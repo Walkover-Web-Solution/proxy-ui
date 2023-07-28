@@ -1,14 +1,14 @@
-# Msg91
+# Proxy-UI
 
-[![CI](https://github.com/Walkover-Web-Solution/msg91-UI/actions/workflows/main.yml/badge.svg)](https://github.com/Walkover-Web-Solution/msg91-UI/actions/workflows/main.yml)
+[![CI](https://github.com/Walkover-Web-Solution/proxy-ui/actions/workflows/main.yml/badge.svg)](https://github.com/Walkover-Web-Solution/proxy-ui/actions/workflows/main.yml)
 
 ## Setup Guide
 
-1. Clone https://github.com/Walkover-Web-Solution/msg91-UI.git.
+1. Clone https://github.com/Walkover-Web-Solution/proxy-ui.git.
 
 2. This project requires Node version 14+, install Node from [here](https://nodejs.org/en/).
 
-3. Go inside the cloned directory `msg91-UI` in any terminal and run these following commands in the terminal to install dependency and start local serve.
+3. Go inside the cloned directory `proxy-ui` in any terminal and run these following commands in the terminal to install dependency and start local serve.
 
 4. Run `npm i` for installation of dependencies.
 
