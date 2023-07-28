@@ -1,0 +1,19 @@
+{
+    "name": "services-admin-voice-dashboard",
+    "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/admin/voice/dashboard/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/services/admin/voice/dashboard/src/**/*.ts",
+                    "libs/services/admin/voice/dashboard/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

@@ -1,0 +1,16 @@
+{
+    "name": "services-msg91-email",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/msg91/email/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/services/msg91/email/src/**/*.ts", "libs/services/msg91/email/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

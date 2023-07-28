@@ -1,0 +1,28 @@
+.card {
+    width: 250px;
+    overflow-y: auto;
+    &.no-data {
+        min-height: 250px;
+        min-width: 250px;
+    }
+    background-color: var(--color-common-silver) !important;
+    img {
+        border-radius: 5px;
+    }
+    .content {
+        font-size: var(--font-size-common-14);
+    }
+    mat-card-content {
+        margin-bottom: 0 !important;
+    }
+    // .mat-card-image {
+    //     width: 100% !important;
+    //     margin: 0 0 10px 0 !important;
+    // }
+}
+
+.btn-static {
+    width: 250px;
+    background: var(--color-common-silver);
+    border-radius: var(--border-common-radius);
+}

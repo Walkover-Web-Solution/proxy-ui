@@ -1,0 +1,56 @@
+<div class="w-100" #timeForm>
+    <mat-form-field
+        [appearance]="appearance"
+        class="w-100 custom-time-picker-form"
+        [matMenuTriggerFor]="menu"
+        (menuOpened)="menuOpened()"
+        #menuTrigger="matMenuTrigger"
+        floatLabel="always"
+    >
+        <mat-label>{{ label }}</mat-label>
+        <input
+            matInput
+            [formControl]="timeFormControl"
+            [placeholder]="'-- : --' + (showSeconds ? ' : --' : '') + (enableMeridian ? ' --' : '')"
+            readonly
+        />
+        <div matSuffix style="display: flex">
+            <button mat-icon-button *ngIf="timeFormControl?.value" (click)="clearField()" color="primary">
+                <mat-icon class="mat-icon-20">close</mat-icon>
+            </button>
+            <button mat-icon-button color="primary">
+                <mat-icon class="mat-icon-20">schedule</mat-icon>
+            </button>
+        </div>
+        <mat-error *ngIf="timeFormControl?.touched">
+            <mat-error *ngIf="timeFormControl?.errors?.required"> Field is required </mat-error>
+            <mat-error *ngIf="timeFormControl?.errors"> Enter a valid time </mat-error>
+        </mat-error>
+    </mat-form-field>
+</div>
+<mat-menu #menu="matMenu" class="more-menu custom-time-picker-menu">
+    <form
+        [formGroup]="timeGroup"
+        [ngStyle]="{ 'min-width.px': timeForm.offsetWidth, 'max-width.px': timeForm.offsetWidth }"
+        (click)="$event.stopPropagation()"
+    >
+        <div class="ml-4 mr-2">
+            <ngx-mat-timepicker
+                formControlName="time"
+                [enableMeridian]="enableMeridian"
+                [showSpinners]="showSpinners"
+                [defaultTime]="defaultTime"
+                [showSeconds]="showSeconds"
+                [disabled]="disabled"
+            ></ngx-mat-timepicker>
+        </div>
+        <div class="d-flex align-items-center justify-content-center w-100 mt-3 mb-2 col-gap-3 px-3">
+            <button mat-flat-button (click)="setTime(); menuTrigger.closeMenu()" color="primary">
+                <mat-icon class="mat-icon-18">done</mat-icon>
+            </button>
+            <button mat-stroked-button (click)="menuTrigger.closeMenu()" color="warn">
+                <mat-icon class="mat-icon-18">close</mat-icon>
+            </button>
+        </div>
+    </form>
+</mat-menu>

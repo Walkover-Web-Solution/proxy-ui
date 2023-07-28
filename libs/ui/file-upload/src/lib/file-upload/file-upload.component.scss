@@ -1,0 +1,29 @@
+.upload-file-wrapper {
+    &.invalid {
+        .upload-file-content {
+            border-color: var(--color-email-primary);
+        }
+        .upload-file-info {
+            color: var(--color-email-primary);
+        }
+    }
+    .upload-file-content {
+        border: 1px dashed var(--color-common-cloud);
+        padding: 12.5px 8px;
+        height: 47px;
+        transform: all linear ease-in 0.2s;
+        &:hover,
+        &.highlighted {
+            border-color: var(--color-common-primary);
+            * {
+                color: var(--color-common-primary) !important;
+            }
+        }
+    }
+    .upload-file-info {
+        color: var(--color-common-rock);
+    }
+    input[type='file'] {
+        display: none;
+    }
+}

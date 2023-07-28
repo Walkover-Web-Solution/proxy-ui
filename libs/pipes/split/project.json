@@ -1,0 +1,15 @@
+{
+    "name": "pipes-split",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/split/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/pipes/split/**/*.ts", "libs/pipes/split/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

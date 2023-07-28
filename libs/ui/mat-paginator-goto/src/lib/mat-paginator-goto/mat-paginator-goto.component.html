@@ -1,0 +1,44 @@
+<div
+    [ngClass]="{ 'hide-pagination-arrows': hidePaginationArrows }"
+    *ngIf="length > showPaginatorLength"
+    class="d-flex justify-content-end align-items-center go-to-pagination"
+>
+    <div class="go-to-container" [hidden]="pageNumbers?.length < 1">
+        <div class="go-to-label">Go To:</div>
+        <mat-form-field class="goto-dropdown" [ngStyle]="{ 'width.px': minWidth }">
+            <mat-select
+                [(ngModel)]="goTo"
+                (selectionChange)="goToChange()"
+                (openedChange)="enableVirtualScroll ? openChange($event) : ''"
+                #goToDropdown="matSelect"
+            >
+                <ng-container *ngIf="enableVirtualScroll">
+                    <cdk-virtual-scroll-viewport [itemSize]="itemSize" style="height: 200px" minBufferPx="200">
+                        <mat-option
+                            *cdkVirtualFor="let pageNumber of pageNumbers"
+                            [value]="pageNumber"
+                            style="font-size: 11px"
+                            [style.height.px]="itemSize"
+                            >{{ pageNumber }}</mat-option
+                        >
+                    </cdk-virtual-scroll-viewport>
+                </ng-container>
+                <ng-container *ngIf="!enableVirtualScroll">
+                    <mat-option *ngFor="let pageNumber of pageNumbers" [value]="pageNumber" style="font-size: 11px">{{
+                        pageNumber
+                    }}</mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <mat-paginator
+        [length]="length"
+        [pageIndex]="pageIndex"
+        [pageSize]="pageSize"
+        [hidePageSize]="hidePageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="paginationChange($event)"
+        class="default-mat-paginator"
+    >
+    </mat-paginator>
+</div>

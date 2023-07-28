@@ -1,0 +1,147 @@
+<div class="datepicker">
+    <div class="custom-datepicker w-100">
+        <button
+            mat-stroked-button
+            class="date-input w-100 px-2 remove-mat-button-focus-overlay"
+            [matMenuTriggerFor]="customDateRangePicker"
+            #trigger="matMenuTrigger"
+            (click)="setInputDate()"
+            (menuClosed)="menuClosed()"
+            [ngClass]="cssClass"
+            [disableRipple]="true"
+        >
+            <span class="rounded-4 position-absolute outline-position"></span>
+            <span
+                class="rounded-4 position-absolute hide-border"
+                [style.width]="flatLabelWidth.offsetWidth + 'px'"
+            ></span>
+            <span class="float-label text-dark" #flatLabelWidth>{{ placeholder }}</span>
+            <div class="d-flex justify-content-start align-items-center">
+                <mat-icon class="today">date_range</mat-icon>
+                <span class="falex-grow-1">{{ selectedDateValue }}</span>
+            </div>
+        </button>
+        <mat-menu #customDateRangePicker="matMenu" class="custom-drp">
+            <div class="drp-content" (click)="$event.stopPropagation()">
+                <div class="drp-ranges" [class.hide-option]="showRangePicker">
+                    <mat-list role="list" class="drp-range-list">
+                        <button
+                            mat-button
+                            class="px-3 btn-hide"
+                            [ngClass]="{ 'selected': monthSelected === null && quarterSelected === null }"
+                            (click)="toggleRangePicker()"
+                        >
+                            Custom Date Range
+                        </button>
+                        <button
+                            mat-button
+                            class="px-3"
+                            [ngClass]="{ 'selected': monthSelected === 'current' }"
+                            (click)="selectThisMonth()"
+                            [disabled]="!customOptionActive"
+                        >
+                            This Month
+                        </button>
+                        <button
+                            mat-button
+                            class="px-3"
+                            [ngClass]="{ 'selected': monthSelected === 'last' }"
+                            (click)="selectLastMonth()"
+                            [disabled]="!customOptionActive"
+                        >
+                            Last Month
+                        </button>
+                        <button
+                            mat-button
+                            class="px-3"
+                            [ngClass]="{ 'selected': quarterSelected === 'current' }"
+                            (click)="selectThisQuarter()"
+                            [disabled]="!customOptionActive"
+                        >
+                            This Quarter to date
+                        </button>
+                        <button
+                            mat-button
+                            class="px-3"
+                            [ngClass]="{ 'selected': quarterSelected === 'last' }"
+                            (click)="selectLastQuarter()"
+                            [disabled]="!customOptionActive"
+                        >
+                            Last Quarter
+                        </button>
+                    </mat-list>
+                </div>
+                <div class="drp-calendar" [class.show-calendar]="showRangePicker">
+                    <div class="drp-inputs">
+                        <form [formGroup]="range">
+                            <mat-form-field appearance="legacy" class="mat-form-custom">
+                                <mat-label>From</mat-label>
+                                <input
+                                    matInput
+                                    formControlName="start"
+                                    placeholder="DD/MM/YYYY"
+                                    (blur)="checkFromToDate(true)"
+                                    autocomplete="off"
+                                />
+                                <mat-icon matSuffix class="mat-icon-18">today</mat-icon>
+                                <mat-error *ngIf="range.get('start').errors?.pattern">Invalid Date Format.</mat-error>
+                            </mat-form-field>
+                            <mat-form-field appearance="legacy" class="mat-form-custom">
+                                <mat-label>To</mat-label>
+                                <input
+                                    matInput
+                                    formControlName="end"
+                                    placeholder="DD/MM/YYYY"
+                                    (blur)="checkFromToDate(false)"
+                                    autocomplete="off"
+                                />
+                                <mat-icon matSuffix class="mat-icon-18">today</mat-icon>
+                                <mat-error *ngIf="range.get('end').errors?.pattern">Invalid Date Format.</mat-error>
+                            </mat-form-field>
+                        </form>
+                    </div>
+                    <div class="drp-calendar-content">
+                        <mat-calendar
+                            #calendar
+                            [selected]="calenderDateRange"
+                            (selectedChange)="selectedChange($event)"
+                            [maxDate]="today"
+                            [minDate]="minDate"
+                        ></mat-calendar>
+                    </div>
+                    <div class="drp-calendar-content">
+                        <p *ngIf="selectedDateIsGreaterThenToday" class="pl-2 m-0 text-danger" style="font-size: 12px">
+                            Future Date Selected.
+                        </p>
+                        <p
+                            *ngIf="selectedDateIsSmallerThenMinDate"
+                            class="pl-2 m-0 text-danger"
+                            style="font-size: 12px"
+                        >
+                            Date Selected older then available data.
+                        </p>
+                    </div>
+                    <div class="drp-calendar-actions px-2">
+                        <button mat-stroked-button class="mw-auto px-2 btn-hide" (click)="toggleRangePicker()">
+                            <mat-icon class="mat-icon-16">arrow_back</mat-icon> Back
+                        </button>
+                        <div class="d-flex col-gap-3">
+                            <button mat-button (click)="closeDialog()">Cancel</button>
+                            <button mat-flat-button class="flat-default" (click)="resetDate()">Reset</button>
+                            <button
+                                mat-flat-button
+                                color="primary"
+                                [disabled]="
+                                    range.invalid || selectedDateIsGreaterThenToday || selectedDateIsSmallerThenMinDate
+                                "
+                                (click)="applyDateRange()"
+                            >
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-menu>
+    </div>
+</div>

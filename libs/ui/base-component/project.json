@@ -1,0 +1,16 @@
+{
+    "name": "ui-components-base-component",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/base-component/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/base-component/src/**/*.ts", "libs/ui/base-component/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

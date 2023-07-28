@@ -1,0 +1,15 @@
+{
+    "name": "pipes-join",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/join/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/pipes/join/**/*.ts", "libs/pipes/join/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

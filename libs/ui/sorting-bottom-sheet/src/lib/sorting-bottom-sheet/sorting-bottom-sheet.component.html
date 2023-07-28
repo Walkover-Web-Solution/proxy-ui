@@ -1,0 +1,35 @@
+<div class="d-flex align-item-center justify-content-between p-3">
+    <p mat-list-item class="text-dark mat-subheading-2 mb-1">Sort By</p>
+    <button
+        mat-icon-button
+        color="primary"
+        class="icon-btn-md"
+        (click)="closeSortingBottomSheet()"
+        style="position: absolute; right: 8px; top: 10px"
+    >
+        <mat-icon class="mat-icon-24">close</mat-icon>
+    </button>
+</div>
+<mat-nav-list class="custom-nav-list" style="max-height: 65vh; overflow-y: auto">
+    <ng-container *ngFor="let sort of sortColumns; let lastIndex = last; let index = index">
+        <mat-list-item>
+            <span mat-line class="mat-body-2 text-dark text-capitalize" style="font-size: 13px">{{
+                sort.columnName
+            }}</span>
+            <mat-button-toggle-group
+                [(ngModel)]="sort.value"
+                class="custom-toggle-btn"
+                (ngModelChange)="
+                    updateSortValue({ key: sort.key, value: sort.value, columnName: sort.columnName }, index)
+                "
+            >
+                <mat-button-toggle value="asc" class="font-weight-normal">ASC</mat-button-toggle>
+                <mat-button-toggle value="desc" class="font-weight-normal">DSC</mat-button-toggle>
+            </mat-button-toggle-group>
+        </mat-list-item>
+        <mat-divider *ngIf="!lastIndex"></mat-divider>
+    </ng-container>
+</mat-nav-list>
+<div class="d-flex px-3 py-3">
+    <button mat-flat-button color="primary" class="w-100" (click)="applySorting()">Apply</button>
+</div>

@@ -1,0 +1,16 @@
+{
+    "name": "urls-notifications",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/notifications/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/notifications/**/*.ts", "libs/urls/notifications/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

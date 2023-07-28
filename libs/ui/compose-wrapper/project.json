@@ -1,0 +1,15 @@
+{
+    "name": "ui-compose-wrapper",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/compose-wrapper/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/compose-wrapper/**/*.ts", "libs/ui/compose-wrapper/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

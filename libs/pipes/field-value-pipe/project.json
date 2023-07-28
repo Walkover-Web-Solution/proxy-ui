@@ -1,0 +1,19 @@
+{
+    "name": "pipes-field-value-pipe",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/field-value-pipe/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/pipes/field-value-pipe/src/**/*.ts",
+                    "libs/pipes/field-value-pipe/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

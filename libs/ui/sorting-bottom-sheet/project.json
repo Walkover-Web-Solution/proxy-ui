@@ -1,0 +1,15 @@
+{
+    "name": "ui-sorting-bottom-sheet",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/sorting-bottom-sheet/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/sorting-bottom-sheet/**/*.ts", "libs/ui/sorting-bottom-sheet/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

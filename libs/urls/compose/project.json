@@ -1,0 +1,15 @@
+{
+    "name": "urls-compose",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/compose/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/compose/src/**/*.ts", "libs/urls/compose/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

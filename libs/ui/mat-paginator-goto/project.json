@@ -1,0 +1,15 @@
+{
+    "name": "ui-mat-paginator-goto",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/mat-paginator-goto/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/mat-paginator-goto/**/*.ts", "libs/ui/mat-paginator-goto/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

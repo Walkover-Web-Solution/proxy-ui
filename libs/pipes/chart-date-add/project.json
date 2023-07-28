@@ -1,0 +1,25 @@
+{
+    "name": "pipes-chart-date-add",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/chart-date-add/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/pipes/chart-date-add/src/**/*.ts", "libs/pipes/chart-date-add/src/**/*.html"]
+            }
+        },
+        "test": {
+            "executor": "@nrwl/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/libs/pipes/chart-date-add"],
+            "options": {
+                "tsConfig": "libs/pipes/chart-date-add/tsconfig.lib.json",
+                "jestConfig": "libs/pipes/chart-date-add/jest.config.ts",
+                "passWithNoTests": true
+            }
+        }
+    },
+    "tags": ["scope:shared", "type:lib"]
+}

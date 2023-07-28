@@ -1,0 +1,9 @@
+<div class="cmd-enter d-flex">
+    <span class="mr-2 pointer text-hover-underline" (click)="toggleCmdEnter()" [matTooltip]="'Click to switch'">
+        {{ isCmdEnter ? buttonName + ' +' : '' }} Enter to
+        <!-- {{ type === 'note' ? 'save' : 'send message' }} (<span
+            class="switch"
+            >switch</span
+        >) -->
+    </span>
+</div>

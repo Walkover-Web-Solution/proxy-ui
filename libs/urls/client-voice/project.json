@@ -1,0 +1,15 @@
+{
+    "name": "urls-client-voice",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/client-voice/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/client-voice/src/**/*.ts", "libs/urls/client-voice/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

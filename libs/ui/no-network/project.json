@@ -1,0 +1,15 @@
+{
+    "name": "ui-no-network",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/no-network/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/no-network/**/*.ts", "libs/ui/no-network/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

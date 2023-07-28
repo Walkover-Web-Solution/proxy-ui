@@ -1,0 +1,15 @@
+{
+    "name": "pipes-timer",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/timer/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/pipes/timer/**/*.ts", "libs/pipes/timer/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

@@ -1,0 +1,15 @@
+{
+    "name": "urls-otp",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/otp/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/otp/src/**/*.ts", "libs/urls/otp/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

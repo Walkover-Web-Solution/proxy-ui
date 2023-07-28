@@ -1,0 +1,19 @@
+{
+    "name": "pipes-decimal-formatter",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/decimal-formatter/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/pipes/decimal-formatter/src/**/*.ts",
+                    "libs/pipes/decimal-formatter/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

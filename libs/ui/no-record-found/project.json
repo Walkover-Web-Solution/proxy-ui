@@ -1,0 +1,15 @@
+{
+    "name": "ui-no-record-found",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/no-record-found/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/no-record-found/**/*.ts", "libs/ui/no-record-found/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

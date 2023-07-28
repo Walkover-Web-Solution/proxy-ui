@@ -1,0 +1,18 @@
+{
+    "name": "ui-components-voice-template-dropdown",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/voice-template-dropdown/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/ui/voice-template-dropdown/src/**/*.ts",
+                    "libs/ui/voice-template-dropdown/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

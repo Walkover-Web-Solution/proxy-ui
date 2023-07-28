@@ -1,0 +1,15 @@
+{
+    "name": "ui-components-route-loader",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/route-loader/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/route-loader/**/*.ts", "libs/ui/route-loader/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

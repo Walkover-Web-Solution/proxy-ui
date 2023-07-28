@@ -1,0 +1,27 @@
+<div class="d-flex align-items-start">
+    <mat-form-field [appearance]="appearance" class="w-100 whatsapp-compose">
+        <mat-label>Select template</mat-label>
+        <mat-select
+            disableRipple
+            [placeholder]="'Select template'"
+            [formControl]="templateForm"
+            (selectionChange)="templateSelected.emit(true)"
+            msg91AutoSelectDropdown
+        >
+            <mat-option [value]="temp.name" *ngFor="let temp of templates$ | async">
+                {{ temp.name }}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="templateForm.touched && templateForm.errors?.required"> Template is required. </mat-error>
+    </mat-form-field>
+    <button
+        type="button"
+        mat-flat-button
+        class="flat-icon-btn my-1 ml-2 flat-default"
+        (click)="fetchTemplate()"
+        matTooltip="Refresh"
+        matTooltipPosition="above"
+    >
+        <mat-icon class="mat-icon-18">refresh</mat-icon>
+    </button>
+</div>

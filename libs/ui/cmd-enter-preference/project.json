@@ -1,0 +1,15 @@
+{
+    "name": "ui-cmd-enter-preference",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/cmd-enter-preference/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/cmd-enter-preference/**/*.ts", "libs/ui/cmd-enter-preference/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

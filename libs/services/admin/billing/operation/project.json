@@ -1,0 +1,19 @@
+{
+    "name": "services-admin-billing-operation",
+    "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/admin/billing/operation/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/services/admin/billing/operation/**/*.ts",
+                    "libs/services/admin/billing/operation/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

@@ -1,0 +1,15 @@
+{
+    "name": "models-voice-models",
+    "projectType": "library",
+    "sourceRoot": "libs/models/voice/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/models/voice/src/**/*.ts", "libs/models/voice/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

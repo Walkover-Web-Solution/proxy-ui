@@ -1,0 +1,15 @@
+{
+    "name": "models-setting-models",
+    "projectType": "library",
+    "sourceRoot": "libs/models/setting-models/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/models/setting-models/**/*.ts", "libs/models/setting-models/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

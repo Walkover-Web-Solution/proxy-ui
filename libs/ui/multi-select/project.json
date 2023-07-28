@@ -1,0 +1,15 @@
+{
+    "name": "ui-multi-select",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/multi-select/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/multi-select/**/*.ts", "libs/ui/multi-select/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

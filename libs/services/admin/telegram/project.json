@@ -1,0 +1,19 @@
+{
+    "name": "services-admin-telegram",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/admin/telegram/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/services/admin/telegram/src/**/*.ts",
+                    "libs/services/admin/telegram/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

@@ -1,0 +1,15 @@
+{
+    "name": "pipes-typeof",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/typeof/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/pipes/typeof/**/*.ts", "libs/pipes/typeof/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

@@ -1,0 +1,15 @@
+{
+    "name": "services-permission",
+    "projectType": "library",
+    "sourceRoot": "libs/services/permission/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/services/permission/**/*.ts", "libs/services/permission/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

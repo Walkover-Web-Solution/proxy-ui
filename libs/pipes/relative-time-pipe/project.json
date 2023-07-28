@@ -1,0 +1,15 @@
+{
+    "name": "pipes-relative-time-pipe",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/relative-time-pipe/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/pipes/relative-time-pipe/**/*.ts", "libs/pipes/relative-time-pipe/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

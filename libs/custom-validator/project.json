@@ -1,0 +1,25 @@
+{
+    "name": "custom-validator",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/custom-validator/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/custom-validator/src/**/*.ts", "libs/custom-validator/src/**/*.html"]
+            }
+        },
+        "test": {
+            "executor": "@nrwl/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/libs/custom-validator"],
+            "options": {
+                "tsConfig": "libs/custom-validator/tsconfig.lib.json",
+                "jestConfig": "libs/custom-validator/jest.config.ts",
+                "passWithNoTests": true
+            }
+        }
+    },
+    "tags": ["scope:shared", "type:lib"]
+}

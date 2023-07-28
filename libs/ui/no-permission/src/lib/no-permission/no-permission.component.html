@@ -1,0 +1,14 @@
+<mat-card class="py-5 w-50 m-auto my-5">
+    <mat-card-content>
+        <div class="no-permission text-center">
+            <svg fill="#F44336" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="50px" height="50px">
+                <path
+                    d="M 15 3 C 11.783059 3 8.8641982 4.2807926 6.7070312 6.3496094 A 1.0001 1.0001 0 0 0 6.3476562 6.7070312 C 4.2793766 8.8641071 3 11.783531 3 15 C 3 21.615572 8.3844276 27 15 27 C 18.210007 27 21.123475 25.724995 23.279297 23.664062 A 1.0001 1.0001 0 0 0 23.662109 23.28125 C 25.724168 21.125235 27 18.210998 27 15 C 27 8.3844276 21.615572 3 15 3 z M 15 5 C 20.534692 5 25 9.4653079 25 15 C 25 17.40637 24.155173 19.609062 22.746094 21.332031 L 8.6679688 7.2539062 C 10.390938 5.8448274 12.59363 5 15 5 z M 7.2539062 8.6679688 L 21.332031 22.746094 C 19.609062 24.155173 17.40637 25 15 25 C 9.4653079 25 5 20.534692 5 15 C 5 12.59363 5.8448274 10.390938 7.2539062 8.6679688 z"
+                />
+            </svg>
+            <h1 class="mat-display-4 text-dark fw-bolder mb-2">No Permission</h1>
+            <p class="t-opacity-7 text-grey my-0 mat-body-2">Sorry, you don't have permission to access this page.</p>
+            <p class="t-opacity-7 text-grey mt-2 mat-body-2" *ngIf="additionalMsg" [innerHTML]="additionalMsg"></p>
+        </div>
+    </mat-card-content>
+</mat-card>

@@ -1,0 +1,26 @@
+<div
+    class="position-relative d-flex flex-column justify-content-between host-tool-tip"
+    @tooltip
+    [ngClass]="{ 'white-tool-tip': toolTipValueType === 'string' }"
+>
+    <button
+        mat-icon-button
+        color="primary"
+        class="icon-btn-md close-tooltip mat-default-btn"
+        (click)="closeTooltip.emit()"
+        *ngIf="showCloseButton"
+    >
+        <mat-icon class="mat-icon-14 text-white">close</mat-icon>
+    </button>
+    <ng-container *ngIf="toolTipValueType === 'string'; else elseArray">
+        <div [innerHTML]="toolTipValue" class="string-view"></div>
+    </ng-container>
+    <ng-template #elseArray>
+        <ng-container *ngFor="let t of toolTipValue">
+            <div class="d-flex align-items-center">
+                <p class="my-0 mr-1">{{ t.label }}</p>
+                <p class="my-0 mr-1">{{ t.value }}</p>
+            </div>
+        </ng-container>
+    </ng-template>
+</div>

@@ -1,0 +1,26 @@
+<p-toast position="bottom-left" [baseZIndex]="5000" (onClose)="onReject($event)">
+    <ng-template let-message pTemplate="message">
+        <div class="d-flex w-100">
+            <p
+                class="flex-grow-1 mat-body-2 fw-bolder m-0 d-flex justify-content-between"
+                style="line-height: 28px; word-break: break-word"
+            >
+                {{ message.detail?.customAction ? message.detail?.message : message.detail }}
+                <span *ngIf="message.detail?.customAction && undoTimer > 0" class="mr-2 text-danger">
+                    undo in {{ undoTimer }}
+                </span>
+            </p>
+            <button
+                mat-icon-button
+                disableRipple
+                class="mat-icon-default mat-icon-18"
+                style="margin-right: -21px; margin-top: 1px"
+                [matTooltip]="message.detail?.customAction ? 'Undo' : ''"
+                matTooltipPosition="above"
+                *ngIf="(message.detail?.customAction && undoTimer > 0) || !message.detail?.customAction"
+            >
+                <mat-icon>{{ !message.detail?.customAction ? 'close' : 'undo' }}</mat-icon>
+            </button>
+        </div>
+    </ng-template>
+</p-toast>

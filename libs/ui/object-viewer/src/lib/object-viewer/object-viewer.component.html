@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-center align-items-center">
+    <button
+        mat-icon-button
+        color="primary"
+        [matMenuTriggerFor]="menu"
+        #trigger="matMenuTrigger"
+        aria-label="Icon-button with a menu"
+        [class]="buttonClass"
+    >
+        <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu" class="black-tool-tip">
+        <div (click)="$event.stopPropagation()">
+            <ng-container [ngTemplateOutlet]="startCurlyBracket"></ng-container>
+            <ng-container [ngTemplateOutlet]="tree" [ngTemplateOutletContext]="{ $implicit: data }"></ng-container>
+            <ng-container [ngTemplateOutlet]="endCurlyBracket"></ng-container>
+        </div>
+    </mat-menu>
+</div>
+<ng-template #tree let-node>
+    <ng-container *ngFor="let obj of node | keyvalue">
+        <ng-container
+            [ngTemplateOutlet]="keyValue"
+            [ngTemplateOutletContext]="{
+                $implicit: obj,
+                class: 'ml-3'
+            }"
+        ></ng-container>
+    </ng-container>
+</ng-template>
+<ng-template #keyValue let-obj let-class="class">
+    <div [ngClass]="class">
+        <span [ngClass]="classesForKey">
+            {{ obj.key }}
+        </span>
+        :
+        <ng-container [ngSwitch]="obj.value | typeof">
+            <ng-container *ngSwitchCase="'object'">
+                <ng-container [ngTemplateOutlet]="startCurlyBracket"></ng-container>
+                <ng-container
+                    [ngTemplateOutlet]="tree"
+                    [ngTemplateOutletContext]="{
+                        $implicit: obj.value
+                    }"
+                ></ng-container>
+                <ng-container [ngTemplateOutlet]="endCurlyBracket"></ng-container>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+                <span [ngClass]="classesForValue"> {{ obj.value }} , </span>
+            </ng-container>
+        </ng-container>
+    </div>
+</ng-template>
+<ng-template #startCurlyBracket>
+    <span>&#123;</span>
+</ng-template>
+<ng-template #endCurlyBracket>
+    <span>&#125;</span>
+</ng-template>

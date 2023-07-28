@@ -1,0 +1,18 @@
+{
+    "name": "services-msg91-payment-method",
+    "projectType": "library",
+    "sourceRoot": "libs/services/msg91/payment-method/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/services/msg91/payment-method/src/**/*.ts",
+                    "libs/services/msg91/payment-method/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

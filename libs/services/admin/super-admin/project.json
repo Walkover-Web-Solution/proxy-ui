@@ -1,0 +1,19 @@
+{
+    "name": "services-admin-super-admin",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/admin/super-admin/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/services/admin/super-admin/**/*.ts",
+                    "libs/services/admin/super-admin/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

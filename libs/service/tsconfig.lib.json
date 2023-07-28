@@ -1,0 +1,21 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "outDir": "../../dist/out-tsc",
+        "target": "es2015",
+        "declaration": true,
+        "inlineSources": true,
+        "types": [],
+        "lib": ["dom", "esnext"],
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
+    },
+    "angularCompilerOptions": {
+        "enableIvy": false,
+        "skipTemplateCodegen": true,
+        "strictMetadataEmit": true,
+        "enableResourceInlining": true
+    },
+    "include": ["**/*.ts"],
+    "exclude": ["jest.config.ts"]
+}

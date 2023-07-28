@@ -1,0 +1,15 @@
+{
+    "name": "models-root-models",
+    "projectType": "library",
+    "sourceRoot": "libs/models/root-models/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/models/root-models/**/*.ts", "libs/models/root-models/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

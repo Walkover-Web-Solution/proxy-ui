@@ -1,0 +1,42 @@
+<mat-form-field [appearance]="appearance" class="w-100" [ngClass]="{ 'static-label padding-bottom-10': !labelFloat }">
+    <mat-label *ngIf="labelFloat">{{ label }}</mat-label>
+    <span matPrefix class="mr-2 d-inline-block mat-body-2" *ngIf="!labelFloat">{{ label }} :</span>
+    <input
+        type="text"
+        matInput
+        [matAutocomplete]="inboxAutoComplete"
+        #inboxInput
+        [formControl]="inboxForm"
+        class="py-2"
+    />
+    <mat-autocomplete
+        #inboxAutoComplete="matAutocomplete"
+        (optionSelected)="handelInboxSelection()"
+        [displayWith]="inboxDisplayFunction"
+        msg91AutoSelectDropdown
+        (setControlValue)="inboxForm.setValue($event); handelInboxSelection()"
+    >
+        <mat-option class="pointer-none t-opacity-6" value="" *ngIf="!(inboxes$ | async)?.length">
+            {{ (inboxes$ | async)?.length ? 'Select Inbox' : 'No Inbox Found' }}
+        </mat-option>
+        <mat-option [value]="inbox" *ngFor="let inbox of inboxes$ | async">
+            {{ inbox.name }}
+        </mat-option>
+    </mat-autocomplete>
+    <mat-error *ngIf="inboxForm.touched">
+        <mat-error *ngIf="inboxForm.errors?.required && isRequired"> Please select an inbox. </mat-error>
+        <mat-error *ngIf="inboxForm.errors && inboxForm?.errors?.elementExistsInList">
+            Select Inbox from dropdown.
+        </mat-error>
+    </mat-error>
+    <button
+        mat-icon-button
+        matSuffix
+        *ngIf="showClose"
+        class="cursor-pointer icon-btn-md"
+        color="primary"
+        (click)="clearInbox()"
+    >
+        <mat-icon class="mat-icon-20 text-dark">close</mat-icon>
+    </button>
+</mat-form-field>

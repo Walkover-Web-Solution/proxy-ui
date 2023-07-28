@@ -1,0 +1,15 @@
+{
+    "name": "models-email-models",
+    "projectType": "library",
+    "sourceRoot": "libs/models/email-models/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/models/email-models/**/*.ts", "libs/models/email-models/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

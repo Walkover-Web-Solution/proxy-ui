@@ -1,0 +1,18 @@
+{
+    "name": "ui-components-campaign-autocomplete",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/campaign-autocomplete/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/ui/campaign-autocomplete/src/**/*.ts",
+                    "libs/ui/campaign-autocomplete/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

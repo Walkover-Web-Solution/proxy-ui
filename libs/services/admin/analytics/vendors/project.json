@@ -1,0 +1,19 @@
+{
+    "name": "services-admin-analytics-vendors",
+    "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/admin/analytics/vendors/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/services/admin/analytics/vendors/src/**/*.ts",
+                    "libs/services/admin/analytics/vendors/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

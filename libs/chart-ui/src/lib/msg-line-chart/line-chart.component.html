@@ -1,0 +1,110 @@
+<div class="d-flex justify-content-between pb-3 filter-btn-group">
+    <p class="p-0 m-0 line-chart-title">{{ yAxisLabel }}</p>
+    <mat-button-toggle-group
+        *ngIf="data?.length"
+        #filter
+        name="fontStyle"
+        aria-label="Font Style"
+        [value]="xAxisLabel"
+        (change)="changeRange($event)"
+        color="primary"
+        class="custom-toggle-btn"
+    >
+        <mat-button-toggle *ngIf="showHourlTab" value="Hourly" selected>Hourly</mat-button-toggle>
+        <mat-button-toggle value="Day">Day</mat-button-toggle>
+        <mat-button-toggle value="Week">Week</mat-button-toggle>
+        <mat-button-toggle value="Month">Month</mat-button-toggle>
+    </mat-button-toggle-group>
+</div>
+<div [ngStyle]="{ 'height': containerHeight + 'px' }">
+    <ngx-charts-line-chart
+        *ngIf="data?.length; else noDataFound"
+        #chart
+        (select)="select.emit($event)"
+        (activate)="activate.emit($event)"
+        (deactivate)="deactivate.emit($event)"
+        [results]="results"
+        [view]="view"
+        [scheme]="scheme"
+        [customColors]="customColors"
+        [animations]="animations"
+        [legend]="legend"
+        [legendTitle]="legendTitle"
+        [legendPosition]="legendPosition"
+        [xAxis]="xAxis"
+        [yAxis]="yAxis"
+        [showXAxisLabel]="showXAxisLabel"
+        [showYAxisLabel]="showYAxisLabel"
+        [xAxisLabel]="xAxisLabel"
+        [yAxisLabel]="''"
+        [autoScale]="autoScale"
+        [timeline]="timeline"
+        [gradient]="gradient"
+        [showGridLines]="showGridLines"
+        [curve]="curve"
+        [activeEntries]="activeEntries"
+        [schemeType]="schemeType"
+        [rangeFillOpacity]="rangeFillOpacity"
+        [trimXAxisTicks]="trimXAxisTicks"
+        [trimYAxisTicks]="trimYAxisTicks"
+        [rotateXAxisTicks]="rotateXAxisTicks"
+        [maxXAxisTickLength]="maxXAxisTickLength"
+        [maxYAxisTickLength]="maxYAxisTickLength"
+        [xAxisTickFormatting]="xAxisTickFormatting"
+        [yAxisTickFormatting]="yAxisTickFormatting"
+        [xAxisTicks]="xAxisTicks"
+        [yAxisTicks]="yAxisTicks"
+        [roundDomains]="roundDomains"
+        [tooltipDisabled]="tooltipDisabled"
+        [showRefLines]="showRefLines"
+        [referenceLines]="referenceLines"
+        [showRefLabels]="showRefLabels"
+        [yScaleMin]="yScaleMin"
+        [yScaleMax]="yScaleMax"
+    >
+        <ng-template #tooltipTemplate let-model="model">
+            <ng-container *ngIf="xAxisLabel === 'Hourly' && model">
+                {{ model.name | date: 'dd/MM/yyyy hh:mm' }}
+            </ng-container>
+            <ng-container *ngIf="xAxisLabel === 'Day' && model">
+                {{ model.name | date: 'dd/MM/yyyy' }}
+            </ng-container>
+            <ng-container *ngIf="xAxisLabel === 'Week' && model">
+                {{ model.name | date: 'dd/MM/yyyy' }} - {{ model.name | dateadd | date: 'dd/MM/yyyy' }}
+            </ng-container>
+            <ng-container *ngIf="xAxisLabel === 'Month' && model">
+                {{ model.name | date: 'MMMM' }}
+            </ng-container>
+            <div class="area-tooltip-container">
+                <div class="tooltip-item">
+                    {{ model?.series + ': ' + model?.value?.toLocaleString().replace('_', ' ') | titlecase }}
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template #seriesTooltipTemplate let-model="model">
+            <ng-container *ngIf="xAxisLabel === 'Hourly' && model.length > 0">
+                {{ model[0].name | date: 'dd/MM/yyyy hh:mm' }}
+            </ng-container>
+            <ng-container *ngIf="xAxisLabel === 'Day' && model.length > 0">
+                {{ model[0].name | date: 'dd/MM/yyyy' }}
+            </ng-container>
+            <ng-container *ngIf="xAxisLabel === 'Week' && model.length > 0">
+                {{ model[0].name | date: 'dd/MM/yyyy' }} - {{ model[0].name | dateadd | date: 'dd/MM/yyyy' }}
+            </ng-container>
+            <ng-container *ngIf="xAxisLabel === 'Month' && model.length > 0">
+                {{ model[0].name | date: 'MMMM' }}
+            </ng-container>
+            <div class="area-tooltip-container">
+                <div *ngFor="let tooltipItem of model" class="tooltip-item">
+                    <span class="tooltip-item-color" [style.background-color]="tooltipItem.color"></span>
+                    {{ getToolTipText(tooltipItem).replace('_', ' ') | titlecase }}
+                </div>
+            </div>
+        </ng-template>
+    </ngx-charts-line-chart>
+</div>
+
+<ng-template #noDataFound>
+    <div class="h-100 d-flex align-items-center justify-content-center text-grey">No data to display</div>
+</ng-template>

@@ -1,0 +1,15 @@
+{
+    "name": "pipes-repeater-condition",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/repeater-condition/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/pipes/repeater-condition/**/*.ts", "libs/pipes/repeater-condition/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

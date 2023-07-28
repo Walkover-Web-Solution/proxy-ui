@@ -1,0 +1,16 @@
+{
+    "name": "services-admin-rcs",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/admin/rcs/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/services/admin/rcs/src/**/*.ts", "libs/services/admin/rcs/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

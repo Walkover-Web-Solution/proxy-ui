@@ -1,0 +1,16 @@
+{
+    "name": "ui-components-ivr-dialer",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/ivr-dialer/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/ivr-dialer/**/*.ts", "libs/ui/ivr-dialer/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}
