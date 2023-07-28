@@ -1,5 +1,5 @@
 {
-    "name": "msg91",
+    "name": "proxy",
     "version": "0.0.3",
     "license": "MIT",
     "scripts": {
@@ -9,9 +9,9 @@
         "build:test": "npm run build:web:test",
         "build:prod": "npm run build:web:prod",
         "build:web": "node --max_old_space_size=2560 ./node_modules/@nrwl/cli/bin/nx build --project=proxy --configuration=local ",
-        "build:web:test": "node --max_old_space_size=2560 ./node_modules/@nrwl/cli/bin/nx build msg91 --configuration=test --base-href /app/ && node tools/postbuild --path=dist/apps/msg91",
-        "build:web:prod": "node --max_old_space_size=2560 ./node_modules/@nrwl/cli/bin/nx build msg91 --configuration=production  --base-href /app/ && node tools/postbuild --path=dist/apps/msg91",
-        "build:web:stage": "node --max_old_space_size=2560 ./node_modules/@nrwl/cli/bin/nx build msg91 --configuration=stage  --base-href /stage/ && node tools/postbuild --path=dist/apps/msg91",
+        "build:web:test": "node --max_old_space_size=2560 ./node_modules/@nrwl/cli/bin/nx build proxy --configuration=test --base-href /app/ && node tools/postbuild --path=dist/apps/proxy",
+        "build:web:prod": "node --max_old_space_size=2560 ./node_modules/@nrwl/cli/bin/nx build proxy --configuration=production  --base-href /app/ && node tools/postbuild --path=dist/apps/proxy",
+        "build:web:stage": "node --max_old_space_size=2560 ./node_modules/@nrwl/cli/bin/nx build proxy --configuration=stage  --base-href /stage/ && node tools/postbuild --path=dist/apps/proxy",
         "test": "nx test",
         "lint": "nx workspace-lint && nx lint",
         "e2e": "nx e2e",

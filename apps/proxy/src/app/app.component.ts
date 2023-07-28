@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'msg91-root',
+    selector: 'proxy-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })
