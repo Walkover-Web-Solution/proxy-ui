@@ -1,0 +1,19 @@
+{
+    "name": "ui-components-days-autocomplete-chip-list",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/days-autocomplete-chip-list/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/ui/days-autocomplete-chip-list/**/*.ts",
+                    "libs/ui/days-autocomplete-chip-list/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

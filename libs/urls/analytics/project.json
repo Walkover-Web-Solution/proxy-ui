@@ -1,0 +1,16 @@
+{
+    "name": "urls-analytics",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/analytics/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/analytics/src/**/*.ts", "libs/urls/analytics/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

@@ -1,0 +1,15 @@
+{
+    "name": "models-otp-models",
+    "projectType": "library",
+    "sourceRoot": "libs/models/otp-models/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/models/otp-models/**/*.ts", "libs/models/otp-models/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

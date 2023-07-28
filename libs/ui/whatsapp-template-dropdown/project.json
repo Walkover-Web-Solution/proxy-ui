@@ -1,0 +1,19 @@
+{
+    "name": "ui-components-whatsapp-template-dropdown",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/whatsapp-template-dropdown/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/ui/whatsapp-template-dropdown/src/**/*.ts",
+                    "libs/ui/whatsapp-template-dropdown/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

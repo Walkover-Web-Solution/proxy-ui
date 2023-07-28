@@ -1,0 +1,15 @@
+{
+    "name": "services-msg91-voice",
+    "projectType": "library",
+    "sourceRoot": "libs/services/msg91/voice/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/services/msg91/voice/src/**/*.ts", "libs/services/msg91/voice/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

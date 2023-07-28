@@ -1,0 +1,180 @@
+<div class="d-flex col-gap-3 align-items-start">
+    <mat-form-field [appearance]="formFieldAppearance" [ngClass]="formFiledWidth">
+        <mat-label
+            >Select Campaign
+            <span *ngIf="showRequiredAsterisk && hasRequiredValidator" class="text-danger">*</span></mat-label
+        >
+        <input
+            type="text"
+            matInput
+            [matAutocomplete]="campaignAutoComplete"
+            (keypress)="addRemoveValidationElementExist(true)"
+            #trigger="matAutocompleteTrigger"
+            #campaignInput
+            [formControl]="campaignForm"
+            placeholder="Select Campaign"
+        />
+        <mat-autocomplete
+            #campaignAutoComplete="matAutocomplete"
+            (optionSelected)="handleCampaignSelection($event.option.value)"
+            [displayWith]="campaignDisplayFunction"
+            msg91AutoSelectDropdown
+            (setControlValue)="setCampaignControlValue($event)"
+        >
+            <msg91-cdk-scroll (fetchNextPage)="fetchNextCampaignPage()">
+                <a
+                    class="mat-option text-primary fw-bold d-flex align-items-center"
+                    href="javascript:void(0);"
+                    *ngIf="!getChannelType"
+                    (click)="trigger.closePanel(); handleCampaignSelection(null)"
+                    ><mat-icon class="mat-icon-16 mr-0">add</mat-icon>&nbsp;Create Campaign</a
+                >
+                <a
+                    class="mat-option text-primary fw-bold d-flex align-items-center"
+                    href="javascript:void(0);"
+                    [matMenuTriggerFor]="serviceDetails"
+                    #firstTrigger="matMenuTrigger"
+                    *ngIf="getChannelType"
+                    (click)="$event.stopPropagation(); firstTrigger.openMenu()"
+                >
+                    <mat-icon class="mat-icon-16 mr-0">add</mat-icon>&nbsp;Create Campaign
+                </a>
+                <mat-option disabled value="" *ngIf="!(campaigns$ | async)?.length"> No Campaign Found </mat-option>
+                <mat-option
+                    [value]="campaign"
+                    *ngFor="let campaign of campaigns$ | async"
+                    (mouseover)="firstTrigger?.closeMenu()"
+                >
+                    <div class="d-flex justify-content-between">
+                        <span>{{ campaign.name }}</span>
+                        <span
+                            *ngIf="showDuplicate"
+                            (click)="$event.stopPropagation(); duplicate(campaign)"
+                            class="text-primary text-underline"
+                            >Duplicate</span
+                        >
+                    </div>
+                </mat-option>
+            </msg91-cdk-scroll>
+        </mat-autocomplete>
+        <button
+            mat-icon-button
+            matSuffix
+            *ngIf="campaignForm?.value"
+            class="cursor-pointer icon-btn-md"
+            color="primary"
+            (click)="clearCampaign()"
+        >
+            <mat-icon class="mat-icon-20 text-dark">close</mat-icon>
+        </button>
+
+        <mat-error *ngIf="campaignForm.touched">
+            <mat-error *ngIf="campaignForm.errors?.required"> Campaign field is required. </mat-error>
+            <mat-error *ngIf="campaignForm?.errors?.elementExistsInList"> Select Campaign from dropdown </mat-error>
+        </mat-error>
+    </mat-form-field>
+    <button
+        *ngIf="showRefreshBtn"
+        type="button"
+        mat-flat-button
+        class="flat-icon-btn flat-default mt-1"
+        (click)="reloadCampaignList()"
+        matTooltip="Refresh"
+        matTooltipPosition="above"
+    >
+        <mat-icon class="mat-icon-18">refresh</mat-icon>
+    </button>
+</div>
+
+<mat-menu
+    [class]="'add-campaign-channel-menu ml-1'"
+    backdropClass="create-campaign-menu"
+    #serviceDetails="matMenu"
+    xPosition="after"
+    yPosition="below"
+>
+    <ng-container *ngFor="let channelType of allChannel$ | async">
+        <button
+            class="d-flex align-items-center font-14"
+            *ngIf="!channelType.is_hidden"
+            (click)="channelSelected(channelType)"
+            mat-menu-item
+        >
+            <img
+                *ngIf="channelType?.name === 'Email'"
+                src="assets/images/microservice-icon/email.svg"
+                class="mr-2"
+                alt=""
+                width="20"
+                height="20"
+                y="13"
+                x="95"
+            />
+            <img
+                *ngIf="channelType?.name === 'SMS'"
+                src="assets/images/microservice-icon/sms.svg"
+                class="mr-2"
+                alt=""
+                width="20"
+                height="20"
+                y="13"
+                x="95"
+            />
+            <img
+                *ngIf="channelType?.name === 'Whatsapp'"
+                src="assets/images/microservice-icon/whatsapp.svg"
+                class="mr-2"
+                alt=""
+                width="20"
+                height="20"
+                y="13"
+                x="95"
+            />
+            <img
+                *ngIf="channelType?.name === 'RCS'"
+                src="assets/images/microservice-icon/rcs.svg"
+                class="mr-2"
+                alt=""
+                width="20"
+                height="20"
+                y="13"
+                x="95"
+            />
+            <img
+                *ngIf="channelType?.name === 'Voice'"
+                src="assets/images/microservice-icon/voice.svg"
+                class="mr-2"
+                alt=""
+                width="20"
+                height="20"
+                y="13"
+                x="95"
+            />
+            <img
+                *ngIf="channelType?.name === 'Voice Flow'"
+                src="assets/images/microservice-icon/flow.svg"
+                class="mr-2"
+                alt=""
+                width="20"
+                height="20"
+                y="13"
+                x="95"
+            />
+            <img
+                *ngIf="channelType?.name === 'Push Notification'"
+                src="assets/images/microservice-icon/push-notification.svg"
+                class="mr-2"
+                alt=""
+                width="20"
+                height="20"
+                y="13"
+                x="95"
+            />
+            <span class="mat-body-2 text-dark">{{ channelType?.name }}</span>
+        </button>
+    </ng-container>
+    <button class="d-flex align-items-center font-14" (click)="handleCampaignSelection(null)" mat-menu-item>
+        <mat-icon class="mr-1">add</mat-icon>
+        Multi-channel
+    </button>
+</mat-menu>

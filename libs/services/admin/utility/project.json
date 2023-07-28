@@ -1,0 +1,19 @@
+{
+    "name": "services-admin-utility",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/admin/utility/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/services/admin/utility/src/**/*.ts",
+                    "libs/services/admin/utility/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

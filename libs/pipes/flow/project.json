@@ -1,0 +1,15 @@
+{
+    "name": "pipes-flow",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/flow/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/pipes/flow/**/*.ts", "libs/pipes/flow/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

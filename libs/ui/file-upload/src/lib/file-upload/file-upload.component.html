@@ -1,0 +1,24 @@
+<div class="upload-file-wrapper d-flex flex-column w-100" [class.invalid]="errorMessage">
+    <div
+        class="upload-file-content d-flex align-items-center justify-content-between cursor-pointer"
+        (click)="startUpload()"
+    >
+        <div class="mat-body-2 fw-bold text-dark d-flex">
+            <mat-icon class="mat-icon-22 mr-2 material-icons-outlined">file_upload</mat-icon> Upload CSV file
+        </div>
+        <span class="font-10 fw-bold text-light" *ngIf="fileDragged">Drop your file here</span>
+    </div>
+    <input
+        id="file-upload"
+        type="file"
+        #fileInput
+        hidden
+        (click)="fileInput.value = ''"
+        (change)="uploadFile($event)"
+        [attr.accept]="acceptType"
+    />
+    <span *ngIf="errorMessage" class="upload-file-info font-12 fw-bold">{{ errorMessage }}</span>
+    <span *ngIf="!errorMessage" class="upload-file-info font-12 fw-bold"
+        >Note: File should not exceed more than {{ maxFileSize ? maxFileSize.value + maxFileSize.type : '10MB' }}</span
+    >
+</div>

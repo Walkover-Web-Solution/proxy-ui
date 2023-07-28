@@ -1,0 +1,15 @@
+{
+    "name": "pipes-floor",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/floor/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/pipes/floor/**/*.ts", "libs/pipes/floor/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

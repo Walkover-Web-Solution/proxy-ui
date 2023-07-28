@@ -1,0 +1,25 @@
+import { createUrl } from '@msg91/service';
+
+export const SecurityUrls = {
+    getCountryListUrl: (baseUrl) => createUrl(baseUrl, 'api/v5/countrySetting/getCountryList'),
+    blockUnblockCountryUrl: (baseUrl) => createUrl(baseUrl, 'api/v5/countrySetting/blockUnblockCountry'),
+    setCountryLimit: (baseUrl) => createUrl(baseUrl, 'api/v5/countrySetting/saveBlockedByCountryPrice'),
+    getBlockedByPriceUrl: (baseUrl) => createUrl(baseUrl, 'api/v5/countrySetting/getBlockedByPrice'),
+    saveBlockedByPriceUrl: (baseUrl) => createUrl(baseUrl, 'api/v5/countrySetting/saveBlockedByPrice'),
+    getCompanyRulesUrl: (baseUrl) => createUrl(baseUrl, 'api/v5/access/getCompanyRules'),
+    addCompanyRulesUrl: (baseUrl) => createUrl(baseUrl, 'api/v5/access/addCompanyRule'),
+    getAllPermissionsStatus: (baseUrl) => createUrl(baseUrl, 'api/v5/access/getAllPermissionsStatus'),
+    getRuleById: (baseUrl) => createUrl(baseUrl, 'api/v5/access/getRuleById'),
+    getLoginHistory: (baseUrl) => createUrl(baseUrl, 'api/v5/access/getLoginHistory'),
+    changeUserStatus: (baseUrl) => createUrl(baseUrl, 'api/v5/access/enableDisableUser'),
+    deleteUser: (baseUrl) => createUrl(baseUrl, 'api/v5/access/permDeleteUser'),
+    editUser: (baseUrl) => createUrl(baseUrl, 'api/v5/access/editUser'),
+    inviteUser: (baseUrl) => createUrl(baseUrl, 'api/v5/access/inviteUser'),
+    getUsersList: (baseUrl) => createUrl(baseUrl, 'api/v5/access/getUsersList'),
+    getAddedIp: (baseUrl) => createUrl(baseUrl, 'api/v5/access/getAddedIp'),
+    getNotAddedIp: (baseUrl) => createUrl(baseUrl, 'api/v5/access/getNotAddedIp'),
+    whiteListedIps: (baseUrl) => createUrl(baseUrl, 'api/v5/access/getUserWhiteListedIPs'),
+    blockUnblockAllCountries: (baseUrl) => createUrl(baseUrl, 'api/v5/countrySetting/blockUnblockAllCountries'),
+    generateOtp: (baseUrl) => createUrl(baseUrl, 'api/v5/access/sendOTPToInviteeContacts'),
+    verifyOtp: (baseUrl) => createUrl(baseUrl, 'api/v5/access/verifyOTPOfInviteeContacts'),
+};

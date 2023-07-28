@@ -1,0 +1,18 @@
+{
+    "name": "directives-mark-all-as-touched",
+    "projectType": "library",
+    "sourceRoot": "libs/directives/mark-all-as-touched/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/directives/mark-all-as-touched/**/*.ts",
+                    "libs/directives/mark-all-as-touched/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

@@ -1,0 +1,25 @@
+{
+    "name": "ui-loader",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/loader/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/loader/src/**/*.ts", "libs/ui/loader/src/**/*.html"]
+            }
+        },
+        "test": {
+            "executor": "@nrwl/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/libs/ui/loader"],
+            "options": {
+                "tsConfig": "libs/ui/loader/tsconfig.lib.json",
+                "jestConfig": "libs/ui/loader/jest.config.ts",
+                "passWithNoTests": true
+            }
+        }
+    },
+    "tags": ["scope:shared", "type:lib"]
+}

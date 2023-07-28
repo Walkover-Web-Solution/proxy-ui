@@ -1,0 +1,41 @@
+<mat-form-field [appearance]="appearance" class="w-100" *ngIf="timezones$ | async as timezonesList">
+    <mat-label> {{ label }} <span *ngIf="showRequiredAsterisk" class="text-danger">*</span> </mat-label>
+    <input
+        type="text"
+        matInput
+        [matAutocomplete]="timezoneAutoComplete"
+        #timezoneInput
+        [formControl]="timezoneFormControl"
+        [readOnly]="fetchingTimezones | async"
+        [placeholder]="placeholder"
+    />
+    <mat-autocomplete #timezoneAutoComplete="matAutocomplete" (optionSelected)="resetTimezoneList()">
+        <mat-option disabled value="" *ngIf="!timezonesList?.length"> No Timezone Found </mat-option>
+        <mat-option
+            [value]="zone"
+            *ngFor="let zone of timezonesList"
+            [ngClass]="{ 'text-primary': timezoneFormControl?.value === zone }"
+            [ngStyle]="{
+                'background-color': timezoneFormControl?.value === zone ? '#E2F0FF' : 'white'
+            }"
+        >
+            {{ zone }}
+        </mat-option>
+    </mat-autocomplete>
+    <mat-spinner matSuffix [diameter]="20" *ngIf="fetchingTimezones | async; else closeBtn"></mat-spinner>
+    <ng-template #closeBtn>
+        <button
+            mat-icon-button
+            matSuffix
+            *ngIf="timezoneFormControl?.value"
+            class="cursor-pointer"
+            (click)="clearTimezone()"
+        >
+            <mat-icon class="mat-icon-20 text-dark">close</mat-icon>
+        </button>
+    </ng-template>
+    <mat-error *ngIf="timezoneFormControl?.touched">
+        <mat-error *ngIf="timezoneFormControl.errors?.required"> {{ label }} is required. </mat-error>
+        <mat-error *ngIf="timezoneFormControl.errors?.elementExistsInList"> Select Timezone from dropdown </mat-error>
+    </mat-error>
+</mat-form-field>

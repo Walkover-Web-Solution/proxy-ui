@@ -1,0 +1,15 @@
+{
+    "name": "ui-confirm-dialog",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/confirm-dialog/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/confirm-dialog/**/*.ts", "libs/ui/confirm-dialog/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

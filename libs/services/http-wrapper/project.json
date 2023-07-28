@@ -1,0 +1,19 @@
+{
+    "name": "services-http-wrapper",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/http-wrapper/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/services/http-wrapper/src/**/*.ts",
+                    "libs/services/http-wrapper/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

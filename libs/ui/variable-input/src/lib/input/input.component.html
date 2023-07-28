@@ -1,0 +1,8 @@
+<input
+    type="text"
+    [ngModel]="value"
+    (ngModelChange)="onValueChange($event)"
+    class="form-control"
+    [ngClass]="{ 'var-text': format && fileNameHasVar }"
+    [placeholder]="placeholder"
+/>

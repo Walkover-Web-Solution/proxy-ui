@@ -1,0 +1,15 @@
+{
+    "name": "ui-prime-ng-toast",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/prime-ng-toast/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/prime-ng-toast/**/*.ts", "libs/ui/prime-ng-toast/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

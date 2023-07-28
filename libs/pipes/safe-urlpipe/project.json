@@ -1,0 +1,25 @@
+{
+    "name": "pipes-safe-urlpipe",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/safe-urlpipe/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/pipes/safe-urlpipe/src/**/*.ts", "libs/pipes/safe-urlpipe/src/**/*.html"]
+            }
+        },
+        "test": {
+            "executor": "@nrwl/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/libs/pipes/safe-urlpipe"],
+            "options": {
+                "tsConfig": "libs/pipes/safe-urlpipe/tsconfig.lib.json",
+                "jestConfig": "libs/pipes/safe-urlpipe/jest.config.ts",
+                "passWithNoTests": true
+            }
+        }
+    },
+    "tags": ["scope:shared", "type:lib"]
+}

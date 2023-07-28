@@ -1,0 +1,16 @@
+{
+    "name": "urls-voice",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/voice/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/voice/src/**/*.ts", "libs/urls/voice/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

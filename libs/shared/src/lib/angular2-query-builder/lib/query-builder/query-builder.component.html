@@ -1,0 +1,599 @@
+<div
+    #treeContainer
+    (transitionend)="transitionEnd($event)"
+    [ngClass]="getClassNames('treeContainer', data?.collapsed ? 'collapsed' : null)"
+>
+    <ul [ngClass]="getClassNames('tree')" class="my-0 d-flex flex-column gap-2">
+        <ng-container *ngIf="data && data.rules">
+            <ng-container *ngFor="let rule of data.rules; let i = index">
+                <ng-container
+                    *ngIf="{
+                        ruleset: !!rule.rules,
+                        invalid: !config.allowEmptyRulesets && rule.rules && rule.rules.length === 0
+                    } as local"
+                >
+                    <li [ngClass]="getQueryItemClassName(local)">
+                        <ng-container *ngIf="!local.ruleset">
+                            <span class="mr-3 mat-body-2 text-dark" style="width: 70px" *ngIf="i === 0">Where</span>
+                            <ng-container *ngIf="i >= 1">
+                                <ng-container *ngIf="getSwitchGroupTemplate() as template; else defaultSwitchGroup">
+                                    <ng-container
+                                        *ngTemplateOutlet="template; context: getSwitchGroupContext()"
+                                    ></ng-container>
+                                </ng-container>
+                            </ng-container>
+                            <ng-template #defaultRemoveButton>
+                                <div [ngClass]="getClassNames('removeButtonSize', 'rightAlign')" *ngIf="i !== 0">
+                                    <button
+                                        type="button"
+                                        class="removeButton"
+                                        [ngClass]="getClassNames('button', 'removeButton')"
+                                        (click)="removeRule(rule, data)"
+                                        [disabled]="disabled"
+                                        *ngIf="!matIconShow"
+                                    >
+                                        <svg
+                                            class="interface-icon o__standard o__standard__small-close"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 16 16"
+                                        >
+                                            <path
+                                                d="M8.018 6.643L5.375 4 4 5.375l2.643 2.643L4 10.643 5.375 12l2.643-2.625L10.625 12 12 10.643 9.357 8.018 12 5.375 10.643 4z"
+                                            ></path>
+                                        </svg>
+                                    </button>
+                                    <button
+                                        mat-icon-button
+                                        *ngIf="matIconShow"
+                                        color="warn"
+                                        class="icon-btn-md rounded-0"
+                                        (click)="removeRule(rule, data)"
+                                    >
+                                        <mat-icon class="material-icons-outlined">delete</mat-icon>
+                                    </button>
+                                </div>
+                            </ng-template>
+                            <!-- [class.invalid]="!rule.isValid" -->
+                            <div
+                                class="form-input-item"
+                                [class.invalid-query-builder]="!rule.isValid && rule.field !== ''"
+                            >
+                                <ng-container *ngIf="getFieldTemplate() as template; else defaultField">
+                                    <ng-container
+                                        *ngTemplateOutlet="template; context: getFieldContext(rule)"
+                                    ></ng-container>
+                                </ng-container>
+
+                                <ng-container *ngIf="getOperatorTemplate() as template; else defaultOperator">
+                                    <ng-container
+                                        *ngTemplateOutlet="template; context: getOperatorContext(rule)"
+                                    ></ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="(rule.type | lowercase) === 'object' && !rule.operator">
+                                    <ng-container
+                                        *ngTemplateOutlet="
+                                            defaultNestedOperator;
+                                            context: getOperatorContext(rule, true)
+                                        "
+                                    ></ng-container>
+                                </ng-container>
+
+                                <ng-container *ngIf="findTemplateForRule(rule) as template; else defaultInput">
+                                    <!--
+                                        we use this if-else bcz we need to show input box if operator belong to define holdOperator class field.
+                                    -->
+                                    <ng-container
+                                        *ngIf="
+                                            rule.type.toLowerCase() === 'date' && holdOperator.includes(rule.operator);
+                                            else defaultOldTemplate
+                                        "
+                                    >
+                                        <div [ngClass]="getClassNames('inputControlSize')">
+                                            <input
+                                                [ngClass]="getClassNames('inputControl')"
+                                                [(ngModel)]="rule.value"
+                                                (ngModelChange)="minMaxValidatorForNumber(rule, 1)"
+                                                [disabled]="disabled"
+                                                type="number"
+                                                step="1"
+                                            />
+                                            <div class="placeholder">{{ rule.value }}</div>
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #defaultOldTemplate>
+                                        <ng-container
+                                            *ngTemplateOutlet="template; context: getInputContext(rule)"
+                                        ></ng-container>
+                                    </ng-template>
+                                </ng-container>
+
+                                <ng-container *ngIf="getRemoveButtonTemplate() as template; else defaultRemoveButton">
+                                    <div [ngClass]="getClassNames('buttonGroup', 'rightAlign')">
+                                        <ng-container
+                                            *ngTemplateOutlet="template; context: getRemoveButtonContext(rule)"
+                                        ></ng-container>
+                                    </div>
+                                </ng-container>
+                            </div>
+                            <!-- We are commented this beacuse we want condition before -->
+                            <!-- <ng-container *ngIf="i !== data.rules.length - 1">
+                                <ng-container *ngIf="getSwitchGroupTemplate() as template; else defaultSwitchGroup">
+                                    <ng-container
+                                        *ngTemplateOutlet="template; context: getSwitchGroupContext()"
+                                    ></ng-container>
+                                </ng-container>
+                            </ng-container> -->
+                            <ng-template #defaultField>
+                                <div [ngClass]="getClassNames('fieldControlSize')" class="q-control-size">
+                                    <select
+                                        [ngClass]="getClassNames('fieldControl')"
+                                        [(ngModel)]="rule.field"
+                                        (ngModelChange)="changeField($event, rule)"
+                                        [disabled]="disabled"
+                                        class="select-operation"
+                                        placeholder="Alias"
+                                    >
+                                        <option
+                                            [hidden]="field?.customHiddenOption"
+                                            [ngValue]="field.value"
+                                            *ngFor="let field of getFields(rule.entity)"
+                                        >
+                                            {{ field.name }}
+                                        </option>
+                                    </select>
+                                    <!-- comment out now no need to change size of input bcz we use fixed width input. -->
+                                    <!-- <div class="placeholder-select">{{ holdMapping[rule.field] }}</div> -->
+                                </div>
+                            </ng-template>
+                            <ng-template #defaultOperator>
+                                <div
+                                    [ngClass]="getClassNames('operatorControlSize')"
+                                    [attr.data-value]="rule.operator"
+                                    class="q-control-size"
+                                >
+                                    <select
+                                        style="
+                                            font-weight: bold;
+                                            background-color: #465264;
+                                            border: none;
+                                            color: #ffffff;
+                                            padding: 0px 5px;
+                                        "
+                                        [ngClass]="getClassNames('operatorControl')"
+                                        [(ngModel)]="rule.operator"
+                                        (ngModelChange)="changeOperator(rule)"
+                                        [disabled]="disabled"
+                                    >
+                                        <option *ngFor="let operator of getOperators(rule.field)" [ngValue]="operator">
+                                            {{ operator }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </ng-template>
+                            <ng-template #defaultNestedOperator>
+                                <div
+                                    [ngClass]="getClassNames('operatorControlSize')"
+                                    [attr.data-value]="rule.operator"
+                                    class="q-control-size"
+                                >
+                                    <input
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [(ngModel)]="rule.path"
+                                        (ngModelChange)="changeInput(rule)"
+                                        [disabled]="disabled"
+                                        type="text"
+                                        size="4"
+                                        placeholder="Eg. key_name1.key_name2"
+                                    />
+                                </div>
+                                <div
+                                    [ngClass]="getClassNames('operatorControlSize')"
+                                    [attr.data-value]="rule.operator"
+                                    class="q-control-size"
+                                >
+                                    <select
+                                        [ngClass]="getClassNames('operatorControl')"
+                                        [(ngModel)]="rule.suboperator"
+                                        (ngModelChange)="changeOperator(rule)"
+                                        [disabled]="disabled"
+                                    >
+                                        <option hidden selected [value]="undefined">Select an operator</option>
+                                        <option
+                                            *ngFor="let operator of getOperators(rule.field, true)"
+                                            [ngValue]="operator.mathematical_symbol"
+                                        >
+                                            {{ operator.label }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </ng-template>
+                            <ng-template #defaultInput>
+                                <div
+                                    [ngClass]="getClassNames('inputControlSize')"
+                                    [ngSwitch]="getInputType(rule.field, rule.operator)"
+                                    [ngStyle]="{
+                                        'display':
+                                            getInputType(rule.field, rule.operator, rule.suboperator) === null
+                                                ? 'none'
+                                                : null
+                                    }"
+                                >
+                                    <input
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [(ngModel)]="rule.value"
+                                        (ngModelChange)="changeInput(rule)"
+                                        [disabled]="disabled"
+                                        *ngSwitchCase="'string'"
+                                        type="text"
+                                        size="4"
+                                        placeholder="Enter value"
+                                    />
+                                    <input
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [(ngModel)]="rule.value"
+                                        (ngModelChange)="changeInput(rule)"
+                                        [disabled]="disabled"
+                                        *ngSwitchCase="'text'"
+                                        type="text"
+                                        size="4"
+                                        placeholder="Enter value"
+                                    />
+                                    <input
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [(ngModel)]="rule.value"
+                                        (ngModelChange)="changeInput(rule)"
+                                        [disabled]="disabled"
+                                        *ngSwitchCase="'email'"
+                                        type="text"
+                                        size="4"
+                                        placeholder="Enter value"
+                                    />
+                                    <input
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [(ngModel)]="rule.value"
+                                        (ngModelChange)="changeInput()"
+                                        [disabled]="disabled"
+                                        *ngSwitchCase="'number'"
+                                        type="number"
+                                        pattern="/d"
+                                        min="0"
+                                        step="1"
+                                        placeholder="Enter value"
+                                    />
+                                    <input
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [(ngModel)]="rule.value"
+                                        (ngModelChange)="changeInput()"
+                                        [disabled]="disabled"
+                                        *ngSwitchCase="'decimal'"
+                                        type="number"
+                                        size="4"
+                                        placeholder="Enter value"
+                                    />
+                                    <input
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [(ngModel)]="rule.value"
+                                        (ngModelChange)="changeInput()"
+                                        [disabled]="disabled"
+                                        *ngSwitchCase="'date'"
+                                        type="date"
+                                        placeholder="Enter value"
+                                    />
+                                    <input
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [(ngModel)]="rule.value"
+                                        (ngModelChange)="changeInput()"
+                                        [disabled]="disabled"
+                                        *ngSwitchCase="'time'"
+                                        type="time"
+                                        placeholder="Enter value"
+                                    />
+                                    <select
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [(ngModel)]="rule.value"
+                                        (ngModelChange)="changeInput()"
+                                        [disabled]="disabled"
+                                        *ngSwitchCase="'category'"
+                                    >
+                                        <option *ngFor="let opt of getOptions(rule.field)" [ngValue]="opt.value">
+                                            {{ opt.name }}
+                                        </option>
+                                    </select>
+                                    <ng-container *ngSwitchCase="'multiselect'">
+                                        <select
+                                            [ngClass]="getClassNames('inputControl')"
+                                            [(ngModel)]="rule.value"
+                                            (ngModelChange)="changeInput()"
+                                            [disabled]="disabled"
+                                            multiple
+                                        >
+                                            <option *ngFor="let opt of getOptions(rule.field)" [ngValue]="opt.value">
+                                                {{ opt.name }}
+                                            </option>
+                                        </select>
+                                    </ng-container>
+                                    <!-- comment bcz no need to show checkbox on boolean -->
+                                    <!-- <input
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [(ngModel)]="rule.value"
+                                        (ngModelChange)="changeInput()"
+                                        [disabled]="disabled"
+                                        *ngSwitchCase="'boolean'"
+                                        type="checkbox"
+                                    /> -->
+                                    <ng-container *ngSwitchCase="'percentage'">
+                                        <div class="d-flex">
+                                            <input
+                                                [ngClass]="getClassNames('inputControl')"
+                                                [(ngModel)]="rule.value"
+                                                (ngModelChange)="changeInput()"
+                                                [disabled]="disabled"
+                                                type="number"
+                                                placeholder="Enter value"
+                                            />
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'currency'">
+                                        <div class="d-flex">
+                                            <input
+                                                [ngClass]="getClassNames('inputControl')"
+                                                [(ngModel)]="rule.value"
+                                                (ngModelChange)="changeInput()"
+                                                [disabled]="disabled"
+                                                type="number"
+                                                placeholder="Enter value"
+                                            />
+                                        </div>
+                                    </ng-container>
+                                    <input
+                                        *ngSwitchCase="'phone number'"
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [(ngModel)]="rule.value"
+                                        (ngModelChange)="changeInput()"
+                                        [disabled]="disabled"
+                                        type="number"
+                                        placeholder="Enter value"
+                                    />
+                                    <input
+                                        *ngSwitchCase="'object'"
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [(ngModel)]="rule.value"
+                                        (ngModelChange)="changeInput()"
+                                        [disabled]="disabled"
+                                        type="text"
+                                        placeholder="Enter value"
+                                    />
+                                    <input
+                                        [ngClass]="getClassNames('inputControl')"
+                                        [disabled]="true"
+                                        *ngSwitchDefault
+                                        size="4"
+                                        placeholder="Select alias first"
+                                    />
+                                    <!-- comment out now no need to change size of input bcz we use fixed width input. -->
+                                    <!-- <div class="placeholder">{{ rule.value }}</div> -->
+                                </div>
+                                <span
+                                    *ngIf="getInputType(rule.field, rule.operator) === 'currency'"
+                                    class="mat-body-2 text-dark extra-span"
+                                >
+                                    {{
+                                        fields | fieldValuePipe: rule.field:'configurations.setup.fields.currency_code'
+                                    }}
+                                </span>
+                                <span
+                                    *ngIf="getInputType(rule.field, rule.operator) === 'percentage'"
+                                    class="mat-body-2 text-dark extra-span"
+                                >
+                                    %
+                                </span>
+                            </ng-template>
+                        </ng-container>
+                        <query-builder
+                            *ngIf="local.ruleset"
+                            [data]="rule"
+                            [disabled]="disabled"
+                            [parentTouchedCallback]="parentTouchedCallback || onTouchedCallback"
+                            [parentChangeCallback]="parentChangeCallback || onChangeCallback"
+                            [parentInputTemplates]="parentInputTemplates || inputTemplates"
+                            [parentOperatorTemplate]="parentOperatorTemplate || operatorTemplate"
+                            [parentFieldTemplate]="parentFieldTemplate || fieldTemplate"
+                            [parentAdditionalButtonTemplate]="
+                                parentAdditionalButtonTemplate || additionalButtonTemplate
+                            "
+                            [parentEntityTemplate]="parentEntityTemplate || entityTemplate"
+                            [parentSwitchGroupTemplate]="parentSwitchGroupTemplate || switchGroupTemplate"
+                            [parentButtonGroupTemplate]="parentButtonGroupTemplate || buttonGroupTemplate"
+                            [parentRemoveButtonTemplate]="parentRemoveButtonTemplate || removeButtonTemplate"
+                            [parentEmptyWarningTemplate]="parentEmptyWarningTemplate || emptyWarningTemplate"
+                            [parentArrowIconTemplate]="parentArrowIconTemplate || arrowIconTemplate"
+                            [parentValue]="data"
+                            [classNames]="classNames"
+                            [config]="config"
+                            [allowRuleset]="false"
+                            [allowCollapse]="allowCollapse"
+                            [emptyMessage]="emptyMessage"
+                            [operatorMap]="operatorMap"
+                            [matIconShow]="matIconShow"
+                        >
+                        </query-builder>
+
+                        <!-- not in use because it is for add rule set and we are not using more then one rule set-->
+                        <div
+                            class="form-input-item mx-2"
+                            *ngIf="local.ruleset && i !== data.rules.length - 1"
+                            style="background-color: transparent"
+                        >
+                            <div class="q-control-size">
+                                <select
+                                    class="and-or-item-select"
+                                    (change)="changeParetCondition($event?.target?.value)"
+                                    [(ngModel)]="data.condition"
+                                    [disabled]="disabled"
+                                >
+                                    <option value="and">and</option>
+                                    <option value="or">or</option>
+                                </select>
+                                <div class="placeholder-select"></div>
+                            </div>
+                        </div>
+
+                        <ng-container *ngIf="getEmptyWarningTemplate() as template; else defaultEmptyWarning">
+                            <ng-container *ngIf="local.invalid">
+                                <ng-container
+                                    *ngTemplateOutlet="template; context: getEmptyWarningContext()"
+                                ></ng-container>
+                            </ng-container>
+                        </ng-container>
+
+                        <ng-template #defaultEmptyWarning>
+                            <p [ngClass]="getClassNames('emptyWarning')" *ngIf="local.invalid">
+                                {{ emptyMessage }}
+                            </p>
+                        </ng-template>
+                    </li>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+
+        <div class="btn-s-group" [ngClass]="getClassNames('switchRow')">
+            <ng-template #defaultArrowIcon>
+                <i [ngClass]="getClassNames('arrowIcon')"></i>
+            </ng-template>
+
+            <!--  <a *ngIf="allowCollapse" (click)="toggleCollapse()" [ngClass]="getClassNames('arrowIconButton', data.collapsed ? 'collapsed' : null)">-->
+            <!--    <ng-container *ngIf="getArrowIconTemplate() as template; else defaultArrowIcon">-->
+            <!--      <ng-container *ngTemplateOutlet="template; context: getArrowIconContext()"></ng-container>-->
+            <!--    </ng-container>-->
+            <!--  </a>-->
+
+            <ng-container *ngIf="getButtonGroupTemplate() as template; else defaultButtonGroup">
+                <div [ngClass]="getClassNames('buttonGroup', 'rightAlign')">
+                    <ng-container *ngTemplateOutlet="template; context: getButtonGroupContext()"></ng-container>
+                </div>
+            </ng-container>
+
+            <div class="d-flex align-items-center ml-2" *ngIf="allowRuleset">
+                <!-- comment it because we not show add filter button more. -->
+                <!-- <button
+                    type="button"
+                    class="add-filter mat-stroked-button mat-primary mr-2"
+                    (click)="addRuleSet()"
+                    style="display: flex"
+                    [ngClass]="getClassNames('button')"
+                    [disabled]="disabled"
+                    *ngIf="!data?.rules?.length"
+                >
+                    <svg
+                        class="interface-icon o__tiny o__tiny__new o__by-text mr-1"
+                        width="12"
+                        height="12"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 12 12"
+                    >
+                        <path
+                            d="M5.5 2a.5.5 0 00-.5.5V5H2.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H5v2.5a.5.5 0 00.5.5h1a.5.5 0 00.5-.5V7h2.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H7V2.5a.5.5 0 00-.5-.5h-1z"
+                        ></path>
+                    </svg>
+                    Add Filter
+                </button> -->
+                <ng-container *ngIf="allowRuleset">
+                    <ng-container *ngIf="getAdditionalButtonTemplate() as template">
+                        <ng-container *ngTemplateOutlet="template"></ng-container>
+                    </ng-container>
+                </ng-container>
+            </div>
+
+            <ng-template #defaultButtonGroup>
+                <div [ngClass]="getClassNames('buttonGroup', 'rightAlign')">
+                    <!-- commenting because we use Add condition button in parent. -->
+                    <!-- <button
+                        type="button"
+                        class="filter-r-add"
+                        *ngIf="data && data.rules && data.rules?.length && parentValue"
+                        [class.invalid]="!config.allowEmptyRulesets && data.rules && data.rules.length === 0"
+                        [class.hideme]="!data.rules[data.rules.length - 1]?.isValid"
+                        style="display: flex"
+                        (click)="data.rules[data.rules.length - 1]?.isValid ? addRule() : 0"
+                        [ngClass]="getClassNames('button')"
+                        [disabled]="disabled"
+                    >
+                        <svg
+                            class="interface-icon o__tiny o__tiny__new o__by-text"
+                            style="fill: #465165"
+                            width="12"
+                            height="12"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 12 12"
+                        >
+                            <path
+                                d="M5.5 2a.5.5 0 00-.5.5V5H2.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H5v2.5a.5.5 0 00.5.5h1a.5.5 0 00.5-.5V7h2.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5H7V2.5a.5.5 0 00-.5-.5h-1z"
+                            ></path>
+                        </svg>
+                    </button> -->
+
+                    <ng-container *ngIf="!!parentValue && allowRuleset">
+                        <button
+                            type="button"
+                            (click)="removeRuleSet()"
+                            class="removeButton"
+                            [ngClass]="getClassNames('button', 'removeButton')"
+                            [disabled]="disabled"
+                        >
+                            <svg
+                                class="interface-icon o__standard o__standard__small-close"
+                                style="fill: inherit"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                            >
+                                <path
+                                    d="M8.018 6.643L5.375 4 4 5.375l2.643 2.643L4 10.643 5.375 12l2.643-2.625L10.625 12 12 10.643 9.357 8.018 12 5.375 10.643 4z"
+                                ></path>
+                            </svg>
+                        </button>
+                    </ng-container>
+                </div>
+            </ng-template>
+
+            <ng-template #defaultSwitchGroup>
+                <!--    *ngIf="{ruleset: !!rule.rules, invalid: !config.allowEmptyRulesets && rule.rules && rule.rules.length === 0} as local"-->
+                <!--    <div [ngClass]="getClassNames('switchGroup', 'transition')" *ngIf="data && data.rules">-->
+                <!--      <div [ngClass]="getClassNames('switchControl')">-->
+                <!--        <input type="radio" [ngClass]="getClassNames('switchRadio')" [(ngModel)]="data.condition" [disabled]=disabled-->
+                <!--          value="and" #andOption />-->
+                <!--        <label (click)="changeCondition(andOption.value)" [ngClass]="getClassNames('switchLabel')">AND</label>-->
+                <!--      </div>-->
+                <!--      <div [ngClass]="getClassNames('switchControl')">-->
+                <!--        <input type="radio" [ngClass]="getClassNames('switchRadio')" [(ngModel)]="data.condition" [disabled]=disabled-->
+                <!--          value="or" #orOption />-->
+                <!--        <label (click)="changeCondition(orOption.value)" [ngClass]="getClassNames('switchLabel')">OR</label>-->
+                <!--      </div>-->
+                <!--    </div>-->
+                <br />
+                <div class="form-input-item and-or-item-input">
+                    <div class="q-control-size">
+                        <select
+                            class="and-or-item-select"
+                            (change)="changeCondition($event?.target?.value)"
+                            [(ngModel)]="data.condition"
+                            *ngIf="data && parentValue && !!data.rules"
+                            [disabled]="disabled"
+                        >
+                            <option value="and">and</option>
+                            <option value="or">or</option>
+                        </select>
+                        <div class="placeholder-select"></div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!--  <ng-container *ngIf="getSwitchGroupTemplate() as template; else defaultSwitchGroup">-->
+            <!--    <ng-container *ngTemplateOutlet="template; context: getSwitchGroupContext()"></ng-container>-->
+            <!--  </ng-container>-->
+        </div>
+    </ul>
+</div>

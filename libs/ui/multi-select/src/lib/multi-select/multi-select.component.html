@@ -1,0 +1,68 @@
+<mat-form-field appearance="outline" [ngClass]="multiSelectClass">
+    <mat-label>{{ multiSelectLabelValue }}</mat-label>
+    <mat-select
+        disableOptionCentering="true"
+        [formControl]="multiSelectControl"
+        multiple
+        [placeholder]="multiSelectPlaceholder"
+        [compareWith]="compareConditionally"
+        (openedChange)="emitSelectedValueOnMenuClose ? handleStateChange($event) : false"
+    >
+        <mat-checkbox
+            *ngIf="showSelectAll"
+            class="mat-option w-100"
+            [disableRipple]="true"
+            [indeterminate]="
+                !shouldGroupOptions
+                    ? multiSelectControl.value.length > 0 && multiSelectValues.length > multiSelectControl.value.length
+                    : multiSelectControl.value.length > 0 && allGroupedValues.length > multiSelectControl.value.length
+            "
+            [checked]="
+                !shouldGroupOptions
+                    ? multiSelectValues.length === multiSelectControl.value.length
+                    : allGroupedValues.length === multiSelectControl.value.length
+            "
+            (click)="$event.stopPropagation()"
+            (change)="toggleSelectAll($event)"
+        >
+            {{ selectAllLabel }}
+        </mat-checkbox>
+
+        <!-- Render options without grouping -->
+        <ng-container *ngIf="!shouldGroupOptions">
+            <mat-option
+                *ngFor="let item of multiSelectValues"
+                [value]="item"
+                [ngClass]="item.cssClass"
+                [style]="item.style"
+                >{{ multiSelectValuesLabel ? item[multiSelectValuesLabel] : item }}</mat-option
+            >
+        </ng-container>
+
+        <!-- Render options with grouping -->
+        <ng-container *ngIf="shouldGroupOptions">
+            <mat-optgroup *ngFor="let group of multiSelectValues">
+                <mat-label [ngClass]="{ 'd-flex align-items-center': group.imgSrc }">
+                    <img
+                        *ngIf="group.imgSrc"
+                        [src]="group.imgSrc"
+                        width="20"
+                        height="20"
+                        loading="lazy"
+                        class="mr-2"
+                        style="margin-left: -2px"
+                        alt="Microservice icon"
+                    />
+                    <span class="text-dark fw-bolder">{{ group.name }}</span>
+                </mat-label>
+                <mat-option
+                    *ngFor="let item of group.value"
+                    [value]="item"
+                    [ngClass]="item.cssClass"
+                    [style]="item.style"
+                    >{{ multiSelectValuesLabel ? item[multiSelectValuesLabel] : item }}</mat-option
+                >
+            </mat-optgroup>
+        </ng-container>
+    </mat-select>
+</mat-form-field>

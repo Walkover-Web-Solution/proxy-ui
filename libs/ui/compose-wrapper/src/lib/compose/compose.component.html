@@ -1,0 +1,47 @@
+<div class="compose-mail">
+    <div class="d-flex align-items-center justify-content-between compose-mail-header">
+        <!-- (click)="minimizeMailComposeValue.emit(!minimizeMailCompose); fullScreenMailComposeValue.emit(false)" -->
+        <p class="my-0 mat-body-2 text-white pl-3 pr-2 py-2 flex-grow-1 cursor-pointer">
+            {{ composeTitle }}
+        </p>
+        <div class="d-flex align-items-center pr-2">
+            <button
+                mat-icon-button
+                class="icon-btn-md mr-1"
+                (click)="
+                    minimizeMailComposeValue.emit(!minimizeMailCompose);
+                    fullScreenMailComposeValue.emit(false);
+                    minimizeMailCompose ? false : exitFullScreen()
+                "
+            >
+                <mat-icon class="mat-icon-18 text-white" [matTooltip]="minimizeMailCompose ? 'Maximize' : 'Minimize'"
+                    >{{ minimizeMailCompose ? 'web_asset' : 'minimize' }}
+                </mat-icon>
+            </button>
+            <button
+                [matTooltip]="!fullScreenMailCompose ? 'Full screen' : 'Exit Full screen'"
+                mat-icon-button
+                class="icon-btn-md"
+                (click)="
+                    fullScreenMailComposeValue.emit(!fullScreenMailCompose);
+                    minimizeMailComposeValue.emit(false);
+                    showFullScreen()
+                "
+            >
+                <mat-icon class="mat-icon-18 text-white">{{
+                    fullScreenMailCompose ? 'fullscreen_exit' : 'open_in_full'
+                }}</mat-icon>
+            </button>
+            <button
+                mat-icon-button
+                class="icon-btn-md"
+                (click)="onNoClick()"
+                matTooltip="Close"
+                matTooltipPosition="below"
+            >
+                <mat-icon class="mat-icon-18 text-white">close</mat-icon>
+            </button>
+        </div>
+    </div>
+    <ng-content></ng-content>
+</div>

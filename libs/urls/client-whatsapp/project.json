@@ -1,0 +1,16 @@
+{
+    "name": "urls-client-whatsapp",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/client-whatsapp/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/client-whatsapp/src/**/*.ts", "libs/urls/client-whatsapp/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

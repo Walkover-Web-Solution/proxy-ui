@@ -1,0 +1,25 @@
+{
+    "name": "ui-date-range-picker",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/date-range-picker/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/date-range-picker/src/**/*.ts", "libs/ui/date-range-picker/src/**/*.html"]
+            }
+        },
+        "test": {
+            "executor": "@nrwl/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/libs/ui/date-range-picker"],
+            "options": {
+                "tsConfig": "libs/ui/date-range-picker/tsconfig.lib.json",
+                "jestConfig": "libs/ui/date-range-picker/jest.config.ts",
+                "passWithNoTests": true
+            }
+        }
+    },
+    "tags": ["scope:shared", "type:lib"]
+}

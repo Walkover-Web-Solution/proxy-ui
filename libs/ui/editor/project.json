@@ -1,0 +1,15 @@
+{
+    "name": "ui-editor",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/editor/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/editor/**/*.ts", "libs/ui/editor/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

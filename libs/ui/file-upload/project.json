@@ -1,0 +1,15 @@
+{
+    "name": "ui-file-upload",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/file-upload/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/file-upload/src/**/*.ts", "libs/ui/file-upload/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

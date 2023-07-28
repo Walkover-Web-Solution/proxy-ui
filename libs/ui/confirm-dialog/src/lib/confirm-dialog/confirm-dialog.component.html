@@ -1,0 +1,31 @@
+<h1 mat-dialog-title class="mat-subheading-2 text-dark mb-3 fw-bold">{{ title }}</h1>
+<div mat-dialog-content class="w-100 mb-4">
+    <p class="text-dark mat-body-2 my-0" [innerHTML]="confirmationMessage"></p>
+</div>
+<div cdkTrapFocus mat-dialog-actions class="d-flex gap-2 align-items-center" [ngClass]="footerButtonPosition">
+    <button
+        *ngIf="showCancelButton"
+        cdkFocusRegionStart
+        type="reset"
+        [ngClass]="cancelButtonClass"
+        mat-dialog-close
+        mat-button
+        [color]="cancelButtonColor"
+        (click)="closeDialog('no')"
+    >
+        {{ cancelButtonText }}
+    </button>
+    <button
+        *ngIf="showConfirmButton"
+        type="button"
+        mat-flat-button
+        mat-dialog-close
+        cdkFocusRegionEnd
+        cdkFocusInitial
+        [ngClass]="confirmButtonClass"
+        [color]="confirmButtonColor"
+        (click)="closeDialog('yes')"
+    >
+        {{ confirmButtonText }}
+    </button>
+</div>

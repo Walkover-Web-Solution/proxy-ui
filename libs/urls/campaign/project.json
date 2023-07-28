@@ -1,0 +1,15 @@
+{
+    "name": "urls-campaign",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/campaign/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/campaign/src/**/*.ts", "libs/urls/campaign/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

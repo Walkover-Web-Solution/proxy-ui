@@ -1,0 +1,33 @@
+::ng-deep .p-toast-message-success {
+    border-color: #29a653 !important;
+    background-color: #e8f7e8 !important;
+    color: #307368 !important;
+}
+::ng-deep .p-toast-message-error {
+    border-color: #cc5229 !important;
+    background-color: #f9eae5 !important;
+    color: #8c2e0e !important;
+}
+::ng-deep .p-toast-message-warn {
+    border-color: #f2ca55 !important;
+    background-color: #fdf4e2 !important;
+    color: #8c5d00 !important;
+}
+::ng-deep .p-toast-message-info {
+    border-color: #1157a6 !important;
+    background-color: #e2f0ff !important;
+    color: #0a3566 !important;
+}
+::ng-deep .p-toast-message {
+    padding: 8px 12px !important;
+    border-left: 4px solid !important;
+}
+::ng-deep .p-toast-message-content {
+    padding: 0px !important;
+}
+// ::ng-deep .p-toast-icon-close {
+//     display: none !important;
+// }
+::ng-deep .p-toast-icon-close:hover {
+    background: transparent !important;
+}

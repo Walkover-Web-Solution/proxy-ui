@@ -1,0 +1,49 @@
+<div class="audio-controls d-flex align-items-center justify-content-center">
+    <a
+        class="mr-1 d-flex text-primary"
+        href="javascript:void(0)"
+        *ngIf="showPlay && !isLoading && !isPlaying"
+        (click)="playAudio()"
+    >
+        <i class="material-icons" aria-hidden="true">play_arrow</i></a
+    >
+    <a
+        class="mr-1 d-flex text-primary"
+        href="javascript:void(0)"
+        *ngIf="showPlay && !isLoading && isPlaying"
+        (click)="pauseAudio()"
+    >
+        <i class="material-icons" aria-hidden="true">pause</i></a
+    >
+    <a class="mr-1 d-flex text-dark" href="javascript:void(0)" *ngIf="isLoading">
+        <mat-spinner diameter="24"></mat-spinner>
+    </a>
+    <audio (timeupdate)="updateDuration()" #audio></audio>
+    <input
+        type="range"
+        min="0"
+        [value]="seconds"
+        (mousedown)="isSeeking = true"
+        [max]="total"
+        step="0.01"
+        class="slider"
+        (change)="seekAudio($event.target.value)"
+        [disabled]="isLoading"
+    />
+    <span class="mx-2 mat-body-2 text-dark" style="font-size: 12px" *ngIf="showTime"
+        >{{ duration }}/{{ totalDuration }}</span
+    >
+
+    <button
+        mat-icon-button
+        class="icon-btn-md"
+        color="warn"
+        *ngIf="showDelete"
+        href="javascript:void(0)"
+        (click)="remove.emit()"
+        style="text-decoration: none"
+    >
+        <mat-icon class="material-icons-outlined mat-icon-16" aria-hidden="true">delete</mat-icon>
+    </button>
+    <a *ngIf="showDownload && blobUrl" class="download" download="recording" [href]="blobUrl"> </a>
+</div>

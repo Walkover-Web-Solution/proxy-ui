@@ -1,0 +1,15 @@
+{
+    "name": "ui-reject-reason",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/reject-reason/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/reject-reason/**/*.ts", "libs/ui/reject-reason/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

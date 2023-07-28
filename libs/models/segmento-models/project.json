@@ -1,0 +1,15 @@
+{
+    "name": "models-segmento-models",
+    "projectType": "library",
+    "sourceRoot": "libs/models/segmento-models/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/models/segmento-models/**/*.ts", "libs/models/segmento-models/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

@@ -1,0 +1,19 @@
+{
+    "name": "services-admin-email-domain",
+    "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/admin/email/domain/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/services/admin/email/domain/src/**/*.ts",
+                    "libs/services/admin/email/domain/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

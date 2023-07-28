@@ -1,0 +1,19 @@
+{
+    "name": "directives-open-datepicker-on-focus-directive",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/directives/open-datepicker-on-focus-directive/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/directives/open-datepicker-on-focus-directive/**/*.ts",
+                    "libs/directives/open-datepicker-on-focus-directive/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

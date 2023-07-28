@@ -1,0 +1,16 @@
+{
+    "name": "urls-security",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/security/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/security/src/**/*.ts", "libs/urls/security/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

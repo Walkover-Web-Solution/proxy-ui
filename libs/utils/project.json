@@ -1,0 +1,15 @@
+{
+    "name": "utils",
+    "projectType": "library",
+    "sourceRoot": "libs/utils/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/utils/**/*.ts", "libs/utils/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

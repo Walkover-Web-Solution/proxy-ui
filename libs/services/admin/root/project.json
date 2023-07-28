@@ -1,0 +1,16 @@
+{
+    "name": "services-admin-root",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/admin/root/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/services/admin/root/src/**/*.ts", "libs/services/admin/root/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

@@ -1,0 +1,25 @@
+{
+    "name": "ui-virtual-scroll",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/virtual-scroll/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/virtual-scroll/src/**/*.ts", "libs/ui/virtual-scroll/src/**/*.html"]
+            }
+        },
+        "test": {
+            "executor": "@nrwl/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/libs/ui/virtual-scroll"],
+            "options": {
+                "tsConfig": "libs/ui/virtual-scroll/tsconfig.lib.json",
+                "jestConfig": "libs/ui/virtual-scroll/jest.config.ts",
+                "passWithNoTests": true
+            }
+        }
+    },
+    "tags": ["scope:shared", "type:lib"]
+}

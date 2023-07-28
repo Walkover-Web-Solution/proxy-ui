@@ -1,0 +1,18 @@
+{
+    "name": "pipes-country-currency-symbol",
+    "projectType": "library",
+    "sourceRoot": "libs/pipes/country-currency-symbol/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/pipes/country-currency-symbol/**/*.ts",
+                    "libs/pipes/country-currency-symbol/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

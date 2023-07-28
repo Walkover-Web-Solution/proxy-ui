@@ -1,0 +1,15 @@
+{
+    "name": "urls-payment-method",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/payment-method/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/payment-method/src/**/*.ts", "libs/urls/payment-method/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

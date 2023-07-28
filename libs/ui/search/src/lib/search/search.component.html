@@ -1,0 +1,52 @@
+<mat-form-field class="search-form-field" [ngClass]="matFormFieldClass?.length ? matFormFieldClass : ''">
+    <ng-container *ngIf="!isRemoveChar">
+        <input
+            [attr.type]="type"
+            matInput
+            [placeholder]="placeholder"
+            autocomplete="off"
+            [matTooltip]="toolTipString"
+            #tooltip="matTooltip"
+            [matTooltipPosition]="toolTipPosition"
+            [matTooltipDisabled]="toolTipString.length > 0 ? toolTipDisable : true"
+            [formControl]="searchFormControl"
+            (keydown.enter)="emitOnEnter ? emitInputChanges(searchFormControl.value) : null"
+        />
+    </ng-container>
+    <ng-container *ngIf="isRemoveChar">
+        <input
+            [attr.type]="type"
+            matInput
+            [placeholder]="placeholder"
+            autocomplete="off"
+            [matTooltip]="toolTipString"
+            #tooltip="matTooltip"
+            [matTooltipPosition]="toolTipPosition"
+            [matTooltipDisabled]="toolTipString.length > 0 ? toolTipDisable : true"
+            [formControl]="searchFormControl"
+            msg91RemoveCharacter
+            [charactersToRemove]="charactersToRemove?.length ? charactersToRemove : ['e', '+', '-']"
+            (keydown.enter)="emitOnEnter ? emitInputChanges(searchFormControl.value) : null"
+        />
+    </ng-container>
+    <mat-icon matPrefix>search</mat-icon>
+    <button
+        (click)="clearSearch()"
+        class="icon-btn-md"
+        color="primary"
+        *ngIf="searchFormControl.value?.length && !hideCloseIcon"
+        mat-icon-button
+        matSuffix
+    >
+        <mat-icon>close</mat-icon>
+    </button>
+</mat-form-field>
+<ng-container *ngTemplateOutlet="error"></ng-container>
+
+<ng-template #error>
+    <ng-container *ngIf="searchFormControl.dirty">
+        <ng-container *ngFor="let error of formErrors || {} | keyvalue">
+            <mat-error *ngIf="searchFormControl.errors?.[error.key]">{{ error.value }}</mat-error>
+        </ng-container>
+    </ng-container>
+</ng-template>

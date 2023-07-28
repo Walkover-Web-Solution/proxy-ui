@@ -1,0 +1,25 @@
+{
+    "name": "constant",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/constant/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/constant/src/**/*.ts", "libs/constant/src/**/*.html"]
+            }
+        },
+        "test": {
+            "executor": "@nrwl/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/libs/constant"],
+            "options": {
+                "tsConfig": "libs/constant/tsconfig.lib.json",
+                "jestConfig": "libs/constant/jest.config.ts",
+                "passWithNoTests": true
+            }
+        }
+    },
+    "tags": ["scope:shared", "type:lib"]
+}

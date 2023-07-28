@@ -1,0 +1,67 @@
+<div class="d-flex col-gap-3 align-items-start">
+    <mat-form-field [appearance]="formFieldAppearance" class="w-100" [floatLabel]="fromCampaign ? 'auto' : 'always'">
+        <mat-label>Select Domain</mat-label>
+        <input
+            type="text"
+            matInput
+            [matAutocomplete]="emailDomainAutoComplete"
+            #emailDomainInput
+            [formControl]="emailDomainFormControl"
+            placeholder=" Select Domain"
+            (focusout)="
+                $event?.relatedTarget?.nodeName !== 'MAT-OPTION' && $event?.relatedTarget?.nodeName !== 'A'
+                    ? autocomplete.closePanel()
+                    : null
+            "
+        />
+        <mat-autocomplete
+            #emailDomainAutoComplete="matAutocomplete"
+            [displayWith]="domainDisplayFunction"
+            msg91AutoSelectDropdown
+            (setControlValue)="setDomainControlValue($event)"
+            (optionSelected)="showCloseDomain = true; optionSelected.emit($event)"
+        >
+            <msg91-cdk-scroll (fetchNextPage)="fetchNextDomainPage()">
+                <a
+                    class="flat-primary-light my-2 mx-3"
+                    *ngIf="createDomainURL"
+                    mat-flat-button
+                    [href]="createDomainURL"
+                    target="_blank"
+                    >Create Email Domain</a
+                >
+                <!-- <mat-option value="">-- Select Domain --</mat-option> -->
+                <mat-option disabled value="" *ngIf="!domains?.length"> No Domain Found </mat-option>
+                <mat-option [value]="domain" *ngFor="let domain of domains">
+                    {{ domain.domain }}
+                </mat-option>
+            </msg91-cdk-scroll>
+        </mat-autocomplete>
+        <button
+            mat-icon-button
+            matSuffix
+            color="primary"
+            *ngIf="showCloseDomain"
+            class="cursor-pointer icon-btn-md"
+            (click)="clearDomain()"
+        >
+            <mat-icon class="mat-icon-20 text-dark">close</mat-icon>
+        </button>
+        <mat-error *ngIf="emailDomainFormControl.touched">
+            <mat-error *ngIf="emailDomainFormControl.errors?.required"> Domain field is required. </mat-error>
+            <mat-error *ngIf="emailDomainFormControl.errors?.elementExistsInList">
+                Please select domain from the list
+            </mat-error>
+        </mat-error>
+    </mat-form-field>
+    <button
+        type="button"
+        mat-flat-button
+        class="flat-icon-btn flat-default mt-1"
+        (click)="refreshDomain()"
+        matTooltip="Refresh"
+        matTooltipPosition="above"
+    >
+        <mat-icon class="mat-icon-18">refresh</mat-icon>
+    </button>
+</div>

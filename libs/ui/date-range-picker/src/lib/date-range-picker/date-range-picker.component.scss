@@ -1,0 +1,160 @@
+.datepicker {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+::ng-deep.custom-drp {
+    max-width: 460px !important;
+    min-width: 460px !important;
+    @media only screen and (max-width: 600px) {
+        max-width: 300px !important;
+        min-width: 300px !important;
+    }
+    .mat-menu-content {
+        padding: 0px !important;
+    }
+    .drp-content {
+        display: flex;
+        @media only screen and (max-width: 600px) {
+            flex-direction: column;
+        }
+        .drp-calendar {
+            flex: 1;
+            @media only screen and (max-width: 600px) {
+                display: none;
+                &.show-calendar {
+                    display: block;
+                }
+            }
+
+            .drp-inputs {
+                display: flex;
+                justify-content: center;
+                padding: 10px 0px 0px 0px;
+                .mat-form-field {
+                    width: 124px;
+                    margin: 0px 10px;
+                    font-size: 14px;
+                }
+            }
+            .drp-calendar-actions {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px 0px;
+                .mat-raised-button,
+                .mat-stroked-button {
+                    margin: 0px 4px;
+                }
+                .btn-hide {
+                    display: none;
+                    @media only screen and (max-width: 600px) {
+                        display: block;
+                    }
+                }
+                @media only screen and (max-width: 600px) {
+                    justify-content: space-between;
+                }
+            }
+        }
+        .drp-ranges {
+            flex: 0 0 160px;
+            border-right: 1px solid var(--color-common-border);
+            @media only screen and (max-width: 600px) {
+                &.hide-option {
+                    display: none;
+                }
+            }
+            .drp-range-list {
+                .btn-hide {
+                    display: none;
+                    @media only screen and (max-width: 600px) {
+                        display: block;
+                    }
+                }
+                .mat-button {
+                    width: 100%;
+                    border-radius: 0px !important;
+                    text-align: left;
+                    padding: 2px 20px;
+                    color: var(--color-common-text);
+                    border-right: 3px solid transparent;
+                    font-size: 13px;
+                    &:hover {
+                        background: var(--color-menu-common-active-link-background) !important;
+                        color: var(--color-menu-common-active-link-text) !important;
+                        border-right-color: var(--color-menu-common-active-link-background);
+                    }
+                    &.selected {
+                        background: var(--color-menu-common-active-link-background) !important;
+                        color: var(--color-menu-common-active-link-text) !important;
+                        border-right-color: var(--color-menu-common-active-link-background);
+                    }
+                }
+            }
+        }
+        .drp-calendar-content {
+            width: 99%;
+            @media only screen and (max-width: 300px) {
+                width: 300px;
+            }
+            .mat-calendar {
+                .mat-calendar-header {
+                    padding: 0px;
+                    .mat-calendar-controls {
+                        margin-top: 0px !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.custom-datepicker {
+    .date-input {
+        font-weight: 400;
+        color: var(--color-common-text) !important;
+        position: relative;
+        line-height: 38px;
+        font-size: 14px;
+        padding: 0px 12px !important;
+        border: 0px;
+        position: relative;
+        .outline-position {
+            outline: 1px solid var(--color-common-border);
+            line-height: 40px;
+            inset: 0;
+        }
+        .hide-border {
+            background-color: var(--color-common-white);
+            line-height: 40px;
+            left: 5px;
+            top: -3px;
+            height: 6px;
+        }
+        .float-label {
+            position: absolute;
+            top: -8px;
+            font-size: 10px;
+            color: rgba(0, 0, 0, 0.6);
+            line-height: 14px;
+            padding: 0px 5px;
+            left: 4px;
+            z-index: 99;
+        }
+        &:hover {
+            .outline-position {
+                outline: 2px solid var(--color-common-black);
+            }
+        }
+    }
+    .today {
+        width: 18px;
+        height: 18px;
+        font-size: 18px;
+        margin-right: 10px;
+        color: var(--color-common-text);
+        display: inline-table;
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "name": "services-interceptor-error-interceptor",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/interceptor/error-interceptor/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/services/interceptor/error-interceptor/src/**/*.ts",
+                    "libs/services/interceptor/error-interceptor/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

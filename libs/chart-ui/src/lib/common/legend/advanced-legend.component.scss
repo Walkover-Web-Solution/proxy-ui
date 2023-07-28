@@ -1,0 +1,63 @@
+.advanced-pie-legend {
+    float: left;
+    position: relative;
+    top: 50%;
+    transform: translate(0, -50%);
+    width: 100%;
+
+    .total-value {
+        font-size: 36px;
+        display: none;
+    }
+
+    .total-label {
+        font-size: 20px;
+        margin-bottom: 14px;
+        font-weight: 600;
+        color: var(--color-common-dark) !important;
+    }
+
+    .legend-items-container {
+        width: 100%;
+
+        .legend-items {
+            white-space: nowrap;
+            .legend-item {
+                margin-right: 20px;
+                display: inline-block;
+                cursor: pointer;
+                width: 150px;
+
+                &:focus {
+                    outline: none;
+                }
+
+                &:hover {
+                    color: var(--color-common-dark);
+                    -webkit-transition: 0.2s;
+                    -moz-transition: 0.2s;
+                    transition: 0.2s;
+                }
+
+                .item-value {
+                    font-size: 24px;
+                    margin-top: -6px;
+                    margin-left: 11px;
+                }
+
+                .item-label {
+                    font-size: 14px;
+                    opacity: 0.7;
+                    margin-left: 11px;
+                    margin-top: -6px;
+                }
+
+                .item-percent {
+                    font-size: 24px;
+                    opacity: 0.7;
+                    margin-left: 11px;
+                }
+            }
+        }
+    }
+}

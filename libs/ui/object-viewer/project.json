@@ -1,0 +1,15 @@
+{
+    "name": "ui-object-viewer",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/object-viewer/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/object-viewer/**/*.ts", "libs/ui/object-viewer/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

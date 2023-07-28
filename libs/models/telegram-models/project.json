@@ -1,0 +1,19 @@
+{
+    "name": "models-telegram-models",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/models/telegram-models/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/models/telegram-models/src/**/*.ts",
+                    "libs/models/telegram-models/src/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}

@@ -1,0 +1,16 @@
+{
+    "name": "models-rcs-models",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/models/rcs-models/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/models/rcs-models/src/**/*.ts", "libs/models/rcs-models/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

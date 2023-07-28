@@ -1,0 +1,15 @@
+{
+    "name": "urls-segmento",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/segmento/src",
+    "prefix": "msg91",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/segmento/src/**/*.ts", "libs/urls/segmento/src/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

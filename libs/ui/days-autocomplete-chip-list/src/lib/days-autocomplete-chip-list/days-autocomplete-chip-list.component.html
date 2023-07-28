@@ -1,0 +1,35 @@
+<mat-form-field [appearance]="appearance" class="w-100 no-padding" (click)="trigger.openPanel()">
+    <mat-label>{{ label }}</mat-label>
+    <mat-chip-list #chipList>
+        <mat-chip
+            *ngFor="let days of selectedDays; let i = index"
+            [selectable]="false"
+            [removable]="true"
+            (removed)="removeChipListSelection(i)"
+            class="mat-chip-outlined mat-chip-md"
+        >
+            {{ days }}
+            <mat-icon matChipRemove class="mat-icon-16 ml-1" (click)="trigger.openPanel()">close</mat-icon>
+        </mat-chip>
+        <input
+            matInput
+            readonly
+            [matAutocomplete]="auto"
+            [formControl]="daysFormControl"
+            #trigger="matAutocompleteTrigger"
+            ngDefaultControl
+            [matChipInputFor]="chipList"
+            [placeholder]="selectedDays.length ? '' : placeholder"
+        />
+    </mat-chip-list>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="handleChipListSelection($event)">
+        <mat-option *ngFor="let days of dayOptions" (click)="trigger.openPanel()" [value]="days">
+            {{ days }}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>
+<div style="height: 21.5px">
+    <mat-error *ngIf="daysFormControl.touched && isRequired && !selectedDays.length">
+        {{ label }} is required.
+    </mat-error>
+</div>
