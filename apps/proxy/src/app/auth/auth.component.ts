@@ -1,5 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { IFirebaseUserModel } from '@msg91/models/root-models';
 import { BaseComponent } from '@msg91/ui/base-component';
+import { PrimeNgToastService } from '@msg91/ui/prime-ng-toast';
+import { Store, select } from '@ngrx/store';
+import { isEqual } from 'lodash';
+import { Observable, distinctUntilChanged, takeUntil, debounceTime } from 'rxjs';
+import { selectAccessToken } from '../ngrx';
+import { selectLogInErrors, selectLogInData, selectLogInDataInProcess, selectLogInDataSuccess } from './ngrx/selector/login.selector';
+import { ILogInFeatureStateWithRootState } from './ngrx/store/login.state';
+import * as logInActions from './ngrx/actions/login.action';
 
 @Component({
     selector: 'proxy-auth',
@@ -7,9 +17,66 @@ import { BaseComponent } from '@msg91/ui/base-component';
     styleUrls: ['./auth.component.scss'],
 })
 export class AuthComponent extends BaseComponent implements OnInit {
-    constructor() {
+    public selectLogInErrors$: Observable<string[]>;
+    public logInData$: Observable<IFirebaseUserModel>;
+    public accessToken$: Observable<string>;
+    public logInDataInProcess$: Observable<boolean>;
+    public logInDataSuccess$: Observable<boolean>;
+
+    constructor(
+        private toast: PrimeNgToastService,
+        private _store: Store<ILogInFeatureStateWithRootState>,
+        private router: Router,
+    ) {
         super();
+
+        this.selectLogInErrors$ = this._store.pipe(
+            select(selectLogInErrors),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.logInData$ = this._store.pipe(
+            select(selectLogInData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.accessToken$ = this._store.pipe(
+            select(selectAccessToken),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.logInDataInProcess$ = this._store.pipe(
+            select(selectLogInDataInProcess),
+            debounceTime(200),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.logInDataSuccess$ = this._store.pipe(
+            select(selectLogInDataSuccess),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
     }
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        this.selectLogInErrors$.subscribe((res) => {
+            res?.forEach((r) => {
+                this.toast.error(r);
+            });
+        });
+
+        this.logInData$.subscribe((res) => {
+            if (res) {
+                this.router.navigate(['app']);
+            }
+        });
+    }
+
+    ngOnDestroy() {
+        super.ngOnDestroy();
+    }
+
+    login() {
+        this._store.dispatch(logInActions.logInAction());
+    }
 }
