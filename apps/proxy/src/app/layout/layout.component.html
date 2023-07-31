@@ -1,1 +1,29 @@
-<p>layout works!</p>
+<div class="d-flex w-100 h-100" [ngClass]="!toggleMenuSideBar ? 'collapsed-sidebar' : ''">
+    <div class="left-menu-main-container mat-drawer panel-sidenav proxy-collapse-sidenav">
+        <div class="left-menu-header d-flex">
+            <button mat-button class="static-btn fw-bolder" style="cursor: default" [disableRipple]="true">
+                <mat-icon class="mr-3">apps</mat-icon>
+                <span class="mb-0 text-dark">Proxy</span>
+            </button>
+            <button mat-icon-button class="close-btn-xs" (click)="toggleSideBarEvent(true)">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        </div>
+        <!-- Proxy Sidenav::START -->
+            <proxy-main-left-menu></proxy-main-left-menu>
+        <!-- Proxy Sidenav::END -->
+        <div class="left-menu-footer" >
+        </div>
+    </div>
+    <div class="app-main-container">
+        <!-- Content::START -->
+        <div class="component-render-container">
+            <div class="component-render-container-inner">
+                <div style="flex-grow: 1">
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </div>
+        <!-- Content::END -->
+    </div>
+</div>
