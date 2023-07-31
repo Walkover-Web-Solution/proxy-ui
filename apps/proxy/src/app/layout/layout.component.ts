@@ -1,5 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { IFirebaseUserModel } from '@msg91/models/root-models';
 import { BaseComponent } from '@msg91/ui/base-component';
+import { Store, select } from '@ngrx/store';
+import { selectLogInData } from '../auth/ngrx/selector/login.selector';
+import { isEqual } from 'lodash';
+import { Observable, distinctUntilChanged, takeUntil } from 'rxjs';
+import { ILogInFeatureStateWithRootState } from '../auth/ngrx/store/login.state';
+import * as logInActions from '../auth/ngrx/actions/login.action';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
     selector: 'proxy-layout',
@@ -8,8 +16,16 @@ import { BaseComponent } from '@msg91/ui/base-component';
 })
 export class LayoutComponent extends BaseComponent implements OnInit {
     public toggleMenuSideBar: boolean;
-    constructor() {
+    public logInData$: Observable<IFirebaseUserModel>;
+
+    constructor(private store: Store<ILogInFeatureStateWithRootState>, private cookieService: CookieService) {
         super();
+        this.logInData$ = this.store.pipe(
+            select(selectLogInData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.getCurrentTheme();
     }
 
     ngOnInit(): void {
@@ -19,6 +35,28 @@ export class LayoutComponent extends BaseComponent implements OnInit {
     public toggleSideBarEvent(event) {
         this.toggleMenuSideBar = !this.toggleMenuSideBar;
     }
+
+    public logOut() {
+        this.cookieService.delete('authToken', '/');
+        this.store.dispatch(logInActions.logoutAction());
+    }
+
+    public getCurrentTheme() {
+        if (
+            localStorage.getItem('selected-theme') === null ||
+            localStorage.getItem('selected-theme') === 'light-theme'
+        ) {
+            this.switchedDarkMode(false);
+        } else {
+            this.switchedDarkMode(true);
+        }
+    }
+
+    switchedDarkMode(isDarkMode: boolean) {
+        const hostClass = isDarkMode ? 'dark-theme' : 'light-theme';
+        localStorage.setItem('selected-theme', hostClass);
+    }
+      
 
     getIsMobile(): boolean {
         const w = document.documentElement.clientWidth;

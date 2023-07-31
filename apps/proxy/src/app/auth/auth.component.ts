@@ -67,7 +67,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
 
         this.logInData$.subscribe((res) => {
             if (res) {
-                this.router.navigate(['app']);
+                this.router.navigate(['/app']);
             }
         });
     }
