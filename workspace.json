@@ -136,6 +136,7 @@
         "services-msg91-transaction-logs": "libs/services/msg91/transaction-logs",
         "services-msg91-voice": "libs/services/msg91/voice",
         "services-permission": "libs/services/permission",
+        "services-proxy-auth": "libs/services/proxy/auth",
         "services-shared": "libs/services/shared",
         "shared": "libs/shared",
         "ui-angular-mentions": "libs/ui/angular-mentions",
