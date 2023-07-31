@@ -1,0 +1,213 @@
+// .mat-form-field-wrapper {
+//     .mat-form-field-infix {
+//         line-height: 20px;
+//     }
+// }
+
+// Default form field
+.mat-form-field {
+    // .mat-form-field-label{
+    //     color: var(--color-common-primary);
+    // }
+    font-size: 14px;
+    .mat-form-field-infix {
+        .mat-input-element {
+            &::-webkit-input-placeholder {
+                /* Chrome/Opera/Safari */
+                color: var(--color-common-grey);
+                font-weight: normal;
+            }
+            &::-moz-placeholder {
+                /* Firefox 19+ */
+                color: var(--color-common-grey);
+                font-weight: normal;
+            }
+            &:-ms-input-placeholder {
+                /* IE 10+ */
+                color: var(--color-common-grey);
+                font-weight: normal;
+            }
+            &:-moz-placeholder {
+                /* Firefox 18- */
+                color: var(--color-common-grey);
+                font-weight: normal;
+            }
+        }
+        .mat-form-field-label-wrapper {
+            .mat-form-field-required-marker {
+                display: none;
+            }
+        }
+    }
+    .mat-form-field-flex {
+        .mat-form-field-outline {
+            // color: var(--color-common-input-border);
+            .mat-form-field-outline-start {
+                border-radius: var(--border-common-radius-4) 0 0 var(--border-common-radius-4);
+                min-width: var(--border-common-radius-4);
+            }
+            .mat-form-field-outline-end {
+                border-radius: 0 var(--border-common-radius-4) var(--border-common-radius-4) 0;
+            }
+        }
+        .mat-form-field-infix {
+            .mat-select {
+                .mat-select-trigger {
+                    .mat-select-arrow-wrapper {
+                        transform: translateY(-6%);
+                    }
+                }
+            }
+        }
+    }
+    input {
+        &.mat-input-element {
+            color: var(--color-common-text);
+        }
+    }
+    // &.rounded {
+    //     .mat-form-field-wrapper {
+    //         .mat-form-field-flex {
+    //             .mat-form-field-outline {
+    //                 .mat-form-field-outline-start {
+    //                     border-radius: var(--border-common-radius-4) 0 0 var(--border-common-radius-4);
+    //                     min-width: var(--border-common-radius-4);
+    //                 }
+    //                 .mat-form-field-outline-end {
+    //                     border-radius: 0 var(--border-common-radius-4) var(--border-common-radius-4) 0;
+    //                 }
+    //             }
+    //             .mat-form-field-infix {
+    //                 .mat-select {
+    //                     .mat-select-trigger {
+    //                         .mat-select-arrow-wrapper {
+    //                             transform: translateY(-6%);
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // &.search-input {
+    //     width: 250px;
+    //     .mat-form-field-wrapper {
+    //         padding-bottom: 0px !important;
+    //         .mat-form-field-flex {
+    //             .mat-form-field-prefix {
+    //                 color: var(--color-common-grey) !important;
+    //             }
+    //         }
+    //     }
+    // }
+    &.no-padding {
+        .mat-form-field-wrapper {
+            padding-bottom: 0px !important;
+            .mat-form-field-flex {
+                .mat-form-field-prefix {
+                    color: var(--color-common-grey) !important;
+                }
+            }
+        }
+    }
+    &.search-form-field {
+        width: 250px;
+        .mat-form-field-wrapper {
+            padding-bottom: 0px !important;
+            margin: 0px !important;
+            .mat-form-field-flex {
+                .mat-form-field-prefix {
+                    .mat-icon {
+                        color: #676b6e;
+                    }
+                }
+            }
+        }
+        &.mat-form-field-appearance-outline .mat-form-field-outline {
+            background-color: transparent !important;
+        }
+    }
+    &.mat-form-field-appearance-outline .mat-form-field-outline {
+        background-color: transparent !important;
+    }
+    &.mat-form-field-disabled {
+        .mat-form-field-wrapper {
+            // .mat-input-element:disabled,
+            // .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+            //     color: rgba(0, 0, 0, 0.51);
+            // }
+            .mat-form-field-outline {
+                background-color: #b1b1b12e !important;
+                border-radius: var(--border-common-radius-4);
+            }
+            .option-loader {
+                background-color: #b1b1b12e !important;
+            }
+            .mat-form-field-label {
+                mat-label {
+                    color: var(--color-common-text) !important;
+                }
+            }
+        }
+    }
+    // Used to display only first mat-error
+    mat-error {
+        display: none !important;
+        font-size: var(--font-size-common-12);
+        &:first-child {
+            display: block !important;
+        }
+    }
+    .mat-form-field-subscript-wrapper {
+        margin-top: 2px;
+    }
+}
+
+@-moz-document url-prefix() {
+    .mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-prefix .mat-icon-button,
+    .mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix .mat-icon-button {
+        display: inline-block !important;
+    }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input[matinput]::-webkit-outer-spin-button,
+input[matinput]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[matinput][type='number'] {
+    -moz-appearance: textfield;
+}
+
+.mat-form-field {
+    &.mat-form-field-appearance-outline {
+        .mat-form-field-wrapper {
+            .mat-form-field-infix {
+                padding: 7px 0 10px 0;
+            }
+            // .mat-select-arrow-wrapper {
+            //     padding-top: 9px;
+            // }
+        }
+    }
+}
+
+.ngx-mat-timepicker-table {
+    .mat-form-field {
+        border: 1px solid var(--color-common-border);
+        padding: 0px;
+        width: 35px !important;
+        max-width: 35px !important;
+        border-radius: 4px;
+        line-height: 16px;
+        .mat-form-field-infix {
+            border-top-width: 0px !important;
+        }
+        .mat-form-field-underline {
+            display: none;
+        }
+    }
+}

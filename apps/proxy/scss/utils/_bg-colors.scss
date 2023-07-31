@@ -1,0 +1,19 @@
+.bg-white {
+    background-color: var(--color-common-white) !important;
+}
+.bg-transparent {
+    background-color: transparent !important;
+}
+.bg-gray {
+    background-color: var(--color-common-bg);
+}
+.bg-light-grey {
+    background-color: var(--color-common-graph-bg) !important;
+}
+.bg-green {
+    background-color: var(--color-common-green) !important;
+    color: var(--color-common-white) !important;
+}
+.bg-primary-light {
+    background-color: #e2f0ff !important;
+}
