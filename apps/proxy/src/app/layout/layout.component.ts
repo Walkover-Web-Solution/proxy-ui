@@ -25,11 +25,11 @@ export class LayoutComponent extends BaseComponent implements OnInit {
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
-        this.getCurrentTheme();
     }
 
     ngOnInit(): void {
         this.toggleMenuSideBar = this.getIsMobile();
+        this.getCurrentTheme();
     }
 
     public toggleSideBarEvent(event) {
