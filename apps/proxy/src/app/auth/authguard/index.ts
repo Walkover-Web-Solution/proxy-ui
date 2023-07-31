@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { AuthService } from '@msg91/services/admin/auth';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { AuthService } from '@proxy/services/proxy/auth';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CanActivateRouteGuard implements CanActivate {
-    constructor(
-        private cookieService: CookieService,
-        private authService: AuthService
-    ) {}
+    constructor(private cookieService: CookieService, private authService: AuthService, private router: Router) {}
 
     canActivate(
         route: ActivatedRouteSnapshot,
