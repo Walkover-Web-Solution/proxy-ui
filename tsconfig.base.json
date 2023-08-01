@@ -125,6 +125,7 @@
             "@proxy/models/logs-models": ["libs/models/logs-models/src/index.ts"],
             "@proxy/services/proxy/auth": ["libs/services/proxy/auth/src/index.ts"],
             "@proxy/services/proxy/logs": ["libs/services/proxy/logs/src/index.ts"],
+            "@proxy/services/login": ["libs/services/login/src/index.ts"],
             "@proxy/urls/logs-urls": ["libs/urls/logs-urls/src/index.ts"]
         }
     },
