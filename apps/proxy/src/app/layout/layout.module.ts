@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { LayoutRoutingModule } from './layout-routing.module';
 import { LayoutComponent } from './layout.component';
-import { MainLeftMenuComponent } from './main-left-menu/main-left-menu.component';
+import { MainLeftSideNavComponent } from './main-left-side-nav/main-left-side-nav.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -14,7 +14,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
-    declarations: [LayoutComponent, MainLeftMenuComponent],
+    declarations: [LayoutComponent, MainLeftSideNavComponent],
     imports: [
         CommonModule,
         LayoutRoutingModule,
