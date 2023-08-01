@@ -38,10 +38,7 @@ export class LogInEffects {
                                         emailVerified: user.emailVerified,
                                         jwtToken: token,
                                     };
-                                    return [
-                                        rootActions.rootActions.setAuthToken({ token }),
-                                        logInActions.authenticatedAction({ response: data }),
-                                    ];
+                                    return [logInActions.authenticatedAction({ response: data })];
                                 }),
                                 catchError((err) => {
                                     return of(logInActions.logInActionError({ errors: errorResolver(err.message) }));
@@ -78,6 +75,7 @@ export class LogInEffects {
             switchMap((p) => {
                 return this.loginService.googleLogin({}).pipe(
                     map((res) => {
+                        this.service.setTokenSync(res.data.auth);
                         return logInActions.getUserAction();
                     }),
                     catchError((err) => {
