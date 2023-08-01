@@ -107,11 +107,11 @@ export class LogInEffects {
             ofType(logInActions.logoutActionComplete),
             switchMap((p) => {
                 return this.loginService.logout().pipe(
+                    switchMap((action) => []),
                     catchError((err) => {
                         return of(logInActions.logInActionError({ errors: errorResolver(err.message) }));
                     })
                 );
-                return [];
             })
         )
     );
