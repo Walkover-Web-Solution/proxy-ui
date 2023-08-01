@@ -73,9 +73,6 @@
             "@msg91/service": ["libs/service/src/index.ts"],
             "@msg91/service/admin/super-admin": ["libs/services/admin/super-admin/src/index.ts"],
             "@msg91/services/httpWrapper": ["libs/services/http-wrapper/src/index.ts"],
-            "@msg91/services/interceptor/adminErrorInterceptor": [
-                "libs/services/interceptor/admin-error-interceptor/src/index.ts"
-            ],
             "@msg91/services/interceptor/errorInterceptor": [
                 "libs/services/interceptor/error-interceptor/src/index.ts"
             ],

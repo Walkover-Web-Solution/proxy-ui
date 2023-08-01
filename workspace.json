@@ -52,7 +52,6 @@
         "regex": "libs/regex",
         "service": "libs/service",
         "services-http-wrapper": "libs/services/http-wrapper",
-        "services-interceptor-admin-error-interceptor": "libs/services/interceptor/admin-error-interceptor",
         "services-interceptor-error-interceptor": "libs/services/interceptor/error-interceptor",
         "services-proxy-auth": "libs/services/proxy/auth",
         "services-shared": "libs/services/shared",
