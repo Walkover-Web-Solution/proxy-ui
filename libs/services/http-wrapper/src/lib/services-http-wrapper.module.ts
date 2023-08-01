@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ProxyBaseUrls } from '@msg91/models/root-models';
+import { AuthService } from '@proxy/services/proxy/auth';
 @NgModule({
     imports: [CommonModule],
 })
@@ -16,11 +17,24 @@ export class ServicesHttpWrapperModule {
     }
 }
 
+export const DEFAULT_OPTIONS = {
+    withCredentials: false,
+    headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Authorization': '',
+    },
+};
+
 @Injectable({
     providedIn: 'root',
 })
 export class HttpWrapperService {
-    constructor(private http: HttpClient, @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any) {}
+    constructor(
+        private http: HttpClient,
+        @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any,
+        private authService: AuthService,
+    ) {}
 
     public createUrl = (url: string): string => {
         return `${this.baseUrl}/${url}`;
@@ -74,11 +88,14 @@ export class HttpWrapperService {
     }
 
     public prepareOptions(options: any, addcontentType: boolean = true): any {
-        options = options || {};
-
+        options = {
+            ...DEFAULT_OPTIONS,
+            ...(options || {}),
+        };
         if (!options.headers) {
             options.headers = {} as any;
         }
+        options.headers['Authorization'] = this.authService.getTokenSync();
         // eslint-disable-next-line no-prototype-builtins
         if (options.headers.hasOwnProperty('noHeader')) {
             // eslint-disable-next-line no-prototype-builtins
