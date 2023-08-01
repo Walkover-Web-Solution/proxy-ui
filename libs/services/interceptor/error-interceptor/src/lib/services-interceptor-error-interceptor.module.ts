@@ -35,16 +35,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         if (request.url.includes('api/googleLogin') || this.cookieService.get('authToken')) {
             return next.handle(request).pipe(
                 tap((resp: HttpResponse<any>) => {
-                    if (
-                        resp.type &&
-                        resp.body &&
-                        resp.body['errors'] &&
-                        resp.body['errors'].length &&
-                        resp.body['errors'][0] &&
-                        resp.body['errors'][0].title === '503'
-                    ) {
-                        //  this.router.navigate(['under-maintenance']);
-                    }
+                    // console.log(resp);
                 }),
                 catchError((err) => {
                     if (err instanceof HttpErrorResponse) {

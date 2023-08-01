@@ -95,7 +95,11 @@ export class HttpWrapperService {
         if (!options.headers) {
             options.headers = {} as any;
         }
-        options.headers['Authorization'] = this.authService.getTokenSync();
+        const authToken = this.authService.getTokenSync();
+        if(authToken) {
+            options.headers['Authorization'] = authToken;
+        }
+
         // eslint-disable-next-line no-prototype-builtins
         if (options.headers.hasOwnProperty('noHeader')) {
             // eslint-disable-next-line no-prototype-builtins
