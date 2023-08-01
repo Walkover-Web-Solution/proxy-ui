@@ -54,6 +54,7 @@
         "service": "libs/service",
         "services-http-wrapper": "libs/services/http-wrapper",
         "services-interceptor-error-interceptor": "libs/services/interceptor/error-interceptor",
+        "services-login": "libs/services/login",
         "services-proxy-auth": "libs/services/proxy/auth",
         "services-proxy-logs": "libs/services/proxy/logs",
         "services-shared": "libs/services/shared",
