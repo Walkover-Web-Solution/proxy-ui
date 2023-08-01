@@ -32,7 +32,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     ) {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if (request.url.includes('api/admin/login') || this.cookieService.get('authToken')) {
+        if (request.url.includes('api/googleLogin') || this.cookieService.get('authToken')) {
             return next.handle(request).pipe(
                 tap((resp: HttpResponse<any>) => {
                     if (

@@ -171,3 +171,8 @@ export function errorResolver(params: string[] | string | { [key: string]: [] })
         return ['Something went wrong.'];
     }
 }
+
+export interface ILoginResponse {
+    message: string;
+    auth: string;
+}
