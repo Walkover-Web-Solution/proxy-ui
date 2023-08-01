@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, switchMap, take } from 'rxjs/operators';
 import { from, of } from 'rxjs';
-import { BaseResponse, ILoginResponse, errorResolver } from '@msg91/models/root-models';
+import { errorResolver } from '@msg91/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
 import * as logInActions from '../actions/login.action';
 import * as rootActions from '../../../ngrx/actions';
@@ -38,7 +38,10 @@ export class LogInEffects {
                                         emailVerified: user.emailVerified,
                                         jwtToken: token,
                                     };
-                                    return [logInActions.authenticatedAction({ response: data })];
+                                    return [
+                                        rootActions.rootActions.setAuthToken({ token }),
+                                        logInActions.authenticatedAction({ response: data }),
+                                    ];
                                 }),
                                 catchError((err) => {
                                     return of(logInActions.logInActionError({ errors: errorResolver(err.message) }));
@@ -74,11 +77,8 @@ export class LogInEffects {
             ofType(logInActions.logInActionComplete),
             switchMap((p) => {
                 return this.loginService.googleLogin({}).pipe(
-                    switchMap((res: BaseResponse<ILoginResponse, void>) => {
-                        return [
-                            rootActions.rootActions.setAuthToken({ token: res.data.auth }),
-                            logInActions.getUserAction(),
-                        ];
+                    map((res) => {
+                        return logInActions.getUserAction();
                     }),
                     catchError((err) => {
                         return of(logInActions.logInActionError({ errors: errorResolver(err.message) }));
