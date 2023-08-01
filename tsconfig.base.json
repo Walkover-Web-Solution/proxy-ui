@@ -306,7 +306,10 @@
             "@msg91/urls/voice": ["libs/urls/voice/src/index.ts"],
             "@msg91/urls/whatsapp": ["libs/urls/whatsapp/src/index.ts"],
             "@msg91/utils": ["libs/utils/src/index.ts"],
-            "@proxy/services/proxy/auth": ["libs/services/proxy/auth/src/index.ts"]
+            "@proxy/models/logs-models": ["libs/models/logs-models/src/index.ts"],
+            "@proxy/services/proxy/auth": ["libs/services/proxy/auth/src/index.ts"],
+            "@proxy/services/proxy/logs": ["libs/services/proxy/logs/src/index.ts"],
+            "@proxy/urls/logs-urls": ["libs/urls/logs-urls/src/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]

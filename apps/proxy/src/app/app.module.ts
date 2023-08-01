@@ -63,6 +63,14 @@ import { VersionCheckServiceModule } from '@msg91/service';
                 restoreFocus: false,
             },
         },
+        {
+            provide: ProxyBaseUrls.BaseURL,
+            useValue: environment.baseUrl
+        },
+        {
+            provide: ProxyBaseUrls.ProxyLogsUrl,
+            useValue: environment.baseUrl
+        }
     ],
     bootstrap: [AppComponent],
 })

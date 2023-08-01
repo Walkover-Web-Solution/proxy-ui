@@ -10,7 +10,12 @@ const routes: Routes = [
     {
         path: '',
         component: LayoutComponent,
-        children: [],
+        children: [
+            {
+                path: 'logs',
+                loadChildren: () => import('../logs/logs.module').then((p) => p.LogsModule)
+            }
+        ],
         data: { authGuardPipe: redirectUnauthorizedToLogin },
         canActivate: [CanActivateRouteGuard],
     },

@@ -62,9 +62,11 @@
     background-color: var(--color-common-bg);
     height: calc(100vh - 55px);
     overflow-y: auto;
+    background-color: var(--color-common-app-bg);
     @media (max-width: 768px) {
         overflow-x: auto;
     }
+    
 }
 canvas {
     width: 100% !important;
