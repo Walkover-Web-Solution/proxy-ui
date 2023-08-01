@@ -2,7 +2,7 @@ import { Inject, Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseResponse, ILoginResponse, ProxyBaseUrls } from '@msg91/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
-import { HttpWrapperService } from '@msg91/services/httpWrapper';
+import { DEFAULT_OPTIONS, HttpWrapperService } from '@msg91/services/httpWrapper';
 import { Observable } from 'rxjs';
 
 @NgModule({
@@ -16,8 +16,10 @@ export class ServicesLoginModule {}
 export class LoginService {
     constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any) {}
 
-    public googleLogin(body): Observable<BaseResponse<ILoginResponse, void>> {
-        return this.http.post<BaseResponse<ILoginResponse, void>>(`${this.baseUrl}/googleLogin`, body);
+    public googleLogin(authToken: string): Observable<BaseResponse<ILoginResponse, void>> {
+        const options = Object.assign({}, DEFAULT_OPTIONS);
+        options.headers.Authorization = authToken;
+        return this.http.post<BaseResponse<ILoginResponse, void>>(`${this.baseUrl}/googleLogin`, {}, options);
     }
 
     public logout(): Observable<BaseResponse<{ message: string }, void>> {

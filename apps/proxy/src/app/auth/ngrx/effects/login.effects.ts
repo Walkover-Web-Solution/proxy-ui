@@ -59,7 +59,7 @@ export class LogInEffects {
             switchMap(() => {
                 return this.service.loginViaGoogle().pipe(
                     map((res) => {
-                        return logInActions.logInActionComplete();
+                        return logInActions.logInActionComplete({ token: res.credential['idToken']});
                     }),
                     catchError((err) => {
                         return of(logInActions.logInActionError({ errors: errorResolver(err.message) }));
@@ -73,7 +73,7 @@ export class LogInEffects {
         this.actions$.pipe(
             ofType(logInActions.logInActionComplete),
             switchMap((p) => {
-                return this.loginService.googleLogin({}).pipe(
+                return this.loginService.googleLogin(p.token).pipe(
                     map((res) => {
                         this.service.setTokenSync(res.data.auth);
                         return logInActions.getUserAction();
