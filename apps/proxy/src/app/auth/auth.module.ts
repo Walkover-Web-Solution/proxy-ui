@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { UiLoaderModule } from '@msg91/ui/loader';
 import { ServicesProxyAuthModule } from '@proxy/services/proxy/auth';
+import { MatIconModule } from '@angular/material/icon';
 
 const routes: Routes = [
     {
@@ -26,6 +27,7 @@ const routes: Routes = [
         MatButtonModule,
         UiLoaderModule,
         ServicesProxyAuthModule,
+        MatIconModule,
     ],
     exports: [RouterModule],
 })

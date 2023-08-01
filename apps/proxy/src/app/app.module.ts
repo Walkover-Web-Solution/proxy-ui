@@ -18,7 +18,7 @@ import { ProxyBaseUrls } from '@msg91/models/root-models';
 import { environment } from '../environments/environment';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
-import { AdminErrorInterceptor } from '@msg91/services/interceptor/adminErrorInterceptor';
+import { ErrorInterceptor } from '@msg91/services/interceptor/errorInterceptor';
 import { VersionCheckServiceModule } from '@msg91/service';
 
 @NgModule({
@@ -53,7 +53,7 @@ import { VersionCheckServiceModule } from '@msg91/service';
                 companyId: null,
             },
         },
-        { provide: HTTP_INTERCEPTORS, useClass: AdminErrorInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
         {
             provide: MAT_DIALOG_DEFAULT_OPTIONS,
             useValue: {

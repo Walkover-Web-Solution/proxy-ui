@@ -7,7 +7,12 @@ import { Store, select } from '@ngrx/store';
 import { isEqual } from 'lodash';
 import { Observable, distinctUntilChanged, takeUntil, debounceTime } from 'rxjs';
 import { selectAccessToken } from '../ngrx';
-import { selectLogInErrors, selectLogInData, selectLogInDataInProcess, selectLogInDataSuccess } from './ngrx/selector/login.selector';
+import {
+    selectLogInErrors,
+    selectLogInData,
+    selectLogInDataInProcess,
+    selectLogInDataSuccess,
+} from './ngrx/selector/login.selector';
 import { ILogInFeatureStateWithRootState } from './ngrx/store/login.state';
 import * as logInActions from './ngrx/actions/login.action';
 
@@ -22,6 +27,20 @@ export class AuthComponent extends BaseComponent implements OnInit {
     public accessToken$: Observable<string>;
     public logInDataInProcess$: Observable<boolean>;
     public logInDataSuccess$: Observable<boolean>;
+
+    public description = [
+        {
+            title: 'Feature of SAAR',
+            list: [
+                'Flexible Proxy Pass',
+                'Custom Gateway Domains',
+                'Real-time Analytics',
+                'Developer-Friendly Documentation',
+                'Secure your APIs',
+            ],
+        },
+        { title: 'Why choose SAAR?', list: ['Secure and Reliable', 'Future-Proof Solution', 'User-Centric Design'] },
+    ];
 
     constructor(
         private toast: PrimeNgToastService,
