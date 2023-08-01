@@ -1,3 +1,4 @@
+@import '../../scss/utils/mixins/common-utils';
 .login-left-menu {
     display: flex;
     padding: 80px 40px 0px 40px;
@@ -7,6 +8,9 @@
     gap: 24px;
     background-color: var(--color-common-silver);
     height: 100vh;
+    @include media-breakpoint-down('phone') {
+        display: none;
+    }
     .brand-title {
         font-size: 40px !important;
         font-weight: 600 !important;
