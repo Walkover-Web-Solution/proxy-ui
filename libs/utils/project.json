@@ -2,7 +2,7 @@
     "name": "utils",
     "projectType": "library",
     "sourceRoot": "libs/utils/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

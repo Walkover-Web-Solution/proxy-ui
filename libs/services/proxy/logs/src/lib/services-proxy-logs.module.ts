@@ -1,7 +1,7 @@
 import { Inject, Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BaseResponse, IPaginatedResponse, ProxyBaseUrls } from '@msg91/models/root-models';
-import { HttpWrapperService } from '@msg91/services/httpWrapper';
+import { BaseResponse, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
+import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { Observable } from 'rxjs';
 import { AuthService } from '@proxy/services/proxy/auth';
 import { ILogsData } from '@proxy/models/logs-models';

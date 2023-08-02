@@ -12,8 +12,8 @@ import { CommonModule } from '@angular/common';
 import * as dayjs from 'dayjs';
 import * as relativeTime from 'dayjs/plugin/relativeTime';
 import { BehaviorSubject } from 'rxjs';
-import { ConvertToDigitTimeToken } from '@msg91/utils';
-import { PipesTimeTokenPipeModule } from '@msg91/pipes/TimeTokenPipe';
+import { ConvertToDigitTimeToken } from '@proxy/utils';
+import { PipesTimeTokenPipeModule } from '@proxy/pipes/TimeTokenPipe';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 dayjs.extend(relativeTime);

@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { ReplacePipe } from '@msg91/pipes/replace';
-import { CONTENT_BETWEEEN_HASH_TAG_REGEX } from '@msg91/regex';
+import { ReplacePipe } from '@proxy/pipes/replace';
+import { CONTENT_BETWEEEN_HASH_TAG_REGEX } from '@proxy/regex';
 
 @Component({
-    selector: 'msg91-email-preview',
+    selector: 'proxy-email-preview',
     templateUrl: './email-preview.component.html',
     styleUrls: ['./email-preview.component.scss'],
 })

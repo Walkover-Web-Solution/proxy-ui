@@ -2,7 +2,7 @@
     "name": "ui-no-record-found",
     "projectType": "library",
     "sourceRoot": "libs/ui/no-record-found/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

@@ -51,7 +51,7 @@ import {
 } from '@angular/core';
 import { QueryAdditionalButtonDirective } from './query-additional-button.directive';
 import { cloneDeep } from 'lodash-es';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { BaseComponent } from '@proxy/ui/base-component';
 
 export const CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,

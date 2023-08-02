@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'msg91-router-loader',
+    selector: 'proxy-router-loader',
     template: `
         <div class="bg-white microservice-route-loader">
             <div class="w-100 p-3 text-left">
                 <img
-                    src="{{ 'assets/images/logo/msg91-logo.svg?' }}"
-                    alt="MSG91 logo"
+                    src="{{ 'assets/images/logo/proxy-logo.svg?' }}"
+                    alt="proxy logo"
                     width="100"
                     height="50"
                     loading="lazy"

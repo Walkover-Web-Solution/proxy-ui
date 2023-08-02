@@ -1,10 +1,10 @@
-import { BaseComponent } from '@msg91/ui/base-component';
+import { BaseComponent } from '@proxy/ui/base-component';
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PrimeNgToastService } from '@msg91/ui/prime-ng-toast';
+import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 
 @Component({
-    selector: 'msg91-calendly-dialog',
+    selector: 'proxy-calendly-dialog',
     templateUrl: './calendly-dialog.component.html',
     styleUrls: ['./calendly-dialog.component.scss'],
 })

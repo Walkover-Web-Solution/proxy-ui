@@ -15,10 +15,10 @@ import {
 import * as dayjs from 'dayjs';
 import { Observable } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
-import { PrimeNgToastService } from '@msg91/ui/prime-ng-toast';
+import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 
 @Component({
-    selector: 'msg91-lib-audio-player',
+    selector: 'proxy-lib-audio-player',
     templateUrl: './player.component.html',
     styleUrls: ['./player.component.scss'],
     encapsulation: ViewEncapsulation.None,

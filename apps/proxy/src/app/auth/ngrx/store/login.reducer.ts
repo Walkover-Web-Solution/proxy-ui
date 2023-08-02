@@ -1,5 +1,5 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { IFirebaseUserModel } from '@msg91/models/root-models';
+import { IFirebaseUserModel } from '@proxy/models/root-models';
 import * as logInActions from '../actions/login.action';
 
 export interface ILogInState {

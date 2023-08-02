@@ -2,16 +2,16 @@
 
 ##   Setup Guide
 
-1. Clone https://github.com/Walkover-Web-Solution/msg91-UI.git.
+1. Clone https://github.com/Walkover-Web-Solution/proxy-UI.git.
 
 2. This project requires Node version 14+, install Node from [here](https://nodejs.org/en/).
 
-3. Go inside the cloned directory `msg91-UI` in any terminal and run these following commands in the terminal to install dependency and start local serve.
+3. Go inside the cloned directory `proxy-UI` in any terminal and run these following commands in the terminal to install dependency and start local serve.
 
 4. Run `npm i` for installation of dependencies.
 
 5. Serving the project locally: 
-    * For msg91: Run `npm start` to local serve the project.
+    * For proxy: Run `npm start` to local serve the project.
     * For Admin Panel: Run `npm run start:admin` to local serve the project.
     * For chat-widget: Run `npm run start:chat-widget` to local serve the project.
     * For otp-provider: Run `npm run start:otp-provider` to local serve the project.

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, switchMap, take } from 'rxjs/operators';
 import { from, of } from 'rxjs';
-import { errorResolver } from '@msg91/models/root-models';
+import { errorResolver } from '@proxy/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
 import * as logInActions from '../actions/login.action';
 import { AngularFireAuth } from '@angular/fire/compat/auth';

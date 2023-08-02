@@ -1,6 +1,6 @@
 import { getCurrencySymbol } from '@angular/common';
 import { ModuleWithProviders, NgModule, Pipe, PipeTransform } from '@angular/core';
-import { PipesFieldValuePipeModule } from '@msg91/pipes/FieldValuePipe';
+import { PipesFieldValuePipeModule } from '@proxy/pipes/FieldValuePipe';
 
 @Pipe({
     name: 'currencySymbol',

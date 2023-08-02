@@ -17,8 +17,8 @@ import {
     MonacoEditorLoaderService,
     MonacoStandaloneCodeEditor,
 } from '@materia-ui/ngx-monaco-editor';
-import { keyValuePair } from '@msg91/models/root-models';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { keyValuePair } from '@proxy/models/root-models';
+import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash-es';
 import { filter, takeUntil } from 'rxjs/operators';
 

@@ -14,7 +14,7 @@ import { QuerySwitchGroupDirective } from './query-builder/query-switch-group.di
 import { QueryRemoveButtonDirective } from './query-builder/query-remove-button.directive';
 import { QueryEmptyWarningDirective } from './query-builder/query-empty-warning.directive';
 import { QueryAdditionalButtonDirective } from './query-builder/query-additional-button.directive';
-import { PipesFieldValuePipeModule } from '@msg91/pipes/FieldValuePipe';
+import { PipesFieldValuePipeModule } from '@proxy/pipes/FieldValuePipe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 

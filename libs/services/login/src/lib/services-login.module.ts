@@ -1,8 +1,8 @@
 import { Inject, Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BaseResponse, ILoginResponse, ProxyBaseUrls } from '@msg91/models/root-models';
+import { BaseResponse, ILoginResponse, ProxyBaseUrls } from '@proxy/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
-import { DEFAULT_OPTIONS, HttpWrapperService } from '@msg91/services/httpWrapper';
+import { DEFAULT_OPTIONS, HttpWrapperService } from '@proxy/services/httpWrapper';
 import { Observable } from 'rxjs';
 
 @NgModule({

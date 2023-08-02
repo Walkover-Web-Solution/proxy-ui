@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { IFirebaseUserModel } from '@msg91/models/root-models';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { IFirebaseUserModel } from '@proxy/models/root-models';
+import { BaseComponent } from '@proxy/ui/base-component';
 import { Store, select } from '@ngrx/store';
 import { selectLogInData } from '../auth/ngrx/selector/login.selector';
 import { isEqual } from 'lodash';

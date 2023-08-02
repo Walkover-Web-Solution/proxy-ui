@@ -11,7 +11,7 @@ import {
 import { EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { PrimeNgToastService } from '@msg91/ui/prime-ng-toast';
+import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { CookieService } from 'ngx-cookie-service';
 

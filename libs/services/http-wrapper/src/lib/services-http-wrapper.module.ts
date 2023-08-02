@@ -3,7 +3,7 @@ import { NgModule, Inject, Injectable, ModuleWithProviders } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ProxyBaseUrls } from '@msg91/models/root-models';
+import { ProxyBaseUrls } from '@proxy/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
 @NgModule({
     imports: [CommonModule],

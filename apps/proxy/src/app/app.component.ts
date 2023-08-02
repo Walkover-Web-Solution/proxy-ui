@@ -1,13 +1,13 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { IToken, ProxyBaseUrls } from '@msg91/models/root-models';
-import { VersionCheckService } from '@msg91/service';
+import { IToken, ProxyBaseUrls } from '@proxy/models/root-models';
+import { VersionCheckService } from '@proxy/service';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../environments/environment';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { BaseComponent } from '@proxy/ui/base-component';
 import { selectLogOutSuccess } from './auth/ngrx/selector/login.selector';
 import { ILogInFeatureStateWithRootState } from './auth/ngrx/store/login.state';
 import { IAppState, selectAccessToken } from './ngrx';

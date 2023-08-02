@@ -4,7 +4,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { from, Observable } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import firebase from 'firebase/compat/app';
-import { IToken, ProxyBaseUrls } from '@msg91/models/root-models';
+import { IToken, ProxyBaseUrls } from '@proxy/models/root-models';
 import * as dayjs from 'dayjs';
 import { CookieService } from 'ngx-cookie-service';
 

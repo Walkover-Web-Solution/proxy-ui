@@ -3,7 +3,7 @@ import * as dayjs from 'dayjs';
 import * as relativeTime from 'dayjs/plugin/relativeTime';
 import * as localizedFormat from 'dayjs/plugin/localizedFormat';
 import * as advancedFormat from 'dayjs/plugin/advancedFormat';
-import { ConvertToDigitTimeToken } from '@msg91/utils';
+import { ConvertToDigitTimeToken } from '@proxy/utils';
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);

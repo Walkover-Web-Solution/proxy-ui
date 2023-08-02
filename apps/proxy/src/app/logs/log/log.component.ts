@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { BaseComponent } from "@msg91/ui/base-component";
-import {DEFAULT_SEVEN_DAYS_DATE_RANGE} from '@msg91/constant';
+import { BaseComponent } from "@proxy/ui/base-component";
+import {DEFAULT_SEVEN_DAYS_DATE_RANGE} from '@proxy/constant';
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { LogsComponentStore } from "./logs.component.store";
 import { Observable } from "rxjs";
 import { ILogsData } from "@proxy/models/logs-models";
-import { IPaginatedResponse } from "@msg91/models/root-models";
+import { IPaginatedResponse } from "@proxy/models/root-models";
 
 export interface PeriodicElement {
     name: string;
