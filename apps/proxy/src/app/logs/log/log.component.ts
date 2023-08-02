@@ -6,7 +6,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import { LogsComponentStore } from "./logs.component.store";
 import { Observable } from "rxjs";
 import { IEnvProjects, ILogsData } from "@proxy/models/logs-models";
-import { IPaginatedResponse } from "@msg91/models/root-models";
+import { IPaginatedResponse } from "@proxy/models/root-models";
 
 export interface PeriodicElement {
     name: string;
