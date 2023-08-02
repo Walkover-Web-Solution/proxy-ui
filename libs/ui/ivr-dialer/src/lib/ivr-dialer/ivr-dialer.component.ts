@@ -1,9 +1,9 @@
-import { BaseComponent } from '@msg91/ui/base-component';
+import { BaseComponent } from '@proxy/ui/base-component';
 import { Component, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-    selector: 'msg91-ivr-dialer',
+    selector: 'proxy-ivr-dialer',
     templateUrl: './ivr-dialer.component.html',
     styleUrls: ['./ivr-dialer.component.scss'],
 })

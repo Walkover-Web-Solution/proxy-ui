@@ -1,9 +1,10 @@
+import { cloneDeep } from 'lodash-es';
 import { finalize, tap } from 'rxjs/operators';
 import { NgModule, Inject, Injectable, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ProxyBaseUrls } from '@msg91/models/root-models';
+import { ProxyBaseUrls } from '@proxy/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
 @NgModule({
     imports: [CommonModule],
@@ -88,30 +89,34 @@ export class HttpWrapperService {
     }
 
     public prepareOptions(options: any, addcontentType: boolean = true): any {
-        options = {
-            ...DEFAULT_OPTIONS,
+        const newOptions = {
+            ...cloneDeep(DEFAULT_OPTIONS),
             ...(options || {}),
         };
-        if (!options.headers) {
-            options.headers = {} as any;
+        if (!newOptions.headers) {
+            newOptions.headers = {} as any;
         }
-        options.headers['Authorization'] = this.authService.getTokenSync();
-        // eslint-disable-next-line no-prototype-builtins
-        if (options.headers.hasOwnProperty('noHeader')) {
-            // eslint-disable-next-line no-prototype-builtins
-            if (options.headers.hasOwnProperty('Content-Type')) {
-                delete options.headers['Content-Type'];
-            }
-            delete options.headers['noHeader'];
+        const authToken = this.authService.getTokenSync();
+        if(authToken && !options?.headers?.['Authorization']) {
+            newOptions.headers['Authorization'] = authToken;
         }
 
-        if (options['withCredentials']) {
-            options['withCredentials'] = true;
-        } else {
-            options['withCredentials'] = false;
+        // eslint-disable-next-line no-prototype-builtins
+        if (newOptions.headers.hasOwnProperty('noHeader')) {
+            // eslint-disable-next-line no-prototype-builtins
+            if (newOptions.headers.hasOwnProperty('Content-Type')) {
+                delete newOptions.headers['Content-Type'];
+            }
+            delete newOptions.headers['noHeader'];
         }
-        options.headers = new HttpHeaders(options.headers);
-        return options;
+
+        if (newOptions['withCredentials']) {
+            newOptions['withCredentials'] = true;
+        } else {
+            newOptions['withCredentials'] = false;
+        }
+        newOptions.headers = new HttpHeaders(newOptions.headers);
+        return newOptions;
     }
 
     public isPrimitive(value) {

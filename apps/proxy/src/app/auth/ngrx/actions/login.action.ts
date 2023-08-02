@@ -1,4 +1,4 @@
-import { IFirebaseUserModel } from '@msg91/models/root-models';
+import { IFirebaseUserModel } from '@proxy/models/root-models';
 import { createAction, props } from '@ngrx/store';
 
 export const logInAction = createAction('[Auth] Log In Or Sign Up');

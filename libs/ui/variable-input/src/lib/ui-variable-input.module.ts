@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TextInputHighlightModule } from 'angular-text-input-highlight';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { UiAngularMentionsModule } from '@msg91/ui/angular-mentions';
+import { UiAngularMentionsModule } from '@proxy/ui/angular-mentions';
 
 @NgModule({
     imports: [

@@ -2,7 +2,7 @@
     "name": "pipes-typeof",
     "projectType": "library",
     "sourceRoot": "libs/pipes/typeof/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

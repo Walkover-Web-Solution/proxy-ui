@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BaseResponse, IPaginatedResponse, errorResolver } from "@msg91/models/root-models";
-import { PrimeNgToastService } from "@msg91/ui/prime-ng-toast";
+import { BaseResponse, IPaginatedResponse, errorResolver } from "@proxy/models/root-models";
+import { PrimeNgToastService } from "@proxy/ui/prime-ng-toast";
 import { ComponentStore, tapResponse } from "@ngrx/component-store";
 import { IEnvProjects, ILogsData } from "@proxy/models/logs-models";
 import { LogsService } from "@proxy/services/proxy/logs";

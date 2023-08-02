@@ -1,4 +1,4 @@
-import { createUrl } from '@msg91/service';
+import { createUrl } from '@proxy/service';
 
 export const LogsUrls = {
     getLogs: (baseUrl) => createUrl(baseUrl, 'proxyLogs'),

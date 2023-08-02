@@ -25,7 +25,7 @@ export interface Call {
         | 'MISS-CALL-VIDEO'
         | 'CALL-END';
     WidgetDeviceId?: string;
-    Msg91DeviceId?: string;
+    proxyDeviceId?: string;
     sender?: string;
     msg?: string;
     widgetToken?: string;
@@ -36,7 +36,7 @@ export interface JoinRoom {
     roomUrl: string;
     WidgetDeviceId: string;
     CallId: string;
-    Msg91DeviceId: string;
+    proxyDeviceId: string;
     CallType: string;
 }
 

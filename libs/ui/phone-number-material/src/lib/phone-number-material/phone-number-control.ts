@@ -13,7 +13,7 @@ import { MatFormField, MatFormFieldAppearance, MatFormFieldControl } from '@angu
 import { Subject, Subscription } from 'rxjs';
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
-import { DIAL_CODE_REGEX, ONLY_INTEGER_REGEX } from '@msg91/regex';
+import { DIAL_CODE_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
 
 export class PhoneNumber {
     constructor(public countryIso2: string, public phonenumber: string) {}

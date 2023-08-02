@@ -2,7 +2,7 @@
     "name": "ui-prime-ng-toast",
     "projectType": "library",
     "sourceRoot": "libs/ui/prime-ng-toast/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { BaseComponent } from "@msg91/ui/base-component";
-import {DEFAULT_SEVEN_DAYS_DATE_RANGE} from '@msg91/constant';
+import { BaseComponent } from "@proxy/ui/base-component";
+import {DEFAULT_SEVEN_DAYS_DATE_RANGE} from '@proxy/constant';
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { LogsComponentStore } from "./logs.component.store";

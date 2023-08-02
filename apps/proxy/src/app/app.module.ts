@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { AppFirebaseModule } from './app-firebase.module';
-import { UiPrimeNgToastModule } from '@msg91/ui/prime-ng-toast';
+import { UiPrimeNgToastModule } from '@proxy/ui/prime-ng-toast';
 import { StoreModule } from '@ngrx/store';
 import { loginsReducer } from './auth/ngrx/store/login.state';
 import { reducers, EffectModule } from './ngrx';
@@ -14,12 +14,12 @@ import { clearStateMetaReducer } from './ngrx/store/app.state';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { LogInEffectsModule } from './auth/ngrx/effects/login-effects.module';
 import { ServicesProxyAuthModule } from '@proxy/services/proxy/auth';
-import { ProxyBaseUrls } from '@msg91/models/root-models';
+import { ProxyBaseUrls } from '@proxy/models/root-models';
 import { environment } from '../environments/environment';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
-import { ErrorInterceptor } from '@msg91/services/interceptor/errorInterceptor';
-import { VersionCheckServiceModule } from '@msg91/service';
+import { ErrorInterceptor } from '@proxy/services/interceptor/errorInterceptor';
+import { VersionCheckServiceModule } from '@proxy/service';
 
 @NgModule({
     declarations: [AppComponent],

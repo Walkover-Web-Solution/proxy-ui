@@ -2,7 +2,7 @@
     "name": "directives-skeleton",
     "projectType": "library",
     "sourceRoot": "libs/directives/skeleton/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

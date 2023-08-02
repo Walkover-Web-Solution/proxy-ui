@@ -2,7 +2,7 @@
     "name": "directives-auto-select-dropdown",
     "projectType": "library",
     "sourceRoot": "libs/directives/auto-select-dropdown/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

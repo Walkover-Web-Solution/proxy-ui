@@ -13,8 +13,8 @@ import {
     START_WITH_ALPHABET,
     CONTENT_BETWEEEN_HASH_TAG_REGEX,
     NON_ASCII_PRINTABLE_CHARACTERS_REGEX,
-} from '@msg91/regex';
-import { getInvalidEmailVariables, maxVariableLengthCheck, minVariableLengthCheck } from '@msg91/utils';
+} from '@proxy/regex';
+import { getInvalidEmailVariables, maxVariableLengthCheck, minVariableLengthCheck } from '@proxy/utils';
 import { cloneDeep } from 'lodash-es';
 import { Observable, of } from 'rxjs';
 

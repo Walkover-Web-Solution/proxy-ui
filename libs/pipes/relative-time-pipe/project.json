@@ -2,7 +2,7 @@
     "name": "pipes-relative-time-pipe",
     "projectType": "library",
     "sourceRoot": "libs/pipes/relative-time-pipe/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

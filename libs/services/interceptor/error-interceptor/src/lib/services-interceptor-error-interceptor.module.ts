@@ -11,7 +11,7 @@ import {
 import { EMPTY, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { PrimeNgToastService } from '@msg91/ui/prime-ng-toast';
+import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -35,16 +35,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         if (request.url.includes('api/googleLogin') || this.cookieService.get('authToken')) {
             return next.handle(request).pipe(
                 tap((resp: HttpResponse<any>) => {
-                    if (
-                        resp.type &&
-                        resp.body &&
-                        resp.body['errors'] &&
-                        resp.body['errors'].length &&
-                        resp.body['errors'][0] &&
-                        resp.body['errors'][0].title === '503'
-                    ) {
-                        //  this.router.navigate(['under-maintenance']);
-                    }
+                    // console.log(resp);
                 }),
                 catchError((err) => {
                     if (err instanceof HttpErrorResponse) {

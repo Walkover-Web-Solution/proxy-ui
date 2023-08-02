@@ -7,7 +7,7 @@
                 disableOptionCentering
                 placeholder="Select theme"
                 [value]="editorOptions.theme"
-                msg91AutoSelectDropdown
+                proxyAutoSelectDropdown
                 (setControlValue)="setEditorTheme($event)"
             >
                 <mat-option *ngFor="let theme of themes" [value]="theme.value">

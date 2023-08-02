@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IFirebaseUserModel } from '@msg91/models/root-models';
-import { BaseComponent } from '@msg91/ui/base-component';
-import { PrimeNgToastService } from '@msg91/ui/prime-ng-toast';
+import { IFirebaseUserModel } from '@proxy/models/root-models';
+import { BaseComponent } from '@proxy/ui/base-component';
+import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { Store, select } from '@ngrx/store';
 import { isEqual } from 'lodash';
 import { Observable, distinctUntilChanged, takeUntil, debounceTime } from 'rxjs';

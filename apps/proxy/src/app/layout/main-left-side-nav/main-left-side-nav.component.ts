@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { BaseComponent } from '@proxy/ui/base-component';
 
 @Component({
     selector: 'proxy-main-left-side-nav',
