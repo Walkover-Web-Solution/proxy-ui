@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es';
 import { finalize, tap } from 'rxjs/operators';
 import { NgModule, Inject, Injectable, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -88,34 +89,34 @@ export class HttpWrapperService {
     }
 
     public prepareOptions(options: any, addcontentType: boolean = true): any {
-        options = {
-            ...DEFAULT_OPTIONS,
+        const newOptions = {
+            ...cloneDeep(DEFAULT_OPTIONS),
             ...(options || {}),
         };
-        if (!options.headers) {
-            options.headers = {} as any;
+        if (!newOptions.headers) {
+            newOptions.headers = {} as any;
         }
         const authToken = this.authService.getTokenSync();
-        if(authToken && !options.headers['Authorization']) {
-            options.headers['Authorization'] = authToken;
+        if(authToken && !options?.headers?.['Authorization']) {
+            newOptions.headers['Authorization'] = authToken;
         }
 
         // eslint-disable-next-line no-prototype-builtins
-        if (options.headers.hasOwnProperty('noHeader')) {
+        if (newOptions.headers.hasOwnProperty('noHeader')) {
             // eslint-disable-next-line no-prototype-builtins
-            if (options.headers.hasOwnProperty('Content-Type')) {
-                delete options.headers['Content-Type'];
+            if (newOptions.headers.hasOwnProperty('Content-Type')) {
+                delete newOptions.headers['Content-Type'];
             }
-            delete options.headers['noHeader'];
+            delete newOptions.headers['noHeader'];
         }
 
-        if (options['withCredentials']) {
-            options['withCredentials'] = true;
+        if (newOptions['withCredentials']) {
+            newOptions['withCredentials'] = true;
         } else {
-            options['withCredentials'] = false;
+            newOptions['withCredentials'] = false;
         }
-        options.headers = new HttpHeaders(options.headers);
-        return options;
+        newOptions.headers = new HttpHeaders(newOptions.headers);
+        return newOptions;
     }
 
     public isPrimitive(value) {

@@ -59,4 +59,9 @@ export class AuthService {
     public getTokenSync(): string {
         return this.token.proxyJWTToken;
     }
+
+    public clearTokenSync(): void {
+        this.cookieService.delete('authToken', '/');
+        this.token.proxyJWTToken = null;
+    }
 }

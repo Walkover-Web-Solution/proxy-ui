@@ -37,7 +37,6 @@ export class LayoutComponent extends BaseComponent implements OnInit {
     }
 
     public logOut() {
-        this.cookieService.delete('authToken', '/');
         this.store.dispatch(logInActions.logoutAction());
     }
 

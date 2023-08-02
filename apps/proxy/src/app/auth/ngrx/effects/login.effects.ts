@@ -12,7 +12,7 @@ import { LoginService } from '@proxy/services/login';
 export class LogInEffects {
     constructor(
         private actions$: Actions,
-        private service: AuthService,
+        private authService: AuthService,
         private loginService: LoginService,
         private afAuth: AngularFireAuth
     ) {}
@@ -56,7 +56,7 @@ export class LogInEffects {
         this.actions$.pipe(
             ofType(logInActions.logInAction),
             switchMap(() => {
-                return this.service.loginViaGoogle().pipe(
+                return this.authService.loginViaGoogle().pipe(
                     map((res) => {
                         return logInActions.logInActionComplete();
                     }),
@@ -72,15 +72,19 @@ export class LogInEffects {
         this.actions$.pipe(
             ofType(logInActions.logInActionComplete),
             switchMap((p) => {
-                return this.service.getToken(true).pipe(
+                return this.authService.getToken(true).pipe(
                     switchMap((idToken) => {
                         return this.loginService.googleLogin(idToken).pipe(
                             map((res) => {
-                                this.service.setTokenSync(res.data.auth);
+                                this.authService.setTokenSync(res.data.auth);
                                 return logInActions.getUserAction();
                             }),
                             catchError((err) => {
-                                return of(logInActions.logInActionError({ errors: errorResolver(err?.error?.data?.message || err.message) }));
+                                return of(
+                                    logInActions.logInActionError({
+                                        errors: errorResolver(err?.error?.data?.message || err.message),
+                                    })
+                                );
                             })
                         );
                     }),
@@ -113,9 +117,16 @@ export class LogInEffects {
             ofType(logInActions.logoutActionComplete),
             switchMap((p) => {
                 return this.loginService.logout().pipe(
-                    switchMap((action) => []),
+                    switchMap((action) => {
+                        this.authService.clearTokenSync();
+                        return [];
+                    }),
                     catchError((err) => {
-                        return of(logInActions.logInActionError({ errors: errorResolver(err.message) }));
+                        return of(
+                            logInActions.logInActionError({
+                                errors: errorResolver(err?.error?.data?.message || err.message),
+                            })
+                        );
                     })
                 );
             })
