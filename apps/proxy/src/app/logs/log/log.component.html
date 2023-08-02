@@ -4,8 +4,8 @@
             <mat-form-field appearance="outline" class="no-padding">
                 <mat-label>Select Project</mat-label>
                 <mat-select class="Select Project">
-                  <mat-option *ngFor="let project of projectsList" [value]="project.value">
-                    {{project.viewValue}}
+                  <mat-option *ngFor="let project of (envProjects$ | async)?.data" [value]="project.slug">
+                    {{project.project_name}}
                   </mat-option>
                 </mat-select>
             </mat-form-field>
