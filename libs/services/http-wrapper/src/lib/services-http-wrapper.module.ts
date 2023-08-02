@@ -96,7 +96,7 @@ export class HttpWrapperService {
             options.headers = {} as any;
         }
         const authToken = this.authService.getTokenSync();
-        if(authToken) {
+        if(authToken && !options.headers['Authorization']) {
             options.headers['Authorization'] = authToken;
         }
 

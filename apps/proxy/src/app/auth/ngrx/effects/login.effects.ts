@@ -72,7 +72,7 @@ export class LogInEffects {
         this.actions$.pipe(
             ofType(logInActions.logInActionComplete),
             switchMap((p) => {
-                return this.service.getToken().pipe(
+                return this.service.getToken(true).pipe(
                     switchMap((idToken) => {
                         return this.loginService.googleLogin(idToken).pipe(
                             map((res) => {
@@ -80,7 +80,7 @@ export class LogInEffects {
                                 return logInActions.getUserAction();
                             }),
                             catchError((err) => {
-                                return of(logInActions.logInActionError({ errors: errorResolver(err.message) }));
+                                return of(logInActions.logInActionError({ errors: errorResolver(err?.error?.data?.message || err.message) }));
                             })
                         );
                     }),
@@ -97,8 +97,8 @@ export class LogInEffects {
             ofType(logInActions.logoutAction),
             switchMap((p) => {
                 return from(this.afAuth.signOut()).pipe(
-                    map((res: void) => {
-                        return logInActions.logoutActionComplete();
+                    switchMap((res: void) => {
+                        return [logInActions.logoutActionComplete()];
                     }),
                     catchError((err) => {
                         return of(logInActions.logoutActionError({ errors: errorResolver(err.errors) }));
