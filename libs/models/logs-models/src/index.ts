@@ -10,3 +10,10 @@ export interface ILogsData {
     environment_name: string;
     response_time_in_ms: string;
 }
+
+export interface IEnvProjects {
+    id: number;
+    project_name: string;
+    environment_name: string;
+    slug: string;
+}

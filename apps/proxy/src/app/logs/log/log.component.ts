@@ -5,8 +5,8 @@ import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { LogsComponentStore } from "./logs.component.store";
 import { Observable } from "rxjs";
-import { ILogsData } from "@proxy/models/logs-models";
-import { IPaginatedResponse } from "@proxy/models/root-models";
+import { IEnvProjects, ILogsData } from "@proxy/models/logs-models";
+import { IPaginatedResponse } from "@msg91/models/root-models";
 
 export interface PeriodicElement {
     name: string;
@@ -48,12 +48,14 @@ export class LogComponent extends BaseComponent implements  OnDestroy, OnInit {
 
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public logs$: Observable<IPaginatedResponse<ILogsData[]>> = this.componentStore.logsData$;
+    public envProjects$: Observable<IPaginatedResponse<IEnvProjects[]>> = this.componentStore.envProjects$;
 
     constructor(private componentStore: LogsComponentStore){
         super()
     }
     ngOnInit(): void {
-      this.componentStore.getLogs(null)
+      this.componentStore.getLogs(null);
+      this.componentStore.getEnvProjects(null);
     }
       
 

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BaseResponse, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { Observable } from 'rxjs';
-import { ILogsData } from '@proxy/models/logs-models';
+import { IEnvProjects, ILogsData } from '@proxy/models/logs-models';
 import { LogsUrls } from '@proxy/urls/logs-urls';
 
 @NgModule({
@@ -22,6 +22,13 @@ export class LogsService {
         return this.http.get<BaseResponse<IPaginatedResponse<ILogsData[]>, void>>(
             LogsUrls.getLogs(this.proxyLogsUrl),
             params
+        );
+    }
+
+    // Fetch Projects
+    public getEnvProjects(): Observable<BaseResponse<IPaginatedResponse<IEnvProjects[]>, void>> {
+        return this.http.get<BaseResponse<IPaginatedResponse<IEnvProjects[]>, void>>(
+            LogsUrls.getEnvProjects(this.proxyLogsUrl)
         );
     }
 }
