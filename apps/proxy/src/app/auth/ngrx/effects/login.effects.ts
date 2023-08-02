@@ -72,7 +72,8 @@ export class LogInEffects {
         this.actions$.pipe(
             ofType(logInActions.logInActionComplete),
             switchMap((p) => {
-                return this.authService.getToken(true).pipe(
+                return this.authService.getToken().pipe(
+                    take(1),
                     switchMap((idToken) => {
                         return this.loginService.googleLogin(idToken).pipe(
                             map((res) => {
