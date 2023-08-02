@@ -33,7 +33,7 @@ export const NEXT_MONTH = (TODAY.getMonth() + 1) % 12;
 export const TODAY_DATE: number = TODAY.getDate();
 export const META_TAG_ID = 'meta-tag-id-proxy-otp-provider';
 export const JITSI_SCRIPT_TAG_ID = 'jitsi-script-tag-proxy-video-call';
-export const proxy_WIDGET_HIDE_LAUNCHER_STATUS = 'proxy_WIDGET_HIDE_LAUNCHER_STATUS';
+export const PROXY_WIDGET_HIDE_LAUNCHER_STATUS = 'PROXY_WIDGET_HIDE_LAUNCHER_STATUS';
 export const OVER_USAGE_LIMIT_TOOLTIP =
     'Maximum amount deductable from wallet after free credits are exhausted in real-time';
 export const separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
