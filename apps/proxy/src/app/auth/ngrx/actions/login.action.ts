@@ -2,7 +2,7 @@ import { IFirebaseUserModel } from '@msg91/models/root-models';
 import { createAction, props } from '@ngrx/store';
 
 export const logInAction = createAction('[Auth] Log In Or Sign Up');
-export const logInActionComplete = createAction('[Auth] Log In Or Sign Up Complete', props<{ token: string }>());
+export const logInActionComplete = createAction('[Auth] Log In Or Sign Up Complete');
 export const logInActionError = createAction('[Auth] Log In Or Sign Up Error', props<{ errors: string[] }>());
 
 export const authenticatedAction = createAction('[Auth] Authenticated', props<{ response: IFirebaseUserModel }>());

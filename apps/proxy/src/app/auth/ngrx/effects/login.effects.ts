@@ -5,7 +5,6 @@ import { from, of } from 'rxjs';
 import { errorResolver } from '@msg91/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
 import * as logInActions from '../actions/login.action';
-import * as rootActions from '../../../ngrx/actions';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { LoginService } from '@proxy/services/login';
 
@@ -59,7 +58,7 @@ export class LogInEffects {
             switchMap(() => {
                 return this.service.loginViaGoogle().pipe(
                     map((res) => {
-                        return logInActions.logInActionComplete({ token: res.credential['idToken']});
+                        return logInActions.logInActionComplete();
                     }),
                     catchError((err) => {
                         return of(logInActions.logInActionError({ errors: errorResolver(err.message) }));
@@ -73,10 +72,17 @@ export class LogInEffects {
         this.actions$.pipe(
             ofType(logInActions.logInActionComplete),
             switchMap((p) => {
-                return this.loginService.googleLogin(p.token).pipe(
-                    map((res) => {
-                        this.service.setTokenSync(res.data.auth);
-                        return logInActions.getUserAction();
+                return this.service.getToken().pipe(
+                    switchMap((idToken) => {
+                        return this.loginService.googleLogin(idToken).pipe(
+                            map((res) => {
+                                this.service.setTokenSync(res.data.auth);
+                                return logInActions.getUserAction();
+                            }),
+                            catchError((err) => {
+                                return of(logInActions.logInActionError({ errors: errorResolver(err.message) }));
+                            })
+                        );
                     }),
                     catchError((err) => {
                         return of(logInActions.logInActionError({ errors: errorResolver(err.message) }));
