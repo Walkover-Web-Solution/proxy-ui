@@ -11,6 +11,7 @@ const routes: Routes = [
         path: '',
         component: LayoutComponent,
         children: [
+            { path: '', redirectTo: 'logs', pathMatch: 'full' },
             {
                 path: 'logs',
                 loadChildren: () => import('../logs/logs.module').then((p) => p.LogsModule)
