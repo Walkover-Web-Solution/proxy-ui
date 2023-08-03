@@ -14,6 +14,15 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatTableModule } from "@angular/material/table";
 import { ServicesProxyLogsModule } from "@proxy/services/proxy/logs";
+import { MatSortModule } from "@angular/material/sort";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatDividerModule } from "@angular/material/divider";
+import { UiNoRecordFoundModule } from "@proxy/ui/no-record-found";
+import { DirectivesRemoveCharacterDirectiveModule } from "@proxy/directives/RemoveCharacterDirective";
+import { UiMatPaginatorGotoModule } from "@proxy/ui/mat-paginator-goto";
+import { LogsDetailsSideDialogComponent } from "./log-details-side-dialog/log-details-side-dialog.component";
+import { MatDialogModule } from "@angular/material/dialog";
+import { UiLoaderModule } from "@proxy/ui/loader";
 
 
 const routes: Routes = [
@@ -26,7 +35,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [LogComponent],
+    declarations: [LogComponent, LogsDetailsSideDialogComponent],
     imports: [
         FormsModule,
         CommonModule,
@@ -41,9 +50,17 @@ const routes: Routes = [
         MatIconModule,
         MatTableModule,
         MatMenuModule,
-        UiComponentsSearchModule,
+        MatSortModule,
+        MatCheckboxModule,
+        MatDividerModule,
+        MatDialogModule,
         UiDateRangePickerModule,
-        ServicesProxyLogsModule
+        ServicesProxyLogsModule,
+        UiNoRecordFoundModule,
+        UiMatPaginatorGotoModule,
+        UiLoaderModule,
+        UiComponentsSearchModule,
+        DirectivesRemoveCharacterDirectiveModule,
     ],
     exports: [RouterModule],
 })
