@@ -1,5 +1,5 @@
 <div class="app-content">
-    <msg91-loader *ngIf="isLoading$ | async"></msg91-loader>
+    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
     <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
         <div class="d-flex align-items-center justify-content-between gap-3">
             <mat-form-field appearance="outline" class="no-padding">
@@ -199,10 +199,10 @@
 
                     <tr *matNoDataRow>
                         <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
-                            <msg91-no-record-found
+                            <proxy-no-record-found
                                 [title]="'logs'"
                                 [showBtn]="false"
-                            ></msg91-no-record-found>
+                            ></proxy-no-record-found>
                         </td>
                     </tr>
                 </table>
