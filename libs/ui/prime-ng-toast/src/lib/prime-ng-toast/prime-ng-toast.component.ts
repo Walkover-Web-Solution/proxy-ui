@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { errorResolver } from '@msg91/models/root-models';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { errorResolver } from '@proxy/models/root-models';
+import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash-es';
 import { MessageService } from 'primeng/api';
 import { PrimeNGConfig } from 'primeng/api';
@@ -8,7 +8,7 @@ import { distinctUntilChanged, takeUntil } from 'rxjs';
 import { PrimeNgToastService } from '../prime-ng-toast.service';
 
 @Component({
-    selector: 'msg91-prime-ng-toast',
+    selector: 'proxy-prime-ng-toast',
     templateUrl: './prime-ng-toast.component.html',
     styleUrls: ['./prime-ng-toast.component.scss'],
     providers: [MessageService],

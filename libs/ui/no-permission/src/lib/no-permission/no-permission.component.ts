@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'msg91-no-permission',
+    selector: 'proxy-no-permission',
     templateUrl: './no-permission.component.html',
     styleUrls: ['./no-permission.component.scss'],
 })

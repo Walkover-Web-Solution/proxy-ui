@@ -1,7 +1,7 @@
 import { ModuleWithProviders, NgModule, Pipe, PipeTransform } from '@angular/core';
 import * as dayjs from 'dayjs';
-import { dateFormat, timeFormat } from '@msg91/constant';
-import { PipesFieldValuePipeModule, FieldValuePipe } from '@msg91/pipes/FieldValuePipe';
+import { dateFormat, timeFormat } from '@proxy/constant';
+import { PipesFieldValuePipeModule, FieldValuePipe } from '@proxy/pipes/FieldValuePipe';
 
 @Pipe({
     name: 'customDate',

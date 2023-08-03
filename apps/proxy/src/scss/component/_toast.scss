@@ -1,0 +1,17 @@
+.error-toast {
+    background-color: var(--color-email-primary) !important;
+}
+.success-toast {
+    background-color: var(--color-common-green) !important;
+    color: var(--color-common-white) !important;
+}
+.mat-snack-bar-container {
+    margin: 4px !important;
+    border-radius: 8px;
+    min-height: 36px;
+    padding: 10px 16px;
+    .mat-simple-snackbar-content {
+        font-size: 14px;
+        color: var(--color-common-white);
+    }
+}

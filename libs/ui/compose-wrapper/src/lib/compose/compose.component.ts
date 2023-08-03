@@ -9,9 +9,9 @@ import {
     Output,
     SimpleChanges,
 } from '@angular/core';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { BaseComponent } from '@proxy/ui/base-component';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '@msg91/ui/confirm-dialog';
+import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { DOCUMENT } from '@angular/common';
 // import { Agent } from '../../hello/models/team';
 // import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -23,7 +23,7 @@ import { DOCUMENT } from '@angular/common';
 // import { generalActions } from '../../store/actions';
 
 @Component({
-    selector: 'msg91-compose-wrapper',
+    selector: 'proxy-compose-wrapper',
     templateUrl: './compose.component.html',
     styleUrls: ['./compose.component.scss'],
 })

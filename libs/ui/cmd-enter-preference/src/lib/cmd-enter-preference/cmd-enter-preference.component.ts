@@ -1,10 +1,10 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { BaseComponent } from '@proxy/ui/base-component';
 import { takeUntil } from 'rxjs/operators';
 import { CmdEnterPreferenceService } from './cmd-enter-preference.service';
 
 @Component({
-    selector: 'msg91-cmd-enter-preference',
+    selector: 'proxy-cmd-enter-preference',
     templateUrl: './cmd-enter-preference.component.html',
     styleUrls: ['./cmd-enter-preference.component.scss'],
 })

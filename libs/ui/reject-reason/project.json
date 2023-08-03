@@ -2,7 +2,7 @@
     "name": "ui-reject-reason",
     "projectType": "library",
     "sourceRoot": "libs/ui/reject-reason/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

@@ -6,7 +6,7 @@ interface ISortColumn {
     value: 'asc' | 'desc';
 }
 @Component({
-    selector: 'msg91-sorting-bottom-sheet',
+    selector: 'proxy-sorting-bottom-sheet',
     templateUrl: './sorting-bottom-sheet.component.html',
     styleUrls: ['./sorting-bottom-sheet.component.scss'],
 })

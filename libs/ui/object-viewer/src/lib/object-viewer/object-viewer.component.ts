@@ -2,7 +2,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
-    selector: 'msg91-object-viewer',
+    selector: 'proxy-object-viewer',
     templateUrl: './object-viewer.component.html',
     styleUrls: ['./object-viewer.component.scss'],
 })

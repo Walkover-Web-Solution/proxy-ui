@@ -1,0 +1,112 @@
+:root {
+    // Border
+    --border-common-radius: 8px;
+    --border-common-radius-50: 50%;
+    --border-common-radius-4: 4px;
+
+    // Common Font Weight
+    --font-weight-normal: normal;
+    --font-weight-thin: 100;
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: bold;
+    --font-weight-bolder: bolder;
+
+    --font-family-common: 'Inter', sans-serif;
+    // Common Font Size
+    --font-size-common-8: 8px;
+    --font-size-common-10: 10px;
+    --font-size-common-11: 11px;
+    --font-size-common-12: 12px;
+    --font-size-common-13: 13px;
+    --font-size-common-14: 14px;
+    --font-size-common-16: 16px;
+    --font-size-common-18: 18px;
+    --font-size-common-20: 20px;
+    --font-size-common-22: 22px;
+    --font-size-common-24: 24px;
+    --font-size-common-26: 26px;
+    --font-size-common-28: 28px;
+    --font-size-common-30: 30px;
+    --font-size-common-32: 32px;
+    --font-size-common-34: 34px;
+
+    // Common color
+    --color-common-green: #008000;
+    --color-common-scrollbar: 0, 0, 0;
+    --color-common-hover: var(--color-common-silver);
+
+    // #1 - Hello
+    --color-hello-primary: #f2ca55;
+    --color-hello-primary-dark: #8c5d00;
+    --color-hello-primary-light: rgba(242, 190, 85, 0.17);
+
+    // #2 - Email
+    --color-email-primary: #cc5229;
+    --color-email-primary-dark: #8c2e0e;
+    --color-email-primary-light: rgba(204, 82, 41, 0.12);
+    --color-email-primary-hover: #af4622;
+
+    // #3 - WhatsApp
+    --color-whatsApp-primary: #29a653;
+    --color-whatsApp-primary-dark: #307368;
+    --color-whatsApp-primary-light: rgba(111, 202, 113, 0.16);
+    --color-whatsApp-primary-hover: #238b45;
+
+    // #4 - RCS
+    --color-rcs-primary: #1a73e8;
+    --color-rcs-primary-dark: #264d99;
+    --color-rcs-primary-light: rgba(56, 146, 224, 0.12);
+
+    // #5 - Campaign
+    --color-campaign-primary: #aa50f6;
+    --color-campaign-primary-dark: #5f388c;
+    --color-campaign-primary-light: rgba(167, 92, 229, 0.1);
+
+    // #6 - Segmento
+    --color-segmento-primary: #e55ca1;
+    --color-segmento-primary-dark: #80335a;
+    --color-segmento-primary-light: rgba(229, 92, 161, 0.1);
+
+    // #7 - Voice
+    --color-voice-primary: #696bef;
+    --color-voice-primary-dark: #3a3ba6;
+    --color-voice-primary-light: rgba(105, 107, 239, 0.12);
+
+    // #8 - ShortURL
+    --color-short-url-primary: #de8644;
+    --color-short-url-primary-dark: #804f13;
+    --color-short-url-primary-light: rgba(229, 142, 34, 0.12);
+
+    // #9 - Number
+    --color-number-primary: #24b3b3;
+    --color-number-primary-dark: #2e7373;
+    --color-number-primary-light: rgba(102, 221, 221, 0.12);
+
+    // #10 - OTP
+    --color-otp-primary: #1157a6;
+    --color-otp-primary-dark: #0a3566;
+    --color-otp-primary-light: rgba(56, 146, 224, 0.12);
+
+    // #11 Reports
+    --color-report-primary: #24b3b3;
+    --color-report-primary-dark: #268080;
+    --color-report-primary-light: rgba(76, 217, 217, 0.16);
+
+    // #12 Telegram
+    --color-telegram-primary: #26a5e4;
+    --color-telegram-primary-dark: #2188ba;
+    --color-telegram-primary-light: rgba(37, 162, 224, 0.1);
+
+    //grid style variable
+    --color-common-grid-style: #ffffff;
+
+    // Active Items
+    --color-menu-common-active-link-background: #3f51b5;
+    --color-menu-common-active-link-text: #ffffff;
+    --color-menu-common-active-link-icon: #ffffff;
+
+    --color-menu-common-hover-link-background: #3f51b5;
+    --color-menu-common-hover-link-text: #ffffff;
+    --color-menu-common-hover-link-icon: #ffffff;
+}

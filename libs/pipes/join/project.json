@@ -2,7 +2,7 @@
     "name": "pipes-join",
     "projectType": "library",
     "sourceRoot": "libs/pipes/join/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

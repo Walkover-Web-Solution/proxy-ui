@@ -1,1 +1,94 @@
 /* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+
+/* Plus imports for other components in your app.*/
+@import 'scss/base/fonts';
+@import 'scss/theme/theme-colors';
+@import 'scss/base/default-variables';
+@import 'scss/base/light-theme';
+@import 'scss/base/dark-theme';
+
+/* Reset*/
+@import 'scss/base/reset.scss';
+
+/* Layout*/
+@import 'scss/layout/display.scss';
+@import 'scss/layout/flex.scss';
+@import 'scss/layout/sizing.scss';
+@import 'scss/layout/spacing.scss';
+@import 'scss/layout/grid.scss';
+@import 'scss/layout/text.scss';
+@import 'scss/layout/positions.scss';
+@import 'scss/theme/theme-colors';
+
+/* Component*/
+@import 'scss/component/modal.scss';
+
+/* Common Class Name*/
+@import 'scss/utils/common-classes.scss';
+
+/* Backgound Colors*/
+@import 'scss/utils/bg-colors';
+
+/* Theme*/
+@import 'scss/theme/default-theme';
+
+/*Components*/
+@import 'scss/component/filters';
+@import 'scss/component/toast';
+@import 'scss/component/table';
+@import 'scss/component/loader';
+@import 'scss/component/icon';
+@import 'scss/component/card';
+@import 'scss/component/form-field';
+@import 'scss/component/pagination';
+@import 'scss/component/tabs';
+@import 'scss/component/buttons';
+@import 'scss/component/status';
+@import 'scss/component/text-style';
+@import 'scss/component/side-dialog';
+@import 'scss/component/modal';
+@import 'scss/component/menu';
+@import 'scss/component/bottom-sheet';
+@import 'scss/component/checkbox';
+@import 'scss/component/sidenav';
+@import 'scss/component/select-option';
+@import 'scss/component/chart';
+
+/*Main*/
+.app-content {
+    padding: 16px;
+    min-height: 100%;
+    background-color: var(--color-common-bg);
+    height: calc(100vh - 55px);
+    overflow-y: auto;
+    background-color: var(--color-common-app-bg);
+    @media (max-width: 768px) {
+        overflow-x: auto;
+    }
+    
+}
+canvas {
+    width: 100% !important;
+}
+
+.no-data-placeholder {
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 18px;
+    text-align: center;
+    color: var(--color-common-grey) !important;
+    align-items: center;
+    img {
+        margin-bottom: 25px;
+    }
+}
+
+// Sort Button
+
+.bottom-sort-btn {
+    display: none !important;
+    @media only screen and (max-width: 768px) {
+        display: block !important;
+    }
+}

@@ -3,7 +3,7 @@ export * from './email-variable-check';
 export * from './rename-key-recursively';
 export * from './convert-to-utc';
 
-import { Result, getHostNameDetail } from '@msg91/ui/handle-domain';
+import { Result, getHostNameDetail } from '@proxy/ui/handle-domain';
 import * as dayjs from 'dayjs';
 import { cloneDeep, pickBy, uniqBy } from 'lodash-es';
 

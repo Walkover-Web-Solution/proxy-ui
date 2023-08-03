@@ -2,7 +2,7 @@
     "name": "ui-components-template-preview",
     "projectType": "library",
     "sourceRoot": "libs/ui/template-preview/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

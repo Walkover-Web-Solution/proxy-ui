@@ -2,7 +2,7 @@ import { CdkDragMove } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, ElementRef, Input, NgZone, ViewChild } from '@angular/core';
 
 @Component({
-    selector: 'msg91-resizable',
+    selector: 'proxy-resizable',
     templateUrl: './resizable.component.html',
     styleUrls: ['./resizable.component.scss'],
 })

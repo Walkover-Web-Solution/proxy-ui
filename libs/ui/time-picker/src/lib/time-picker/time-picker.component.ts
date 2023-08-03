@@ -1,11 +1,11 @@
 import { takeUntil } from 'rxjs/operators';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { BaseComponent } from '@proxy/ui/base-component';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import * as dayjs from 'dayjs';
 
 @Component({
-    selector: 'msg91-time-picker',
+    selector: 'proxy-time-picker',
     templateUrl: './time-picker.component.html',
     styleUrls: ['./time-picker.component.scss'],
 })

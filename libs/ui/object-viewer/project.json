@@ -2,7 +2,7 @@
     "name": "ui-object-viewer",
     "projectType": "library",
     "sourceRoot": "libs/ui/object-viewer/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

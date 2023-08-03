@@ -6,13 +6,13 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { UiLoaderModule } from '@msg91/ui/loader';
+import { UiLoaderModule } from '@proxy/ui/loader';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
-import { UiComponentsSearchModule } from '@msg91/ui/search';
+import { UiComponentsSearchModule } from '@proxy/ui/search';
 import { MatDialogModule } from '@angular/material/dialog';
-import { UiConfirmDialogModule } from '@msg91/ui/confirm-dialog';
+import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
 
 @NgModule({
     imports: [

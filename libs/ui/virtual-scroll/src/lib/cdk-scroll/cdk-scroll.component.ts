@@ -2,16 +2,16 @@ import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { DEBOUNCE_TIME } from '@msg91/constant';
+import { DEBOUNCE_TIME } from '@proxy/constant';
 
 @Component({
-    selector: 'msg91-cdk-scroll',
+    selector: 'proxy-cdk-scroll',
     templateUrl: './cdk-scroll.component.html',
 })
 export class CDKScrollComponent implements OnInit {
     @ViewChild(CdkScrollable) public scrollableWrapper: CdkScrollable | undefined;
     /** Scrollable element ID, provided to avoid multiple event triggering when
-     * same page has multiple instances of msg91-cdk-scroll component
+     * same page has multiple instances of proxy-cdk-scroll component
      */
     @Input() public scrollableElementId = '';
     @Output() public fetchNextPage: EventEmitter<string> = new EventEmitter();

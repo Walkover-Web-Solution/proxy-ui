@@ -12,8 +12,8 @@ import {
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { DateRange, MatCalendar } from '@angular/material/datepicker';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { DEFAULT_SELECTED_DATE_RANGE, JS_START_DATE, SelectDateRange } from '@msg91/constant';
-import { DATE_FORMAT_REGEX } from '@msg91/regex';
+import { DEFAULT_SELECTED_DATE_RANGE, JS_START_DATE, SelectDateRange } from '@proxy/constant';
+import { DATE_FORMAT_REGEX } from '@proxy/regex';
 import * as dayjs from 'dayjs';
 import * as quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import * as advancedFormat from 'dayjs/plugin/advancedFormat';

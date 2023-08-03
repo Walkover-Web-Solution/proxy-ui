@@ -2,7 +2,7 @@
     "name": "ui-phone-number-material",
     "projectType": "library",
     "sourceRoot": "libs/ui/phone-number-material/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

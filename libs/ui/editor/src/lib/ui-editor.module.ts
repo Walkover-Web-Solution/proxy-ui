@@ -4,7 +4,7 @@ import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { EditorComponent } from './editor.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-import { DirectivesAutoSelectDropdownModule } from '@msg91/directives/auto-select-dropdown';
+import { DirectivesAutoSelectDropdownModule } from '@proxy/directives/auto-select-dropdown';
 
 @NgModule({
     imports: [

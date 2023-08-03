@@ -1,0 +1,202 @@
+
+// Default theme changes
+.mat-form-field{
+    .mat-form-field-wrapper{
+        vertical-align: baseline !important;
+
+        .mat-form-field-flex{
+            font-size: var(--font-size-common-14);
+                line-height: 1.225;
+            .mat-form-field-infix{
+                .mat-form-field-label-wrapper{
+                    .mat-form-field-label{
+                        color: var(--color-common-slate);
+                    }
+                }
+            }
+        }
+        .mat-form-field-hint-wrapper {
+            .mat-hint{
+                color: var(--color-common-slate);
+                font-size: 12px;
+            }
+        }
+    }
+    &.search-form-field{
+        width: 250px;
+    }
+}
+
+
+.mat-form-field{
+    &.mat-form-field-appearance-legacy{
+        &.mat-legacy-form-field-sm{
+            .mat-form-field-wrapper{
+                padding-bottom: 0px;
+            }
+            .mat-form-field-infix{
+                border-top: 0px !important;
+                padding: 8px 0 4px 0 !important;
+                max-width: 100%;
+                // min-width: 100px;
+                width: 100%;
+                font-size: 14px;
+            }
+            .mat-form-field-suffix{
+                button{
+                    width: 23px;
+                    height: 23px;
+                    min-height: 23px;
+                    line-height: 23px;
+                }
+            }
+            .mat-form-field-underline{
+                bottom: 0px !important;
+            }
+            .mat-form-field-subscript-wrapper{
+                top: calc(100% - 5px);
+                .mat-error{
+                    font-size: var(--font-size-common-12);
+                }
+            }
+            .mat-form-field-label{
+                top: 1.00125em !important;
+            }
+        }
+    }
+    &.mat-form-field-disabled {
+        .mat-form-field-wrapper{
+            .mat-form-field-flex {
+                .mat-form-field-outline{
+                    background-color: var(--color-common-silver) !important;
+                    border-radius: var(--border-common-radius-4) !important;
+                }
+            }
+        }
+    }
+}
+
+
+
+// Default form field
+.mat-form-field {
+    .mat-form-field-infix{
+        padding: 5px 0 10px 0 !important;
+        .mat-input-element{
+            &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+                color: var(--color-common-grey);
+                font-weight: normal;
+            }
+            &::-moz-placeholder { /* Firefox 19+ */
+                color: var(--color-common-grey);
+                font-weight: normal;
+            }
+            &:-ms-input-placeholder { /* IE 10+ */
+                color: var(--color-common-grey);
+                font-weight: normal;
+            }
+            &:-moz-placeholder { /* Firefox 18- */
+                color: var(--color-common-grey);
+                font-weight: normal;
+            }
+        }
+        .mat-form-field-label-wrapper{
+            .mat-form-field-required-marker{
+                display: none;
+            }
+        }
+        &.mat-form-field-appearance-outline {
+            .mat-form-field-outline {
+                background-color: var(--color-common-white) !important;
+            }
+        }
+    }
+    .mat-form-field-flex{
+        .mat-form-field-outline{
+            .mat-form-field-outline-start{
+                border-radius: var(--border-common-radius-4) 0 0 var(--border-common-radius-4);
+                min-width: var(--border-common-radius-4);
+            }
+            .mat-form-field-outline-end{
+                border-radius: 0 var(--border-common-radius-4) var(--border-common-radius-4) 0;
+            }
+        }
+        .mat-form-field-infix{
+            .mat-select{
+                .mat-select-trigger{
+                    .mat-select-arrow-wrapper {
+                        transform: translateY(0%);
+                    }
+                }
+            }
+        }
+    }
+    input{
+        &.mat-input-element{
+            color: var(--color-common-text);
+        }
+    }
+    &.no-padding {
+        .mat-form-field-wrapper {
+            padding-bottom: 0px !important;
+            .mat-form-field-flex {
+                .mat-form-field-prefix {
+                    color: var(--color-common-grey) !important;
+                }
+            }
+        }
+    }
+    // Used to display only first mat-error
+    mat-error {
+        display: none !important;
+        font-size: var(--font-size-common-12);
+        &:first-child {
+            display: block !important;
+        }
+    }
+}
+
+@-moz-document url-prefix() {
+    .mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-prefix .mat-icon-button,
+    .mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix .mat-icon-button {
+        display: inline-block !important;
+    }
+
+}
+
+// Disbaled stroked input form field
+.mat-form-field-disabled .mat-form-field-underline {
+    background-image: linear-gradient( to right, rgba(0, 0, 0, 1) 0, rgba(0, 0, 0, 0.42) 33%, #c2c7cc 0 ) !important;
+    background-size: 1px 100% !important;
+    background-repeat: repeat-x !important;
+}
+
+.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label,
+.mat-form-field-appearance-outline.mat-form-field-can-float
+    .mat-input-server:focus
+    + .mat-form-field-label-wrapper
+    .mat-form-field-label {
+    transform: translateY(-15px) scale(0.7) !important;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-label {
+    top: 18px !important;
+}
+
+
+.mat-form-field-subscript-wrapper {
+    padding: 0px !important;
+    margin-top: 2px !important;
+    font-size: var(--font-size-common-10);
+}
+
+/* Firefox hide */
+input[matinput][type='number'] {
+    -moz-appearance: textfield;
+}
+/* Chrome, Safari, Edge, Opera */
+input[matinput]::-webkit-outer-spin-button,
+input[matinput]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

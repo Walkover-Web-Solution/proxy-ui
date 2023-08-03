@@ -11,7 +11,7 @@
     <mat-autocomplete
         #matAutoComplete="matAutocomplete"
         (optionSelected)="selectOption()"
-        msg91AutoSelectDropdown
+        proxyAutoSelectDropdown
         (setControlValue)="setControlValue($event)"
     >
         <mat-option [value]="option.name" *ngFor="let option of filteredList">

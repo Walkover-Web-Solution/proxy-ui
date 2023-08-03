@@ -2,7 +2,7 @@
     "name": "pipes-timer",
     "projectType": "library",
     "sourceRoot": "libs/pipes/timer/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",
