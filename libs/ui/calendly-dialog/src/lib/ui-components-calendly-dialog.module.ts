@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CalendlyDialogComponent } from './calendly-dialog/calendly-dialog.component';
-import { PipesSafeUrlPipeModule } from '@msg91/pipes/SafeURLPipe';
+import { PipesSafeUrlPipeModule } from '@proxy/pipes/SafeURLPipe';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';

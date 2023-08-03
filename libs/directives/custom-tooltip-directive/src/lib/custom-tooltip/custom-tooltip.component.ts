@@ -2,7 +2,7 @@ import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from 
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
-    selector: 'msg91-custom-tooltip',
+    selector: 'proxy-custom-tooltip',
     templateUrl: './custom-tooltip.component.html',
     styleUrls: ['./custom-tooltip.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

@@ -24,7 +24,7 @@
             [matTooltipPosition]="toolTipPosition"
             [matTooltipDisabled]="toolTipString.length > 0 ? toolTipDisable : true"
             [formControl]="searchFormControl"
-            msg91RemoveCharacter
+            proxyRemoveCharacter
             [charactersToRemove]="charactersToRemove?.length ? charactersToRemove : ['e', '+', '-']"
             (keydown.enter)="emitOnEnter ? emitInputChanges(searchFormControl.value) : null"
         />

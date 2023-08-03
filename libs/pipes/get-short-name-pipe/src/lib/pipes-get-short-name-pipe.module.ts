@@ -1,5 +1,5 @@
 import { ModuleWithProviders, NgModule, Pipe, PipeTransform } from '@angular/core';
-import { ALPHANUMERIC_WITH_SPACE_REGEX } from '@msg91/regex';
+import { ALPHANUMERIC_WITH_SPACE_REGEX } from '@proxy/regex';
 
 @Pipe({ name: 'getShortName' })
 export class GetShortNamePipe implements PipeTransform {

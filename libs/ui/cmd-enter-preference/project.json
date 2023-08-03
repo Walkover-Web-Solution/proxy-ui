@@ -2,7 +2,7 @@
     "name": "ui-cmd-enter-preference",
     "projectType": "library",
     "sourceRoot": "libs/ui/cmd-enter-preference/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

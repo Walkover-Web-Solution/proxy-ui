@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { PipesTypeofModule } from '@msg91/pipes/typeof';
+import { PipesTypeofModule } from '@proxy/pipes/typeof';
 
 @NgModule({
     declarations: [ObjectViewerComponent],

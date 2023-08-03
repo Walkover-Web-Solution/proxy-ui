@@ -1,0 +1,43 @@
+@use '@angular/material' as mat;
+/*
+// Custom Blue
+*/
+$custom-blue: (
+    50: #e6f2fb,
+    100: #a4cff0,
+    200: #74b5e9,
+    300: #3794df,
+    400: #2286d4,
+    500: #1e75ba,
+    600: #1a64a0,
+    700: #155485,
+    800: #11436b,
+    900: #0d3351,
+    A100: #d8eeff,
+    A200: #72c1ff,
+    A400: #1b92ef,
+    A700: #1c84d6,
+    contrast: (
+        50: #ffffff,
+        100: #ffffff,
+        200: #ffffff,
+        300: #ffffff,
+        400: #ffffff,
+        500: #ffffff,
+        600: #ffffff,
+        700: #ffffff,
+        800: #ffffff,
+        900: #ffffff,
+        A100: #ffffff,
+        A200: #ffffff,
+        A400: #ffffff,
+        A700: #ffffff,
+    ),
+);
+
+/*
+// Define a theme.
+*/
+$primary: mat.define-palette(mat.$indigo-palette);
+$accent: mat.define-palette(mat.$indigo-palette, 400);
+$warn: mat.define-palette(mat.$red-palette);

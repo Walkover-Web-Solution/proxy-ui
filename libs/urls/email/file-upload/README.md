@@ -1,3 +1,0 @@
-# urls-email-file-upload
-
-This library was generated with [Nx](https://nx.dev).

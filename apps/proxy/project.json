@@ -3,11 +3,14 @@
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
     "projectType": "application",
     "sourceRoot": "apps/proxy/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "build": {
             "executor": "@angular-devkit/build-angular:browser",
-            "outputs": ["{options.outputPath}"],
+            "builder": "@angular-builders/custom-webpack:browser",
+            "outputs": [
+                "{options.outputPath}"
+            ],
             "options": {
                 "outputPath": "dist/apps/proxy",
                 "index": "apps/proxy/src/index.html",
@@ -15,8 +18,16 @@
                 "polyfills": "apps/proxy/src/polyfills.ts",
                 "tsConfig": "apps/proxy/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
-                "assets": ["apps/proxy/src/favicon.ico", "apps/proxy/src/assets"],
-                "styles": ["apps/proxy/src/styles.scss"],
+                "customWebpackConfig": {
+                    "path": "/webpack.config.js"
+                },
+                "assets": [
+                    "apps/proxy/src/favicon.ico",
+                    "apps/proxy/src/assets"
+                ],
+                "styles": [
+                    "apps/proxy/src/styles.scss"
+                ],
                 "scripts": []
             },
             "configurations": {
@@ -25,18 +36,60 @@
                         {
                             "type": "initial",
                             "maximumWarning": "500kb",
-                            "maximumError": "1mb"
+                            "maximumError": "3mb"
                         },
                         {
                             "type": "anyComponentStyle",
                             "maximumWarning": "2kb",
-                            "maximumError": "4kb"
+                            "maximumError": "25kb"
                         }
                     ],
                     "fileReplacements": [
                         {
                             "replace": "apps/proxy/src/environments/environment.ts",
                             "with": "apps/proxy/src/environments/environment.prod.ts"
+                        }
+                    ],
+                    "outputHashing": "all"
+                },
+                "stage": {
+                    "budgets": [
+                        {
+                            "type": "initial",
+                            "maximumWarning": "500kb",
+                            "maximumError": "3mb"
+                        },
+                        {
+                            "type": "anyComponentStyle",
+                            "maximumWarning": "2kb",
+                            "maximumError": "25kb"
+                        }
+                    ],
+                    "fileReplacements": [
+                        {
+                            "replace": "apps/proxy/src/environments/environment.ts",
+                            "with": "apps/proxy/src/environments/environment.stage.ts"
+                        }
+                    ],
+                    "outputHashing": "all"
+                },
+                "test": {
+                    "budgets": [
+                        {
+                            "type": "initial",
+                            "maximumWarning": "500kb",
+                            "maximumError": "3mb"
+                        },
+                        {
+                            "type": "anyComponentStyle",
+                            "maximumWarning": "2kb",
+                            "maximumError": "25kb"
+                        }
+                    ],
+                    "fileReplacements": [
+                        {
+                            "replace": "apps/proxy/src/environments/environment.ts",
+                            "with": "apps/proxy/src/environments/environment.test.ts"
                         }
                     ],
                     "outputHashing": "all"
@@ -54,6 +107,7 @@
         },
         "serve": {
             "executor": "@angular-devkit/build-angular:dev-server",
+            "builder": "@angular-builders/custom-webpack:dev-server",
             "configurations": {
                 "production": {
                     "browserTarget": "proxy:build:production"
@@ -73,7 +127,10 @@
         "lint": {
             "executor": "@nrwl/linter:eslint",
             "options": {
-                "lintFilePatterns": ["apps/proxy/**/*.ts", "apps/proxy/**/*.html"]
+                "lintFilePatterns": [
+                    "apps/proxy/**/*.ts",
+                    "apps/proxy/**/*.html"
+                ]
             }
         }
     },

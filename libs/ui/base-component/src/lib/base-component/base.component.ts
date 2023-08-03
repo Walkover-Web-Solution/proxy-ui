@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import { ONLY_INTEGER_REGEX } from '@msg91/regex';
+import { ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { take } from 'rxjs';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';

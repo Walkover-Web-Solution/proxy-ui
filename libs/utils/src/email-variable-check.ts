@@ -1,7 +1,7 @@
 import {
     CONTENT_BETWEEEN_HASH_TAG_REGEX,
     ALPHANUMERIC_WITH_DASH_CAPS_AND_STARTS_WITH_ALPHABET_REGEX,
-} from '@msg91/regex';
+} from '@proxy/regex';
 
 /**
  * Checks Variables contains only alphanumeric, dashes, underscores and and must start withalphabet only
