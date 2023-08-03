@@ -1,12 +1,7 @@
 .table-scroll {
-    height: calc(100vh - 206px);
+    height: calc(100vh - 160px);
     overflow-y: auto;
     display: block;
-    @media (max-width: 660px) {
-        height: calc(100vh - 240px);
-        overflow-y: auto;
-        display: block;
-    }
 }
 
 .table-wp-scroll {
@@ -56,7 +51,6 @@
     background-color: var(--color-common-bg) !important;
     box-shadow: none;
     width: 100%;
-    padding: 1px;
     .mat-header-row {
         background-color: var(--color-common-bg) !important;
         .mat-header-cell {

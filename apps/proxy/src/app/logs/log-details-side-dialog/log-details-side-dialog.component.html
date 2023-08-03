@@ -15,7 +15,7 @@
             <mat-card-content>
                 <pre [innerHtml]="data | json" *ngIf="data; else noRequestBody"></pre>
                 <ng-template #noRequestBody>
-                    <msg91-no-record-found [title]="'request body'" [showBtn]="false"></msg91-no-record-found>
+                    <proxy-no-record-found [title]="'request body'" [showBtn]="false"></proxy-no-record-found>
                 </ng-template>
             </mat-card-content>
         </mat-card>
