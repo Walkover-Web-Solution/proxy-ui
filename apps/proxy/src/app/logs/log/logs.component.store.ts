@@ -3,13 +3,12 @@ import { Injectable } from "@angular/core";
 import { BaseResponse, IPaginatedResponse, errorResolver } from "@proxy/models/root-models";
 import { PrimeNgToastService } from "@proxy/ui/prime-ng-toast";
 import { ComponentStore, tapResponse } from "@ngrx/component-store";
-import { IEnvProjects, ILogsData } from "@proxy/models/logs-models";
+import { IEnvProjects, ILogsReq, ILogsRes } from "@proxy/models/logs-models";
 import { LogsService } from "@proxy/services/proxy/logs";
-import { error } from "console";
 import { EMPTY, Observable, catchError, switchMap } from "rxjs";
 
 export interface ILogsInitialState  {
-    logs: IPaginatedResponse<ILogsData[]>,
+    logs: IPaginatedResponse<ILogsRes[]>,
     envProjects: IPaginatedResponse<IEnvProjects[]>,
     isLoading: boolean
 }
@@ -24,17 +23,17 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
         })
     }
 
-    readonly logsData$: Observable<IPaginatedResponse<ILogsData[]>> = this.select((state) => state.logs);
+    readonly logsData$: Observable<IPaginatedResponse<ILogsRes[]>> = this.select((state) => state.logs);
     readonly envProjects$: Observable<IPaginatedResponse<IEnvProjects[]>> = this.select((state) => state.envProjects);
     readonly isLoading$: Observable<boolean> = this.select((state) => state.isLoading);
 
-    readonly getLogs = this.effect((data: Observable<any>) => {
+    readonly getLogs = this.effect((data: Observable<ILogsReq>) => {
         return data.pipe(
-            switchMap((req : Observable<any>) => {
+            switchMap((req: ILogsReq) => {
                 this.setState((state) => ({...state, isLoading: true}))
                 return this.service.getProxyLogs(req).pipe(
                     tapResponse(
-                        (res: BaseResponse<IPaginatedResponse<ILogsData[]>, void>) => {
+                        (res: BaseResponse<IPaginatedResponse<ILogsRes[]>, ILogsReq>) => {
                             if(res.hasError){
                                 this.showErrorMessages(res['error'])
                             }
@@ -59,9 +58,9 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
         )
     });
 
-    readonly getEnvProjects = this.effect((data: Observable<any>) => {
+    readonly getEnvProjects = this.effect((data) => {
         return data.pipe(
-            switchMap((req: Observable<any>) => {
+            switchMap(() => {
                 this.setState((state) => ({...state, isLoading: true}));
                 return this.service.getEnvProjects().pipe(
                     tapResponse(

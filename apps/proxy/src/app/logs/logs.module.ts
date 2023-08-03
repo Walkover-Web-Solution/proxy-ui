@@ -14,6 +14,12 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatTableModule } from "@angular/material/table";
 import { ServicesProxyLogsModule } from "@proxy/services/proxy/logs";
+import { MatSortModule } from "@angular/material/sort";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatDividerModule } from "@angular/material/divider";
+import { UiNoRecordFoundModule } from "@proxy/ui/no-record-found";
+import { DirectivesRemoveCharacterDirectiveModule } from "@proxy/directives/RemoveCharacterDirective";
+import { UiMatPaginatorGotoModule } from "@proxy/ui/mat-paginator-goto";
 
 
 const routes: Routes = [
@@ -41,9 +47,15 @@ const routes: Routes = [
         MatIconModule,
         MatTableModule,
         MatMenuModule,
+        MatSortModule,
+        MatCheckboxModule,
+        MatDividerModule,
         UiComponentsSearchModule,
         UiDateRangePickerModule,
-        ServicesProxyLogsModule
+        ServicesProxyLogsModule,
+        UiNoRecordFoundModule,
+        DirectivesRemoveCharacterDirectiveModule,
+        UiMatPaginatorGotoModule
     ],
     exports: [RouterModule],
 })

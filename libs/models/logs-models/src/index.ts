@@ -1,4 +1,4 @@
-export interface ILogsData {
+export interface ILogsRes {
     id: number;
     status_code: number;
     user_ip: string;
@@ -9,6 +9,20 @@ export interface ILogsData {
     project_name: string;
     environment_name: string;
     response_time_in_ms: string;
+}
+
+export interface ILogsReq {
+    sortBy: string;
+    order: string;
+    slug: string;
+    url_unique_id: string;
+    range: string;
+    from: string;
+    to: string;
+    user_ip: string;
+    endpoint: string;
+    startDate: string;
+    endDate: string;
 }
 
 export interface IEnvProjects {
