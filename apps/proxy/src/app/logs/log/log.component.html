@@ -1,18 +1,19 @@
 <div class="app-content">
+    <msg91-loader *ngIf="isLoading$ | async"></msg91-loader>
     <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
         <div class="d-flex align-items-center justify-content-between gap-3">
             <mat-form-field appearance="outline" class="no-padding">
                 <mat-label>Select Project</mat-label>
-                <mat-select class="Select Project" (selectionChange)="selectEnvProject($event)">
-                    <mat-option [value]="''">None</mat-option>
+                <mat-select class="Select Project" (selectionChange)="selectEnvProject($event)" [formControl]="engProjectControl">
+                    <mat-option [value]="''">All</mat-option>
                     <mat-option *ngFor="let project of (envProjects$ | async)?.data" [value]="project.slug">
-                        {{ project.project_name }}
+                        {{ project.project_name }} ({{ project.environment_name }})
                     </mat-option>
                 </mat-select>
             </mat-form-field>
             <proxy-lib-search
                 [matFormFieldClass]="'no-padding'"
-                [placeholder]="'Search'"
+                [placeholder]="'Search by endpoint'"
                 (inputChanges)="onEnter($event)"
                 class="w-xs-100"
             ></proxy-lib-search>
@@ -56,7 +57,7 @@
                                                 requestTypes.length === logsFilterForm.controls.requestType.value.length
                                             "
                                             (click)="$event.stopPropagation()"
-                                            (change)="toggleSelectAll($event)"
+                                            (change)="toggleSelectAllReqType($event)"
                                         >
                                             All
                                         </mat-checkbox>
@@ -87,9 +88,9 @@
                                         placeholder="From"
                                         autocomplete="off"
                                         formControlName="from"
-                                        msg91RemoveCharacter
+                                        proxyRemoveCharacter
+                                        [charactersToRemove]="['e', '+', '-', '.', ' ']"
                                         />
-                                        <!-- [charactersToRemove]="['e', '+', '-', '.', ' ']" -->
                                     <mat-error *ngIf="logsFilterForm.controls.from.invalid">
                                         <mat-error *ngIf="logsFilterForm.get('from').errors?.pattern"
                                             >Invalid Number</mat-error
@@ -110,9 +111,9 @@
                                         placeholder="To"
                                         autocomplete="off"
                                         formControlName="to"
-                                        msg91RemoveCharacter
+                                        proxyRemoveCharacter
+                                        [charactersToRemove]="['e', '+', '-', '.', ' ']"
                                         />
-                                        <!-- [charactersToRemove]="['e', '+', '-', '.', ' ']" -->
                                     <mat-error *ngIf="logsFilterForm.controls.to.invalid">
                                         <mat-error *ngIf="logsFilterForm.get('to').errors?.pattern"
                                             >Invalid Number</mat-error
@@ -152,6 +153,18 @@
                         <td mat-cell *matCellDef="let element">{{ element.created_at }}</td>
                     </ng-container>
 
+                    <!-- Project name Column -->
+                    <ng-container matColumnDef="project_name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Project name</th>
+                        <td mat-cell *matCellDef="let element">{{ element.project_name }} ({{element.environment_name}})</td>
+                    </ng-container>
+
+                    <!-- User IP Column -->
+                    <ng-container matColumnDef="user_ip">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>User IP</th>
+                        <td mat-cell *matCellDef="let element">{{ element.user_ip }}</td>
+                    </ng-container>
+
                     <!-- Endpoint Column -->
                     <ng-container matColumnDef="endpoint">
                         <th mat-header-cell *matHeaderCellDef>Endpoint</th>
@@ -177,12 +190,17 @@
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns" 
+                        (click)="viewLogsDetails(row?.id)"
+                        class="cursor-pointer"
+                        [ngClass]="selectedRow == row.id ? 'highlight' : ''"
+                        title="Click here to view logs details"
+                    ></tr>
 
                     <tr *matNoDataRow>
                         <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
                             <msg91-no-record-found
-                                [title]="'proxy logs'"
+                                [title]="'logs'"
                                 [showBtn]="false"
                             ></msg91-no-record-found>
                         </td>
@@ -191,10 +209,10 @@
             </div>
             <mat-paginator-goto
                 [length]="(logs$ | async)?.totalEntityCount"
-                [pageSize]="params?.itemsPerPage"
+                [pageSize]="(logs$ | async)?.itemsPerPage || 25"
                 [pageSizeOptions]="pageSizeOptions"
                 (page)="pageChange($event)"
-                [pageIndex]="params?.pageNo - 1"
+                [pageIndex]="(logs$ | async)?.pageNumber - 1"
                 class="box-shadow-none"
             ></mat-paginator-goto>
         </mat-card-content>

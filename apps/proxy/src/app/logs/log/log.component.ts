@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { DEFAULT_END_DATE, DEFAULT_SELECTED_DATE_RANGE, DEFAULT_START_DATE, SelectDateRange, PAGE_SIZE_OPTIONS } from '@proxy/constant';
 import { MatSort } from '@angular/material/sort';
 import { LogsComponentStore } from './logs.component.store';
-import { Observable } from 'rxjs';
+import { Observable, filter, take, takeUntil } from 'rxjs';
 import { IEnvProjects, ILogsRes } from '@proxy/models/logs-models';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import * as dayjs from 'dayjs';
@@ -15,6 +15,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { CustomValidators } from '@proxy/custom-validator';
 import { PageEvent } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { LogsDetailsSideDialogComponent } from '../log-details-side-dialog/log-details-side-dialog.component';
 @Component({
     selector: 'proxy-logs',
     templateUrl: './log.component.html',
@@ -25,7 +27,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
     @ViewChild(MatSort) matSort: MatSort;
     @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
-    public displayedColumns: string[] = ['created_at', 'endpoint', 'request_type', 'status_code', 'response_time'];
+    public displayedColumns: string[] = ['created_at', 'project_name','user_ip','endpoint', 'request_type', 'status_code', 'response_time'];
     public params: any = {};
     public selectedRangeValue = DEFAULT_SELECTED_DATE_RANGE;
     public selectedDefaultDateRange = SelectDateRange;
@@ -35,17 +37,17 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
     };
     public requestTypes: Array<string> = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
-
+    public engProjectControl:FormControl<string> = new FormControl<string>('');
+    public selectedRow: number;
     // Observable
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public logs$: Observable<IPaginatedResponse<ILogsRes[]>> = this.componentStore.logsData$;
     public envProjects$: Observable<IPaginatedResponse<IEnvProjects[]>> = this.componentStore.envProjects$;
+    public reqLogs$:Observable<any> = this.componentStore.reqLogs$;
 
     /* Logs Filter Form */
     public logsFilterForm = new FormGroup({
       requestType: new FormControl<string[]>(this.requestTypes),
-      // startDate: new FormControl<string | Date>(DEFAULT_START_DATE),
-      // endDate: new FormControl<string | Date>(DEFAULT_END_DATE),
       range: new FormControl<string>(''),
       from: new FormControl<number>({ value: null, disabled: true }, [
           Validators.pattern(ONLY_INTEGER_REGEX),
@@ -57,7 +59,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
       ]),
   });
 
-    constructor(private componentStore: LogsComponentStore) {
+    constructor(private componentStore: LogsComponentStore, private dialog: MatDialog, private cdr: ChangeDetectorRef) {
         super();
     }
     ngOnInit(): void {
@@ -73,11 +75,12 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
         if(searchKeyword?.length){
           this.params = {
             ...this.params,
-            slug: searchKeyword.trim()
+            endpoint: searchKeyword.trim()
           }
         }else{
-          this.params = {...omit(this.params, ['slug'])};
+          this.params = {...omit(this.params, ['endpoint'])};
         }
+        this.params.pageNo = 1;
         this.getLogs();
     }
 
@@ -125,11 +128,21 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
      */
     public selectEnvProject(event:MatSelectChange): void {
       if(event.value){
-        console.log(event.value)
+          this.params = {
+            ...this.params,
+            slug: event.value
+          }
+      }else{
+        this.params = omit(this.params, ['slug']);
       }
+      this.getLogs();
     }
 
-    public toggleSelectAll(change: MatCheckboxChange){
+    /**
+     * Select All Request Type
+     * @param change 
+     */
+    public toggleSelectAllReqType(change: MatCheckboxChange){
       const requestTypeControl = this.logsFilterForm.controls.requestType;
       if (change.checked) {
           requestTypeControl.patchValue(this.requestTypes);
@@ -138,6 +151,10 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
       }
     }
 
+    /**
+     * Range Type Changes
+     * @param value 
+     */
     public changeRangeType(value){
       if (value) {
           this.logsFilterForm.controls.from.enable();
@@ -150,10 +167,11 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
       }
     }
 
+    /**
+     * Reset Filter Form
+     */
     public resetForm(){
       this.logsFilterForm.patchValue({
-          // startDate: dayjs(DEFAULT_START_DATE).format('YYYY-MM-DD'),
-          // endDate: dayjs(DEFAULT_END_DATE).format('YYYY-MM-DD'),
           range: null,
           from: null,
           to: null,
@@ -161,13 +179,15 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
       });
     }
 
+    /**
+     * Reset Param
+     */ 
     public resetParam():void {
       this.resetForm();
       this.changeRangeType(null);
       this.closeMyMenu();
       this.applyFilter();
     }
-
     /**
      * Close the menu
      * @memberof LogsComponent
@@ -176,12 +196,13 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
       this.trigger?.closeMenu();
     } 
 
+    /**
+     * Apply Filter
+     */
     public applyFilter(){
       if (this.logsFilterForm.value) {
         this.params = CustomValidators.removeNullKeys({
               ...this.params,
-              // startDate: dayjs(this.logsFilterForm.value.startDate).format('YYYY-MM-DD'),
-              // endDate: dayjs(this.logsFilterForm.value.endDate).format('YYYY-MM-DD'),
               range: this.logsFilterForm.value.range ? this.logsFilterForm.value.range : null,
               from: this.logsFilterForm.value.from ? this.logsFilterForm.value.from : null,
               to: this.logsFilterForm.value.to ? this.logsFilterForm.value.to : null,
@@ -191,19 +212,47 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
           });
       }
       this.params.pageNo = 1;
-      console.log(this.params)
       this.getLogs();
       this.closeMyMenu();
     }
 
+    /**
+     * Handle Page Changes
+     * @param event 
+     */
     public pageChange(event: PageEvent): void{
-      console.log('Page Event', event);
       this.params = {
         ...this.params,
         pageNo: event.pageIndex + 1,
         itemsPerPage: event.pageSize
       }
       this.getLogs();
+    }
+
+    /**
+     * View Logs By Logs Id
+     * @param id 
+     */
+    public viewLogsDetails(id){
+      this.selectedRow = id;
+      this.componentStore.getLogsById(id);
+      this.reqLogs$.pipe(filter(Boolean), take(1)).subscribe((res) => {
+          if(res?.request_body){
+            const dialogRef = this.dialog.open(LogsDetailsSideDialogComponent, {
+              panelClass: ['mat-right-dialog', 'mat-dialog-lg'],
+              data: JSON.parse(res.request_body),
+              autoFocus: false
+            });
+
+            dialogRef
+            .afterClosed()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.selectedRow = 0;
+                this.cdr.detectChanges();
+            });
+          }
+        });
     }
 
     /**

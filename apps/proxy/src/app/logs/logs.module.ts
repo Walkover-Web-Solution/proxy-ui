@@ -20,6 +20,9 @@ import { MatDividerModule } from "@angular/material/divider";
 import { UiNoRecordFoundModule } from "@proxy/ui/no-record-found";
 import { DirectivesRemoveCharacterDirectiveModule } from "@proxy/directives/RemoveCharacterDirective";
 import { UiMatPaginatorGotoModule } from "@proxy/ui/mat-paginator-goto";
+import { LogsDetailsSideDialogComponent } from "./log-details-side-dialog/log-details-side-dialog.component";
+import { MatDialogModule } from "@angular/material/dialog";
+import { UiLoaderModule } from "@proxy/ui/loader";
 
 
 const routes: Routes = [
@@ -32,7 +35,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [LogComponent],
+    declarations: [LogComponent, LogsDetailsSideDialogComponent],
     imports: [
         FormsModule,
         CommonModule,
@@ -50,12 +53,14 @@ const routes: Routes = [
         MatSortModule,
         MatCheckboxModule,
         MatDividerModule,
-        UiComponentsSearchModule,
+        MatDialogModule,
         UiDateRangePickerModule,
         ServicesProxyLogsModule,
         UiNoRecordFoundModule,
+        UiMatPaginatorGotoModule,
+        UiLoaderModule,
+        UiComponentsSearchModule,
         DirectivesRemoveCharacterDirectiveModule,
-        UiMatPaginatorGotoModule
     ],
     exports: [RouterModule],
 })

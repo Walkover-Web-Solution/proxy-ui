@@ -19,11 +19,15 @@ export class LogsService {
 
     // Fetch Proxy logs
     public getProxyLogs(params): Observable<BaseResponse<IPaginatedResponse<ILogsRes[]>, ILogsReq>> {
-        console.log(params)
         return this.http.get<BaseResponse<IPaginatedResponse<ILogsRes[]>, ILogsReq>>(
             LogsUrls.getLogs(this.proxyLogsUrl),
             params
         );
+    }
+
+     // Fetch Proxy logs
+     public getProxyLogsById(id: string): any {
+        return this.http.get(LogsUrls.getLogsById(this.proxyLogsUrl).replace(':id', id));
     }
 
     // Fetch Projects

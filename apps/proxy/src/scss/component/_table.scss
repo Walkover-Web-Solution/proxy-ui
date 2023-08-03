@@ -90,6 +90,9 @@
                 }
             }
         }
+        &.highlight{
+            background-color: var(--color-common-bg-lighter);
+        }
         &:hover:not(.mat-no-data-row) {
             background: var(--color-common-silver);
         }

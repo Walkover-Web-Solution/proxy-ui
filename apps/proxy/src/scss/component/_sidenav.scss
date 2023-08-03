@@ -2,12 +2,15 @@
     .mat-nav-list {
         padding-top: 0px;
         .mat-list-item {
-            height: 42px !important;
+            height: 40px !important;
             cursor: pointer !important;
             color: var(--color-sidenav-menu-link-text) !important;
             position: relative;
-            .mat-icon {
+            .mat-icon{
                 border-radius: 0px !important;
+            }
+            .mat-list-item-content{
+                padding: 0px 0px 0px 16px;
             }
             &.mat-list-item-disabled {
                 background-color: transparent;
@@ -15,67 +18,13 @@
             }
             .mat-line {
                 font-size: 14px !important;
-                color: var(--color-common-grey);
                 font-weight: 400;
-            }
-        }
-    }
-}
-.sidenav-expansion-panel {
-    border-radius: 0px !important;
-    .mat-expansion-panel-header {
-        padding: 0 16px !important;
-        height: 40px;
-        &.mat-expanded {
-            height: 40px;
-        }
-        .mat-content {
-            align-items: center;
-        }
-        .mat-expansion-indicator {
-            margin-top: -2px;
-            &:after {
-                color: var(--color-common-grey);
-            }
-        }
-
-        .mat-line {
-            font-size: 14px !important;
-            padding-left: 16px;
-            color: var(--color-common-grey);
-            font-weight: 400;
-        }
-        .mat-icon {
-            svg {
-                width: 18px;
-                path {
-                    fill: var(--color-sidenav-menu-link-icon) !important;
-                }
-            }
-        }
-        &:hover {
-            .mat-expansion-indicator {
-                &:after {
-                    color: var(--color-sidenav-menu-hover-link-icon) !important;
-                }
-            }
-            .mat-icon {
-                svg {
-                    path {
-                        fill: var(--color-sidenav-menu-hover-link-icon) !important;
-                    }
-                }
-            }
-        }
-    }
-    // Panel Content
-    .mat-expansion-panel-content {
-        .mat-expansion-panel-body {
-            padding: 0px;
-            .mat-nav-list {
-                .mat-list-item {
-                    .mat-list-item-content {
-                        padding-left: 30px !important;
+                &.menu-svg-icon {
+                    fill: red;
+                    svg {
+                        path {
+                            fill: var(--color-common-slate);
+                        }
                     }
                 }
             }
