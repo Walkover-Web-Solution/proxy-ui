@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { HighlightTag } from 'angular-text-input-highlight';
-import { MentionConfig } from '@msg91/ui/angular-mentions';
+import { MentionConfig } from '@proxy/ui/angular-mentions';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 
 @Component({
-    selector: 'msg91-textarea',
+    selector: 'proxy-textarea',
     templateUrl: './textarea.component.html',
     styleUrls: ['./textarea.component.scss'],
 })

@@ -1,0 +1,75 @@
+@use '@angular/material' as mat;
+@import '../../../scss/theme/theme-colors';
+
+.proxy-sidenav {
+    .mat-list-item {
+        &.active-list-item,
+        &:hover {
+            background: var(--color-sidenav-menu-hover-link-background) !important;
+            .mat-line {
+                color: var(--color-sidenav-menu-hover-link-text) !important;
+            }
+            .mat-icon {
+                display: table;
+                color: var(--color-sidenav-menu-hover-link-icon) !important;
+                &.menu-svg-icon {
+                    svg {
+                        path {
+                            fill: var(--color-sidenav-menu-hover-link-icon);
+                        }
+                    }
+                }
+            }
+            &:before {
+                content: '';
+                border: 2px solid var(--color-common-primary-dark);
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                border-radius: 0px 6px 6px 0px;
+            }
+        }
+        &.active-list-item {
+            font-weight: 700;
+        }
+    }
+}
+
+.menu-heading {
+    box-sizing: border-box;
+    padding: 5px 16px;
+    margin: 0px;
+    font-size: 14px;
+    font-weight: 600;
+    color: mat.get-color-from-palette($primary) !important;
+}
+
+/*custom-expansion-panel Menu*/
+.sidenav-expansion-panel.custom-expansion-panel {
+    background-color: var(--color-common-bg);
+    &.mat-expanded {
+        background-color: var(--color-sidenav-expanded-background) !important;
+    }
+    //Header
+    .mat-expansion-panel-header {
+        .mat-icon {
+            display: table;
+            color: var(--color-sidenav-menu-link-icon);
+        }
+        &:hover {
+            background: var(--color-sidenav-menu-hover-link-background);
+            .mat-line {
+                color: var(--color-sidenav-menu-hover-link-icon);
+            }
+            .mat-icon {
+                color: var(--color-sidenav-menu-hover-link-icon);
+                svg {
+                    path {
+                        fill: var(--color-sidenav-menu-hover-link-icon) !important;
+                    }
+                }
+            }
+        }
+    }
+}

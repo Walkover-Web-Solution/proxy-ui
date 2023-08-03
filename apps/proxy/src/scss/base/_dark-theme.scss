@@ -1,0 +1,68 @@
+body.dark-theme {
+    --color-common-white: #ffffff;
+    --color-common-smoke: #d5d9dc;
+    --color-common-cloud: #c1c5c8;
+    --color-common-grey: #8f9396;
+    --color-common-rock: #5d6164;
+    --color-common-slate: #3f4346;
+    --color-common-dark: #212528;
+    --color-common-silver: rgba(123, 127, 130, 0.07);
+
+    --color-common-bg: var(--color-common-dark);
+    --color-common-text: var(--color-common-smoke);
+    --color-common-border: var(--color-common-grey);
+    --color-common-placeholder: var(--color-common-grey);
+    --color-common-icon: var(--color-common-cloud);
+    --color-common-input-border: var(--color-common-slate);
+    --color-common-tooltip-bg: var(--color-common-slate);
+    --color-common-dialog-bg: var(--color-common-slate);
+    --color-common-chip-bg: var(--color-common-dark);
+
+    --color-common-graph-bg: rgba(123, 127, 130, 0.09);
+    --color-common-flat-btn-bg: rgba(123, 127, 130, 0.09);
+    --color-common-bg-light: rgba(123, 127, 130, 0.09);
+    --color-common-bg-lighter: rgba(123, 127, 130, 0.1);
+    --color-common-bg-lighter-hover: rgba(123, 127, 130, 0.2);
+    --color-common-scrollbar: 255, 255, 255;
+    --color-common-hover: var(--color-common-slate);
+
+    --color-button-bg: rgba(123, 127, 130, 0.1);
+    --color-button-text: var(--color-common-white);
+    --color-button-hover: rgba(123, 127, 130, 0.2);
+
+    // Primary Color
+    --color-common-primary: #3f51b5;
+    --color-common-primary-light: rgba(80, 103, 230, 0.12);
+    --color-common-primary-dark: #29379d;
+    --color-common-primary-light-hover: rgb(80 103 230 / 32%);
+
+    --color-link-color: blue;
+
+    // Box Shadow
+    --color-common-box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%);
+
+    // Table Color variables
+    --color-table-head: var(--color-common-smoke);
+    --color-table-cell: var(--color-common-smoke);
+    --color-table-head-border: var(--color-common-slate);
+    --color-table-cell-border: var(--color-common-slate);
+
+    // Sidenav colors variables
+    --color-sidenav-expanded-background: var(--color-common-primary-light);
+    --color-sidenav-border: #e1e4e8;
+    --color-sidenav-icon: var(--color-common-grey);
+
+    --color-sidenav-menu-link-background: var(--color-common-white);
+    --color-sidenav-menu-link-icon: var(--color-common-grey);
+    --color-sidenav-menu-link-text: var(--color-common-grey);
+
+    --color-sidenav-menu-hover-link-background: var(--color-common-primary);
+    --color-sidenav-menu-hover-link-text: var(--color-common-white);
+    --color-sidenav-menu-hover-link-icon: var(--color-common-white);
+
+    --color-sidenav-menu-active-link-background: var(--color-common-primary);
+    --color-sidenav-menu-active-link-text: var(--color-common-white);
+    --color-sidenav-menu-active-link-icon: var(--color-common-white);
+
+    --color-common-sidenav-shadow: 1px 0px 4px rgba(0, 0, 0, 0.5);
+}

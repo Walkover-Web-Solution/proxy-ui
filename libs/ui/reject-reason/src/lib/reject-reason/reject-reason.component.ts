@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormRecord, ValidatorFn } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '@msg91/ui/confirm-dialog';
+import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 
 export interface RejectFormField {
     name: string;
@@ -39,7 +39,7 @@ export interface RejectReasonConfiguration {
     searchReason: SearchRejectReason;
 }
 @Component({
-    selector: 'msg91-reject-reason',
+    selector: 'proxy-reject-reason',
     templateUrl: './reject-reason.component.html',
     styleUrls: ['./reject-reason.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

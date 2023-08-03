@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { CONTENT_BETWEEEN_HASH_TAG_REGEX } from '@msg91/regex';
+import { CONTENT_BETWEEEN_HASH_TAG_REGEX } from '@proxy/regex';
 
 @Component({
-    selector: 'msg91-sms-preview',
+    selector: 'proxy-sms-preview',
     templateUrl: './sms-preview.component.html',
     styleUrls: ['./sms-preview.component.scss'],
 })

@@ -2,7 +2,7 @@
     "name": "models-root-models",
     "projectType": "library",
     "sourceRoot": "libs/models/root-models/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

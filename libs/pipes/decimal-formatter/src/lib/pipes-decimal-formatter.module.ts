@@ -1,6 +1,6 @@
 import { ModuleWithProviders, NgModule, Pipe, PipeTransform } from '@angular/core';
-import { decimalNumberSystem, numberSystem } from '@msg91/constant';
-import { PipesFieldValuePipeModule, FieldValuePipe } from '@msg91/pipes/FieldValuePipe';
+import { decimalNumberSystem, numberSystem } from '@proxy/constant';
+import { PipesFieldValuePipeModule, FieldValuePipe } from '@proxy/pipes/FieldValuePipe';
 
 @Pipe({ name: 'decimalFormatter' })
 export class DecimalFormatterPipe implements PipeTransform {

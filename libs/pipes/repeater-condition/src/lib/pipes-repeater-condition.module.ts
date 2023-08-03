@@ -1,6 +1,6 @@
 import { ModuleWithProviders, NgModule, Pipe, PipeTransform } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ConfigurationsField } from '@msg91/models/segmento-models';
+import { ConfigurationsField } from '@proxy/models/segmento-models';
 import * as dayjs from 'dayjs';
 
 type KeyValue = { [key: string]: any };

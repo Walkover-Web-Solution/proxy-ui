@@ -3,7 +3,7 @@ import { AfterViewInit, Directive, ElementRef, Input, NgModule, OnChanges, Simpl
 import { escapeRegExp, isEqual } from 'lodash-es';
 
 @Directive({
-    selector: '[msg91Highlight]',
+    selector: '[proxyHighlight]',
 })
 export class HighlightDirective implements OnChanges, AfterViewInit {
     /** Color mapping array for showing entries along with color */
@@ -56,7 +56,7 @@ export class HighlightDirective implements OnChanges, AfterViewInit {
             colorIndexes.forEach(() => {
                 message = message.replaceAll(
                     color.name,
-                    `<span class="msg91-highlight-text" style="background-color: ${color.color};">${color.name}</span>`
+                    `<span class="proxy-highlight-text" style="background-color: ${color.color};">${color.name}</span>`
                 );
             });
         });

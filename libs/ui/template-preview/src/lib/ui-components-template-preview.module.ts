@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SmsPreviewComponent } from './sms-preview/sms-preview.component';
 import { EmailPreviewComponent } from './email-preview/email-preview.component';
 import { WhatsappPreviewComponent } from './whatsapp-preview/whatsapp-preview.component';
-import { PipesReplaceModule } from '@msg91/pipes/replace';
+import { PipesReplaceModule } from '@proxy/pipes/replace';
 
 @NgModule({
     imports: [CommonModule, MatCardModule, MatButtonModule, PipesReplaceModule],

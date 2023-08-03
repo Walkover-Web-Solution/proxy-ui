@@ -9,11 +9,11 @@ import {
     SimpleChanges,
     ViewChild,
 } from '@angular/core';
-import { FILE_SIZE } from '@msg91/constant/file-size';
+import { FILE_SIZE } from '@proxy/constant/file-size';
 import { FileSize, FileSizeUnit, FileUpload, FileUploadError, FileUploadErrorType } from './file-upload.model';
 
 @Component({
-    selector: 'msg91-file-upload',
+    selector: 'proxy-file-upload',
     templateUrl: './file-upload.component.html',
     styleUrls: ['./file-upload.component.scss'],
 })

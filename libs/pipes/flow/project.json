@@ -2,7 +2,7 @@
     "name": "pipes-flow",
     "projectType": "library",
     "sourceRoot": "libs/pipes/flow/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

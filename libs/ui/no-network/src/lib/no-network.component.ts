@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-    selector: 'msg91-no-network-connection',
+    selector: 'proxy-no-network-connection',
     template: ` <div
             class="mat-right-dialog-header logs-details-header d-flex align-items-center justify-content-end"
             *ngIf="data?.showCloseButton"

@@ -2,7 +2,7 @@
     "name": "ui-editor",
     "projectType": "library",
     "sourceRoot": "libs/ui/editor/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

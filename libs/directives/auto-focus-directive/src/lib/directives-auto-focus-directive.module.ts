@@ -2,7 +2,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { DOCUMENT } from '@angular/common';
 import { Directive, ElementRef, Inject, Input, NgModule, OnInit } from '@angular/core';
 
-@Directive({ selector: '[msg91Autofocus]' })
+@Directive({ selector: '[proxyAutofocus]' })
 export class AutoFocusDirective implements OnInit {
     private host: HTMLElement;
     private focused: Element;

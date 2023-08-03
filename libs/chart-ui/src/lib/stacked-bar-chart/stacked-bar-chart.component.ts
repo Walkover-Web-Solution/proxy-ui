@@ -3,7 +3,7 @@ import { StackedBarChartOptions } from '../models/stacked-bar-chart.model';
 import * as Highcharts from 'highcharts';
 
 @Component({
-    selector: 'msg91-stacked-bar-chart',
+    selector: 'proxy-stacked-bar-chart',
     templateUrl: './stacked-bar-chart.component.html',
     styleUrls: ['./stacked-bar-chart.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

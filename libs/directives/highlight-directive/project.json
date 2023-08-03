@@ -2,7 +2,7 @@
     "name": "directives-highlight-directive",
     "projectType": "library",
     "sourceRoot": "libs/directives/highlight-directive/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

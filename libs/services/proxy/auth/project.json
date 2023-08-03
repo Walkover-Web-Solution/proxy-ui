@@ -1,0 +1,16 @@
+{
+    "name": "services-proxy-auth",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/proxy/auth/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/services/proxy/auth/**/*.ts", "libs/services/proxy/auth/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

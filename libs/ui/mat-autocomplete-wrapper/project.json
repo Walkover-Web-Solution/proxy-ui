@@ -2,7 +2,7 @@
     "name": "ui-mat-autocomplete-wrapper",
     "projectType": "library",
     "sourceRoot": "libs/ui/mat-autocomplete-wrapper/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

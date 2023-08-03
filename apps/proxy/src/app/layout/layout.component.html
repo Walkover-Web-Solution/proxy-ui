@@ -1,0 +1,53 @@
+<div class="d-flex w-100 h-100" [ngClass]="!toggleMenuSideBar ? 'collapsed-sidebar' : ''">
+    <div class="left-menu-main-container mat-drawer panel-sidenav proxy-collapse-sidenav">
+        <div class="left-menu-header d-flex">
+            <button mat-button class="static-btn fw-bolder" style="cursor: default" [disableRipple]="true">
+                <mat-icon class="mr-3">apps</mat-icon>
+                <span class="mb-0 text-dark">Proxy</span>
+            </button>
+            <button mat-icon-button class="close-btn-xs" (click)="toggleSideBarEvent(true)">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        </div>
+        <!-- Proxy Sidenav::START -->
+        <proxy-main-left-side-nav class="left-menu-center-container proxy-left-menu"></proxy-main-left-side-nav>
+        <!-- Proxy Sidenav::END -->
+        <div class="left-menu-footer" *ngIf="logInData$ | async as user">
+            <button mat-button [matMenuTriggerFor]="menu">
+                <div class="d-flex align-items-center">
+                    <!-- <mat-icon svgIcon="profile-avatar" aria-hidden="false" class="mr-3"></mat-icon> -->
+                    <img
+                        *ngIf="user.photoURL"
+                        [src]="user.photoURL"
+                        alt="No Image"
+                        class="profile-avatar"
+                        loading="lazy"
+                    />
+                    <mat-icon *ngIf="!user.photoURL" aria-hidden="false" class="mr-3 text-grey material-icons-outlined">
+                        account_circle</mat-icon
+                    >
+                    <div class="d-flex flex-column" style="width: 140px">
+                        <h6 class="username m-0 text-grey">{{ user.displayName }}</h6>
+                    </div>
+                    <mat-icon class="mx-1 text-grey material-icons-outlined">keyboard_arrow_up</mat-icon>
+                </div>
+            </button>
+            <mat-menu #menu="matMenu" class="profile-dropdown">
+                <ng-container>
+                    <h4 class="b-d-header px-4">{{ user.displayName }}</h4>
+                    <mat-divider></mat-divider>
+                    <a mat-menu-item class="text-grey" (click)="logOut()"> Signout </a>
+                </ng-container>
+            </mat-menu>
+        </div>
+    </div>
+    <div class="app-main-container">
+        <!-- Content::START -->
+        <div class="component-render-container">
+            <div class="component-render-container-inner">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+        <!-- Content::END -->
+    </div>
+</div>
