@@ -2,58 +2,58 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* Plus imports for other components in your app.*/
-@import 'scss/base/fonts';
-@import 'scss/theme/theme-colors';
-@import 'scss/base/default-variables';
-@import 'scss/base/light-theme';
-@import 'scss/base/dark-theme';
+@import 'assets/scss/base/fonts';
+@import 'assets/scss/theme/theme-colors';
+@import 'assets/scss/base/default-variables';
+@import 'assets/scss/base/light-theme';
+@import 'assets/scss/base/dark-theme';
 
 /* Reset*/
-@import 'scss/base/reset.scss';
+@import 'assets/scss/base/reset.scss';
 
 /* Layout*/
-@import 'scss/layout/display.scss';
-@import 'scss/layout/flex.scss';
-@import 'scss/layout/sizing.scss';
-@import 'scss/layout/spacing.scss';
-@import 'scss/layout/grid.scss';
-@import 'scss/layout/text.scss';
-@import 'scss/layout/positions.scss';
-@import 'scss/theme/theme-colors';
+@import 'assets/scss/layout/display.scss';
+@import 'assets/scss/layout/flex.scss';
+@import 'assets/scss/layout/sizing.scss';
+@import 'assets/scss/layout/spacing.scss';
+@import 'assets/scss/layout/grid.scss';
+@import 'assets/scss/layout/text.scss';
+@import 'assets/scss/layout/positions.scss';
+@import 'assets/scss/theme/theme-colors';
 
 /* Component*/
-@import 'scss/component/modal.scss';
+@import 'assets/scss/component/modal.scss';
 
 /* Common Class Name*/
-@import 'scss/utils/common-classes.scss';
+@import 'assets/scss/utils/common-classes.scss';
 
 /* Backgound Colors*/
-@import 'scss/utils/bg-colors';
+@import 'assets/scss/utils/bg-colors';
 
 /* Theme*/
-@import 'scss/theme/default-theme';
+@import 'assets/scss/theme/default-theme';
 
 /*Components*/
-@import 'scss/component/filters';
-@import 'scss/component/toast';
-@import 'scss/component/table';
-@import 'scss/component/loader';
-@import 'scss/component/icon';
-@import 'scss/component/card';
-@import 'scss/component/form-field';
-@import 'scss/component/pagination';
-@import 'scss/component/tabs';
-@import 'scss/component/buttons';
-@import 'scss/component/status';
-@import 'scss/component/text-style';
-@import 'scss/component/side-dialog';
-@import 'scss/component/modal';
-@import 'scss/component/menu';
-@import 'scss/component/bottom-sheet';
-@import 'scss/component/checkbox';
-@import 'scss/component/sidenav';
-@import 'scss/component/select-option';
-@import 'scss/component/chart';
+@import 'assets/scss/component/filters';
+@import 'assets/scss/component/toast';
+@import 'assets/scss/component/table';
+@import 'assets/scss/component/loader';
+@import 'assets/scss/component/icon';
+@import 'assets/scss/component/card';
+@import 'assets/scss/component/form-field';
+@import 'assets/scss/component/pagination';
+@import 'assets/scss/component/tabs';
+@import 'assets/scss/component/buttons';
+@import 'assets/scss/component/status';
+@import 'assets/scss/component/text-style';
+@import 'assets/scss/component/side-dialog';
+@import 'assets/scss/component/modal';
+@import 'assets/scss/component/menu';
+@import 'assets/scss/component/bottom-sheet';
+@import 'assets/scss/component/checkbox';
+@import 'assets/scss/component/sidenav';
+@import 'assets/scss/component/select-option';
+@import 'assets/scss/component/chart';
 
 /*Main*/
 .app-content {
