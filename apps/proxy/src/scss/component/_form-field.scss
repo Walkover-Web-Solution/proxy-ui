@@ -113,6 +113,7 @@
     }
     .mat-form-field-flex{
         .mat-form-field-outline{
+            background-color: var(--color-common-white);
             .mat-form-field-outline-start{
                 border-radius: var(--border-common-radius-4) 0 0 var(--border-common-radius-4);
                 min-width: var(--border-common-radius-4);

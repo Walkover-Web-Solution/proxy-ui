@@ -6,8 +6,7 @@
     "prefix": "proxy",
     "targets": {
         "build": {
-            "executor": "@angular-devkit/build-angular:browser",
-            "builder": "@angular-builders/custom-webpack:browser",
+            "executor": "@angular-builders/custom-webpack:browser",
             "outputs": [
                 "{options.outputPath}"
             ],
@@ -106,8 +105,7 @@
             "defaultConfiguration": "production"
         },
         "serve": {
-            "executor": "@angular-devkit/build-angular:dev-server",
-            "builder": "@angular-builders/custom-webpack:dev-server",
+            "executor": "@angular-builders/custom-webpack:dev-server",
             "configurations": {
                 "production": {
                     "browserTarget": "proxy:build:production"
