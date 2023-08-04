@@ -84,6 +84,7 @@
                 }
             }
         }
+        
         &.highlight{
             background-color: var(--color-common-bg-lighter);
         }
@@ -95,11 +96,17 @@
                 padding: 0px;
             }
         }
+        &.last-child {
+            .mat-cell{
+                 border-bottom: 0px;
+            }
+        }
     }
 }
 
 @media screen and (max-width: 768px) {
     .mat-table {
+        background-color: transparent !important;
         &.responsive-table {
             background-color: transparent;
             .mat-row {
@@ -110,6 +117,7 @@
                 border-radius: 5px;
                 margin-bottom: 16px;
                 background-color: var(--color-common-white);
+                border: 1px solid var(--color-common-border);
                 &:not(.mat-no-data-row) {
                     display: grid;
                     grid-template-columns: auto auto;
@@ -136,24 +144,24 @@
                         text-transform: uppercase;
                         font-weight: 500;
                         font-size: 10px;
-                        color: #8a8e91;
+                        color: var(--color-common-rock);
                     }
                     &:last-child {
                         border-bottom: 0;
                     }
                     &:nth-child(even) {
                         text-align: right;
-                        &:after {
-                            content: attr(data-label);
-                            float: left;
-                            text-transform: uppercase;
-                            font-weight: 500;
-                            font-size: 10px;
-                            color: #8a8e91;
-                        }
-                        &:before {
-                            display: none;
-                        }
+                        // &:after {
+                        //     content: attr(data-label);
+                        //     float: left;
+                        //     text-transform: uppercase;
+                        //     font-weight: 500;
+                        //     font-size: 10px;
+                        //     color: var(--color-common-rock);
+                        // }
+                        // &:before {
+                        //     display: none;
+                        // }
                     }
                     &.action-column-m {
                         height: 62px;
