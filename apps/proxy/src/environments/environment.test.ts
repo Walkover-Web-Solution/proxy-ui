@@ -13,8 +13,8 @@ export const environment = {
         messagingSenderId: process.env.FIREBASE_CONFIG_MESSAGING_SENDER_ID,
         appId: process.env.FIREBASE_CONFIG_APP_ID,
     },
-    proxyServer: 'http://apitest.msg91.com',
-    baseUrl: 'http://apitest.msg91.com/api',
+    proxyServer: 'https://apitest.msg91.com',
+    baseUrl: 'https://apitest.msg91.com/api',
 };
 /*
  * For easier debugging in development mode, you can import the following file

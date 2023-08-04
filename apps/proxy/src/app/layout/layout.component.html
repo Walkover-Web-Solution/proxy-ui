@@ -12,10 +12,9 @@
         <!-- Proxy Sidenav::START -->
         <proxy-main-left-side-nav class="left-menu-center-container proxy-left-menu"></proxy-main-left-side-nav>
         <!-- Proxy Sidenav::END -->
-        <div class="left-menu-footer" *ngIf="logInData$ | async as user">
+        <div class="left-menu-footer border-top" *ngIf="logInData$ | async as user">
             <button mat-button [matMenuTriggerFor]="menu">
                 <div class="d-flex align-items-center">
-                    <!-- <mat-icon svgIcon="profile-avatar" aria-hidden="false" class="mr-3"></mat-icon> -->
                     <img
                         *ngIf="user.photoURL"
                         [src]="user.photoURL"
@@ -27,17 +26,14 @@
                         account_circle</mat-icon
                     >
                     <div class="d-flex flex-column" style="width: 140px">
-                        <h6 class="username m-0 text-grey">{{ user.displayName }}</h6>
+                        <h6 class="username m-0 text-secondary">{{ user.displayName }}</h6>
                     </div>
-                    <mat-icon class="mx-1 text-grey material-icons-outlined">keyboard_arrow_up</mat-icon>
+                    <mat-icon class="mx-1 text-secondary material-icons-outlined">keyboard_arrow_up</mat-icon>
                 </div>
             </button>
             <mat-menu #menu="matMenu" class="profile-dropdown">
-                <ng-container>
-                    <h4 class="b-d-header px-4">{{ user.displayName }}</h4>
-                    <mat-divider></mat-divider>
-                    <a mat-menu-item class="text-grey" (click)="logOut()"> Logout <mat-icon class="mat-icon-16 mb-1">logout</mat-icon> </a>
-                </ng-container>
+                <h4 class="m-0 py-2 px-3 text-dark fw-bold">{{ user.displayName }}</h4>
+                <a mat-menu-item class="d-flex justify-content-between text-danger" (click)="logOut()"> Logout <mat-icon class="mat-icon-18 text-danger mr-0">logout</mat-icon> </a>
             </mat-menu>
         </div>
     </div>
