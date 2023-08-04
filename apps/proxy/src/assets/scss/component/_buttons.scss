@@ -1,6 +1,6 @@
-@use '../../../../../node_modules/@angular/material/index' as mat;
+@use '../../../../../../node_modules/@angular/material/index' as mat;
 @import '../theme/theme-colors';
-@import '../../scss/utils/mixins/common-utils';
+@import '../utils/mixins/common-utils';
 
 $primary-btn-height: 40px;
 $secondary-btn-height: 30px;
