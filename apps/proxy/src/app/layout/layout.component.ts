@@ -55,7 +55,6 @@ export class LayoutComponent extends BaseComponent implements OnInit {
         const hostClass = isDarkMode ? 'dark-theme' : 'light-theme';
         localStorage.setItem('selected-theme', hostClass);
     }
-      
 
     getIsMobile(): boolean {
         const w = document.documentElement.clientWidth;

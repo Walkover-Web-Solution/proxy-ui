@@ -65,12 +65,12 @@ import { VersionCheckServiceModule } from '@proxy/service';
         },
         {
             provide: ProxyBaseUrls.BaseURL,
-            useValue: environment.baseUrl
+            useValue: environment.baseUrl,
         },
         {
             provide: ProxyBaseUrls.ProxyLogsUrl,
-            useValue: environment.baseUrl
-        }
+            useValue: environment.baseUrl,
+        },
     ],
     bootstrap: [AppComponent],
 })
