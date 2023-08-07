@@ -7,11 +7,7 @@
         "default": {
             "runner": "@nrwl/nx-cloud",
             "options": {
-                "cacheableOperations": [
-                    "build",
-                    "lint",
-                    "test"
-                ],
+                "cacheableOperations": ["build", "lint", "test"],
                 "accessToken": "Yzk3NzU2OWMtZTJhZC00NWNhLTk1OGQtMWJiOThhMWM2MzE0fHJlYWQtd3JpdGU=",
                 "parallel": 3
             }
@@ -35,10 +31,7 @@
     },
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
     "namedInputs": {
-        "default": [
-            "{projectRoot}/**/*",
-            "sharedGlobals"
-        ],
+        "default": ["{projectRoot}/**/*", "sharedGlobals"],
         "sharedGlobals": [
             "{workspaceRoot}/workspace.json",
             "{workspaceRoot}/tsconfig.base.json",
@@ -56,29 +49,16 @@
     },
     "targetDefaults": {
         "build": {
-            "inputs": [
-                "production",
-                "^production"
-            ]
+            "inputs": ["production", "^production"]
         },
         "test": {
-            "inputs": [
-                "default",
-                "^production",
-                "{workspaceRoot}/jest.preset.js"
-            ]
+            "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
         },
         "lint": {
-            "inputs": [
-                "default",
-                "{workspaceRoot}/.eslintrc"
-            ]
+            "inputs": ["default", "{workspaceRoot}/.eslintrc"]
         },
         "e2e": {
-            "inputs": [
-                "default",
-                "^production"
-            ]
+            "inputs": ["default", "^production"]
         }
     },
     "defaultProject": "proxy"

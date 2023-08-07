@@ -16,7 +16,7 @@ export class LogsDetailsSideDialogComponent extends BaseComponent implements OnI
     }
 
     public ngOnInit(): void {
-        console.log(this.data)
+        console.log(this.data);
     }
 
     public onCloseDialog(): void {

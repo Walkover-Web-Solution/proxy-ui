@@ -82,7 +82,7 @@ export enum ProxyBaseUrls {
     FileUploadProxy = 'FILE_UPLOAD_PROXY',
     NumbersProxy = 'NUMBERS_PROXY',
     PushNotificationProxy = 'PUSH_NOTIFICATION_URL',
-    ProxyLogsUrl = 'PROXY_LOGS_URL'
+    ProxyLogsUrl = 'PROXY_LOGS_URL',
 }
 
 export interface IToken {

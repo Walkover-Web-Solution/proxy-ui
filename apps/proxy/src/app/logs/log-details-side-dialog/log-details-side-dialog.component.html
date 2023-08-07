@@ -11,7 +11,7 @@
     <!-- Content::START -->
     <div class="mat-right-dialog-content" *ngIf="data">
         <p class="mb-2 mt-0 mat-body-2 fw-bold">Request body</p>
-        <mat-card class="outline-card overflow-y" style="height: calc(100vh - 116px);">
+        <mat-card class="outline-card overflow-y" style="height: calc(100vh - 116px)">
             <mat-card-content>
                 <pre [innerHtml]="data | json" *ngIf="data; else noRequestBody"></pre>
                 <ng-template #noRequestBody>

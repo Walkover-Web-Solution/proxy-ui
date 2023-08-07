@@ -25,8 +25,8 @@ export class LogsService {
         );
     }
 
-     // Fetch Proxy logs
-     public getProxyLogsById(id: string): any {
+    // Fetch Proxy logs
+    public getProxyLogsById(id: string): any {
         return this.http.get(LogsUrls.getLogsById(this.proxyLogsUrl).replace(':id', id));
     }
 

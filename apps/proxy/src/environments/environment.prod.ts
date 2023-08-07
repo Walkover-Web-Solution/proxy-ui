@@ -10,5 +10,5 @@ export const environment = {
         appId: process.env.FIREBASE_CONFIG_APP_ID,
     },
     proxyServer: 'https://proxy.msg91.com',
-    baseUrl: 'https://routes.msg91.com/api'
+    baseUrl: 'https://routes.msg91.com/api',
 };
