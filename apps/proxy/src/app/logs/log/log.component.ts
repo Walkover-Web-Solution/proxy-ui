@@ -60,18 +60,21 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
     public reqLogs$: Observable<any> = this.componentStore.reqLogs$;
 
     /* Logs Filter Form */
-    public logsFilterForm = new FormGroup({
-        requestType: new FormControl<string[]>(this.requestTypes),
-        range: new FormControl<string>(''),
-        from: new FormControl<number>({ value: null, disabled: true }, [
-            Validators.pattern(ONLY_INTEGER_REGEX),
-            Validators.maxLength(6),
-        ]),
-        to: new FormControl<number>({ value: null, disabled: true }, [
-            Validators.pattern(ONLY_INTEGER_REGEX),
-            Validators.maxLength(6),
-        ]),
-    });
+    public logsFilterForm = new FormGroup(
+        {
+            requestType: new FormControl<string[]>(this.requestTypes),
+            range: new FormControl<string>(''),
+            from: new FormControl<number>({ value: null, disabled: true }, [
+                Validators.pattern(ONLY_INTEGER_REGEX),
+                Validators.maxLength(6),
+            ]),
+            to: new FormControl<number>({ value: null, disabled: true }, [
+                Validators.pattern(ONLY_INTEGER_REGEX),
+                Validators.maxLength(6),
+            ]),
+        },
+        CustomValidators.greaterThan('from', 'to')
+    );
 
     constructor(private componentStore: LogsComponentStore, private dialog: MatDialog, private cdr: ChangeDetectorRef) {
         super();
@@ -186,7 +189,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
      */
     public resetForm() {
         this.logsFilterForm.patchValue({
-            range: null,
+            range: '',
             from: null,
             to: null,
             requestType: this.requestTypes,

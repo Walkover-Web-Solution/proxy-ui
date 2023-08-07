@@ -80,7 +80,7 @@
                                 </mat-form-field>
                             </div>
                             <ng-container *ngIf="logsFilterForm.value.range">
-                                <div class="col-lg-6 pr-2">
+                                <div class="col-lg-6 pr-2 mb-2">
                                     <mat-form-field appearance="outline" class="w-100" floatLabel="always">
                                         <mat-label>From</mat-label>
                                         <input
@@ -92,9 +92,12 @@
                                             [charactersToRemove]="['e', '+', '-', '.', ' ']"
                                         />
                                         <mat-error *ngIf="logsFilterForm.controls.from.invalid">
-                                            <mat-error *ngIf="logsFilterForm.get('from').errors?.pattern"
-                                                >Invalid Number</mat-error
-                                            >
+                                            <mat-error *ngIf="logsFilterForm.get('from').errors?.pattern">
+                                                Invalid Number
+                                            </mat-error>
+                                            <mat-error *ngIf="logsFilterForm.get('from').errors?.limitExceeded">
+                                                <b>From</b> should be less than or equal to <b>To</b>
+                                            </mat-error>
                                             <mat-error
                                                 *ngIf="logsFilterForm.get('from').errors?.maxlength as maxlengthError"
                                             >
@@ -115,9 +118,9 @@
                                             [charactersToRemove]="['e', '+', '-', '.', ' ']"
                                         />
                                         <mat-error *ngIf="logsFilterForm.controls.to.invalid">
-                                            <mat-error *ngIf="logsFilterForm.get('to').errors?.pattern"
-                                                >Invalid Number</mat-error
-                                            >
+                                            <mat-error *ngIf="logsFilterForm.get('to').errors?.pattern">
+                                                Invalid Number
+                                            </mat-error>
                                             <mat-error
                                                 *ngIf="logsFilterForm.get('to').errors?.maxlength as maxlengthError"
                                             >
