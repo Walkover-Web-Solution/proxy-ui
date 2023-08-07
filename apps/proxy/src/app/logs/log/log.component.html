@@ -162,7 +162,12 @@
                     <!-- Time Column -->
                     <ng-container matColumnDef="created_at">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time</th>
-                        <td mat-cell *matCellDef="let element" data-label="Time">{{ element.created_at }}</td>
+                        <td mat-cell *matCellDef="let element" data-label="Time">
+                            <span>
+                                {{ element?.created_at | date: 'd MMM y' }}
+                            </span>
+                            <span>({{ element?.created_at | date: 'mediumTime' }})</span>
+                        </td>
                     </ng-container>
 
                     <!-- Project name Column -->
