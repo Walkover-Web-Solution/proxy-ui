@@ -3,14 +3,15 @@ import { Injectable } from '@angular/core';
 import { BaseResponse, IPaginatedResponse, errorResolver } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
-import { IEnvProjects, ILogsReq, ILogsRes } from '@proxy/models/logs-models';
+import { IEnvProjects, ILogDetailRes, ILogsReq, ILogsRes } from '@proxy/models/logs-models';
 import { LogsService } from '@proxy/services/proxy/logs';
 import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
 
 export interface ILogsInitialState {
     logs: IPaginatedResponse<ILogsRes[]>;
     envProjects: IPaginatedResponse<IEnvProjects[]>;
-    reqLogs: any;
+    reqLogs: ILogDetailRes;
+    reqLogsInProcess: boolean;
     isLoading: boolean;
 }
 
@@ -22,6 +23,7 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
             envProjects: null,
             isLoading: false,
             reqLogs: null,
+            reqLogsInProcess: false,
         });
     }
 
@@ -29,6 +31,9 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
     readonly envProjects$: Observable<IPaginatedResponse<IEnvProjects[]>> = this.select((state) => state.envProjects);
     readonly reqLogs$: Observable<any> = this.select((state) => state.reqLogs);
     readonly isLoading$: Observable<boolean> = this.select((state) => state.isLoading);
+    readonly reqLogsInProcess$: Observable<boolean> = this.select((state) => state.reqLogsInProcess);
+
+    readonly resetReqLog = this.updater((state) => ({ ...state, reqLog: null }));
 
     readonly getLogs = this.effect((data: Observable<ILogsReq>) => {
         return data.pipe(
@@ -62,22 +67,25 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
     readonly getLogsById = this.effect((data: Observable<any>) => {
         return data.pipe(
             switchMap((req: any) => {
-                this.patchState({ isLoading: true, reqLogs: null });
+                this.patchState({ reqLogsInProcess: true, reqLogs: null });
                 return this.service.getProxyLogsById(req).pipe(
                     tapResponse(
-                        (res: any) => {
+                        (res: BaseResponse<ILogDetailRes, void>) => {
                             if (res.hasError) {
                                 this.showErrorMessages(res['error']);
                             }
                             return this.patchState({
-                                isLoading: false,
-                                reqLogs: res?.data,
+                                reqLogsInProcess: false,
+                                reqLogs: {
+                                    ...res.data,
+                                    request_body: JSON.parse(res?.data.request_body as string),
+                                },
                             });
                         },
                         (error: HttpErrorResponse) => {
                             this.showErrorMessages(error['error']);
                             return this.patchState({
-                                isLoading: false,
+                                reqLogsInProcess: false,
                                 reqLogs: null,
                             });
                         }

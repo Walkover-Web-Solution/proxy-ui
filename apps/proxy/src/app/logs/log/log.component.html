@@ -227,7 +227,10 @@
                         *matRowDef="let row; columns: displayedColumns; let i = index"
                         (click)="viewLogsDetails(row?.id)"
                         class="cursor-pointer"
-                        [ngClass]="{ 'highlight': selectedRow === row.id, 'last-child': i + 1 === pageSizeOptions[0] }"
+                        [ngClass]="{
+                            'highlight': (reqLogs$ | async)?.id === row.id,
+                            'last-child': i + 1 === pageSizeOptions[0]
+                        }"
                         title="Click here to view logs details"
                     ></tr>
 

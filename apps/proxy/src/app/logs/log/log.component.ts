@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import {
     DEFAULT_END_DATE,
@@ -9,8 +9,8 @@ import {
 } from '@proxy/constant';
 import { MatSort } from '@angular/material/sort';
 import { LogsComponentStore } from './logs.component.store';
-import { Observable, filter, take, takeUntil } from 'rxjs';
-import { IEnvProjects, ILogsRes } from '@proxy/models/logs-models';
+import { Observable } from 'rxjs';
+import { IEnvProjects, ILogDetailRes, ILogsRes } from '@proxy/models/logs-models';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import * as dayjs from 'dayjs';
 import { omit } from 'lodash';
@@ -21,7 +21,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { CustomValidators } from '@proxy/custom-validator';
 import { PageEvent } from '@angular/material/paginator';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LogsDetailsSideDialogComponent } from '../log-details-side-dialog/log-details-side-dialog.component';
 @Component({
     selector: 'proxy-logs',
@@ -52,12 +52,12 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
     public requestTypes: Array<string> = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
     public engProjectControl: FormControl<string> = new FormControl<string>('');
-    public selectedRow: number;
     // Observable
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public logs$: Observable<IPaginatedResponse<ILogsRes[]>> = this.componentStore.logsData$;
     public envProjects$: Observable<IPaginatedResponse<IEnvProjects[]>> = this.componentStore.envProjects$;
-    public reqLogs$: Observable<any> = this.componentStore.reqLogs$;
+    public reqLogs$: Observable<ILogDetailRes> = this.componentStore.reqLogs$;
+    public logDetailDialogRef: MatDialogRef<LogsDetailsSideDialogComponent>;
 
     /* Logs Filter Form */
     public logsFilterForm = new FormGroup(
@@ -76,7 +76,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
         CustomValidators.greaterThan('from', 'to')
     );
 
-    constructor(private componentStore: LogsComponentStore, private dialog: MatDialog, private cdr: ChangeDetectorRef) {
+    constructor(private componentStore: LogsComponentStore, private dialog: MatDialog) {
         super();
     }
     ngOnInit(): void {
@@ -108,11 +108,10 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
     public sortLogs(event: MatSort): void {
         if (event.direction !== '') {
             this.params = { ...this.params, sortBy: event.active, order: event.direction };
-            this.getLogs();
         } else {
             this.params = omit(this.params, ['sortBy', 'order']);
-            this.getLogs();
         }
+        this.getLogs();
     }
 
     /**
@@ -258,22 +257,19 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
      * @param id
      */
     public viewLogsDetails(id) {
-        this.selectedRow = id;
         this.componentStore.getLogsById(id);
-        this.reqLogs$.pipe(filter(Boolean), take(1)).subscribe((res) => {
-            if (res?.request_body) {
-                const dialogRef = this.dialog.open(LogsDetailsSideDialogComponent, {
-                    panelClass: ['mat-right-dialog', 'mat-dialog-lg'],
-                    data: JSON.parse(res.request_body),
-                    autoFocus: false,
-                });
-
-                dialogRef.afterClosed().subscribe(() => {
-                    this.selectedRow = 0;
-                    this.cdr.detectChanges();
-                });
-            }
-        });
+        if (!this.logDetailDialogRef) {
+            this.logDetailDialogRef = this.dialog.open(LogsDetailsSideDialogComponent, {
+                panelClass: ['mat-right-dialog', 'mat-dialog-lg'],
+                data: { logData$: this.reqLogs$, isLoading$: this.componentStore.reqLogsInProcess$ },
+                autoFocus: false,
+                hasBackdrop: false,
+            });
+            this.logDetailDialogRef.afterClosed().subscribe(() => {
+                this.componentStore.resetReqLog();
+                this.logDetailDialogRef = null;
+            });
+        }
     }
 
     /**
