@@ -88,6 +88,11 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
         this.componentStore.getEnvProjects();
     }
 
+    public ngOnDestroy(): void {
+        this.logDetailDialogRef?.close();
+        super.ngOnDestroy();
+    }
+
     public onEnter(searchKeyword: string) {
         if (searchKeyword?.length) {
             this.params = {
