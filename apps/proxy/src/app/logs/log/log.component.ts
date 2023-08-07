@@ -207,6 +207,10 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
      * @memberof LogsComponent
      */
     public closeMyMenu(): void {
+        if (this.logsFilterForm.value.requestType?.length === 0) {
+            this.logsFilterForm.controls.requestType.setValue(this.requestTypes);
+            this.logsFilterForm.controls.requestType.updateValueAndValidity();
+        }
         this.trigger?.closeMenu();
     }
 
