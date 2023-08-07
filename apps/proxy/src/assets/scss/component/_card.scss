@@ -6,8 +6,8 @@
     box-shadow: none !important;
     border-radius: var(--border-common-radius) !important;
     background-color: var(--color-common-bg) !important;
-    &.responsive-card{
-        @include media-breakpoint-down('tablet'){
+    &.responsive-card {
+        @include media-breakpoint-down('tablet') {
             background-color: transparent !important;
             border: none !important;
         }
