@@ -33,7 +33,9 @@
             </button>
             <mat-menu #menu="matMenu" class="profile-dropdown">
                 <h4 class="m-0 py-2 px-3 text-dark fw-bold">{{ user.displayName }}</h4>
-                <a mat-menu-item class="d-flex justify-content-between text-danger" (click)="logOut()"> Logout <mat-icon class="mat-icon-18 text-danger mr-0">logout</mat-icon> </a>
+                <a mat-menu-item class="d-flex justify-content-between text-danger" (click)="logOut()">
+                    Logout <mat-icon class="mat-icon-18 text-danger mr-0">logout</mat-icon>
+                </a>
             </mat-menu>
         </div>
     </div>

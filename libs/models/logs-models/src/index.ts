@@ -31,3 +31,8 @@ export interface IEnvProjects {
     environment_name: string;
     slug: string;
 }
+
+export interface ILogDetailRes {
+    id: number;
+    request_body: string | { [key: string]: any };
+}

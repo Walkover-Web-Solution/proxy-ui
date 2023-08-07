@@ -34,7 +34,7 @@ export class HttpWrapperService {
     constructor(
         private http: HttpClient,
         @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any,
-        private authService: AuthService,
+        private authService: AuthService
     ) {}
 
     public createUrl = (url: string): string => {
@@ -97,7 +97,7 @@ export class HttpWrapperService {
             newOptions.headers = {} as any;
         }
         const authToken = this.authService.getTokenSync();
-        if(authToken && !options?.headers?.['Authorization']) {
+        if (authToken && !options?.headers?.['Authorization']) {
             newOptions.headers['Authorization'] = authToken;
         }
 

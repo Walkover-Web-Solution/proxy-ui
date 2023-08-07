@@ -84,8 +84,8 @@
                 }
             }
         }
-        
-        &.highlight{
+
+        &.highlight {
             background-color: var(--color-common-bg-lighter);
         }
         &:hover:not(.mat-no-data-row) {
@@ -97,8 +97,8 @@
             }
         }
         &.last-child {
-            .mat-cell{
-                 border-bottom: 0px;
+            .mat-cell {
+                border-bottom: 0px;
             }
         }
     }
