@@ -173,14 +173,15 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
      * @param value
      */
     public changeRangeType(value) {
+        const { from, to } = this.logsFilterForm.controls;
         if (value) {
-            this.logsFilterForm.controls.from.enable();
-            this.logsFilterForm.controls.to.enable();
+            from.enable();
+            to.enable();
         } else {
-            this.logsFilterForm.controls.from.setValue(null);
-            this.logsFilterForm.controls.to.setValue(null);
-            this.logsFilterForm.controls.from.disable();
-            this.logsFilterForm.controls.to.disable();
+            from.reset();
+            to.reset();
+            from.disable();
+            to.disable();
         }
     }
 
@@ -221,15 +222,17 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
      * Apply Filter
      */
     public applyFilter() {
-        if (this.logsFilterForm.value) {
+        const formValue = this.logsFilterForm.value;
+        if (formValue) {
             this.params = CustomValidators.removeNullKeys({
                 ...this.params,
-                range: this.logsFilterForm.value.range ? this.logsFilterForm.value.range : null,
-                from: this.logsFilterForm.value.from ? this.logsFilterForm.value.from : null,
-                to: this.logsFilterForm.value.to ? this.logsFilterForm.value.to : null,
-                request_type: this.logsFilterForm.value.requestType?.length
-                    ? this.logsFilterForm.value.requestType.join(',')
-                    : null,
+                range: formValue.range ? formValue.range : null,
+                from: formValue.from ? formValue.from : null,
+                to: formValue.to ? formValue.to : null,
+                request_type:
+                    formValue.requestType?.length && formValue.requestType.length !== this.requestTypes.length
+                        ? formValue.requestType.join(',')
+                        : null,
             });
         }
         this.params.pageNo = 1;
@@ -265,13 +268,10 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
                     autoFocus: false,
                 });
 
-                dialogRef
-                    .afterClosed()
-                    .pipe(takeUntil(this.destroy$))
-                    .subscribe(() => {
-                        this.selectedRow = 0;
-                        this.cdr.detectChanges();
-                    });
+                dialogRef.afterClosed().subscribe(() => {
+                    this.selectedRow = 0;
+                    this.cdr.detectChanges();
+                });
             }
         });
     }
