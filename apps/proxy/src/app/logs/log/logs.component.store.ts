@@ -9,10 +9,11 @@ import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
 
 export interface ILogsInitialState {
     logs: IPaginatedResponse<ILogsRes[]>;
+    logsInProcess: boolean;
     envProjects: IPaginatedResponse<IEnvProjects[]>;
+    envProjectsInProcess: boolean;
     reqLogs: ILogDetailRes;
     reqLogsInProcess: boolean;
-    isLoading: boolean;
 }
 
 @Injectable()
@@ -20,8 +21,9 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
     constructor(private service: LogsService, private toast: PrimeNgToastService) {
         super({
             logs: null,
+            logsInProcess: false,
             envProjects: null,
-            isLoading: false,
+            envProjectsInProcess: false,
             reqLogs: null,
             reqLogsInProcess: false,
         });
@@ -30,7 +32,9 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
     readonly logsData$: Observable<IPaginatedResponse<ILogsRes[]>> = this.select((state) => state.logs);
     readonly envProjects$: Observable<IPaginatedResponse<IEnvProjects[]>> = this.select((state) => state.envProjects);
     readonly reqLogs$: Observable<any> = this.select((state) => state.reqLogs);
-    readonly isLoading$: Observable<boolean> = this.select((state) => state.isLoading);
+    readonly isLoading$: Observable<boolean> = this.select(
+        (state) => state.logsInProcess || state.envProjectsInProcess
+    );
     readonly reqLogsInProcess$: Observable<boolean> = this.select((state) => state.reqLogsInProcess);
 
     readonly resetReqLog = this.updater((state) => ({ ...state, reqLog: null }));
@@ -38,7 +42,7 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
     readonly getLogs = this.effect((data: Observable<ILogsReq>) => {
         return data.pipe(
             switchMap((req: ILogsReq) => {
-                this.patchState({ isLoading: true });
+                this.patchState({ logsInProcess: true });
                 return this.service.getProxyLogs(req).pipe(
                     tapResponse(
                         (res: BaseResponse<IPaginatedResponse<ILogsRes[]>, ILogsReq>) => {
@@ -46,14 +50,14 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
                                 this.showErrorMessages(res['error']);
                             }
                             return this.patchState({
-                                isLoading: false,
+                                logsInProcess: false,
                                 logs: res?.data,
                             });
                         },
                         (error: HttpErrorResponse) => {
                             this.showErrorMessages(error['error']);
                             return this.patchState({
-                                isLoading: false,
+                                logsInProcess: false,
                                 logs: null,
                             });
                         }
@@ -99,7 +103,7 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
     readonly getEnvProjects = this.effect((data) => {
         return data.pipe(
             switchMap(() => {
-                this.patchState({ isLoading: true });
+                this.patchState({ envProjectsInProcess: true });
                 return this.service.getEnvProjects().pipe(
                     tapResponse(
                         (res: BaseResponse<IPaginatedResponse<IEnvProjects[]>, void>) => {
@@ -107,14 +111,14 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
                                 this.showErrorMessages(res['error']);
                             }
                             return this.patchState({
-                                isLoading: false,
+                                envProjectsInProcess: false,
                                 envProjects: res?.data,
                             });
                         },
                         (error: HttpErrorResponse) => {
                             this.showErrorMessages(error['error']);
                             return this.patchState({
-                                isLoading: false,
+                                envProjectsInProcess: false,
                                 envProjects: null,
                             });
                         }
