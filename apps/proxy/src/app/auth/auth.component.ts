@@ -45,7 +45,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
     constructor(
         private toast: PrimeNgToastService,
         private _store: Store<ILogInFeatureStateWithRootState>,
-        private router: Router,
+        private router: Router
     ) {
         super();
 

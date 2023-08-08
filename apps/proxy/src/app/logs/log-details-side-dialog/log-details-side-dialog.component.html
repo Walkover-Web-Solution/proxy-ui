@@ -1,4 +1,5 @@
 <div class="position-relative mat-right-dialog-container">
+    <proxy-loader *ngIf="data.isLoading$ | async"></proxy-loader>
     <!-- Top Fixed Header::START -->
     <div class="mat-right-dialog-header d-flex align-items-center justify-content-between">
         <h2 class="mat-title mat-subheading-2 mb-0 text-dark">Logs Details</h2>
@@ -11,11 +12,18 @@
     <!-- Content::START -->
     <div class="mat-right-dialog-content" *ngIf="data">
         <p class="mb-2 mt-0 mat-body-2 fw-bold">Request body</p>
-        <mat-card class="outline-card overflow-y" style="height: calc(100vh - 116px);">
+        <mat-card class="outline-card overflow-y" style="height: calc(100vh - 116px)">
             <mat-card-content>
-                <pre [innerHtml]="data | json" *ngIf="data; else noRequestBody"></pre>
+                <pre
+                    [innerHtml]="logdata?.request_body | json"
+                    *ngIf="data.logData$ | async as logdata; else noRequestBody"
+                ></pre>
                 <ng-template #noRequestBody>
-                    <proxy-no-record-found [title]="'request body'" [showBtn]="false"></proxy-no-record-found>
+                    <proxy-no-record-found
+                        [title]="'request body'"
+                        [showBtn]="false"
+                        *ngIf="(data.isLoading$ | async) === false"
+                    ></proxy-no-record-found>
                 </ng-template>
             </mat-card-content>
         </mat-card>

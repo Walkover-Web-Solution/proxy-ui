@@ -7,9 +7,7 @@
     "targets": {
         "build": {
             "executor": "@angular-builders/custom-webpack:browser",
-            "outputs": [
-                "{options.outputPath}"
-            ],
+            "outputs": ["{options.outputPath}"],
             "options": {
                 "outputPath": "dist/apps/proxy",
                 "index": "apps/proxy/src/index.html",
@@ -20,12 +18,11 @@
                 "customWebpackConfig": {
                     "path": "/webpack.config.js"
                 },
-                "assets": [
-                    "apps/proxy/src/favicon.ico",
-                    "apps/proxy/src/assets"
-                ],
+                "assets": ["apps/proxy/src/favicon.ico", "apps/proxy/src/assets"],
                 "styles": [
-                    "apps/proxy/src/styles.scss"
+                    "apps/proxy/src/styles.scss",
+                    "node_modules/primeng/resources/themes/md-light-indigo/theme.css",
+                    "node_modules/primeng/resources/primeng.min.css"
                 ],
                 "scripts": []
             },
@@ -125,10 +122,7 @@
         "lint": {
             "executor": "@nrwl/linter:eslint",
             "options": {
-                "lintFilePatterns": [
-                    "apps/proxy/**/*.ts",
-                    "apps/proxy/**/*.html"
-                ]
+                "lintFilePatterns": ["apps/proxy/**/*.ts", "apps/proxy/**/*.html"]
             }
         }
     },

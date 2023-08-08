@@ -13,7 +13,7 @@ export const environment = {
         messagingSenderId: process.env.FIREBASE_CONFIG_MESSAGING_SENDER_ID,
         appId: process.env.FIREBASE_CONFIG_APP_ID,
     },
-    proxyServer: 'https://apitest.msg91.com',
+    proxyServer: 'https://test.proxy.msg91.com',
     baseUrl: 'https://apitest.msg91.com/api',
 };
 /*
