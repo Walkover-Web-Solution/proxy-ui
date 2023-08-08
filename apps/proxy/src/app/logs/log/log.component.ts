@@ -269,6 +269,8 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
                 data: { logData$: this.reqLogs$, isLoading$: this.componentStore.reqLogsInProcess$ },
                 autoFocus: false,
                 hasBackdrop: false,
+                enterAnimationDuration: '0ms',
+                exitAnimationDuration: '0ms',
             });
             this.logDetailDialogRef.afterClosed().subscribe(() => {
                 this.componentStore.resetReqLog();

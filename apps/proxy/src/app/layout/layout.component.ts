@@ -4,7 +4,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { Store, select } from '@ngrx/store';
 import { selectLogInData } from '../auth/ngrx/selector/login.selector';
 import { isEqual } from 'lodash';
-import { Observable, distinctUntilChanged, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { ILogInFeatureStateWithRootState } from '../auth/ngrx/store/login.state';
 import * as logInActions from '../auth/ngrx/actions/login.action';
 import { CookieService } from 'ngx-cookie-service';
@@ -17,6 +17,8 @@ import { CookieService } from 'ngx-cookie-service';
 export class LayoutComponent extends BaseComponent implements OnInit {
     public toggleMenuSideBar: boolean;
     public logInData$: Observable<IFirebaseUserModel>;
+    public sideNavOpenState = true;
+    public isSideNavOpen$ = new BehaviorSubject<boolean>(this.sideNavOpenState);
 
     constructor(private store: Store<ILogInFeatureStateWithRootState>, private cookieService: CookieService) {
         super();
@@ -28,12 +30,10 @@ export class LayoutComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.toggleMenuSideBar = this.getIsMobile();
         this.getCurrentTheme();
-    }
-
-    public toggleSideBarEvent(event) {
-        this.toggleMenuSideBar = !this.toggleMenuSideBar;
+        if (this.isMobileDevice()) {
+            this.toggleSideBarEvent();
+        }
     }
 
     public logOut() {
@@ -56,13 +56,17 @@ export class LayoutComponent extends BaseComponent implements OnInit {
         localStorage.setItem('selected-theme', hostClass);
     }
 
-    getIsMobile(): boolean {
+    public isMobileDevice() {
         const w = document.documentElement.clientWidth;
         const breakpoint = 992;
-        if (w < breakpoint) {
-            return false;
-        } else {
+        if (w <= breakpoint) {
             return true;
+        } else {
+            return false;
         }
+    }
+
+    public toggleSideBarEvent(): void {
+        this.isSideNavOpen$.next((this.sideNavOpenState = !this.sideNavOpenState));
     }
 }
