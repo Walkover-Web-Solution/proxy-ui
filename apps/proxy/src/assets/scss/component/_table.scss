@@ -1,7 +1,10 @@
+@import "../../scss/utils/mixins/common-utils";
 .table-scroll {
-    height: calc(100vh - 160px);
-    overflow-y: auto;
     display: block;
+    @include  media-breakpoint-up('tablet') {
+        height: calc(100vh - 160px);
+        overflow-y: auto;
+    }
 }
 
 .table-wp-scroll {
@@ -51,6 +54,9 @@
     background-color: var(--color-common-bg) !important;
     box-shadow: none;
     width: 100%;
+    &:has(.mat-no-data-row) {
+        height: 100%;
+    }
     .mat-header-row {
         background-color: var(--color-common-bg) !important;
         .mat-header-cell {
