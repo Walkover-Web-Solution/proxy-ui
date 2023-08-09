@@ -1,18 +1,37 @@
-<div class="d-flex w-100 h-100" [ngClass]="!toggleMenuSideBar ? 'collapsed-sidebar' : ''">
-    <div class="left-menu-main-container mat-drawer panel-sidenav proxy-collapse-sidenav">
-        <div class="left-menu-header d-flex">
-            <button mat-button class="static-btn fw-bolder" style="cursor: default" [disableRipple]="true">
-                <mat-icon class="mr-3">apps</mat-icon>
-                <span class="mb-0 text-dark">Proxy</span>
-            </button>
-            <button mat-icon-button class="close-btn-xs" (click)="toggleSideBarEvent(true)">
-                <mat-icon>arrow_back</mat-icon>
+<div class="d-flex w-100 h-100" [ngClass]="!(isSideNavOpen | async) ? 'collapsed-sidebar' : ''">
+    <div
+        class="d-flex flex-column mat-drawer mat-drawer-content"
+        [ngClass]="(isSideNavOpen | async) ? 'mat-drawer-toggle-btn-hover' : ''"
+    >
+        <div class="d-flex align-items-center mat-drawer-header">
+            <div class="d-flex align-items-center flex-grow-1 gap-2 mat-drawer-header-title">
+                <mat-icon class="mat-icon-22">apps</mat-icon>
+                <div class="d-flex align-items-center col-gap-1 mat-drawer-header-subtitle">
+                    <span class="font-16 fw-bolder text-dark white-space-nowrap"> Proxy </span>
+                    <!-- <mat-icon class="mat-icon-20">expand_more</mat-icon> -->
+                </div>
+            </div>
+            <button
+                mat-icon-button
+                color="primary"
+                class="mat-drawer-toggle-btn"
+                (click)="toggleSideBarEvent()"
+                [matTooltip]="(isSideNavOpen | async) ? 'Collapse Menu' : 'Expand Menu'"
+                matTooltipPosition="right"
+                type="button"
+            >
+                <mat-icon class="mat-icon-18">{{
+                    (isSideNavOpen | async) ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
+                }}</mat-icon>
             </button>
         </div>
         <!-- Proxy Sidenav::START -->
-        <proxy-main-left-side-nav class="left-menu-center-container proxy-left-menu"></proxy-main-left-side-nav>
+        <proxy-main-left-side-nav
+            class="mat-drawer-nav proxy-left-menu"
+            [isSideNavOpen]="!(isSideNavOpen | async)"
+        ></proxy-main-left-side-nav>
         <!-- Proxy Sidenav::END -->
-        <div class="left-menu-footer border-top" *ngIf="logInData$ | async as user">
+        <div class="mat-drawer-footer" *ngIf="logInData$ | async as user">
             <button mat-button [matMenuTriggerFor]="menu">
                 <div class="d-flex align-items-center">
                     <img
@@ -31,9 +50,13 @@
                     <mat-icon class="mx-1 text-secondary material-icons-outlined">keyboard_arrow_up</mat-icon>
                 </div>
             </button>
-            <mat-menu #menu="matMenu" class="profile-dropdown">
+            <mat-menu #menu="matMenu" class="profile-menu ml-1">
                 <h4 class="m-0 py-2 px-3 text-dark fw-bold">{{ user.displayName }}</h4>
-                <a mat-menu-item class="d-flex justify-content-between text-danger" (click)="logOut()">
+                <a
+                    mat-menu-item
+                    class="d-flex align-items-center justify-content-between text-danger"
+                    (click)="logOut()"
+                >
                     Logout <mat-icon class="mat-icon-18 text-danger mr-0">logout</mat-icon>
                 </a>
             </mat-menu>

@@ -97,3 +97,41 @@
         }
     }
 }
+
+@mixin sideNavHoverActiveState($primary-color, $primary-color-light, $active-color, $hover-color){        
+    &.active-list-item {
+        .mat-line {
+            font-weight: 500 !important;
+            color: $active-color !important;
+        }
+        background: $primary-color !important;
+        .mat-icon {
+            color: $active-color !important;
+            &.menu-svg-icon {
+                 > svg {
+                    color:var(--color-email-primary);
+                    path {
+                        fill: $active-color;
+                    }
+                }
+            }
+        }
+    }
+    &:not(.active-list-item):hover {
+        background: $primary-color-light !important;
+        .mat-line {
+            color: $hover-color !important;
+        }
+        .mat-icon {
+            color: $hover-color;
+            &.menu-svg-icon {
+                svg {
+                    path {
+                        fill: $hover-color;
+                    }
+                }
+            }
+        }
+    }
+    
+}

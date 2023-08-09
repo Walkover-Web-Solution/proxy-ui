@@ -31,14 +31,12 @@
     .mat-form-field-wrapper {
         .mat-form-field-infix {
             padding: 0px 0 10px 0 !important;
-            // .mat-select-arrow-wrapper {
-            //     transform: translateY(-15%) !important;
-            // }
         }
     }
 }
 .go-to-pagination {
     border-top: 1px solid var(--color-table-cell-border);
+    background-color: var(--color-common-white);
     .mat-paginator {
         box-shadow: none !important;
         border-top: 0px;
