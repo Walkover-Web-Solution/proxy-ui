@@ -20,6 +20,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { ErrorInterceptor } from '@proxy/services/interceptor/errorInterceptor';
 import { VersionCheckServiceModule } from '@proxy/service';
+import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 
 @NgModule({
     declarations: [AppComponent],
@@ -70,6 +71,12 @@ import { VersionCheckServiceModule } from '@proxy/service';
         {
             provide: ProxyBaseUrls.ProxyLogsUrl,
             useValue: environment.baseUrl,
+        },
+        {
+            provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
+            useValue: {
+                disableTooltipInteractivity: true,
+            },
         },
     ],
     bootstrap: [AppComponent],

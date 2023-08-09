@@ -12,6 +12,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
     declarations: [LayoutComponent, MainLeftSideNavComponent],
@@ -26,6 +27,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
         MatSidenavModule,
         MatToolbarModule,
         MatExpansionModule,
+        MatTooltipModule,
     ],
 })
 export class LayoutModule {}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 
 @Component({
@@ -7,6 +7,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
     styleUrls: ['./main-left-side-nav.component.scss'],
 })
 export class MainLeftSideNavComponent extends BaseComponent {
+    @Input() public isSideNavOpen: boolean;
     constructor() {
         super();
     }

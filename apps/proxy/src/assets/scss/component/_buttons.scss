@@ -82,11 +82,7 @@ $secondary-btn-height: 30px;
         &.flat-icon-btn {
             padding: 0px 12px;
         }
-        &.remove-mat-button-focus-overlay {
-            .mat-button-focus-overlay {
-                display: none;
-            }
-        }
+
     }
     .mat-icon-suffix {
         margin-right: calc(12px - 16px);
@@ -117,6 +113,11 @@ $secondary-btn-height: 30px;
         &.mat-primary {
             border-color: var(--color-primary-color) !important;
             @include btnHover(var(--color-common-primary), transparent, var(--color-common-primary-light));
+        }
+    }
+    &.remove-mat-button-focus-overlay {
+        .mat-button-focus-overlay {
+            display: none;
         }
     }
 }
