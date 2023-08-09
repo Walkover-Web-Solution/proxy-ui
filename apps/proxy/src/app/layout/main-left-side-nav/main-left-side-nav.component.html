@@ -1,7 +1,13 @@
 <!-- Menus::START -->
 <div class="default-drawer proxy-sidenav">
     <mat-nav-list>
-        <a mat-list-item [routerLink]="['logs']" routerLinkActive="active-list-item">
+        <a
+            mat-list-item
+            [routerLink]="['logs']"
+            routerLinkActive="active-list-item"
+            [matTooltipPosition]="'right'"
+            [matTooltip]="isSideNavOpen ? 'Logs' : ''"
+        >
             <mat-icon matListIcon class="mat-icon-20 material-icons-outlined p-0" aria-hidden="false"
                 >description</mat-icon
             >

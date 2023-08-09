@@ -17,8 +17,7 @@ import { CookieService } from 'ngx-cookie-service';
 export class LayoutComponent extends BaseComponent implements OnInit {
     public toggleMenuSideBar: boolean;
     public logInData$: Observable<IFirebaseUserModel>;
-    public sideNavOpenState = true;
-    public isSideNavOpen$ = new BehaviorSubject<boolean>(this.sideNavOpenState);
+    public isSideNavOpen = new BehaviorSubject<boolean>(true);
 
     constructor(private store: Store<ILogInFeatureStateWithRootState>, private cookieService: CookieService) {
         super();
@@ -67,6 +66,6 @@ export class LayoutComponent extends BaseComponent implements OnInit {
     }
 
     public toggleSideBarEvent(): void {
-        this.isSideNavOpen$.next((this.sideNavOpenState = !this.sideNavOpenState));
+        this.isSideNavOpen.next(!this.isSideNavOpen.getValue());
     }
 }

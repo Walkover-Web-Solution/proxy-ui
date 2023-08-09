@@ -1,14 +1,14 @@
-<div class="d-flex w-100 h-100" [ngClass]="!(isSideNavOpen$ | async) ? 'collapsed-sidebar' : ''">
+<div class="d-flex w-100 h-100" [ngClass]="!(isSideNavOpen | async) ? 'collapsed-sidebar' : ''">
     <div
         class="d-flex flex-column mat-drawer mat-drawer-content"
-        [ngClass]="(isSideNavOpen$ | async) ? 'mat-drawer-toggle-btn-hover' : ''"
+        [ngClass]="(isSideNavOpen | async) ? 'mat-drawer-toggle-btn-hover' : ''"
     >
         <div class="d-flex align-items-center mat-drawer-header">
             <div class="d-flex align-items-center flex-grow-1 gap-2 mat-drawer-header-title">
                 <mat-icon class="mat-icon-22">apps</mat-icon>
                 <div class="d-flex align-items-center col-gap-1 mat-drawer-header-subtitle">
                     <span class="font-16 fw-bolder text-dark white-space-nowrap"> Proxy </span>
-                    <mat-icon class="mat-icon-20">expand_more</mat-icon>
+                    <!-- <mat-icon class="mat-icon-20">expand_more</mat-icon> -->
                 </div>
             </div>
             <button
@@ -16,17 +16,20 @@
                 color="primary"
                 class="mat-drawer-toggle-btn"
                 (click)="toggleSideBarEvent()"
-                [matTooltip]="(isSideNavOpen$ | async) ? 'Collapse Menu' : 'Expand Menu'"
+                [matTooltip]="(isSideNavOpen | async) ? 'Collapse Menu' : 'Expand Menu'"
                 matTooltipPosition="right"
                 type="button"
             >
                 <mat-icon class="mat-icon-18">{{
-                    (isSideNavOpen$ | async) ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
+                    (isSideNavOpen | async) ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
                 }}</mat-icon>
             </button>
         </div>
         <!-- Proxy Sidenav::START -->
-        <proxy-main-left-side-nav class="mat-drawer-nav proxy-left-menu"></proxy-main-left-side-nav>
+        <proxy-main-left-side-nav
+            class="mat-drawer-nav proxy-left-menu"
+            [isSideNavOpen]="!(isSideNavOpen | async)"
+        ></proxy-main-left-side-nav>
         <!-- Proxy Sidenav::END -->
         <div class="mat-drawer-footer" *ngIf="logInData$ | async as user">
             <button mat-button [matMenuTriggerFor]="menu">
