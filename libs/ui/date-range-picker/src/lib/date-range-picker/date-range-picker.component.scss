@@ -143,6 +143,15 @@
             padding: 0px 5px;
             left: 4px;
             z-index: 99;
+            background: linear-gradient(
+                to top,
+                transparent 0%,
+                transparent 40%,
+                var(--color-common-white) 40%,
+                var(--color-common-white) 60%,
+                transparent 60%,
+                transparent 100%
+            );
         }
         &:hover {
             .outline-position {
