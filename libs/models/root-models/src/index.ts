@@ -82,6 +82,7 @@ export enum ProxyBaseUrls {
     FileUploadProxy = 'FILE_UPLOAD_PROXY',
     NumbersProxy = 'NUMBERS_PROXY',
     PushNotificationProxy = 'PUSH_NOTIFICATION_URL',
+    ProxyLogsUrl = 'PROXY_LOGS_URL',
 }
 
 export interface IToken {
@@ -169,4 +170,9 @@ export function errorResolver(params: string[] | string | { [key: string]: [] })
     } else {
         return ['Something went wrong.'];
     }
+}
+
+export interface ILoginResponse {
+    message: string;
+    auth: string;
 }

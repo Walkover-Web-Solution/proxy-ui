@@ -2,15 +2,15 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MAT_SELECT_CONFIG } from '@angular/material/select';
-import { DEBOUNCE_TIME } from '@msg91/constant';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { DEBOUNCE_TIME } from '@proxy/constant';
+import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash-es';
 import { debounceTime, takeUntil } from 'rxjs';
 
 import { MultiSelectGroupOptions } from './multi-select.model';
 
 @Component({
-    selector: 'msg91-multi-select',
+    selector: 'proxy-multi-select',
     templateUrl: './multi-select.component.html',
     styleUrls: ['./multi-select.component.scss'],
     providers: [

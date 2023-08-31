@@ -2,7 +2,7 @@
     "name": "ui-components-route-loader",
     "projectType": "library",
     "sourceRoot": "libs/ui/route-loader/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

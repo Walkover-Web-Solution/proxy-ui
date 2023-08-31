@@ -3,16 +3,16 @@ import { AfterViewInit, Directive, ElementRef, Input, NgModule } from '@angular/
 import { CommonModule } from '@angular/common';
 import { MatDatepicker } from '@angular/material/datepicker';
 
-@Directive({ selector: '[msg91OpenDatepickerOnFocus]', exportAs: 'msg91OpenDatepickerOnFocus' })
+@Directive({ selector: '[proxyOpenDatepickerOnFocus]', exportAs: 'proxyOpenDatepickerOnFocus' })
 export class OpenDatepickerOnFocusDirective implements AfterViewInit {
-    @Input() msg91OpenDatepickerOnFocus: MatDatepicker<any> | NgxMatDatetimePicker<any>;
+    @Input() proxyOpenDatepickerOnFocus: MatDatepicker<any> | NgxMatDatetimePicker<any>;
     @Input() restoreFocus = false;
 
     constructor(private elRef: ElementRef) {}
 
     ngAfterViewInit(): void {
         this.elRef?.nativeElement?.addEventListener('focus', () => {
-            this.msg91OpenDatepickerOnFocus?.open();
+            this.proxyOpenDatepickerOnFocus?.open();
             if (!this.restoreFocus) {
                 this.elRef?.nativeElement?.blur();
             }

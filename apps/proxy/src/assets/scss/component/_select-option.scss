@@ -1,0 +1,13 @@
+@import '../theme/theme-colors';
+
+.cdk-overlay-pane {
+    .mat-select-panel-wrap {
+        .mat-select-panel {
+            .mat-option {
+                &.mat-selected {
+                    color: var(--color-common-text) !important;
+                }
+            }
+        }
+    }
+}

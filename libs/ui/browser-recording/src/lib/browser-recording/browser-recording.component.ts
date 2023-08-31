@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
-import { PlayerComponent } from '@msg91/ui/player';
+import { PlayerComponent } from '@proxy/ui/player';
 import { Subject } from 'rxjs';
 
 @Component({
-    selector: 'msg91-browser-recording',
+    selector: 'proxy-browser-recording',
     templateUrl: './browser-recording.component.html',
     styleUrls: ['./browser-recording.component.scss'],
 })

@@ -10,11 +10,11 @@ import {
 } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
 import { TooltipPosition } from '@angular/material/tooltip';
-import { DEBOUNCE_TIME } from '@msg91/constant';
+import { DEBOUNCE_TIME } from '@proxy/constant';
 import { debounceTime } from 'rxjs/operators';
 
 @Component({
-    selector: 'msg91-lib-search',
+    selector: 'proxy-lib-search',
     templateUrl: './search.component.html',
     styleUrls: ['./search.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

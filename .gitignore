@@ -48,3 +48,6 @@ Thumbs.db
 /yarn.lock
 
 .angular
+
+# dotenv environment variables file
+.env

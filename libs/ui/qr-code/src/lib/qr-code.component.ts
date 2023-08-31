@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { BaseComponent } from '@proxy/ui/base-component';
 
 declare var QRious;
 
 @Component({
-    selector: 'msg91-qr-code',
+    selector: 'proxy-qr-code',
     template: '<canvas id="qr-code" style="height: 200px !important; width: 200px !important;"></canvas>',
 })
 export class QRCodeComponent extends BaseComponent implements OnInit {

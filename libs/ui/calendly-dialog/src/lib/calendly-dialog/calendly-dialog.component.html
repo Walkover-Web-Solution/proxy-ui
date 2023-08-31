@@ -11,7 +11,7 @@
                 class="mat-subheading-2 fw-bold text-dark fw-bolder"
                 *ngIf="!data?.accountManagerDetail?.isAccountManager"
             >
-                Sales MSG91
+                Sales proxy
             </p>
             <div class="mat-subheading-2 fw-normal text-dark" *ngIf="data?.accountManagerDetail?.isAccountManager">
                 <p class="my-0 fw-bolder text-capitalize">{{ data?.accountManagerDetail?.name }}</p>
@@ -62,18 +62,18 @@
                 >content_copy</mat-icon
             >
         </div>
-        <div class="d-flex align-items-center mb-3" *ngIf="data?.accountManagerDetail?.email !== 'support@msg91.com'">
+        <div class="d-flex align-items-center mb-3" *ngIf="data?.accountManagerDetail?.email !== 'support@proxy.com'">
             <a
-                href="mailto:support@msg91.com"
+                href="mailto:support@proxy.com"
                 class="text-dark mat-subheading-2 fw-normal d-flex align-items-center mb-0"
             >
                 <mat-icon matListIcon class="mat-icon-16 mr-1 material-icons-outlined" aria-hidden="false"
                     >email</mat-icon
                 >
-                <span matLine class="menu-list-span menu-label" style="line-height: 16px">support@msg91.com</span>
+                <span matLine class="menu-list-span menu-label" style="line-height: 16px">support@proxy.com</span>
             </a>
             <mat-icon
-                [cdkCopyToClipboard]="'support@msg91.com'"
+                [cdkCopyToClipboard]="'support@proxy.com'"
                 (mouseup)="copyDetails()"
                 matListIcon
                 class="mat-icon-14 ml-1 material-icons-outlined cursor-pointer"

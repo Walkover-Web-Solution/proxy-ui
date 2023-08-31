@@ -2,7 +2,7 @@
     "name": "ui-confirm-dialog",
     "projectType": "library",
     "sourceRoot": "libs/ui/confirm-dialog/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

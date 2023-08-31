@@ -1,9 +1,11 @@
+import { cloneDeep } from 'lodash-es';
 import { finalize, tap } from 'rxjs/operators';
 import { NgModule, Inject, Injectable, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ProxyBaseUrls } from '@msg91/models/root-models';
+import { ProxyBaseUrls } from '@proxy/models/root-models';
+import { AuthService } from '@proxy/services/proxy/auth';
 @NgModule({
     imports: [CommonModule],
 })
@@ -16,11 +18,24 @@ export class ServicesHttpWrapperModule {
     }
 }
 
+export const DEFAULT_OPTIONS = {
+    withCredentials: false,
+    headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Authorization': '',
+    },
+};
+
 @Injectable({
     providedIn: 'root',
 })
 export class HttpWrapperService {
-    constructor(private http: HttpClient, @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any) {}
+    constructor(
+        private http: HttpClient,
+        @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any,
+        private authService: AuthService
+    ) {}
 
     public createUrl = (url: string): string => {
         return `${this.baseUrl}/${url}`;
@@ -74,27 +89,34 @@ export class HttpWrapperService {
     }
 
     public prepareOptions(options: any, addcontentType: boolean = true): any {
-        options = options || {};
-
-        if (!options.headers) {
-            options.headers = {} as any;
+        const newOptions = {
+            ...cloneDeep(DEFAULT_OPTIONS),
+            ...(options || {}),
+        };
+        if (!newOptions.headers) {
+            newOptions.headers = {} as any;
         }
+        const authToken = this.authService.getTokenSync();
+        if (authToken && !options?.headers?.['Authorization']) {
+            newOptions.headers['Authorization'] = authToken;
+        }
+
         // eslint-disable-next-line no-prototype-builtins
-        if (options.headers.hasOwnProperty('noHeader')) {
+        if (newOptions.headers.hasOwnProperty('noHeader')) {
             // eslint-disable-next-line no-prototype-builtins
-            if (options.headers.hasOwnProperty('Content-Type')) {
-                delete options.headers['Content-Type'];
+            if (newOptions.headers.hasOwnProperty('Content-Type')) {
+                delete newOptions.headers['Content-Type'];
             }
-            delete options.headers['noHeader'];
+            delete newOptions.headers['noHeader'];
         }
 
-        if (options['withCredentials']) {
-            options['withCredentials'] = true;
+        if (newOptions['withCredentials']) {
+            newOptions['withCredentials'] = true;
         } else {
-            options['withCredentials'] = false;
+            newOptions['withCredentials'] = false;
         }
-        options.headers = new HttpHeaders(options.headers);
-        return options;
+        newOptions.headers = new HttpHeaders(newOptions.headers);
+        return newOptions;
     }
 
     public isPrimitive(value) {

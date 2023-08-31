@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { PlayerComponent } from '@msg91/ui/player';
+import { PlayerComponent } from '@proxy/ui/player';
 import { Observable } from 'rxjs';
 
 @Component({
-    selector: 'msg91-tts-recording',
+    selector: 'proxy-tts-recording',
     templateUrl: './tts-recording.component.html',
     styleUrls: ['./tts-recording.component.scss'],
 })

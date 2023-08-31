@@ -1,0 +1,120 @@
+.mat-paginator {
+    background: var(--colo-common-bg);
+    &.default-mat-paginator {
+        background-color: transparent !important;
+        .mat-form-field {
+            .mat-form-field-wrapper {
+                padding-bottom: 6px !important;
+            }
+        }
+        .mat-paginator-range-label {
+            @media only screen and (max-width: 768px) {
+                margin: 0 10px 0 10px;
+            }
+        }
+    }
+}
+
+.cdk-overlay-pane .mat-select-panel-wrap {
+    margin-top: 0 !important;
+}
+
+// Goto pagination
+.mat-paginator-outer-container {
+    .mat-select-value {
+        line-height: 16px;
+    }
+    .mat-paginator-page-size-label,
+    .mat-paginator-range-label {
+        font-size: var(--font-size-common-12);
+    }
+    .mat-form-field-wrapper {
+        .mat-form-field-infix {
+            padding: 0px 0 10px 0 !important;
+        }
+    }
+}
+.go-to-pagination {
+    border-top: 1px solid var(--color-table-cell-border);
+    background-color: var(--color-common-white);
+    .mat-paginator {
+        box-shadow: none !important;
+        border-top: 0px;
+        .mat-paginator-page-size-label {
+            @media (max-width: 660px) {
+                display: none;
+            }
+        }
+    }
+    .go-to-container {
+        display: flex;
+        align-items: baseline;
+        height: 39px;
+        margin-top: -3px;
+        .go-to-label {
+            margin: 0 4px;
+            font-size: 12px;
+            color: var(--color-common-text);
+            font-family: var(--font-family-common);
+            @media (max-width: 460px) {
+                display: none;
+            }
+        }
+        .mat-form-field {
+            width: 56px;
+            font-size: 12px;
+            .mat-form-field-wrapper {
+                padding-bottom: 0px !important;
+                .mat-form-field-flex {
+                    font-size: 12px;
+                    .mat-form-field-infix {
+                        padding: 4px 0 10px 0 !important;
+
+                        .mat-select-arrow-wrapper {
+                            transform: translateY(-15%) !important;
+                        }
+
+                        .mat-select-value-text {
+                            color: var(--color-common-text);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .mat-paginator {
+        .mat-paginator-container {
+            @media (max-width: 460px) {
+                padding-right: 0px;
+                .mat-paginator-page-size {
+                    margin-right: 0px !important;
+                }
+                .mat-paginator-range-label {
+                    margin-right: 0px !important;
+                }
+                .mat-paginator-navigation-previous,
+                .mat-paginator-navigation-next {
+                    width: 30px;
+                    height: 30px;
+                    line-height: 30px;
+                }
+            }
+        }
+    }
+}
+// Add class inside Overlay useing provider
+.custom-mat-paginator {
+    .mat-select-panel-wrap {
+        .mat-select-panel {
+            border-radius: var(--border-common-radius);
+            .mat-option {
+                font-size: var(--font-size-common-11);
+            }
+        }
+    }
+}
+
+.mat-form-field-appearance-outline .mat-form-field-flex {
+    font-size: var(--font-size-common-14);
+    line-height: 1.225;
+}
