@@ -7,7 +7,7 @@ import { SendOtpComponent } from './otp/send-otp/send-otp.component';
 
 declare global {
     interface Window {
-        initSendOTP: any;
+        initVerification: any;
         intlTelInput: any;
     }
 }
@@ -22,7 +22,7 @@ function documentReady(fn: any) {
     }
 }
 
-window['initSendOTP'] = (config: any) => {
+window['initVerification'] = (config: any) => {
     documentReady(() => {
         if (config?.referenceId) {
             const findOtpProvider = document.querySelector('proxy-auth');

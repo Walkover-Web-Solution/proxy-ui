@@ -53,7 +53,7 @@ import 'zone.js'; // Included with Angular CLI.
 
 declare global {
     interface Window {
-        initSendOTP: any;
+        initVerification: any;
         intlTelInput: any;
     }
 }
