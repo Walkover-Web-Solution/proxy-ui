@@ -22,7 +22,6 @@ export class OtpUtilityService {
                 padding: CryptoJS.pad.Pkcs7,
             }
         );
-
         return cipher.toString(CryptoJS.enc.Utf8);
     }
 }

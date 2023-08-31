@@ -2,25 +2,27 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyProgressBarModule as MatProgressBarModule } from '@angular/material/legacy-progress-bar';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
-import { ProxyBaseUrls } from '@msg91/models/root-models';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
+import { ProxyBaseUrls } from '@proxy/models/root-models';
+
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { DirectivesRemoveCharacterDirectiveModule } from 'libs/directives/remove-character-directive/src';
+
 import { environment } from '../../environments/environment';
 import { SendOtpCenterComponent } from './component';
 import { SendOtpComponent } from './send-otp/send-otp.component';
 import { OtpService } from './service/otp.service';
 import { reducers } from './store/app.state';
 import { OtpEffects } from './store/effects';
-import { DirectivesRemoveCharacterDirectiveModule } from 'libs/directives/remove-character-directive/src/index';
-import { ServicesHttpWrapperModule } from '@msg91/services/httpWrapper';
+import { ServicesHttpWrapperNoAuthModule } from '@proxy/services/http-wrapper-no-auth';
 import { OtpUtilityService } from './service/otp-utility.service';
 
 export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent];
@@ -47,14 +49,13 @@ export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent]
                 strictActionImmutability: true,
             },
         }),
-        ServicesHttpWrapperModule,
+        ServicesHttpWrapperNoAuthModule,
     ],
     declarations: [...CHAT_COMPONENTS],
     providers: [
         OtpService,
         OtpUtilityService,
         { provide: ProxyBaseUrls.Env, useValue: environment.env },
-        { provide: ProxyBaseUrls.ProxyURL, useValue: null },
         {
             provide: ProxyBaseUrls.BaseURL,
             useValue: environment.apiUrl + environment.msgMidProxy,

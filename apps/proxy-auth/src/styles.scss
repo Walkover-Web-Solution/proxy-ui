@@ -52,7 +52,6 @@ $theme: mat.define-light-theme(
 /*
 // Include all theme styles for the components.
 */
-@include mat.all-legacy-component-themes($theme);
 
 /* You can add global styles to this file, and also import other style files */
 html,
@@ -64,7 +63,7 @@ body {
 }
 
 *,
-msg91-auth,
+proxy-auth,
 .iti__country-list {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;

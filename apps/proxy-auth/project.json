@@ -6,7 +6,7 @@
     "prefix": "proxy",
     "targets": {
         "build": {
-            "executor": "@angular-devkit/build-angular:browser",
+            "executor": "@angular-builders/custom-webpack:browser",
             "outputs": ["{options.outputPath}"],
             "options": {
                 "outputPath": "dist/apps/proxy-auth",
@@ -17,7 +17,11 @@
                 "inlineStyleLanguage": "scss",
                 "assets": ["apps/proxy-auth/src/favicon.ico", "apps/proxy-auth/src/assets"],
                 "styles": ["apps/proxy-auth/src/styles.scss"],
-                "scripts": []
+                "aot": true,
+                "scripts": [],
+                "customWebpackConfig": {
+                    "path": "/webpack.config.js"
+                }
             },
             "configurations": {
                 "production": {
@@ -39,7 +43,12 @@
                             "with": "apps/proxy-auth/src/environments/environment.prod.ts"
                         }
                     ],
-                    "outputHashing": "all"
+                    "buildOptimizer": true,
+                    "optimization": true,
+                    "vendorChunk": false,
+                    "extractLicenses": false,
+                    "sourceMap": false,
+                    "namedChunks": false
                 },
                 "development": {
                     "buildOptimizer": false,
@@ -53,7 +62,10 @@
             "defaultConfiguration": "production"
         },
         "serve": {
-            "executor": "@angular-devkit/build-angular:dev-server",
+            "executor": "@angular-builders/custom-webpack:dev-server",
+            "options": {
+                "browserTarget": "proxy-auth:build"
+            },
             "configurations": {
                 "production": {
                     "browserTarget": "proxy-auth:build:production"
@@ -77,5 +89,5 @@
             }
         }
     },
-    "tags": []
+    "tags": ["scope:proxy-auth", "type:application"]
 }

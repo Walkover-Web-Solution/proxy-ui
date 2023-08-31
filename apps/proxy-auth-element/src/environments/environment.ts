@@ -4,14 +4,6 @@
 
 export const environment = {
     production: false,
-    env: 'local',
-    apiUrl: 'https://apitest.msg91.com/api',
-    baseUrl: 'https://test.proxy.msg91.com',
-    msgMidProxy: '',
-    uiEncodeKey: process.env.AUTH_UI_ENCODE_KEY,
-    uiIvKey: process.env.AUTH_UI_IV_KEY,
-    apiEncodeKey: process.env.AUTH_API_ENCODE_KEY,
-    apiIvKey: process.env.AUTH_API_IV_KEY,
 };
 
 /*

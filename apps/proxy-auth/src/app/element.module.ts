@@ -25,11 +25,11 @@ function documentReady(fn: any) {
 window['initSendOTP'] = (config: any) => {
     documentReady(() => {
         if (config?.referenceId) {
-            const findOtpProvider = document.querySelector('msg91-auth');
+            const findOtpProvider = document.querySelector('proxy-auth');
             if (findOtpProvider) {
                 document.body.removeChild(findOtpProvider);
             }
-            const sendOtpElement = document.createElement('msg91-auth') as NgElement & WithProperties<SendOtpComponent>;
+            const sendOtpElement = document.createElement('proxy-auth') as NgElement & WithProperties<SendOtpComponent>;
             sendOtpElement.referenceId = config.referenceId;
             sendOtpElement.css = config.style;
             if (!config.success || typeof config.success !== 'function') {
@@ -55,20 +55,20 @@ window['initSendOTP'] = (config: any) => {
 })
 export class ElementModule implements DoBootstrap {
     constructor(private injector: Injector) {
-        if (!customElements.get('msg91-auth')) {
+        if (!customElements.get('proxy-auth')) {
             const sendOtpComponent = createCustomElement(SendOtpComponent, {
                 injector: this.injector,
             });
-            customElements.define('msg91-auth', sendOtpComponent);
+            customElements.define('proxy-auth', sendOtpComponent);
         }
     }
 
     ngDoBootstrap(appRef: ApplicationRef) {
-        if (!customElements.get('msg91-auth')) {
+        if (!customElements.get('proxy-auth')) {
             const sendOtpComponent = createCustomElement(SendOtpComponent, {
                 injector: this.injector,
             });
-            customElements.define('msg91-auth', sendOtpComponent);
+            customElements.define('proxy-auth', sendOtpComponent);
         }
     }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { errorResolver } from '@msg91/models/root-models';
+import { errorResolver } from '@proxy/models/root-models';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -7,7 +7,7 @@ import { OtpResModel } from '../../model/otp';
 import { OtpService } from '../../service/otp.service';
 import { otpActions } from '../actions/index';
 import { OtpUtilityService } from '../../service/otp-utility.service';
-import { environment } from 'apps/msg91-auth/src/environments/environment';
+import { environment } from 'apps/proxy-auth/src/environments/environment';
 
 @Injectable()
 export class OtpEffects {

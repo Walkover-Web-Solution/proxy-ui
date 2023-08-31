@@ -1,7 +1,7 @@
 import { NgStyle } from '@angular/common';
 import { Component, Input, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { META_TAG_ID } from '@msg91/constant';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { META_TAG_ID } from '@proxy/constant';
+import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -12,7 +12,7 @@ import { IAppState } from '../store/app.state';
 import { selectGetOtpInProcess, selectResendOtpInProcess, selectVerifyOtpInProcess } from '../store/selectors';
 
 @Component({
-    selector: 'msg91-send-otp',
+    selector: 'proxy-send-otp',
     templateUrl: './send-otp.component.html',
     encapsulation: ViewEncapsulation.ShadowDom,
     styleUrls: ['../../../styles.scss', './send-otp.component.scss'],
@@ -82,7 +82,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     private loadExternalFonts() {
-        const node = document.querySelector('msg91-auth')?.shadowRoot;
+        const node = document.querySelector('proxy-auth')?.shadowRoot;
         const styleElement = document.createElement('link');
         styleElement.rel = 'stylesheet';
         styleElement.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600&display=swap';

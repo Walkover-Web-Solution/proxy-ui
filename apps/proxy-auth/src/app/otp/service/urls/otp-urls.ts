@@ -1,4 +1,4 @@
-import { createUrl } from 'libs/service/src/lib/utils/base-url';
+import { createUrl } from '@proxy/service';
 
 export const otpVerificationUrls = {
     getWidgetData: (baseUrl) => createUrl(baseUrl, ':referenceId/widget'),

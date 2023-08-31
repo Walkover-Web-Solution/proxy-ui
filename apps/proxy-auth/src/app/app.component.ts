@@ -1,9 +1,9 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { environment } from '../environments/environment';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { BaseComponent } from '@proxy/ui/base-component';
 
 @Component({
-    selector: 'msg91-root',
+    selector: 'proxy-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })

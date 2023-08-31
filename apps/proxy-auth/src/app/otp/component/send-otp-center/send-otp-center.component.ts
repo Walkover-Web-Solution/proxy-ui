@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { BaseComponent } from '@proxy/ui/base-component';
 import {
     sendOtpAction,
     getOtpResendAction,
@@ -39,11 +39,11 @@ import {
 } from '../../store/selectors';
 import { isEqual } from 'lodash-es';
 import { debounceTime, distinctUntilChanged, skip, take, takeUntil } from 'rxjs/operators';
-import { EMAIL_REGEX, ONLY_INTEGER_REGEX } from '@msg91/regex';
+import { EMAIL_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { IGetOtpRes, IWidgetResponse } from '../../model/otp';
-import { IntlPhoneLib } from '@msg91/utils';
-import { environment } from 'apps/otp-provider/src/environments/environment';
-import { META_TAG_ID } from '@msg91/constant';
+import { IntlPhoneLib } from '@proxy/utils';
+import { META_TAG_ID } from '@proxy/constant';
+import { environment } from 'apps/proxy-auth/src/environments/environment';
 
 export enum OtpErrorCodes {
     VerifyLimitReached = 704,
@@ -51,7 +51,7 @@ export enum OtpErrorCodes {
 }
 
 @Component({
-    selector: 'msg91-send-otp-center',
+    selector: 'proxy-send-otp-center',
     templateUrl: './send-otp-center.component.html',
     styleUrls: ['./send-otp-center.component.scss'],
 })
@@ -221,8 +221,8 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     }
 
     public initIntl() {
-        const parentDom = document.querySelector('msg91-auth')?.shadowRoot;
-        const input = document.querySelector('msg91-auth')?.shadowRoot?.getElementById('init-contact');
+        const parentDom = document.querySelector('proxy-auth')?.shadowRoot;
+        const input = document.querySelector('proxy-auth')?.shadowRoot?.getElementById('init-contact');
         const customCssStyleURL = `${environment.baseUrl}/${
             environment.production ? 'app' : 'hello-new'
         }/assets/utils/intl-tel-input-custom.css`;

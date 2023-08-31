@@ -8,12 +8,12 @@
                 (selectVerifyOtpInProcess$ | async)
             "
         ></mat-progress-bar>
-        <msg91-send-otp-center
+        <proxy-send-otp-center
             [referenceId]="referenceId"
             (togglePopUp)="toggleSendOtp()"
             (successReturn)="returnSuccessObj($event)"
             (failureReturn)="returnFailureObj($event)"
-        ></msg91-send-otp-center>
+        ></proxy-send-otp-center>
     </div>
     <div class="otp-verification-footer">
         <span>Secured by</span>

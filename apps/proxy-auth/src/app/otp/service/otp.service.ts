@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
-import { BaseResponse, ProxyBaseUrls } from '@msg91/models/root-models';
-import { HttpWrapperService } from '@msg91/services/httpWrapper';
+import { BaseResponse, ProxyBaseUrls } from '@proxy/models/root-models';
 import { Observable, of } from 'rxjs';
 import { omit } from 'lodash-es';
 import { map } from 'rxjs/operators';
 import { OtpResModel, ISendOtpReq, IRetryOtpReq, IVerifyOtpReq, IWidgetResponse, IGetWidgetData } from '../model/otp';
 import { otpVerificationUrls } from './urls/otp-urls';
+import { HttpWrapperService } from '@proxy/services/http-wrapper-no-auth';
 
 @Injectable()
 export class OtpService {
@@ -13,7 +13,6 @@ export class OtpService {
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authkey: '278060AgSjOR5y648314cbP1',
         },
         withCredentials: false,
     };

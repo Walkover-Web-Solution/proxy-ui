@@ -1,0 +1,19 @@
+{
+    "name": "services-http-wrapper-no-auth",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/http-wrapper-no-auth/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": [
+                    "libs/services/http-wrapper-no-auth/**/*.ts",
+                    "libs/services/http-wrapper-no-auth/**/*.html"
+                ]
+            }
+        }
+    },
+    "tags": []
+}
