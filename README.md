@@ -291,13 +291,13 @@ Just like files, functions also follow the single responsibility princinple. Def
 
 -   In desktop view the filter options for tabel column is given just beside the column heading (represented by an arrow). By hovering over the heading you can see it appear and by clicking on it you can toggle the data from ascending to descending(or vice-versa).
 
-![desktop view filter](./apps/msg91/src/assets/images/snaps/desktop-view-filter.png).
+![desktop view filter](./apps/proxy/src/assets/images/snaps/desktop-view-filter.png).
 
 #### For Mobile View
 
 -   In mobile view we are changing the layout to card format and placing the filter arrow beside the column title was not feasible(or user friendly), hence for this purpose we are providing a sort button at top of the cards beside other buttons.
 
-![sort button](./apps/msg91/src/assets/images/snaps/sort%20button%20in%20mobile%20view.png).
+![sort button](./apps/proxy/src/assets/images/snaps/sort%20button%20in%20mobile%20view.png).
 
 `Note: I have highlighted the button with yellow color to understand which sort buttom I am talking about.`
 

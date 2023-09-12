@@ -2,7 +2,7 @@
     "name": "pipes-split",
     "projectType": "library",
     "sourceRoot": "libs/pipes/split/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

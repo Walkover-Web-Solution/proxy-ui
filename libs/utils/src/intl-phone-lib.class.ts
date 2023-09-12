@@ -1,5 +1,5 @@
-import { INTL_INPUT_OPTION } from '@msg91/constant';
-import { PHONE_NUMBER_REGEX } from '@msg91/regex';
+import { INTL_INPUT_OPTION } from '@proxy/constant';
+import { PHONE_NUMBER_REGEX } from '@proxy/regex';
 declare var window;
 
 export class IntlPhoneLib {

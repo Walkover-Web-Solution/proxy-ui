@@ -1,6 +1,6 @@
 import { NgModule, Pipe, PipeTransform } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { keyValuePair } from '@msg91/models/root-models';
+import { keyValuePair } from '@proxy/models/root-models';
 
 type valueType = string | number | boolean | keyValuePair<any> | any[];
 

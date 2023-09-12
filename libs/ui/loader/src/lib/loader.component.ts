@@ -1,7 +1,7 @@
 import { Component, Input, TemplateRef } from '@angular/core';
 
 @Component({
-    selector: 'msg91-loader',
+    selector: 'proxy-loader',
     template: `
         <div class="h-100 content-loader">
             <div class="loading-box">

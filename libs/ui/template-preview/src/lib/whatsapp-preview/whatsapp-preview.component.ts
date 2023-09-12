@@ -4,11 +4,11 @@ import {
     IWhatsappTemplateButtonFormat,
     IWhatsappTemplateHeaderFormat,
     IWhatsappTemplateMessageType,
-} from '@msg91/models/whatsapp-models';
-import { CONTENT_BETWEEEN_CURLY_BRACKETS_REGEX } from '@msg91/regex';
+} from '@proxy/models/whatsapp-models';
+import { CONTENT_BETWEEEN_CURLY_BRACKETS_REGEX } from '@proxy/regex';
 
 @Component({
-    selector: 'msg91-whatsapp-preview',
+    selector: 'proxy-whatsapp-preview',
     templateUrl: './whatsapp-preview.component.html',
     styleUrls: ['./whatsapp-preview.component.scss'],
 })

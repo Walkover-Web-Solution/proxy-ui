@@ -15,7 +15,7 @@ import {
 import { fromEvent as observableFromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { VisibilityObserver } from '../utils/visibility-observer';
-import { DEBOUNCE_TIME } from '@msg91/constant';
+import { DEBOUNCE_TIME } from '@proxy/constant';
 
 @Component({
     selector: 'base-chart',

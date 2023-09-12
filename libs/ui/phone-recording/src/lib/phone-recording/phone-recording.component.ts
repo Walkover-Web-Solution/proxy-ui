@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 @Component({
-    selector: 'msg91-phone-recording',
+    selector: 'proxy-phone-recording',
     templateUrl: './phone-recording.component.html',
     styleUrls: ['./phone-recording.component.scss'],
 })

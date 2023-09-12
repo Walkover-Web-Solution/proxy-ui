@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ServicesHttpWrapperModule, HttpWrapperService } from '@msg91/services/httpWrapper';
+import { ServicesHttpWrapperModule, HttpWrapperService } from '@proxy/services/httpWrapper';
 @NgModule({
     imports: [CommonModule, ServicesHttpWrapperModule],
 })

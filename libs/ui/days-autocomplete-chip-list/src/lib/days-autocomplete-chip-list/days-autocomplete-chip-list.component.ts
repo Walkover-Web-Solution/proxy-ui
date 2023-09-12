@@ -1,10 +1,10 @@
 import { Component, Input, OnChanges, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { WEEK_DAYS, WEEK_DAYS_FULL, WEEK_DAYS_LESS } from '@msg91/constant';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { WEEK_DAYS, WEEK_DAYS_FULL, WEEK_DAYS_LESS } from '@proxy/constant';
+import { BaseComponent } from '@proxy/ui/base-component';
 
 @Component({
-    selector: 'msg91-days-autocomplete-chip-list',
+    selector: 'proxy-days-autocomplete-chip-list',
     templateUrl: './days-autocomplete-chip-list.component.html',
 })
 export class DaysAutocompleteChipListComponent extends BaseComponent implements OnChanges {

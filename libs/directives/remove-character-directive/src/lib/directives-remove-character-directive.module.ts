@@ -1,7 +1,7 @@
 import { Directive, HostListener, Input, NgModule } from '@angular/core';
 
 @Directive({
-    selector: '[msg91RemoveCharacter]',
+    selector: '[proxyRemoveCharacter]',
 })
 export class RemoveCharacterDirective {
     /** Array of characters to remove */

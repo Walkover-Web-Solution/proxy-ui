@@ -1,0 +1,32 @@
+<div class="d-flex">
+    <div class="login-left-menu">
+        <div class="font-20 fw-bold brand-title">SAAR</div>
+        <div>
+            Take your API management to new heights with SAAR. Sign up for a free trial today and experience the
+            seamless management of APIs and proxy-pass like never before!
+        </div>
+        <ng-container *ngFor="let data of description">
+            <div class="font-20 fw-bold">
+                {{ data.title }}
+            </div>
+            <div class="d-flex flex-column gap-2">
+                <div class="d-flex align-content-center gap-2" *ngFor="let item of data.list">
+                    <mat-icon class="mat-icon-20">done</mat-icon>
+                    {{ item }}
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <div class="login-content">
+        <ng-component *ngTemplateOutlet="loginPage"></ng-component>
+    </div>
+</div>
+
+<ng-template #loginPage>
+    <div class="right-title fw-bold">Welcome back!</div>
+    <div class="">Login with</div>
+    <button mat-stroked-button color="primary" (click)="login()">
+        <img class="mr-1" src="assets/images/logos/google-logo.svg" />
+        Google
+    </button>
+</ng-template>

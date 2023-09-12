@@ -2,7 +2,7 @@
     "name": "directives-mark-all-as-touched",
     "projectType": "library",
     "sourceRoot": "libs/directives/mark-all-as-touched/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

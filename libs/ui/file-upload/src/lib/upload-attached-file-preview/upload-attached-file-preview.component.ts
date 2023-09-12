@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
-    selector: 'msg91-upload-attached-file-preview',
+    selector: 'proxy-upload-attached-file-preview',
     templateUrl: './upload-attached-file-preview.component.html',
     styleUrls: ['./upload-attached-file-preview.component.scss'],
 })

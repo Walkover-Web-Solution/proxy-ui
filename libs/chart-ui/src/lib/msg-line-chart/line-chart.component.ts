@@ -25,7 +25,7 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
 @Component({
-    selector: 'msg91-line-chart',
+    selector: 'proxy-line-chart',
     templateUrl: './line-chart.component.html',
     styleUrls: ['./line-chart.component.scss'],
 })

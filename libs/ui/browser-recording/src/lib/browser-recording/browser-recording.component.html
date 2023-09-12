@@ -15,7 +15,7 @@
                         autocomplete="off"
                         placeholder="Enter Name"
                         (ngModelChange)="onModelChange($event)"
-                        msg91RemoveCharacter
+                        proxyRemoveCharacter
                         [charactersToRemove]="[' ']"
                     />
                     <mat-error *ngIf="(name.dirty || name.touched) && name.invalid"> Invalid Value </mat-error>
@@ -38,13 +38,13 @@
                         <i class="material-icons text-success">replay</i> Play Recording
                     </a>
                     <div>
-                        <msg91-lib-audio-player
+                        <proxy-lib-audio-player
                             #audio
                             [getBuffer]="getBuffer"
                             (remove)="clearRecordedData()"
                             [showPlay]="false"
                             [showTime]="false"
-                        ></msg91-lib-audio-player>
+                        ></proxy-lib-audio-player>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 import { ModuleWithProviders, NgModule, Pipe, PipeTransform } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { DecimalFormatterPipe, PipesDecimalFormatterModule } from '@msg91/pipes/DecimalFormatter';
+import { DecimalFormatterPipe, PipesDecimalFormatterModule } from '@proxy/pipes/DecimalFormatter';
 
 @Pipe({ name: 'currencyFormatter' })
 export class CurrencyFormatterPipe implements PipeTransform {

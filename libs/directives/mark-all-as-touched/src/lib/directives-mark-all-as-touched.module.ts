@@ -15,7 +15,7 @@ import {
 import { ControlContainer, FormGroup, FormGroupDirective } from '@angular/forms';
 
 @Directive({
-    selector: '[msg91MarkAllAsTouched]',
+    selector: '[proxyMarkAllAsTouched]',
 })
 export class MarkAllAsTouchedDirective implements OnInit, OnDestroy {
     /** Button reference to handle custom form submit where submit event is not listened */

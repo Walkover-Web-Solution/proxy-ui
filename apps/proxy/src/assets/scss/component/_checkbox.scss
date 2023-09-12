@@ -1,0 +1,14 @@
+.default-checkbox {
+    font-size: 14px;
+    line-height: 16px;
+    color: var(--color-common-text);
+}
+
+// mat-checkbox doesn't get checked unitl we click on label or checkbox even if we have added w-100
+// need to pass full-width-clickable-checkbox class with w-100 to make mat-checkbox fully clickable
+.full-width-clickable-checkbox {
+    .mat-checkbox-layout {
+        width: 100% !important;
+        display: inline-block;
+    }
+}

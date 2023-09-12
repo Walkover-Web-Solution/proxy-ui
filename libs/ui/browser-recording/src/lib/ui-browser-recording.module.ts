@@ -5,8 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { UiPlayerModule } from '@msg91/ui/player';
-import { DirectivesRemoveCharacterDirectiveModule } from '@msg91/directives/RemoveCharacterDirective';
+import { UiPlayerModule } from '@proxy/ui/player';
+import { DirectivesRemoveCharacterDirectiveModule } from '@proxy/directives/RemoveCharacterDirective';
 import { BrowserRecordingComponent } from './browser-recording/browser-recording.component';
 
 @NgModule({

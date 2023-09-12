@@ -1,0 +1,33 @@
+.default-sidenav {
+    .mat-nav-list {
+        padding-top: 0px;
+        .mat-list-item {
+            height: 40px !important;
+            cursor: pointer !important;
+            color: var(--color-sidenav-menu-link-text) !important;
+            position: relative;
+            .mat-icon {
+                border-radius: 0px !important;
+            }
+            .mat-list-item-content {
+                padding: 0px 0px 0px 16px;
+            }
+            &.mat-list-item-disabled {
+                background-color: transparent;
+                pointer-events: none;
+            }
+            .mat-line {
+                font-size: 14px !important;
+                font-weight: 400;
+                &.menu-svg-icon {
+                    fill: red;
+                    svg {
+                        path {
+                            fill: var(--color-common-slate);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

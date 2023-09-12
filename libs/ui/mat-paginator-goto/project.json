@@ -2,7 +2,7 @@
     "name": "ui-mat-paginator-goto",
     "projectType": "library",
     "sourceRoot": "libs/ui/mat-paginator-goto/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

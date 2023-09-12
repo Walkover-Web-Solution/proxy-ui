@@ -1,5 +1,5 @@
 {
-    "npmScope": "msg91",
+    "npmScope": "proxy",
     "affected": {
         "defaultBase": "master"
     },
@@ -8,7 +8,7 @@
             "runner": "@nrwl/nx-cloud",
             "options": {
                 "cacheableOperations": ["build", "lint", "test"],
-                "accessToken": "ZTkyNWU1OTctMTc3My00OTcwLWIyZWMtZmQyNmE5MTNhMTRifHJlYWQtd3JpdGU=",
+                "accessToken": "Yzk3NzU2OWMtZTJhZC00NWNhLTk1OGQtMWJiOThhMWM2MzE0fHJlYWQtd3JpdGU=",
                 "parallel": 3
             }
         }
@@ -43,7 +43,8 @@
             "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
             "!{projectRoot}/tsconfig.spec.json",
             "!{projectRoot}/jest.config.[jt]s",
-            "!{projectRoot}/.eslintrc"
+            "!{projectRoot}/.eslintrc",
+            "!{projectRoot}/.eslintrc.json"
         ]
     },
     "targetDefaults": {

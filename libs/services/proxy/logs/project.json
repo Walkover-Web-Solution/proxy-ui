@@ -1,0 +1,16 @@
+{
+    "name": "services-proxy-logs",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/proxy/logs/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/services/proxy/logs/**/*.ts", "libs/services/proxy/logs/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

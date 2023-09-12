@@ -2,7 +2,7 @@
     "name": "ui-file-upload",
     "projectType": "library",
     "sourceRoot": "libs/ui/file-upload/src",
-    "prefix": "msg91",
+    "prefix": "proxy",
     "targets": {
         "lint": {
             "executor": "@nrwl/linter:eslint",

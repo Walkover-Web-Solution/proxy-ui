@@ -1,1 +1,93 @@
 /* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+
+/* Plus imports for other components in your app.*/
+@import 'assets/scss/base/fonts';
+@import 'assets/scss/theme/theme-colors';
+@import 'assets/scss/base/default-variables';
+@import 'assets/scss/base/light-theme';
+@import 'assets/scss/base/dark-theme';
+
+/* Reset*/
+@import 'assets/scss/base/reset.scss';
+
+/* Layout*/
+@import 'assets/scss/layout/display.scss';
+@import 'assets/scss/layout/flex.scss';
+@import 'assets/scss/layout/sizing.scss';
+@import 'assets/scss/layout/spacing.scss';
+@import 'assets/scss/layout/grid.scss';
+@import 'assets/scss/layout/text.scss';
+@import 'assets/scss/layout/positions.scss';
+@import 'assets/scss/theme/theme-colors';
+
+/* Component*/
+@import 'assets/scss/component/modal.scss';
+
+/* Common Class Name*/
+@import 'assets/scss/utils/common-classes.scss';
+
+/* Backgound Colors*/
+@import 'assets/scss/utils/bg-colors';
+
+/* Theme*/
+@import 'assets/scss/theme/default-theme';
+
+/*Components*/
+@import 'assets/scss/component/filters';
+@import 'assets/scss/component/toast';
+@import 'assets/scss/component/table';
+@import 'assets/scss/component/loader';
+@import 'assets/scss/component/icon';
+@import 'assets/scss/component/card';
+@import 'assets/scss/component/form-field';
+@import 'assets/scss/component/pagination';
+@import 'assets/scss/component/tabs';
+@import 'assets/scss/component/buttons';
+@import 'assets/scss/component/status';
+@import 'assets/scss/component/text-style';
+@import 'assets/scss/component/side-dialog';
+@import 'assets/scss/component/modal';
+@import 'assets/scss/component/menu';
+@import 'assets/scss/component/bottom-sheet';
+@import 'assets/scss/component/checkbox';
+@import 'assets/scss/component/sidenav';
+@import 'assets/scss/component/select-option';
+@import 'assets/scss/component/chart';
+
+/*Main*/
+.app-content {
+    padding: 16px;
+    min-height: 100%;
+    background-color: var(--color-common-bg);
+    height: calc(100vh - 55px);
+    overflow-y: auto;
+    background-color: var(--color-common-app-bg);
+    @media (max-width: 768px) {
+        overflow-x: auto;
+    }
+}
+canvas {
+    width: 100% !important;
+}
+
+.no-data-placeholder {
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 18px;
+    text-align: center;
+    color: var(--color-common-grey) !important;
+    align-items: center;
+    img {
+        margin-bottom: 25px;
+    }
+}
+
+// Sort Button
+
+.bottom-sort-btn {
+    display: none !important;
+    @media only screen and (max-width: 768px) {
+        display: block !important;
+    }
+}

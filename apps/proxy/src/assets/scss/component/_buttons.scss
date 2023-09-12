@@ -1,0 +1,253 @@
+@use '../../../../../../node_modules/@angular/material/index' as mat;
+@import '../theme/theme-colors';
+@import '../utils/mixins/common-utils';
+
+$primary-btn-height: 40px;
+$secondary-btn-height: 30px;
+
+.mat-button-base {
+    &.mat-flat-button,
+    &.mat-stroked-button,
+    &.mat-button {
+        border-radius: var(--border-common-radius-4);
+        min-width: auto !important;
+        transition: background-color 200ms cubic-bezier(0.35, 0, 0.25, 1);
+        line-height: $primary-btn-height;
+        &.mat-button-disabled {
+            background-color: var(--color-button-bg) !important;
+        }
+        &.btn-medium {
+            line-height: $secondary-btn-height !important;
+            font-size: var(--font-size-common-12);
+        }
+    }
+    // 6. Flat button
+    &.mat-flat-button {
+        transition: background-color 200ms cubic-bezier(0.35, 0, 0.25, 1);
+        // Flat button color variation
+        &.flat-default {
+            @include btnHover(var(--color-button-text), var(--color-button-bg), var(--color-button-hover));
+        }
+        &.flat-primary-light {
+            @include btnHover(
+                var(--color-common-primary),
+                var(--color-common-primary-light),
+                var(--color-common-primary-light-hover)
+            );
+        }
+        &.flat-primary {
+            background-color: var(--color-common-primary-light);
+            color: var(--color-common-primary);
+        }
+        &.btn-success {
+            @include btnHover(
+                var(--color-common-white),
+                var(--color-whatsApp-primary),
+                var(--color-whatsApp-primary-hover),
+                var(--color-common-white)
+            );
+        }
+        &.btn-success-light {
+            @include btnHover(
+                var(--color-whatsApp-primary),
+                var(--color-whatsApp-primary-light),
+                var(--color-whatsApp-primary),
+                var(--color-common-white)
+            );
+        }
+        &.btn-danger-light {
+            @include btnHover(
+                var(--color-email-primary),
+                var(--color-email-primary-light),
+                var(--color-email-primary),
+                var(--color-common-white)
+            );
+        }
+        // Hover state
+        &.mat-primary {
+            &:hover {
+                background-color: var(--color-common-primary-dark);
+            }
+        }
+        // Hover state
+        &.mat-warn {
+            @include btnHover(
+                var(--color-common-white),
+                var(--color-email-primary),
+                var(--color-email-primary-hover),
+                var(--color-common-white)
+            );
+        }
+        // Flat Icon button
+        &.flat-icon-btn {
+            padding: 0px 12px;
+        }
+
+    }
+    .mat-icon-suffix {
+        margin-right: calc(12px - 16px);
+        margin-left: 4px;
+    }
+    .mat-icon-prefix {
+        margin-left: calc(12px - 16px);
+        margin-right: 4px;
+    }
+
+    &.mat-button {
+        @include btnHover(var(--color-button-text), transparent, var(--color-button-bg));
+        &.mat-primary {
+            @include btnHover(
+                var(--color-common-primary),
+                transparent,
+                var(--color-common-primary-light),
+                var(--color-common-primary)
+            );
+        }
+    }
+    &.mat-stroked-button {
+        line-height: 38px;
+        &:not(.mat-primary) {
+            border-color: var(--color-common-grey) !important;
+            color: var(--color-common-grey) !important;
+        }
+        &.mat-primary {
+            border-color: var(--color-primary-color) !important;
+            @include btnHover(var(--color-common-primary), transparent, var(--color-common-primary-light));
+        }
+    }
+    &.remove-mat-button-focus-overlay {
+        .mat-button-focus-overlay {
+            display: none;
+        }
+    }
+}
+
+/* 1. Icon Button */
+.mat-icon-button {
+    &.icon-btn-md {
+        @include generateIconBtn(30px, 18px, var(--color-common-text-2));
+    }
+    &.icon-btn-sm {
+        @include generateIconBtn(20px, 12px, var(--color-common-text-2));
+    }
+    &.mat-primary {
+        @include iconBtnHover(
+            var(--color-common-text-2),
+            var(--color-common-primary-light),
+            var(--color-common-primary)
+        );
+    }
+    &.mat-warn {
+        @include iconBtnHover(var(--color-common-text-2), var(--color-email-primary-light), var(--color-email-primary));
+    }
+    &.mat-success {
+        @include iconBtnHover(
+            var(--color-common-text-2),
+            var(--color-whatsApp-primary-light),
+            var(--color-whatsApp-primary)
+        );
+    }
+    &.mat-button-disabled {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+}
+
+.mat-btn-xs {
+    @media only screen and (max-width: 660px) {
+        padding-left: 12px;
+        padding-right: 12px;
+        .mat-icon {
+            margin: 0px;
+        }
+    }
+}
+
+// Slider
+.slider::-webkit-slider-thumb {
+    background: var(--color-common-primary) !important;
+}
+
+// Toggle Button light theme color - https://prnt.sc/wY6YBUSpVDQF
+
+.default-toggle-btn {
+    border-radius: var(--border-common-radius) !important;
+    border: none !important;
+    box-shadow: none !important;
+    .mat-button-toggle {
+        font-size: var(--font-size-common-14);
+        border-color: var(--color-common-border);
+        // min-width: 108px;
+        // &.mat-button-toggle-appearance-standard {
+        //     background-color: var(--color-button-bg);
+        //     color: var(--color-common-rock) !important;
+        //     font-weight: 500;
+        //     .mat-button-toggle-label-content {
+        //         line-height: 40px !important;
+        //     }
+        //     &.mat-button-toggle-checked {
+        //         background-color: var(--color-common-primary-light);
+        //         color: var(--color-common-primary) !important;
+        //     }
+        // }
+        background-color: var(--color-button-bg);
+        color: var(--color-button-text) !important;
+        font-weight: 500;
+        .mat-button-toggle-label-content {
+            line-height: 40px !important;
+        }
+        &.mat-button-toggle-checked {
+            background-color: var(--color-common-primary);
+            color: var(--color-common-white) !important;
+            &:hover {
+                background-color: var(--color-common-primary-dark);
+            }
+        }
+        &:hover {
+            background-color: var(--color-button-hover);
+        }
+    }
+    &.icon-type-button {
+        .mat-button-toggle {
+            min-width: auto;
+        }
+    }
+}
+
+// Toggle Button - https://prnt.sc/ad0qU7tV7Bg5
+.custom-toggle-btn {
+    border-radius: var(--border-common-radius) !important;
+    .mat-button-toggle {
+        font-size: var(--font-size-common-12);
+        font-weight: 600;
+        color: var(--color-common-text-2);
+        border-color: var(--color-common-border);
+        &.mat-button-toggle-checked {
+            background-color: var(--color-common-primary) !important;
+            color: var(--color-common-white) !important;
+        }
+        &.mat-button-toggle-appearance-standard {
+            .mat-button-toggle-label-content {
+                line-height: 36.5px !important;
+            }
+        }
+    }
+}
+
+// Disabled Action on permission basis
+.disabled-action,
+button:disabled,
+button[disabled],
+button:hover:disabled,
+button:hover[disabled],
+button.mat-btn-md.mat-btn-wran:disabled,
+button.mat-btn-md.mat-btn-wran[disabled],
+button.mat-btn-md.mat-btn-wran:hover:disabled,
+button.mat-btn-md.mat-btn-wran:hover[disabled] {
+    pointer-events: none;
+    color: var(--color-common-grey) !important;
+    border-color: var(--color-common-grey) !important;
+    .mat-icon {
+        color: var(--color-common-grey) !important;
+    }
+}

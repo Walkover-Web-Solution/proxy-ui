@@ -1,17 +1,17 @@
-# Msg91 Design Guide
+# Proxy UI Design Guide
 
 ##   Setup Guide
 
-1. Clone https://github.com/Walkover-Web-Solution/msg91-UI.git.
+1. Clone https://github.com/Walkover-Web-Solution/proxy-UI.git.
 
 2. This project requires Node version 14+, install Node from [here](https://nodejs.org/en/).
 
-3. Go inside the cloned directory `msg91-UI` in any terminal and run these following commands in the terminal to install dependency and start local serve.
+3. Go inside the cloned directory `proxy-UI` in any terminal and run these following commands in the terminal to install dependency and start local serve.
 
 4. Run `npm i` for installation of dependencies.
 
 5. Serving the project locally: 
-    * For msg91: Run `npm start` to local serve the project.
+    * For proxy: Run `npm start` to local serve the project.
     * For Admin Panel: Run `npm run start:admin` to local serve the project.
     * For chat-widget: Run `npm run start:chat-widget` to local serve the project.
     * For otp-provider: Run `npm run start:otp-provider` to local serve the project.
@@ -320,13 +320,13 @@ You should consider the styles of a component to be private implementation detai
 
 * In desktop view the filter options for tabel column is given just beside the column heading (represented by an arrow). By hovering over the heading you can see it appear and by clicking on it you can toggle the data from ascending to descending(or vice-versa).
 
-![desktop view filter](./apps/msg91/src/assets/images/snaps/desktop-view-filter.png).
+![desktop view filter](./apps/proxy/src/assets/images/snaps/desktop-view-filter.png).
 
 ##### For Mobile View:
 
 * In mobile view we are changing the layout to card format and placing the filter arrow beside the column title was not feasible(or user friendly), hence for this purpose we are providing a sort button at top of the cards beside other buttons.
 
-![sort button](./apps/msg91/src/assets/images/snaps/sort%20button%20in%20mobile%20view.png).
+![sort button](./apps/proxy/src/assets/images/snaps/sort%20button%20in%20mobile%20view.png).
 
 `Note: I have highlighted the button with yellow color to let you know which sort buttom I am talking about.`
 
@@ -369,36 +369,36 @@ public sortBottomSheet(): void {
 
 | Class Name                           | Preview                                                                                 |
 | -------------------------------------|-----------------------------------------------------------------------------------------|
-| `mat-flat-button flat-default`       | ![desktop view filter](./apps/msg91/src/assets/images/snaps/flat-default-btn.jpg)       |         
-| `mat-flat-button flat-primary-light` | ![desktop view filter](./apps/msg91/src/assets/images/snaps/flat-primary-light.jpg)     |         
-| `mat-icon-button mat-icon-sm`        | ![desktop view filter](./apps/msg91/src/assets/images/snaps/mat-icon-sm.jpg)            |        
-| `mat-icon-button icon-btn-md`        | ![desktop view filter](./apps/msg91/src/assets/images/snaps/icon-btn-md.jpg)            |         
-| `mat-icon-button`                    | ![desktop view filter](./apps/msg91/src/assets/images/snaps/mat-icon-button.png)        |         
-| `mat-icon-button mat-primary`        | ![desktop view filter](./apps/msg91/src/assets/images/snaps/mat-icon-button.png)        |        
-| `mat-icon-button mat-warn`           | ![desktop view filter](./apps/msg91/src/assets/images/snaps/icon-warn-btn.jpg)          |        
-| `mat-btn-md`                         | ![desktop view filter](./apps/msg91/src/assets/images/snaps/mat-btn-md.jpg)             |        
-| `mat-btn-sm`                         | ![desktop view filter](./apps/msg91/src/assets/images/snaps/mat-btn-sm.jpg)             |        
-| `custom-toggle-btn`                  | ![desktop view filter](./apps/msg91/src/assets/images/snaps/custom-toggle-btn.jpg)      | 
-| `default-toggle-btn`                 | ![desktop view filter](./apps/msg91/src/assets/images/snaps/default-toggle-btn.jpg)     | 
+| `mat-flat-button flat-default`       | ![desktop view filter](./apps/proxy/src/assets/images/snaps/flat-default-btn.jpg)       |         
+| `mat-flat-button flat-primary-light` | ![desktop view filter](./apps/proxy/src/assets/images/snaps/flat-primary-light.jpg)     |         
+| `mat-icon-button mat-icon-sm`        | ![desktop view filter](./apps/proxy/src/assets/images/snaps/mat-icon-sm.jpg)            |        
+| `mat-icon-button icon-btn-md`        | ![desktop view filter](./apps/proxy/src/assets/images/snaps/icon-btn-md.jpg)            |         
+| `mat-icon-button`                    | ![desktop view filter](./apps/proxy/src/assets/images/snaps/mat-icon-button.png)        |         
+| `mat-icon-button mat-primary`        | ![desktop view filter](./apps/proxy/src/assets/images/snaps/mat-icon-button.png)        |        
+| `mat-icon-button mat-warn`           | ![desktop view filter](./apps/proxy/src/assets/images/snaps/icon-warn-btn.jpg)          |        
+| `mat-btn-md`                         | ![desktop view filter](./apps/proxy/src/assets/images/snaps/mat-btn-md.jpg)             |        
+| `mat-btn-sm`                         | ![desktop view filter](./apps/proxy/src/assets/images/snaps/mat-btn-sm.jpg)             |        
+| `custom-toggle-btn`                  | ![desktop view filter](./apps/proxy/src/assets/images/snaps/custom-toggle-btn.jpg)      | 
+| `default-toggle-btn`                 | ![desktop view filter](./apps/proxy/src/assets/images/snaps/default-toggle-btn.jpg)     | 
 
 #### 2. Card
 
 | Class Name                           | Preview                                                                                 |
 | -------------------------------------|-----------------------------------------------------------------------------------------|
-| `mat-data-card outline-card`         |   <img src="./apps/msg91/src/assets/images/snaps/outline-card.jpg" width="350">
-| `mat-data-card delivered`            |   <img src="./apps/msg91/src/assets/images/snaps/delivered-card.jpg" width="350">       |
-| `mat-data-card suppressed`           |   <img src="./apps/msg91/src/assets/images/snaps/suppressed.jpg" width="350">       |
-| `mat-data-card open`                 |   <img src="./apps/msg91/src/assets/images/snaps/open-card.jpg" width="350">       |
-| `mat-data-card failed`               |   <img src="./apps/msg91/src/assets/images/snaps/failed-card.jpg" width="350">       |
-| `mat-data-card others`               |   <img src="./apps/msg91/src/assets/images/snaps/others-card.jpg" width="350">       |
-| `mat-data-card inprogress`           |   <img src="./apps/msg91/src/assets/images/snaps/inprogress-card.jpg" width="350">       |
-| `mat-data-card total`                |   <img src="./apps/msg91/src/assets/images/snaps/total-card.jpg" width="350">       |
+| `mat-data-card outline-card`         |   <img src="./apps/proxy/src/assets/images/snaps/outline-card.jpg" width="350">
+| `mat-data-card delivered`            |   <img src="./apps/proxy/src/assets/images/snaps/delivered-card.jpg" width="350">       |
+| `mat-data-card suppressed`           |   <img src="./apps/proxy/src/assets/images/snaps/suppressed.jpg" width="350">       |
+| `mat-data-card open`                 |   <img src="./apps/proxy/src/assets/images/snaps/open-card.jpg" width="350">       |
+| `mat-data-card failed`               |   <img src="./apps/proxy/src/assets/images/snaps/failed-card.jpg" width="350">       |
+| `mat-data-card others`               |   <img src="./apps/proxy/src/assets/images/snaps/others-card.jpg" width="350">       |
+| `mat-data-card inprogress`           |   <img src="./apps/proxy/src/assets/images/snaps/inprogress-card.jpg" width="350">       |
+| `mat-data-card total`                |   <img src="./apps/proxy/src/assets/images/snaps/total-card.jpg" width="350">       |
 
 #### 3. Chip
 
 | Class Name                           | Preview                                                                                 |
 | -------------------------------------|-----------------------------------------------------------------------------------------|
-| `mat-chip-outlined` `mat-chip-md` | ![desktop view filter](./apps/msg91/src/assets/images/snaps/chip.jpg) 
+| `mat-chip-outlined` `mat-chip-md` | ![desktop view filter](./apps/proxy/src/assets/images/snaps/chip.jpg) 
       
 #### 4. Colors
 
@@ -410,7 +410,7 @@ public sortBottomSheet(): void {
 
 | Class Name                           | Preview                                                                                 |
 | -------------------------------------|-----------------------------------------------------------------------------------------|
-| `custom-expansion-panel`             | <img src="./apps/msg91/src/assets/images/snaps/custom-expansion-panel.jpg" width="500"> |
+| `custom-expansion-panel`             | <img src="./apps/proxy/src/assets/images/snaps/custom-expansion-panel.jpg" width="500"> |
 
 #### 6. Icons Size
 
@@ -461,6 +461,6 @@ public sortBottomSheet(): void {
 
 | Class Name                           | Preview                                                                                 |
 | -------------------------------------|-----------------------------------------------------------------------------------------|
-| `status` `status-default` `status-pending` `status-success` `status-failed` `status-success` `status-approved` | ![desktop view filter](./apps/msg91/src/assets/images/snaps/status.jpg)       | 
+| `status` `status-default` `status-pending` `status-success` `status-failed` `status-success` `status-approved` | ![desktop view filter](./apps/proxy/src/assets/images/snaps/status.jpg)       | 
 
 

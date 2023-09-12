@@ -1,0 +1,140 @@
+@import '../../assets/scss/utils/mixins/common-utils';
+
+:host {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    .mat-drawer {
+        transition: 200ms all;
+        height: 100%;
+        width: 246px;
+        z-index: 9;
+        box-shadow: none !important;
+        border-right: 1px solid var(--color-common-border);
+        background-color: var(--color-common-bg);
+        &-content {
+            .mat-drawer-header {
+                &-title {
+                    padding: 12px 16px;
+                    color: var(--color-common-dark);
+                }
+            }
+            &.mat-drawer-toggle-btn-hover {
+                .mat-drawer-toggle-btn {
+                    display: none;
+                    @include media-breakpoint-down('desktop') {
+                        display: block;
+                    }
+                }
+                &:hover {
+                    .mat-drawer-toggle-btn {
+                        display: block;
+                    }
+                }
+            }
+            .mat-drawer-nav {
+                flex: 1;
+                overflow: overlay;
+                @supports not (overflow: overlay) {
+                    overflow: auto;
+                }
+            }
+        }
+        @include media-breakpoint-down('desktop') {
+            position: fixed;
+            z-index: 999;
+            top: 0;
+            bottom: 0;
+        }
+    }
+    .app-main-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        .component-render-container {
+            position: relative;
+            flex: 1;
+            z-index: 1;
+            .component-render-container-inner {
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0;
+                bottom: 0;
+                overflow: auto;
+            }
+        }
+        @include media-breakpoint-down('desktop') {
+            padding-left: 55px;
+        }
+    }
+    .collapsed-sidebar {
+        .mat-drawer {
+            width: 56px;
+            overflow: hidden;
+            position: fixed;
+            z-index: 999;
+            // @media only screen and (max-width: 660px) {
+            //     width: 0px;
+            // }
+
+            &-header {
+                flex-direction: column;
+                &-subtitle {
+                    display: none !important;
+                }
+            }
+        }
+        .app-main-container {
+            padding-left: 55px;
+            // @media only screen and (max-width: 620px) {
+            //     padding-left: 0px;
+            // }
+        }
+    }
+}
+/*Footer*/
+.mat-drawer-footer {
+    button {
+        width: 100%;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        padding: 12px 14px;
+        border-radius: 0px !important;
+    }
+
+    h4.b-d-header {
+        color: var(--color-whatsApp-primary);
+        padding: 8px 22px;
+        font-size: 18px;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    h6.username {
+        line-height: 1.5;
+        font-size: 15px;
+        white-space: nowrap;
+        width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .company-name {
+        font-weight: 100;
+        white-space: nowrap;
+        width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.5;
+    }
+
+    .profile-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        margin-right: 16px;
+    }
+}

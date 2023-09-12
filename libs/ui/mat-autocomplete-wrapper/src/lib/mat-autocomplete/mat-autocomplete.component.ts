@@ -13,13 +13,13 @@ import {
 import { FormControl, Validators } from '@angular/forms';
 import { fromEvent } from 'rxjs';
 import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
-import { BaseComponent } from '@msg91/ui/base-component';
+import { BaseComponent } from '@proxy/ui/base-component';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { cloneDeep } from 'lodash-es';
-import { CustomValidators } from '@msg91/custom-validator';
+import { CustomValidators } from '@proxy/custom-validator';
 
 @Component({
-    selector: 'msg91-mat-autocomplete',
+    selector: 'proxy-mat-autocomplete',
     templateUrl: './mat-autocomplete.component.html',
     styleUrls: ['./mat-autocomplete.component.scss'],
 })
