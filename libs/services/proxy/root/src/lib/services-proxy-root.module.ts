@@ -1,6 +1,6 @@
 import { Inject, Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BaseResponse, IClientSettings, ICompany, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
+import { BaseResponse, IClientSettings, IClient, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { Observable } from 'rxjs';
 import { RootUrls } from '@proxy/urls/root-urls';
@@ -29,8 +29,8 @@ export class RootService {
     // Get All Clients
     public getClients(params: {
         [key: string]: string;
-    }): Observable<BaseResponse<IPaginatedResponse<ICompany[]>, void>> {
-        return this.http.get<BaseResponse<IPaginatedResponse<ICompany[]>, void>>(
+    }): Observable<BaseResponse<IPaginatedResponse<IClient[]>, void>> {
+        return this.http.get<BaseResponse<IPaginatedResponse<IClient[]>, void>>(
             RootUrls.getClients(this.baseUrl),
             params
         );

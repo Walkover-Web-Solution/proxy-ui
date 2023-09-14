@@ -1,19 +1,29 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { rootActions } from '../../actions';
-import { IClientSettings } from '@proxy/models/root-models';
+import { IClient, IClientSettings, IPaginatedResponse } from '@proxy/models/root-models';
 
 export interface IRootState {
     errors: string[];
     headerTitle: string;
+
+    // Client settings
     clientSettings: IClientSettings;
     clientSettingsInProcess: boolean;
+
+    // Client Company
+    clientCompanies: IPaginatedResponse<IClient[]>;
 }
 
 export const initialState: IRootState = {
     errors: null,
     headerTitle: null,
+
+    // Client settings
     clientSettings: null,
     clientSettingsInProcess: false,
+
+    // Client Company
+    clientCompanies: null,
 };
 
 export function rootReducer(state: IRootState, action: Action) {
