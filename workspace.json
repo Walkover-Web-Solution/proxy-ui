@@ -57,6 +57,7 @@
         "services-login": "libs/services/login",
         "services-proxy-auth": "libs/services/proxy/auth",
         "services-proxy-logs": "libs/services/proxy/logs",
+        "services-proxy-root": "libs/services/proxy/root",
         "services-shared": "libs/services/shared",
         "shared": "libs/shared",
         "ui-angular-mentions": "libs/ui/angular-mentions",

@@ -80,6 +80,7 @@
             "@proxy/services/login": ["libs/services/login/src/index.ts"],
             "@proxy/services/proxy/auth": ["libs/services/proxy/auth/src/index.ts"],
             "@proxy/services/proxy/logs": ["libs/services/proxy/logs/src/index.ts"],
+            "@proxy/services/proxy/root": ["libs/services/proxy/root/src/index.ts"],
             "@proxy/services/shared": ["libs/services/shared/src/index.ts"],
             "@proxy/shared": ["libs/shared/src/index.ts"],
             "@proxy/shared/cmd-enter-preference": ["libs/shared/src/lib/cmd-enter-preference/index.ts"],
