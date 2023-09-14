@@ -102,3 +102,15 @@ export interface IClient {
     url_unique_id: string;
     stage: string;
 }
+
+export interface ICompany {
+    id: number;
+    name: string;
+    mobile: string;
+    email: string;
+    url_unique_id: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string;
+    stage: string;
+}
