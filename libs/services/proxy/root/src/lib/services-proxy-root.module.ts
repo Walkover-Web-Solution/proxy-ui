@@ -28,7 +28,7 @@ export class RootService {
 
     // Get All Clients
     public getClients(params: {
-        [key: string]: string;
+        [key: string]: string | number;
     }): Observable<BaseResponse<IPaginatedResponse<IClient[]>, void>> {
         return this.http.get<BaseResponse<IPaginatedResponse<IClient[]>, void>>(
             RootUrls.getClients(this.baseUrl),

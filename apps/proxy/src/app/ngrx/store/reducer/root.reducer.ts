@@ -70,14 +70,13 @@ const _rootReducer = createReducer(
     on(rootActions.getAllClients, (state) => {
         return {
             ...state,
-            clients: null,
             clientsInProcess: true,
         };
     }),
     on(rootActions.getAllClientsSuccess, (state, { response }) => {
         return {
             ...state,
-            clients: response,
+            clients: response?.pageNo > 1 ? { ...response, data: [...state.clients.data, ...response.data] } : response,
             clientsInProcess: false,
         };
     }),

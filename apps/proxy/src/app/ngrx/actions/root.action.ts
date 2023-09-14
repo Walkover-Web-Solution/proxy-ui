@@ -12,7 +12,7 @@ export const getClientSettingsError = createAction('[Client Setting] Get Client 
 
 export const getAllClients = createAction(
     '[Client Setting] Get All Clients',
-    props<{ params: { [key: string]: string } }>()
+    props<{ params: { [key: string]: string | number } }>()
 );
 export const getAllClientsSuccess = createAction(
     '[Client Setting] Get All Clients Success',
