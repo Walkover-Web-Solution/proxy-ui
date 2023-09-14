@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { IFirebaseUserModel } from '@proxy/models/root-models';
+import { IClient, IClientSettings, IFirebaseUserModel, IPaginatedResponse } from '@proxy/models/root-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store, select } from '@ngrx/store';
 import { selectLogInData } from '../auth/ngrx/selector/login.selector';
 import { isEqual } from 'lodash';
-import { BehaviorSubject, Observable, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, distinctUntilChanged, filter, takeUntil } from 'rxjs';
 import { ILogInFeatureStateWithRootState } from '../auth/ngrx/store/login.state';
 import * as logInActions from '../auth/ngrx/actions/login.action';
+import { rootActions } from '../ngrx/actions';
 import { CookieService } from 'ngx-cookie-service';
+import { selectAllClient, selectClientSettings, selectSwtichClientSuccess } from '../ngrx';
 
 @Component({
     selector: 'proxy-layout',
@@ -15,9 +17,18 @@ import { CookieService } from 'ngx-cookie-service';
     styleUrls: ['./layout.component.scss'],
 })
 export class LayoutComponent extends BaseComponent implements OnInit {
-    public toggleMenuSideBar: boolean;
     public logInData$: Observable<IFirebaseUserModel>;
+    public clientSettings$: Observable<IClientSettings>;
+    public clients$: Observable<IPaginatedResponse<IClient[]>>;
+    public swtichClientSuccess$: Observable<boolean>;
+
     public isSideNavOpen = new BehaviorSubject<boolean>(true);
+
+    public toggleMenuSideBar: boolean;
+    public clientsParams = {
+        itemsPerPage: 25,
+        pageNo: 1,
+    };
 
     constructor(private store: Store<ILogInFeatureStateWithRootState>, private cookieService: CookieService) {
         super();
@@ -26,17 +37,61 @@ export class LayoutComponent extends BaseComponent implements OnInit {
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
+        this.clientSettings$ = this.store.pipe(
+            select(selectClientSettings),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.clients$ = this.store.pipe(
+            select(selectAllClient),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.swtichClientSuccess$ = this.store.pipe(
+            select(selectSwtichClientSuccess),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
     }
 
     ngOnInit(): void {
+        this.getClients();
+        this.getClientSettings();
         this.getCurrentTheme();
         if (this.isMobileDevice()) {
             this.toggleSideBarEvent();
         }
+        this.swtichClientSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                location.href = '/app';
+            }
+        });
     }
 
     public logOut() {
         this.store.dispatch(logInActions.logoutAction());
+    }
+
+    public getClients() {
+        this.store.dispatch(rootActions.getAllClients({ params: this.clientsParams }));
+    }
+
+    public getClientSettings() {
+        this.store.dispatch(rootActions.getClientSettings());
+    }
+
+    public fetchClientsNextPage() {
+        if (this.clientsParams.pageNo < this.getValueFromObservable(this.clients$)?.totalPageCount) {
+            this.clientsParams = {
+                ...this.clientsParams,
+                pageNo: this.clientsParams.pageNo + 1,
+            };
+            this.getClients();
+        }
+    }
+
+    public switchClient(clientId: number): void {
+        this.store.dispatch(rootActions.switchClient({ request: { client_id: clientId } }));
     }
 
     public getCurrentTheme() {

@@ -60,6 +60,7 @@
         "services-login": "libs/services/login",
         "services-proxy-auth": "libs/services/proxy/auth",
         "services-proxy-logs": "libs/services/proxy/logs",
+        "services-proxy-root": "libs/services/proxy/root",
         "services-shared": "libs/services/shared",
         "shared": "libs/shared",
         "ui-angular-mentions": "libs/ui/angular-mentions",
@@ -101,6 +102,7 @@
         "ui-variable-input": "libs/ui/variable-input",
         "ui-virtual-scroll": "libs/ui/virtual-scroll",
         "urls-logs-urls": "libs/urls/logs-urls",
+        "urls-root-urls": "libs/urls/root-urls",
         "utils": "libs/utils"
     },
     "$schema": "./node_modules/nx/schemas/workspace-schema.json"

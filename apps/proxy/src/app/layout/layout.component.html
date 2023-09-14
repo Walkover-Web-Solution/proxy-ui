@@ -6,9 +6,49 @@
         <div class="d-flex align-items-center mat-drawer-header">
             <div class="d-flex align-items-center flex-grow-1 gap-2 mat-drawer-header-title">
                 <mat-icon class="mat-icon-22">apps</mat-icon>
-                <div class="d-flex align-items-center col-gap-1 mat-drawer-header-subtitle">
-                    <span class="font-16 fw-bolder text-dark white-space-nowrap"> Proxy </span>
-                    <!-- <mat-icon class="mat-icon-20">expand_more</mat-icon> -->
+                <div
+                    class="d-flex align-items-center col-gap-1 mat-drawer-header-subtitle cursor-pointer"
+                    [matMenuTriggerFor]="clientsMenu"
+                    #clientsMenuTrigger="matMenuTrigger"
+                >
+                    <span class="font-16 fw-bolder text-dark overflow-dotted" style="max-width: 145px">
+                        {{ (clientSettings$ | async)?.client?.name }}
+                    </span>
+                    <mat-icon class="mat-icon-18" *ngIf="isSideNavOpen | async">{{
+                        clientsMenuTrigger?.menuOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
+                    }}</mat-icon>
+                    <mat-menu #clientsMenu="matMenu" class="profile-sub-dropdown" xPosition="before">
+                        <mat-list *ngIf="clients$ | async as clientList">
+                            <proxy-cdk-scroll
+                                (fetchNextPage)="fetchClientsNextPage()"
+                                *ngIf="clientList.totalEntityCount > 25; else clientListRef"
+                            >
+                                <cdk-virtual-scroll-viewport
+                                    [itemSize]="40"
+                                    style="overflow: hidden overlay"
+                                    minBufferPx="400"
+                                    maxBufferPx="400"
+                                    id="scrollableWrapper"
+                                    style="height: 80vh; width: 280px"
+                                >
+                                    <ng-container *ngTemplateOutlet="clientListRef"></ng-container>
+                                </cdk-virtual-scroll-viewport>
+                            </proxy-cdk-scroll>
+                            <ng-template #clientListRef>
+                                <button
+                                    mat-menu-item
+                                    (click)="switchClient(client?.id)"
+                                    [disabled]="(clientSettings$ | async)?.client?.id === client?.id"
+                                    [ngClass]="{
+                                        'text-dark': (clientSettings$ | async)?.client?.id === client?.id
+                                    }"
+                                    *ngFor="let client of clientList?.data"
+                                >
+                                    {{ client.name }}
+                                </button>
+                            </ng-template>
+                        </mat-list>
+                    </mat-menu>
                 </div>
             </div>
             <button
