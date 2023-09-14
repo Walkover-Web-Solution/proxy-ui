@@ -15,7 +15,7 @@
         &-content {
             .mat-drawer-header {
                 &-title {
-                    padding: 12px 0px 12px 8px;
+                    padding: 12px 0px 12px 12px;
                     color: var(--color-common-dark);
                 }
             }
@@ -136,17 +136,5 @@
         height: 28px;
         border-radius: 50%;
         margin-right: 16px;
-    }
-}
-
-::ng-deep.profile-sub-dropdown {
-    .mat-menu-item {
-        padding: 0px 24px;
-        height: 40px;
-        line-height: 40px;
-        font-size: 14px;
-    }
-    #scrollableWrapper {
-        overflow-x: hidden !important;
     }
 }
