@@ -8,4 +8,9 @@ export const selectRootState = createSelector(selectState, (p) => p.root);
 
 export const selectRootErrors = createSelector(selectRootState, (rootState: IRootState) => rootState.errors);
 export const selectTitle = createSelector(selectRootState, (rootState: IRootState) => rootState.headerTitle);
-export const selectAccessToken = createSelector(selectRootState, (rootState: IRootState) => rootState?.token);
+
+export const clientSettings = createSelector(selectRootState, (rootState: IRootState) => rootState.clientSettings);
+export const clientSettingsInProcess = createSelector(
+    selectRootState,
+    (rootState: IRootState) => rootState.clientSettingsInProcess
+);

@@ -1,5 +1,11 @@
 import { createAction, props } from '@ngrx/store';
+import { IClientSettings } from '@proxy/models/root-models';
 
-export const headerTitleAction = createAction('[set header name] Header Title Action ', props<{ title: string }>());
+export const headerTitleAction = createAction('[Set header name] Header Title Action ', props<{ title: string }>());
 
-export const setAuthToken = createAction('[Root] Set Auth Token', props<{ token: string }>());
+export const getClientSettings = createAction('[Client Setting] Get Client Settings');
+export const getClientSettingsSuccess = createAction(
+    '[Client Setting] Get Client Settings Success',
+    props<{ response: IClientSettings }>()
+);
+export const getClientSettingsError = createAction('[Client Setting] Get Client Settings Error');

@@ -89,3 +89,15 @@ export interface ILoginResponse {
     message: string;
     auth: string;
 }
+
+export interface IClientSettings {
+    client: IClient;
+}
+
+export interface IClient {
+    name: string;
+    mobile: string;
+    email: string;
+    url_unique_id: string;
+    stage: string;
+}

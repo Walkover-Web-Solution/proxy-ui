@@ -10,7 +10,7 @@ import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { selectLogOutSuccess } from './auth/ngrx/selector/login.selector';
 import { ILogInFeatureStateWithRootState } from './auth/ngrx/store/login.state';
-import { IAppState, selectAccessToken } from './ngrx';
+import { IAppState } from './ngrx';
 import { rootActions } from './ngrx/actions';
 import * as logInActions from './auth/ngrx/actions/login.action';
 import { AuthService } from '@proxy/services/proxy/auth';
@@ -22,7 +22,6 @@ import { AuthService } from '@proxy/services/proxy/auth';
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     public title = 'proxy';
     public logoutActionComplete$: Observable<boolean>;
-    public selectAccessToken$: Observable<string>;
     public companyId$: Observable<string>;
 
     /** True, if new build is deployed */
@@ -71,11 +70,6 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
-        this.selectAccessToken$ = this._store.pipe(
-            select(selectAccessToken),
-            distinctUntilChanged(isEqual),
-            takeUntil(this.destroy$)
-        );
     }
 
     public ngOnInit(): void {
@@ -83,12 +77,6 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
             if (res) {
                 this.router.navigate(['/login']);
             }
-        });
-
-        this.selectAccessToken$.subscribe((token) => {
-            if (!token) return;
-            this.token.token = token;
-            this.authService.fetchActiveToken();
         });
 
         if (environment.env !== 'local') {

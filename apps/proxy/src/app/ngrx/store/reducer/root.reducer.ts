@@ -1,16 +1,19 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { rootActions } from '../../actions';
+import { IClientSettings } from '@proxy/models/root-models';
 
 export interface IRootState {
     errors: string[];
     headerTitle: string;
-    token: string;
+    clientSettings: IClientSettings;
+    clientSettingsInProcess: boolean;
 }
 
 export const initialState: IRootState = {
     errors: null,
     headerTitle: null,
-    token: null,
+    clientSettings: null,
+    clientSettingsInProcess: false,
 };
 
 export function rootReducer(state: IRootState, action: Action) {
@@ -26,10 +29,25 @@ const _rootReducer = createReducer(
         };
     }),
 
-    on(rootActions.setAuthToken, (state, { token }) => {
+    on(rootActions.getClientSettings, (state) => {
         return {
             ...state,
-            token,
+            clientSettings: null,
+            clientSettingsInProcess: true,
+        };
+    }),
+    on(rootActions.getClientSettingsSuccess, (state, { response }) => {
+        return {
+            ...state,
+            clientSettings: response,
+            clientSettingsInProcess: false,
+        };
+    }),
+    on(rootActions.getClientSettingsError, (state) => {
+        return {
+            ...state,
+            clientSettings: null,
+            clientSettingsInProcess: false,
         };
     })
 );
