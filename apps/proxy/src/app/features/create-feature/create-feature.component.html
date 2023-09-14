@@ -1,4 +1,5 @@
 <div class="app-content d-flex flex-column">
+    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
     <div class="d-flex align-items-center justify-content-start gap-1 mb-3">
         <button mat-icon-button color="primary" [routerLink]="['/app', 'features']">
             <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
@@ -14,7 +15,9 @@
         <mat-step>
             <ng-template matStepLabel>Select Feature</ng-template>
             <div class="d-flex flex-column h-100 my-3">
-                <ng-container *ngTemplateOutlet="selectFeature"></ng-container>
+                <ng-container
+                    *ngTemplateOutlet="selectFeature; context: { featureType: featureType$ | async }"
+                ></ng-container>
                 <div class="d-flex align-items-center justify-content-end">
                     <button mat-flat-button color="primary" matStepperNext>
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
@@ -93,14 +96,15 @@
         </mat-step>
     </mat-stepper>
 </div>
-<ng-template #selectFeature>
+<ng-template #selectFeature let-featureType="featureType">
     <div class="flex-grow-1">
         <div class="features-layout">
             <div
+                *ngFor="let type of featureType"
                 class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center feature-card bg-light-grey cursor-pointer"
             >
-                <mat-icon>lock</mat-icon>
-                <p class="mat-body-2 text-secondary fe-bold">Authentication</p>
+                <mat-icon>{{ type.icon }}</mat-icon>
+                <p class="mat-body-2 text-secondary fe-bold">{{ type.name }}</p>
             </div>
         </div>
     </div>

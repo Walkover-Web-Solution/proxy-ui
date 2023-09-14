@@ -17,6 +17,7 @@ import { DirectivesRemoveCharacterDirectiveModule } from '@proxy/directives/Remo
 import { UiMatPaginatorGotoModule } from '@proxy/ui/mat-paginator-goto';
 import { UiLoaderModule } from '@proxy/ui/loader';
 import { UserComponent } from './user/user.component';
+import { ServicesProxyUsersModule } from '@proxy/services/proxy/users';
 
 // Components
 const routes: Routes = [
@@ -49,6 +50,7 @@ const routes: Routes = [
         UiLoaderModule,
         UiComponentsSearchModule,
         DirectivesRemoveCharacterDirectiveModule,
+        ServicesProxyUsersModule,
     ],
     exports: [RouterModule],
 })

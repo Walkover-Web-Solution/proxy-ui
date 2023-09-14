@@ -27,7 +27,7 @@
     <mat-card class="p-0 outline-card responsive-card flex-grow-1">
         <mat-card-content>
             <div class="table-scroll">
-                <table mat-table [dataSource]="feature$ | async" class="default-table responsive-table">
+                <table mat-table [dataSource]="(feature$ | async)?.data" class="default-table responsive-table">
                     <!-- Name Column -->
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
@@ -60,8 +60,7 @@
                     <tr
                         mat-row
                         *matRowDef="let row; columns: displayedColumns; let i = index"
-                        class="cursor-pointer"
-                        title="Click here to view logs details"
+                        [ngClass]="{ 'last-child': i + 1 === pageSizeOptions[0] }"
                     ></tr>
 
                     <tr *matNoDataRow>

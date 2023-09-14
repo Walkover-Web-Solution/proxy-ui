@@ -7,26 +7,22 @@ import {
     SelectDateRange,
     PAGE_SIZE_OPTIONS,
 } from '@proxy/constant';
-import { MatSort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
-import { IEnvProjects, ILogDetailRes, ILogsRes } from '@proxy/models/logs-models';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import * as dayjs from 'dayjs';
 import { omit } from 'lodash';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ONLY_INTEGER_REGEX } from '@proxy/regex';
-import { MatMenuTrigger } from '@angular/material/menu';
-import { CustomValidators } from '@proxy/custom-validator';
 import { PageEvent } from '@angular/material/paginator';
+import { UserComponentStore } from './user.store';
+import { IUser } from '@proxy/models/users-model';
 @Component({
     selector: 'proxy-users',
     templateUrl: './user.component.html',
     styleUrls: ['./user.component.scss'],
-    // providers: [UserComponentStore],
+    providers: [UserComponentStore],
 })
 export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
-    @ViewChild(MatSort) matSort: MatSort;
-    @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+    public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
+    public users$: Observable<IPaginatedResponse<IUser[]>> = this.componentStore.users$;
 
     public displayedColumns: string[] = ['name', 'email', 'phone_number'];
     public params: any = {};
@@ -38,7 +34,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     };
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
 
-    constructor() {
+    constructor(private componentStore: UserComponentStore) {
         super();
     }
     ngOnInit(): void {
@@ -46,7 +42,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
             ...this.params,
             ...this.formatDateRange(),
         };
-        this.getLogs();
+        this.getUsers();
     }
 
     public ngOnDestroy(): void {
@@ -57,13 +53,13 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
         if (searchKeyword?.length) {
             this.params = {
                 ...this.params,
-                endpoint: searchKeyword.trim(),
+                search: searchKeyword.trim(),
             };
         } else {
-            this.params = { ...omit(this.params, ['endpoint']) };
+            this.params = { ...omit(this.params, ['search']) };
         }
         this.params.pageNo = 1;
-        this.getLogs();
+        this.getUsers();
     }
 
     /**
@@ -87,7 +83,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
             ...this.params,
             ...this.formatDateRange(),
         };
-        this.getLogs();
+        this.getUsers();
     }
 
     /**
@@ -100,11 +96,13 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
             pageNo: event.pageIndex + 1,
             itemsPerPage: event.pageSize,
         };
-        this.getLogs();
+        this.getUsers();
     }
 
     /**
      * Get Logs
      */
-    public getLogs(): void {}
+    public getUsers(): void {
+        this.componentStore.getUsers({ ...this.params });
+    }
 }

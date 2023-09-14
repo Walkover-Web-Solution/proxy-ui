@@ -16,6 +16,7 @@
         "models-features-model": "libs/models/features-model",
         "models-logs-models": "libs/models/logs-models",
         "models-root-models": "libs/models/root-models",
+        "models-users-model": "libs/models/users-model",
         "pipes-chart-date-add": "libs/pipes/chart-date-add",
         "pipes-country-currency-symbol": "libs/pipes/country-currency-symbol",
         "pipes-currency-formatter": "libs/pipes/currency-formatter",
@@ -62,6 +63,7 @@
         "services-proxy-auth": "libs/services/proxy/auth",
         "services-proxy-features": "libs/services/proxy/features",
         "services-proxy-logs": "libs/services/proxy/logs",
+        "services-proxy-users": "libs/services/proxy/users",
         "services-shared": "libs/services/shared",
         "shared": "libs/shared",
         "ui-angular-mentions": "libs/ui/angular-mentions",
@@ -104,6 +106,7 @@
         "ui-virtual-scroll": "libs/ui/virtual-scroll",
         "urls-features-url": "libs/urls/features-url",
         "urls-logs-urls": "libs/urls/logs-urls",
+        "urls-users-urls": "libs/urls/users-urls",
         "utils": "libs/utils"
     },
     "$schema": "./node_modules/nx/schemas/workspace-schema.json"

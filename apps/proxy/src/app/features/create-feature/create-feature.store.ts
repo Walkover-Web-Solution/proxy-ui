@@ -1,13 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BaseResponse, IPaginatedResponse, errorResolver } from '@proxy/models/root-models';
+import { BaseResponse, errorResolver } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
-import { IFeature, IFeatureReq } from '@proxy/models/features-model';
+import { IFeatureType } from '@proxy/models/features-model';
 import { FeaturesService } from '@proxy/services/proxy/features';
+
 export interface IFeatureInitialState {
-    features: IPaginatedResponse<IFeature[]>;
+    featureType: IFeatureType[];
     isLoading: boolean;
 }
 
@@ -15,35 +16,32 @@ export interface IFeatureInitialState {
 export class FeatureComponentStore extends ComponentStore<IFeatureInitialState> {
     constructor(private service: FeaturesService, private toast: PrimeNgToastService) {
         super({
-            features: null,
+            featureType: null,
             isLoading: false,
         });
     }
 
     readonly isLoading$: Observable<boolean> = this.select((state) => state.isLoading);
-    readonly feature$: Observable<IPaginatedResponse<IFeature[]>> = this.select((state) => state.features);
+    readonly featureType$: Observable<IFeatureType[]> = this.select((state) => state.featureType);
 
-    readonly getFeature = this.effect((data: Observable<IFeatureReq>) => {
+    readonly getFeatureType = this.effect((data) => {
         return data.pipe(
-            switchMap((req: IFeatureReq) => {
+            switchMap(() => {
                 this.patchState({ isLoading: true });
-                return this.service.getFeature(req).pipe(
+                return this.service.getFeatureType().pipe(
                     tapResponse(
-                        (res: BaseResponse<IPaginatedResponse<IFeature[]>, IFeatureReq>) => {
+                        (res: BaseResponse<IFeatureType[], void>) => {
                             if (res.hasError) {
                                 this.showErrorMessages(res['error']);
                             }
                             return this.patchState({
                                 isLoading: false,
-                                features: res?.data,
+                                featureType: res.data,
                             });
                         },
                         (error: HttpErrorResponse) => {
                             this.showErrorMessages(error['error']);
-                            this.patchState({
-                                isLoading: false,
-                                features: null,
-                            });
+                            this.patchState({ isLoading: false, featureType: null });
                         }
                     ),
                     catchError((err) => EMPTY)

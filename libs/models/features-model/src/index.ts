@@ -12,7 +12,7 @@ export interface IFeature {
 export interface IFeatureReq {
     startDate: string;
     endDate: string;
-    slug: string;
+    search: string;
 }
 
 export interface ICreatedBy {

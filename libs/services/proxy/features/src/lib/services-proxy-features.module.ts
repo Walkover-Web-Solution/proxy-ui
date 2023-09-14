@@ -27,7 +27,7 @@ export class FeaturesService {
 
     // Fetch Feature Type
     public getFeatureType(): Observable<BaseResponse<IFeatureType[], void>> {
-        return this.http.get(FeaturesUrls.getFeatureType(this.baseURL));
+        return this.http.get<BaseResponse<IFeatureType[], void>>(FeaturesUrls.getFeatureType(this.baseURL));
     }
 
     // Fetch Method
