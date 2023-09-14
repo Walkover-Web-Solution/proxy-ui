@@ -234,6 +234,25 @@ $secondary-btn-height: 30px;
     }
 }
 
+// 11. Button size
+.mat-btn-md {
+    min-height: 26px;
+    line-height: 30px !important;
+    font-size: var(--font-size-common-12) !important;
+    &.mat-btn-wran {
+        border-color: mat.get-color-from-palette($warn) !important;
+    }
+}
+.mat-btn-xs {
+    @media only screen and (max-width: 660px) {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        .mat-icon {
+            margin: 0px;
+        }
+    }
+}
+
 // Disabled Action on permission basis
 .disabled-action,
 button:disabled,
