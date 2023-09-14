@@ -1,0 +1,84 @@
+<div class="app-content d-flex flex-column">
+    <!-- <proxy-loader *ngIf="isLoading$ | async"></proxy-loader> -->
+    <div class="d-flex align-items-center justify-content-between gap-3">
+        <h4 class="my-0 text-secondary mat-body-1 fw-bolder">Features</h4>
+        <proxy-lib-search
+            [matFormFieldClass]="'no-padding w-xs-100'"
+            [placeholder]="'Search by feature'"
+            (inputChanges)="onEnter($event)"
+            class="w-xs-100"
+        ></proxy-lib-search>
+        <button
+            mat-flat-button
+            color="primary"
+            class="mat-btn-xs"
+            [routerLink]="['/app', 'features', 'create-feature']"
+        >
+            <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
+            <span class="hide-xs">Add New Feature</span>
+        </button>
+    </div>
+    <p class="mat-body-2 text-secondary w-50">
+        The "Features" component in the Proxy Server is a dynamic tool that offers versatile authentication and
+        subscription plan options. It supports various authentication methods like OTP and social logins (e.g., Google,
+        Microsoft) while providing flexible subscription plans. Users benefit from enhanced security, cost-efficient
+        resource allocation, and a user-friendly dashboard for easy configuration.
+    </p>
+    <mat-card class="p-0 outline-card responsive-card flex-grow-1">
+        <mat-card-content>
+            <div class="table-scroll">
+                <table mat-table [dataSource]="[]" class="default-table responsive-table">
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                        <td mat-cell *matCellDef="let element" data-label="Name">
+                            {{ element.name }}
+                        </td>
+                    </ng-container>
+
+                    <!-- reference_id Column -->
+                    <ng-container matColumnDef="reference_id">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Reference Id</th>
+                        <td mat-cell *matCellDef="let element" data-label="Reference Id">
+                            {{ element.reference_id }}
+                        </td>
+                    </ng-container>
+
+                    <!-- Method Column -->
+                    <ng-container matColumnDef="method">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Method</th>
+                        <td mat-cell *matCellDef="let element" data-label="Method">{{ element.method }}</td>
+                    </ng-container>
+
+                    <!-- Type Column -->
+                    <ng-container matColumnDef="type">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+                        <td mat-cell *matCellDef="let element" data-label="Type">{{ element.type }}</td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                    <tr
+                        mat-row
+                        *matRowDef="let row; columns: displayedColumns; let i = index"
+                        class="cursor-pointer"
+                        title="Click here to view logs details"
+                    ></tr>
+
+                    <tr *matNoDataRow>
+                        <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
+                            <proxy-no-record-found [title]="'features'" [showBtn]="false"></proxy-no-record-found>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!-- <mat-paginator-goto
+                [length]="(logs$ | async)?.totalEntityCount"
+                [pageSize]="(logs$ | async)?.itemsPerPage || 25"
+                [pageSizeOptions]="pageSizeOptions"
+                (page)="pageChange($event)"
+                [pageIndex]="(logs$ | async)?.pageNumber - 1"
+                class="box-shadow-none"
+            ></mat-paginator-goto> -->
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -13,6 +13,28 @@
             >
             <span matLine class="menu-list-span menu-label">Logs</span>
         </a>
+        <a
+            mat-list-item
+            [routerLink]="['features']"
+            routerLinkActive="active-list-item"
+            [matTooltipPosition]="'right'"
+            [matTooltip]="isSideNavOpen ? 'Features' : ''"
+        >
+            <mat-icon matListIcon class="mat-icon-20 material-icons-outlined p-0" aria-hidden="false"
+                >featured_play_list</mat-icon
+            >
+            <span matLine class="menu-list-span menu-label">Features</span>
+        </a>
+        <a
+            mat-list-item
+            [routerLink]="['users']"
+            routerLinkActive="active-list-item"
+            [matTooltipPosition]="'right'"
+            [matTooltip]="isSideNavOpen ? 'Users' : ''"
+        >
+            <mat-icon matListIcon class="mat-icon-20 material-icons-outlined p-0" aria-hidden="false">person</mat-icon>
+            <span matLine class="menu-list-span menu-label">User</span>
+        </a>
     </mat-nav-list>
 </div>
 <!-- Menus::END -->

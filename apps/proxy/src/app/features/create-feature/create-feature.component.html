@@ -1,0 +1,182 @@
+<div class="app-content d-flex flex-column">
+    <div class="d-flex align-items-center justify-content-start gap-1 mb-3">
+        <button mat-icon-button color="primary" [routerLink]="['/app', 'features']">
+            <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
+        </button>
+        <h4 class="my-0 text-secondary mat-body-1 fw-bold">Add New Features</h4>
+    </div>
+    <mat-stepper
+        #stepper
+        class="rounded-8 border flex-grow-1 mat-stepper-starched"
+        labelPosition="bottom"
+        [animationDuration]="0"
+    >
+        <mat-step>
+            <ng-template matStepLabel>Select Feature</ng-template>
+            <div class="d-flex flex-column h-100 my-3">
+                <ng-container *ngTemplateOutlet="selectFeature"></ng-container>
+                <div class="d-flex align-items-center justify-content-end">
+                    <button mat-flat-button color="primary" matStepperNext>
+                        Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
+                            >navigate_next</mat-icon
+                        >
+                    </button>
+                </div>
+            </div>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Feature Name</ng-template>
+            <div class="d-flex flex-column h-100">
+                <ng-container *ngTemplateOutlet="featureName"></ng-container>
+                <div class="d-flex align-items-center justify-content-between">
+                    <button mat-flat-button class="flat-default" matStepperPrevious>
+                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
+                        >Back
+                    </button>
+                    <button mat-flat-button color="primary" matStepperNext>
+                        Next
+                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Configure Method</ng-template>
+            <div class="d-flex flex-column h-100">
+                <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
+                <div class="d-flex align-items-center justify-content-between">
+                    <button mat-flat-button class="flat-default" matStepperPrevious>
+                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
+                        >Back
+                    </button>
+                    <button mat-flat-button color="primary" matStepperNext>
+                        Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
+                            >navigate_next</mat-icon
+                        >
+                    </button>
+                </div>
+            </div>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Authorization Setup</ng-template>
+            <div class="d-flex flex-column h-100">
+                <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
+                <div class="d-flex align-items-center justify-content-between">
+                    <button mat-flat-button class="flat-default" matStepperPrevious>
+                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
+                        >Back
+                    </button>
+                    <button mat-flat-button color="primary" matStepperNext>
+                        Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
+                            >navigate_next</mat-icon
+                        >
+                    </button>
+                </div>
+            </div>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Design & code</ng-template>
+            <div class="d-flex flex-column h-100">
+                <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
+                <div class="d-flex align-items-center justify-content-between">
+                    <button mat-flat-button class="flat-default" matStepperPrevious>
+                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
+                        >Back
+                    </button>
+                    <button mat-flat-button color="primary" matStepperNext>
+                        Manage Feature<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
+                            >navigate_next</mat-icon
+                        >
+                    </button>
+                </div>
+            </div>
+        </mat-step>
+    </mat-stepper>
+</div>
+<ng-template #selectFeature>
+    <div class="flex-grow-1">
+        <div class="features-layout">
+            <div
+                class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center feature-card bg-light-grey cursor-pointer"
+            >
+                <mat-icon>lock</mat-icon>
+                <p class="mat-body-2 text-secondary fe-bold">Authentication</p>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #featureName>
+    <div class="my-3 flex-grow-1">
+        <p class="mat-body-2 text-secondary fw-bold">Give a name of your Feature</p>
+        <form action="">
+            <mat-form-field appearance="outline" class="w-50">
+                <mat-label>Enter Name</mat-label>
+                <input matInput placeholder="Enter Name" [autocomplete]="false" />
+            </mat-form-field>
+        </form>
+    </div>
+</ng-template>
+<ng-template #configureMethodTemplate>
+    <div class="d-flex gap-3 my-3 flex-grow-1">
+        <div class="d-flex flex-column gap-1 auth-service border-right pr-3">
+            <p class="mat-body-2 fw-bolder mt-0">Services</p>
+            <mat-list role="list" class="default-list pt-0">
+                <mat-list-item role="listitem" class="active rounded-4"
+                    >Google Authentication
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon></mat-list-item
+                >
+                <mat-list-item role="listitem" class="rounded-4"
+                    >Google Authentication
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon></mat-list-item
+                >
+                <mat-list-item role="listitem" class="rounded-4"
+                    >Google Authentication
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon></mat-list-item
+                >
+                <mat-list-item role="listitem" class="rounded-4"
+                    >Google Authentication
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon></mat-list-item
+                >
+            </mat-list>
+        </div>
+        <div class="auth-credentials px-3">
+            <p class="mat-body-2 fw-bolder mt-0">Credentials</p>
+            <div class="d-flex flex-column">
+                <form></form>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #authorizationSetup>
+    <div class="d-flex flex-column gap-3 my-3 flex-grow-1">
+        <div class="d-flex flex-column w-50">
+            <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Session Time</mat-label>
+                <input matInput placeholder="Enter Session Time (Second)" [autocomplete]="false" />
+                <mat-hint>Session Time Second</mat-hint>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Key Name</mat-label>
+                <input matInput placeholder="Key Name" [autocomplete]="false" />
+                <mat-hint>Key name to pass the JWT as e.g "authorization", "access_token" etc</mat-hint>
+            </mat-form-field>
+        </div>
+        <div class="d-flex flex-column w-50">
+            <div class="overflow-auto code-snippet-view">
+                <markdown> </markdown>
+            </div>
+            <p class="mat-body-2 text-secondary my-2">
+                <strong>Note:</strong> JSON format you will receive after login as JWT in Authorization key
+            </p>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #designAndCode>
+    <div class="d-flex col-gap-3 my-3 flex-grow-1">
+        <div class="overflow-auto code-snippet-view">
+            <markdown> </markdown>
+        </div>
+    </div>
+</ng-template>
