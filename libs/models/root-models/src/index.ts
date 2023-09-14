@@ -95,6 +95,7 @@ export interface IClientSettings {
 }
 
 export interface IClient {
+    id: number;
     name: string;
     mobile: string;
     email: string;

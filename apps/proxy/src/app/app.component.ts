@@ -1,6 +1,5 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { IToken, ProxyBaseUrls } from '@proxy/models/root-models';
 import { VersionCheckService } from '@proxy/service';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
@@ -13,7 +12,6 @@ import { ILogInFeatureStateWithRootState } from './auth/ngrx/store/login.state';
 import { IAppState } from './ngrx';
 import { rootActions } from './ngrx/actions';
 import * as logInActions from './auth/ngrx/actions/login.action';
-import { AuthService } from '@proxy/services/proxy/auth';
 
 @Component({
     selector: 'proxy-root',
@@ -32,13 +30,12 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         private router: Router,
         private actRoute: ActivatedRoute,
         private store: Store<IAppState>,
-        @Inject(ProxyBaseUrls.IToken) private token: IToken,
-        private versionCheckService: VersionCheckService,
-        private authService: AuthService
+        private versionCheckService: VersionCheckService
     ) {
         super();
 
         this._store.dispatch(logInActions.getUserAction());
+        this._store.dispatch(rootActions.getClientSettings());
         this.router.events
             .pipe(
                 filter((event) => event instanceof NavigationEnd),
