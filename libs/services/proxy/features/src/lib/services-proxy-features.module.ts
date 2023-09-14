@@ -30,8 +30,10 @@ export class FeaturesService {
         return this.http.get<BaseResponse<IFeatureType[], void>>(FeaturesUrls.getFeatureType(this.baseURL));
     }
 
-    // Fetch Method
-    public getMethod(id): Observable<BaseResponse<IMethod[], void>> {
-        return this.http.get<BaseResponse<IMethod[], void>>(FeaturesUrls.getMethod(this.baseURL).replace(':id', id));
+    // Fetch Method Service
+    public getMethodService(id): Observable<BaseResponse<IMethod[], void>> {
+        return this.http.get<BaseResponse<IMethod[], void>>(
+            FeaturesUrls.getMethodService(this.baseURL).replace(':id', id)
+        );
     }
 }

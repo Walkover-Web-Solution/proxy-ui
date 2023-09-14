@@ -29,16 +29,16 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
                 return this.service.getUsers(req).pipe(
                     tapResponse(
                         (res: BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>) => {
-                            if (res.hasError) {
-                                this.showErrorMessages(res['error']);
+                            if (res?.hasError) {
+                                this.showErrorMessages(res?.errors);
                             }
                             return this.patchState({
                                 isLoading: false,
                                 users: res?.data,
                             });
                         },
-                        (error: HttpWrapperService) => {
-                            this.showErrorMessages(error['error']);
+                        (error: any) => {
+                            this.showErrorMessages(error?.errors);
                             return this.patchState({
                                 isLoading: true,
                                 users: null,

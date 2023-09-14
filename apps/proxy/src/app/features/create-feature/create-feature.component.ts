@@ -20,6 +20,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     ngOnInit(): void {
         this.getFeatureType();
+        this.componentStore.getServiceMethods(1);
     }
 
     public ngOnDestroy(): void {

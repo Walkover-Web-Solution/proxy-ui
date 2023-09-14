@@ -30,16 +30,16 @@ export class FeatureComponentStore extends ComponentStore<IFeatureInitialState> 
                 return this.service.getFeature(req).pipe(
                     tapResponse(
                         (res: BaseResponse<IPaginatedResponse<IFeature[]>, IFeatureReq>) => {
-                            if (res.hasError) {
-                                this.showErrorMessages(res['error']);
+                            if (res?.hasError) {
+                                this.showErrorMessages(res?.errors);
                             }
                             return this.patchState({
                                 isLoading: false,
                                 features: res?.data,
                             });
                         },
-                        (error: HttpErrorResponse) => {
-                            this.showErrorMessages(error['error']);
+                        (error: any) => {
+                            this.showErrorMessages(error?.errors);
                             this.patchState({
                                 isLoading: false,
                                 features: null,
