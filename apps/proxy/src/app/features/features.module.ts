@@ -17,6 +17,7 @@ import { CreateFeatureComponent } from './create-feature/create-feature.componen
 import { FeaturesLayoutComponent } from './feature-layout.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatListModule } from '@angular/material/list';
+import { ServicesProxyFeaturesModule } from '@proxy/services/proxy/features';
 // Component
 const routes: Routes = [
     {
@@ -59,6 +60,7 @@ const routes: Routes = [
         UiComponentsSearchModule,
         MatStepperModule,
         MatListModule,
+        ServicesProxyFeaturesModule,
     ],
     exports: [RouterModule],
 })

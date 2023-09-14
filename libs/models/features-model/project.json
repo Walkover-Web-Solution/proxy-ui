@@ -1,0 +1,16 @@
+{
+    "name": "models-features-model",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/models/features-model/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/models/features-model/**/*.ts", "libs/models/features-model/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

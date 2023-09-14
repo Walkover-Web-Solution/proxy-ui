@@ -3,123 +3,46 @@ import { Injectable } from '@angular/core';
 import { BaseResponse, IPaginatedResponse, errorResolver } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
-import { IEnvProjects, ILogDetailRes, ILogsReq, ILogsRes } from '@proxy/models/logs-models';
-import { LogsService } from '@proxy/services/proxy/logs';
 import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
-
+import { IFeature, IFeatureReq } from '@proxy/models/features-model';
+import { FeaturesService } from '@proxy/services/proxy/features';
 export interface ILogsInitialState {
-    logs: IPaginatedResponse<ILogsRes[]>;
-    logsInProcess: boolean;
-    envProjects: IPaginatedResponse<IEnvProjects[]>;
-    envProjectsInProcess: boolean;
-    reqLogs: ILogDetailRes;
-    reqLogsInProcess: boolean;
+    features: IPaginatedResponse<IFeature[]>;
+    isLoading: boolean;
 }
 
 @Injectable()
-export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
-    constructor(private service: LogsService, private toast: PrimeNgToastService) {
+export class FeatureComponentStore extends ComponentStore<ILogsInitialState> {
+    constructor(private service: FeaturesService, private toast: PrimeNgToastService) {
         super({
-            logs: null,
-            logsInProcess: false,
-            envProjects: null,
-            envProjectsInProcess: false,
-            reqLogs: null,
-            reqLogsInProcess: false,
+            features: null,
+            isLoading: false,
         });
     }
 
-    readonly logsData$: Observable<IPaginatedResponse<ILogsRes[]>> = this.select((state) => state.logs);
-    readonly envProjects$: Observable<IPaginatedResponse<IEnvProjects[]>> = this.select((state) => state.envProjects);
-    readonly reqLogs$: Observable<any> = this.select((state) => state.reqLogs);
-    readonly isLoading$: Observable<boolean> = this.select(
-        (state) => state.logsInProcess || state.envProjectsInProcess
-    );
-    readonly reqLogsInProcess$: Observable<boolean> = this.select((state) => state.reqLogsInProcess);
+    readonly isLoading$: Observable<boolean> = this.select((state) => state.isLoading);
+    readonly feature$: Observable<IPaginatedResponse<IFeature[]>> = this.select((state) => state.features);
 
-    readonly resetReqLog = this.updater((state) => ({ ...state, reqLog: null }));
-
-    readonly getLogs = this.effect((data: Observable<ILogsReq>) => {
+    readonly getFeature = this.effect((data: Observable<IFeatureReq>) => {
         return data.pipe(
-            switchMap((req: ILogsReq) => {
-                this.patchState({ logsInProcess: true });
-                return this.service.getProxyLogs(req).pipe(
+            switchMap((req: IFeatureReq) => {
+                this.patchState({ isLoading: true });
+                return this.service.getFeature(req).pipe(
                     tapResponse(
-                        (res: BaseResponse<IPaginatedResponse<ILogsRes[]>, ILogsReq>) => {
+                        (res: BaseResponse<IPaginatedResponse<IFeature[]>, IFeatureReq>) => {
                             if (res.hasError) {
                                 this.showErrorMessages(res['error']);
                             }
                             return this.patchState({
-                                logsInProcess: false,
-                                logs: res?.data,
+                                isLoading: false,
+                                features: res?.data,
                             });
                         },
                         (error: HttpErrorResponse) => {
                             this.showErrorMessages(error['error']);
-                            return this.patchState({
-                                logsInProcess: false,
-                                logs: null,
-                            });
-                        }
-                    ),
-                    catchError((err) => EMPTY)
-                );
-            })
-        );
-    });
-
-    readonly getLogsById = this.effect((data: Observable<any>) => {
-        return data.pipe(
-            switchMap((req: any) => {
-                this.patchState({ reqLogsInProcess: true, reqLogs: null });
-                return this.service.getProxyLogsById(req).pipe(
-                    tapResponse(
-                        (res: BaseResponse<ILogDetailRes, void>) => {
-                            if (res.hasError) {
-                                this.showErrorMessages(res['error']);
-                            }
-                            return this.patchState({
-                                reqLogsInProcess: false,
-                                reqLogs: {
-                                    ...res.data,
-                                    request_body: JSON.parse(res?.data.request_body as string),
-                                },
-                            });
-                        },
-                        (error: HttpErrorResponse) => {
-                            this.showErrorMessages(error['error']);
-                            return this.patchState({
-                                reqLogsInProcess: false,
-                                reqLogs: null,
-                            });
-                        }
-                    ),
-                    catchError((err) => EMPTY)
-                );
-            })
-        );
-    });
-
-    readonly getEnvProjects = this.effect((data) => {
-        return data.pipe(
-            switchMap(() => {
-                this.patchState({ envProjectsInProcess: true });
-                return this.service.getEnvProjects().pipe(
-                    tapResponse(
-                        (res: BaseResponse<IPaginatedResponse<IEnvProjects[]>, void>) => {
-                            if (res.hasError) {
-                                this.showErrorMessages(res['error']);
-                            }
-                            return this.patchState({
-                                envProjectsInProcess: false,
-                                envProjects: res?.data,
-                            });
-                        },
-                        (error: HttpErrorResponse) => {
-                            this.showErrorMessages(error['error']);
-                            return this.patchState({
-                                envProjectsInProcess: false,
-                                envProjects: null,
+                            this.patchState({
+                                isLoading: false,
+                                features: null,
                             });
                         }
                     ),

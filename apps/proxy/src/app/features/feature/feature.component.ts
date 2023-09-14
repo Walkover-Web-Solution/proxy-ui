@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import {
     DEFAULT_END_DATE,
@@ -7,21 +7,22 @@ import {
     SelectDateRange,
     PAGE_SIZE_OPTIONS,
 } from '@proxy/constant';
-import { MatSort } from '@angular/material/sort';
 import * as dayjs from 'dayjs';
 import { omit } from 'lodash';
-import { MatMenuTrigger } from '@angular/material/menu';
 import { PageEvent } from '@angular/material/paginator';
+import { FeatureComponentStore } from './feature.store';
+import { Observable } from 'rxjs';
+import { IFeature } from '@proxy/models/features-model';
+import { IPaginatedResponse } from '@proxy/models/root-models';
 @Component({
     selector: 'proxy-features',
     templateUrl: './feature.component.html',
     styleUrls: ['./feature.component.scss'],
-    // providers: [UserComponentStore],
+    providers: [FeatureComponentStore],
 })
 export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit {
-    @ViewChild(MatSort) matSort: MatSort;
-    @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
-
+    public feature$: Observable<IPaginatedResponse<IFeature[]>> = this.componentStore.feature$;
+    public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public displayedColumns: string[] = ['name', 'reference_id', 'method', 'type'];
     public params: any = {};
     public selectedRangeValue = DEFAULT_SELECTED_DATE_RANGE;
@@ -32,7 +33,7 @@ export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit
     };
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
 
-    constructor() {
+    constructor(private componentStore: FeatureComponentStore) {
         super();
     }
     ngOnInit(): void {
@@ -40,7 +41,7 @@ export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit
             ...this.params,
             ...this.formatDateRange(),
         };
-        this.getLogs();
+        this.getFeatures();
     }
 
     public ngOnDestroy(): void {
@@ -51,13 +52,13 @@ export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit
         if (searchKeyword?.length) {
             this.params = {
                 ...this.params,
-                endpoint: searchKeyword.trim(),
+                search: searchKeyword.trim(),
             };
         } else {
-            this.params = { ...omit(this.params, ['endpoint']) };
+            this.params = { ...omit(this.params, ['search']) };
         }
         this.params.pageNo = 1;
-        this.getLogs();
+        this.getFeatures();
     }
 
     /**
@@ -81,7 +82,7 @@ export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit
             ...this.params,
             ...this.formatDateRange(),
         };
-        this.getLogs();
+        this.getFeatures();
     }
 
     /**
@@ -94,11 +95,13 @@ export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit
             pageNo: event.pageIndex + 1,
             itemsPerPage: event.pageSize,
         };
-        this.getLogs();
+        this.getFeatures();
     }
 
     /**
-     * Get Logs
+     * Get Feature
      */
-    public getLogs(): void {}
+    public getFeatures(): void {
+        this.componentStore.getFeature({ ...this.params });
+    }
 }

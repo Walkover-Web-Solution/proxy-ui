@@ -13,6 +13,7 @@
         "directives-remove-character-directive": "libs/directives/remove-character-directive",
         "directives-skeleton": "libs/directives/skeleton",
         "directives-timeago-directive": "libs/directives/timeago-directive",
+        "models-features-model": "libs/models/features-model",
         "models-logs-models": "libs/models/logs-models",
         "models-root-models": "libs/models/root-models",
         "pipes-chart-date-add": "libs/pipes/chart-date-add",
@@ -59,6 +60,7 @@
         "services-interceptor-error-interceptor": "libs/services/interceptor/error-interceptor",
         "services-login": "libs/services/login",
         "services-proxy-auth": "libs/services/proxy/auth",
+        "services-proxy-features": "libs/services/proxy/features",
         "services-proxy-logs": "libs/services/proxy/logs",
         "services-shared": "libs/services/shared",
         "shared": "libs/shared",
@@ -100,6 +102,7 @@
         "ui-tts-recording": "libs/ui/tts-recording",
         "ui-variable-input": "libs/ui/variable-input",
         "ui-virtual-scroll": "libs/ui/virtual-scroll",
+        "urls-features-url": "libs/urls/features-url",
         "urls-logs-urls": "libs/urls/logs-urls",
         "utils": "libs/utils"
     },
