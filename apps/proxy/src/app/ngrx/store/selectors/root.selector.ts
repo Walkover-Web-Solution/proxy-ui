@@ -23,3 +23,7 @@ export const selectClientsInProcess = createSelector(
     selectRootState,
     (rootState: IRootState) => rootState.clientsInProcess
 );
+export const selectSwtichClientSuccess = createSelector(
+    selectRootState,
+    (rootState: IRootState) => rootState.swtichClientSuccess
+);

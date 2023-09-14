@@ -35,7 +35,6 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         super();
 
         this._store.dispatch(logInActions.getUserAction());
-        this._store.dispatch(rootActions.getClientSettings());
         this.router.events
             .pipe(
                 filter((event) => event instanceof NavigationEnd),

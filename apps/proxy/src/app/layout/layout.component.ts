@@ -9,7 +9,7 @@ import { ILogInFeatureStateWithRootState } from '../auth/ngrx/store/login.state'
 import * as logInActions from '../auth/ngrx/actions/login.action';
 import { rootActions } from '../ngrx/actions';
 import { CookieService } from 'ngx-cookie-service';
-import { selectAllClient, selectClientSettings } from '../ngrx';
+import { selectAllClient, selectClientSettings, selectSwtichClientSuccess } from '../ngrx';
 
 @Component({
     selector: 'proxy-layout',
@@ -20,6 +20,7 @@ export class LayoutComponent extends BaseComponent implements OnInit {
     public logInData$: Observable<IFirebaseUserModel>;
     public clientSettings$: Observable<IClientSettings>;
     public clients$: Observable<IPaginatedResponse<IClient[]>>;
+    public swtichClientSuccess$: Observable<boolean>;
 
     public isSideNavOpen = new BehaviorSubject<boolean>(true);
 
@@ -46,14 +47,25 @@ export class LayoutComponent extends BaseComponent implements OnInit {
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
+        this.swtichClientSuccess$ = this.store.pipe(
+            select(selectSwtichClientSuccess),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
     }
 
     ngOnInit(): void {
         this.getClients();
+        this.getClientSettings();
         this.getCurrentTheme();
         if (this.isMobileDevice()) {
             this.toggleSideBarEvent();
         }
+        this.swtichClientSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                location.href = '/app';
+            }
+        });
     }
 
     public logOut() {
@@ -62,6 +74,10 @@ export class LayoutComponent extends BaseComponent implements OnInit {
 
     public getClients() {
         this.store.dispatch(rootActions.getAllClients({ params: this.clientsParams }));
+    }
+
+    public getClientSettings() {
+        this.store.dispatch(rootActions.getClientSettings());
     }
 
     public fetchClientsNextPage() {
