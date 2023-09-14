@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as rootActions from '../../actions/root.action';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { RootService } from '@proxy/services/proxy/root';
-import { BaseResponse, IClientSettings, errorResolver } from '@proxy/models/root-models';
+import { BaseResponse, IClient, IClientSettings, IPaginatedResponse, errorResolver } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 
 @Injectable()
@@ -25,6 +25,48 @@ export class RootEffects {
                     catchError((err) => {
                         this.showError(err.errors);
                         return of(rootActions.getClientSettingsError());
+                    })
+                );
+            })
+        )
+    );
+
+    getAllClients$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(rootActions.getAllClients),
+            switchMap((req) => {
+                return this.rootService.getClients(req.params).pipe(
+                    map((res: BaseResponse<IPaginatedResponse<IClient[]>, void>) => {
+                        if (res.hasError) {
+                            this.showError(res.errors);
+                            rootActions.getAllClientsError();
+                        }
+                        return rootActions.getAllClientsSuccess({ response: res.data });
+                    }),
+                    catchError((err) => {
+                        this.showError(err.errors);
+                        return of(rootActions.getAllClientsError());
+                    })
+                );
+            })
+        )
+    );
+
+    switchClient$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(rootActions.switchClient),
+            switchMap((req) => {
+                return this.rootService.switchClient(req.request).pipe(
+                    map((res: BaseResponse<{ message: string }, void>) => {
+                        if (res.hasError) {
+                            this.showError(res.errors);
+                            rootActions.switchClientError();
+                        }
+                        return rootActions.switchClientSuccess();
+                    }),
+                    catchError((err) => {
+                        this.showError(err.errors);
+                        return of(rootActions.switchClientError());
                     })
                 );
             })

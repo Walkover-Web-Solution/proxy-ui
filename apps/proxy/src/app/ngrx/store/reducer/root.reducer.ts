@@ -10,8 +10,10 @@ export interface IRootState {
     clientSettings: IClientSettings;
     clientSettingsInProcess: boolean;
 
-    // Client Company
-    clientCompanies: IPaginatedResponse<IClient[]>;
+    // All Clients
+    clients: IPaginatedResponse<IClient[]>;
+    clientsInProcess: boolean;
+    swtichClientSuccess: boolean;
 }
 
 export const initialState: IRootState = {
@@ -22,8 +24,10 @@ export const initialState: IRootState = {
     clientSettings: null,
     clientSettingsInProcess: false,
 
-    // Client Company
-    clientCompanies: null,
+    // All Clients
+    clients: null,
+    clientsInProcess: false,
+    swtichClientSuccess: false,
 };
 
 export function rootReducer(state: IRootState, action: Action) {
@@ -39,6 +43,7 @@ const _rootReducer = createReducer(
         };
     }),
 
+    // Client Settings Actions
     on(rootActions.getClientSettings, (state) => {
         return {
             ...state,
@@ -58,6 +63,52 @@ const _rootReducer = createReducer(
             ...state,
             clientSettings: null,
             clientSettingsInProcess: false,
+        };
+    }),
+
+    // Get All Client Actions
+    on(rootActions.getAllClients, (state) => {
+        return {
+            ...state,
+            clients: null,
+            clientsInProcess: true,
+        };
+    }),
+    on(rootActions.getAllClientsSuccess, (state, { response }) => {
+        return {
+            ...state,
+            clients: response,
+            clientsInProcess: false,
+        };
+    }),
+    on(rootActions.getAllClientsError, (state) => {
+        return {
+            ...state,
+            clients: null,
+            clientsInProcess: false,
+        };
+    }),
+
+    // Switch Client
+    on(rootActions.switchClient, (state) => {
+        return {
+            ...state,
+            clientsInProcess: true,
+            swtichClientSuccess: false,
+        };
+    }),
+    on(rootActions.switchClientSuccess, (state) => {
+        return {
+            ...state,
+            clientsInProcess: false,
+            swtichClientSuccess: true,
+        };
+    }),
+    on(rootActions.switchClientError, (state) => {
+        return {
+            ...state,
+            clientsInProcess: false,
+            swtichClientSuccess: false,
         };
     })
 );

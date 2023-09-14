@@ -22,7 +22,7 @@ export class RootService {
     }
 
     // Switch Client
-    public switchClient(body: { company_id: number }): Observable<BaseResponse<{ message: string }, void>> {
+    public switchClient(body: { client_id: number }): Observable<BaseResponse<{ message: string }, void>> {
         return this.http.post<BaseResponse<{ message: string }, void>>(RootUrls.switchClient(this.baseUrl), body);
     }
 
