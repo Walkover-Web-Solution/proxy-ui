@@ -1,17 +1,27 @@
 <div class="app-content d-flex flex-column">
-    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
     <div class="d-flex align-items-center justify-content-between gap-3">
         <h4 class="my-0 text-secondary mat-body-1 fw-bolder">Features</h4>
         <proxy-lib-search
             [matFormFieldClass]="'no-padding w-xs-100'"
             [placeholder]="'Search by feature'"
-            (inputChanges)="onEnter($event)"
+            (inputChanges)="search($event)"
             class="w-xs-100"
         ></proxy-lib-search>
-        <button mat-flat-button color="primary" class="mat-btn-xs" [routerLink]="['/app', 'features', 'create']">
-            <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
-            <span class="hide-xs">Add New Feature</span>
-        </button>
+        <div class="d-flex align-items-center gap-3 ml-auto">
+            <button mat-flat-button color="primary" class="mat-btn-xs" [routerLink]="['/app', 'features', 'create']">
+                <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
+                <span class="hide-xs">Add New Feature</span>
+            </button>
+            <button
+                mat-flat-button
+                class="flat-icon-btn flat-default"
+                (click)="getFeatures()"
+                matTooltip="Refresh"
+                matTooltipPosition="above"
+            >
+                <mat-icon class="mat-icon-18">refresh</mat-icon>
+            </button>
+        </div>
     </div>
     <p class="mat-body-2 text-secondary w-50">
         The "Features" component in the Proxy Server is a dynamic tool that offers versatile authentication and
@@ -22,12 +32,18 @@
     <mat-card class="p-0 outline-card responsive-card flex-grow-1">
         <mat-card-content>
             <div class="table-scroll">
-                <table mat-table [dataSource]="(feature$ | async)?.data" class="default-table responsive-table">
+                <table
+                    mat-table
+                    [dataSource]="(feature$ | async)?.data?.length ? (feature$ | async)?.data : [1, 2, 3, 4, 5]"
+                    class="default-table responsive-table"
+                >
                     <!-- Name Column -->
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
                         <td mat-cell *matCellDef="let element" data-label="Name">
-                            {{ element.name }}
+                            <ng-container *ngIf="!(isLoading$ | async); else loading">
+                                {{ element.name }}
+                            </ng-container>
                         </td>
                     </ng-container>
 
@@ -35,20 +51,30 @@
                     <ng-container matColumnDef="reference_id">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Reference Id</th>
                         <td mat-cell *matCellDef="let element" data-label="Reference Id">
-                            {{ element.reference_id }}
+                            <ng-container *ngIf="!(isLoading$ | async); else loading">
+                                {{ element.reference_id }}
+                            </ng-container>
                         </td>
                     </ng-container>
 
                     <!-- Method Column -->
                     <ng-container matColumnDef="method">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Method</th>
-                        <td mat-cell *matCellDef="let element" data-label="Method">{{ element.method?.name }}</td>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Method</th>
+                        <td mat-cell *matCellDef="let element" data-label="Method">
+                            <ng-container *ngIf="!(isLoading$ | async); else loading">{{
+                                element.method?.name
+                            }}</ng-container>
+                        </td>
                     </ng-container>
 
                     <!-- Type Column -->
                     <ng-container matColumnDef="type">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
-                        <td mat-cell *matCellDef="let element" data-label="Type">{{ element.feature?.name }}</td>
+                        <td mat-cell *matCellDef="let element" data-label="Type">
+                            <ng-container *ngIf="!(isLoading$ | async); else loading">{{
+                                element.feature?.name
+                            }}</ng-container>
+                        </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
@@ -76,3 +102,6 @@
         </mat-card-content>
     </mat-card>
 </div>
+<ng-template #loading>
+    <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>
+</ng-template>

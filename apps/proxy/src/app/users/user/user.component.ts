@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import {
     DEFAULT_END_DATE,
@@ -21,18 +21,24 @@ import { IUser } from '@proxy/models/users-model';
     providers: [UserComponentStore],
 })
 export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
+    /** Store current API inprogress state */
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
+    /** Store User data */
     public users$: Observable<IPaginatedResponse<IUser[]>> = this.componentStore.users$;
-
+    /** Store display column */
     public displayedColumns: string[] = ['name', 'email', 'phone_number'];
+    /** Store params for fetching feature data */
     public params: any = {};
+    /** Store default selected date range */
     public selectedRangeValue = DEFAULT_SELECTED_DATE_RANGE;
+    /** Store selected date range */
     public selectedDefaultDateRange = SelectDateRange;
-    public selectedDateRange = {
-        startDate: DEFAULT_START_DATE,
-        endDate: DEFAULT_END_DATE,
-    };
+    /** Store page size options */
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
+    // public selectedDateRange = {
+    //     startDate: DEFAULT_START_DATE,
+    //     endDate: DEFAULT_END_DATE,
+    // };
 
     constructor(private componentStore: UserComponentStore) {
         super();
@@ -49,7 +55,11 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
         super.ngOnDestroy();
     }
 
-    public onEnter(searchKeyword: string) {
+    /**
+     * Search by searchKeyword
+     * @param searchKeyword
+     */
+    public search(searchKeyword: string) {
         if (searchKeyword?.length) {
             this.params = {
                 ...this.params,
@@ -100,7 +110,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     }
 
     /**
-     * Get Logs
+     * Get Users
      */
     public getUsers(): void {
         this.componentStore.getUsers({ ...this.params });

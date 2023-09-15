@@ -9,15 +9,15 @@ import { CommonModule } from '@angular/common';
 import { UiComponentsSearchModule } from '@proxy/ui/search';
 import { UiDateRangePickerModule } from '@proxy/date-range-picker';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { ServicesProxyLogsModule } from '@proxy/services/proxy/logs';
 import { UiNoRecordFoundModule } from '@proxy/ui/no-record-found';
 import { DirectivesRemoveCharacterDirectiveModule } from '@proxy/directives/RemoveCharacterDirective';
 import { UiMatPaginatorGotoModule } from '@proxy/ui/mat-paginator-goto';
-import { UiLoaderModule } from '@proxy/ui/loader';
 import { UserComponent } from './user/user.component';
 import { ServicesProxyUsersModule } from '@proxy/services/proxy/users';
+import { DirectivesSkeletonModule } from '@proxy/directives/skeleton';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Components
 const routes: Routes = [
@@ -40,17 +40,17 @@ const routes: Routes = [
         MatInputModule,
         ReactiveFormsModule,
         MatFormFieldModule,
-        MatMenuModule,
+        MatTooltipModule,
         MatIconModule,
         MatTableModule,
         UiDateRangePickerModule,
         ServicesProxyLogsModule,
         UiNoRecordFoundModule,
         UiMatPaginatorGotoModule,
-        UiLoaderModule,
         UiComponentsSearchModule,
         DirectivesRemoveCharacterDirectiveModule,
         ServicesProxyUsersModule,
+        DirectivesSkeletonModule,
     ],
     exports: [RouterModule],
 })

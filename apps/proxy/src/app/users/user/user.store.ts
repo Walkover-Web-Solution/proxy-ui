@@ -26,6 +26,7 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
     readonly getUsers = this.effect((data: Observable<IUserReq>) => {
         return data.pipe(
             switchMap((req: IUserReq) => {
+                this.patchState({ isLoading: true });
                 return this.service.getUsers(req).pipe(
                     tapResponse(
                         (res: BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>) => {
@@ -40,7 +41,7 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
                         (error: any) => {
                             this.showErrorMessages(error?.errors);
                             return this.patchState({
-                                isLoading: true,
+                                isLoading: false,
                                 users: null,
                             });
                         }
