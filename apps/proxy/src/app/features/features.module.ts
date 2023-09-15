@@ -18,6 +18,8 @@ import { FeaturesLayoutComponent } from './feature-layout.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatListModule } from '@angular/material/list';
 import { ServicesProxyFeaturesModule } from '@proxy/services/proxy/features';
+import { DirectivesSkeletonModule } from '@proxy/directives/skeleton';
+import { MatTooltipModule } from '@angular/material/tooltip';
 // Component
 const routes: Routes = [
     {
@@ -56,11 +58,12 @@ const routes: Routes = [
         MatTableModule,
         UiNoRecordFoundModule,
         UiMatPaginatorGotoModule,
-        UiLoaderModule,
         UiComponentsSearchModule,
         MatStepperModule,
         MatListModule,
         ServicesProxyFeaturesModule,
+        DirectivesSkeletonModule,
+        MatTooltipModule,
     ],
     exports: [RouterModule],
 })

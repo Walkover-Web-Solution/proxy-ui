@@ -1,12 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
-import {
-    DEFAULT_END_DATE,
-    DEFAULT_SELECTED_DATE_RANGE,
-    DEFAULT_START_DATE,
-    SelectDateRange,
-    PAGE_SIZE_OPTIONS,
-} from '@proxy/constant';
+import { DEFAULT_SELECTED_DATE_RANGE, SelectDateRange, PAGE_SIZE_OPTIONS } from '@proxy/constant';
 import * as dayjs from 'dayjs';
 import { omit } from 'lodash';
 import { PageEvent } from '@angular/material/paginator';
@@ -21,17 +15,24 @@ import { IPaginatedResponse } from '@proxy/models/root-models';
     providers: [FeatureComponentStore],
 })
 export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit {
+    /** Store Feature Data */
     public feature$: Observable<IPaginatedResponse<IFeature[]>> = this.componentStore.feature$;
+    /** Store current API Inprogress State */
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
+    /** Store display column */
     public displayedColumns: string[] = ['name', 'reference_id', 'method', 'type'];
+    /** Params for fetching feature data */
     public params: any = {};
+    /** Store default selected date */
     public selectedRangeValue = DEFAULT_SELECTED_DATE_RANGE;
+    /** Store date range */
     public selectedDefaultDateRange = SelectDateRange;
-    public selectedDateRange = {
-        startDate: DEFAULT_START_DATE,
-        endDate: DEFAULT_END_DATE,
-    };
+    /** Store page size option */
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
+    // public selectedDateRange = {
+    //     startDate: DEFAULT_START_DATE,
+    //     endDate: DEFAULT_END_DATE,
+    // };
 
     constructor(private componentStore: FeatureComponentStore) {
         super();
@@ -48,7 +49,11 @@ export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit
         super.ngOnDestroy();
     }
 
-    public onEnter(searchKeyword: string) {
+    /**
+     *  Search by searchKeyword
+     * @param searchKeyword
+     */
+    public search(searchKeyword: string) {
         if (searchKeyword?.length) {
             this.params = {
                 ...this.params,
