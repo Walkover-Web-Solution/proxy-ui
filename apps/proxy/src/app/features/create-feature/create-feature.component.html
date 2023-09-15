@@ -11,12 +11,23 @@
         class="rounded-8 border flex-grow-1 mat-stepper-starched"
         labelPosition="bottom"
         [animationDuration]="0"
+        [formGroup]="featureForm"
+        [linear]="true"
     >
-        <mat-step>
+        <mat-step
+            *ngIf="featureForm.get('primaryDetails.feature_id') as featureTypeControl"
+            [stepControl]="featureTypeControl"
+        >
             <ng-template matStepLabel>Select Feature</ng-template>
-            <div class="d-flex flex-column h-100 my-3">
+            <div class="d-flex flex-column h-100">
                 <ng-container
-                    *ngTemplateOutlet="selectFeature; context: { featureType: featureType$ | async }"
+                    *ngTemplateOutlet="
+                        selectFeature;
+                        context: {
+                            featureType: featureType$ | async,
+                            featureTypeControl
+                        }
+                    "
                 ></ng-container>
                 <div class="d-flex align-items-center justify-content-end">
                     <button mat-flat-button color="primary" matStepperNext>
@@ -27,10 +38,10 @@
                 </div>
             </div>
         </mat-step>
-        <mat-step>
+        <mat-step *ngIf="featureForm.get('primaryDetails.name') as nameControl" [stepControl]="nameControl">
             <ng-template matStepLabel>Feature Name</ng-template>
             <div class="d-flex flex-column h-100">
-                <ng-container *ngTemplateOutlet="featureName"></ng-container>
+                <ng-container *ngTemplateOutlet="featureName; context: { nameControl }"></ng-container>
                 <div class="d-flex align-items-center justify-content-between">
                     <button mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
@@ -96,26 +107,46 @@
         </mat-step>
     </mat-stepper>
 </div>
-<ng-template #selectFeature let-featureType="featureType">
+<ng-template #selectFeature let-featureType="featureType" let-featureTypeControl="featureTypeControl">
     <div class="flex-grow-1">
         <div class="features-layout">
             <div
                 *ngFor="let type of featureType"
                 class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center feature-card bg-light-grey cursor-pointer"
+                (click)="radioInput.click()"
+                [ngClass]="{ 'active': type.id === featureTypeControl.value }"
             >
                 <mat-icon>{{ type.icon }}</mat-icon>
                 <p class="mat-body-2 text-secondary fe-bold">{{ type.name }}</p>
+                <input
+                    type="radio"
+                    name="featureType"
+                    hidden
+                    #radioInput
+                    [formControl]="featureTypeControl"
+                    [value]="type.id"
+                />
             </div>
         </div>
     </div>
 </ng-template>
-<ng-template #featureName>
+<ng-template #featureName let-nameControl="nameControl">
     <div class="my-3 flex-grow-1">
         <p class="mat-body-2 text-secondary fw-bold">Give a name of your Feature</p>
         <form action="">
             <mat-form-field appearance="outline" class="w-50">
                 <mat-label>Enter Name</mat-label>
-                <input matInput placeholder="Enter Name" [autocomplete]="false" />
+                <input matInput placeholder="Enter Name" [autocomplete]="false" [formControl]="nameControl" />
+                <mat-error *ngIf="nameControl.touched">
+                    <mat-error *ngIf="nameControl.errors?.required"> Name is required. </mat-error>
+                    <mat-error *ngIf="nameControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
+                    <mat-error *ngIf="nameControl.errors?.maxlength as maxLengthError">
+                        Max allowed length is {{ maxLengthError?.requiredLength }}
+                    </mat-error>
+                    <mat-error *ngIf="nameControl.errors?.pattern">
+                        Name must contain only alphanumeric and underscore.
+                    </mat-error>
+                </mat-error>
             </mat-form-field>
         </form>
     </div>
