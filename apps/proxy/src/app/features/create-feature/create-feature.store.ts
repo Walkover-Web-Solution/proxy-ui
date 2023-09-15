@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BaseResponse, errorResolver } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
@@ -7,14 +6,14 @@ import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
 import { IFeatureType, IMethod } from '@proxy/models/features-model';
 import { FeaturesService } from '@proxy/services/proxy/features';
 
-export interface IFeatureInitialState {
+export interface ICreateFeatureInitialState {
     featureType: IFeatureType[];
     isLoading: boolean;
     serviceMethods: IMethod[];
 }
 
 @Injectable()
-export class FeatureComponentStore extends ComponentStore<IFeatureInitialState> {
+export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureInitialState> {
     constructor(private service: FeaturesService, private toast: PrimeNgToastService) {
         super({
             featureType: null,

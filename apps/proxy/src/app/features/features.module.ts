@@ -13,8 +13,6 @@ import { UiNoRecordFoundModule } from '@proxy/ui/no-record-found';
 import { UiMatPaginatorGotoModule } from '@proxy/ui/mat-paginator-goto';
 import { UiLoaderModule } from '@proxy/ui/loader';
 import { FeatureComponent } from './feature/feature.component';
-import { CreateFeatureComponent } from './create-feature/create-feature.component';
-import { FeaturesLayoutComponent } from './feature-layout.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatListModule } from '@angular/material/list';
 import { ServicesProxyFeaturesModule } from '@proxy/services/proxy/features';
@@ -24,27 +22,17 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 const routes: Routes = [
     {
         path: '',
-        component: FeaturesLayoutComponent,
-        children: [
-            {
-                path: '',
-                redirectTo: 'feature',
-                pathMatch: 'full',
-            },
-            {
-                path: 'feature',
-                component: FeatureComponent,
-            },
-            {
-                path: 'create-feature',
-                component: CreateFeatureComponent,
-            },
-        ],
+        component: FeatureComponent,
+        pathMatch: 'full',
+    },
+    {
+        path: 'create',
+        loadChildren: () => import('./create-feature/create-feature.module').then((p) => p.CreateFeatureModule),
     },
 ];
 
 @NgModule({
-    declarations: [FeaturesLayoutComponent, FeatureComponent, CreateFeatureComponent],
+    declarations: [FeatureComponent],
     imports: [
         FormsModule,
         CommonModule,
