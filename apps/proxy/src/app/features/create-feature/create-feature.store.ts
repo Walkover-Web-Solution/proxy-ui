@@ -25,7 +25,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     /** Selector for feature type data */
     readonly featureType$: Observable<IFeatureType[]> = this.select((state) => state.featureType);
     /** Selector for service method data */
-    readonly serviceMthods$: Observable<IMethod[]> = this.select((state) => state.serviceMethods);
+    readonly serviceMethods$: Observable<IMethod[]> = this.select((state) => state.serviceMethods);
 
     /** Get feature type data */
     readonly getFeatureType = this.effect((data) => {

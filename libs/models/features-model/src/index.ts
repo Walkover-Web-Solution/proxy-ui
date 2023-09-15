@@ -52,7 +52,7 @@ export interface IMethodService {
     name: string;
     method_id: number;
     service_id: number;
-    configurations: { [key: string]: IFieldConfig };
+    configurations: { fields: { [key: string]: IFieldConfig }; mappings: any[] };
     requirements: { [key: string]: IFieldConfig };
 }
 
