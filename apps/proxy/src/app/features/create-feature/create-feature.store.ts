@@ -5,7 +5,6 @@ import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
 import { IFeatureType, IMethod } from '@proxy/models/features-model';
 import { FeaturesService } from '@proxy/services/proxy/features';
-
 export interface ICreateFeatureInitialState {
     featureType: IFeatureType[];
     isLoading: boolean;
@@ -21,11 +20,14 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             serviceMethods: null,
         });
     }
-
+    /** Selector for API progress  */
     readonly isLoading$: Observable<boolean> = this.select((state) => state.isLoading);
+    /** Selector for feature type data */
     readonly featureType$: Observable<IFeatureType[]> = this.select((state) => state.featureType);
+    /** Selector for service method data */
     readonly serviceMthods$: Observable<IMethod[]> = this.select((state) => state.serviceMethods);
 
+    /** Get feature type data */
     readonly getFeatureType = this.effect((data) => {
         return data.pipe(
             switchMap(() => {
@@ -34,7 +36,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                     tapResponse(
                         (res: BaseResponse<IFeatureType[], void>) => {
                             if (res?.hasError) {
-                                this.showErrorMessages(res.errors);
+                                this.showError(res.errors);
                             }
                             return this.patchState({
                                 isLoading: false,
@@ -42,7 +44,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                             });
                         },
                         (error: any) => {
-                            this.showErrorMessages(error.errors);
+                            this.showError(error.errors);
                             this.patchState({ isLoading: false, featureType: null });
                         }
                     ),
@@ -52,6 +54,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
         );
     });
 
+    /** Get service method data */
     readonly getServiceMethods = this.effect((data: Observable<number>) => {
         return data.pipe(
             switchMap((req: number) => {
@@ -60,7 +63,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                     tapResponse(
                         (res: BaseResponse<IMethod[], void>) => {
                             if (res?.hasError) {
-                                this.showErrorMessages(res.errors);
+                                this.showError(res.errors);
                             }
                             return this.patchState({
                                 isLoading: false,
@@ -68,7 +71,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                             });
                         },
                         (error: any) => {
-                            this.showErrorMessages(error.errors);
+                            this.showError(error.errors);
                             this.patchState({
                                 isLoading: false,
                                 serviceMethods: null,
@@ -81,7 +84,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
         );
     });
 
-    private showErrorMessages(error): void {
+    private showError(error): void {
         const errorMessage = errorResolver(error);
         errorMessage.forEach((error) => {
             this.toast.error(error);

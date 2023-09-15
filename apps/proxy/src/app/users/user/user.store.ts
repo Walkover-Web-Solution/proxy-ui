@@ -4,7 +4,6 @@ import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
 import { IUser, IUserReq } from '@proxy/models/users-model';
 import { UsersService } from '@proxy/services/proxy/users';
 import { BaseResponse, IPaginatedResponse, errorResolver } from '@proxy/models/root-models';
-import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 
 export interface IUserInitialState {
@@ -20,9 +19,11 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
         });
     }
 
+    /** Selector for API progress */
     readonly isLoading$: Observable<boolean> = this.select((state) => state.isLoading);
+    /** Selector for user data */
     readonly users$: Observable<IPaginatedResponse<IUser[]>> = this.select((state) => state.users);
-
+    /** Get users data */
     readonly getUsers = this.effect((data: Observable<IUserReq>) => {
         return data.pipe(
             switchMap((req: IUserReq) => {
@@ -31,7 +32,7 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
                     tapResponse(
                         (res: BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>) => {
                             if (res?.hasError) {
-                                this.showErrorMessages(res?.errors);
+                                this.showError(res?.errors);
                             }
                             return this.patchState({
                                 isLoading: false,
@@ -39,7 +40,7 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
                             });
                         },
                         (error: any) => {
-                            this.showErrorMessages(error?.errors);
+                            this.showError(error?.errors);
                             return this.patchState({
                                 isLoading: false,
                                 users: null,
@@ -52,7 +53,7 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
         );
     });
 
-    private showErrorMessages(error): void {
+    private showError(error): void {
         const errorMessage = errorResolver(error);
         errorMessage.forEach((error) => {
             this.toast.error(error);
