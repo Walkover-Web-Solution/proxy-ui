@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { Observable } from 'rxjs';
+import { Observable, filter, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
 import { IFeatureType } from '@proxy/models/features-model';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -26,6 +26,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public featureType$: Observable<IFeatureType[]> = this.componentStore.featureType$;
 
+    public isEditMode: boolean = false;
+
     public featureForm = new FormGroup({
         primaryDetails: new FormGroup({
             name: new FormControl<string>(null, [
@@ -46,11 +48,19 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     ngOnInit(): void {
         this.getFeatureType();
-        this.componentStore.getServiceMethods(1);
+        if (!this.isEditMode) {
+            this.featureType$.pipe(takeUntil(this.destroy$), filter(Boolean)).subscribe((features) => {
+                this.featureForm.get('primaryDetails.feature_id').setValue(features[0].id);
+            });
+        }
     }
 
     public ngOnDestroy(): void {
         super.ngOnDestroy();
+    }
+
+    public getServiceMethods(id: number): void {
+        this.componentStore.getServiceMethods(id);
     }
 
     public getFeatureType() {

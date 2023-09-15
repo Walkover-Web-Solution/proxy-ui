@@ -30,10 +30,15 @@
                     "
                 ></ng-container>
                 <div class="d-flex align-items-center justify-content-end">
-                    <button mat-flat-button color="primary" matStepperNext>
-                        Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
-                            >navigate_next</mat-icon
-                        >
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        matStepperNext
+                        (click)="getServiceMethods(featureTypeControl.value)"
+                    >
+                        Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">
+                            navigate_next
+                        </mat-icon>
                     </button>
                 </div>
             </div>
