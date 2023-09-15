@@ -43,96 +43,20 @@ export interface IMethod {
 }
 
 export interface IAuthorizationFormat {
-    format: IFormat;
+    format: { [key: string]: any };
     encode_type: string;
     key: string;
-}
-
-export interface IFormat {
-    company: ICompany;
-    user: User;
-    ip: string;
-}
-
-export interface ICompany {
-    id: string;
-    name: string;
-    email: string;
-    mobile: string;
-    timezone: string;
-}
-
-export interface User {
-    id: string;
-    name: string;
-    email: string;
-    mobile: string;
 }
 
 export interface IMethodService {
     name: string;
     method_id: number;
     service_id: number;
-    configurations: IConfigurations;
-    requirements: IRequirements;
+    configurations: { [key: string]: IFieldConfig };
+    requirements: { [key: string]: IFieldConfig };
 }
 
-export interface IConfigurations {
-    fields: IFields;
-    mappings: any[];
-}
-
-export interface IFields {
-    scope: IScope;
-    redirect_uri: IRedirectUri;
-}
-
-export interface IScope {
-    type: string;
-    label: string;
-    regex: string;
-    value: string;
-    source: string;
-    is_hidden: boolean;
-    value_type: string;
-    is_required: boolean;
-    read_only_value: string[];
-    sourceFieldLabel: string;
-    sourceFieldValue: string;
-}
-
-export interface IRedirectUri {
-    type: string;
-    label: string;
-    regex: string;
-    value: string;
-    source: string;
-    is_hidden: boolean;
-    value_type: string;
-    is_required: boolean;
-    sourceFieldLabel: string;
-    sourceFieldValue: string;
-}
-
-export interface IRequirements {
-    client_id: IClientId;
-    client_secret: IClientSecret;
-}
-
-export interface IClientId {
-    type: string;
-    label: string;
-    regex: string;
-    value: string;
-    source: string;
-    is_hidden: boolean;
-    value_type: string;
-    is_required: boolean;
-    sourceFieldLabel: string;
-    sourceFieldValue: string;
-}
-
-export interface IClientSecret {
+export interface IFieldConfig {
     type: string;
     label: string;
     regex: string;
