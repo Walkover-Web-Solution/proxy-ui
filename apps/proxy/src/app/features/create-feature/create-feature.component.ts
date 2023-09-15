@@ -68,7 +68,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.selectedMethod.next(methods.find((method) => method.id === id));
             });
         this.selectedMethod.pipe(takeUntil(this.destroy$), filter(Boolean)).subscribe((method) => {
-            console.log(method);
             method.method_services.forEach((service) => {
                 const serviceFormGroup: ServiceFormGroup = new FormGroup({
                     requirements: new FormGroup({}),
@@ -84,7 +83,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     Object.entries(service.configurations.fields).forEach(([key, config]) => {
                         const formControl = this.createFormControl(config);
                         if (formControl) {
-                            serviceFormGroup.controls.requirements.addControl(key, formControl);
+                            serviceFormGroup.controls.configurations.addControl(key, formControl);
                         }
                     });
                 }

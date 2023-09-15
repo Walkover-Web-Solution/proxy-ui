@@ -40,6 +40,11 @@
         width: 100% !important;
     }
 }
+.w-md-100 {
+    @include media-breakpoint-down('tablet') {
+        width: 100% !important;
+    }
+}
 
 // This class applying before 768px
 @include media-breakpoint-up('tablet') {
