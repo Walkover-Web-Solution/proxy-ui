@@ -17,6 +17,10 @@ export interface IPaginatedResponse<P> {
     totalPageCount: number; // Total records of p in database without applying filters
 }
 
+export interface IReqParams {
+    [key: string]: string | number | boolean;
+}
+
 export interface IIdNameModel {
     id: number;
     name: string;

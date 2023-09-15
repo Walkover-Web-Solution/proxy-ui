@@ -11,3 +11,15 @@
         }
     }
 }
+
+// Autocomplete
+.mat-autocomplete-panel {
+    .mat-option{
+        font-size: 14px;
+        height: 40px !important;
+        line-height: 40px !important;
+        &:hover{
+            background-color: var(--color-common-primary-light) !important;
+        }
+    }
+}
