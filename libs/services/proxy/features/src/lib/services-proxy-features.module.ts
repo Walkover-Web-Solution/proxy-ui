@@ -31,9 +31,9 @@ export class FeaturesService {
     }
 
     // Fetch Method Service
-    public getMethodService(id): Observable<BaseResponse<IMethod[], void>> {
+    public getMethodService(id: number): Observable<BaseResponse<IMethod[], void>> {
         return this.http.get<BaseResponse<IMethod[], void>>(
-            FeaturesUrls.getMethodService(this.baseURL).replace(':id', id)
+            FeaturesUrls.getMethodService(this.baseURL).replace(':id', String(id))
         );
     }
 }
