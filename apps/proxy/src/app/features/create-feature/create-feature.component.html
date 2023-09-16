@@ -11,26 +11,38 @@
         class="rounded-8 border flex-grow-1 mat-stepper-starched"
         labelPosition="bottom"
         [animationDuration]="0"
+        [formGroup]="featureForm"
+        [linear]="true"
+        (selectionChange)="stepChange($event)"
     >
-        <mat-step>
+        <mat-step
+            *ngIf="featureForm.get('primaryDetails.feature_id') as featureTypeControl"
+            [stepControl]="featureTypeControl"
+        >
             <ng-template matStepLabel>Select Feature</ng-template>
-            <div class="d-flex flex-column h-100 my-3">
+            <div class="d-flex flex-column h-100">
                 <ng-container
-                    *ngTemplateOutlet="selectFeature; context: { featureType: featureType$ | async }"
+                    *ngTemplateOutlet="
+                        selectFeature;
+                        context: {
+                            featureType: featureType$ | async,
+                            featureTypeControl
+                        }
+                    "
                 ></ng-container>
                 <div class="d-flex align-items-center justify-content-end">
                     <button mat-flat-button color="primary" matStepperNext>
-                        Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
-                            >navigate_next</mat-icon
-                        >
+                        Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">
+                            navigate_next
+                        </mat-icon>
                     </button>
                 </div>
             </div>
         </mat-step>
-        <mat-step>
+        <mat-step *ngIf="featureForm.get('primaryDetails.name') as nameControl" [stepControl]="nameControl">
             <ng-template matStepLabel>Feature Name</ng-template>
             <div class="d-flex flex-column h-100">
-                <ng-container *ngTemplateOutlet="featureName"></ng-container>
+                <ng-container *ngTemplateOutlet="featureName; context: { nameControl }"></ng-container>
                 <div class="d-flex align-items-center justify-content-between">
                     <button mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
@@ -96,57 +108,118 @@
         </mat-step>
     </mat-stepper>
 </div>
-<ng-template #selectFeature let-featureType="featureType">
+<ng-template #selectFeature let-featureType="featureType" let-featureTypeControl="featureTypeControl">
     <div class="flex-grow-1">
         <div class="features-layout">
             <div
                 *ngFor="let type of featureType"
                 class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center feature-card bg-light-grey cursor-pointer"
+                (click)="radioInput.click()"
+                [ngClass]="{ 'active': type.id === featureTypeControl.value }"
             >
                 <mat-icon>{{ type.icon }}</mat-icon>
                 <p class="mat-body-2 text-secondary fe-bold">{{ type.name }}</p>
+                <input
+                    type="radio"
+                    name="featureType"
+                    hidden
+                    #radioInput
+                    [formControl]="featureTypeControl"
+                    [value]="type.id"
+                />
             </div>
         </div>
     </div>
 </ng-template>
-<ng-template #featureName>
+<ng-template #featureName let-nameControl="nameControl">
     <div class="my-3 flex-grow-1">
         <p class="mat-body-2 text-secondary fw-bold">Give a name of your Feature</p>
         <form action="">
             <mat-form-field appearance="outline" class="w-50">
                 <mat-label>Enter Name</mat-label>
-                <input matInput placeholder="Enter Name" [autocomplete]="false" />
+                <input matInput placeholder="Enter Name" [autocomplete]="false" [formControl]="nameControl" />
+                <mat-error *ngIf="nameControl.touched">
+                    <mat-error *ngIf="nameControl.errors?.required"> Name is required. </mat-error>
+                    <mat-error *ngIf="nameControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
+                    <mat-error *ngIf="nameControl.errors?.maxlength as maxLengthError">
+                        Max allowed length is {{ maxLengthError?.requiredLength }}
+                    </mat-error>
+                    <mat-error *ngIf="nameControl.errors?.pattern">
+                        Name must contain only alphanumeric and underscore.
+                    </mat-error>
+                </mat-error>
             </mat-form-field>
         </form>
     </div>
 </ng-template>
-<ng-template #configureMethodTemplate>
+<ng-template #configureMethodTemplate let-selectedIndex="selectedIndex">
     <div class="d-flex gap-3 my-3 flex-grow-1">
         <div class="d-flex flex-column gap-1 auth-service border-right pr-3">
             <p class="mat-body-2 fw-bolder mt-0">Services</p>
             <mat-list role="list" class="default-list pt-0">
-                <mat-list-item role="listitem" class="active rounded-4"
-                    >Google Authentication
-                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon></mat-list-item
+                <mat-list-item
+                    role="listitem"
+                    class="rounded-4"
+                    *ngFor="let service of (selectedMethod | async)?.method_services; let i = index"
+                    [ngClass]="{ 'active': selectedServiceIndex === i }"
+                    (click)="selectedServiceIndex = i"
                 >
-                <mat-list-item role="listitem" class="rounded-4"
-                    >Google Authentication
-                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon></mat-list-item
-                >
-                <mat-list-item role="listitem" class="rounded-4"
-                    >Google Authentication
-                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon></mat-list-item
-                >
-                <mat-list-item role="listitem" class="rounded-4"
-                    >Google Authentication
-                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon></mat-list-item
-                >
+                    {{ service.name }}
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
+                </mat-list-item>
             </mat-list>
         </div>
-        <div class="auth-credentials px-3">
-            <p class="mat-body-2 fw-bolder mt-0">Credentials</p>
+        <div class="auth-credentials px-3" class="width-md-500 w-md-100">
             <div class="d-flex flex-column">
-                <form></form>
+                <ng-container *ngIf="(selectedMethod | async)?.method_services as methodServices">
+                    <form
+                        [formGroup]="serviceForm"
+                        *ngIf="featureForm.get('serviceDetails')?.at(selectedServiceIndex) as serviceForm"
+                    >
+                        <ng-container *ngIf="methodServices?.[selectedServiceIndex]?.requirements as requirements">
+                            <p class="mat-body-2 fw-bolder mt-0">Credentials</p>
+                            <ng-container
+                                *ngFor="let controlKeyValue of serviceForm.controls.requirements.controls | keyvalue"
+                            >
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <ng-container
+                                            *ngTemplateOutlet="
+                                                inputField;
+                                                context: {
+                                                    fieldControl: controlKeyValue.value,
+                                                    fieldConfig: requirements[controlKeyValue.key]
+                                                }
+                                            "
+                                        ></ng-container>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container
+                            *ngIf="methodServices?.[selectedServiceIndex]?.configurations?.fields as configurationsFields"
+                        >
+                            <p class="mat-body-2 fw-bolder mt-0">Configurations</p>
+                            <ng-container
+                                *ngFor="let controlKeyValue of serviceForm.controls.configurations.controls | keyvalue"
+                            >
+                                <div class="row">
+                                    <div class="col-md-12 w-100">
+                                        <ng-container
+                                            *ngTemplateOutlet="
+                                                inputField;
+                                                context: {
+                                                    fieldControl: controlKeyValue.value,
+                                                    fieldConfig: configurationsFields[controlKeyValue.key]
+                                                }
+                                            "
+                                        ></ng-container>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </form>
+                </ng-container>
             </div>
         </div>
     </div>
@@ -183,4 +256,28 @@
             <markdown> </markdown>
         </div>
     </div>
+</ng-template>
+
+<ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
+    <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ fieldConfig?.label }}</mat-label>
+        <input
+            matInput
+            placeholder="Enter Name"
+            [autocomplete]="false"
+            [type]="fieldConfig?.type"
+            [formControl]="fieldControl"
+        />
+        <mat-error *ngIf="fieldControl.touched">
+            <mat-error *ngIf="fieldControl.errors?.required"> {{ fieldConfig?.label }} is required. </mat-error>
+            <mat-error *ngIf="fieldControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
+            <mat-error *ngIf="fieldControl.errors?.minlength as minLengthError">
+                Min allowed length is {{ minLengthError?.requiredLength }}
+            </mat-error>
+            <mat-error *ngIf="fieldControl.errors?.maxlength as maxLengthError">
+                Max allowed length is {{ maxLengthError?.requiredLength }}
+            </mat-error>
+            <mat-error *ngIf="fieldControl.errors?.pattern"> Enter valid {{ fieldConfig?.label }} </mat-error>
+        </mat-error>
+    </mat-form-field>
 </ng-template>
