@@ -173,7 +173,12 @@
                         >
                             <mat-icon
                                 class="material-icons-outlined mat-icon-18 text-danger ml-1 mt-1"
-                                *ngIf="serviceForm.dirty && serviceForm.invalid && serviceForm.touched"
+                                *ngIf="
+                                    i !== selectedServiceIndex &&
+                                    serviceForm.dirty &&
+                                    serviceForm.touched &&
+                                    serviceForm.invalid
+                                "
                             >
                                 error
                             </mat-icon>

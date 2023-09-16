@@ -150,9 +150,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         formGroup.reset();
         Object.keys(this.chipListValues)
             .filter((key) => +key.split('_')[1] === index)
-            .forEach((key) => {
-                this.chipListValues[key].clear();
-                this.chipListValues[key] = new Set(this.chipListReadOnlyValues[key]);
-            });
+            .forEach((key) => (this.chipListValues[key] = new Set(this.chipListReadOnlyValues[key])));
     }
 }
