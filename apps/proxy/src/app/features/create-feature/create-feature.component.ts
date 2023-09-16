@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, filter, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
 import { FeatureFieldType, IFeatureType, IFieldConfig, IMethod } from '@proxy/models/features-model';
 import { FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
-import { CAMPAIGN_NAME_REGEX } from '@proxy/regex';
+import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
@@ -50,6 +50,13 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             method_id: new FormControl<number>(null, [Validators.required]),
         }),
         serviceDetails: new FormArray<ServiceFormGroup>([]),
+        authorizationDetails: new FormGroup({
+            session_time: new FormControl<number>(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
+            authorizationKey: new FormControl<string>(null, [
+                Validators.required,
+                CustomValidators.minLengthThreeWithoutSpace,
+            ]),
+        }),
     });
 
     constructor(private componentStore: CreateFeatureComponentStore) {

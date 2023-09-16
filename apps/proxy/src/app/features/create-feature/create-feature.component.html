@@ -10,9 +10,9 @@
         #stepper
         class="rounded-8 border flex-grow-1 mat-stepper-starched"
         labelPosition="bottom"
+        [linear]="true"
         [animationDuration]="0"
         [formGroup]="featureForm"
-        [linear]="true"
         (selectionChange)="stepChange($event)"
     >
         <mat-step
@@ -72,7 +72,7 @@
                 </div>
             </div>
         </mat-step>
-        <mat-step>
+        <mat-step [stepControl]="featureForm.get('authorizationDetails')">
             <ng-template matStepLabel>Authorization Setup</ng-template>
             <div class="d-flex flex-column h-100">
                 <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
@@ -134,23 +134,20 @@
 <ng-template #featureName let-nameControl="nameControl">
     <div class="my-3 flex-grow-1">
         <p class="mat-body-2 text-secondary fw-bold">Give a name of your Feature</p>
-        <form action="">
-            <mat-form-field appearance="outline" class="w-50">
-                <mat-label>Enter Name</mat-label>
-                <input matInput placeholder="Enter Name" [autocomplete]="false" [formControl]="nameControl" />
-                <mat-error *ngIf="nameControl.touched">
-                    <ng-container
-                        *ngTemplateOutlet="
-                            matErrors;
-                            context: {
-                                fieldControl: nameControl,
-                                label: 'Name',
-                                patternErrorText: 'Name must contain only alphanumeric and underscore.'
-                            }
-                        "
-                    ></ng-container>
-                </mat-error>
-            </mat-form-field>
+        <form class="w-50">
+            <ng-container
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: nameControl,
+                        fieldConfig: {
+                            label: 'Name',
+                            is_required: true,
+                            patternErrorText: 'Name must contain only alphanumeric and underscore'
+                        }
+                    }
+                "
+            ></ng-container>
         </form>
     </div>
 </ng-template>
@@ -254,22 +251,42 @@
 <ng-template #authorizationSetup>
     <div class="d-flex flex-column gap-3 my-3 flex-grow-1">
         <div class="d-flex flex-column w-50">
-            <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Session Time</mat-label>
-                <input matInput placeholder="Enter Session Time (Second)" [autocomplete]="false" />
-                <mat-hint>Session Time Second</mat-hint>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Key Name</mat-label>
-                <input matInput placeholder="Key Name" [autocomplete]="false" />
-                <mat-hint>Key name to pass the JWT as e.g "authorization", "access_token" etc</mat-hint>
-            </mat-form-field>
+            <ng-container
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: featureForm.get('authorizationDetails.session_time'),
+                        fieldConfig: {
+                            label: 'Session Time',
+                            is_required: true,
+                            hint: 'Enter session time in seconds',
+                            patternErrorText: 'Only integer value allowed'
+                        }
+                    }
+                "
+            ></ng-container>
+            <ng-container
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: featureForm.get('authorizationDetails.authorizationKey'),
+                        fieldConfig: {
+                            label: 'Key Name',
+                            is_required: true,
+                            hint: 'Key name to pass the JWT as e.g &#8221;authorization&#8221;, &#8221;access_token&#8221; etc'
+                        }
+                    }
+                "
+            ></ng-container>
         </div>
         <div class="d-flex flex-column w-50">
             <div class="overflow-auto code-snippet-view">
-                <markdown> </markdown>
+                <markdown
+                    [data]="(selectedMethod | async)?.authorization_format?.format | json | language: 'javascript'"
+                >
+                </markdown>
             </div>
-            <p class="mat-body-2 text-secondary my-2">
+            <p class="mat-body-2 text-secondary my-4">
                 <strong>Note:</strong> JSON format you will receive after login as JWT in Authorization key
             </p>
         </div>
@@ -285,67 +302,63 @@
 </ng-template>
 
 <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
-    <mat-form-field appearance="outline" class="w-100" *ngIf="fieldConfig?.type === featureFieldType.Text">
-        <mat-label>{{ fieldConfig?.label }}</mat-label>
-        <input
-            matInput
-            type="text"
-            placeholder="Enter {{ fieldConfig?.label }}"
-            autocomplete="off"
-            [formControl]="fieldControl"
-        />
+    <mat-form-field appearance="outline" class="w-100" [ngSwitch]="fieldConfig?.type">
+        <mat-label
+            >{{ fieldConfig?.label }} <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span>
+        </mat-label>
+        <ng-container *ngSwitchCase="featureFieldType.ChipList">
+            <mat-chip-list #chipList aria-label="{{ fieldConfig?.label }}">
+                <mat-chip
+                    *ngFor="let item of chipListValues[fieldConfig?.label + '_' + this.selectedServiceIndex]"
+                    (removed)="chipListValues[fieldConfig?.label + '_' + this.selectedServiceIndex].delete(item)"
+                    [removable]="
+                        !chipListReadOnlyValues[fieldConfig?.label + '_' + this.selectedServiceIndex].has(item)
+                    "
+                >
+                    {{ item }}
+                    <button
+                        matChipRemove
+                        *ngIf="!chipListReadOnlyValues[fieldConfig?.label + '_' + this.selectedServiceIndex].has(item)"
+                    >
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip>
+                <input
+                    type="text"
+                    placeholder="Enter {{ fieldConfig?.label }}"
+                    autocomplete="off"
+                    [formControl]="fieldControl"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
+                    (matChipInputTokenEnd)="
+                        chipListValues[fieldConfig?.label + '_' + this.selectedServiceIndex].add($event.value);
+                        fieldControl.reset()
+                    "
+                />
+            </mat-chip-list>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+            <input
+                matInput
+                type="text"
+                placeholder="Enter {{ fieldConfig?.label }}"
+                autocomplete="off"
+                [formControl]="fieldControl"
+            />
+        </ng-container>
         <mat-error *ngIf="fieldControl.touched">
             <ng-container
                 *ngTemplateOutlet="
                     matErrors;
                     context: {
                         fieldControl,
-                        label: fieldConfig.label
+                        label: fieldConfig.label,
+                        patternErrorText: fieldConfig?.patternErrorText
                     }
                 "
             ></ng-container>
         </mat-error>
-    </mat-form-field>
-    <mat-form-field class="w-100" *ngIf="fieldConfig?.type === featureFieldType.ChipList">
-        <mat-label>{{ fieldConfig?.label }}</mat-label>
-        <mat-chip-list #chipList aria-label="{{ fieldConfig?.label }}">
-            <mat-chip
-                *ngFor="let item of chipListValues[fieldConfig?.label + '_' + this.selectedServiceIndex]"
-                (removed)="chipListValues[fieldConfig?.label + '_' + this.selectedServiceIndex].delete(item)"
-                [removable]="!chipListReadOnlyValues[fieldConfig?.label + '_' + this.selectedServiceIndex].has(item)"
-            >
-                {{ item }}
-                <button
-                    matChipRemove
-                    *ngIf="!chipListReadOnlyValues[fieldConfig?.label + '_' + this.selectedServiceIndex].has(item)"
-                >
-                    <mat-icon>cancel</mat-icon>
-                </button>
-            </mat-chip>
-            <input
-                type="text"
-                placeholder="Enter {{ fieldConfig?.label }}"
-                autocomplete="off"
-                [formControl]="fieldControl"
-                [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
-                (matChipInputTokenEnd)="
-                    chipListValues[fieldConfig?.label + '_' + this.selectedServiceIndex].add($event.value);
-                    fieldControl.reset()
-                "
-            />
-            <mat-error *ngIf="fieldControl.touched">
-                <ng-container
-                    *ngTemplateOutlet="
-                        matErrors;
-                        context: {
-                            fieldControl,
-                            label: fieldConfig.label
-                        }
-                    "
-                ></ng-container>
-            </mat-error>
-        </mat-chip-list>
+        <mat-hint *ngIf="fieldConfig?.hint">{{ fieldConfig?.hint }}</mat-hint>
     </mat-form-field>
 </ng-template>
 

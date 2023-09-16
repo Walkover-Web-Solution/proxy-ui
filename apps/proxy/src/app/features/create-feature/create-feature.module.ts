@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
+import { MarkdownModule } from 'ngx-markdown';
 
 const routes: Routes = [
     {
@@ -38,6 +39,7 @@ const routes: Routes = [
         MatListModule,
         ServicesProxyFeaturesModule,
         MatChipsModule,
+        MarkdownModule.forRoot(),
     ],
     exports: [RouterModule],
 })
