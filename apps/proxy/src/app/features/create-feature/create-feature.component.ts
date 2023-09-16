@@ -145,4 +145,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         serviceFormArray.controls.forEach((formGroup) => formGroup.dirty && formGroup.invalid && (isValid = false));
         return isValid && serviceFormArray.dirty;
     }
+
+    public resetFormGroup(formGroup: FormGroup, index: number): void {
+        formGroup.reset();
+        Object.keys(this.chipListValues)
+            .filter((key) => +key.split('_')[1] === index)
+            .forEach((key) => {
+                this.chipListValues[key].clear();
+                this.chipListValues[key] = new Set(this.chipListReadOnlyValues[key]);
+            });
+    }
 }

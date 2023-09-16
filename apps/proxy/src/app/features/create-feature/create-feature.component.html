@@ -156,7 +156,7 @@
 </ng-template>
 <ng-template #configureMethodTemplate let-selectedIndex="selectedIndex">
     <div class="d-flex gap-3 my-3 flex-grow-1">
-        <div class="d-flex flex-column gap-1 auth-service border-right pr-3">
+        <div class="d-flex flex-column gap-1 border-right pr-3 service-list">
             <p class="mat-body-2 fw-bolder mt-0">Services</p>
             <mat-list role="list" class="default-list pt-0">
                 <mat-list-item
@@ -166,7 +166,19 @@
                     [ngClass]="{ 'active': selectedServiceIndex === i }"
                     (click)="selectedServiceIndex = i"
                 >
-                    {{ service.name }}
+                    <div class="d-flex align-items-center flex-grow-1">
+                        {{ service.name }}
+                        <ng-container
+                            *ngIf="featureForm.get('serviceDetails')?.at(selectedServiceIndex) as serviceForm"
+                        >
+                            <mat-icon
+                                class="material-icons-outlined mat-icon-18 text-danger ml-1 mt-1"
+                                *ngIf="serviceForm.dirty && serviceForm.invalid && serviceForm.touched"
+                            >
+                                error
+                            </mat-icon>
+                        </ng-container>
+                    </div>
                     <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
                 </mat-list-item>
             </mat-list>
@@ -220,6 +232,13 @@
                                 </div>
                             </ng-container>
                         </ng-container>
+                        <button
+                            mat-flat-button
+                            class="flat-default"
+                            (click)="resetFormGroup(serviceForm, this.selectedServiceIndex)"
+                        >
+                            Reset
+                        </button>
                     </form>
                 </ng-container>
             </div>
