@@ -286,12 +286,15 @@
         <mat-label>{{ fieldConfig?.label }}</mat-label>
         <mat-chip-list #chipList aria-label="{{ fieldConfig?.label }}">
             <mat-chip
-                *ngFor="let item of chipListValues[fieldConfig?.label]"
-                (removed)="chipListValues[fieldConfig?.label].delete(item)"
-                [removable]="!chipListReadOnlyValues[fieldConfig?.label].has(item)"
+                *ngFor="let item of chipListValues[fieldConfig?.label + '_' + this.selectedServiceIndex]"
+                (removed)="chipListValues[fieldConfig?.label + '_' + this.selectedServiceIndex].delete(item)"
+                [removable]="!chipListReadOnlyValues[fieldConfig?.label + '_' + this.selectedServiceIndex].has(item)"
             >
                 {{ item }}
-                <button matChipRemove *ngIf="!chipListReadOnlyValues[fieldConfig?.label].has(item)">
+                <button
+                    matChipRemove
+                    *ngIf="!chipListReadOnlyValues[fieldConfig?.label + '_' + this.selectedServiceIndex].has(item)"
+                >
                     <mat-icon>cancel</mat-icon>
                 </button>
             </mat-chip>
@@ -302,7 +305,10 @@
                 [formControl]="fieldControl"
                 [matChipInputFor]="chipList"
                 [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
-                (matChipInputTokenEnd)="chipListValues[fieldConfig?.label].add($event.value); fieldControl.reset()"
+                (matChipInputTokenEnd)="
+                    chipListValues[fieldConfig?.label + '_' + this.selectedServiceIndex].add($event.value);
+                    fieldControl.reset()
+                "
             />
             <mat-error *ngIf="fieldControl.touched">
                 <ng-container

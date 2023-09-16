@@ -75,20 +75,20 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.selectedMethod.next(methods.find((method) => method.id === id));
             });
         this.selectedMethod.pipe(takeUntil(this.destroy$), filter(Boolean)).subscribe((method) => {
-            method.method_services.forEach((service) => {
+            method.method_services.forEach((service, index) => {
                 const serviceFormGroup: ServiceFormGroup = new FormGroup({
                     requirements: new FormGroup({}),
                     configurations: new FormGroup({}),
                 });
                 if (service.requirements) {
                     Object.entries(service.requirements).forEach(([key, config]) => {
-                        const formControl = this.createFormControl(config);
+                        const formControl = this.createFormControl(config, index);
                         if (formControl) {
                             serviceFormGroup.controls.requirements.addControl(key, formControl);
                         }
                     });
                     Object.entries(service.configurations.fields).forEach(([key, config]) => {
-                        const formControl = this.createFormControl(config);
+                        const formControl = this.createFormControl(config, index);
                         if (formControl) {
                             serviceFormGroup.controls.configurations.addControl(key, formControl);
                         }
@@ -117,7 +117,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         this.componentStore.getFeatureType();
     }
 
-    public createFormControl(config: IFieldConfig, value: any = null) {
+    public createFormControl(config: IFieldConfig, index: number, value: any = null) {
         if (!config.is_hidden) {
             const validators: ValidatorFn[] = [];
             let formValue = value ?? config.value;
@@ -128,8 +128,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 validators.push(Validators.pattern(config.regex));
             }
             if (config.type === FeatureFieldType.ChipList) {
-                this.chipListValues[config.label] = new Set(formValue?.split(config.delimiter ?? ' ') ?? []);
-                this.chipListReadOnlyValues[config.label] = new Set(config?.read_only_value ?? []);
+                const key = `${config.label}_${index}`;
+                this.chipListValues[key] = new Set(formValue?.split(config.delimiter ?? ' ') ?? []);
+                this.chipListReadOnlyValues[key] = new Set(config?.read_only_value ?? []);
                 formValue = null;
             }
             return new FormControl<any>(formValue, validators);
