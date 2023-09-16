@@ -2,10 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { BehaviorSubject, Observable, filter, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
-import { IFeatureType, IFieldConfig, IMethod } from '@proxy/models/features-model';
+import { FeatureFieldType, IFeatureType, IFieldConfig, IMethod } from '@proxy/models/features-model';
 import { FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 type ServiceFormGroup = FormGroup<{
     requirements: FormGroup<{
@@ -30,6 +31,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public isEditMode: boolean = false;
     public selectedMethod = new BehaviorSubject<IMethod>(null);
     public selectedServiceIndex: number = 0;
+    public featureFieldType = FeatureFieldType;
+
+    // Chip list
+    public chipListSeparatorKeysCodes: number[] = [ENTER, COMMA];
+    public chipListValues: { [key: string]: Set<string> } = {};
+    public chipListReadOnlyValues: { [key: string]: Set<string> } = {};
 
     public featureForm = new FormGroup({
         primaryDetails: new FormGroup({
@@ -113,15 +120,28 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public createFormControl(config: IFieldConfig, value: any = null) {
         if (!config.is_hidden) {
             const validators: ValidatorFn[] = [];
+            let formValue = value ?? config.value;
             if (config.is_required) {
                 validators.push(Validators.required);
             }
             if (config.regex) {
                 validators.push(Validators.pattern(config.regex));
             }
-            return new FormControl<any>(value, validators);
+            if (config.type === FeatureFieldType.ChipList) {
+                this.chipListValues[config.label] = new Set(formValue?.split(config.delimiter ?? ' ') ?? []);
+                this.chipListReadOnlyValues[config.label] = new Set(config?.read_only_value ?? []);
+                formValue = null;
+            }
+            return new FormControl<any>(formValue, validators);
         } else {
             return null;
         }
+    }
+
+    public get isConfigureMethodValid(): boolean {
+        let isValid = true;
+        const serviceFormArray = this.featureForm.controls.serviceDetails;
+        serviceFormArray.controls.forEach((formGroup) => formGroup.dirty && formGroup.invalid && (isValid = false));
+        return isValid && serviceFormArray.dirty;
     }
 }

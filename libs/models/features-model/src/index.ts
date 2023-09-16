@@ -67,4 +67,11 @@ export interface IFieldConfig {
     is_required: boolean;
     sourceFieldLabel: string;
     sourceFieldValue: string;
+    delimiter?: string;
+    read_only_value?: string[];
+}
+
+export enum FeatureFieldType {
+    Text = 'text',
+    ChipList = 'chipList',
 }

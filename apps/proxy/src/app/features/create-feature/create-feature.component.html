@@ -55,7 +55,7 @@
                 </div>
             </div>
         </mat-step>
-        <mat-step>
+        <mat-step [completed]="isConfigureMethodValid">
             <ng-template matStepLabel>Configure Method</ng-template>
             <div class="d-flex flex-column h-100">
                 <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
@@ -139,14 +139,16 @@
                 <mat-label>Enter Name</mat-label>
                 <input matInput placeholder="Enter Name" [autocomplete]="false" [formControl]="nameControl" />
                 <mat-error *ngIf="nameControl.touched">
-                    <mat-error *ngIf="nameControl.errors?.required"> Name is required. </mat-error>
-                    <mat-error *ngIf="nameControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
-                    <mat-error *ngIf="nameControl.errors?.maxlength as maxLengthError">
-                        Max allowed length is {{ maxLengthError?.requiredLength }}
-                    </mat-error>
-                    <mat-error *ngIf="nameControl.errors?.pattern">
-                        Name must contain only alphanumeric and underscore.
-                    </mat-error>
+                    <ng-container
+                        *ngTemplateOutlet="
+                            matErrors;
+                            context: {
+                                fieldControl: nameControl,
+                                label: 'Name',
+                                patternErrorText: 'Name must contain only alphanumeric and underscore.'
+                            }
+                        "
+                    ></ng-container>
                 </mat-error>
             </mat-form-field>
         </form>
@@ -259,25 +261,74 @@
 </ng-template>
 
 <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
-    <mat-form-field appearance="outline" class="w-100">
+    <mat-form-field appearance="outline" class="w-100" *ngIf="fieldConfig?.type === featureFieldType.Text">
         <mat-label>{{ fieldConfig?.label }}</mat-label>
         <input
             matInput
-            placeholder="Enter Name"
-            [autocomplete]="false"
-            [type]="fieldConfig?.type"
+            type="text"
+            placeholder="Enter {{ fieldConfig?.label }}"
+            autocomplete="off"
             [formControl]="fieldControl"
         />
         <mat-error *ngIf="fieldControl.touched">
-            <mat-error *ngIf="fieldControl.errors?.required"> {{ fieldConfig?.label }} is required. </mat-error>
-            <mat-error *ngIf="fieldControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
-            <mat-error *ngIf="fieldControl.errors?.minlength as minLengthError">
-                Min allowed length is {{ minLengthError?.requiredLength }}
-            </mat-error>
-            <mat-error *ngIf="fieldControl.errors?.maxlength as maxLengthError">
-                Max allowed length is {{ maxLengthError?.requiredLength }}
-            </mat-error>
-            <mat-error *ngIf="fieldControl.errors?.pattern"> Enter valid {{ fieldConfig?.label }} </mat-error>
+            <ng-container
+                *ngTemplateOutlet="
+                    matErrors;
+                    context: {
+                        fieldControl,
+                        label: fieldConfig.label
+                    }
+                "
+            ></ng-container>
         </mat-error>
     </mat-form-field>
+    <mat-form-field class="w-100" *ngIf="fieldConfig?.type === featureFieldType.ChipList">
+        <mat-label>{{ fieldConfig?.label }}</mat-label>
+        <mat-chip-list #chipList aria-label="{{ fieldConfig?.label }}">
+            <mat-chip
+                *ngFor="let item of chipListValues[fieldConfig?.label]"
+                (removed)="chipListValues[fieldConfig?.label].delete(item)"
+                [removable]="!chipListReadOnlyValues[fieldConfig?.label].has(item)"
+            >
+                {{ item }}
+                <button matChipRemove *ngIf="!chipListReadOnlyValues[fieldConfig?.label].has(item)">
+                    <mat-icon>cancel</mat-icon>
+                </button>
+            </mat-chip>
+            <input
+                type="text"
+                placeholder="Enter {{ fieldConfig?.label }}"
+                autocomplete="off"
+                [formControl]="fieldControl"
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
+                (matChipInputTokenEnd)="chipListValues[fieldConfig?.label].add($event.value); fieldControl.reset()"
+            />
+            <mat-error *ngIf="fieldControl.touched">
+                <ng-container
+                    *ngTemplateOutlet="
+                        matErrors;
+                        context: {
+                            fieldControl,
+                            label: fieldConfig.label
+                        }
+                    "
+                ></ng-container>
+            </mat-error>
+        </mat-chip-list>
+    </mat-form-field>
+</ng-template>
+
+<ng-template #matErrors let-label="label" let-fieldControl="fieldControl" let-patternErrorText="patternErrorText">
+    <mat-error *ngIf="fieldControl.errors?.required"> {{ label }} is required. </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.minlength as minLengthError">
+        Min allowed length is {{ minLengthError?.requiredLength }}
+    </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.maxlength as maxLengthError">
+        Max allowed length is {{ maxLengthError?.requiredLength }}
+    </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.pattern">
+        {{ patternErrorText ?? 'Enter valid ' + label }}
+    </mat-error>
 </ng-template>
