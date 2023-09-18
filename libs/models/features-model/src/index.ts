@@ -1,6 +1,7 @@
 export interface IFeature {
     id: number;
     feature_id: number;
+    method_id?: number;
     name: string;
     reference_id: string;
     feature: { id: number; name: string };

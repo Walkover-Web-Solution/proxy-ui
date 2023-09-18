@@ -14,6 +14,7 @@
         [animationDuration]="0"
         [formGroup]="featureForm"
         (selectionChange)="stepChange($event)"
+        *ngIf="!isEditMode"
     >
         <mat-step
             *ngIf="featureForm.get('primaryDetails.feature_id') as featureTypeControl"
@@ -112,6 +113,33 @@
             </div>
         </mat-step>
     </mat-stepper>
+    <mat-card class="p-0" *ngIf="isEditMode">
+        <mat-tab-group animationDuration="0ms">
+            <mat-tab label="Service">
+                <div class="d-flex flex-column h-100 p-4">
+                    <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
+                    <mat-divider></mat-divider>
+                    <div class="d-flex align-items-center justify-content-end mt-3">
+                        <button mat-flat-button color="primary" (click)="updateFeature('service')">Update</button>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="Setting">
+                <div class="d-flex flex-column h-100 p-4">
+                    <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
+                    <mat-divider></mat-divider>
+                    <div class="d-flex align-items-center justify-content-end mt-3">
+                        <button mat-flat-button color="primary" (click)="updateFeature('authorization')">Update</button>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="Design & code">
+                <div>
+                    <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-card>
 </div>
 <ng-template #selectFeature let-featureType="featureType" let-featureTypeControl="featureTypeControl">
     <div class="flex-grow-1">

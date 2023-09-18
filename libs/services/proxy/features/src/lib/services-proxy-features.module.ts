@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { BaseResponse, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
 import { Observable } from 'rxjs';
-import { IFeature, IFeatureReq, IFeatureType, IMethod } from '@proxy/models/features-model';
+import { IFeature, IFeatureDetails, IFeatureReq, IFeatureType, IMethod } from '@proxy/models/features-model';
 import { FeaturesUrls } from '@proxy/urls/features-url';
 
 @NgModule({
@@ -23,6 +23,11 @@ export class FeaturesService {
             FeaturesUrls.getFeature(this.baseURL),
             params
         );
+    }
+
+    // Get Feature Details
+    public getFeatureDetails(id: string | number): Observable<BaseResponse<IFeatureDetails, void>> {
+        return this.http.get<BaseResponse<IFeatureDetails, void>>(`${FeaturesUrls.getFeature(this.baseURL)}/${id}`);
     }
 
     // Fetch Feature Type
