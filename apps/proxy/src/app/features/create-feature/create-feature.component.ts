@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { BehaviorSubject, Observable, filter, takeUntil } from 'rxjs';
@@ -109,6 +110,40 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         });
     }
 
+    public createFeature() {
+        if (this.featureForm.controls.authorizationDetails.invalid) {
+            this.featureForm.controls.authorizationDetails.markAllAsTouched();
+        } else {
+            const selectedMethod = cloneDeep(this.selectedMethod.getValue());
+            const featureFormData = this.featureForm.value;
+            const payload = {
+                ...featureFormData.primaryDetails,
+                authorization_format: {
+                    ...selectedMethod.authorization_format,
+                    key: featureFormData.authorizationDetails.authorizationKey,
+                },
+                session_time: featureFormData.authorizationDetails.authorizationKey,
+                services: [],
+            };
+            this.featureForm.controls.serviceDetails.controls.forEach((formGroup, index) => {
+                if (formGroup.dirty) {
+                    const service = selectedMethod.method_services[index];
+                    const formData = formGroup.value;
+                    Object.keys(service?.requirements ?? {}).forEach((key) => {
+                        const config = service.requirements[key];
+                        config.value = this.getValueOtherThanForm(config, index) ?? formData.requirements[key];
+                    });
+                    Object.keys(service?.configurations?.fields ?? {}).forEach((key) => {
+                        const config = service.configurations.fields[key];
+                        config.value = this.getValueOtherThanForm(config, index) ?? formData.configurations[key];
+                    });
+                    payload.services.push(service);
+                }
+            });
+            console.log(payload);
+        }
+    }
+
     public stepChange(event: any) {
         if (!this.isEditMode && event?.previouslySelectedIndex === 0) {
             this.getServiceMethods(this.featureForm.value.primaryDetails.feature_id);
@@ -125,6 +160,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     public getFeatureType() {
         this.componentStore.getFeatureType();
+    }
+
+    public getValueOtherThanForm(config: IFieldConfig, index: number): any {
+        if (config.type === FeatureFieldType.ChipList) {
+            const key = `${config.label}_${index}`;
+            return Array.from(this.chipListValues[key]).join(config?.delimiter ?? ' ');
+        }
+        return null;
     }
 
     public createFormControl(config: IFieldConfig, index: number, value: any = null) {

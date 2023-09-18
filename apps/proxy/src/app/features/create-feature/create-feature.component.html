@@ -48,7 +48,7 @@
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
                     </button>
-                    <button mat-flat-button color="primary" matStepperNext>
+                    <button mat-flat-button color="primary" matStepperNext (click)="nameControl.markAllAsTouched()">
                         Next
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
                     </button>
@@ -64,7 +64,12 @@
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
                     </button>
-                    <button mat-flat-button color="primary" matStepperNext>
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        matStepperNext
+                        (click)="featureForm.get('serviceDetails').markAllAsTouched()"
+                    >
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
                         >
@@ -81,7 +86,7 @@
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
                     </button>
-                    <button mat-flat-button color="primary" matStepperNext>
+                    <button mat-flat-button color="primary" matStepperNext (click)="createFeature()">
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
                         >
