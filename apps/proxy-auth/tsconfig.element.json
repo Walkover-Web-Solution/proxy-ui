@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "declaration": true,
+        "outDir": "../out-tsc/app",
+        "types": []
+    },
+    "angularCompilerOptions": {
+        "annotateForClosureCompiler": true,
+        "skipTemplateCodegen": true,
+        "strictMetadataEmit": true,
+        "fullTemplateTypeCheck": false,
+        "strictInjectionParameters": true,
+        "enableResourceInlining": true
+    },
+    "files": ["src/main.element.ts"],
+    "include": ["/src/**/*.d.ts"]
+}

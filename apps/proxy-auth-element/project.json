@@ -1,0 +1,126 @@
+{
+    "name": "proxy-auth-element",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "prefix": "proxy",
+    "sourceRoot": "apps/proxy-auth/src",
+    "tags": [],
+    "targets": {
+        "build": {
+            "executor": "ngx-build-plus:build",
+            "options": {
+                "outputPath": "dist/apps/proxy-auth",
+                "index": "apps/proxy-auth/src/index.html",
+                "main": "apps/proxy-auth/src/main.element.ts",
+                "tsConfig": "apps/proxy-auth/tsconfig.element.json",
+                "aot": true,
+                "singleBundle": true,
+                "keepStyles": true,
+                "bundleStyles": true,
+                "extraWebpackConfig": "apps/proxy-auth/webpack.config.js"
+            },
+            "configurations": {
+                "test": {
+                    "fileReplacements": [
+                        {
+                            "replace": "apps/proxy-auth/src/environments/environment.ts",
+                            "with": "apps/proxy-auth/src/environments/environment.test.ts"
+                        }
+                    ],
+                    "extraWebpackConfig": "apps/proxy-auth/webpack.config.js",
+                    "optimization": true,
+                    "outputHashing": "none",
+                    "sourceMap": false,
+                    "namedChunks": false,
+                    "extractLicenses": true,
+                    "vendorChunk": false,
+                    "buildOptimizer": true,
+                    "budgets": [
+                        {
+                            "type": "initial",
+                            "maximumWarning": "12mb",
+                            "maximumError": "15mb"
+                        }
+                    ]
+                },
+                "stage": {
+                    "fileReplacements": [
+                        {
+                            "replace": "apps/proxy-auth/src/environments/environment.ts",
+                            "with": "apps/proxy-auth/src/environments/environment.stage.ts"
+                        }
+                    ],
+                    "extraWebpackConfig": "apps/proxy-auth/webpack.config.js",
+                    "optimization": true,
+                    "outputHashing": "none",
+                    "sourceMap": false,
+                    "namedChunks": false,
+                    "extractLicenses": true,
+                    "vendorChunk": false,
+                    "buildOptimizer": true,
+                    "budgets": [
+                        {
+                            "type": "initial",
+                            "maximumWarning": "2mb",
+                            "maximumError": "5mb"
+                        }
+                    ]
+                },
+                "production": {
+                    "fileReplacements": [
+                        {
+                            "replace": "apps/proxy-auth/src/environments/environment.ts",
+                            "with": "apps/proxy-auth/src/environments/environment.prod.ts"
+                        }
+                    ],
+                    "extraWebpackConfig": "apps/proxy-auth/webpack.config.js",
+                    "optimization": true,
+                    "outputHashing": "none",
+                    "sourceMap": false,
+                    "namedChunks": false,
+                    "extractLicenses": true,
+                    "vendorChunk": false,
+                    "buildOptimizer": true,
+                    "budgets": [
+                        {
+                            "type": "initial",
+                            "maximumWarning": "2mb",
+                            "maximumError": "5mb"
+                        }
+                    ]
+                }
+            }
+        },
+        "serve": {
+            "executor": "@angular-devkit/build-angular:dev-server",
+            "configurations": {
+                "production": {
+                    "browserTarget": "proxy-auth-element:build:production"
+                },
+                "development": {
+                    "browserTarget": "proxy-auth-element:build:development"
+                }
+            },
+            "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+            "executor": "@angular-devkit/build-angular:extract-i18n",
+            "options": {
+                "browserTarget": "proxy-auth-element:build"
+            }
+        },
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "outputs": ["{options.outputFile}"],
+            "options": {
+                "lintFilePatterns": ["apps/proxy-auth-element/**/*.ts", "apps/proxy-auth-element/**/*.html"]
+            }
+        },
+        "serve-static": {
+            "executor": "@nrwl/web:file-server",
+            "options": {
+                "buildTarget": "proxy-auth-element:build"
+            }
+        }
+    }
+}

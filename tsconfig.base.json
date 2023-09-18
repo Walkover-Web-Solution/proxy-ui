@@ -73,6 +73,7 @@
             "@proxy/regex": ["libs/regex/src/index.ts"],
             "@proxy/service": ["libs/service/src/index.ts"],
             "@proxy/service/admin/super-admin": ["libs/services/admin/super-admin/src/index.ts"],
+            "@proxy/services/http-wrapper-no-auth": ["libs/services/http-wrapper-no-auth/src/index.ts"],
             "@proxy/services/httpWrapper": ["libs/services/http-wrapper/src/index.ts"],
             "@proxy/services/interceptor/errorInterceptor": [
                 "libs/services/interceptor/error-interceptor/src/index.ts"
