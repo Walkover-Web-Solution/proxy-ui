@@ -2,11 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { BehaviorSubject, Observable, filter, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
-import { FeatureFieldType, IFeatureType, IFieldConfig, IMethod } from '@proxy/models/features-model';
+import { FeatureFieldType, IFeatureType, IFieldConfig, IMethod, ProxyAuthScript } from '@proxy/models/features-model';
 import { FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { environment } from '../../../environments/environment';
 
 type ServiceFormGroup = FormGroup<{
     requirements: FormGroup<{
@@ -28,10 +29,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public featureType$: Observable<IFeatureType[]> = this.componentStore.featureType$;
     public serviceMethods$: Observable<IMethod[]> = this.componentStore.serviceMethods$;
 
-    public isEditMode: boolean = false;
+    public isEditMode = false;
+    public selectedServiceIndex = 0;
     public selectedMethod = new BehaviorSubject<IMethod>(null);
-    public selectedServiceIndex: number = 0;
+
     public featureFieldType = FeatureFieldType;
+    public proxyAuthScript = ProxyAuthScript(environment.proxyServer);
 
     // Chip list
     public chipListSeparatorKeysCodes: number[] = [ENTER, COMMA];

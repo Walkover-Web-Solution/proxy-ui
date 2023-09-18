@@ -296,7 +296,7 @@
 <ng-template #designAndCode>
     <div class="d-flex col-gap-3 my-3 flex-grow-1">
         <div class="overflow-auto code-snippet-view">
-            <markdown> </markdown>
+            <markdown [data]="proxyAuthScript | language: 'javascript'"> </markdown>
         </div>
     </div>
 </ng-template>

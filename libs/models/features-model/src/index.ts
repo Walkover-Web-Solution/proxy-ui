@@ -75,3 +75,29 @@ export enum FeatureFieldType {
     Text = 'text',
     ChipList = 'chipList',
 }
+
+export const ProxyAuthScript = (
+    baseUrl: string,
+    referenceId = '<reference_id>',
+    time?: number
+) => `<script type="text/javascript">
+    var configuration = {
+        referenceId: '${referenceId}',
+        success: (data) => {
+            // get verified token in response
+            console.log('success response', data);
+        },
+        failure: (error) => {
+            // handle error
+            console.log('failure reason', error);
+        },
+    };
+</script>
+<script
+    type="text/javascript"
+    onload="initVerification(configuration)"
+    src="${ProxyAuthScriptUrl(baseUrl, time)}"
+></script>`;
+
+export const ProxyAuthScriptUrl = (baseUrl: string, time?: number) =>
+    `${baseUrl}/assets/proxy-auth/proxy-auth.js${time ? '?time=' + time : ''}`;
