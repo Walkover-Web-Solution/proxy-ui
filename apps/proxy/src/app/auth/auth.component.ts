@@ -6,7 +6,6 @@ import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { Store, select } from '@ngrx/store';
 import { isEqual } from 'lodash';
 import { Observable, distinctUntilChanged, takeUntil, debounceTime } from 'rxjs';
-import { selectAccessToken } from '../ngrx';
 import {
     selectLogInErrors,
     selectLogInData,
@@ -24,7 +23,6 @@ import * as logInActions from './ngrx/actions/login.action';
 export class AuthComponent extends BaseComponent implements OnInit {
     public selectLogInErrors$: Observable<string[]>;
     public logInData$: Observable<IFirebaseUserModel>;
-    public accessToken$: Observable<string>;
     public logInDataInProcess$: Observable<boolean>;
     public logInDataSuccess$: Observable<boolean>;
 
@@ -56,11 +54,6 @@ export class AuthComponent extends BaseComponent implements OnInit {
         );
         this.logInData$ = this._store.pipe(
             select(selectLogInData),
-            distinctUntilChanged(isEqual),
-            takeUntil(this.destroy$)
-        );
-        this.accessToken$ = this._store.pipe(
-            select(selectAccessToken),
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );

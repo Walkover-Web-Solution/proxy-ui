@@ -1,9 +1,9 @@
 import { Inject, Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BaseResponse, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
+import { BaseResponse, IPaginatedResponse, IReqParams, ProxyBaseUrls } from '@proxy/models/root-models';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { Observable } from 'rxjs';
-import { IEnvProjects, ILogDetailRes, ILogsReq, ILogsRes } from '@proxy/models/logs-models';
+import { IEnvironments, ILogDetailRes, ILogsReq, ILogsRes, IProjects } from '@proxy/models/logs-models';
 import { LogsUrls } from '@proxy/urls/logs-urls';
 
 @NgModule({
@@ -33,9 +33,18 @@ export class LogsService {
     }
 
     // Fetch Projects
-    public getEnvProjects(): Observable<BaseResponse<IPaginatedResponse<IEnvProjects[]>, void>> {
-        return this.http.get<BaseResponse<IPaginatedResponse<IEnvProjects[]>, void>>(
-            LogsUrls.getEnvProjects(this.proxyLogsUrl)
+    public getProjects(req: IReqParams): Observable<BaseResponse<IPaginatedResponse<IProjects[]>, void>> {
+        return this.http.get<BaseResponse<IPaginatedResponse<IProjects[]>, void>>(
+            LogsUrls.getProjects(this.proxyLogsUrl),
+            req
+        );
+    }
+
+    // Fetch Environments
+    public getEnvironments(req: IReqParams): Observable<BaseResponse<IPaginatedResponse<IEnvironments[]>, void>> {
+        return this.http.get<BaseResponse<IPaginatedResponse<IEnvironments[]>, void>>(
+            LogsUrls.getEnvironment(this.proxyLogsUrl),
+            req
         );
     }
 }
