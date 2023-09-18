@@ -209,4 +209,21 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             .filter((key) => +key.split('_')[1] === index)
             .forEach((key) => (this.chipListValues[key] = new Set(this.chipListReadOnlyValues[key])));
     }
+
+    public updateChipListValues(
+        operation: 'add' | 'delete',
+        chipListKey: string,
+        fieldControl: FormControl,
+        value: string
+    ): void {
+        if (operation === 'add') {
+            if (fieldControl.valid && value) {
+                this.chipListValues[chipListKey].add(value);
+                fieldControl.reset();
+            }
+        } else if (operation === 'delete') {
+            this.chipListValues[chipListKey].delete(value);
+            fieldControl.updateValueAndValidity();
+        }
+    }
 }

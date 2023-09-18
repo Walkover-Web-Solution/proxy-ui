@@ -328,7 +328,7 @@
             >
                 <mat-chip
                     *ngFor="let item of chipListValues[chipListKey]"
-                    (removed)="chipListValues[chipListKey].delete(item); fieldControl.updateValueAndValidity()"
+                    (removed)="updateChipListValues('delete', chipListKey, fieldControl, item)"
                     [removable]="!chipListReadOnlyValues[chipListKey].has(item)"
                 >
                     {{ item }}
@@ -343,7 +343,7 @@
                     [formControl]="fieldControl"
                     [matChipInputFor]="chipList"
                     [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
-                    (matChipInputTokenEnd)="chipListValues[chipListKey].add($event.value); fieldControl.reset()"
+                    (matChipInputTokenEnd)="updateChipListValues('add', chipListKey, fieldControl, $event.value)"
                 />
             </mat-chip-list>
         </ng-container>
@@ -372,9 +372,16 @@
     </mat-form-field>
     <div class="mat-form-field-outside-error" *ngIf="fieldConfig?.type === featureFieldType.ChipList">
         <mat-error *ngIf="fieldControl.touched">
-            <mat-error *ngIf="fieldControl?.errors?.atleastOneValueInChipList">
-                Atleast One Value is Required
-            </mat-error>
+            <ng-container
+                *ngTemplateOutlet="
+                    matErrors;
+                    context: {
+                        fieldControl,
+                        label: fieldConfig.label,
+                        patternErrorText: fieldConfig?.patternErrorText
+                    }
+                "
+            ></ng-container>
         </mat-error>
     </div>
 </ng-template>
@@ -391,4 +398,5 @@
     <mat-error *ngIf="fieldControl.errors?.pattern">
         {{ patternErrorText ?? 'Enter valid ' + label }}
     </mat-error>
+    <mat-error *ngIf="fieldControl?.errors?.atleastOneValueInChipList"> Atleast One Value is Required </mat-error>
 </ng-template>
