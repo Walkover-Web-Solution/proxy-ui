@@ -1,10 +1,40 @@
 <div class="app-content d-flex flex-column">
     <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
-    <div class="d-flex align-items-center justify-content-start gap-1 mb-3">
+    <div class="d-flex align-items-start justify-content-start gap-1 mb-3">
         <button mat-icon-button color="primary" [routerLink]="['/app', 'features']">
             <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
         </button>
-        <h4 class="my-0 text-secondary mat-body-1 fw-bold">Add New Features</h4>
+        <ng-container *ngIf="isEditMode">
+            <div class="d-flex align-items-center gap-1">
+                <div *ngIf="nameFieldEditMode" class="d-flex align-items-start gap-1">
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('primaryDetails.name'),
+                                fieldConfig: {
+                                    label: 'Name',
+                                    is_required: true,
+                                    patternErrorText: 'Name must contain only alphanumeric and underscore'
+                                }
+                            }
+                        "
+                    ></ng-container>
+                    <button mat-icon-button color="success" (click)="updateFeature('name')" class="mt-1">
+                        <mat-icon class="material-icons-outlined mat-icon-18"> done </mat-icon>
+                    </button>
+                </div>
+                <ng-container *ngIf="!nameFieldEditMode">
+                    <h4 class="my-0 text-secondary mat-body-1 fw-bold">{{ (featureDetails$ | async)?.name }}</h4>
+                    <button mat-icon-button color="primary" (click)="nameFieldEditMode = true">
+                        <mat-icon class="material-icons-outlined mat-icon-18"> edit </mat-icon>
+                    </button>
+                </ng-container>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="!isEditMode">
+            <h4 class="my-0 text-secondary mat-body-1 fw-bold">Add New Features</h4>
+        </ng-container>
     </div>
     <mat-stepper
         #stepper

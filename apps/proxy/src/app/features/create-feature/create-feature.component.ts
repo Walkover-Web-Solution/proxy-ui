@@ -46,6 +46,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public selectedServiceIndex = 0;
     public selectedMethod = new BehaviorSubject<IMethod>(null);
     public featureId: number = null;
+    public nameFieldEditMode = false;
 
     public featureFieldType = FeatureFieldType;
     public proxyAuthScript = ProxyAuthScript(environment.proxyServer);
@@ -84,8 +85,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         this.activatedRoute.params.subscribe((params) => {
             if (params?.id) {
                 this.featureId = params.id;
-                this.componentStore.getFeatureDetalis(this.featureId);
                 this.isEditMode = true;
+                this.getFeatureDetalis();
             } else {
                 this.getFeatureType();
             }
@@ -159,6 +160,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         });
         this.createUpdateObject$.pipe(takeUntil(this.destroy$), filter(Boolean)).subscribe((obj) => {
             this.proxyAuthScript = ProxyAuthScript(environment.proxyServer, obj.reference_id);
+            this.nameFieldEditMode = false;
+            this.getFeatureDetalis();
         });
     }
 
@@ -267,6 +270,10 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     public getFeatureType() {
         this.componentStore.getFeatureType();
+    }
+
+    public getFeatureDetalis() {
+        this.componentStore.getFeatureDetalis(this.featureId);
     }
 
     public getValueOtherThanForm(config: IFieldConfig, index: number): any {
