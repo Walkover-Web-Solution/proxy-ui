@@ -3,7 +3,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { BehaviorSubject, Observable, filter, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
-import { FeatureFieldType, IFeatureType, IFieldConfig, IMethod, ProxyAuthScript } from '@proxy/models/features-model';
+import {
+    FeatureFieldType,
+    IFeature,
+    IFeatureType,
+    IFieldConfig,
+    IMethod,
+    ProxyAuthScript,
+} from '@proxy/models/features-model';
 import { FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
@@ -29,6 +36,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public featureType$: Observable<IFeatureType[]> = this.componentStore.featureType$;
     public serviceMethods$: Observable<IMethod[]> = this.componentStore.serviceMethods$;
+    public createUpdateObject$: Observable<IFeature> = this.componentStore.createUpdateObject$;
 
     public isEditMode = false;
     public selectedServiceIndex = 0;
@@ -108,6 +116,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.featureForm.controls.serviceDetails.push(serviceFormGroup);
             });
         });
+        this.createUpdateObject$.pipe(takeUntil(this.destroy$), filter(Boolean)).subscribe((obj) => {
+            this.proxyAuthScript = ProxyAuthScript(environment.proxyServer, obj.reference_id);
+        });
     }
 
     public createFeature() {
@@ -122,7 +133,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     ...selectedMethod.authorization_format,
                     key: featureFormData.authorizationDetails.authorizationKey,
                 },
-                session_time: featureFormData.authorizationDetails.authorizationKey,
+                session_time: featureFormData.authorizationDetails.session_time,
                 services: [],
             };
             this.featureForm.controls.serviceDetails.controls.forEach((formGroup, index) => {
@@ -141,6 +152,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 }
             });
             console.log(payload);
+            this.componentStore.createFeature(payload);
         }
     }
 

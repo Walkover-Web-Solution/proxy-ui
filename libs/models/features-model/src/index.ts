@@ -5,8 +5,22 @@ export interface IFeature {
     reference_id: string;
     feature: { id: number; name: string };
     method: { id: number; name: string };
+    session_time: number;
     created_by: ICreatedBy;
     updated_by: IUpdatedBy;
+}
+
+export interface IFeatureDetails extends IFeature {
+    projects?: string[];
+    authorization_format: IAuthorizationFormat;
+    service_configurations: IServiceConfigurations[];
+}
+
+export interface IServiceConfigurations {
+    service_id: number;
+    feature_configuration_id: number;
+    configurations: { fields: { [key: string]: any }; mappings: any[] };
+    requirements: { [key: string]: any };
 }
 
 export interface IFeatureReq {

@@ -3,12 +3,13 @@ import { BaseResponse, errorResolver } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
-import { IFeatureType, IMethod } from '@proxy/models/features-model';
+import { IFeature, IFeatureType, IMethod } from '@proxy/models/features-model';
 import { FeaturesService } from '@proxy/services/proxy/features';
 export interface ICreateFeatureInitialState {
     featureType: IFeatureType[];
     isLoading: boolean;
     serviceMethods: IMethod[];
+    createUpdateObject: IFeature;
 }
 
 @Injectable()
@@ -18,6 +19,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             featureType: null,
             isLoading: false,
             serviceMethods: null,
+            createUpdateObject: null,
         });
     }
     /** Selector for API progress  */
@@ -26,6 +28,8 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly featureType$: Observable<IFeatureType[]> = this.select((state) => state.featureType);
     /** Selector for service method data */
     readonly serviceMethods$: Observable<IMethod[]> = this.select((state) => state.serviceMethods);
+    /** Selector for object we get after create or update success */
+    readonly createUpdateObject$: Observable<IFeature> = this.select((state) => state.createUpdateObject);
 
     /** Get feature type data */
     readonly getFeatureType = this.effect((data) => {
@@ -76,6 +80,58 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                                 isLoading: false,
                                 serviceMethods: null,
                             });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly createFeature = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.createFeature(req).pipe(
+                    tapResponse(
+                        (res: BaseResponse<IFeature, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                            }
+                            return this.patchState({
+                                isLoading: false,
+                                createUpdateObject: res.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly updateFeature = this.effect((data: Observable<{ id: string | number; body: { [key: string]: any } }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.updateFeature(req.id, req.body).pipe(
+                    tapResponse(
+                        (res: BaseResponse<IFeature, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                            }
+                            return this.patchState({
+                                isLoading: false,
+                                createUpdateObject: res.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
                         }
                     ),
                     catchError((err) => EMPTY)

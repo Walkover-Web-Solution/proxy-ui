@@ -36,4 +36,14 @@ export class FeaturesService {
             FeaturesUrls.getMethodService(this.baseURL).replace(':id', String(id))
         );
     }
+
+    // Create Feature
+    public createFeature(body): Observable<BaseResponse<IFeature, void>> {
+        return this.http.post<BaseResponse<IFeature, void>>(FeaturesUrls.getFeature(this.baseURL), body);
+    }
+
+    // Update Feature
+    public updateFeature(id: string | number, body): Observable<BaseResponse<IFeature, void>> {
+        return this.http.put<BaseResponse<IFeature, void>>(`${FeaturesUrls.getFeature(this.baseURL)}/${id}`, body);
+    }
 }
