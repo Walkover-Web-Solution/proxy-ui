@@ -307,7 +307,16 @@
 </ng-template>
 
 <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
-    <mat-form-field appearance="outline" class="w-100" [ngSwitch]="fieldConfig?.type">
+    <mat-form-field
+        appearance="outline"
+        class="w-100"
+        [ngSwitch]="fieldConfig?.type"
+        [ngClass]="{
+            'no-padding': fieldConfig?.type === featureFieldType.ChipList,
+            'mat-form-field-invalid':
+                fieldConfig?.type === featureFieldType.ChipList && fieldControl?.touched && fieldControl?.errors
+        }"
+    >
         <mat-label
             >{{ fieldConfig?.label }} <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span>
         </mat-label>
@@ -361,6 +370,13 @@
         </mat-error>
         <mat-hint *ngIf="fieldConfig?.hint">{{ fieldConfig?.hint }}</mat-hint>
     </mat-form-field>
+    <div class="mat-form-field-outside-error" *ngIf="fieldConfig?.type === featureFieldType.ChipList">
+        <mat-error *ngIf="fieldControl.touched">
+            <mat-error *ngIf="fieldControl?.errors?.atleastOneValueInChipList">
+                Atleast One Value is Required
+            </mat-error>
+        </mat-error>
+    </div>
 </ng-template>
 
 <ng-template #matErrors let-label="label" let-fieldControl="fieldControl" let-patternErrorText="patternErrorText">
