@@ -312,19 +312,18 @@
             >{{ fieldConfig?.label }} <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span>
         </mat-label>
         <ng-container *ngSwitchCase="featureFieldType.ChipList">
-            <mat-chip-list #chipList aria-label="{{ fieldConfig?.label }}">
+            <mat-chip-list
+                #chipList
+                aria-label="{{ fieldConfig?.label }}"
+                *ngIf="fieldConfig?.label + '_' + this.selectedServiceIndex as chipListKey"
+            >
                 <mat-chip
-                    *ngFor="let item of chipListValues[fieldConfig?.label + '_' + this.selectedServiceIndex]"
-                    (removed)="chipListValues[fieldConfig?.label + '_' + this.selectedServiceIndex].delete(item)"
-                    [removable]="
-                        !chipListReadOnlyValues[fieldConfig?.label + '_' + this.selectedServiceIndex].has(item)
-                    "
+                    *ngFor="let item of chipListValues[chipListKey]"
+                    (removed)="chipListValues[chipListKey].delete(item); fieldControl.updateValueAndValidity()"
+                    [removable]="!chipListReadOnlyValues[chipListKey].has(item)"
                 >
                     {{ item }}
-                    <button
-                        matChipRemove
-                        *ngIf="!chipListReadOnlyValues[fieldConfig?.label + '_' + this.selectedServiceIndex].has(item)"
-                    >
+                    <button matChipRemove *ngIf="!chipListReadOnlyValues[chipListKey].has(item)">
                         <mat-icon>cancel</mat-icon>
                     </button>
                 </mat-chip>
@@ -335,10 +334,7 @@
                     [formControl]="fieldControl"
                     [matChipInputFor]="chipList"
                     [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
-                    (matChipInputTokenEnd)="
-                        chipListValues[fieldConfig?.label + '_' + this.selectedServiceIndex].add($event.value);
-                        fieldControl.reset()
-                    "
+                    (matChipInputTokenEnd)="chipListValues[chipListKey].add($event.value); fieldControl.reset()"
                 />
             </mat-chip-list>
         </ng-container>

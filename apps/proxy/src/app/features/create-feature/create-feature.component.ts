@@ -174,17 +174,21 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         if (!config.is_hidden) {
             const validators: ValidatorFn[] = [];
             let formValue = value ?? config.value;
-            if (config.is_required) {
-                validators.push(Validators.required);
-            }
-            if (config.regex) {
-                validators.push(Validators.pattern(config.regex));
-            }
+            const key = `${config.label}_${index}`;
             if (config.type === FeatureFieldType.ChipList) {
-                const key = `${config.label}_${index}`;
                 this.chipListValues[key] = new Set(formValue?.split(config.delimiter ?? ' ') ?? []);
                 this.chipListReadOnlyValues[key] = new Set(config?.read_only_value ?? []);
                 formValue = null;
+            }
+            if (config.is_required) {
+                if (config.type === FeatureFieldType.ChipList) {
+                    validators.push(CustomValidators.atleastOneValueInChipList(this.chipListValues[key]));
+                } else {
+                    validators.push(Validators.required);
+                }
+            }
+            if (config.regex) {
+                validators.push(Validators.pattern(config.regex));
             }
             return new FormControl<any>(formValue, validators);
         } else {
