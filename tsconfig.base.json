@@ -34,6 +34,7 @@
             ],
             "@proxy/directives/skeleton": ["libs/directives/skeleton/src/index.ts"],
             "@proxy/directives/timeago-directive": ["libs/directives/timeago-directive/src/index.ts"],
+            "@proxy/models/logs-models": ["libs/models/logs-models/src/index.ts"],
             "@proxy/models/root-models": ["libs/models/root-models/src/index.ts"],
             "@proxy/pipes/ChartDateAdd": ["libs/pipes/chart-date-add/src/index.ts"],
             "@proxy/pipes/CurrencyFormatter": ["libs/pipes/currency-formatter/src/index.ts"],
@@ -76,6 +77,10 @@
             "@proxy/services/interceptor/errorInterceptor": [
                 "libs/services/interceptor/error-interceptor/src/index.ts"
             ],
+            "@proxy/services/login": ["libs/services/login/src/index.ts"],
+            "@proxy/services/proxy/auth": ["libs/services/proxy/auth/src/index.ts"],
+            "@proxy/services/proxy/logs": ["libs/services/proxy/logs/src/index.ts"],
+            "@proxy/services/proxy/root": ["libs/services/proxy/root/src/index.ts"],
             "@proxy/services/shared": ["libs/services/shared/src/index.ts"],
             "@proxy/shared": ["libs/shared/src/index.ts"],
             "@proxy/shared/cmd-enter-preference": ["libs/shared/src/lib/cmd-enter-preference/index.ts"],
@@ -121,12 +126,9 @@
             "@proxy/ui/tts-recording": ["libs/ui/tts-recording/src/index.ts"],
             "@proxy/ui/variable-input": ["libs/ui/variable-input/src/index.ts"],
             "@proxy/ui/virtual-scroll": ["libs/ui/virtual-scroll/src/index.ts"],
-            "@proxy/utils": ["libs/utils/src/index.ts"],
-            "@proxy/models/logs-models": ["libs/models/logs-models/src/index.ts"],
-            "@proxy/services/proxy/auth": ["libs/services/proxy/auth/src/index.ts"],
-            "@proxy/services/proxy/logs": ["libs/services/proxy/logs/src/index.ts"],
-            "@proxy/services/login": ["libs/services/login/src/index.ts"],
-            "@proxy/urls/logs-urls": ["libs/urls/logs-urls/src/index.ts"]
+            "@proxy/urls/logs-urls": ["libs/urls/logs-urls/src/index.ts"],
+            "@proxy/urls/root-urls": ["libs/urls/root-urls/src/index.ts"],
+            "@proxy/utils": ["libs/utils/src/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]

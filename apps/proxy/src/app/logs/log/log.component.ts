@@ -8,13 +8,12 @@ import {
     PAGE_SIZE_OPTIONS,
 } from '@proxy/constant';
 import { MatSort } from '@angular/material/sort';
-import { LogsComponentStore } from './logs.component.store';
+import { LogsComponentStore } from './logs.store';
 import { Observable } from 'rxjs';
-import { IEnvProjects, ILogDetailRes, ILogsRes } from '@proxy/models/logs-models';
+import { IEnvironments, ILogDetailRes, ILogsRes, IProjects } from '@proxy/models/logs-models';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import * as dayjs from 'dayjs';
 import { omit } from 'lodash';
-import { MatSelectChange } from '@angular/material/select';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -23,6 +22,9 @@ import { CustomValidators } from '@proxy/custom-validator';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LogsDetailsSideDialogComponent } from '../log-details-side-dialog/log-details-side-dialog.component';
+
+type FilterTypes = 'environments' | 'projects';
+
 @Component({
     selector: 'proxy-logs',
     templateUrl: './log.component.html',
@@ -43,6 +45,15 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
         'response_time',
     ];
     public params: any = {};
+    public environmentParams = {
+        itemsPerPage: 25,
+        pageNo: 1,
+    };
+    public projectParams = {
+        itemsPerPage: 25,
+        pageNo: 1,
+    };
+    public activeList: FilterTypes = null;
     public selectedRangeValue = DEFAULT_SELECTED_DATE_RANGE;
     public selectedDefaultDateRange = SelectDateRange;
     public selectedDateRange = {
@@ -51,11 +62,15 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
     };
     public requestTypes: Array<string> = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
-    public engProjectControl: FormControl<string> = new FormControl<string>('');
+    public engProjectFormGroup = new FormGroup({
+        environments: new FormControl<IEnvironments | string>(''),
+        projects: new FormControl<IProjects | string>(''),
+    });
     // Observable
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public logs$: Observable<IPaginatedResponse<ILogsRes[]>> = this.componentStore.logsData$;
-    public envProjects$: Observable<IPaginatedResponse<IEnvProjects[]>> = this.componentStore.envProjects$;
+    public environments$: Observable<IPaginatedResponse<IEnvironments[]>> = this.componentStore.environments$;
+    public projects$: Observable<IPaginatedResponse<IProjects[]>> = this.componentStore.projects$;
     public reqLogs$: Observable<ILogDetailRes> = this.componentStore.reqLogs$;
     public logDetailDialogRef: MatDialogRef<LogsDetailsSideDialogComponent>;
 
@@ -85,7 +100,8 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
             ...this.formatDateRange(),
         };
         this.getLogs();
-        this.componentStore.getEnvProjects();
+        this.getEnvironment();
+        this.getProject();
     }
 
     public ngOnDestroy(): void {
@@ -144,18 +160,27 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
     }
 
     /**
-     * Filter select by env project
+     * Filter select by Environment or Project
      * @param event
      */
-    public selectEnvProject(event: MatSelectChange): void {
-        if (event.value) {
-            this.params = {
-                ...this.params,
-                slug: event.value,
-            };
-        } else {
-            this.params = omit(this.params, ['slug']);
+    public selectEnvProject(type: FilterTypes): void {
+        if (!this.activeList) {
+            this.activeList = type;
+        } else if (this.activeList === type) {
+            const inactiveControl =
+                this.engProjectFormGroup.controls[type === 'environments' ? 'projects' : 'environments'];
+            inactiveControl.setValue('');
+            inactiveControl.updateValueAndValidity();
+            this.activeList = null;
         }
+        const formData = this.engProjectFormGroup.value;
+        const project_id = formData?.projects?.['id'] ?? null;
+        const environment_id = formData?.environments?.['id'] ?? null;
+        this.params = CustomValidators.removeNullKeys({
+            ...this.params,
+            project_id,
+            environment_id,
+        });
         this.getLogs();
     }
 
@@ -284,5 +309,46 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
      */
     public getLogs(): void {
         this.componentStore.getLogs({ ...this.params });
+    }
+
+    /**
+     * Get Environment
+     */
+    public getEnvironment(): void {
+        this.componentStore.getEnvironment(this.environmentParams);
+    }
+
+    /**
+     * Get Project
+     */
+    public getProject(): void {
+        this.componentStore.getProjects(this.projectParams);
+    }
+
+    public fetchNextPage(type: FilterTypes): void {
+        if (this.activeList === type) return;
+        if (
+            type === 'environments' &&
+            this.getValueFromObservable(this.environments$)?.totalPageCount > this.environmentParams.pageNo
+        ) {
+            this.environmentParams = {
+                ...this.environmentParams,
+                pageNo: this.environmentParams.pageNo + 1,
+            };
+            this.getEnvironment();
+        } else if (
+            type === 'projects' &&
+            this.getValueFromObservable(this.projects$)?.totalPageCount > this.projectParams.pageNo
+        ) {
+            this.projectParams = {
+                ...this.projectParams,
+                pageNo: this.projectParams.pageNo + 1,
+            };
+            this.getProject();
+        }
+    }
+
+    public envProjectDisplayFunc(obj: IEnvironments | IProjects): string {
+        return obj.name ?? 'All';
     }
 }

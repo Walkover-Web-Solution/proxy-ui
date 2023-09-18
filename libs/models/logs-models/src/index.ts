@@ -25,11 +25,32 @@ export interface ILogsReq {
     endDate: string;
 }
 
-export interface IEnvProjects {
+export interface IProjects {
     id: number;
-    project_name: string;
-    environment_name: string;
-    slug: string;
+    name: string;
+    client_id: number;
+    created_at: string;
+    updated_at: string;
+    created_by?: ICreatedOrUpdatedBy;
+    updated_by?: ICreatedOrUpdatedBy;
+    environments?: IEnvironments[];
+}
+
+export interface IEnvironments {
+    id: number;
+    name: string;
+    client_id: number;
+    created_at: string;
+    updated_at: string;
+    created_by?: ICreatedOrUpdatedBy;
+    updated_by?: ICreatedOrUpdatedBy;
+    projects?: IProjects;
+}
+
+export interface ICreatedOrUpdatedBy {
+    id: number;
+    name: string;
+    email: string;
 }
 
 export interface ILogDetailRes {
