@@ -23,6 +23,8 @@ import { UiMatPaginatorGotoModule } from '@proxy/ui/mat-paginator-goto';
 import { LogsDetailsSideDialogComponent } from './log-details-side-dialog/log-details-side-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { UiLoaderModule } from '@proxy/ui/loader';
+import { UiVirtualScrollModule } from '@proxy/ui/virtual-scroll';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 const routes: Routes = [
     {
@@ -60,6 +62,8 @@ const routes: Routes = [
         UiLoaderModule,
         UiComponentsSearchModule,
         DirectivesRemoveCharacterDirectiveModule,
+        UiVirtualScrollModule,
+        MatAutocompleteModule,
     ],
     exports: [RouterModule],
 })
