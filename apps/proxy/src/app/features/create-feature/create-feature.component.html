@@ -52,6 +52,7 @@
         <mat-step
             *ngIf="featureForm.get('primaryDetails.feature_id') as featureTypeControl"
             [stepControl]="featureTypeControl"
+            [editable]="!(createUpdateObject$ | async)"
         >
             <ng-template matStepLabel>Select Feature</ng-template>
             <div class="d-flex flex-column h-100">
@@ -73,7 +74,11 @@
                 </div>
             </div>
         </mat-step>
-        <mat-step *ngIf="featureForm.get('primaryDetails.name') as nameControl" [stepControl]="nameControl">
+        <mat-step
+            *ngIf="featureForm.get('primaryDetails.name') as nameControl"
+            [stepControl]="nameControl"
+            [editable]="!(createUpdateObject$ | async)"
+        >
             <ng-template matStepLabel>Feature Name</ng-template>
             <div class="d-flex flex-column h-100">
                 <ng-container *ngTemplateOutlet="featureName; context: { nameControl }"></ng-container>
@@ -89,7 +94,7 @@
                 </div>
             </div>
         </mat-step>
-        <mat-step [completed]="isConfigureMethodValid">
+        <mat-step [completed]="isConfigureMethodValid" [editable]="!(createUpdateObject$ | async)">
             <ng-template matStepLabel>Configure Method</ng-template>
             <div class="d-flex flex-column h-100">
                 <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
@@ -111,7 +116,7 @@
                 </div>
             </div>
         </mat-step>
-        <mat-step [stepControl]="featureForm.get('authorizationDetails')">
+        <mat-step [stepControl]="featureForm.get('authorizationDetails')" [editable]="!(createUpdateObject$ | async)">
             <ng-template matStepLabel>Authorization Setup</ng-template>
             <div class="d-flex flex-column h-100">
                 <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
@@ -121,7 +126,7 @@
                         >Back
                     </button>
                     <button mat-flat-button color="primary" matStepperNext (click)="createFeature()">
-                        Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
+                        Save & Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
                         >
                     </button>
@@ -132,12 +137,12 @@
             <ng-template matStepLabel>Design & code</ng-template>
             <div class="d-flex flex-column h-100">
                 <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
-                <div class="d-flex align-items-center justify-content-between">
-                    <button mat-flat-button class="flat-default" matStepperPrevious>
-                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
-                        >Back
-                    </button>
-                    <button mat-flat-button color="primary" matStepperNext>
+                <div class="d-flex align-items-center justify-content-end">
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        [routerLink]="['/app/features/manage', (createUpdateObject$ | async)?.id]"
+                    >
                         Manage Feature<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
                         >
