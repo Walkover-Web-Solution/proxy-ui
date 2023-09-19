@@ -31,6 +31,7 @@ window['initVerification'] = (config: any) => {
             }
             const sendOtpElement = document.createElement('proxy-auth') as NgElement & WithProperties<SendOtpComponent>;
             sendOtpElement.referenceId = config.referenceId;
+            sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;
             if (!config.success || typeof config.success !== 'function') {
                 throw Error('success callback function missing !');
