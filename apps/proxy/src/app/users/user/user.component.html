@@ -30,7 +30,13 @@
             <div class="table-scroll">
                 <table
                     mat-table
-                    [dataSource]="(users$ | async)?.data?.length ? (users$ | async)?.data : [1, 2, 3, 4]"
+                    [dataSource]="
+                        (users$ | async)?.data?.length
+                            ? (users$ | async)?.data
+                            : (isLoading$ | async)
+                            ? [1, 2, 3, 4]
+                            : []
+                    "
                     class="default-table responsive-table"
                 >
                     <!-- Name Column -->
