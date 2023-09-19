@@ -1,0 +1,100 @@
+<div class="app-content d-flex flex-column">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+        <div class="d-flex flex-wrap align-items-center flex-grow-1 gap-3">
+            <proxy-lib-search
+                [matFormFieldClass]="'no-padding w-xs-100'"
+                [placeholder]="'Search'"
+                (inputChanges)="search($event)"
+                class="w-xs-100"
+            ></proxy-lib-search>
+        </div>
+        <div class="d-flex align-items-center justify-content-between gap-3 ml-auto">
+            <date-range-picker
+                (selectedRangeValueChange)="setDateRange($event)"
+                [(selectedRangeValue)]="selectedRangeValue"
+                [selectedDefaultDateRange]="selectedDefaultDateRange.CurrentMonth"
+            ></date-range-picker>
+            <button
+                mat-flat-button
+                class="flat-icon-btn flat-default"
+                (click)="getUsers()"
+                matTooltip="Refresh"
+                matTooltipPosition="above"
+            >
+                <mat-icon class="mat-icon-18">refresh</mat-icon>
+            </button>
+        </div>
+    </div>
+    <mat-card class="p-0 outline-card responsive-card flex-grow-1">
+        <mat-card-content>
+            <div class="table-scroll">
+                <table
+                    mat-table
+                    [dataSource]="
+                        (users$ | async)?.data?.length
+                            ? (users$ | async)?.data
+                            : (isLoading$ | async)
+                            ? [1, 2, 3, 4]
+                            : []
+                    "
+                    class="default-table responsive-table"
+                >
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
+                        <td mat-cell *matCellDef="let element" data-label="Name">
+                            <ng-container *ngIf="!(isLoading$ | async); else loading">
+                                {{ element.name }}
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- Email Column -->
+                    <ng-container matColumnDef="email">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Email</th>
+                        <td mat-cell *matCellDef="let element" data-label="Email">
+                            <ng-container *ngIf="!(isLoading$ | async); else loading">
+                                {{ element.email }}
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- Phone Number Column -->
+                    <ng-container matColumnDef="phone_number">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone Number</th>
+                        <td mat-cell *matCellDef="let element" data-label="Phone Number">
+                            <ng-container *ngIf="!(isLoading$ | async); else loading">
+                                {{ element.mobile ?? '-' }}
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                    <tr
+                        mat-row
+                        *matRowDef="let row; columns: displayedColumns; let i = index"
+                        [ngClass]="{ 'last-child': i + 1 === ((users$ | async)?.itemsPerPage || 25) }"
+                    ></tr>
+
+                    <tr *matNoDataRow>
+                        <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
+                            <proxy-no-record-found [title]="'users'" [showBtn]="false"></proxy-no-record-found>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <mat-paginator-goto
+                [length]="(users$ | async)?.totalEntityCount"
+                [pageSize]="(users$ | async)?.itemsPerPage || 25"
+                [pageSizeOptions]="pageSizeOptions"
+                (page)="pageChange($event)"
+                [pageIndex]="(users$ | async)?.pageNumber - 1"
+                class="box-shadow-none"
+            ></mat-paginator-goto>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<ng-template #loading>
+    <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>
+</ng-template>

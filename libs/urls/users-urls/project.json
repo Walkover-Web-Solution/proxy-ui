@@ -1,0 +1,16 @@
+{
+    "name": "urls-users-urls",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/users-urls/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/users-urls/**/*.ts", "libs/urls/users-urls/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}
