@@ -56,6 +56,7 @@ const routes: Routes = [
         ServicesProxyFeaturesModule,
         DirectivesSkeletonModule,
         MatTooltipModule,
+        UiLoaderModule,
     ],
     exports: [RouterModule],
 })
