@@ -114,6 +114,23 @@
                 border-bottom: 0px;
             }
         }
+        &.hover-action{
+            .actions {
+                opacity: 0;
+            }
+            @media (hover: hover) {
+                &:hover{
+                    .actions {
+                        opacity: 1;
+                    }
+                }
+            }
+            @media (hover: none) {
+                .actions{
+                    opacity: 1;
+                }
+            }
+        }
     }
 }
 
