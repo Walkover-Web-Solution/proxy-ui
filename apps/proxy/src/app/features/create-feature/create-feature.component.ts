@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { cloneDeep } from 'lodash-es';
-import { Component, OnDestroy, OnInit, NgZone, ViewChild, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnDestroy, OnInit, NgZone, ViewChildren, QueryList } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { BehaviorSubject, Observable, filter, take, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
@@ -94,7 +94,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     }
 
     ngOnInit(): void {
-        this.activatedRoute.params.subscribe((params) => {
+        this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
             if (params?.id) {
                 this.featureId = params.id;
                 this.isEditMode = true;
@@ -104,15 +104,15 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             }
         });
         if (!this.isEditMode) {
-            this.featureType$.pipe(takeUntil(this.destroy$), filter(Boolean)).subscribe((features) => {
+            this.featureType$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((features) => {
                 this.featureForm.get('primaryDetails.feature_id').setValue(features[0].id);
             });
             // Selecting first method because there is no form for `method_id` selection currently
-            this.serviceMethods$.pipe(takeUntil(this.destroy$), filter(Boolean)).subscribe((methods) => {
+            this.serviceMethods$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((methods) => {
                 this.featureForm.get('primaryDetails.method_id').setValue(methods[0].id);
             });
         } else {
-            this.featureDetails$.pipe(takeUntil(this.destroy$), filter(Boolean)).subscribe((feature) => {
+            this.featureDetails$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((feature) => {
                 this.getServiceMethods(feature.feature_id);
                 this.proxyAuthScript = ProxyAuthScript(environment.proxyServer, feature.reference_id);
                 this.serviceMethods$.pipe(filter(Boolean), take(1)).subscribe(() => {
@@ -132,12 +132,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }
         this.featureForm
             .get('primaryDetails.method_id')
-            .valueChanges.pipe(takeUntil(this.destroy$), filter(Boolean))
+            .valueChanges.pipe(filter(Boolean), takeUntil(this.destroy$))
             .subscribe((id) => {
                 const methods: IMethod[] = this.getValueFromObservable(this.serviceMethods$);
                 this.selectedMethod.next(methods.find((method) => method.id === id));
             });
-        this.selectedMethod.pipe(takeUntil(this.destroy$), filter(Boolean)).subscribe((method) => {
+        this.selectedMethod.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((method) => {
             const featureDetails: IFeatureDetails = this.getValueFromObservable(this.featureDetails$);
             method.method_services.forEach((service, index) => {
                 const serviceValues = featureDetails?.service_configurations?.[index];
@@ -170,7 +170,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.featureForm.controls.serviceDetails.push(serviceFormGroup);
             });
         });
-        this.createUpdateObject$.pipe(takeUntil(this.destroy$), filter(Boolean)).subscribe((obj) => {
+        this.createUpdateObject$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((obj) => {
             this.proxyAuthScript = ProxyAuthScript(environment.proxyServer, obj.reference_id);
             if (this.isEditMode) {
                 this.nameFieldEditMode = false;
