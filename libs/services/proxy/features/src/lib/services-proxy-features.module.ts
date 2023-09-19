@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { BaseResponse, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
 import { Observable } from 'rxjs';
-import { IFeature, IFeatureReq, IFeatureType, IMethod } from '@proxy/models/features-model';
+import { IFeature, IFeatureDetails, IFeatureReq, IFeatureType, IMethod } from '@proxy/models/features-model';
 import { FeaturesUrls } from '@proxy/urls/features-url';
 
 @NgModule({
@@ -25,6 +25,11 @@ export class FeaturesService {
         );
     }
 
+    // Get Feature Details
+    public getFeatureDetails(id: string | number): Observable<BaseResponse<IFeatureDetails, void>> {
+        return this.http.get<BaseResponse<IFeatureDetails, void>>(`${FeaturesUrls.getFeature(this.baseURL)}/${id}`);
+    }
+
     // Fetch Feature Type
     public getFeatureType(): Observable<BaseResponse<IFeatureType[], void>> {
         return this.http.get<BaseResponse<IFeatureType[], void>>(FeaturesUrls.getFeatureType(this.baseURL));
@@ -35,5 +40,15 @@ export class FeaturesService {
         return this.http.get<BaseResponse<IMethod[], void>>(
             FeaturesUrls.getMethodService(this.baseURL).replace(':id', String(id))
         );
+    }
+
+    // Create Feature
+    public createFeature(body): Observable<BaseResponse<IFeature, void>> {
+        return this.http.post<BaseResponse<IFeature, void>>(FeaturesUrls.getFeature(this.baseURL), body);
+    }
+
+    // Update Feature
+    public updateFeature(id: string | number, body): Observable<BaseResponse<IFeature, void>> {
+        return this.http.put<BaseResponse<IFeature, void>>(`${FeaturesUrls.getFeature(this.baseURL)}/${id}`, body);
     }
 }

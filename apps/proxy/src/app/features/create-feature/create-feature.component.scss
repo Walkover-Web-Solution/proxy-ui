@@ -8,15 +8,18 @@
 }
 
 .code-snippet-view {
-    background-color: #272822;
     border-radius: var(--border-common-radius-4);
     transition: min-height 0.2s linear;
     min-height: 360px;
     max-height: 400px;
-    width: 460px;
+    width: 550px;
 }
 
 .active {
     background-color: var(--color-common-primary-light) !important;
     border-color: var(--color-common-primary) !important;
+}
+
+.service-list {
+    width: 250px;
 }

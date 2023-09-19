@@ -12,6 +12,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatListModule } from '@angular/material/list';
+import { MatChipsModule } from '@angular/material/chips';
+import { MarkdownModule } from 'ngx-markdown';
+import { MatTabsModule } from '@angular/material/tabs';
 
 const routes: Routes = [
     {
@@ -36,6 +39,9 @@ const routes: Routes = [
         MatStepperModule,
         MatListModule,
         ServicesProxyFeaturesModule,
+        MatChipsModule,
+        MarkdownModule.forRoot(),
+        MatTabsModule,
     ],
     exports: [RouterModule],
 })

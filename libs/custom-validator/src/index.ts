@@ -458,4 +458,13 @@ export class CustomValidators {
             return null;
         };
     }
+
+    public static atleastOneValueInChipList(list: Set<any>): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            if (!list?.size) {
+                return { atleastOneValueInChipList: true };
+            }
+            return null;
+        };
+    }
 }

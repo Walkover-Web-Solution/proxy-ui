@@ -1,17 +1,18 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BaseResponse, IPaginatedResponse, errorResolver } from '@proxy/models/root-models';
+import { BaseResponse, IPaginatedResponse, errorResolver, IReqParams } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
-import { IEnvProjects, ILogDetailRes, ILogsReq, ILogsRes } from '@proxy/models/logs-models';
+import { IEnvironments, ILogDetailRes, ILogsReq, ILogsRes, IProjects } from '@proxy/models/logs-models';
 import { LogsService } from '@proxy/services/proxy/logs';
 import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
 
 export interface ILogsInitialState {
     logs: IPaginatedResponse<ILogsRes[]>;
     logsInProcess: boolean;
-    envProjects: IPaginatedResponse<IEnvProjects[]>;
-    envProjectsInProcess: boolean;
+    environments: IPaginatedResponse<IEnvironments[]>;
+    environmentsInProcess: boolean;
+    projects: IPaginatedResponse<IProjects[]>;
+    projectsInProcess: boolean;
     reqLogs: ILogDetailRes;
     reqLogsInProcess: boolean;
 }
@@ -22,18 +23,23 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
         super({
             logs: null,
             logsInProcess: false,
-            envProjects: null,
-            envProjectsInProcess: false,
+            environments: null,
+            environmentsInProcess: false,
+            projects: null,
+            projectsInProcess: false,
             reqLogs: null,
             reqLogsInProcess: false,
         });
     }
 
     readonly logsData$: Observable<IPaginatedResponse<ILogsRes[]>> = this.select((state) => state.logs);
-    readonly envProjects$: Observable<IPaginatedResponse<IEnvProjects[]>> = this.select((state) => state.envProjects);
+    readonly environments$: Observable<IPaginatedResponse<IEnvironments[]>> = this.select(
+        (state) => state.environments
+    );
+    readonly projects$: Observable<IPaginatedResponse<IProjects[]>> = this.select((state) => state.projects);
     readonly reqLogs$: Observable<any> = this.select((state) => state.reqLogs);
     readonly isLoading$: Observable<boolean> = this.select(
-        (state) => state.logsInProcess || state.envProjectsInProcess
+        (state) => state.logsInProcess || state.environmentsInProcess || state.projectsInProcess
     );
     readonly reqLogsInProcess$: Observable<boolean> = this.select((state) => state.reqLogsInProcess);
 
@@ -47,15 +53,15 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
                     tapResponse(
                         (res: BaseResponse<IPaginatedResponse<ILogsRes[]>, ILogsReq>) => {
                             if (res.hasError) {
-                                this.showErrorMessages(res['error']);
+                                this.showErrorMessages(res.errors);
                             }
                             return this.patchState({
                                 logsInProcess: false,
                                 logs: res?.data,
                             });
                         },
-                        (error: HttpErrorResponse) => {
-                            this.showErrorMessages(error['error']);
+                        (error: any) => {
+                            this.showErrorMessages(error.errors);
                             return this.patchState({
                                 logsInProcess: false,
                                 logs: null,
@@ -76,7 +82,7 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
                     tapResponse(
                         (res: BaseResponse<ILogDetailRes, void>) => {
                             if (res.hasError) {
-                                this.showErrorMessages(res['error']);
+                                this.showErrorMessages(res.errors);
                             }
                             return this.patchState({
                                 reqLogsInProcess: false,
@@ -86,8 +92,8 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
                                 },
                             });
                         },
-                        (error: HttpErrorResponse) => {
-                            this.showErrorMessages(error['error']);
+                        (error: any) => {
+                            this.showErrorMessages(error.errors);
                             return this.patchState({
                                 reqLogsInProcess: false,
                                 reqLogs: null,
@@ -100,26 +106,61 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
         );
     });
 
-    readonly getEnvProjects = this.effect((data) => {
+    readonly getEnvironment = this.effect((data: Observable<IReqParams>) => {
         return data.pipe(
-            switchMap(() => {
-                this.patchState({ envProjectsInProcess: true });
-                return this.service.getEnvProjects().pipe(
+            switchMap((req: IReqParams) => {
+                this.patchState({ environmentsInProcess: true });
+                return this.service.getEnvironments(req).pipe(
                     tapResponse(
-                        (res: BaseResponse<IPaginatedResponse<IEnvProjects[]>, void>) => {
+                        (res: BaseResponse<IPaginatedResponse<IEnvironments[]>, void>) => {
                             if (res.hasError) {
-                                this.showErrorMessages(res['error']);
+                                this.showErrorMessages(res.errors);
                             }
-                            return this.patchState({
-                                envProjectsInProcess: false,
-                                envProjects: res?.data,
-                            });
+                            return this.patchState((state) => ({
+                                environmentsInProcess: false,
+                                environments:
+                                    res?.data?.pageNo > 1
+                                        ? { ...res.data, data: [...state.environments.data, ...res.data.data] }
+                                        : res.data,
+                            }));
                         },
-                        (error: HttpErrorResponse) => {
-                            this.showErrorMessages(error['error']);
+                        (error: any) => {
+                            this.showErrorMessages(error.errors);
                             return this.patchState({
-                                envProjectsInProcess: false,
-                                envProjects: null,
+                                environmentsInProcess: false,
+                                environments: null,
+                            });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly getProjects = this.effect((data: Observable<IReqParams>) => {
+        return data.pipe(
+            switchMap((req: IReqParams) => {
+                this.patchState({ projectsInProcess: true });
+                return this.service.getProjects(req).pipe(
+                    tapResponse(
+                        (res: BaseResponse<IPaginatedResponse<IProjects[]>, void>) => {
+                            if (res.hasError) {
+                                this.showErrorMessages(res.errors);
+                            }
+                            return this.patchState((state) => ({
+                                projectsInProcess: false,
+                                projects:
+                                    res?.data?.pageNo > 1
+                                        ? { ...res.data, data: [...state.projects.data, ...res.data.data] }
+                                        : res.data,
+                            }));
+                        },
+                        (error: any) => {
+                            this.showErrorMessages(error.errors);
+                            return this.patchState({
+                                projectsInProcess: false,
+                                projects: null,
                             });
                         }
                     ),

@@ -29,6 +29,10 @@ const routes: Routes = [
         path: 'create',
         loadChildren: () => import('./create-feature/create-feature.module').then((p) => p.CreateFeatureModule),
     },
+    {
+        path: 'manage/:id',
+        loadChildren: () => import('./create-feature/create-feature.module').then((p) => p.CreateFeatureModule),
+    },
 ];
 
 @NgModule({

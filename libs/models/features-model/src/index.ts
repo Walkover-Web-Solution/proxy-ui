@@ -1,12 +1,27 @@
 export interface IFeature {
     id: number;
     feature_id: number;
+    method_id?: number;
     name: string;
     reference_id: string;
     feature: { id: number; name: string };
     method: { id: number; name: string };
+    session_time: number;
     created_by: ICreatedBy;
     updated_by: IUpdatedBy;
+}
+
+export interface IFeatureDetails extends IFeature {
+    projects?: string[];
+    authorization_format: IAuthorizationFormat;
+    service_configurations: IServiceConfigurations[];
+}
+
+export interface IServiceConfigurations {
+    service_id: number;
+    feature_configuration_id: number;
+    configurations: { fields: { [key: string]: any }; mappings: any[] };
+    requirements: { [key: string]: any };
 }
 
 export interface IFeatureReq {
@@ -67,4 +82,37 @@ export interface IFieldConfig {
     is_required: boolean;
     sourceFieldLabel: string;
     sourceFieldValue: string;
+    delimiter?: string;
+    read_only_value?: string[];
 }
+
+export enum FeatureFieldType {
+    Text = 'text',
+    ChipList = 'chipList',
+}
+
+export const ProxyAuthScript = (
+    baseUrl: string,
+    referenceId = '<reference_id>',
+    time?: number
+) => `<script type="text/javascript">
+    var configuration = {
+        referenceId: '${referenceId}',
+        success: (data) => {
+            // get verified token in response
+            console.log('success response', data);
+        },
+        failure: (error) => {
+            // handle error
+            console.log('failure reason', error);
+        },
+    };
+</script>
+<script
+    type="text/javascript"
+    onload="initVerification(configuration)"
+    src="${ProxyAuthScriptUrl(baseUrl, time)}"
+></script>`;
+
+export const ProxyAuthScriptUrl = (baseUrl: string, time?: number) =>
+    `${baseUrl}/assets/proxy-auth/proxy-auth.js${time ? '?time=' + time : ''}`;

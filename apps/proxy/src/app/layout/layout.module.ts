@@ -13,6 +13,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { UiVirtualScrollModule } from '@proxy/ui/virtual-scroll';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
     declarations: [LayoutComponent, MainLeftSideNavComponent],
@@ -28,6 +30,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatToolbarModule,
         MatExpansionModule,
         MatTooltipModule,
+        UiVirtualScrollModule,
+        ScrollingModule,
     ],
 })
 export class LayoutModule {}

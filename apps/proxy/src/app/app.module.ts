@@ -21,6 +21,7 @@ import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { ErrorInterceptor } from '@proxy/services/interceptor/errorInterceptor';
 import { VersionCheckServiceModule } from '@proxy/service';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
+import { ServicesProxyRootModule } from '@proxy/services/proxy/root';
 
 @NgModule({
     declarations: [AppComponent],
@@ -37,6 +38,7 @@ import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
         LogInEffectsModule,
         ServicesProxyAuthModule,
         VersionCheckServiceModule,
+        ServicesProxyRootModule,
     ],
     providers: [
         { provide: ProxyBaseUrls.FirebaseConfig, useValue: environment.firebaseConfig },
