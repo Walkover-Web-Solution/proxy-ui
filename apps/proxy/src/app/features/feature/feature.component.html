@@ -1,6 +1,6 @@
 <div class="app-content d-flex flex-column">
     <div class="d-flex align-items-center justify-content-between gap-3">
-        <h4 class="my-0 text-secondary mat-display-4" *ngIf="!(feature$ | async)?.totalEntityCount">Features</h4>
+        <h4 class="my-0 text-secondary mat-display-4" *ngIf="(feature$ | async)?.totalEntityCount === 0">Features</h4>
         <proxy-lib-search
             *ngIf="(feature$ | async)?.totalEntityCount"
             [matFormFieldClass]="'no-padding w-xs-100'"
@@ -24,7 +24,7 @@
             </button>
         </div>
     </div>
-    <p class="mat-body-2 text-secondary w-50" *ngIf="!(feature$ | async)?.totalEntityCount">
+    <p class="mat-body-2 text-secondary w-50" *ngIf="(feature$ | async)?.totalEntityCount === 0">
         The "Features" component in the Proxy Server is a dynamic tool that offers versatile authentication and
         subscription plan options. It supports various authentication methods like OTP and social logins (e.g., Google,
         Microsoft) while providing flexible subscription plans. Users benefit from enhanced security, cost-efficient

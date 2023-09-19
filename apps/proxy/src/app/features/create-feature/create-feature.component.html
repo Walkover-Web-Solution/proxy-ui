@@ -1,5 +1,5 @@
 <div class="app-content d-flex flex-column">
-    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
+    <proxy-loader *ngIf="(isLoading$ | async) || (loadingScript | async)"></proxy-loader>
     <div
         class="d-flex justify-content-start gap-1 mb-3"
         [ngClass]="isEditMode ? 'align-items-start' : 'align-items-center'"
@@ -116,7 +116,10 @@
                 </div>
             </div>
         </mat-step>
-        <mat-step [stepControl]="featureForm.get('authorizationDetails')" [editable]="!(createUpdateObject$ | async)">
+        <mat-step
+            [completed]="(createUpdateObject$ | async) && featureForm.get('authorizationDetails')?.valid"
+            [editable]="!(createUpdateObject$ | async)"
+        >
             <ng-template matStepLabel>Authorization Setup</ng-template>
             <div class="d-flex flex-column h-100">
                 <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
@@ -125,7 +128,7 @@
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
                     </button>
-                    <button mat-flat-button color="primary" matStepperNext (click)="createFeature()">
+                    <button mat-flat-button color="primary" (click)="createFeature()">
                         Save & Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
                         >
@@ -141,7 +144,8 @@
                     <button
                         mat-flat-button
                         color="primary"
-                        [routerLink]="['/app/features/manage', (createUpdateObject$ | async)?.id]"
+                        *ngIf="createUpdateObject$ | async as createUpdateObject"
+                        [routerLink]="['/app/features/manage', createUpdateObject?.id]"
                     >
                         Manage Feature<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
@@ -157,7 +161,7 @@
                 <div class="d-flex flex-column h-100 p-4">
                     <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
                     <mat-divider></mat-divider>
-                    <div class="d-flex align-items-center justify-content-end mt-3">
+                    <div class="d-flex align-items-center justify-content-start mt-3">
                         <button mat-flat-button color="primary" (click)="updateFeature('service')">Update</button>
                     </div>
                 </div>
@@ -166,7 +170,7 @@
                 <div class="d-flex flex-column h-100 p-4">
                     <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
                     <mat-divider></mat-divider>
-                    <div class="d-flex align-items-center justify-content-end mt-3">
+                    <div class="d-flex align-items-center justify-content-start mt-3">
                         <button mat-flat-button color="primary" (click)="updateFeature('authorization')">Update</button>
                     </div>
                 </div>
@@ -223,7 +227,7 @@
     </div>
 </ng-template>
 <ng-template #configureMethodTemplate let-selectedIndex="selectedIndex">
-    <div class="d-flex gap-3 my-3 flex-grow-1">
+    <div class="d-flex gap-3 my-3 flex-grow-1" style="min-height: 400px">
         <div class="d-flex flex-column gap-1 border-right pr-3 service-list">
             <p class="mat-body-2 fw-bolder mt-0">Services</p>
             <mat-list role="list" class="default-list pt-0">
@@ -370,6 +374,12 @@
             <markdown [data]="proxyAuthScript | language: 'javascript'"> </markdown>
         </div>
     </div>
+    <div
+        class="d-flex align-items-center justify-content-start mt-3"
+        *ngIf="(createUpdateObject$ | async) || (featureDetails$ | async)"
+    >
+        <button mat-flat-button color="primary" (click)="previewFeature()">Preview</button>
+    </div>
 </ng-template>
 
 <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
@@ -455,8 +465,10 @@
 <ng-template #matErrors let-label="label" let-fieldControl="fieldControl" let-patternErrorText="patternErrorText">
     <mat-error *ngIf="fieldControl.errors?.required"> {{ label }} is required. </mat-error>
     <mat-error *ngIf="fieldControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.min as minError"> Min value required is {{ minError?.min }} </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.max as maxError"> Max value allowed is {{ maxError?.max }} </mat-error>
     <mat-error *ngIf="fieldControl.errors?.minlength as minLengthError">
-        Min allowed length is {{ minLengthError?.requiredLength }}
+        Min required length is {{ minLengthError?.requiredLength }}
     </mat-error>
     <mat-error *ngIf="fieldControl.errors?.maxlength as maxLengthError">
         Max allowed length is {{ maxLengthError?.requiredLength }}

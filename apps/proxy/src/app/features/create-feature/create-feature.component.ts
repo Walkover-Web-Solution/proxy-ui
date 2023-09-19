@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { cloneDeep } from 'lodash-es';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, NgZone, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { BehaviorSubject, Observable, filter, take, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
@@ -13,12 +13,15 @@ import {
     IMethod,
     IMethodService,
     ProxyAuthScript,
+    ProxyAuthScriptUrl,
 } from '@proxy/models/features-model';
 import { FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { environment } from '../../../environments/environment';
+import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
+import { MatStepper } from '@angular/material/stepper';
 
 type ServiceFormGroup = FormGroup<{
     requirements: FormGroup<{
@@ -36,6 +39,8 @@ type ServiceFormGroup = FormGroup<{
     providers: [CreateFeatureComponentStore],
 })
 export class CreateFeatureComponent extends BaseComponent implements OnDestroy, OnInit {
+    @ViewChildren('stepper') stepper: QueryList<MatStepper>;
+
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public featureType$: Observable<IFeatureType[]> = this.componentStore.featureType$;
     public serviceMethods$: Observable<IMethod[]> = this.componentStore.serviceMethods$;
@@ -47,6 +52,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public selectedMethod = new BehaviorSubject<IMethod>(null);
     public featureId: number = null;
     public nameFieldEditMode = false;
+    public loadingScript = new BehaviorSubject<boolean>(false);
+    public scriptLoaded = new BehaviorSubject<boolean>(false);
 
     public featureFieldType = FeatureFieldType;
     public proxyAuthScript = ProxyAuthScript(environment.proxyServer);
@@ -77,7 +84,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }),
     });
 
-    constructor(private componentStore: CreateFeatureComponentStore, private activatedRoute: ActivatedRoute) {
+    constructor(
+        private componentStore: CreateFeatureComponentStore,
+        private activatedRoute: ActivatedRoute,
+        private toast: PrimeNgToastService,
+        private ngZone: NgZone
+    ) {
         super();
     }
 
@@ -163,6 +175,10 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             if (this.isEditMode) {
                 this.nameFieldEditMode = false;
                 this.getFeatureDetalis();
+            } else {
+                setTimeout(() => {
+                    this.stepper?.first?.next();
+                }, 10);
             }
         });
     }
@@ -339,6 +355,43 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         } else if (operation === 'delete') {
             this.chipListValues[chipListKey].delete(value);
             fieldControl.updateValueAndValidity();
+        }
+    }
+
+    public previewFeature(): void {
+        const configuration = {
+            referenceId:
+                this.getValueFromObservable(this.createUpdateObject$)?.reference_id ??
+                this.getValueFromObservable(this.featureDetails$)?.reference_id,
+            target: '_blank',
+            success: (data) => {
+                // get verified token in response
+                this.ngZone.run(() => {
+                    this.toast.success('Authorization successfully completed');
+                });
+            },
+            failure: (error) => {
+                // handle error
+                this.ngZone.run(() => {
+                    this.toast.error(error?.message);
+                });
+            },
+        };
+        if (!this.scriptLoaded.getValue()) {
+            this.loadingScript.next(true);
+            const head = document.getElementsByTagName('head')[0];
+            const currentTimestamp = new Date().getTime();
+            const otpProviderScript = document.createElement('script');
+            otpProviderScript.type = 'text/javascript';
+            otpProviderScript.src = ProxyAuthScriptUrl(environment.proxyServer, currentTimestamp);
+            head.appendChild(otpProviderScript);
+            otpProviderScript.onload = () => {
+                this.loadingScript.next(false);
+                window?.['initVerification']?.(configuration);
+            };
+            this.scriptLoaded.next(true);
+        } else {
+            window?.['initVerification']?.(configuration);
         }
     }
 }
