@@ -160,8 +160,10 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         });
         this.createUpdateObject$.pipe(takeUntil(this.destroy$), filter(Boolean)).subscribe((obj) => {
             this.proxyAuthScript = ProxyAuthScript(environment.proxyServer, obj.reference_id);
-            this.nameFieldEditMode = false;
-            this.getFeatureDetalis();
+            if (this.isEditMode) {
+                this.nameFieldEditMode = false;
+                this.getFeatureDetalis();
+            }
         });
     }
 
@@ -180,7 +182,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 session_time: featureFormData.authorizationDetails.session_time,
                 services: this.getServicePayload(selectedMethod),
             };
-            console.log(payload);
             this.componentStore.createFeature(payload);
         }
     }
