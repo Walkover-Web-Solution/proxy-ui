@@ -19,6 +19,7 @@ import { selectGetOtpInProcess, selectResendOtpInProcess, selectVerifyOtpInProce
 })
 export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy {
     @Input() public referenceId: string;
+    @Input() public target: string;
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
