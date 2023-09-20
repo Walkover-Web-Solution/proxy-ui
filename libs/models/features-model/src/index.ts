@@ -19,6 +19,7 @@ export interface IFeatureDetails extends IFeature {
 
 export interface IServiceConfigurations {
     service_id: number;
+    is_enabled: boolean;
     feature_configuration_id: number;
     configurations: { fields: { [key: string]: any }; mappings: any[] };
     requirements: { [key: string]: any };
@@ -67,6 +68,7 @@ export interface IMethodService {
     name: string;
     method_id: number;
     service_id: number;
+    is_enabled?: boolean;
     configurations: { fields: { [key: string]: IFieldConfig }; mappings: any[] };
     requirements: { [key: string]: IFieldConfig };
 }

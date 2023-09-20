@@ -18,6 +18,7 @@ import { MatListModule } from '@angular/material/list';
 import { ServicesProxyFeaturesModule } from '@proxy/services/proxy/features';
 import { DirectivesSkeletonModule } from '@proxy/directives/skeleton';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { UiCopyButtonModule } from '@proxy/ui/copy-button';
 // Component
 const routes: Routes = [
     {
@@ -57,6 +58,7 @@ const routes: Routes = [
         DirectivesSkeletonModule,
         MatTooltipModule,
         UiLoaderModule,
+        UiCopyButtonModule,
     ],
     exports: [RouterModule],
 })
