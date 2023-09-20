@@ -309,6 +309,13 @@
                                 </div>
                             </ng-container>
                         </ng-container>
+                        <mat-slide-toggle
+                            *ngIf="isEditMode"
+                            class="w-100 mat-body-2 mb-4"
+                            [formControl]="serviceForm.controls.is_enabled"
+                        >
+                            Enable Service
+                        </mat-slide-toggle>
                         <button
                             mat-flat-button
                             class="flat-default"
@@ -355,11 +362,18 @@
             ></ng-container>
         </div>
         <div class="d-flex flex-column w-50">
-            <div class="overflow-auto code-snippet-view">
+            <div class="overflow-auto code-snippet-view position-relative">
                 <markdown
                     [data]="(selectedMethod | async)?.authorization_format?.format | json | language: 'javascript'"
                 >
                 </markdown>
+                <proxy-copy-button
+                    class="position-absolute"
+                    style="top: 16px; right: 8px"
+                    [copyData]="(selectedMethod | async)?.authorization_format?.format | json"
+                    tooltip="Copy JSON"
+                    iconClass="text-white"
+                ></proxy-copy-button>
             </div>
             <p class="mat-body-2 text-secondary my-2">
                 <strong>Note:</strong> JSON format you will receive after login as JWT in Authorization key
@@ -370,8 +384,15 @@
 
 <ng-template #designAndCode>
     <div class="d-flex col-gap-3 flex-grow-1">
-        <div class="overflow-auto code-snippet-view">
+        <div class="overflow-auto code-snippet-view position-relative">
             <markdown [data]="proxyAuthScript | language: 'javascript'"> </markdown>
+            <proxy-copy-button
+                class="position-absolute"
+                style="top: 16px; right: 8px"
+                [copyData]="proxyAuthScript"
+                tooltip="Copy Script"
+                iconClass="text-white"
+            ></proxy-copy-button>
         </div>
     </div>
     <div

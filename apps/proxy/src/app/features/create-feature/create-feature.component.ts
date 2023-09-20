@@ -30,6 +30,7 @@ type ServiceFormGroup = FormGroup<{
     configurations: FormGroup<{
         [key: string]: FormControl<any>;
     }>;
+    is_enabled: FormControl<boolean>;
 }>;
 
 @Component({
@@ -144,6 +145,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 const serviceFormGroup: ServiceFormGroup = new FormGroup({
                     requirements: new FormGroup({}),
                     configurations: new FormGroup({}),
+                    is_enabled: new FormControl<boolean>(this.isEditMode ? serviceValues?.is_enabled : true),
                 });
                 if (service.requirements) {
                     Object.entries(service.requirements).forEach(([key, config]) => {
@@ -265,6 +267,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     const config = service.configurations.fields[key];
                     config.value = this.getValueOtherThanForm(config, index) ?? formData.configurations[key];
                 });
+                service['is_enabled'] = formData.is_enabled;
                 services.push(service);
             }
         });

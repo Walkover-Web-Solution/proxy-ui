@@ -103,6 +103,7 @@
             "@proxy/ui/component/code-snippet-dialog": ["libs/ui/code-snippet-dialog/src/index.ts"],
             "@proxy/ui/compose-wrapper": ["libs/ui/compose-wrapper/src/index.ts"],
             "@proxy/ui/confirm-dialog": ["libs/ui/confirm-dialog/src/index.ts"],
+            "@proxy/ui/copy-button": ["libs/ui/copy-button/src/index.ts"],
             "@proxy/ui/days-autocomplete-chip-list": ["libs/ui/days-autocomplete-chip-list/src/index.ts"],
             "@proxy/ui/drag-resizable": ["libs/ui/drag-resizable/src/index.ts"],
             "@proxy/ui/editor": ["libs/ui/editor/src/index.ts"],
