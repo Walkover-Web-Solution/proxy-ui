@@ -15,6 +15,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { MarkdownModule } from 'ngx-markdown';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 const routes: Routes = [
     {
@@ -42,6 +43,7 @@ const routes: Routes = [
         MatChipsModule,
         MarkdownModule.forRoot(),
         MatTabsModule,
+        MatSlideToggleModule,
     ],
     exports: [RouterModule],
 })
