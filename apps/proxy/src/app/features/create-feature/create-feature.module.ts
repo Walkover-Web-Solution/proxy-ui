@@ -16,6 +16,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MarkdownModule } from 'ngx-markdown';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { UiCopyButtonModule } from '@proxy/ui/copy-button';
 
 const routes: Routes = [
     {
@@ -44,6 +45,7 @@ const routes: Routes = [
         MarkdownModule.forRoot(),
         MatTabsModule,
         MatSlideToggleModule,
+        UiCopyButtonModule,
     ],
     exports: [RouterModule],
 })

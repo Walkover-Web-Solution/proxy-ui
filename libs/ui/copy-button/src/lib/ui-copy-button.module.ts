@@ -21,7 +21,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
             [ngClass]="{ 'pointer-none': copied | async }"
             [matTooltip]="tooltip"
         >
-            <mat-icon class="material-icons-outlined mat-icon-18" [ngClass]="{ 'text-success': copied | async }">
+            <mat-icon
+                [class]="'material-icons-outlined mat-icon-18 ' + iconClass"
+                [ngClass]="{ 'text-success': copied | async }"
+            >
                 {{ (copied | async) ? 'done' : 'content_copy' }}
             </mat-icon>
         </button>
@@ -30,6 +33,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class CopyButtonComponent {
     @Input() public copyData: any;
     @Input() public btnClass = 'icon-btn-md';
+    @Input() public iconClass = '';
     @Input() private iconChangeDelay = 1000;
     @Input() public tooltip = '';
 
