@@ -82,6 +82,7 @@
         "ui-components-template-preview": "libs/ui/template-preview",
         "ui-compose-wrapper": "libs/ui/compose-wrapper",
         "ui-confirm-dialog": "libs/ui/confirm-dialog",
+        "ui-copy-button": "libs/ui/copy-button",
         "ui-date-range-picker": "libs/ui/date-range-picker",
         "ui-drag-resizable": "libs/ui/drag-resizable",
         "ui-editor": "libs/ui/editor",
