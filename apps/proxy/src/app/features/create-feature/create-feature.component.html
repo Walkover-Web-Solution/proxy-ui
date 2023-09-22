@@ -427,6 +427,7 @@
                     *ngFor="let item of chipListValues[chipListKey]"
                     (removed)="updateChipListValues('delete', chipListKey, fieldControl, item)"
                     [removable]="!chipListReadOnlyValues[chipListKey].has(item)"
+                    disableRipple
                 >
                     {{ item }}
                     <button matChipRemove *ngIf="!chipListReadOnlyValues[chipListKey].has(item)">

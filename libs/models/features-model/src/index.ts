@@ -80,6 +80,7 @@ export interface IFieldConfig {
     value: string;
     source: string;
     is_hidden: boolean;
+    is_disable?: boolean;
     value_type: string;
     is_required: boolean;
     sourceFieldLabel: string;
