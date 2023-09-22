@@ -107,6 +107,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         if (!this.isEditMode) {
             this.featureType$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((features) => {
                 this.featureForm.get('primaryDetails.feature_id').setValue(features[0].id);
+                if (features?.length === 1) {
+                    this.stepper?.first?.next();
+                }
             });
             // Selecting first method because there is no form for `method_id` selection currently
             this.serviceMethods$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((methods) => {
