@@ -77,7 +77,11 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }),
         serviceDetails: new FormArray<ServiceFormGroup>([]),
         authorizationDetails: new FormGroup({
-            session_time: new FormControl<number>(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
+            session_time: new FormControl<number>(null, [
+                Validators.required,
+                Validators.pattern(ONLY_INTEGER_REGEX),
+                Validators.min(60),
+            ]),
             authorizationKey: new FormControl<string>(null, [
                 Validators.required,
                 CustomValidators.minLengthThreeWithoutSpace,
