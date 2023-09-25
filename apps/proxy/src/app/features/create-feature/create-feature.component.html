@@ -309,6 +309,19 @@
                                 </div>
                             </ng-container>
                         </ng-container>
+                        <mat-form-field
+                            appearance="outline"
+                            class="w-100"
+                            *ngIf="(featureDetails$ | async)?.callback_url as callbackUrl"
+                        >
+                            <mat-label>Callback URL</mat-label>
+                            <input matInput type="text" placeholder="Callback URL" [value]="callbackUrl" disabled />
+                            <proxy-copy-button
+                                matSuffix
+                                [copyData]="callbackUrl"
+                                tooltip="Copy URL"
+                            ></proxy-copy-button>
+                        </mat-form-field>
                         <mat-slide-toggle
                             *ngIf="isEditMode"
                             class="w-100 mat-body-2 mb-4"
@@ -427,6 +440,7 @@
                     *ngFor="let item of chipListValues[chipListKey]"
                     (removed)="updateChipListValues('delete', chipListKey, fieldControl, item)"
                     [removable]="!chipListReadOnlyValues[chipListKey].has(item)"
+                    disableRipple
                 >
                     {{ item }}
                     <button matChipRemove *ngIf="!chipListReadOnlyValues[chipListKey].has(item)">

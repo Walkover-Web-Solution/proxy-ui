@@ -13,6 +13,7 @@ export interface IFeature {
 
 export interface IFeatureDetails extends IFeature {
     projects?: string[];
+    callback_url: string;
     authorization_format: IAuthorizationFormat;
     service_configurations: IServiceConfigurations[];
 }
@@ -80,6 +81,7 @@ export interface IFieldConfig {
     value: string;
     source: string;
     is_hidden: boolean;
+    is_disable?: boolean;
     value_type: string;
     is_required: boolean;
     sourceFieldLabel: string;

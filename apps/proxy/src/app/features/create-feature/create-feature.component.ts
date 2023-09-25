@@ -77,7 +77,11 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }),
         serviceDetails: new FormArray<ServiceFormGroup>([]),
         authorizationDetails: new FormGroup({
-            session_time: new FormControl<number>(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
+            session_time: new FormControl<number>(null, [
+                Validators.required,
+                Validators.pattern(ONLY_INTEGER_REGEX),
+                Validators.min(60),
+            ]),
             authorizationKey: new FormControl<string>(null, [
                 Validators.required,
                 CustomValidators.minLengthThreeWithoutSpace,
@@ -107,6 +111,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         if (!this.isEditMode) {
             this.featureType$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((features) => {
                 this.featureForm.get('primaryDetails.feature_id').setValue(features[0].id);
+                if (features?.length === 1) {
+                    this.stepper?.first?.next();
+                }
             });
             // Selecting first method because there is no form for `method_id` selection currently
             this.serviceMethods$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((methods) => {
@@ -324,7 +331,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             if (config.regex) {
                 validators.push(Validators.pattern(config.regex));
             }
-            return new FormControl<any>(formValue, validators);
+            return new FormControl<any>({ value: formValue, disabled: Boolean(config?.is_disable) }, validators);
         } else {
             return null;
         }

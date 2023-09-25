@@ -69,6 +69,19 @@
                         </td>
                     </ng-container>
 
+                    <!-- Phone Number Column -->
+                    <ng-container matColumnDef="created_at">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Created At</th>
+                        <td mat-cell *matCellDef="let element" data-label="Created At">
+                            <ng-container *ngIf="!(isLoading$ | async); else loading">
+                                <span>
+                                    {{ element?.created_at | date: 'd MMM y' }}
+                                </span>
+                                <span>({{ element?.created_at | date: 'mediumTime' }})</span>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
                     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                     <tr
                         mat-row
