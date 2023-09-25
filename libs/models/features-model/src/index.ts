@@ -13,6 +13,7 @@ export interface IFeature {
 
 export interface IFeatureDetails extends IFeature {
     projects?: string[];
+    callback_url: string;
     authorization_format: IAuthorizationFormat;
     service_configurations: IServiceConfigurations[];
 }
