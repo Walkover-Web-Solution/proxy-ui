@@ -331,7 +331,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             if (config.regex) {
                 validators.push(Validators.pattern(config.regex));
             }
-            return new FormControl<any>({ value: '', disabled: Boolean(config?.is_disable) }, validators);
+            return new FormControl<any>({ value: formValue, disabled: Boolean(config?.is_disable) }, validators);
         } else {
             return null;
         }
