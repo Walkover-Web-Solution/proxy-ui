@@ -4,7 +4,7 @@
         class="d-flex justify-content-start gap-1 mb-3"
         [ngClass]="isEditMode ? 'align-items-start' : 'align-items-center'"
     >
-        <button mat-icon-button color="primary" [routerLink]="['/app', 'features']">
+        <button type="button" mat-icon-button color="primary" [routerLink]="['/app', 'features']">
             <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
         </button>
         <ng-container *ngIf="isEditMode">
@@ -23,13 +23,13 @@
                             }
                         "
                     ></ng-container>
-                    <button mat-icon-button color="success" (click)="updateFeature('name')" class="mt-1">
+                    <button type="button" mat-icon-button color="success" (click)="updateFeature('name')" class="mt-1">
                         <mat-icon class="material-icons-outlined mat-icon-18"> done </mat-icon>
                     </button>
                 </div>
                 <ng-container *ngIf="!nameFieldEditMode">
                     <h4 class="my-0 text-secondary mat-body-1 fw-bold">{{ (featureDetails$ | async)?.name }}</h4>
-                    <button mat-icon-button color="primary" (click)="nameFieldEditMode = true">
+                    <button type="button" mat-icon-button color="primary" (click)="nameFieldEditMode = true">
                         <mat-icon class="material-icons-outlined mat-icon-18"> edit </mat-icon>
                     </button>
                 </ng-container>
@@ -66,7 +66,7 @@
                     "
                 ></ng-container>
                 <div class="d-flex align-items-center justify-content-end">
-                    <button mat-flat-button color="primary" matStepperNext>
+                    <button type="button" mat-flat-button color="primary" matStepperNext>
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">
                             navigate_next
                         </mat-icon>
@@ -83,11 +83,17 @@
             <div class="d-flex flex-column h-100">
                 <ng-container *ngTemplateOutlet="featureName; context: { nameControl }"></ng-container>
                 <div class="d-flex align-items-center justify-content-between">
-                    <button mat-flat-button class="flat-default" matStepperPrevious>
+                    <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
                     </button>
-                    <button mat-flat-button color="primary" matStepperNext (click)="nameControl.markAllAsTouched()">
+                    <button
+                        type="button"
+                        mat-flat-button
+                        color="primary"
+                        matStepperNext
+                        (click)="nameControl.markAllAsTouched()"
+                    >
                         Next
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
                     </button>
@@ -99,11 +105,12 @@
             <div class="d-flex flex-column h-100">
                 <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
                 <div class="d-flex align-items-center justify-content-between">
-                    <button mat-flat-button class="flat-default" matStepperPrevious>
+                    <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
                     </button>
                     <button
+                        type="button"
                         mat-flat-button
                         color="primary"
                         matStepperNext
@@ -124,11 +131,11 @@
             <div class="d-flex flex-column h-100">
                 <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
                 <div class="d-flex align-items-center justify-content-between">
-                    <button mat-flat-button class="flat-default" matStepperPrevious>
+                    <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
                     </button>
-                    <button mat-flat-button color="primary" (click)="createFeature()">
+                    <button type="button" mat-flat-button color="primary" (click)="createFeature()">
                         Save & Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
                         >
@@ -142,6 +149,7 @@
                 <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
                 <div class="d-flex align-items-center justify-content-end">
                     <button
+                        type="button"
                         mat-flat-button
                         color="primary"
                         *ngIf="createUpdateObject$ | async as createUpdateObject"
@@ -162,7 +170,9 @@
                     <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
                     <mat-divider></mat-divider>
                     <div class="d-flex align-items-center justify-content-start mt-3">
-                        <button mat-flat-button color="primary" (click)="updateFeature('service')">Update</button>
+                        <button type="button" mat-flat-button color="primary" (click)="updateFeature('service')">
+                            Update
+                        </button>
                     </div>
                 </div>
             </mat-tab>
@@ -171,7 +181,9 @@
                     <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
                     <mat-divider></mat-divider>
                     <div class="d-flex align-items-center justify-content-start mt-3">
-                        <button mat-flat-button color="primary" (click)="updateFeature('authorization')">Update</button>
+                        <button type="button" mat-flat-button color="primary" (click)="updateFeature('authorization')">
+                            Update
+                        </button>
                     </div>
                 </div>
             </mat-tab>
@@ -260,7 +272,7 @@
                 </mat-list-item>
             </mat-list>
         </div>
-        <div class="auth-credentials px-3" class="width-md-500 w-md-100">
+        <div class="auth-credentials px-3" class="width-md-700 w-md-100">
             <div class="d-flex flex-column">
                 <ng-container *ngIf="(selectedMethod | async)?.method_services as methodServices">
                     <form
@@ -330,6 +342,7 @@
                             Enable Service
                         </mat-slide-toggle>
                         <button
+                            type="button"
                             mat-flat-button
                             class="flat-default"
                             (click)="resetFormGroup(serviceForm, this.selectedServiceIndex)"
@@ -412,7 +425,7 @@
         class="d-flex align-items-center justify-content-start mt-3"
         *ngIf="(createUpdateObject$ | async) || (featureDetails$ | async)"
     >
-        <button mat-flat-button color="primary" (click)="previewFeature()">Preview</button>
+        <button type="button" mat-flat-button color="primary" (click)="previewFeature()">Preview</button>
     </div>
 </ng-template>
 
@@ -433,6 +446,7 @@
         <ng-container *ngSwitchCase="featureFieldType.ChipList">
             <mat-chip-list
                 #chipList
+                [disabled]="fieldControl.disabled"
                 aria-label="{{ fieldConfig?.label }}"
                 *ngIf="fieldConfig?.label + '_' + this.selectedServiceIndex as chipListKey"
             >
@@ -443,13 +457,14 @@
                     disableRipple
                 >
                     {{ item }}
-                    <button matChipRemove *ngIf="!chipListReadOnlyValues[chipListKey].has(item)">
+                    <button type="button" matChipRemove *ngIf="!chipListReadOnlyValues[chipListKey].has(item)">
                         <mat-icon>cancel</mat-icon>
                     </button>
                 </mat-chip>
                 <input
+                    matChipInput
                     type="text"
-                    placeholder="Enter {{ fieldConfig?.label }}"
+                    [placeholder]="chipListValues[chipListKey].size ? '' : 'Enter ' + fieldConfig?.label"
                     autocomplete="off"
                     [formControl]="fieldControl"
                     [matChipInputFor]="chipList"
