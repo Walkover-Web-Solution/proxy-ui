@@ -13,7 +13,7 @@ export class CDKScrollComponent implements OnInit {
     /** Scrollable element ID, provided to avoid multiple event triggering when
      * same page has multiple instances of proxy-cdk-scroll component
      */
-    @Input() public scrollableElementId = '';
+    @Input() public scrollableElementId = 'scrollableWrapper';
     @Output() public fetchNextPage: EventEmitter<string> = new EventEmitter();
     private destroy$: Subject<any> = new Subject();
 

@@ -1,0 +1,78 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+// Theme
+$custom-blue: (
+    50: #e6f2fb,
+    100: #a4cff0,
+    200: #74b5e9,
+    300: #3794df,
+    400: #2286d4,
+    500: #1e75ba,
+    600: #1a64a0,
+    700: #155485,
+    800: #11436b,
+    900: #0d3351,
+    A100: #d8eeff,
+    A200: #72c1ff,
+    A400: #1b92ef,
+    A700: #1c84d6,
+    contrast: (
+        // 50: $dark-primary-text,
+        // 100: $dark-primary-text,
+        // 200: $dark-primary-text,
+        // 300: $dark-primary-text,
+        400: #ffffff,
+        500: #ffffff,
+        600: #ffffff,
+        700: #ffffff,
+        800: #ffffff,
+        900: #ffffff,
+        // A100: $dark-primary-text,
+        // A200: $dark-primary-text,
+        A400: #ffffff,
+        A700: #ffffff,
+    ),
+);
+
+$primary: mat.define-palette($custom-blue);
+$accent: mat.define-palette($custom-blue);
+$warn: mat.define-palette(mat.$red-palette);
+
+$theme: mat.define-light-theme(
+    (
+        color: (
+            primary: $primary,
+            accent: $accent,
+            warn: $warn,
+        ),
+    )
+);
+
+/*
+// Include all theme styles for the components.
+*/
+
+/* You can add global styles to this file, and also import other style files */
+html,
+body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+*,
+proxy-auth,
+.iti__country-list {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+// .iti {
+//     width: 100%;
+// }

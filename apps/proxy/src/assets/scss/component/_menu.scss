@@ -60,3 +60,15 @@
         }
     }
 }
+
+.profile-sub-dropdown {
+    .mat-menu-item {
+        padding: 0px 24px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 14px;
+    }
+    #scrollableWrapper {
+        overflow-x: hidden !important;
+    }
+}
