@@ -20,7 +20,9 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
     }
 
     /** Selector for API progress */
-    readonly isLoading$: Observable<boolean> = this.select((state) => state.isLoading);
+    readonly loading$: Observable<{ [key: string]: boolean }> = this.select((state) => ({
+        dataLoading: state.isLoading,
+    }));
     /** Selector for user data */
     readonly users$: Observable<IPaginatedResponse<IUser[]>> = this.select((state) => state.users);
     /** Get users data */

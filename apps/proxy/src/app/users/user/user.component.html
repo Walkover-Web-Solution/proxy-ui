@@ -1,4 +1,4 @@
-<div class="app-content d-flex flex-column">
+<div class="app-content d-flex flex-column" *ngIf="loading$ | async as loading">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <div class="d-flex flex-wrap align-items-center flex-grow-1 gap-3">
             <proxy-lib-search
@@ -33,7 +33,7 @@
                     [dataSource]="
                         (users$ | async)?.data?.length
                             ? (users$ | async)?.data
-                            : (isLoading$ | async)
+                            : loading.dataLoading
                             ? [1, 2, 3, 4]
                             : []
                     "
@@ -43,7 +43,7 @@
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
                         <td mat-cell *matCellDef="let element" data-label="Name">
-                            <ng-container *ngIf="!(isLoading$ | async); else loading">
+                            <ng-container *ngIf="!loading.dataLoading; else loadingRef">
                                 {{ element.name }}
                             </ng-container>
                         </td>
@@ -53,7 +53,7 @@
                     <ng-container matColumnDef="email">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Email</th>
                         <td mat-cell *matCellDef="let element" data-label="Email">
-                            <ng-container *ngIf="!(isLoading$ | async); else loading">
+                            <ng-container *ngIf="!loading.dataLoading; else loadingRef">
                                 {{ element.email }}
                             </ng-container>
                         </td>
@@ -63,7 +63,7 @@
                     <ng-container matColumnDef="phone_number">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone Number</th>
                         <td mat-cell *matCellDef="let element" data-label="Phone Number">
-                            <ng-container *ngIf="!(isLoading$ | async); else loading">
+                            <ng-container *ngIf="!loading.dataLoading; else loadingRef">
                                 {{ element.mobile ?? '-' }}
                             </ng-container>
                         </td>
@@ -73,7 +73,7 @@
                     <ng-container matColumnDef="created_at">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Created At</th>
                         <td mat-cell *matCellDef="let element" data-label="Created At">
-                            <ng-container *ngIf="!(isLoading$ | async); else loading">
+                            <ng-container *ngIf="!loading.dataLoading; else loadingRef">
                                 <span>
                                     {{ element?.created_at | date: 'd MMM y' }}
                                 </span>
@@ -108,6 +108,6 @@
     </mat-card>
 </div>
 
-<ng-template #loading>
+<ng-template #loadingRef>
     <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>
 </ng-template>

@@ -515,6 +515,7 @@
 <ng-template #matErrors let-label="label" let-fieldControl="fieldControl" let-patternErrorText="patternErrorText">
     <mat-error *ngIf="fieldControl.errors?.required"> {{ label }} is required. </mat-error>
     <mat-error *ngIf="fieldControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.noStartEndSpaces"> Start and End spaces are not allowed</mat-error>
     <mat-error *ngIf="fieldControl.errors?.min as minError"> Min value required is {{ minError?.min }} </mat-error>
     <mat-error *ngIf="fieldControl.errors?.max as maxError"> Max value allowed is {{ maxError?.max }} </mat-error>
     <mat-error *ngIf="fieldControl.errors?.minlength as minLengthError">
