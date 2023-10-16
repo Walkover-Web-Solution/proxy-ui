@@ -82,6 +82,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 Validators.required,
                 Validators.pattern(ONLY_INTEGER_REGEX),
                 Validators.min(60),
+                Validators.max(999999999),
             ]),
             authorizationKey: new FormControl<string>(null, [
                 Validators.required,
