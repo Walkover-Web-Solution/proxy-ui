@@ -1,5 +1,5 @@
 <div class="app-content d-flex flex-column" *ngIf="loading$ | async as loading">
-    <proxy-loader *ngIf="loading.dataLoading && !(feature$ | async)"></proxy-loader>
+    <proxy-loader *ngIf="loading.dataLoading && (feature$ | async) === null"></proxy-loader>
     <div class="d-flex align-items-center justify-content-between gap-3">
         <h4
             class="my-0 text-secondary mat-display-4"

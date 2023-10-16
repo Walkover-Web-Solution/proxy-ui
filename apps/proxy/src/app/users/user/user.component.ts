@@ -22,7 +22,7 @@ import { IUser } from '@proxy/models/users-model';
 })
 export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     /** Store current API inprogress state */
-    public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
+    public loading$: Observable<{ [key: string]: boolean }> = this.componentStore.loading$;
     /** Store User data */
     public users$: Observable<IPaginatedResponse<IUser[]>> = this.componentStore.users$;
     /** Store display column */
