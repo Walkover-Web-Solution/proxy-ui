@@ -1,14 +1,9 @@
 <div class="app-content d-flex flex-column" *ngIf="loading$ | async as loading">
-    <proxy-loader *ngIf="loading.dataLoading && (feature$ | async) === null"></proxy-loader>
+    <proxy-loader *ngIf="loading.dataLoading && (hasSomeFeatures$ | async) === null"></proxy-loader>
     <div class="d-flex align-items-center justify-content-between gap-3">
-        <h4
-            class="my-0 text-secondary mat-display-4"
-            *ngIf="(feature$ | async)?.totalEntityCount === 0 && !params?.search && !loading.dataLoading"
-        >
-            Features
-        </h4>
+        <h4 class="my-0 text-secondary mat-display-4" *ngIf="(hasSomeFeatures$ | async) === false">Features</h4>
         <proxy-lib-search
-            *ngIf="(feature$ | async)?.totalEntityCount || params?.search"
+            *ngIf="(hasSomeFeatures$ | async) === true"
             [matFormFieldClass]="'no-padding w-xs-100'"
             [placeholder]="'Search'"
             (inputChanges)="search($event)"
@@ -30,19 +25,13 @@
             </button>
         </div>
     </div>
-    <p
-        class="mat-body-2 text-secondary w-50"
-        *ngIf="(feature$ | async)?.totalEntityCount === 0 && !params?.search && !loading.dataLoading"
-    >
+    <p class="mat-body-2 text-secondary w-50" *ngIf="(hasSomeFeatures$ | async) === false">
         The "Features" component in the Proxy Server is a dynamic tool that offers versatile authentication and
         subscription plan options. It supports various authentication methods like OTP and social logins (e.g., Google,
         Microsoft) while providing flexible subscription plans. Users benefit from enhanced security, cost-efficient
         resource allocation, and a user-friendly dashboard for easy configuration.
     </p>
-    <mat-card
-        class="p-0 outline-card responsive-card flex-grow-1 mt-3"
-        *ngIf="(feature$ | async)?.totalEntityCount || params?.search"
-    >
+    <mat-card class="p-0 outline-card responsive-card flex-grow-1 mt-3" *ngIf="(hasSomeFeatures$ | async) === true">
         <mat-card-content>
             <div class="table-scroll">
                 <table

@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BaseResponse, IPaginatedResponse, errorResolver } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
@@ -9,6 +8,7 @@ import { FeaturesService } from '@proxy/services/proxy/features';
 export interface IFeatureInitialState {
     features: IPaginatedResponse<IFeature[]>;
     isLoading: boolean;
+    hasSomeFeatures: boolean;
 }
 
 @Injectable()
@@ -17,6 +17,7 @@ export class FeatureComponentStore extends ComponentStore<IFeatureInitialState> 
         super({
             features: null,
             isLoading: false,
+            hasSomeFeatures: null,
         });
     }
 
@@ -24,6 +25,7 @@ export class FeatureComponentStore extends ComponentStore<IFeatureInitialState> 
         dataLoading: state.isLoading,
     }));
     readonly feature$: Observable<IPaginatedResponse<IFeature[]>> = this.select((state) => state.features);
+    readonly hasSomeFeatures$: Observable<boolean> = this.select((state) => state.hasSomeFeatures);
 
     readonly getFeature = this.effect((data: Observable<IFeatureReq>) => {
         return data.pipe(
@@ -38,6 +40,9 @@ export class FeatureComponentStore extends ComponentStore<IFeatureInitialState> 
                             return this.patchState({
                                 isLoading: false,
                                 features: res?.data,
+                                ...(!req.search && {
+                                    hasSomeFeatures: res.data.totalEntityCount > 0,
+                                }),
                             });
                         },
                         (error: any) => {

@@ -18,6 +18,8 @@ export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit
     public feature$: Observable<IPaginatedResponse<IFeature[]>> = this.componentStore.feature$;
     /** Store current API Inprogress State */
     public loading$: Observable<{ [key: string]: boolean }> = this.componentStore.loading$;
+    /** User has created any feature or not */
+    public hasSomeFeatures$: Observable<boolean> = this.componentStore.hasSomeFeatures$;
     /** Store display column */
     public displayedColumns: string[] = ['name', 'reference_id', 'method', 'type', 'manage'];
     /** Params for fetching feature data */
