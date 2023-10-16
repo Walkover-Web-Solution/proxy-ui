@@ -20,7 +20,9 @@ export class FeatureComponentStore extends ComponentStore<IFeatureInitialState> 
         });
     }
 
-    readonly isLoading$: Observable<boolean> = this.select((state) => state.isLoading);
+    readonly loading$: Observable<{ [key: string]: boolean }> = this.select((state) => ({
+        dataLoading: state.isLoading,
+    }));
     readonly feature$: Observable<IPaginatedResponse<IFeature[]>> = this.select((state) => state.features);
 
     readonly getFeature = this.effect((data: Observable<IFeatureReq>) => {
