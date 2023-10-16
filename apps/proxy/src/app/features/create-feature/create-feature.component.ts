@@ -1,8 +1,8 @@
 import { ActivatedRoute } from '@angular/router';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, isEqual } from 'lodash-es';
 import { Component, OnDestroy, OnInit, NgZone, ViewChildren, QueryList } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { BehaviorSubject, Observable, filter, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, distinctUntilChanged, filter, take, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
 import {
     FeatureFieldType,
@@ -122,23 +122,36 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.featureForm.get('primaryDetails.method_id').setValue(methods[0].id);
             });
         } else {
-            this.featureDetails$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((feature) => {
-                this.getServiceMethods(feature.feature_id);
-                this.proxyAuthScript = ProxyAuthScript(environment.proxyServer, feature.reference_id);
-                this.serviceMethods$.pipe(filter(Boolean), take(1)).subscribe(() => {
-                    this.featureForm.patchValue({
-                        primaryDetails: {
-                            name: feature.name,
-                            feature_id: feature.feature_id,
-                            method_id: feature.method_id,
-                        },
-                        authorizationDetails: {
-                            session_time: feature.session_time,
-                            authorizationKey: feature.authorization_format.key,
-                        },
+            this.featureDetails$
+                .pipe(
+                    filter(Boolean),
+                    distinctUntilChanged(
+                        (previous, current) =>
+                            previous.feature_id === current.feature_id && previous.reference_id === current.reference_id
+                    ),
+                    takeUntil(this.destroy$)
+                )
+                .subscribe((feature) => {
+                    this.getServiceMethods(feature.feature_id);
+                    this.proxyAuthScript = ProxyAuthScript(environment.proxyServer, feature.reference_id);
+                });
+            this.featureDetails$
+                .pipe(filter(Boolean), distinctUntilChanged(isEqual), takeUntil(this.destroy$))
+                .subscribe((feature) => {
+                    this.serviceMethods$.pipe(filter(Boolean), take(1)).subscribe(() => {
+                        this.featureForm.patchValue({
+                            primaryDetails: {
+                                name: feature.name,
+                                feature_id: feature.feature_id,
+                                method_id: feature.method_id,
+                            },
+                            authorizationDetails: {
+                                session_time: feature.session_time,
+                                authorizationKey: feature.authorization_format.key,
+                            },
+                        });
                     });
                 });
-            });
         }
         this.featureForm
             .get('primaryDetails.method_id')
