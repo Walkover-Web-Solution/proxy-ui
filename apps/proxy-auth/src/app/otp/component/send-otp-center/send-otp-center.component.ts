@@ -59,6 +59,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     @ViewChild('initContact') initContact: ElementRef;
     @Input() public referenceId: string;
     @Input() public tokenAuth: string;
+    @Input() public target: string;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public successReturn: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
@@ -365,6 +366,6 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     }
 
     public openLink(link: string): void {
-        window.open(link, '_self');
+        window.open(link, this.target);
     }
 }

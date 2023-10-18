@@ -40,6 +40,11 @@
         width: 100% !important;
     }
 }
+.w-md-100 {
+    @include media-breakpoint-down('tablet') {
+        width: 100% !important;
+    }
+}
 
 // This class applying before 768px
 @include media-breakpoint-up('tablet') {
@@ -58,6 +63,15 @@
     .width-md-500 {
         width: 500px;
     }
+    .width-md-600 {
+        width: 600px;
+    }
+    .width-md-700 {
+        width: 700px;
+    }
+    .width-md-800 {
+        width: 800px;
+    }
 }
 
 @include media-breakpoint-down('tablet') {
@@ -75,5 +89,14 @@
     }
     .width-sm-500 {
         min-width: 500px;
+    }
+    .width-sm-600 {
+        width: 600px;
+    }
+    .width-sm-700 {
+        width: 700px;
+    }
+    .width-sm-800 {
+        width: 800px;
     }
 }

@@ -1,0 +1,531 @@
+<div class="app-content d-flex flex-column">
+    <proxy-loader *ngIf="(isLoading$ | async) || (loadingScript | async)"></proxy-loader>
+    <div
+        class="d-flex justify-content-start gap-1 mb-3"
+        [ngClass]="isEditMode ? 'align-items-start' : 'align-items-center'"
+    >
+        <button type="button" mat-icon-button color="primary" [routerLink]="['/app', 'features']">
+            <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
+        </button>
+        <ng-container *ngIf="isEditMode">
+            <div class="d-flex align-items-center gap-1">
+                <div *ngIf="nameFieldEditMode" class="d-flex align-items-start gap-1">
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('primaryDetails.name'),
+                                fieldConfig: {
+                                    label: 'Name',
+                                    is_required: true,
+                                    patternErrorText: 'Name must contain only alphanumeric and underscore'
+                                }
+                            }
+                        "
+                    ></ng-container>
+                    <button type="button" mat-icon-button color="success" (click)="updateFeature('name')" class="mt-1">
+                        <mat-icon class="material-icons-outlined mat-icon-18"> done </mat-icon>
+                    </button>
+                </div>
+                <ng-container *ngIf="!nameFieldEditMode">
+                    <h4 class="my-0 text-secondary mat-body-1 fw-bold">{{ (featureDetails$ | async)?.name }}</h4>
+                    <button type="button" mat-icon-button color="primary" (click)="nameFieldEditMode = true">
+                        <mat-icon class="material-icons-outlined mat-icon-18"> edit </mat-icon>
+                    </button>
+                </ng-container>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="!isEditMode">
+            <h4 class="my-0 text-secondary mat-body-1 fw-bold">Add New Features</h4>
+        </ng-container>
+    </div>
+    <mat-stepper
+        #stepper
+        class="rounded-8 border flex-grow-1 mat-stepper-starched"
+        labelPosition="bottom"
+        [linear]="true"
+        [animationDuration]="0"
+        [formGroup]="featureForm"
+        (selectionChange)="stepChange($event)"
+        *ngIf="!isEditMode"
+    >
+        <mat-step
+            *ngIf="featureForm.get('primaryDetails.feature_id') as featureTypeControl"
+            [stepControl]="featureTypeControl"
+            [editable]="!(createUpdateObject$ | async)"
+        >
+            <ng-template matStepLabel>Select Feature</ng-template>
+            <div class="d-flex flex-column h-100">
+                <ng-container
+                    *ngTemplateOutlet="
+                        selectFeature;
+                        context: {
+                            featureType: featureType$ | async,
+                            featureTypeControl
+                        }
+                    "
+                ></ng-container>
+                <div class="d-flex align-items-center justify-content-end">
+                    <button type="button" mat-flat-button color="primary" matStepperNext>
+                        Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">
+                            navigate_next
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </mat-step>
+        <mat-step
+            *ngIf="featureForm.get('primaryDetails.name') as nameControl"
+            [stepControl]="nameControl"
+            [editable]="!(createUpdateObject$ | async)"
+        >
+            <ng-template matStepLabel>Feature Name</ng-template>
+            <div class="d-flex flex-column h-100">
+                <ng-container *ngTemplateOutlet="featureName; context: { nameControl }"></ng-container>
+                <div class="d-flex align-items-center justify-content-between">
+                    <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
+                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
+                        >Back
+                    </button>
+                    <button
+                        type="button"
+                        mat-flat-button
+                        color="primary"
+                        matStepperNext
+                        (click)="nameControl.markAllAsTouched()"
+                    >
+                        Next
+                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </mat-step>
+        <mat-step [completed]="isConfigureMethodValid" [editable]="!(createUpdateObject$ | async)">
+            <ng-template matStepLabel>Configure Method</ng-template>
+            <div class="d-flex flex-column h-100">
+                <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
+                <div class="d-flex align-items-center justify-content-between">
+                    <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
+                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
+                        >Back
+                    </button>
+                    <button
+                        type="button"
+                        mat-flat-button
+                        color="primary"
+                        matStepperNext
+                        (click)="featureForm.get('serviceDetails').markAllAsTouched()"
+                    >
+                        Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
+                            >navigate_next</mat-icon
+                        >
+                    </button>
+                </div>
+            </div>
+        </mat-step>
+        <mat-step
+            [completed]="(createUpdateObject$ | async) && featureForm.get('authorizationDetails')?.valid"
+            [editable]="!(createUpdateObject$ | async)"
+        >
+            <ng-template matStepLabel>Authorization Setup</ng-template>
+            <div class="d-flex flex-column h-100">
+                <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
+                <div class="d-flex align-items-center justify-content-between">
+                    <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
+                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
+                        >Back
+                    </button>
+                    <button type="button" mat-flat-button color="primary" (click)="createFeature()">
+                        Save & Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
+                            >navigate_next</mat-icon
+                        >
+                    </button>
+                </div>
+            </div>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Design & code</ng-template>
+            <div class="d-flex flex-column h-100">
+                <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
+                <div class="d-flex align-items-center justify-content-end">
+                    <button
+                        type="button"
+                        mat-flat-button
+                        color="primary"
+                        *ngIf="createUpdateObject$ | async as createUpdateObject"
+                        [routerLink]="['/app/features/manage', createUpdateObject?.id]"
+                    >
+                        Manage Feature<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
+                            >navigate_next</mat-icon
+                        >
+                    </button>
+                </div>
+            </div>
+        </mat-step>
+    </mat-stepper>
+    <mat-card class="outline-card p-0 flex-grow-1" *ngIf="isEditMode">
+        <mat-tab-group animationDuration="0ms">
+            <mat-tab label="Service">
+                <div class="d-flex flex-column h-100 p-4">
+                    <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
+                    <mat-divider></mat-divider>
+                    <div class="d-flex align-items-center justify-content-start mt-3">
+                        <button type="button" mat-flat-button color="primary" (click)="updateFeature('service')">
+                            Update
+                        </button>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="Setting">
+                <div class="d-flex flex-column h-100 p-4">
+                    <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
+                    <mat-divider></mat-divider>
+                    <div class="d-flex align-items-center justify-content-start mt-3">
+                        <button type="button" mat-flat-button color="primary" (click)="updateFeature('authorization')">
+                            Update
+                        </button>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="Design & code">
+                <div class="p-3">
+                    <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-card>
+</div>
+<ng-template #selectFeature let-featureType="featureType" let-featureTypeControl="featureTypeControl">
+    <div class="flex-grow-1">
+        <div class="features-layout">
+            <div
+                *ngFor="let type of featureType"
+                class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center feature-card bg-light-grey cursor-pointer"
+                (click)="radioInput.click()"
+                [ngClass]="{ 'active': type.id === featureTypeControl.value }"
+            >
+                <mat-icon>{{ type.icon }}</mat-icon>
+                <p class="mat-body-2 text-secondary fe-bold">{{ type.name }}</p>
+                <input
+                    type="radio"
+                    name="featureType"
+                    hidden
+                    #radioInput
+                    [formControl]="featureTypeControl"
+                    [value]="type.id"
+                />
+            </div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #featureName let-nameControl="nameControl">
+    <div class="my-3 flex-grow-1">
+        <p class="mat-body-2 text-secondary fw-bold">Give a name of your Feature</p>
+        <form class="w-50">
+            <ng-container
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: nameControl,
+                        fieldConfig: {
+                            label: 'Name',
+                            is_required: true,
+                            patternErrorText: 'Name must contain only alphanumeric and underscore'
+                        }
+                    }
+                "
+            ></ng-container>
+        </form>
+    </div>
+</ng-template>
+<ng-template #configureMethodTemplate let-selectedIndex="selectedIndex">
+    <div class="d-flex gap-3 my-3 flex-grow-1" style="min-height: 400px">
+        <div class="d-flex flex-column gap-1 border-right pr-3 service-list">
+            <p class="mat-body-2 fw-bolder mt-0">Services</p>
+            <mat-list role="list" class="default-list pt-0">
+                <mat-list-item
+                    role="listitem"
+                    class="rounded-4"
+                    *ngFor="let service of (selectedMethod | async)?.method_services; let i = index"
+                    [ngClass]="{ 'active': selectedServiceIndex === i }"
+                    (click)="selectedServiceIndex = i"
+                >
+                    <div class="d-flex align-items-center flex-grow-1">
+                        {{ service.name }}
+                        <ng-container
+                            *ngIf="featureForm.get('serviceDetails')?.at(selectedServiceIndex) as serviceForm"
+                        >
+                            <mat-icon
+                                class="material-icons-outlined mat-icon-18 text-danger ml-1 mt-1"
+                                *ngIf="
+                                    i !== selectedServiceIndex &&
+                                    serviceForm.dirty &&
+                                    serviceForm.touched &&
+                                    serviceForm.invalid
+                                "
+                            >
+                                error
+                            </mat-icon>
+                        </ng-container>
+                    </div>
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
+                </mat-list-item>
+            </mat-list>
+        </div>
+        <div class="auth-credentials px-3" class="width-md-700 w-md-100">
+            <div class="d-flex flex-column">
+                <ng-container *ngIf="(selectedMethod | async)?.method_services as methodServices">
+                    <form
+                        [formGroup]="serviceForm"
+                        *ngIf="featureForm.get('serviceDetails')?.at(selectedServiceIndex) as serviceForm"
+                    >
+                        <ng-container *ngIf="methodServices?.[selectedServiceIndex]?.requirements as requirements">
+                            <p class="mat-body-2 fw-bolder mt-0">Credentials</p>
+                            <ng-container
+                                *ngFor="let controlKeyValue of serviceForm.controls.requirements.controls | keyvalue"
+                            >
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <ng-container
+                                            *ngTemplateOutlet="
+                                                inputField;
+                                                context: {
+                                                    fieldControl: controlKeyValue.value,
+                                                    fieldConfig: requirements[controlKeyValue.key]
+                                                }
+                                            "
+                                        ></ng-container>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container
+                            *ngIf="methodServices?.[selectedServiceIndex]?.configurations?.fields as configurationsFields"
+                        >
+                            <p class="mat-body-2 fw-bolder mt-0">Configurations</p>
+                            <ng-container
+                                *ngFor="let controlKeyValue of serviceForm.controls.configurations.controls | keyvalue"
+                            >
+                                <div class="row">
+                                    <div class="col-md-12 w-100">
+                                        <ng-container
+                                            *ngTemplateOutlet="
+                                                inputField;
+                                                context: {
+                                                    fieldControl: controlKeyValue.value,
+                                                    fieldConfig: configurationsFields[controlKeyValue.key]
+                                                }
+                                            "
+                                        ></ng-container>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        <mat-form-field
+                            appearance="outline"
+                            class="w-100"
+                            *ngIf="(featureDetails$ | async)?.callback_url as callbackUrl"
+                        >
+                            <mat-label>Callback URL</mat-label>
+                            <input matInput type="text" placeholder="Callback URL" [value]="callbackUrl" disabled />
+                            <proxy-copy-button
+                                matSuffix
+                                [copyData]="callbackUrl"
+                                tooltip="Copy URL"
+                            ></proxy-copy-button>
+                        </mat-form-field>
+                        <mat-slide-toggle
+                            *ngIf="isEditMode"
+                            class="w-100 mat-body-2 mb-4"
+                            [formControl]="serviceForm.controls.is_enable"
+                        >
+                            Enable Service
+                        </mat-slide-toggle>
+                        <button
+                            type="button"
+                            mat-flat-button
+                            class="flat-default"
+                            (click)="resetFormGroup(serviceForm, this.selectedServiceIndex)"
+                        >
+                            Reset
+                        </button>
+                    </form>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #authorizationSetup>
+    <div class="d-flex flex-column gap-3 my-3 flex-grow-1">
+        <div class="d-flex flex-column w-50">
+            <ng-container
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: featureForm.get('authorizationDetails.session_time'),
+                        fieldConfig: {
+                            label: 'Session Time',
+                            is_required: true,
+                            hint: 'Enter session time in seconds',
+                            patternErrorText: 'Only integer value allowed'
+                        }
+                    }
+                "
+            ></ng-container>
+            <ng-container
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: featureForm.get('authorizationDetails.authorizationKey'),
+                        fieldConfig: {
+                            label: 'Key Name',
+                            is_required: true,
+                            hint: 'Key name to pass the JWT as e.g &#8221;authorization&#8221;, &#8221;access_token&#8221; etc'
+                        }
+                    }
+                "
+            ></ng-container>
+        </div>
+        <div class="d-flex flex-column w-50">
+            <div
+                class="overflow-auto code-snippet-view position-relative"
+                *ngIf="((isEditMode ? featureDetails$ : selectedMethod) | async)?.authorization_format?.format as code"
+            >
+                <markdown [data]="code | json | language: 'javascript'"> </markdown>
+                <proxy-copy-button
+                    class="position-absolute"
+                    style="top: 16px; right: 8px"
+                    [copyData]="code | json"
+                    tooltip="Copy JSON"
+                    iconClass="text-white"
+                ></proxy-copy-button>
+            </div>
+            <p class="mat-body-2 text-secondary my-2">
+                <strong>Note:</strong> JSON format you will receive after login as JWT in Authorization key
+            </p>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #designAndCode>
+    <div class="d-flex col-gap-3 flex-grow-1">
+        <div class="overflow-auto code-snippet-view position-relative">
+            <markdown [data]="proxyAuthScript | language: 'javascript'"> </markdown>
+            <proxy-copy-button
+                class="position-absolute"
+                style="top: 16px; right: 8px"
+                [copyData]="proxyAuthScript"
+                tooltip="Copy Script"
+                iconClass="text-white"
+            ></proxy-copy-button>
+        </div>
+    </div>
+    <div
+        class="d-flex align-items-center justify-content-start mt-3"
+        *ngIf="(createUpdateObject$ | async) || (featureDetails$ | async)"
+    >
+        <button type="button" mat-flat-button color="primary" (click)="previewFeature()">Preview</button>
+    </div>
+</ng-template>
+
+<ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
+    <mat-form-field
+        appearance="outline"
+        class="w-100"
+        [ngSwitch]="fieldConfig?.type"
+        [ngClass]="{
+            'no-padding': fieldConfig?.type === featureFieldType.ChipList,
+            'mat-form-field-invalid':
+                fieldConfig?.type === featureFieldType.ChipList && fieldControl?.touched && fieldControl?.errors
+        }"
+    >
+        <mat-label
+            >{{ fieldConfig?.label }} <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span>
+        </mat-label>
+        <ng-container *ngSwitchCase="featureFieldType.ChipList">
+            <mat-chip-list
+                #chipList
+                [disabled]="fieldControl.disabled"
+                aria-label="{{ fieldConfig?.label }}"
+                *ngIf="fieldConfig?.label + '_' + this.selectedServiceIndex as chipListKey"
+            >
+                <mat-chip
+                    *ngFor="let item of chipListValues[chipListKey]"
+                    (removed)="updateChipListValues('delete', chipListKey, fieldControl, item)"
+                    [removable]="!chipListReadOnlyValues[chipListKey].has(item)"
+                    disableRipple
+                >
+                    {{ item }}
+                    <button type="button" matChipRemove *ngIf="!chipListReadOnlyValues[chipListKey].has(item)">
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip>
+                <input
+                    matChipInput
+                    type="text"
+                    [placeholder]="chipListValues[chipListKey].size ? '' : 'Enter ' + fieldConfig?.label"
+                    autocomplete="off"
+                    [formControl]="fieldControl"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
+                    (matChipInputTokenEnd)="updateChipListValues('add', chipListKey, fieldControl, $event.value)"
+                />
+            </mat-chip-list>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+            <input
+                matInput
+                type="text"
+                placeholder="Enter {{ fieldConfig?.label }}"
+                autocomplete="off"
+                [formControl]="fieldControl"
+            />
+        </ng-container>
+        <mat-error *ngIf="fieldControl.touched">
+            <ng-container
+                *ngTemplateOutlet="
+                    matErrors;
+                    context: {
+                        fieldControl,
+                        label: fieldConfig.label,
+                        patternErrorText: fieldConfig?.patternErrorText
+                    }
+                "
+            ></ng-container>
+        </mat-error>
+        <mat-hint *ngIf="fieldConfig?.hint">{{ fieldConfig?.hint }}</mat-hint>
+    </mat-form-field>
+    <div class="mat-form-field-outside-error" *ngIf="fieldConfig?.type === featureFieldType.ChipList">
+        <mat-error *ngIf="fieldControl.touched">
+            <ng-container
+                *ngTemplateOutlet="
+                    matErrors;
+                    context: {
+                        fieldControl,
+                        label: fieldConfig.label,
+                        patternErrorText: fieldConfig?.patternErrorText
+                    }
+                "
+            ></ng-container>
+        </mat-error>
+    </div>
+</ng-template>
+
+<ng-template #matErrors let-label="label" let-fieldControl="fieldControl" let-patternErrorText="patternErrorText">
+    <mat-error *ngIf="fieldControl.errors?.required"> {{ label }} is required. </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.noStartEndSpaces"> Start and End spaces are not allowed</mat-error>
+    <mat-error *ngIf="fieldControl.errors?.min as minError"> Min value required is {{ minError?.min }} </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.max as maxError"> Max value allowed is {{ maxError?.max }} </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.minlength as minLengthError">
+        Min required length is {{ minLengthError?.requiredLength }}
+    </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.maxlength as maxLengthError">
+        Max allowed length is {{ maxLengthError?.requiredLength }}
+    </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.pattern">
+        {{ patternErrorText ?? 'Enter valid ' + label }}
+    </mat-error>
+    <mat-error *ngIf="fieldControl?.errors?.atleastOneValueInChipList"> Atleast One Value is Required </mat-error>
+</ng-template>

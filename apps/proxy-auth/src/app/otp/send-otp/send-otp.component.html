@@ -10,6 +10,7 @@
         ></mat-progress-bar>
         <proxy-send-otp-center
             [referenceId]="referenceId"
+            [target]="target"
             (togglePopUp)="toggleSendOtp()"
             (successReturn)="returnSuccessObj($event)"
             (failureReturn)="returnFailureObj($event)"

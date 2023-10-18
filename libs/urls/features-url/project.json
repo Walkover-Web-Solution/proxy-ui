@@ -1,0 +1,16 @@
+{
+    "name": "urls-features-url",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/features-url/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/features-url/**/*.ts", "libs/urls/features-url/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

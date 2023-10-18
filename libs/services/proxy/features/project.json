@@ -1,0 +1,16 @@
+{
+    "name": "services-proxy-features",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/proxy/features/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/services/proxy/features/**/*.ts", "libs/services/proxy/features/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

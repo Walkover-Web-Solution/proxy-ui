@@ -62,7 +62,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                             });
                         }
                         if (err.status === 403) {
-                            this.router.navigate(['/app']);
+                            // Commented as per https://app.clickup.com/t/8678ypxpx?comment=90100030787886
+                            // this.router.navigate(['/app']);
                             return throwError({
                                 errors: err.error?.errors,
                                 hasError: true,
