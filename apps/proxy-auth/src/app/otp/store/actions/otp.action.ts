@@ -5,7 +5,10 @@ import { IOtpState } from '../reducers/otp.reducer';
 export const resetAnyState = createAction('[OTP] Reset Any State', props<{ request: CreateMutable<IOtpState> }>());
 export const resetAll = createAction('[OTP Reset All]');
 
-export const getWidgetData = createAction('[Auth] Get Widget Data', props<{ referenceId: string }>());
+export const getWidgetData = createAction(
+    '[Auth] Get Widget Data',
+    props<{ referenceId: string; payload?: { [key: string]: any } }>()
+);
 export const getWidgetDataComplete = createAction('[OTP] Get Widget Data Complete', props<{ response: any }>());
 export const getWidgetDataError = createAction(
     '[OTP] Get Widget Data Error',
