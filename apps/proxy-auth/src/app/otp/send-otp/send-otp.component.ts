@@ -19,6 +19,7 @@ import { selectGetOtpInProcess, selectResendOtpInProcess, selectVerifyOtpInProce
 })
 export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy {
     @Input() public referenceId: string;
+    @Input() public addInfo: any;
     @Input() public target: string;
     @Input()
     set css(type: NgStyle['ngStyle']) {
@@ -74,6 +75,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         this.store.dispatch(
             getWidgetData({
                 referenceId: this.referenceId,
+                payload: { ...(this.addInfo && { addInfo: this.addInfo }) },
             })
         );
     }
