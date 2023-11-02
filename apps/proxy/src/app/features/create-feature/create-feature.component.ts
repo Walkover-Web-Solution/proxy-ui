@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { cloneDeep, isEqual } from 'lodash-es';
-import { Component, OnDestroy, OnInit, NgZone, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnDestroy, OnInit, NgZone, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { BehaviorSubject, Observable, distinctUntilChanged, filter, take, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
@@ -90,12 +90,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             ]),
         }),
     });
+    public demoDiv: string = null;
 
     constructor(
         private componentStore: CreateFeatureComponentStore,
         private activatedRoute: ActivatedRoute,
         private toast: PrimeNgToastService,
-        private ngZone: NgZone
+        private ngZone: NgZone,
+        private cdr: ChangeDetectorRef
     ) {
         super();
     }
@@ -134,6 +136,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 .subscribe((feature) => {
                     this.getServiceMethods(feature.feature_id);
                     this.proxyAuthScript = ProxyAuthScript(environment.proxyServer, feature.reference_id);
+                    this.demoDiv = `<div id="${feature.reference_id}"></div>`;
+                    this.cdr.detectChanges();
                 });
             this.featureDetails$
                 .pipe(filter(Boolean), distinctUntilChanged(isEqual), takeUntil(this.destroy$))
