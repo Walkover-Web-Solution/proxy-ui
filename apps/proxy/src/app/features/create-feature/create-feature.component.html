@@ -409,33 +409,29 @@
 </ng-template>
 
 <ng-template #designAndCode>
-    <div class="d-flex col-gap-3 flex-grow-1">
-        <div class="overflow-auto code-snippet-view position-relative">
-            <markdown [data]="proxyAuthScript | language: 'javascript'"> </markdown>
-            <proxy-copy-button
-                class="position-absolute"
-                style="top: 16px; right: 8px"
-                [copyData]="proxyAuthScript"
-                tooltip="Copy Script"
-                iconClass="text-white"
-            ></proxy-copy-button>
-        </div>
+    <div class="overflow-auto code-snippet-view position-relative">
+        <markdown [data]="proxyAuthScript | language: 'javascript'"> </markdown>
+        <proxy-copy-button
+            class="position-absolute"
+            style="top: 16px; right: 8px"
+            [copyData]="proxyAuthScript"
+            tooltip="Copy Script"
+            iconClass="text-white"
+        ></proxy-copy-button>
     </div>
     <div class="mat-body-2 mt-2">
         <strong>Note: </strong>The social login button will be displayed in a dialog/modal by default.<br />
         To integrate this button into your website or application UI, please add a div with the ID like this -
     </div>
-    <div class="d-flex col-gap-3 flex-grow-1">
-        <div class="overflow-auto code-snippet-view position-relative">
-            <markdown [data]="demoDiv$ | async | language: 'html'"> </markdown>
-            <proxy-copy-button
-                class="position-absolute"
-                style="top: 16px; right: 8px"
-                [copyData]="demoDiv$ | async"
-                tooltip="Copy Code"
-                iconClass="text-white"
-            ></proxy-copy-button>
-        </div>
+    <div class="overflow-auto code-snippet-view position-relative">
+        <markdown [data]="demoDiv$ | async | language: 'html'"> </markdown>
+        <proxy-copy-button
+            class="position-absolute"
+            style="top: 16px; right: 8px"
+            [copyData]="demoDiv$ | async"
+            tooltip="Copy Code"
+            iconClass="text-white"
+        ></proxy-copy-button>
     </div>
     <div
         class="d-flex align-items-center justify-content-start mt-3"
