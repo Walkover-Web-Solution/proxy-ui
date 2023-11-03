@@ -427,11 +427,11 @@
     </div>
     <div class="d-flex col-gap-3 flex-grow-1">
         <div class="overflow-auto code-snippet-view position-relative">
-            <markdown [data]="demoDiv | language: 'html'"> </markdown>
+            <markdown [data]="demoDiv$ | async | language: 'html'"> </markdown>
             <proxy-copy-button
                 class="position-absolute"
                 style="top: 16px; right: 8px"
-                [copyData]="demoDiv"
+                [copyData]="demoDiv$ | async"
                 tooltip="Copy Code"
                 iconClass="text-white"
             ></proxy-copy-button>
