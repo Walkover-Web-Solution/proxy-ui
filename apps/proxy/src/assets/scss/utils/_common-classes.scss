@@ -1,5 +1,7 @@
 @use '../../../../../../node_modules/@angular/material/index' as mat;
 @import '../theme/theme-colors';
+@import '../utils/mixins/common-utils';
+
 /*// Mat Divider
 //====================================================*/
 .mat-divider {
@@ -214,4 +216,15 @@
 }
 .border-common-radius-50 {
     border-radius: var(--border-common-radius-50) !important;
+}
+
+// Add Scrollbar in Markdown with custom color
+markdown pre{
+    overflow: auto;
+    @include custom-scroll-bar(
+        $scrollbarThumbColor: rgba(255,255,255,.2),
+        $scrollbarTrackColor: rgba(255,255,255,.4),
+        $scrollbarWidth: 8px,
+        $scrollbarTrackRadius: 4px
+    );
 }

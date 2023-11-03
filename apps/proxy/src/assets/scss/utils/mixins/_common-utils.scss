@@ -135,3 +135,33 @@
     }
     
 }
+
+/*----------------------------------------------------------------
+/* Custom Scrollbar & It's Params
+/*----------------------------------------------------------------
+/* $scrollbarThumbColor : For scrollbar thumb color
+/* $scrollbarTrackColor : For scrollbar track color
+/* $scrollbarWidth : For scrollbar width
+/* $scrollbarTrackRadius: For scrollbar track radius
+/*
+*/ 
+@mixin custom-scroll-bar($scrollbarThumbColor, $scrollbarTrackColor, $scrollbarWidth, $scrollbarTrackRadius) {
+    &::-webkit-scrollbar {
+        width: $scrollbarWidth;
+        height: $scrollbarWidth;
+    }
+    
+    /* Track */
+    &::-webkit-scrollbar-track {
+        background: $scrollbarTrackColor;
+        border-radius: $scrollbarTrackRadius;
+    }
+    
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+        background: $scrollbarThumbColor; 
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: $scrollbarThumbColor; 
+    }
+}
