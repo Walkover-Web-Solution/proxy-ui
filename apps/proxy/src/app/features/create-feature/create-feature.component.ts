@@ -2,7 +2,7 @@ import { ActivatedRoute } from '@angular/router';
 import { cloneDeep, isEqual } from 'lodash-es';
 import { Component, OnDestroy, OnInit, NgZone, ViewChildren, QueryList } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { BehaviorSubject, Observable, distinctUntilChanged, filter, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, distinctUntilChanged, filter, of, take, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
 import {
     FeatureFieldType,
@@ -90,6 +90,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             ]),
         }),
     });
+    public demoDiv$: Observable<string> = of(null);
 
     constructor(
         private componentStore: CreateFeatureComponentStore,
@@ -134,6 +135,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 .subscribe((feature) => {
                     this.getServiceMethods(feature.feature_id);
                     this.proxyAuthScript = ProxyAuthScript(environment.proxyServer, feature.reference_id);
+                    this.demoDiv$ = of(`<div id="${feature.reference_id}"></div>`);
                 });
             this.featureDetails$
                 .pipe(filter(Boolean), distinctUntilChanged(isEqual), takeUntil(this.destroy$))
