@@ -15,6 +15,8 @@ import {
     selectVerifyOtpInProcess,
     selectWidgetData,
 } from '../store/selectors';
+import { FeatureServiceIds } from '@proxy/models/features-model';
+import { OtpWidgetService } from '../service/otp-widget.service';
 
 @Component({
     selector: 'proxy-send-otp',
@@ -56,7 +58,14 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public selectVerifyOtpInProcess$: Observable<boolean>;
     public animate: boolean = false;
 
-    constructor(private ngZone: NgZone, private store: Store<IAppState>, private renderer: Renderer2) {
+    public otpWidgetData;
+
+    constructor(
+        private ngZone: NgZone,
+        private store: Store<IAppState>,
+        private renderer: Renderer2,
+        private otpWidgetService: OtpWidgetService
+    ) {
         super();
         this.selectGetOtpInProcess$ = this.store.pipe(
             select(selectGetOtpInProcess),
@@ -85,6 +94,16 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 payload: { ...(this.addInfo && { addInfo: this.addInfo }) },
             })
         );
+        this.selectWidgetData$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((widgetData) => {
+            this.otpWidgetData = widgetData?.find((widget) => widget?.service_id === FeatureServiceIds.Msg91OtpService);
+            if (this.otpWidgetData) {
+                this.otpWidgetService.setWidgetConfig(this.otpWidgetData?.widget_id, this.otpWidgetData?.token_auth);
+                this.otpWidgetService.loadScript();
+            }
+        });
+        this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
+            console.log(token, this.otpWidgetData);
+        });
     }
 
     ngOnDestroy() {
