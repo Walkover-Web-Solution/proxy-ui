@@ -24,6 +24,7 @@ import { reducers } from './store/app.state';
 import { OtpEffects } from './store/effects';
 import { ServicesHttpWrapperNoAuthModule } from '@proxy/services/http-wrapper-no-auth';
 import { OtpUtilityService } from './service/otp-utility.service';
+import { OtpWidgetService } from './service/otp-widget.service';
 
 export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent];
 
@@ -55,6 +56,7 @@ export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent]
     providers: [
         OtpService,
         OtpUtilityService,
+        OtpWidgetService,
         { provide: ProxyBaseUrls.Env, useValue: environment.env },
         {
             provide: ProxyBaseUrls.BaseURL,
