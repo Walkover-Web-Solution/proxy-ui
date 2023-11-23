@@ -52,4 +52,8 @@ export class OtpService {
     public getIpInfo(requestUrl: any): Observable<any> {
         return this.http.get<any>(requestUrl, {}, this.options);
     }
+
+    public callBackUrl(requestUrl: any, params: { [key: string]: any } = {}): Observable<any> {
+        return this.http.get<any>(requestUrl, params, this.options);
+    }
 }

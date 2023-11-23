@@ -1,3 +1,4 @@
+import { OtpService } from './../service/otp.service';
 import { NgStyle } from '@angular/common';
 import { Component, Input, NgZone, OnDestroy, OnInit, Renderer2, ViewEncapsulation } from '@angular/core';
 import { META_TAG_ID } from '@proxy/constant';
@@ -17,6 +18,7 @@ import {
 } from '../store/selectors';
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { OtpWidgetService } from '../service/otp-widget.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'proxy-send-otp',
@@ -59,12 +61,14 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public animate: boolean = false;
 
     public otpWidgetData;
+    public showRegistration = new BehaviorSubject<boolean>(true);
 
     constructor(
         private ngZone: NgZone,
         private store: Store<IAppState>,
         private renderer: Renderer2,
-        private otpWidgetService: OtpWidgetService
+        private otpWidgetService: OtpWidgetService,
+        private otpService: OtpService
     ) {
         super();
         this.selectGetOtpInProcess$ = this.store.pipe(
@@ -103,6 +107,20 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         });
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
             console.log(token, this.otpWidgetData);
+            this.otpService
+                .callBackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token })
+                .subscribe(
+                    (res) => {
+                        console.log(res);
+                    },
+                    (error: HttpErrorResponse) => {
+                        if (error?.status === 403) {
+                            this.ngZone.run(() => {
+                                this.showRegistration.next(true);
+                            });
+                        }
+                    }
+                );
         });
     }
 

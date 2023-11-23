@@ -25,8 +25,10 @@ import { OtpEffects } from './store/effects';
 import { ServicesHttpWrapperNoAuthModule } from '@proxy/services/http-wrapper-no-auth';
 import { OtpUtilityService } from './service/otp-utility.service';
 import { OtpWidgetService } from './service/otp-widget.service';
+import { RegisterComponent } from './component/register/register.component';
+import { DirectivesMarkAllAsTouchedModule } from '@proxy/directives/mark-all-as-touched';
 
-export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent];
+export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent, RegisterComponent];
 
 @NgModule({
     imports: [
@@ -51,6 +53,7 @@ export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent]
             },
         }),
         ServicesHttpWrapperNoAuthModule,
+        DirectivesMarkAllAsTouchedModule,
     ],
     declarations: [...CHAT_COMPONENTS],
     providers: [

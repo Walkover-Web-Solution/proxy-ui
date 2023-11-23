@@ -1,5 +1,8 @@
 <div class="container" *ngIf="show$ | async">
-    <div class="otp-verification-dialog" [ngClass]="{ 'animation-complete': animate }">
+    <div
+        class="otp-verification-dialog"
+        [ngClass]="{ 'animation-complete': animate, 'register-user': showRegistration | async }"
+    >
         <mat-progress-bar
             mode="indeterminate"
             *ngIf="
@@ -9,12 +12,19 @@
             "
         ></mat-progress-bar>
         <proxy-send-otp-center
+            *ngIf="(showRegistration | async) === false"
             [referenceId]="referenceId"
             [target]="target"
             (togglePopUp)="toggleSendOtp()"
             (successReturn)="returnSuccessObj($event)"
             (failureReturn)="returnFailureObj($event)"
         ></proxy-send-otp-center>
+        <proxy-register
+            *ngIf="showRegistration | async"
+            (togglePopUp)="toggleSendOtp()"
+            (successReturn)="returnSuccessObj($event)"
+            (failureReturn)="returnFailureObj($event)"
+        ></proxy-register>
     </div>
     <div class="otp-verification-footer">
         <span>Secured by</span>

@@ -33,6 +33,10 @@
         animation: login-zoom 2s;
         animation-fill-mode: both;
     }
+    &.register-user {
+        width: 600px;
+        z-index: 9999999 !important;
+    }
 
     .otp-verification-header {
         position: relative;
@@ -84,14 +88,6 @@
                 max-width: 290px;
                 display: block;
             }
-        }
-        .mat-error {
-            font-size: 12px;
-            color: #cc5229;
-            position: absolute;
-            bottom: 18px;
-            line-height: 14px;
-            font-weight: 400;
         }
         .resend-otp {
             font-weight: 400;
@@ -165,45 +161,7 @@
     background: rgba(33, 37, 40, 0.7);
 }
 
-.mat-flat-button {
-    width: 100%;
-    border-radius: 4px !important;
-    box-shadow: none !important;
-    &.send-otp {
-        margin-top: 24px !important;
-    }
-    &.verify-otp {
-        margin-top: 24px !important;
-    }
-    &.mat-primary {
-        font-weight: 500;
-        font-size: 14px;
-        background-color: #1157a6 !important;
-    }
-    &.mat-button-disabled {
-        background-color: #c1c5c8 !important;
-        color: #ffffff !important;
-    }
-}
-
-input {
-    width: 100% !important;
-    // &.invalid-input {
-    //     border-color: #cc5229 !important;
-    //     outline: none;
-    // }
-}
-.mat-form-field {
-    width: 100%;
-}
-.email-input {
-    .mat-form-field-wrapper {
-        text-align: left;
-    }
-}
 .mat-form-field-wrapper {
-    padding-bottom: 0px !important;
-    text-align: center;
     margin: 0px !important;
 }
 .mat-form-field-appearance-outline {
@@ -244,31 +202,6 @@ input {
             }
             .mat-form-field-outline-end {
                 border-radius: 0 4px 4px 0;
-            }
-        }
-    }
-}
-
-.otp-input {
-    .mat-form-field-infix {
-        font-weight: 700 !important;
-        .mat-input-element {
-            letter-spacing: 18px;
-            &::-webkit-input-placeholder {
-                /* Chrome/Opera/Safari */
-                letter-spacing: 6px;
-            }
-            &::-moz-placeholder {
-                /* Firefox 19+ */
-                letter-spacing: 6px;
-            }
-            &:-ms-input-placeholder {
-                /* IE 10+ */
-                letter-spacing: 6px;
-            }
-            &:-moz-placeholder {
-                /* Firefox 18- */
-                letter-spacing: 6px;
             }
         }
     }

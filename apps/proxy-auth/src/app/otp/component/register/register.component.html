@@ -1,0 +1,139 @@
+<ng-container>
+    <div></div>
+    <button mat-icon-button mat-dialog-close class="close-dialog" (click)="close(true)">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
+                fill="#5D6164"
+            />
+        </svg>
+    </button>
+    <div class="otp-verification-content">
+        <div
+            class="form-wrapper"
+            [formGroup]="registrationForm"
+            proxyMarkAllAsTouched
+            [buttonRef]="submitBtn"
+            (valid)="submit()"
+        >
+            <div class="heading">Register</div>
+
+            <div class="subheading">User Details</div>
+            <div class="one-line">
+                <ng-container
+                    [ngTemplateOutlet]="formField"
+                    [ngTemplateOutletContext]="{
+                        label: 'First Name',
+                        formControl: registrationForm.get('user.firstName')
+                    }"
+                ></ng-container>
+                <ng-container
+                    [ngTemplateOutlet]="formField"
+                    [ngTemplateOutletContext]="{
+                        label: 'Last Name',
+                        formControl: registrationForm.get('user.lastName')
+                    }"
+                ></ng-container>
+            </div>
+            <ng-container
+                [ngTemplateOutlet]="formField"
+                [ngTemplateOutletContext]="{
+                    label: 'Email',
+                    formControl: registrationForm.get('user.email')
+                }"
+            ></ng-container>
+            <ng-container
+                [ngTemplateOutlet]="formField"
+                [ngTemplateOutletContext]="{
+                    label: 'Mobile',
+                    formControl: registrationForm.get('user.mobile')
+                }"
+            ></ng-container>
+            <div class="one-line">
+                <ng-container
+                    [ngTemplateOutlet]="formField"
+                    [ngTemplateOutletContext]="{
+                        type: 'password',
+                        label: 'Password',
+                        formControl: registrationForm.get('user.password')
+                    }"
+                ></ng-container>
+                <ng-container
+                    [ngTemplateOutlet]="formField"
+                    [ngTemplateOutletContext]="{
+                        type: 'password',
+                        label: 'Confirm Password',
+                        formControl: registrationForm.get('user.confirmPassword')
+                    }"
+                ></ng-container>
+            </div>
+
+            <div class="subheading">Company Details</div>
+            <ng-container
+                [ngTemplateOutlet]="formField"
+                [ngTemplateOutletContext]="{
+                    label: 'Company Name',
+                    formControl: registrationForm.get('company.name')
+                }"
+            ></ng-container>
+            <ng-container
+                [ngTemplateOutlet]="formField"
+                [ngTemplateOutletContext]="{
+                    label: 'Mobile',
+                    formControl: registrationForm.get('company.mobile')
+                }"
+            ></ng-container>
+            <ng-container
+                [ngTemplateOutlet]="formField"
+                [ngTemplateOutletContext]="{
+                    label: 'Email',
+                    formControl: registrationForm.get('company.email')
+                }"
+            ></ng-container>
+            <div class="submit-btn">
+                <button #submitBtn mat-flat-button color="primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template
+    #formField
+    let-type="type"
+    let-label="label"
+    let-hint="hint"
+    let-formControl="formControl"
+    let-charactersToRemove="charactersToRemove"
+>
+    <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>{{ label }} </mat-label>
+        <input
+            matInput
+            autocomplete="off"
+            [attr.type]="type ?? 'text'"
+            [formControl]="formControl"
+            [placeholder]="'Enter ' + label"
+            msg91RemoveCharacter
+            [charactersToRemove]="charactersToRemove ?? []"
+        />
+        <mat-error *ngIf="formControl.touched">
+            <mat-error *ngIf="formControl.errors?.required"> {{ label }} is required. </mat-error>
+            <mat-error *ngIf="formControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
+            <mat-error *ngIf="formControl.errors?.noStartEndSpaces"> Start and End spaces are not allowed</mat-error>
+            <mat-error *ngIf="formControl.errors?.min as minError">
+                Min value required is {{ minError?.min }}
+            </mat-error>
+            <mat-error *ngIf="formControl.errors?.max as maxError">
+                Max value allowed is {{ maxError?.max }}
+            </mat-error>
+            <mat-error *ngIf="formControl.errors?.minlength as minLengthError">
+                Min required length is {{ minLengthError?.requiredLength }}
+            </mat-error>
+            <mat-error *ngIf="formControl.errors?.maxlength as maxLengthError">
+                Max allowed length is {{ maxLengthError?.requiredLength }}
+            </mat-error>
+            <mat-error *ngIf="formControl.errors?.pattern"> Enter valid + {{ label }} </mat-error>
+        </mat-error>
+        <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
+    </mat-form-field>
+</ng-template>
