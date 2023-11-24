@@ -106,21 +106,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             }
         });
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
-            console.log(token, this.otpWidgetData);
-            this.otpService
-                .callBackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token })
-                .subscribe(
-                    (res) => {
-                        console.log(res);
-                    },
-                    (error: HttpErrorResponse) => {
-                        if (error?.status === 403) {
-                            this.ngZone.run(() => {
-                                this.showRegistration.next(true);
-                            });
-                        }
-                    }
-                );
+            this.hitCallbackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token });
         });
     }
 
@@ -201,13 +187,40 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                     image.loading = 'lazy';
                     span.innerText = buttonsData.text;
                     button.addEventListener('click', () => {
-                        window.open(buttonsData.urlLink, this.target);
+                        if (buttonsData?.urlLink) {
+                            window.open(buttonsData.urlLink, this.target);
+                        } else if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
+                            this.otpWidgetService.openWidget();
+                        }
                     });
                     this.renderer.appendChild(button, image);
                     this.renderer.appendChild(button, span);
                     this.renderer.appendChild(element, button);
                 }
             });
+    }
+
+    public hitCallbackUrl(callbackUrl: string, payload: { [key: string]: any }) {
+        this.otpService.callBackUrl(callbackUrl, payload).subscribe(
+            (res) => {
+                this.successReturn(res);
+            },
+            (error: HttpErrorResponse) => {
+                if (error?.status === 403) {
+                    this.setShowRegistration(true);
+                }
+            }
+        );
+    }
+
+    public setShowRegistration(value: boolean) {
+        this.ngZone.run(() => {
+            const referneceElementExist = document.getElementById(this.referenceId);
+            if (referneceElementExist) {
+                this.show$ = of(value);
+            }
+            this.showRegistration.next(value);
+        });
     }
 
     public returnSuccessObj(obj) {

@@ -21,8 +21,10 @@
         ></proxy-send-otp-center>
         <proxy-register
             *ngIf="showRegistration | async"
-            (togglePopUp)="toggleSendOtp()"
-            (successReturn)="returnSuccessObj($event)"
+            [referenceId]="referenceId"
+            [serviceData]="otpWidgetData"
+            (togglePopUp)="setShowRegistration(false)"
+            (successReturn)="setShowRegistration(false)"
             (failureReturn)="returnFailureObj($event)"
         ></proxy-register>
     </div>
