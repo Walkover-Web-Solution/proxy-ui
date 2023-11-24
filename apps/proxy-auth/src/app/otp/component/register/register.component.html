@@ -24,6 +24,7 @@
                     [ngTemplateOutlet]="formField"
                     [ngTemplateOutletContext]="{
                         label: 'First Name',
+                        patternError: 'Only alphabets are allowed',
                         formControl: registrationForm.get('user.firstName')
                     }"
                 ></ng-container>
@@ -31,6 +32,7 @@
                     [ngTemplateOutlet]="formField"
                     [ngTemplateOutletContext]="{
                         label: 'Last Name',
+                        patternError: 'Only alphabets are allowed',
                         formControl: registrationForm.get('user.lastName')
                     }"
                 ></ng-container>
@@ -55,8 +57,9 @@
                 <ng-container
                     [ngTemplateOutlet]="formField"
                     [ngTemplateOutletContext]="{
-                        type: 'password',
+                        type: 'text',
                         label: 'Password',
+                        patternError: 'Enter a valid password',
                         formControl: registrationForm.get('user.password')
                     }"
                 ></ng-container>
@@ -65,12 +68,17 @@
                     [ngTemplateOutletContext]="{
                         type: 'password',
                         label: 'Confirm Password',
+                        patternError: 'Enter a valid password',
                         formControl: registrationForm.get('user.confirmPassword')
                     }"
                 ></ng-container>
             </div>
+            <div class="note">
+                <span class="subheading">Note: </span>
+                Password should contain atleast one Capital Letter, one Small Letter, one Digit and one Symbol
+            </div>
 
-            <div class="subheading">Company Details</div>
+            <div class="subheading">Company Details (Optional)</div>
             <ng-container
                 [ngTemplateOutlet]="formField"
                 [ngTemplateOutletContext]="{
@@ -106,6 +114,7 @@
     let-label="label"
     let-hint="hint"
     let-formControl="formControl"
+    let-patternError="patternError"
     let-charactersToRemove="charactersToRemove"
 >
     <mat-form-field appearance="outline" style="width: 100%">
@@ -135,7 +144,10 @@
             <mat-error *ngIf="formControl.errors?.maxlength as maxLengthError">
                 Max allowed length is {{ maxLengthError?.requiredLength }}
             </mat-error>
-            <mat-error *ngIf="formControl.errors?.pattern"> Enter valid + {{ label }} </mat-error>
+            <mat-error *ngIf="formControl.errors?.pattern">
+                {{ patternError ? patternError : 'Enter valid ' + label }}
+            </mat-error>
+            <mat-error *ngIf="formControl.errors?.valueSameAsControl"> {{ label }} mismatch </mat-error>
         </mat-error>
         <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
     </mat-form-field>
