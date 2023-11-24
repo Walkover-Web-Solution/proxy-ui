@@ -165,7 +165,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         this.selectedMethod.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((method) => {
             const featureDetails: IFeatureDetails = this.getValueFromObservable(this.featureDetails$);
             method.method_services.forEach((service, index) => {
-                const serviceValues = featureDetails?.service_configurations?.[index];
+                const serviceValues = featureDetails?.service_configurations?.[service?.service_id];
                 const serviceFormGroup: ServiceFormGroup = new FormGroup({
                     requirements: new FormGroup({}),
                     configurations: new FormGroup({}),
