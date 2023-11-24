@@ -43,9 +43,11 @@
                 }"
             ></ng-container>
             <ng-container
-                [ngTemplateOutlet]="formField"
+                [ngTemplateOutlet]="intlFormField"
                 [ngTemplateOutletContext]="{
+                    key: 'user',
                     label: 'Mobile',
+                    required: true,
                     formControl: registrationForm.get('user.mobile')
                 }"
             ></ng-container>
@@ -77,8 +79,9 @@
                 }"
             ></ng-container>
             <ng-container
-                [ngTemplateOutlet]="formField"
+                [ngTemplateOutlet]="intlFormField"
                 [ngTemplateOutletContext]="{
+                    key: 'company',
                     label: 'Mobile',
                     formControl: registrationForm.get('company.mobile')
                 }"
@@ -136,4 +139,32 @@
         </mat-error>
         <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
     </mat-form-field>
+</ng-template>
+
+<ng-template
+    #intlFormField
+    let-key="key"
+    let-label="label"
+    let-hint="hint"
+    let-required="required"
+    let-formControl="formControl"
+>
+    <div [attr.id]="'init-contact-wrapper-' + key" style="position: relative; margin-bottom: 27px">
+        <input
+            type="tel"
+            style="width: 100%"
+            (keypress)="intlClass?.[key]?.onlyPhoneNumber($event)"
+            (keydown.enter)="!intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber'] ? null : sendOtp()"
+            [attr.id]="'init-contact-' + key"
+            [placeholder]="'Enter ' + label + (required ? ' *' : '')"
+            [attr.name]="'mobileNumber' + key"
+            [ngClass]="{ 'invalid-input': formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber'] }"
+            (blur)="formControl?.markAsTouched(); formControl?.setValue(intlClass?.[key]?.phoneNumber)"
+        />
+        <mat-error
+            *ngIf="formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']"
+        >
+            Please enter valid mobile number
+        </mat-error>
+    </div>
 </ng-template>

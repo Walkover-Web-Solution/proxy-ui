@@ -1,5 +1,5 @@
 import { environment } from './../../../../environments/environment';
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnDestroy, Output } from '@angular/core';
 import { resetAll } from '../../store/actions/otp.action';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store } from '@ngrx/store';
@@ -14,7 +14,7 @@ import * as _ from 'lodash';
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent extends BaseComponent implements OnInit, OnDestroy {
+export class RegisterComponent extends BaseComponent implements AfterViewInit, OnDestroy {
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public successReturn: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
@@ -35,25 +35,27 @@ export class RegisterComponent extends BaseComponent implements OnInit, OnDestro
         }),
     });
 
+    public intlClass: { [key: string]: IntlPhoneLib } = {};
+
     constructor(private store: Store<IAppState>) {
         super();
     }
 
-    ngOnInit(): void {}
+    ngAfterViewInit(): void {
+        this.initIntl('user');
+        this.initIntl('company');
+    }
 
     public ngOnDestroy(): void {
         super.ngOnDestroy();
     }
 
-    public initIntl(): void {
+    public initIntl(key: string): void {
         const parentDom = document.querySelector('proxy-auth')?.shadowRoot;
-        const input = document.querySelector('proxy-auth')?.shadowRoot?.getElementById('init-contact');
-        const customCssStyleURL = `${environment.baseUrl}/${
-            environment.production ? 'app' : 'hello-new'
-        }/assets/utils/intl-tel-input-custom.css`;
-
+        const input = document.querySelector('proxy-auth')?.shadowRoot?.getElementById('init-contact-' + key);
+        const customCssStyleURL = `${environment.baseUrl}/assets/utils/intl-tel-input-custom.css`;
         if (input) {
-            new IntlPhoneLib(input, parentDom, customCssStyleURL);
+            this.intlClass[key] = new IntlPhoneLib(input, parentDom, customCssStyleURL);
         }
     }
 

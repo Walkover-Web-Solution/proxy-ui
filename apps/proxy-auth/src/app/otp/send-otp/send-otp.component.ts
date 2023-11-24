@@ -61,7 +61,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public animate: boolean = false;
 
     public otpWidgetData;
-    public showRegistration = new BehaviorSubject<boolean>(true);
+    public showRegistration = new BehaviorSubject<boolean>(false);
 
     constructor(
         private ngZone: NgZone,
