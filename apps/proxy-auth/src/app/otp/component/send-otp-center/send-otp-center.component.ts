@@ -112,6 +112,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public clickedEvent: any;
     public retryProcesses = [];
     public otpErrorCodes = OtpErrorCodes;
+    public featureServiceIds = FeatureServiceIds;
 
     constructor(
         private store: Store<IAppState>,
