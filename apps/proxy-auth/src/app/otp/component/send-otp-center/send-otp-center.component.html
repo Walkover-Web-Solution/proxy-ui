@@ -12,9 +12,10 @@
             <ng-container *ngFor="let widgetData of widgetDataArray">
                 <button
                     mat-raised-button
-                    (click)="openLink(widgetData.urlLink)"
+                    (click)="onVerificationBtnClick(widgetData)"
                     style="padding: 10px 50px !important"
                     class="mat-elevation-z2"
+                    [disabled]="otpScriptLoading | async"
                 >
                     <img [src]="widgetData.icon" [alt]="widgetData.text" style="margin-right: 20px" loading="lazy" />
                     <span class="mat-subheading-2">{{ widgetData.text }}</span>

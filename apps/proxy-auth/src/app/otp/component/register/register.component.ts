@@ -1,0 +1,143 @@
+import { OtpService } from './../../service/otp.service';
+import { environment } from './../../../../environments/environment';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { resetAll } from '../../store/actions/otp.action';
+import { BaseComponent } from '@proxy/ui/base-component';
+import { Store } from '@ngrx/store';
+import { IAppState } from '../../store/app.state';
+import { META_TAG_ID } from '@proxy/constant';
+import { IntlPhoneLib } from '@proxy/utils';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import * as _ from 'lodash';
+import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from '@proxy/regex';
+import { CustomValidators } from '@proxy/custom-validator';
+import { OtpUtilityService } from '../../service/otp-utility.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+@Component({
+    selector: 'proxy-register',
+    templateUrl: './register.component.html',
+    styleUrls: ['./register.component.scss'],
+})
+export class RegisterComponent extends BaseComponent implements AfterViewInit, OnDestroy {
+    @Input() public referenceId: string;
+    @Input() public serviceData: any;
+    @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
+    @Output() public successReturn: EventEmitter<any> = new EventEmitter();
+    @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
+
+    public registrationForm = new FormGroup({
+        user: new FormGroup({
+            firstName: new FormControl<string>(null, [
+                Validators.required,
+                Validators.pattern(NAME_REGEX),
+                Validators.minLength(3),
+                Validators.maxLength(24),
+            ]),
+            lastName: new FormControl<string>(null, [
+                Validators.pattern(NAME_REGEX),
+                Validators.minLength(3),
+                Validators.maxLength(25),
+            ]),
+            email: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_REGEX)]),
+            mobile: new FormControl<string>(null, [Validators.required]),
+            password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
+            confirmPassword: new FormControl<string>(null, [
+                Validators.required,
+                Validators.pattern(PASSWORD_REGEX),
+                CustomValidators.valueSameAsControl('password'),
+            ]),
+        }),
+        company: new FormGroup({
+            name: new FormControl<string>(null, [Validators.minLength(3), Validators.maxLength(50)]),
+            mobile: new FormControl<string>(null),
+            email: new FormControl<string>(null, Validators.pattern(EMAIL_REGEX)),
+        }),
+    });
+
+    public intlClass: { [key: string]: IntlPhoneLib } = {};
+
+    constructor(
+        private store: Store<IAppState>,
+        private otpService: OtpService,
+        private otpUtilityService: OtpUtilityService,
+        private snackBar: MatSnackBar
+    ) {
+        super();
+    }
+
+    ngAfterViewInit(): void {
+        this.initIntl('user');
+        this.initIntl('company');
+    }
+
+    public ngOnDestroy(): void {
+        super.ngOnDestroy();
+    }
+
+    public initIntl(key: string): void {
+        const parentDom = document.querySelector('proxy-auth')?.shadowRoot;
+        const input = document.querySelector('proxy-auth')?.shadowRoot?.getElementById('init-contact-' + key);
+        const customCssStyleURL = `${environment.baseUrl}/assets/utils/intl-tel-input-custom.css`;
+        if (input) {
+            this.intlClass[key] = new IntlPhoneLib(input, parentDom, customCssStyleURL);
+        }
+    }
+
+    public close(closeByUser: boolean = false): void {
+        this.togglePopUp.emit();
+        if (closeByUser) {
+            this.failureReturn.emit({
+                code: 0, // code use for close by user
+                closeByUser, // boolean value for status
+                message: 'User cancelled the registration process.',
+            });
+        }
+    }
+
+    public resetStore(): void {
+        this.store.dispatch(resetAll());
+    }
+
+    public returnSuccess(successResponse: any) {
+        this.successReturn.emit(successResponse);
+    }
+
+    public submit(): void {
+        const formData = this.registrationForm.value;
+        const state = JSON.parse(
+            this.otpUtilityService.aesDecrypt(
+                this.serviceData?.state ?? '',
+                environment.uiEncodeKey,
+                environment.uiIvKey,
+                true
+            ) || '{}'
+        );
+        delete formData?.user?.confirmPassword;
+        formData.user['name'] =
+            formData?.user?.firstName + (formData?.user?.lastName ? ' ' + formData?.user?.lastName : '');
+        delete formData?.user?.firstName;
+        delete formData?.user?.lastName;
+        formData.user['meta'] = {};
+        formData.company['meta'] = {};
+        const payload = {
+            reference_id: this.referenceId,
+            service_id: this.serviceData?.service_id,
+            url_unique_id: state?.url_unique_id,
+            request_data: formData,
+        };
+        const encodedData = this.otpUtilityService.aesEncrypt(
+            JSON.stringify(payload),
+            environment.uiEncodeKey,
+            environment.uiIvKey
+        );
+        this.otpService.register({ proxy_state: encodedData }).subscribe(
+            (response) => {
+                this.returnSuccess(response);
+            },
+            (err) => {
+                this.snackBar.open(err?.error.errors?.message ?? 'Invalid Request', 'close');
+            }
+        );
+    }
+}

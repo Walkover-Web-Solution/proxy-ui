@@ -24,8 +24,12 @@ import { reducers } from './store/app.state';
 import { OtpEffects } from './store/effects';
 import { ServicesHttpWrapperNoAuthModule } from '@proxy/services/http-wrapper-no-auth';
 import { OtpUtilityService } from './service/otp-utility.service';
+import { OtpWidgetService } from './service/otp-widget.service';
+import { RegisterComponent } from './component/register/register.component';
+import { DirectivesMarkAllAsTouchedModule } from '@proxy/directives/mark-all-as-touched';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 
-export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent];
+export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent, RegisterComponent];
 
 @NgModule({
     imports: [
@@ -50,11 +54,15 @@ export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent]
             },
         }),
         ServicesHttpWrapperNoAuthModule,
+        DirectivesMarkAllAsTouchedModule,
+        MatSnackBarModule,
     ],
     declarations: [...CHAT_COMPONENTS],
     providers: [
         OtpService,
         OtpUtilityService,
+        OtpWidgetService,
+        { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
         { provide: ProxyBaseUrls.Env, useValue: environment.env },
         {
             provide: ProxyBaseUrls.BaseURL,
