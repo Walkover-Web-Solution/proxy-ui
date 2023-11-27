@@ -14,7 +14,7 @@ import { ProxyBaseUrls } from '@proxy/models/root-models';
 
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { DirectivesRemoveCharacterDirectiveModule } from 'libs/directives/remove-character-directive/src';
+import { DirectivesRemoveCharacterDirectiveModule } from '@proxy/directives/RemoveCharacterDirective';
 
 import { environment } from '../../environments/environment';
 import { SendOtpCenterComponent } from './component';

@@ -115,7 +115,6 @@
     let-hint="hint"
     let-formControl="formControl"
     let-patternError="patternError"
-    let-charactersToRemove="charactersToRemove"
 >
     <mat-form-field appearance="outline" style="width: 100%">
         <mat-label>{{ label }} </mat-label>
@@ -125,8 +124,6 @@
             [attr.type]="type ?? 'text'"
             [formControl]="formControl"
             [placeholder]="'Enter ' + label"
-            msg91RemoveCharacter
-            [charactersToRemove]="charactersToRemove ?? []"
         />
         <mat-error *ngIf="formControl.touched">
             <mat-error *ngIf="formControl.errors?.required"> {{ label }} is required. </mat-error>
