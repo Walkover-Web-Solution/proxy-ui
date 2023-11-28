@@ -64,13 +64,6 @@
                     }
                 }
             }
-            // Used to display only first mat-error
-            mat-error {
-                display: none !important;
-                &:first-child {
-                    display: block !important;
-                }
-            }
         }
         .mat-form-field-hint-wrapper {
             .mat-hint {
@@ -108,4 +101,12 @@ input[matinput]::-webkit-inner-spin-button {
 // Material Form Error
 .mat-error {
     font-size: 12px;
+}
+
+// Used to display only first mat-error
+mat-error {
+    display: none !important;
+    &:first-child {
+        display: block !important;
+    }
 }

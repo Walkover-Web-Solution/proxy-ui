@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash-es';
 import { OtpService } from './../../service/otp.service';
 import { environment } from './../../../../environments/environment';
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { resetAll } from '../../store/actions/otp.action';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store } from '@ngrx/store';
@@ -14,13 +14,14 @@ import { CustomValidators } from '@proxy/custom-validator';
 import { OtpUtilityService } from '../../service/otp-utility.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { errorResolver } from '@proxy/models/root-models';
+import { takeUntil } from 'rxjs';
 
 @Component({
     selector: 'proxy-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent extends BaseComponent implements AfterViewInit, OnDestroy {
+export class RegisterComponent extends BaseComponent implements AfterViewInit, OnDestroy, OnInit {
     @Input() public referenceId: string;
     @Input() public serviceData: any;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
@@ -65,6 +66,17 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         private snackBar: MatSnackBar
     ) {
         super();
+    }
+
+    ngOnInit(): void {
+        this.registrationForm
+            .get('user.password')
+            .valueChanges.pipe(takeUntil(this.destroy$))
+            .subscribe((res) => {
+                if (res) {
+                    this.registrationForm.get('user.confirmPassword').updateValueAndValidity();
+                }
+            });
     }
 
     ngAfterViewInit(): void {
