@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
 import { BehaviorSubject } from 'rxjs';
-const WIDGET_SCRIPT_JS = `${
-    environment.env === 'prod' ? 'https://control.msg91.com/app/' : 'https://test.msg91.com/hello-new/'
-}/assets/otp-provider/otp-provider.js`;
+const WIDGET_SCRIPT_JS = `https://control.msg91.com/app/assets/otp-provider/otp-provider.js`;
 
 declare var window;
 
