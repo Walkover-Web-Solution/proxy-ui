@@ -163,6 +163,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.selectedMethod.next(methods.find((method) => method.id === id));
             });
         this.selectedMethod.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((method) => {
+            this.featureForm.controls.serviceDetails.clear();
             const featureDetails: IFeatureDetails = this.getValueFromObservable(this.featureDetails$);
             method.method_services.forEach((service, index) => {
                 const serviceValues = featureDetails?.service_configurations?.[service?.service_id];
@@ -260,13 +261,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 }
                 break;
             case 'service':
-                const serviceDetailsForm = this.featureForm.controls.serviceDetails;
-                if (serviceDetailsForm.valid) {
+                if (this.isConfigureMethodValid) {
                     payload = {
                         services: this.getServicePayload(selectedMethod),
                     };
                 } else {
-                    serviceDetailsForm.markAllAsTouched();
+                    this.markDirtyServiceFormTouched();
                     return;
                 }
                 break;
@@ -359,6 +359,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         const serviceFormArray = this.featureForm.controls.serviceDetails;
         serviceFormArray.controls.forEach((formGroup) => formGroup.dirty && formGroup.invalid && (isValid = false));
         return isValid && serviceFormArray.dirty;
+    }
+
+    public markDirtyServiceFormTouched(): void {
+        const serviceFormArray = this.featureForm.controls.serviceDetails;
+        serviceFormArray.controls.forEach(
+            (formGroup, index) =>
+                (formGroup.dirty || index === this.selectedServiceIndex) && formGroup.markAllAsTouched()
+        );
     }
 
     public resetFormGroup(formGroup: FormGroup, index: number): void {

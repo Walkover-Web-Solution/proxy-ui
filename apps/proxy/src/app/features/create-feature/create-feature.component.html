@@ -114,7 +114,7 @@
                         mat-flat-button
                         color="primary"
                         matStepperNext
-                        (click)="featureForm.get('serviceDetails').markAllAsTouched()"
+                        (click)="markDirtyServiceFormTouched()"
                     >
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
@@ -252,9 +252,7 @@
                 >
                     <div class="d-flex align-items-center flex-grow-1">
                         {{ service.name }}
-                        <ng-container
-                            *ngIf="featureForm.get('serviceDetails')?.at(selectedServiceIndex) as serviceForm"
-                        >
+                        <ng-container *ngIf="featureForm.get('serviceDetails')?.at(i) as serviceForm">
                             <mat-icon
                                 class="material-icons-outlined mat-icon-18 text-danger ml-1 mt-1"
                                 *ngIf="
