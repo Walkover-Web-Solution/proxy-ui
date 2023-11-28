@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es';
 import { OtpService } from './../../service/otp.service';
 import { environment } from './../../../../environments/environment';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
@@ -5,14 +6,14 @@ import { resetAll } from '../../store/actions/otp.action';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store } from '@ngrx/store';
 import { IAppState } from '../../store/app.state';
-import { META_TAG_ID } from '@proxy/constant';
-import { IntlPhoneLib } from '@proxy/utils';
+import { IntlPhoneLib, removeEmptyKeys } from '@proxy/utils';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as _ from 'lodash';
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { OtpUtilityService } from '../../service/otp-utility.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { errorResolver } from '@proxy/models/root-models';
 
 @Component({
     selector: 'proxy-register',
@@ -104,7 +105,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     public submit(): void {
-        const formData = this.registrationForm.value;
+        const formData = removeEmptyKeys(cloneDeep(this.registrationForm.value), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
                 this.serviceData?.state ?? '',
@@ -113,13 +114,17 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 true
             ) || '{}'
         );
-        delete formData?.user?.confirmPassword;
-        formData.user['name'] =
-            formData?.user?.firstName + (formData?.user?.lastName ? ' ' + formData?.user?.lastName : '');
-        delete formData?.user?.firstName;
-        delete formData?.user?.lastName;
-        formData.user['meta'] = {};
-        formData.company['meta'] = {};
+        if (formData?.user) {
+            delete formData?.user?.confirmPassword;
+            formData.user['name'] =
+                formData?.user?.firstName + (formData?.user?.lastName ? ' ' + formData?.user?.lastName : '');
+            formData.user['meta'] = {};
+            delete formData?.user?.firstName;
+            delete formData?.user?.lastName;
+        }
+        if (formData?.company) {
+            formData.company['meta'] = {};
+        }
         const payload = {
             reference_id: this.referenceId,
             service_id: this.serviceData?.service_id,
@@ -129,14 +134,17 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         const encodedData = this.otpUtilityService.aesEncrypt(
             JSON.stringify(payload),
             environment.uiEncodeKey,
-            environment.uiIvKey
+            environment.uiIvKey,
+            true
         );
         this.otpService.register({ proxy_state: encodedData }).subscribe(
             (response) => {
                 this.returnSuccess(response);
             },
             (err) => {
-                this.snackBar.open(err?.error.errors?.message ?? 'Invalid Request', 'close');
+                errorResolver(err?.error.errors)?.forEach((error) => {
+                    this.snackBar.open(error ?? 'Something went wrong', 'close');
+                });
             }
         );
     }
