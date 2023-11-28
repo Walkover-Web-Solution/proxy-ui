@@ -11,11 +11,11 @@
         <ng-container *ngIf="selectWidgetData$ | async as widgetDataArray">
             <ng-container *ngFor="let widgetData of widgetDataArray">
                 <button
+                    *ngIf="widgetData?.service_id !== featureServiceIds.Msg91OtpService || !(otpScriptLoading | async)"
                     mat-raised-button
                     (click)="onVerificationBtnClick(widgetData)"
                     style="padding: 10px 50px !important"
                     class="mat-elevation-z2"
-                    [disabled]="otpScriptLoading | async"
                 >
                     <img [src]="widgetData.icon" [alt]="widgetData.text" style="margin-right: 20px" loading="lazy" />
                     <span class="mat-subheading-2">{{ widgetData.text }}</span>

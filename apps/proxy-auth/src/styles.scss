@@ -4,6 +4,17 @@
 
 @import 'assets/scss/component/form-field';
 
+:root {
+    --color-common-dark: #212528;
+    --color-common-slate: #3f4346;
+    --color-common-rock: #5d6164;
+    --color-common-grey: #8f9396;
+    --color-common-cloud: #c1c5c8;
+    --color-common-smoke: #d5d9dc;
+    --color-common-white: #ffffff;
+    --border-common-radius-4: 4px;
+}
+
 // Theme
 $custom-blue: (
     50: #e6f2fb,
@@ -76,6 +87,27 @@ proxy-auth,
     box-sizing: border-box;
 }
 
-// .iti {
-//     width: 100%;
-// }
+.error-snackbar {
+    background-color: #cc5229 !important;
+    color: #ffffff !important;
+}
+.success-snackbar {
+    background-color: #008000 !important;
+    color: #ffffff !important;
+}
+.mat-snack-bar-container {
+    margin: 4px !important;
+    border-radius: 8px;
+    min-height: 36px;
+    padding: 10px 16px;
+    .mat-simple-snackbar-content {
+        font-size: 14px;
+        color: #ffffff;
+    }
+}
+.default-snackbar {
+    .mat-simple-snackbar-action .mat-button {
+        color: #ffffff !important;
+        background-color: var(--color-email-primary) !important;
+    }
+}

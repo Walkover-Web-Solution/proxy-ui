@@ -6,7 +6,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { distinctUntilChanged, filter, map, take, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, skip, take, takeUntil } from 'rxjs/operators';
 
 import { getWidgetData } from '../store/actions/otp.action';
 import { IAppState } from '../store/app.state';
@@ -157,48 +157,62 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 take(1)
             )
             .subscribe((widgetDataArray) => {
-                for (let buttonsData of widgetDataArray) {
-                    const button: HTMLButtonElement = this.renderer.createElement('button');
-                    const image: HTMLImageElement = this.renderer.createElement('img');
-                    const span: HTMLSpanElement = this.renderer.createElement('span');
-                    button.style.cssText = `
-                        outline: none;
-                        padding: 0px 16px;
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        font-size: 14px;
-                        background-color: transparent;
-                        border: 1px solid #3f4346;
-                        border-radius: 4px;
-                        line-height: 40px;
-                        color: #3f4346;
-                        margin: 8px;
-                    `;
-                    image.style.cssText = `
-                        height: 20px;
-                        width: 20px;
-                    `;
-                    span.style.cssText = `
-                        color: #3f4346;
-                        font-weight: 600;
-                    `;
-                    image.src = buttonsData.icon;
-                    image.alt = buttonsData.text;
-                    image.loading = 'lazy';
-                    span.innerText = buttonsData.text;
-                    button.addEventListener('click', () => {
-                        if (buttonsData?.urlLink) {
-                            window.open(buttonsData.urlLink, this.target);
-                        } else if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
-                            this.otpWidgetService.openWidget();
-                        }
-                    });
-                    this.renderer.appendChild(button, image);
-                    this.renderer.appendChild(button, span);
-                    this.renderer.appendChild(element, button);
+                for (const buttonsData of widgetDataArray) {
+                    if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
+                        this.otpWidgetService.scriptLoading
+                            .pipe(
+                                skip(1),
+                                filter((e) => !e),
+                                take(1)
+                            )
+                            .subscribe(() => this.appendButton(element, buttonsData));
+                    } else {
+                        this.appendButton(element, buttonsData);
+                    }
                 }
             });
+    }
+
+    private appendButton(element, buttonsData): void {
+        const button: HTMLButtonElement = this.renderer.createElement('button');
+        const image: HTMLImageElement = this.renderer.createElement('img');
+        const span: HTMLSpanElement = this.renderer.createElement('span');
+        button.style.cssText = `
+            outline: none;
+            padding: 0px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            background-color: transparent;
+            border: 1px solid #3f4346;
+            border-radius: 4px;
+            line-height: 40px;
+            color: #3f4346;
+            margin: 8px;
+        `;
+        image.style.cssText = `
+            height: 20px;
+            width: 20px;
+        `;
+        span.style.cssText = `
+            color: #3f4346;
+            font-weight: 600;
+        `;
+        image.src = buttonsData.icon;
+        image.alt = buttonsData.text;
+        image.loading = 'lazy';
+        span.innerText = buttonsData.text;
+        button.addEventListener('click', () => {
+            if (buttonsData?.urlLink) {
+                window.open(buttonsData.urlLink, this.target);
+            } else if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
+                this.otpWidgetService.openWidget();
+            }
+        });
+        this.renderer.appendChild(button, image);
+        this.renderer.appendChild(button, span);
+        this.renderer.appendChild(element, button);
     }
 
     public hitCallbackUrl(callbackUrl: string, payload: { [key: string]: any }) {
