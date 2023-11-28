@@ -143,7 +143,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             },
             (err) => {
                 errorResolver(err?.error.errors)?.forEach((error) => {
-                    this.snackBar.open(error ?? 'Something went wrong', 'close');
+                    this.snackBar.open(error ?? 'Something went wrong', 'close', {
+                        horizontalPosition: 'end',
+                        verticalPosition: 'top',
+                        panelClass: ['error-snackbar', 'default-snackbar'],
+                    });
                 });
             }
         );

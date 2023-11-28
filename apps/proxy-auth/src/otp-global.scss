@@ -7,7 +7,7 @@
     display: inherit;
     flex-direction: column;
     align-items: inherit;
-    transition: all 0.5s ease;
+    // transition: all 0.5s ease;
     box-shadow: 0 11px 15px -7px #0003, 0 24px 38px 3px #00000024, 0 9px 46px 8px #0000001f;
     background: #ffffff;
     color: #000000de;
@@ -16,6 +16,7 @@
     padding: 48px 32px;
     justify-content: center;
     position: relative;
+    overflow-y: auto;
     @media only screen and (max-width: 768px) {
         width: 90%;
         height: 80%;
@@ -161,51 +162,51 @@
     background: rgba(33, 37, 40, 0.7);
 }
 
-.mat-form-field-wrapper {
-    margin: 0px !important;
-}
-.mat-form-field-appearance-outline {
-    .mat-form-field-infix {
-        padding: 1.2em 0 0.8em 0 !important;
-        border-top: 0px solid transparent !important;
-        font-size: 14px;
-        font-weight: 400;
-        color: #3f4346;
-        .mat-input-element {
-            &::-webkit-input-placeholder {
-                /* Chrome/Opera/Safari */
-                color: #8f9396;
-                font-weight: 400;
-            }
-            &::-moz-placeholder {
-                /* Firefox 19+ */
-                color: #8f9396;
-                font-weight: 400;
-            }
-            &:-ms-input-placeholder {
-                /* IE 10+ */
-                color: #8f9396;
-                font-weight: 400;
-            }
-            &:-moz-placeholder {
-                /* Firefox 18- */
-                color: #8f9396;
-                font-weight: 400;
-            }
-        }
-    }
-    .mat-form-field-flex {
-        .mat-form-field-outline {
-            .mat-form-field-outline-start {
-                border-radius: 4px 0 0 4px;
-                min-width: 8px;
-            }
-            .mat-form-field-outline-end {
-                border-radius: 0 4px 4px 0;
-            }
-        }
-    }
-}
+// .mat-form-field-wrapper {
+//     margin: 0px !important;
+// }
+// .mat-form-field-appearance-outline {
+//     .mat-form-field-infix {
+//         padding: 1.2em 0 0.8em 0 !important;
+//         border-top: 0px solid transparent !important;
+//         font-size: 14px;
+//         font-weight: 400;
+//         color: #3f4346;
+//         .mat-input-element {
+//             &::-webkit-input-placeholder {
+//                 /* Chrome/Opera/Safari */
+//                 color: #8f9396;
+//                 font-weight: 400;
+//             }
+//             &::-moz-placeholder {
+//                 /* Firefox 19+ */
+//                 color: #8f9396;
+//                 font-weight: 400;
+//             }
+//             &:-ms-input-placeholder {
+//                 /* IE 10+ */
+//                 color: #8f9396;
+//                 font-weight: 400;
+//             }
+//             &:-moz-placeholder {
+//                 /* Firefox 18- */
+//                 color: #8f9396;
+//                 font-weight: 400;
+//             }
+//         }
+//     }
+//     .mat-form-field-flex {
+//         .mat-form-field-outline {
+//             .mat-form-field-outline-start {
+//                 border-radius: 4px 0 0 4px;
+//                 min-width: 8px;
+//             }
+//             .mat-form-field-outline-end {
+//                 border-radius: 0 4px 4px 0;
+//             }
+//         }
+//     }
+// }
 
 .disabled {
     pointer-events: none;
