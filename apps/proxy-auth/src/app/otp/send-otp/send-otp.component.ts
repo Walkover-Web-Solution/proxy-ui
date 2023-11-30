@@ -219,6 +219,13 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         this.otpService.callBackUrl(callbackUrl, payload).subscribe(
             (res) => {
                 this.successReturn(res);
+                if (res?.data?.redirect_to) {
+                    setTimeout(() => {
+                        location.href = res?.data?.redirect_to;
+                    }, 100);
+                } else {
+                    this.toggleSendOtp();
+                }
             },
             (error: HttpErrorResponse) => {
                 if (error?.status === 403) {
