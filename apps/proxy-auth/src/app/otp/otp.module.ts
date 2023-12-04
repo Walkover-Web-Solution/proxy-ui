@@ -62,7 +62,15 @@ export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent,
         OtpService,
         OtpUtilityService,
         OtpWidgetService,
-        { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
+        {
+            provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+            useValue: {
+                duration: 2500,
+                horizontalPosition: 'end',
+                verticalPosition: 'top',
+                panelClass: ['error-snackbar', 'default-snackbar'],
+            },
+        },
         { provide: ProxyBaseUrls.Env, useValue: environment.env },
         {
             provide: ProxyBaseUrls.BaseURL,
