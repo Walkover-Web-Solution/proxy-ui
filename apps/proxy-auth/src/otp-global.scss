@@ -56,6 +56,10 @@
         flex-direction: column;
         overflow: visible;
 
+        &.button-gap {
+            gap: 8px;
+        }
+
         .otp-mode {
             font-weight: 400;
             font-size: 14px;
