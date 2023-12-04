@@ -81,7 +81,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
     ngAfterViewInit(): void {
         this.initIntl('user');
-        this.initIntl('company');
+        setTimeout(() => {
+            this.initIntl('company');
+        }, 1000);
     }
 
     public ngOnDestroy(): void {
