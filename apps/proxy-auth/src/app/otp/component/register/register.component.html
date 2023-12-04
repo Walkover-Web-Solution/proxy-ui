@@ -174,10 +174,12 @@
             [ngClass]="{ 'invalid-input': formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber'] }"
             (blur)="formControl?.markAsTouched(); formControl?.setValue(intlClass?.[key]?.phoneNumber?.replace('+', ''))"
         />
-        <mat-error
-            *ngIf="formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']"
-        >
-            Please enter valid mobile number
-        </mat-error>
+        <div>
+            <mat-error
+                *ngIf="formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']"
+            >
+                Please enter valid mobile number
+            </mat-error>
+        </div>
     </div>
 </ng-template>
