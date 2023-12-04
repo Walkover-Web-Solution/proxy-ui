@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 const WIDGET_SCRIPT_JS = `https://control.msg91.com/app/assets/otp-provider/otp-provider.js`;
 
 declare var window;
@@ -13,6 +13,8 @@ export class OtpWidgetService {
     public scriptLoading = new BehaviorSubject<boolean>(false);
     public otpWidgetToken = new BehaviorSubject<string>(null);
 
+    public otpWidgetError = new Subject<{ code: number; message: string; closeByUser?: boolean }>();
+
     private readonly loadWidgetFunc = () => {
         this.scriptLoading.next(false);
         const configuration = {
@@ -24,7 +26,7 @@ export class OtpWidgetService {
             },
             failure: (error) => {
                 // handle error
-                console.log(error.message);
+                this.otpWidgetError.next(error);
             },
         };
         window.initSendOTP(configuration);
