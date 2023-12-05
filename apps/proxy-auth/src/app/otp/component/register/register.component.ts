@@ -81,7 +81,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
     ngAfterViewInit(): void {
         this.initIntl('user');
-        this.initIntl('company');
+        setTimeout(() => {
+            this.initIntl('company');
+        }, 1000);
     }
 
     public ngOnDestroy(): void {
@@ -155,11 +157,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             },
             (err) => {
                 errorResolver(err?.error.errors)?.forEach((error) => {
-                    this.snackBar.open(error ?? 'Something went wrong', 'close', {
-                        horizontalPosition: 'end',
-                        verticalPosition: 'top',
-                        panelClass: ['error-snackbar', 'default-snackbar'],
-                    });
+                    this.snackBar.open(error ?? 'Something went wrong', 'close');
                 });
             }
         );
