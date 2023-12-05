@@ -30,6 +30,15 @@
         margin-top: 24px;
         font-size: 13px;
     }
+
+    @media only screen and (max-width: 768px) {
+        width: 100%;
+    }
+}
+
+.error-message {
+    font-size: 14px;
+    color: #f44336;
 }
 
 #init-contact {
@@ -81,6 +90,10 @@ input[matinput]::-webkit-inner-spin-button {
         display: flex;
         width: 100%;
         gap: 16px;
+        @media only screen and (max-width: 768px) {
+            flex-wrap: wrap;
+            gap: 0px;
+        }
     }
 
     .subheading {
@@ -88,10 +101,15 @@ input[matinput]::-webkit-inner-spin-button {
     }
 }
 
-.submit-btn {
+.submit-wrapper {
     width: 100%;
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
+    align-items: end;
+    gap: 8px !important;
+    .submit-btn {
+        margin-left: auto;
+    }
 }
 
 .heading {

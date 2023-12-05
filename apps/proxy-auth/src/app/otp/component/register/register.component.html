@@ -101,8 +101,19 @@
                     formControl: registrationForm.get('company.email')
                 }"
             ></ng-container>
-            <div class="submit-btn">
-                <button #submitBtn mat-flat-button color="primary">Submit</button>
+            <div class="one-line submit-wrapper">
+                <div class="error-message">
+                    <ng-container *ngIf="apiError | async as apiError">
+                        <span class="subheading">Error: </span>
+                        <span *ngFor="let error of apiError">
+                            {{ error }}
+                            <br />
+                        </span>
+                    </ng-container>
+                </div>
+                <div class="submit-btn">
+                    <button #submitBtn mat-flat-button color="primary">Submit</button>
+                </div>
             </div>
         </div>
     </div>

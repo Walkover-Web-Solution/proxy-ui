@@ -12,9 +12,8 @@ import * as _ from 'lodash';
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { OtpUtilityService } from '../../service/otp-utility.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { errorResolver } from '@proxy/models/root-models';
-import { takeUntil } from 'rxjs';
+import { BehaviorSubject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'proxy-register',
@@ -58,12 +57,12 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     });
 
     public intlClass: { [key: string]: IntlPhoneLib } = {};
+    public apiError = new BehaviorSubject<string[]>(null);
 
     constructor(
         private store: Store<IAppState>,
         private otpService: OtpService,
-        private otpUtilityService: OtpUtilityService,
-        private snackBar: MatSnackBar
+        private otpUtilityService: OtpUtilityService
     ) {
         super();
     }
@@ -119,6 +118,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     public submit(): void {
+        this.apiError.next(null);
         const formData = removeEmptyKeys(cloneDeep(this.registrationForm.value), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
@@ -156,9 +156,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 this.returnSuccess(response);
             },
             (err) => {
-                errorResolver(err?.error.errors)?.forEach((error) => {
-                    this.snackBar.open(error ?? 'Something went wrong', 'close');
-                });
+                this.apiError.next(errorResolver(err?.error.errors));
             }
         );
     }

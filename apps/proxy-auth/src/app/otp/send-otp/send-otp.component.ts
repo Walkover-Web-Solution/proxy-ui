@@ -19,7 +19,6 @@ import {
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { OtpWidgetService } from '../service/otp-widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'proxy-send-otp',
@@ -70,8 +69,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         private store: Store<IAppState>,
         private renderer: Renderer2,
         private otpWidgetService: OtpWidgetService,
-        private otpService: OtpService,
-        private snackBar: MatSnackBar
+        private otpService: OtpService
     ) {
         super();
         this.selectGetOtpInProcess$ = this.store.pipe(
@@ -110,11 +108,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         });
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
             this.hitCallbackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token });
-        });
-        this.otpWidgetService.otpWidgetError.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((error) => {
-            setTimeout(() => {
-                this.snackBar.open(error?.message, 'close');
-            }, 100);
         });
     }
 
