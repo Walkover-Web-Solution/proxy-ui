@@ -81,17 +81,16 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     ngAfterViewInit(): void {
         this.initIntl('user');
         let count = 0;
-        const parentDom = document.querySelector('proxy-auth')?.shadowRoot;
+        const userIntlWrapper = document
+            ?.querySelector('proxy-auth')
+            ?.shadowRoot?.querySelector('#init-contact-wrapper-user');
         const interval = setInterval(() => {
-            if (
-                count > 10 ||
-                parentDom.querySelector('#init-contact-wrapper-user .iti__selected-flag')?.getAttribute('title')
-            ) {
+            if (count > 6 || userIntlWrapper?.querySelector('.iti__selected-flag')?.getAttribute('title')) {
                 this.initIntl('company');
                 clearInterval(interval);
             }
             count += 1;
-        }, 200);
+        }, 500);
     }
 
     public ngOnDestroy(): void {
