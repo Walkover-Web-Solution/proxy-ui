@@ -120,3 +120,8 @@ export const ProxyAuthScript = (
 
 export const ProxyAuthScriptUrl = (baseUrl: string, time?: number) =>
     `${baseUrl}/assets/proxy-auth/proxy-auth.js${time ? '?time=' + time : ''}`;
+
+export enum FeatureServiceIds {
+    Msg91OtpService = 6,
+    GoogleAuthentication = 7,
+}
