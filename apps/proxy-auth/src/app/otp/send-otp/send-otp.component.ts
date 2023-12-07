@@ -1,3 +1,4 @@
+import { OtpService } from './../service/otp.service';
 import { NgStyle } from '@angular/common';
 import { Component, Input, NgZone, OnDestroy, OnInit, Renderer2, ViewEncapsulation } from '@angular/core';
 import { META_TAG_ID } from '@proxy/constant';
@@ -5,7 +6,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { distinctUntilChanged, filter, map, take, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, skip, take, takeUntil } from 'rxjs/operators';
 
 import { getWidgetData } from '../store/actions/otp.action';
 import { IAppState } from '../store/app.state';
@@ -15,6 +16,9 @@ import {
     selectVerifyOtpInProcess,
     selectWidgetData,
 } from '../store/selectors';
+import { FeatureServiceIds } from '@proxy/models/features-model';
+import { OtpWidgetService } from '../service/otp-widget.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'proxy-send-otp',
@@ -56,7 +60,17 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public selectVerifyOtpInProcess$: Observable<boolean>;
     public animate: boolean = false;
 
-    constructor(private ngZone: NgZone, private store: Store<IAppState>, private renderer: Renderer2) {
+    public otpWidgetData;
+    public showRegistration = new BehaviorSubject<boolean>(false);
+    public referenceElement: HTMLElement = null;
+
+    constructor(
+        private ngZone: NgZone,
+        private store: Store<IAppState>,
+        private renderer: Renderer2,
+        private otpWidgetService: OtpWidgetService,
+        private otpService: OtpService
+    ) {
         super();
         this.selectGetOtpInProcess$ = this.store.pipe(
             select(selectGetOtpInProcess),
@@ -85,6 +99,16 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 payload: { ...(this.addInfo && { addInfo: this.addInfo }) },
             })
         );
+        this.selectWidgetData$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((widgetData) => {
+            this.otpWidgetData = widgetData?.find((widget) => widget?.service_id === FeatureServiceIds.Msg91OtpService);
+            if (this.otpWidgetData) {
+                this.otpWidgetService.setWidgetConfig(this.otpWidgetData?.widget_id, this.otpWidgetData?.token_auth);
+                this.otpWidgetService.loadScript();
+            }
+        });
+        this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
+            this.hitCallbackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token });
+        });
     }
 
     ngOnDestroy() {
@@ -106,8 +130,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     public toggleSendOtp() {
-        let referneceElementExist = document.getElementById(this.referenceId);
-        if (!referneceElementExist) {
+        this.referenceElement = document.getElementById(this.referenceId);
+        if (!this.referenceElement) {
             this.show$.pipe(take(1)).subscribe((res) => {
                 this.ngZone.run(() => {
                     if (res) {
@@ -122,7 +146,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 });
             });
         } else {
-            this.addButtonsToReferenceElement(referneceElementExist);
+            this.addButtonsToReferenceElement(this.referenceElement);
         }
     }
 
@@ -133,44 +157,91 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 take(1)
             )
             .subscribe((widgetDataArray) => {
-                for (let buttonsData of widgetDataArray) {
-                    const button: HTMLButtonElement = this.renderer.createElement('button');
-                    const image: HTMLImageElement = this.renderer.createElement('img');
-                    const span: HTMLSpanElement = this.renderer.createElement('span');
-                    button.style.cssText = `
-                        outline: none;
-                        padding: 0px 16px;
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        font-size: 14px;
-                        background-color: transparent;
-                        border: 1px solid #3f4346;
-                        border-radius: 4px;
-                        line-height: 40px;
-                        color: #3f4346;
-                        margin: 8px;
-                    `;
-                    image.style.cssText = `
-                        height: 20px;
-                        width: 20px;
-                    `;
-                    span.style.cssText = `
-                        color: #3f4346;
-                        font-weight: 600;
-                    `;
-                    image.src = buttonsData.icon;
-                    image.alt = buttonsData.text;
-                    image.loading = 'lazy';
-                    span.innerText = buttonsData.text;
-                    button.addEventListener('click', () => {
-                        window.open(buttonsData.urlLink, this.target);
-                    });
-                    this.renderer.appendChild(button, image);
-                    this.renderer.appendChild(button, span);
-                    this.renderer.appendChild(element, button);
+                for (const buttonsData of widgetDataArray) {
+                    if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
+                        this.otpWidgetService.scriptLoading
+                            .pipe(
+                                skip(1),
+                                filter((e) => !e),
+                                take(1)
+                            )
+                            .subscribe(() => this.appendButton(element, buttonsData));
+                    } else {
+                        this.appendButton(element, buttonsData);
+                    }
                 }
             });
+    }
+
+    private appendButton(element, buttonsData): void {
+        const button: HTMLButtonElement = this.renderer.createElement('button');
+        const image: HTMLImageElement = this.renderer.createElement('img');
+        const span: HTMLSpanElement = this.renderer.createElement('span');
+        button.style.cssText = `
+            outline: none;
+            padding: 0px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            background-color: transparent;
+            border: 1px solid #3f4346;
+            border-radius: 4px;
+            line-height: 40px;
+            color: #3f4346;
+            margin: 8px;
+        `;
+        image.style.cssText = `
+            height: 20px;
+            width: 20px;
+        `;
+        span.style.cssText = `
+            color: #3f4346;
+            font-weight: 600;
+        `;
+        image.src = buttonsData.icon;
+        image.alt = buttonsData.text;
+        image.loading = 'lazy';
+        span.innerText = buttonsData.text;
+        button.addEventListener('click', () => {
+            if (buttonsData?.urlLink) {
+                window.open(buttonsData.urlLink, this.target);
+            } else if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
+                this.otpWidgetService.openWidget();
+            }
+        });
+        this.renderer.appendChild(button, image);
+        this.renderer.appendChild(button, span);
+        this.renderer.appendChild(element, button);
+    }
+
+    public hitCallbackUrl(callbackUrl: string, payload: { [key: string]: any }) {
+        this.otpService.callBackUrl(callbackUrl, payload).subscribe(
+            (res) => {
+                this.successReturn(res);
+                if (res?.data?.redirect_to) {
+                    setTimeout(() => {
+                        location.href = res?.data?.redirect_to;
+                    }, 100);
+                } else {
+                    this.toggleSendOtp();
+                }
+            },
+            (error: HttpErrorResponse) => {
+                if (error?.status === 403) {
+                    this.setShowRegistration(true);
+                }
+            }
+        );
+    }
+
+    public setShowRegistration(value: boolean) {
+        this.ngZone.run(() => {
+            if (this.referenceElement) {
+                this.show$ = of(value);
+            }
+            this.showRegistration.next(value);
+        });
     }
 
     public returnSuccessObj(obj) {

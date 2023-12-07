@@ -1,3 +1,4 @@
+import { OtpWidgetService } from './../../service/otp-widget.service';
 import {
     AfterViewInit,
     ChangeDetectorRef,
@@ -21,7 +22,7 @@ import {
     resetAnyState,
 } from '../../store/actions/otp.action';
 import { IAppState } from '../../store/app.state';
-import { Observable, of, Subscription, timer } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subscription, timer } from 'rxjs';
 import {
     closeWidgetApiFailed,
     errors,
@@ -44,6 +45,7 @@ import { IGetOtpRes, IWidgetResponse } from '../../model/otp';
 import { IntlPhoneLib } from '@proxy/utils';
 import { META_TAG_ID } from '@proxy/constant';
 import { environment } from 'apps/proxy-auth/src/environments/environment';
+import { FeatureServiceIds } from '@proxy/models/features-model';
 
 export enum OtpErrorCodes {
     VerifyLimitReached = 704,
@@ -89,6 +91,8 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public selectApiErrorResponse$: Observable<any>;
     public closeWidgetApiFailed$: Observable<boolean>;
 
+    public otpScriptLoading: BehaviorSubject<boolean> = this.otpWidgetService.scriptLoading;
+
     public timerSubscription: Subscription;
     public timerSec = 25;
     public timeRemain: number;
@@ -108,8 +112,14 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public clickedEvent: any;
     public retryProcesses = [];
     public otpErrorCodes = OtpErrorCodes;
+    public featureServiceIds = FeatureServiceIds;
 
-    constructor(private store: Store<IAppState>, private cdr: ChangeDetectorRef, private _elemRef: ElementRef) {
+    constructor(
+        private store: Store<IAppState>,
+        private cdr: ChangeDetectorRef,
+        private _elemRef: ElementRef,
+        private otpWidgetService: OtpWidgetService
+    ) {
         super();
         this.errors$ = this.store.pipe(select(errors), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
         this.selectGetOtpInProcess$ = this.store.pipe(
@@ -365,7 +375,15 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         this.timerSubscription.unsubscribe();
     }
 
-    public openLink(link: string): void {
+    private openLink(link: string): void {
         window.open(link, this.target);
+    }
+
+    public onVerificationBtnClick(widgetData: any): void {
+        if (widgetData?.urlLink) {
+            this.openLink(widgetData?.urlLink);
+        } else if (widgetData?.service_id === FeatureServiceIds.Msg91OtpService) {
+            this.otpWidgetService.openWidget();
+        }
     }
 }

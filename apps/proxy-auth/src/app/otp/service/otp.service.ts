@@ -52,4 +52,12 @@ export class OtpService {
     public getIpInfo(requestUrl: any): Observable<any> {
         return this.http.get<any>(requestUrl, {}, this.options);
     }
+
+    public callBackUrl(requestUrl: any, params: { [key: string]: any } = {}): Observable<any> {
+        return this.http.get<any>(requestUrl, params, this.options);
+    }
+
+    public register(body: { proxy_state?: string }): Observable<any> {
+        return this.http.post<any>(otpVerificationUrls.register(this.baseUrl), body, this.options);
+    }
 }

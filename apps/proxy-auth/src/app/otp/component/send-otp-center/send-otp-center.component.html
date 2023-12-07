@@ -7,12 +7,13 @@
             />
         </svg>
     </button>
-    <div class="otp-verification-content">
+    <div class="otp-verification-content button-gap">
         <ng-container *ngIf="selectWidgetData$ | async as widgetDataArray">
             <ng-container *ngFor="let widgetData of widgetDataArray">
                 <button
+                    *ngIf="widgetData?.service_id !== featureServiceIds.Msg91OtpService || !(otpScriptLoading | async)"
                     mat-raised-button
-                    (click)="openLink(widgetData.urlLink)"
+                    (click)="onVerificationBtnClick(widgetData)"
                     style="padding: 10px 50px !important"
                     class="mat-elevation-z2"
                 >
