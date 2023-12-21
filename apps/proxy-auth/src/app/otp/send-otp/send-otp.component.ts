@@ -62,7 +62,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
     public otpWidgetData;
     public showRegistration = new BehaviorSubject<boolean>(false);
-    public referneceElement: HTMLElement = null;
+    public referenceElement: HTMLElement = null;
 
     constructor(
         private ngZone: NgZone,
@@ -130,8 +130,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     public toggleSendOtp() {
-        this.referneceElement = document.getElementById(this.referenceId);
-        if (!this.referneceElement) {
+        this.referenceElement = document.getElementById(this.referenceId);
+        if (!this.referenceElement) {
             this.show$.pipe(take(1)).subscribe((res) => {
                 this.ngZone.run(() => {
                     if (res) {
@@ -146,7 +146,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 });
             });
         } else {
-            this.addButtonsToReferenceElement(this.referneceElement);
+            this.addButtonsToReferenceElement(this.referenceElement);
         }
     }
 
@@ -237,7 +237,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
     public setShowRegistration(value: boolean) {
         this.ngZone.run(() => {
-            if (this.referneceElement) {
+            if (this.referenceElement) {
                 this.show$ = of(value);
             }
             this.showRegistration.next(value);

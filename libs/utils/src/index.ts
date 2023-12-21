@@ -294,3 +294,18 @@ export function removeEmptyKeys(data: { [key: string]: any }, removeEmptyObject?
     });
     return data;
 }
+
+/**
+ * get Regex for type checking for input type file
+ *
+ * @export
+ * @param {string} acceptString accept string provided in input
+ * @return {*}  {string}
+ */
+export function getAcceptedTypeRegex(acceptString: string): string {
+    return acceptString
+        .replaceAll(/\s*,\s*/g, '|')
+        .replaceAll('/', '\\/')
+        .replaceAll('.', '\\.')
+        .replaceAll('*', '.*');
+}
