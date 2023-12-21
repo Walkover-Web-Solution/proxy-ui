@@ -483,6 +483,16 @@
                 />
             </mat-chip-list>
         </ng-container>
+        <ng-container *ngSwitchCase="featureFieldType.ReadFile">
+            <input
+                matInput
+                type="text"
+                placeholder="Choose {{ fieldConfig?.label }} ==>"
+                autocomplete="off"
+                [formControl]="fieldControl"
+                readonly
+            />
+        </ng-container>
         <ng-container *ngSwitchDefault>
             <input
                 matInput
@@ -504,6 +514,33 @@
                 "
             ></ng-container>
         </mat-error>
+        <div matSuffix>
+            <ng-container
+                *ngIf="
+                    fieldConfig?.type === featureFieldType.ReadFile &&
+                    fieldConfig?.label + '_' + this.selectedServiceIndex as fileKey
+                "
+            >
+                <button
+                    color="warn"
+                    mat-icon-button
+                    *ngIf="fieldControl?.value"
+                    (click)="fileInput.files = null; updateFileValue(fileKey, fieldConfig, fieldControl, null)"
+                >
+                    <mat-icon class="material-icons-outlined mat-icon-18"> close </mat-icon>
+                </button>
+                <input
+                    #fileInput
+                    hidden
+                    type="file"
+                    [accept]="fieldConfig?.allowed_types ?? ''"
+                    (change)="updateFileValue(fileKey, fieldConfig, fieldControl, fileInput.files)"
+                />
+                <button color="primary" mat-icon-button (click)="fileInput.click()">
+                    <mat-icon class="material-icons-outlined mat-icon-18"> attach_file </mat-icon>
+                </button>
+            </ng-container>
+        </div>
         <mat-hint *ngIf="fieldConfig?.hint">{{ fieldConfig?.hint }}</mat-hint>
     </mat-form-field>
     <div class="mat-form-field-outside-error" *ngIf="fieldConfig?.type === featureFieldType.ChipList">
@@ -523,6 +560,7 @@
 </ng-template>
 
 <ng-template #matErrors let-label="label" let-fieldControl="fieldControl" let-patternErrorText="patternErrorText">
+    <mat-error *ngIf="fieldControl?.errors?.customError as customError"> {{ customError }} </mat-error>
     <mat-error *ngIf="fieldControl.errors?.required"> {{ label }} is required. </mat-error>
     <mat-error *ngIf="fieldControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
     <mat-error *ngIf="fieldControl.errors?.noStartEndSpaces"> Start and End spaces are not allowed</mat-error>
