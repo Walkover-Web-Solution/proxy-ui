@@ -229,7 +229,10 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 session_time: featureFormData.authorizationDetails.session_time,
                 services: this.getServicePayload(selectedMethod),
             };
-            this.componentStore.createFeature(payload);
+            // Added setTimeout because payload creation might contain promises
+            setTimeout(() => {
+                this.componentStore.createFeature(payload);
+            }, 100);
         }
     }
 
@@ -368,6 +371,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             }
             if (config.type === FeatureFieldType.ReadFile) {
                 this.fileValues[key] = null;
+                if (config?.fileName) {
+                    formValue = config?.fileName;
+                }
             }
             if (config.is_required) {
                 if (config.type === FeatureFieldType.ChipList) {
