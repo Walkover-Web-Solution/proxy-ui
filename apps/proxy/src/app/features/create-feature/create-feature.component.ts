@@ -411,6 +411,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         Object.keys(this.chipListValues)
             .filter((key) => +key.split('_')[1] === index)
             .forEach((key) => (this.chipListValues[key] = new Set(this.chipListReadOnlyValues[key])));
+        Object.keys(this.fileValues)
+            .filter((key) => +key.split('_')[1] === index)
+            .forEach((key) => (this.fileValues[key] = null));
     }
 
     public updateChipListValues(
