@@ -22,6 +22,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { environment } from '../../../environments/environment';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { MatStepper } from '@angular/material/stepper';
+import { getAcceptedTypeRegex } from '@proxy/utils';
 
 type ServiceFormGroup = FormGroup<{
     requirements: FormGroup<{
@@ -63,6 +64,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public chipListSeparatorKeysCodes: number[] = [ENTER, COMMA];
     public chipListValues: { [key: string]: Set<string> } = {};
     public chipListReadOnlyValues: { [key: string]: Set<string> } = {};
+
+    // File
+    public fileValues: { [key: string]: FileList } = {};
 
     public featureForm = new FormGroup({
         primaryDetails: new FormGroup({
@@ -225,7 +229,10 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 session_time: featureFormData.authorizationDetails.session_time,
                 services: this.getServicePayload(selectedMethod),
             };
-            this.componentStore.createFeature(payload);
+            // Added setTimeout because payload creation might contain promises
+            setTimeout(() => {
+                this.componentStore.createFeature(payload);
+            }, 100);
         }
     }
 
@@ -274,7 +281,10 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 payload = {};
                 break;
         }
-        this.componentStore.updateFeature({ id: this.featureId, body: payload });
+        // Added setTimeout because payload creation might contain promises
+        setTimeout(() => {
+            this.componentStore.updateFeature({ id: this.featureId, body: payload });
+        }, 100);
     }
 
     private getServicePayload(selectedMethod: IMethod): IMethodService[] {
@@ -283,19 +293,29 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             if (formGroup.dirty) {
                 const service = selectedMethod.method_services[index];
                 const formData = formGroup.value;
-                Object.keys(service?.requirements ?? {}).forEach((key) => {
-                    const config = service.requirements[key];
-                    config.value = this.getValueOtherThanForm(config, index) ?? formData.requirements[key];
-                });
-                Object.keys(service?.configurations?.fields ?? {}).forEach((key) => {
-                    const config = service.configurations.fields[key];
-                    config.value = this.getValueOtherThanForm(config, index) ?? formData.configurations[key];
-                });
+                this.setFormDataInPayload(service?.requirements, formData.requirements, index);
+                this.setFormDataInPayload(service?.configurations?.fields, formData.configurations, index);
                 service['is_enable'] = formData.is_enable;
                 services.push(service);
             }
         });
         return services;
+    }
+
+    private setFormDataInPayload(
+        payloadObject: { [key: string]: IFieldConfig },
+        formDataObject: { [key: string]: any },
+        index: number
+    ): void {
+        Object.keys(payloadObject ?? {}).forEach((key) => {
+            const config = payloadObject[key];
+            const promise = this.getValueOtherThanForm(config, index);
+            if (promise) {
+                promise.then((value) => (config.value = value ?? null));
+            } else {
+                config.value = formDataObject?.[key];
+            }
+        });
     }
 
     public stepChange(event: any) {
@@ -320,12 +340,23 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         this.componentStore.getFeatureDetalis(this.featureId);
     }
 
-    public getValueOtherThanForm(config: IFieldConfig, index: number): any {
+    public getValueOtherThanForm(config: IFieldConfig, index: number): Promise<any> {
+        const key = `${config.label}_${index}`;
         if (config.type === FeatureFieldType.ChipList) {
-            const key = `${config.label}_${index}`;
-            return Array.from(this.chipListValues[key]).join(config?.delimiter ?? ' ');
+            return new Promise((resolve) =>
+                resolve(Array.from(this.chipListValues[key]).join(config?.delimiter ?? ' '))
+            );
+        } else if (config.type === FeatureFieldType.ReadFile) {
+            const file = this.fileValues[key]?.[0];
+            if (file) {
+                config['fileName'] = file?.name;
+                return file?.text();
+            } else {
+                return null;
+            }
+        } else {
+            return null;
         }
-        return null;
     }
 
     public createFormControl(config: IFieldConfig, index: number, value: any = null) {
@@ -337,6 +368,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.chipListValues[key] = new Set(formValue?.split(config.delimiter ?? ' ') ?? []);
                 this.chipListReadOnlyValues[key] = new Set(config?.read_only_value ?? []);
                 formValue = null;
+            }
+            if (config.type === FeatureFieldType.ReadFile) {
+                this.fileValues[key] = null;
+                if (config?.fileName) {
+                    formValue = config?.fileName;
+                }
             }
             if (config.is_required) {
                 if (config.type === FeatureFieldType.ChipList) {
@@ -374,6 +411,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         Object.keys(this.chipListValues)
             .filter((key) => +key.split('_')[1] === index)
             .forEach((key) => (this.chipListValues[key] = new Set(this.chipListReadOnlyValues[key])));
+        Object.keys(this.fileValues)
+            .filter((key) => +key.split('_')[1] === index)
+            .forEach((key) => (this.fileValues[key] = null));
     }
 
     public updateChipListValues(
@@ -390,6 +430,51 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         } else if (operation === 'delete') {
             this.chipListValues[chipListKey].delete(value);
             fieldControl.updateValueAndValidity();
+        }
+    }
+
+    public updateFileValue(
+        fileKey: string,
+        fieldConfig: IFieldConfig,
+        fieldControl: FormControl,
+        value: FileList
+    ): void {
+        if (value) {
+            let fileRegex = null;
+            const nameArray = [];
+            if (fieldConfig?.allowed_types) {
+                fileRegex = getAcceptedTypeRegex(fieldConfig?.allowed_types);
+            }
+            for (let i = 0; i < value.length; i++) {
+                if (!fileRegex || this.isFileAllowed(value[i], fileRegex)) {
+                    nameArray.push(value[i]?.name);
+                } else {
+                    setTimeout(() => {
+                        fieldControl?.setErrors({
+                            ...fieldControl?.errors,
+                            customError: 'Selected file is not supported for ' + fieldConfig?.label,
+                        });
+                    }, 100);
+                    value = null;
+                    break;
+                }
+            }
+            this.fileValues[fileKey] = value;
+            fieldControl.setValue(nameArray.join(', '));
+            fieldControl.markAsDirty();
+            this.featureForm.markAsDirty();
+        } else {
+            this.fileValues[fileKey] = null;
+            fieldControl.reset();
+        }
+    }
+
+    private isFileAllowed(file: File, fileRegex: string): boolean {
+        if (file?.type) {
+            return Boolean(file?.type?.match(fileRegex));
+        } else {
+            const nameSplit = file?.name?.split('.');
+            return Boolean(('.' + nameSplit[nameSplit?.length - 1])?.match(fileRegex));
         }
     }
 
