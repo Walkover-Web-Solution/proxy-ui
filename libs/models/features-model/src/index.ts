@@ -88,11 +88,14 @@ export interface IFieldConfig {
     sourceFieldValue: string;
     delimiter?: string;
     read_only_value?: string[];
+    allowed_types: string;
+    fileName: string;
 }
 
 export enum FeatureFieldType {
     Text = 'text',
     ChipList = 'chipList',
+    ReadFile = 'readFile',
 }
 
 export const ProxyAuthScript = (
