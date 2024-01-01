@@ -4,6 +4,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OtpModule } from './otp/otp.module';
 import { SendOtpComponent } from './otp/send-otp/send-otp.component';
+import { omit } from 'lodash-es';
+
+export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure'];
 
 declare global {
     interface Window {
@@ -31,7 +34,6 @@ window['initVerification'] = (config: any) => {
             }
             const sendOtpElement = document.createElement('proxy-auth') as NgElement & WithProperties<SendOtpComponent>;
             sendOtpElement.referenceId = config.referenceId;
-            sendOtpElement.addInfo = config?.addInfo ?? null;
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;
             if (!config.success || typeof config.success !== 'function') {
@@ -39,6 +41,10 @@ window['initVerification'] = (config: any) => {
             }
             sendOtpElement.successReturn = config.success;
             sendOtpElement.failureReturn = config.failure;
+
+            // omitting keys which are not required in API payload
+            sendOtpElement.otherData = omit(config, RESERVED_KEYS);
+
             document.getElementsByTagName('body')[0].append(sendOtpElement);
             window['libLoaded'] = true;
         } else {
