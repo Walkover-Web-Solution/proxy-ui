@@ -34,7 +34,6 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                 failure: (error) => {
                     console.log('failure reason', error);
                 },
-                addInfo: null,
             };
             window.initVerification(sendOTPConfig);
         }
