@@ -28,7 +28,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy {
     @Input() public referenceId: string;
-    @Input() public addInfo: any;
     @Input() public target: string;
     @Input()
     set css(type: NgStyle['ngStyle']) {
@@ -52,6 +51,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     );
     @Input() public successReturn: (arg: any) => any;
     @Input() public failureReturn: (arg: any) => any;
+    @Input() public otherData: { [key: string]: any } = {};
 
     public show$: Observable<boolean> = of(false);
     public selectGetOtpInProcess$: Observable<boolean>;
@@ -96,7 +96,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         this.store.dispatch(
             getWidgetData({
                 referenceId: this.referenceId,
-                payload: { ...(this.addInfo && { addInfo: this.addInfo }) },
+                payload: this.otherData,
             })
         );
         this.selectWidgetData$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((widgetData) => {
