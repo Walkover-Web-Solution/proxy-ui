@@ -82,7 +82,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
     public logsFilterForm = new FormGroup(
         {
             requestType: new FormControl<string[]>(this.requestTypes),
-            range: new FormControl<string>(''),
+            range: new FormControl<string>({ value: 'status_code', disabled: true }),
             from: new FormControl<number>({ value: null, disabled: true }, [
                 Validators.pattern(ONLY_INTEGER_REGEX),
                 Validators.maxLength(6),
@@ -106,6 +106,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
+        this.changeRangeType(this.logsFilterForm.controls.range.value);
     }
     ngOnInit(): void {
         this.params = {
@@ -126,10 +127,10 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
         if (searchKeyword?.length) {
             this.params = {
                 ...this.params,
-                endpoint: searchKeyword.trim(),
+                search: searchKeyword.trim(),
             };
         } else {
-            this.params = { ...omit(this.params, ['endpoint']) };
+            this.params = { ...omit(this.params, ['search']) };
         }
         this.params.pageNo = 1;
         this.getLogs();
@@ -232,7 +233,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
      */
     public resetForm() {
         this.logsFilterForm.patchValue({
-            range: '',
+            range: 'status_code',
             from: null,
             to: null,
             requestType: this.requestTypes,
@@ -244,7 +245,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
      */
     public resetParam(): void {
         this.resetForm();
-        this.changeRangeType(null);
+        this.changeRangeType(this.logsFilterForm.controls.range.value);
         this.closeMyMenu();
         this.applyFilter();
     }
