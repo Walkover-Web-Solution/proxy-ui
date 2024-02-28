@@ -43,7 +43,7 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
     );
     readonly reqLogsInProcess$: Observable<boolean> = this.select((state) => state.reqLogsInProcess);
 
-    readonly resetReqLog = this.updater((state) => ({ ...state, reqLog: null }));
+    readonly resetReqLog = this.updater((state) => ({ ...state, reqLogs: null }));
 
     readonly getLogs = this.effect((data: Observable<ILogsReq>) => {
         return data.pipe(
