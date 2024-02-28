@@ -16,6 +16,7 @@ export class LogsDetailsSideDialogComponent extends BaseComponent implements OnD
         public data: {
             logData$: Observable<ILogDetailRes>;
             isLoading$: Observable<boolean>;
+            logSettings: { [key: string]: boolean };
         }
     ) {
         super();

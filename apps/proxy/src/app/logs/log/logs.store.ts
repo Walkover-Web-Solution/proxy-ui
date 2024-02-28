@@ -43,7 +43,7 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
     );
     readonly reqLogsInProcess$: Observable<boolean> = this.select((state) => state.reqLogsInProcess);
 
-    readonly resetReqLog = this.updater((state) => ({ ...state, reqLog: null }));
+    readonly resetReqLog = this.updater((state) => ({ ...state, reqLogs: null }));
 
     readonly getLogs = this.effect((data: Observable<ILogsReq>) => {
         return data.pipe(
@@ -88,7 +88,9 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
                                 reqLogsInProcess: false,
                                 reqLogs: {
                                     ...res.data,
-                                    request_body: JSON.parse(res?.data.request_body as string),
+                                    request_body: this.parseJson(res?.data?.request_body),
+                                    headers: this.parseJson(res?.data?.headers),
+                                    response: this.parseJson(res?.data?.response),
                                 },
                             });
                         },
@@ -175,5 +177,17 @@ export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
         errorMessage.forEach((error) => {
             this.toast.error(error);
         });
+    }
+
+    private parseJson(value: any): any {
+        if (typeof value === 'string') {
+            try {
+                return this.parseJson(JSON.parse(value));
+            } catch (e) {
+                return value;
+            }
+        } else {
+            return value;
+        }
     }
 }

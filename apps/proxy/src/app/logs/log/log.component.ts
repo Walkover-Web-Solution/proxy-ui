@@ -9,11 +9,11 @@ import {
 } from '@proxy/constant';
 import { MatSort } from '@angular/material/sort';
 import { LogsComponentStore } from './logs.store';
-import { Observable } from 'rxjs';
+import { Observable, distinctUntilChanged, takeUntil } from 'rxjs';
 import { IEnvironments, ILogDetailRes, ILogsRes, IProjects } from '@proxy/models/logs-models';
-import { IPaginatedResponse } from '@proxy/models/root-models';
+import { IClientSettings, IPaginatedResponse } from '@proxy/models/root-models';
 import * as dayjs from 'dayjs';
-import { omit } from 'lodash';
+import { isEqual, omit } from 'lodash';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -22,6 +22,8 @@ import { CustomValidators } from '@proxy/custom-validator';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LogsDetailsSideDialogComponent } from '../log-details-side-dialog/log-details-side-dialog.component';
+import { Store, select } from '@ngrx/store';
+import { IAppState, selectClientSettings } from '../../ngrx';
 
 type FilterTypes = 'environments' | 'projects';
 
@@ -72,13 +74,15 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
     public environments$: Observable<IPaginatedResponse<IEnvironments[]>> = this.componentStore.environments$;
     public projects$: Observable<IPaginatedResponse<IProjects[]>> = this.componentStore.projects$;
     public reqLogs$: Observable<ILogDetailRes> = this.componentStore.reqLogs$;
+    public clientSettings$: Observable<IClientSettings>;
+
     public logDetailDialogRef: MatDialogRef<LogsDetailsSideDialogComponent>;
 
     /* Logs Filter Form */
     public logsFilterForm = new FormGroup(
         {
             requestType: new FormControl<string[]>(this.requestTypes),
-            range: new FormControl<string>(''),
+            range: new FormControl<string>({ value: 'status_code', disabled: true }),
             from: new FormControl<number>({ value: null, disabled: true }, [
                 Validators.pattern(ONLY_INTEGER_REGEX),
                 Validators.maxLength(6),
@@ -91,8 +95,18 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
         CustomValidators.greaterThan('from', 'to')
     );
 
-    constructor(private componentStore: LogsComponentStore, private dialog: MatDialog) {
+    constructor(
+        private componentStore: LogsComponentStore,
+        private store: Store<IAppState>,
+        private dialog: MatDialog
+    ) {
         super();
+        this.clientSettings$ = this.store.pipe(
+            select(selectClientSettings),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.changeRangeType(this.logsFilterForm.controls.range.value);
     }
     ngOnInit(): void {
         this.params = {
@@ -113,10 +127,10 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
         if (searchKeyword?.length) {
             this.params = {
                 ...this.params,
-                endpoint: searchKeyword.trim(),
+                search: searchKeyword.trim(),
             };
         } else {
-            this.params = { ...omit(this.params, ['endpoint']) };
+            this.params = { ...omit(this.params, ['search']) };
         }
         this.params.pageNo = 1;
         this.getLogs();
@@ -219,7 +233,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
      */
     public resetForm() {
         this.logsFilterForm.patchValue({
-            range: '',
+            range: 'status_code',
             from: null,
             to: null,
             requestType: this.requestTypes,
@@ -231,7 +245,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
      */
     public resetParam(): void {
         this.resetForm();
-        this.changeRangeType(null);
+        this.changeRangeType(this.logsFilterForm.controls.range.value);
         this.closeMyMenu();
         this.applyFilter();
     }
@@ -289,9 +303,14 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
     public viewLogsDetails(id) {
         this.componentStore.getLogsById(id);
         if (!this.logDetailDialogRef) {
+            const clientSettings: IClientSettings = this.getValueFromObservable(this.clientSettings$);
             this.logDetailDialogRef = this.dialog.open(LogsDetailsSideDialogComponent, {
                 panelClass: ['mat-right-dialog', 'mat-dialog-lg'],
-                data: { logData$: this.reqLogs$, isLoading$: this.componentStore.reqLogsInProcess$ },
+                data: {
+                    logData$: this.reqLogs$,
+                    isLoading$: this.componentStore.reqLogsInProcess$,
+                    logSettings: clientSettings?.client?.settings?.logs,
+                },
                 autoFocus: false,
                 hasBackdrop: false,
                 enterAnimationDuration: '0ms',
