@@ -1,7 +1,7 @@
 <div class="app-content d-flex flex-column">
     <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-        <div class="d-flex flex-wrap align-items-center flex-grow-1 gap-3">
+    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-3">
+        <div class="d-flex flex-wrap align-items-start flex-grow-1 gap-3">
             <form [formGroup]="engProjectFormGroup" class="d-flex flex-wrap gap-3">
                 <mat-form-field appearance="outline" class="no-padding w-xs-100">
                     <mat-label>Select Project</mat-label>
@@ -78,13 +78,13 @@
                 </mat-form-field>
             </form>
             <proxy-lib-search
-                [matFormFieldClass]="'no-padding w-xs-100'"
-                [placeholder]="'Search by Endpoint'"
+                [matFormFieldClass]="'unset-search-width width-md-600 w-md-100'"
+                [placeholder]="'Search'"
                 (inputChanges)="onEnter($event)"
-                class="w-xs-100"
+                hint="To search in specific field use <b>field:</b> before anything (field => endpoint,request_body,response,headers)"
             ></proxy-lib-search>
         </div>
-        <div class="d-flex align-items-center justify-content-between gap-3 ml-auto">
+        <div class="d-flex align-items-center justify-content-between gap-3 ml-auto pt-1">
             <date-range-picker
                 (selectedRangeValueChange)="setDateRange($event)"
                 [(selectedRangeValue)]="selectedRangeValue"
