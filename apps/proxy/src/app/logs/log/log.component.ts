@@ -265,7 +265,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
      * Apply Filter
      */
     public applyFilter() {
-        const formValue = this.logsFilterForm.value;
+        const formValue = this.logsFilterForm.getRawValue();
         if (formValue) {
             this.params = CustomValidators.removeNullKeys({
                 ...this.params,
