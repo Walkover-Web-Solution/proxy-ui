@@ -223,7 +223,7 @@
     </div>
     <mat-card class="p-0 outline-card responsive-card flex-grow-1">
         <mat-card-content>
-            <div class="table-scroll">
+            <div class="table-scroll" style="height: calc(100vh - 180px)">
                 <table
                     mat-table
                     [dataSource]="(logs$ | async)?.data"
