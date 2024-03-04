@@ -21,7 +21,7 @@
             }
         }
     }
-    &.search-form-field {
+    &.search-form-field:not(.unset-search-width)  {
         width: 250px;
     }
 }

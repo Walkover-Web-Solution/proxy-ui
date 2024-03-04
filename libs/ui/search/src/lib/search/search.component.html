@@ -40,6 +40,7 @@
     >
         <mat-icon>close</mat-icon>
     </button>
+    <mat-hint *ngIf="hint" [innerHTML]="hint"></mat-hint>
 </mat-form-field>
 <ng-container *ngTemplateOutlet="error"></ng-container>
 
