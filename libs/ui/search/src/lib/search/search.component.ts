@@ -42,6 +42,7 @@ export class SearchComponent implements OnInit, OnChanges {
     @Input() isRemoveChar: boolean;
     @Input() charactersToRemove: Array<string>;
     @Input() emitOnEnter = false;
+    @Input() hint: string = null;
 
     @Output() inputChanges: EventEmitter<string> = new EventEmitter();
 

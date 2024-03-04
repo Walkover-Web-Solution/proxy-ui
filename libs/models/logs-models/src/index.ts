@@ -56,4 +56,6 @@ export interface ICreatedOrUpdatedBy {
 export interface ILogDetailRes {
     id: number;
     request_body: string | { [key: string]: any };
+    headers: string | { [key: string]: any };
+    response: string | { [key: string]: any };
 }
