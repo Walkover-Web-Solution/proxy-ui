@@ -1,0 +1,16 @@
+{
+    "name": "services-proxy-users",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/proxy/users/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/services/proxy/users/**/*.ts", "libs/services/proxy/users/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

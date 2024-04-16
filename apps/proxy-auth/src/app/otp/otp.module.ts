@@ -14,7 +14,7 @@ import { ProxyBaseUrls } from '@proxy/models/root-models';
 
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { DirectivesRemoveCharacterDirectiveModule } from 'libs/directives/remove-character-directive/src';
+import { DirectivesRemoveCharacterDirectiveModule } from '@proxy/directives/RemoveCharacterDirective';
 
 import { environment } from '../../environments/environment';
 import { SendOtpCenterComponent } from './component';
@@ -24,8 +24,11 @@ import { reducers } from './store/app.state';
 import { OtpEffects } from './store/effects';
 import { ServicesHttpWrapperNoAuthModule } from '@proxy/services/http-wrapper-no-auth';
 import { OtpUtilityService } from './service/otp-utility.service';
+import { OtpWidgetService } from './service/otp-widget.service';
+import { RegisterComponent } from './component/register/register.component';
+import { DirectivesMarkAllAsTouchedModule } from '@proxy/directives/mark-all-as-touched';
 
-export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent];
+export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent, RegisterComponent];
 
 @NgModule({
     imports: [
@@ -50,11 +53,13 @@ export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent]
             },
         }),
         ServicesHttpWrapperNoAuthModule,
+        DirectivesMarkAllAsTouchedModule,
     ],
     declarations: [...CHAT_COMPONENTS],
     providers: [
         OtpService,
         OtpUtilityService,
+        OtpWidgetService,
         { provide: ProxyBaseUrls.Env, useValue: environment.env },
         {
             provide: ProxyBaseUrls.BaseURL,

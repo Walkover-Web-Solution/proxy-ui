@@ -270,3 +270,28 @@ button.mat-btn-md.mat-btn-wran:hover[disabled] {
         color: var(--color-common-grey) !important;
     }
 }
+
+// 10. Mat slide toggle button design reference - https://prnt.sc/DDH-z4jHnmH5
+.mat-slide-toggle {
+    &.toggle-slide {
+        .mat-slide-toggle-content {
+            color: var(--color-common-white);
+        }
+    }
+    &.mat-checked {
+        .mat-slide-toggle-bar {
+            background-color: var(--color-whatsApp-primary-light) !important;
+        }
+        .mat-slide-toggle-thumb {
+            background-color: var(--color-whatsApp-primary) !important;
+        }
+    }
+    &.mat-disabled{
+        .mat-slide-toggle-bar{
+            background-color: var(--color-common-grey);
+        }
+        .mat-slide-toggle-thumb {
+            background-color: var(--color-common-slate) !important;
+        }
+    }
+}

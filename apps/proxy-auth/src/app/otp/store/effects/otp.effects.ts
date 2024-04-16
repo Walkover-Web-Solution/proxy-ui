@@ -21,7 +21,7 @@ export class OtpEffects {
         this.actions$.pipe(
             ofType(otpActions.getWidgetData),
             switchMap((p) => {
-                return this.otpService.getWidgetData(p.referenceId).pipe(
+                return this.otpService.getWidgetData(p.referenceId, p.payload).pipe(
                     map((res: any) => {
                         if (res) {
                             return otpActions.getWidgetDataComplete({

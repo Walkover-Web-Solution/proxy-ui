@@ -108,4 +108,5 @@ export interface IClient {
     updated_at?: string;
     deleted_at?: string;
     stage: string;
+    settings: { [key: string]: any };
 }

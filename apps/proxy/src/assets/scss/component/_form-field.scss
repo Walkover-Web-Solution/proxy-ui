@@ -21,7 +21,7 @@
             }
         }
     }
-    &.search-form-field {
+    &.search-form-field:not(.unset-search-width)  {
         width: 250px;
     }
 }
@@ -198,4 +198,8 @@ input[matinput]::-webkit-outer-spin-button,
 input[matinput]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.mat-form-field-outside-error {
+    height: 21.5px;
 }

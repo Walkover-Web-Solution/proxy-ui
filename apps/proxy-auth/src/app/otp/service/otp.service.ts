@@ -19,9 +19,12 @@ export class OtpService {
 
     constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any) {}
 
-    public getWidgetData(requestId: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+    public getWidgetData(
+        requestId: string,
+        payload?: { [key: string]: any }
+    ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         const url = otpVerificationUrls.getWidgetData(this.baseUrl).replace(':referenceId', requestId);
-        return this.http.get<BaseResponse<IWidgetResponse, IGetWidgetData>>(url, {}, this.options);
+        return this.http.post<BaseResponse<IWidgetResponse, IGetWidgetData>>(url, payload ?? {}, this.options);
     }
 
     public sendOtp(request: ISendOtpReq): Observable<OtpResModel> {
@@ -48,5 +51,13 @@ export class OtpService {
 
     public getIpInfo(requestUrl: any): Observable<any> {
         return this.http.get<any>(requestUrl, {}, this.options);
+    }
+
+    public callBackUrl(requestUrl: any, params: { [key: string]: any } = {}): Observable<any> {
+        return this.http.get<any>(requestUrl, params, this.options);
+    }
+
+    public register(body: { proxy_state?: string }): Observable<any> {
+        return this.http.post<any>(otpVerificationUrls.register(this.baseUrl), body, this.options);
     }
 }

@@ -7,17 +7,23 @@
             />
         </svg>
     </button>
-    <div class="otp-verification-content">
-        <ng-container *ngFor="let widgetData of selectWidgetData$ | async">
-            <button
-                mat-raised-button
-                (click)="openLink(widgetData.urlLink)"
-                style="padding: 10px 50px !important"
-                class="mat-elevation-z2"
-            >
-                <img [src]="widgetData.icon" [alt]="widgetData.text" style="margin-right: 20px" loading="lazy" />
-                <span class="mat-subheading-2">{{ widgetData.text }}</span>
-            </button>
+    <div class="otp-verification-content button-gap">
+        <ng-container *ngIf="selectWidgetData$ | async as widgetDataArray">
+            <ng-container *ngFor="let widgetData of widgetDataArray">
+                <button
+                    *ngIf="widgetData?.service_id !== featureServiceIds.Msg91OtpService || !(otpScriptLoading | async)"
+                    mat-raised-button
+                    (click)="onVerificationBtnClick(widgetData)"
+                    style="padding: 10px 50px !important"
+                    class="mat-elevation-z2"
+                >
+                    <img [src]="widgetData.icon" [alt]="widgetData.text" style="margin-right: 20px" loading="lazy" />
+                    <span class="mat-subheading-2">{{ widgetData.text }}</span>
+                </button>
+            </ng-container>
+            <ng-container *ngIf="!widgetDataArray?.length">
+                <span class="mat-body-2"> No Service Enabled </span>
+            </ng-container>
         </ng-container>
     </div>
 </ng-container>

@@ -272,3 +272,40 @@ export function downloadCSVFile(content, fileName): void {
     link.click();
     document.body.removeChild(link);
 }
+
+/**
+ * Recursively remove keys with empty data
+ *
+ * @export
+ * @param {{ [key: string]: any }} data
+ * @param {boolean} [removeEmptyObject] true, If you want to remove empty object also
+ * @return {*}  { [key: string]: any }
+ */
+export function removeEmptyKeys(data: { [key: string]: any }, removeEmptyObject?: boolean): { [key: string]: any } {
+    Object.keys(data).forEach((key) => {
+        if (data[key] === null || data[key] === undefined || data[key] === '') {
+            delete data[key];
+        } else if (typeof data[key] === 'object') {
+            data[key] = removeEmptyKeys(data[key]);
+            if (removeEmptyObject && !Object.keys(data[key] ?? {})?.length) {
+                delete data[key];
+            }
+        }
+    });
+    return data;
+}
+
+/**
+ * get Regex for type checking for input type file
+ *
+ * @export
+ * @param {string} acceptString accept string provided in input
+ * @return {*}  {string}
+ */
+export function getAcceptedTypeRegex(acceptString: string): string {
+    return acceptString
+        .replaceAll(/\s*,\s*/g, '|')
+        .replaceAll('/', '\\/')
+        .replaceAll('.', '\\.')
+        .replaceAll('*', '.*');
+}

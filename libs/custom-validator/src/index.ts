@@ -458,4 +458,42 @@ export class CustomValidators {
             return null;
         };
     }
+
+    public static atleastOneValueInChipList(list: Set<any>): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            if (!list?.size) {
+                return { atleastOneValueInChipList: true };
+            }
+            return null;
+        };
+    }
+
+    /**
+     * Compare value of control with other control value and return error if not equal
+     *
+     * @static
+     * @param {string} [controlPath] Control Name/Path Eg. 'password' or 'user.password' (control should be in same parent)
+     * @param {FormControl<any>} [formControl] FormControl to Compare with
+     * @return {*}  {ValidatorFn}
+     * @memberof CustomValidators
+     */
+    public static valueSameAsControl(controlPath?: string, formControl?: FormControl<any>): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            let otherControl;
+            if (formControl) {
+                otherControl = formControl;
+            } else if (controlPath) {
+                otherControl = control?.parent?.get(controlPath ?? '');
+            } else {
+                throw new Error('Provide controlPath or formControl');
+            }
+            if (!otherControl) {
+                return null;
+            }
+            if (control.value && control.value !== otherControl?.value) {
+                return { valueSameAsControl: true };
+            }
+            return null;
+        };
+    }
 }

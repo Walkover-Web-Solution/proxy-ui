@@ -1,7 +1,7 @@
 <div class="app-content d-flex flex-column">
     <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-        <div class="d-flex flex-wrap align-items-center flex-grow-1 gap-3">
+    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-3">
+        <div class="d-flex flex-wrap align-items-start flex-grow-1 gap-3">
             <form [formGroup]="engProjectFormGroup" class="d-flex flex-wrap gap-3">
                 <mat-form-field appearance="outline" class="no-padding w-xs-100">
                     <mat-label>Select Project</mat-label>
@@ -78,13 +78,14 @@
                 </mat-form-field>
             </form>
             <proxy-lib-search
-                [matFormFieldClass]="'no-padding w-xs-100'"
-                [placeholder]="'Search by Endpoint'"
+                [matFormFieldClass]="'unset-search-width width-md-600 w-md-100'"
+                [placeholder]="'Hit Enter to Search'"
                 (inputChanges)="onEnter($event)"
-                class="w-xs-100"
+                [emitOnEnter]="true"
+                hint="To search in specific field use <b>field:</b> before anything (field => endpoint,request_body,response,headers)"
             ></proxy-lib-search>
         </div>
-        <div class="d-flex align-items-center justify-content-between gap-3 ml-auto">
+        <div class="d-flex align-items-center justify-content-between gap-3 ml-auto pt-1">
             <date-range-picker
                 (selectedRangeValueChange)="setDateRange($event)"
                 [(selectedRangeValue)]="selectedRangeValue"
@@ -141,7 +142,7 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <ng-container *ngIf="logsFilterForm.value.range">
+                            <ng-container *ngIf="logsFilterForm.controls.range.value">
                                 <div class="col-lg-6 pr-2 mb-2">
                                     <mat-form-field appearance="outline" class="w-100" floatLabel="always">
                                         <mat-label>From</mat-label>
@@ -222,7 +223,7 @@
     </div>
     <mat-card class="p-0 outline-card responsive-card flex-grow-1">
         <mat-card-content>
-            <div class="table-scroll">
+            <div class="table-scroll" style="height: calc(100vh - 180px)">
                 <table
                     mat-table
                     [dataSource]="(logs$ | async)?.data"
