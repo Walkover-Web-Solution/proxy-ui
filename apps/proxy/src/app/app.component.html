@@ -6,7 +6,7 @@
 <ng-container *ngIf="(logInData$ | async) && (clientSettings$ | async)">
     <div id="iframe-parent-container" class="popup-parent-container">
         <div className="header"><h4 id="title">Proxy</h4></div>
-        <iframe id="iframe-component" title="iframe" style="min-height: 500px"></iframe>
+        <iframe id="iframe-component" title="iframe"></iframe>
     </div>
     <button id="interfaceEmbed" class="popup-interfaceEmbed" style="z-index: 9999">Interface</button>
 </ng-container>
