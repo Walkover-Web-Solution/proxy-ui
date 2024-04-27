@@ -7,4 +7,11 @@ export const envVariables = {
         messagingSenderId: process.env.FIREBASE_CONFIG_MESSAGING_SENDER_ID,
         appId: process.env.FIREBASE_CONFIG_APP_ID,
     },
+
+    // VIASOCKET INTERFACE
+    interfaceId: process.env.INTERFACE_ID,
+    interfaceOrgId: process.env.INTERFACE_ORG_ID,
+    interfaceProjectId: process.env.INTERFACE_PROJECT_ID,
+    interfaceSecret: process.env.INTERFACE_SECRET,
+    interfaceScriptUrl: process.env.INTERFACE_SCRIPT_URL,
 };
