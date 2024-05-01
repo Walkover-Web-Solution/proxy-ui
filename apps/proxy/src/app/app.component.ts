@@ -123,7 +123,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                     )
                 );
                 scriptElement.onload = () => {
-                    (window as any).SendDataToInterface({
+                    const payload = {
                         variables: {
                             variables: JSON.stringify({
                                 session: this.authService.getTokenSync(),
@@ -132,7 +132,9 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                         },
                         threadId: `${loginData?.email}${clientSettings?.client?.id}`,
                         bridgeName: 'root',
-                    });
+                    };
+                    console.log('SendDataToInterface ==>', payload);
+                    (window as any).SendDataToInterface(payload);
                 };
                 document.body.appendChild(scriptElement);
             }
