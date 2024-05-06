@@ -123,18 +123,20 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                     )
                 );
                 scriptElement.onload = () => {
-                    const payload = {
-                        variables: {
-                            variables: JSON.stringify({
-                                session: this.authService.getTokenSync(),
-                                project_id: environment.interfaceProjectId,
-                            }),
-                        },
-                        threadId: `${loginData?.email}${clientSettings?.client?.id}`,
-                        bridgeName: 'root',
-                    };
-                    console.log('SendDataToInterface ==>', payload);
-                    (window as any).SendDataToInterface(payload);
+                    setTimeout(() => {
+                        const payload = {
+                            variables: {
+                                variables: JSON.stringify({
+                                    session: this.authService.getTokenSync(),
+                                    project_id: environment.interfaceProjectId,
+                                }),
+                            },
+                            threadId: `${loginData?.email}${clientSettings?.client?.id}`,
+                            bridgeName: 'root',
+                        };
+                        console.log('SendDataToInterface ==>', payload);
+                        (window as any).SendDataToInterface(payload);
+                    }, 100);
                 };
                 document.body.appendChild(scriptElement);
             }
