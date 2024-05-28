@@ -102,7 +102,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         }
         combineLatest([this.logInData$, this.clientSettings$]).subscribe(([loginData, clientSettings]) => {
             if (loginData && clientSettings) {
-                const scriptId = 'interface-main-script';
+                const scriptId = 'chatbot-main-script';
                 if (document.getElementById(scriptId)) {
                     document.getElementById(scriptId)?.remove();
                 }
@@ -115,28 +115,25 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                     generateJwtToken(
                         {
                             org_id: +environment.interfaceOrgId,
-                            project_id: environment.interfaceProjectId,
-                            interface_id: environment.interfaceId,
+                            chatbot_id: environment.interfaceChatBotId,
                             user_id: loginData?.email,
                         },
                         environment.interfaceSecret
                     )
                 );
                 scriptElement.onload = () => {
-                    setTimeout(() => {
-                        const payload = {
-                            variables: {
-                                variables: JSON.stringify({
-                                    session: this.authService.getTokenSync(),
-                                    project_id: environment.interfaceProjectId,
-                                }),
-                            },
-                            threadId: `${loginData?.email}${clientSettings?.client?.id}`,
-                            bridgeName: 'root',
-                        };
-                        console.log('SendDataToInterface ==>', payload);
-                        (window as any).SendDataToInterface(payload);
-                    }, 100);
+                    const payload = {
+                        variables: {
+                            variables: JSON.stringify({
+                                session: this.authService.getTokenSync(),
+                                chatbot_id: environment.interfaceChatBotId,
+                            }),
+                        },
+                        threadId: `${loginData?.email}${clientSettings?.client?.id}`,
+                        bridgeName: 'root',
+                    };
+                    console.log('SendDataToChatbot ==>', payload);
+                    (window as any).SendDataToChatbot(payload);
                 };
                 document.body.appendChild(scriptElement);
             }

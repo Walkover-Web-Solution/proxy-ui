@@ -9,9 +9,8 @@ export const envVariables = {
     },
 
     // VIASOCKET INTERFACE
-    interfaceId: process.env.INTERFACE_ID,
     interfaceOrgId: process.env.INTERFACE_ORG_ID,
-    interfaceProjectId: process.env.INTERFACE_PROJECT_ID,
+    interfaceChatBotId: process.env.INTERFACE_CHATBOT_ID,
     interfaceSecret: process.env.INTERFACE_SECRET,
     interfaceScriptUrl: process.env.INTERFACE_SCRIPT_URL,
 };
