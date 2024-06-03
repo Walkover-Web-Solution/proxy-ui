@@ -182,6 +182,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             padding: 0px 16px;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             font-size: 14px;
             background-color: transparent;
@@ -189,11 +190,13 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             border-radius: 4px;
             line-height: 40px;
             color: #3f4346;
-            margin: 8px;
+            margin: 8px 8px 16px 8px;
+            cursor: pointer;
+            width: 210px;
         `;
         image.style.cssText = `
             height: 20px;
-            width: 20px;
+            // width: 20px;
         `;
         span.style.cssText = `
             color: #3f4346;
