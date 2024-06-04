@@ -1,3 +1,4 @@
+import { RootService } from '@proxy/services/proxy/root';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { VersionCheckService } from '@proxy/service';
@@ -12,7 +13,6 @@ import { ILogInFeatureStateWithRootState } from './auth/ngrx/store/login.state';
 import { IAppState, selectClientSettings } from './ngrx';
 import { rootActions } from './ngrx/actions';
 import * as logInActions from './auth/ngrx/actions/login.action';
-import { generateJwtToken } from '@proxy/utils';
 import { IClientSettings, IFirebaseUserModel } from '@proxy/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
 
@@ -36,7 +36,8 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         private actRoute: ActivatedRoute,
         private store: Store<IAppState>,
         private versionCheckService: VersionCheckService,
-        private authService: AuthService
+        private authService: AuthService,
+        private rootService: RootService
     ) {
         super();
 
@@ -102,40 +103,31 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         }
         combineLatest([this.logInData$, this.clientSettings$]).subscribe(([loginData, clientSettings]) => {
             if (loginData && clientSettings) {
-                const scriptId = 'chatbot-main-script';
-                if (document.getElementById(scriptId)) {
-                    document.getElementById(scriptId)?.remove();
-                }
-                const scriptElement = document.createElement('script');
-                scriptElement.type = 'text/javascript';
-                scriptElement.src = environment.interfaceScriptUrl;
-                scriptElement.id = scriptId;
-                scriptElement.setAttribute(
-                    'embedToken',
-                    generateJwtToken(
-                        {
-                            org_id: +environment.interfaceOrgId,
-                            chatbot_id: environment.interfaceChatBotId,
-                            user_id: loginData?.email,
-                        },
-                        environment.interfaceSecret
-                    )
-                );
-                scriptElement.onload = () => {
-                    const payload = {
-                        variables: {
-                            variables: JSON.stringify({
-                                session: this.authService.getTokenSync(),
-                                chatbot_id: environment.interfaceChatBotId,
-                            }),
-                        },
-                        threadId: `${loginData?.email}${clientSettings?.client?.id}`,
-                        bridgeName: 'root',
+                this.rootService.generateToken({ source: 'chatbot' }).subscribe((res) => {
+                    const scriptId = 'chatbot-main-script';
+                    if (document.getElementById(scriptId)) {
+                        document.getElementById(scriptId)?.remove();
+                    }
+                    const scriptElement = document.createElement('script');
+                    scriptElement.type = 'text/javascript';
+                    scriptElement.src = environment.interfaceScriptUrl;
+                    scriptElement.id = scriptId;
+                    scriptElement.setAttribute('embedToken', res?.data?.jwt);
+                    scriptElement.onload = () => {
+                        const payload = {
+                            variables: {
+                                variables: JSON.stringify({
+                                    session: this.authService.getTokenSync(),
+                                }),
+                            },
+                            threadId: `${loginData?.email}${clientSettings?.client?.id}`,
+                            bridgeName: 'root',
+                        };
+                        console.log('SendDataToChatbot ==>', payload);
+                        (window as any).SendDataToChatbot(payload);
                     };
-                    console.log('SendDataToChatbot ==>', payload);
-                    (window as any).SendDataToChatbot(payload);
-                };
-                document.body.appendChild(scriptElement);
+                    document.body.appendChild(scriptElement);
+                });
             }
         });
     }

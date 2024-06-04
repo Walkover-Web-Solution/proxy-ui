@@ -35,4 +35,8 @@ export class RootService {
             params
         );
     }
+
+    public generateToken(params: { [key: string]: any } = {}): Observable<BaseResponse<{ jwt: string }, void>> {
+        return this.http.get<BaseResponse<{ jwt: string }, void>>(RootUrls.generateToken(this.baseUrl), params);
+    }
 }
