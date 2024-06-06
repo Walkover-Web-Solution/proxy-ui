@@ -6,6 +6,7 @@ export * from './convert-to-utc';
 import { Result, getHostNameDetail } from '@proxy/ui/handle-domain';
 import * as dayjs from 'dayjs';
 import { cloneDeep, pickBy, uniqBy } from 'lodash-es';
+import { sha256Encrypt } from './crypto';
 
 interface Domain {
     is_parent_domain: boolean;
@@ -308,4 +309,12 @@ export function getAcceptedTypeRegex(acceptString: string): string {
         .replaceAll('/', '\\/')
         .replaceAll('.', '\\.')
         .replaceAll('*', '.*');
+}
+
+export function generateJwtToken(payload: { [key: string]: any }, secret: string): string {
+    const jwtHeaders = {
+        alg: 'HS256',
+        typ: 'JWT',
+    };
+    return sha256Encrypt(jwtHeaders, payload, secret);
 }
