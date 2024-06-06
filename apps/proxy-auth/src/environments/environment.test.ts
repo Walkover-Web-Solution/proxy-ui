@@ -2,16 +2,15 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { envVariables } from './env-variables';
+
 export const environment = {
     production: false,
     env: 'test',
     apiUrl: 'https://apitest.msg91.com/api',
     baseUrl: 'https://test.proxy.msg91.com',
     msgMidProxy: '',
-    uiEncodeKey: process.env.AUTH_UI_ENCODE_KEY,
-    uiIvKey: process.env.AUTH_UI_IV_KEY,
-    apiEncodeKey: process.env.AUTH_API_ENCODE_KEY,
-    apiIvKey: process.env.AUTH_API_IV_KEY,
+    ...envVariables,
 };
 
 /*
