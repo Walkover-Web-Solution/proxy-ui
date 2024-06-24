@@ -1,0 +1,197 @@
+/* General Styles */
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background-color: #3f51b5;
+    color: white;
+}
+
+.heading {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.close-dialog {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+
+.otp-verification-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+
+    background-color: #fafafa;
+}
+
+.form-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 80%; /* 80% screen width */
+    max-width: 1200px; /* Optional: Maximum width */
+    margin: auto; /* Center the form */
+}
+
+.subheading {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.one-line {
+    display: flex;
+    gap: 1rem;
+}
+
+.one-line > ng-container {
+    flex: 1;
+}
+
+.note {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #666;
+    border-left: 4px solid #2196f3;
+    padding-left: 1rem;
+}
+
+.submit-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.error-message {
+    color: #f44336;
+    font-size: 0.875rem;
+}
+
+.submit-btn {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.submit-btn button {
+    min-width: 120px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn button:hover {
+    background-color: #303f9f;
+}
+
+.mat-form-field {
+    width: 100%;
+}
+
+.mat-error {
+    font-size: 0.75rem;
+}
+
+.invalid-input {
+    border: 1px solid #f44336;
+}
+
+.register-user-details {
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+    .one-line {
+        flex-direction: column;
+    }
+
+    .dialog-header {
+        padding: 1rem;
+    }
+
+    .heading {
+        font-size: 1.25rem;
+    }
+
+    .otp-verification-content {
+        padding: 1.5rem;
+    }
+
+    .form-wrapper {
+        padding: 1.5rem;
+        width: 90%; /* Wider form on smaller screens */
+    }
+
+    .submit-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .submit-btn {
+        width: 100%;
+        margin-top: 1rem;
+    }
+}
+
+/* Custom Styles for Form Fields */
+.mat-form-field-appearance-outline .mat-form-field-outline {
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+    color: #3f51b5;
+}
+
+.mat-form-field-label {
+    font-size: 1rem;
+    color: #3f51b5;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-gap {
+    border: none;
+}
+
+.mat-form-field.mat-focused .mat-form-field-label {
+    color: #3f51b5;
+}
+
+.mat-form-field.mat-form-field-appearance-outline .mat-form-field-outline-coarse {
+    border-color: #3f51b5;
+}
+
+.mat-input-element {
+    font-size: 1rem;
+}
+
+.mat-hint {
+    font-size: 0.75rem;
+    color: rgba(0, 0, 0, 0.54);
+}
+
+/* Extra Styles */
+.mat-form-field-appearance-outline .mat-form-field-wrapper {
+    padding: 0.75rem 0.5rem;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+    border-radius: 4px;
+}
+.p-toast {
+    top: 20px;
+}
