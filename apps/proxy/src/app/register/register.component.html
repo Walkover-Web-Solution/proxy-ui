@@ -147,7 +147,7 @@
                 style="display: flex; width: 175%; height: 40px; border: 1px solid rgb(216, 210, 210)"
                 (keypress)="intlClass?.[key]?.onlyPhoneNumber($event) "
                 [attr.id]="'init-contact-' + key"
-                [placeholder]="'Enter ' + label + (required ? ' *' : '')"
+                [placeholder]="'Enter ' + label"
                 [ngClass]="{ 'invalid-input': formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber'] }"
                 (blur)="formControl?.markAsTouched(); formControl?.setValue(intlClass?.[key]?.phoneNumber?.replace('+', ''))"
             />
