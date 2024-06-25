@@ -1,12 +1,9 @@
-<div style="height: 100vh; background-color: #fafafa">
-    <mat-card
-        class="h-75 container outline-card responsive-card py-5 --border-common-radius"
-        style="box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px; background-color: #e6e6fa; width: 40%"
-    >
+<div class="app-content">
+    <mat-card class="h-75 container outline-card responsive-card py-5 --border-common-radius w-40">
         <h2 class="d-flex justify-content-center">Register</h2>
-        <div style="margin-top: 50px">
+        <div>
             <div [formGroup]="registrationForm" proxyMarkAllAsTouched (valid)="submit()">
-                <div class="d-flex gap-3 mt-20">
+                <div class="d-flex gap-3">
                     <ng-container
                         [ngTemplateOutlet]="formField"
                         [ngTemplateOutletContext]="{
@@ -24,7 +21,7 @@
                         }"
                     ></ng-container>
                 </div>
-                <div class="d-flex gap-5 mat-form-field mt-20">
+                <div class="d-flex gap-5 mt-4">
                     <ng-container
                         [ngTemplateOutlet]="intlFormField"
                         [ngTemplateOutletContext]="{
@@ -43,7 +40,7 @@
                         }"
                     ></ng-container>
                 </div>
-                <div class="d-flex gap-3 mt-20 w-auto">
+                <div class="d-flex gap-3 mt-4">
                     <ng-container
                         [ngTemplateOutlet]="formField"
                         [ngTemplateOutletContext]="{
@@ -55,7 +52,7 @@
                     ></ng-container>
                 </div>
 
-                <div class="d-flex gap-3 mt-30">
+                <div class="d-flex gap-3 mt-4">
                     <ng-container
                         [ngTemplateOutlet]="formField"
                         [ngTemplateOutletContext]="{
@@ -76,7 +73,7 @@
                     ></ng-container>
                 </div>
 
-                <div class="mt-30 d-flex justify-content-center align-items-center gap-3">
+                <div class="mt-4 d-flex justify-content-center align-items-center">
                     <button
                         mat-flat-button
                         color="primary"
