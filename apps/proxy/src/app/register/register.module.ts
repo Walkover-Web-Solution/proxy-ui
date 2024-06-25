@@ -31,7 +31,6 @@ const routes: Routes = [
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-
         RouterModule.forChild(routes),
         DirectivesMarkAllAsTouchedModule,
     ],

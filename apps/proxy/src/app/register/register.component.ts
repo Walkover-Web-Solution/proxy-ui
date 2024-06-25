@@ -66,24 +66,13 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
     ngAfterViewInit(): void {
         this.initIntl('user');
         let count = 0;
-        const userIntlWrapper = document
-            ?.querySelector('proxy-auth')
-
-            ?.shadowRoot?.querySelector('#init-contact-wrapper-user');
-        const interval = setInterval(() => {
-            if (count > 6 || userIntlWrapper?.querySelector('.iti__selected-flag')?.getAttribute('title')) {
-                this.initIntl('company');
-                clearInterval(interval);
-            }
-            count += 1;
-        }, 500);
     }
     public ngOnDestroy(): void {
         super.ngOnDestroy();
     }
     public initIntl(key: string): void {
-        const parentDom = document.querySelector('proxy-auth')?.shadowRoot;
-        const input = document.querySelector('proxy-auth')?.shadowRoot?.getElementById('init-contact-' + key);
+        const parentDom = document.querySelector('proxy-root');
+        const input = document.getElementById('init-contact-' + key);
         const customCssStyleURL = `${environment.baseUrl}/assets/utils/intl-tel-input-custom.css`;
         if (input) {
             this.intlClass[key] = new IntlPhoneLib(input, parentDom, customCssStyleURL);
