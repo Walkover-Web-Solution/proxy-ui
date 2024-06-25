@@ -19,7 +19,6 @@ import { IntlPhoneLib } from '@proxy/utils';
     styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent extends BaseComponent implements OnDestroy, OnInit {
-    // public FormData: any;
     public registrationForm = new FormGroup({
         user: new FormGroup({
             fname: new FormControl<string>(null, [
@@ -66,13 +65,11 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
     }
     ngAfterViewInit(): void {
         this.initIntl('user');
-        console.log(this.initIntl);
         let count = 0;
         const userIntlWrapper = document
             ?.querySelector('proxy-auth')
 
             ?.shadowRoot?.querySelector('#init-contact-wrapper-user');
-        console.log(userIntlWrapper);
         const interval = setInterval(() => {
             if (count > 6 || userIntlWrapper?.querySelector('.iti__selected-flag')?.getAttribute('title')) {
                 this.initIntl('company');
@@ -87,7 +84,6 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
     public initIntl(key: string): void {
         const parentDom = document.querySelector('proxy-auth')?.shadowRoot;
         const input = document.querySelector('proxy-auth')?.shadowRoot?.getElementById('init-contact-' + key);
-        console.log(input);
         const customCssStyleURL = `${environment.baseUrl}/assets/utils/intl-tel-input-custom.css`;
         if (input) {
             this.intlClass[key] = new IntlPhoneLib(input, parentDom, customCssStyleURL);
