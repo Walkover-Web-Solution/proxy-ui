@@ -1,9 +1,18 @@
-<div class="app-content">
-    <mat-card class="h-75 container outline-card responsive-card py-5 --border-common-radius w-40">
+<div class="app-content d-flex justify-content-center align-items-center" style="height: 100vh">
+    <mat-card class="container outline-card responsive-card py-5 w-40">
         <h2 class="d-flex justify-content-center">Register</h2>
         <div>
             <div [formGroup]="registrationForm" proxyMarkAllAsTouched (valid)="submit()">
-                <div class="d-flex gap-3">
+                <ng-container
+                    [ngTemplateOutlet]="formField"
+                    [ngTemplateOutletContext]="{
+                        key: 'user Name',
+                        label: 'User Name',
+                        required: true,
+                        formControl: registrationForm.get('user.username')
+                    }"
+                ></ng-container>
+                <div class="d-flex">
                     <ng-container
                         [ngTemplateOutlet]="formField"
                         [ngTemplateOutletContext]="{
@@ -21,7 +30,7 @@
                         }"
                     ></ng-container>
                 </div>
-                <div class="d-flex gap-5 mt-4">
+                <div class="d-flex">
                     <ng-container
                         [ngTemplateOutlet]="intlFormField"
                         [ngTemplateOutletContext]="{
@@ -40,19 +49,8 @@
                         }"
                     ></ng-container>
                 </div>
-                <div class="d-flex gap-3 mt-4">
-                    <ng-container
-                        [ngTemplateOutlet]="formField"
-                        [ngTemplateOutletContext]="{
-                            key: 'user Name',
-                            label: 'User Name',
-                            required: true,
-                            formControl: registrationForm.get('user.username')
-                        }"
-                    ></ng-container>
-                </div>
 
-                <div class="d-flex gap-3 mt-4">
+                <div class="d-flex">
                     <ng-container
                         [ngTemplateOutlet]="formField"
                         [ngTemplateOutletContext]="{
@@ -74,12 +72,7 @@
                 </div>
 
                 <div class="mt-4 d-flex justify-content-center align-items-center">
-                    <button
-                        mat-flat-button
-                        color="primary"
-                        style="height: 40px; width: 250px; font-size: 16px"
-                        (click)="submit()"
-                    >
+                    <button mat-flat-button color="primary" style="width: 250px; font-size: 16px" (click)="submit()">
                         Submit
                     </button>
                 </div>
@@ -138,17 +131,15 @@
     let-formControl="formControl"
 >
     <div [attr.id]="'init-contact-wrapper-' + key" class="register-user-details">
-        <div style="width: 340px; margin-top: 4px">
-            <input
-                type="tel"
-                style="display: flex; width: 175%; height: 40px; border: 1px solid rgb(216, 210, 210)"
-                (keypress)="intlClass?.[key]?.onlyPhoneNumber($event) "
-                [attr.id]="'init-contact-' + key"
-                [placeholder]="'Enter ' + label"
-                [ngClass]="{ 'invalid-input': formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber'] }"
-                (blur)="formControl?.markAsTouched(); formControl?.setValue(intlClass?.[key]?.phoneNumber?.replace('+', ''))"
-            />
-        </div>
+        <input
+            type="tel"
+            class="w-100 mat-form-field-infix mat-form-field-flex"
+            (keypress)="intlClass?.[key]?.onlyPhoneNumber($event) "
+            [attr.id]="'init-contact-' + key"
+            [placeholder]="'Enter ' + label"
+            [ngClass]="{ 'invalid-input': formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber'] }"
+            (blur)="formControl?.markAsTouched(); formControl?.setValue(intlClass?.[key]?.phoneNumber?.replace('+', ''))"
+        />
 
         <div>
             <mat-error
