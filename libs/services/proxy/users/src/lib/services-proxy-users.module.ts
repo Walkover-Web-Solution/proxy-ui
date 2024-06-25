@@ -16,12 +16,14 @@ export class ServicesProxyUsersModule {}
 })
 export class UsersService {
     constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseURL: any) {}
-
     // Get All Users
     public getUsers(params): Observable<BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>> {
         return this.http.get<BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>>(
             UsersUrl.getUsers(this.baseURL),
             params
         );
+    }
+    public register(url: any, formData: any): Observable<any> {
+        return this.http.post(url, formData);
     }
 }

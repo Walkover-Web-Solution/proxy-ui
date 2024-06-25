@@ -10,6 +10,8 @@ import { BehaviorSubject, takeUntil } from 'rxjs';
 import { IAppState } from '../ngrx/store/app.state';
 import { HttpClient } from '@angular/common/http';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
+import { UsersService } from '@proxy/services/proxy/users';
+import { IntlPhoneLib } from '@proxy/utils';
 
 @Component({
     selector: 'app-register-component',
@@ -17,16 +19,16 @@ import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
     styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent extends BaseComponent implements OnDestroy, OnInit {
-    public FormData: any;
+    // public FormData: any;
     public registrationForm = new FormGroup({
         user: new FormGroup({
-            firstName: new FormControl<string>(null, [
+            fname: new FormControl<string>(null, [
                 Validators.required,
                 Validators.pattern(NAME_REGEX),
                 Validators.minLength(3),
                 Validators.maxLength(24),
             ]),
-            lastName: new FormControl<string>(null, [
+            lname: new FormControl<string>(null, [
                 Validators.pattern(NAME_REGEX),
                 Validators.minLength(3),
                 Validators.maxLength(25),
@@ -38,7 +40,7 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
                 Validators.maxLength(24),
             ]),
             email: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_REGEX)]),
-            mobile: new FormControl<string>(null, [Validators.required, Validators.pattern(MOBILE_NUMBER_REGEX)]),
+            mobile: new FormControl<string>(null, [Validators.required]),
             password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
             confirmPassword: new FormControl<string>(null, [
                 Validators.required,
@@ -47,8 +49,8 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
             ]),
         }),
     });
-    public apiError = new BehaviorSubject<string[]>(null);
-    constructor(private store: Store<IAppState>, private http: HttpClient, private toast: PrimeNgToastService) {
+    public intlClass: { [key: string]: IntlPhoneLib } = {};
+    constructor(private store: Store<IAppState>, private service: UsersService, private toast: PrimeNgToastService) {
         super();
     }
 
@@ -62,9 +64,34 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
                 }
             });
     }
+    ngAfterViewInit(): void {
+        this.initIntl('user');
+        console.log(this.initIntl);
+        let count = 0;
+        const userIntlWrapper = document
+            ?.querySelector('proxy-auth')
 
+            ?.shadowRoot?.querySelector('#init-contact-wrapper-user');
+        console.log(userIntlWrapper);
+        const interval = setInterval(() => {
+            if (count > 6 || userIntlWrapper?.querySelector('.iti__selected-flag')?.getAttribute('title')) {
+                this.initIntl('company');
+                clearInterval(interval);
+            }
+            count += 1;
+        }, 500);
+    }
     public ngOnDestroy(): void {
         super.ngOnDestroy();
+    }
+    public initIntl(key: string): void {
+        const parentDom = document.querySelector('proxy-auth')?.shadowRoot;
+        const input = document.querySelector('proxy-auth')?.shadowRoot?.getElementById('init-contact-' + key);
+        console.log(input);
+        const customCssStyleURL = `${environment.baseUrl}/assets/utils/intl-tel-input-custom.css`;
+        if (input) {
+            this.intlClass[key] = new IntlPhoneLib(input, parentDom, customCssStyleURL);
+        }
     }
 
     get f() {
@@ -75,27 +102,16 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
     submit() {
         if (this.registrationForm.valid) {
             const formData = this.registrationForm.value;
-            console.log('Form Data:', formData);
-            this.FormData = {
-                user: {
-                    fname: formData.user.firstName, // Map firstName to fname
-                    lname: formData.user.lastName, // Map lastName to lname
-                    email: formData.user.email,
-                    mobile: formData.user.mobile,
-                    username: formData.user.username,
-                    password: formData.user.password,
-                    confirmPassword: formData.user.confirmPassword,
-                },
-            };
 
             // HTTP POST request to your API endpoint
-            this.http.post(`${environment.baseUrl}/register`, this.FormData).subscribe(
+
+            const url = `${environment.baseUrl}/register`;
+            this.service.register(url, formData).subscribe(
                 (response) => {
-                    this.toast.success('Regitration success');
+                    this.toast.success('Registration success');
                 },
                 (error) => {
                     this.toast.error(error);
-                    this.apiError = error;
                 }
             );
         } else {
