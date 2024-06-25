@@ -1,0 +1,8 @@
+.app-content {
+    @media screen and (max-width: 720px) {
+        mat-card {
+            width: 100% !important;
+            background-color: var(--color-common-bg) !important;
+        }
+    }
+}

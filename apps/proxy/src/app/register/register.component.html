@@ -1,5 +1,5 @@
 <div class="app-content d-flex justify-content-center align-items-center" style="height: 100vh">
-    <mat-card class="container outline-card responsive-card py-5 w-40">
+    <mat-card class="container outline-card responsive-card w-40">
         <h2 class="d-flex justify-content-center">Register</h2>
         <div>
             <div [formGroup]="registrationForm" proxyMarkAllAsTouched (valid)="submit()">
@@ -12,7 +12,7 @@
                         formControl: registrationForm.get('user.username')
                     }"
                 ></ng-container>
-                <div class="d-flex">
+                <div class="d-flex gap-3">
                     <ng-container
                         [ngTemplateOutlet]="formField"
                         [ngTemplateOutletContext]="{
@@ -30,7 +30,7 @@
                         }"
                     ></ng-container>
                 </div>
-                <div class="d-flex">
+                <div class="d-flex gap-3">
                     <ng-container
                         [ngTemplateOutlet]="intlFormField"
                         [ngTemplateOutletContext]="{
@@ -50,7 +50,7 @@
                     ></ng-container>
                 </div>
 
-                <div class="d-flex">
+                <div class="d-flex gap-3">
                     <ng-container
                         [ngTemplateOutlet]="formField"
                         [ngTemplateOutletContext]="{
@@ -89,7 +89,7 @@
     let-formControl="formControl"
     let-patternError="patternError"
 >
-    <mat-form-field appearance="outline" style="width: 100%">
+    <mat-form-field appearance="outline" style="width: 50%">
         <mat-label>{{ label }} </mat-label>
         <input
             matInput
@@ -133,7 +133,7 @@
     <div [attr.id]="'init-contact-wrapper-' + key" class="register-user-details">
         <input
             type="tel"
-            class="w-100 mat-form-field-infix mat-form-field-flex"
+            class="w-100 mat-input-element"
             (keypress)="intlClass?.[key]?.onlyPhoneNumber($event) "
             [attr.id]="'init-contact-' + key"
             [placeholder]="'Enter ' + label"
