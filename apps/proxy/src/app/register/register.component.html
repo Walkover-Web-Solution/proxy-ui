@@ -1,5 +1,5 @@
 <div class="app-content d-flex justify-content-center align-items-center" style="height: 100vh">
-    <mat-card class="container outline-card responsive-card w-40">
+    <mat-card class="outline-card" style="width: 720px">
         <h2 class="d-flex justify-content-center">Register</h2>
         <div>
             <div [formGroup]="registrationForm" proxyMarkAllAsTouched (valid)="submit()">
@@ -12,7 +12,7 @@
                         formControl: registrationForm.get('user.username')
                     }"
                 ></ng-container>
-                <div class="d-flex gap-3">
+                <div class="card d-flex gap-3">
                     <ng-container
                         [ngTemplateOutlet]="formField"
                         [ngTemplateOutletContext]="{
@@ -72,9 +72,7 @@
                 </div>
 
                 <div class="mt-4 d-flex justify-content-center align-items-center">
-                    <button mat-flat-button color="primary" style="width: 250px; font-size: 16px" (click)="submit()">
-                        Submit
-                    </button>
+                    <button mat-flat-button color="primary" (click)="submit()">Submit</button>
                 </div>
             </div>
         </div>
@@ -89,7 +87,7 @@
     let-formControl="formControl"
     let-patternError="patternError"
 >
-    <mat-form-field appearance="outline" style="width: 50%">
+    <mat-form-field appearance="outline" style="width: 100%">
         <mat-label>{{ label }} </mat-label>
         <input
             matInput
@@ -133,7 +131,7 @@
     <div [attr.id]="'init-contact-wrapper-' + key" class="register-user-details">
         <input
             type="tel"
-            class="w-100 mat-form-field"
+            class="w-100 border rounded-4 text-dark"
             (keypress)="intlClass?.[key]?.onlyPhoneNumber($event) "
             [attr.id]="'init-contact-' + key"
             [placeholder]="'Enter ' + label"

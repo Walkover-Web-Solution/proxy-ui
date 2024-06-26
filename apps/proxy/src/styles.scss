@@ -95,12 +95,12 @@ canvas {
     }
 }
 .register-user-details {
-    width: 50%;
+    width: 100%;
     margin-top: 5px;
+    height: 61px;
     #init-contact-user {
-        border: 1px solid #d5d2d2;
-        height: 40px;
-        border-radius: 5px;
+        height: 39px;
+        font-size: 15px;
     }
     .invalid-input {
         outline: 2px solid #f44336;
