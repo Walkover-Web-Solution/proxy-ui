@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout.component';
 import { CanActivateRouteGuard } from '../auth/authguard';
 import { redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
+import { ChatbotComponent } from '../chatbot/chatbot.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
@@ -23,6 +24,10 @@ const routes: Routes = [
             {
                 path: 'users',
                 loadChildren: () => import('../users/users.module').then((p) => p.UsersModule),
+            },
+            {
+                path: 'Ask-ai',
+                component: ChatbotComponent,
             },
         ],
         data: { authGuardPipe: redirectUnauthorizedToLogin },
