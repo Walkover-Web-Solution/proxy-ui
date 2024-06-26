@@ -97,18 +97,12 @@ canvas {
 .register-user-details {
     width: 50%;
     margin-top: 5px;
-    box-sizing: content-box;
     #init-contact-user {
-        outline: none;
-        color: #333;
-        border: 1px solid #c3c2c2;
+        border: 1px solid #d5d2d2;
         height: 40px;
         border-radius: 5px;
     }
     .invalid-input {
         outline: 2px solid #f44336;
-    }
-    .iti--allow-dropdown {
-        width: 100%;
     }
 }

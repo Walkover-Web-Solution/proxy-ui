@@ -133,7 +133,7 @@
     <div [attr.id]="'init-contact-wrapper-' + key" class="register-user-details">
         <input
             type="tel"
-            class="w-100 mat-input-element"
+            class="w-100 mat-form-field"
             (keypress)="intlClass?.[key]?.onlyPhoneNumber($event) "
             [attr.id]="'init-contact-' + key"
             [placeholder]="'Enter ' + label"
