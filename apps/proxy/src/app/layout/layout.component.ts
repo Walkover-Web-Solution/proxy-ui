@@ -4,17 +4,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { Store, select } from '@ngrx/store';
 import { selectLogInData } from '../auth/ngrx/selector/login.selector';
 import { isEqual } from 'lodash';
-import {
-    BehaviorSubject,
-    Observable,
-    distinctUntilChanged,
-    filter,
-    takeUntil,
-    combineLatest,
-    Subscription,
-    interval,
-    switchMap,
-} from 'rxjs';
+import { BehaviorSubject, Observable, distinctUntilChanged, filter, takeUntil, combineLatest } from 'rxjs';
 import { ILogInFeatureStateWithRootState } from '../auth/ngrx/store/login.state';
 import * as logInActions from '../auth/ngrx/actions/login.action';
 import { rootActions } from '../ngrx/actions';
@@ -42,7 +32,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
         itemsPerPage: 25,
         pageNo: 1,
     };
-    private intervalSubscription: Subscription | undefined;
     constructor(
         private store: Store<ILogInFeatureStateWithRootState>,
 
@@ -79,7 +68,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
 
             const container = document.getElementById('ChatbotContainer');
             if (container) {
-                this.showContainer ? (container.style.display = 'block') : (container.style.display = 'none');
+                container.style.display = this.showContainer ? 'block' : 'none';
             } else {
                 console.error('Element with ID "chatbotContainer" not found');
             }
@@ -99,53 +88,43 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
             }
         });
 
-        this.intervalSubscription = interval(100)
-            .pipe(switchMap(() => combineLatest([this.logInData$, this.clientSettings$])))
-            .subscribe(([loginData, clientSettings]) => {
-                if (loginData && clientSettings) {
-                    this.rootService.generateToken({ source: 'chatbot' }).subscribe((res) => {
-                        const scriptId = 'chatbot-main-script';
-                        const existingScript = document.getElementById(scriptId);
-                        if (existingScript) {
-                            existingScript.remove();
-                        }
-                        const scriptElement = document.createElement('script');
-                        scriptElement.type = 'text/javascript';
-                        scriptElement.src = environment.interfaceScriptUrl;
-                        scriptElement.id = scriptId;
-                        scriptElement.setAttribute('embedToken', res?.data?.jwt);
-                        scriptElement.setAttribute('parentId', 'ChatbotContainer');
-                        scriptElement.setAttribute('fullScreen', 'true');
-                        scriptElement.setAttribute('hideIcon', 'true');
-                        scriptElement.setAttribute('hideCloseButton', 'true');
+        combineLatest([this.logInData$, this.clientSettings$]).subscribe(([loginData, clientSettings]) => {
+            if (loginData && clientSettings) {
+                this.rootService.generateToken({ source: 'chatbot' }).subscribe((res) => {
+                    const scriptId = 'chatbot-main-script';
+                    const existingScript = document.getElementById(scriptId);
+                    if (existingScript) {
+                        existingScript.remove();
+                    }
+                    const scriptElement = document.createElement('script');
+                    scriptElement.type = 'text/javascript';
+                    scriptElement.src = environment.interfaceScriptUrl;
+                    scriptElement.id = scriptId;
+                    scriptElement.setAttribute('embedToken', res?.data?.jwt);
+                    scriptElement.setAttribute('parentId', 'ChatbotContainer');
+                    scriptElement.setAttribute('fullScreen', 'true');
+                    scriptElement.setAttribute('hideIcon', 'true');
+                    scriptElement.setAttribute('hideCloseButton', 'true');
 
-                        scriptElement.onload = () => {
-                            const payload = {
-                                variables: {
-                                    variables: JSON.stringify({
-                                        session: this.authService.getTokenSync(),
-                                    }),
-                                },
-                                threadId: `${loginData?.email}${clientSettings?.client?.id}`,
-                                bridgeName: 'root',
-                            };
-                            console.log('SendDataToChatbot ==>', payload);
-                            (window as any).SendDataToChatbot(payload);
-
-                            (window as any).openChatbot();
-                            this.unsubscribeInterval();
+                    scriptElement.onload = () => {
+                        const payload = {
+                            variables: {
+                                variables: JSON.stringify({
+                                    session: this.authService.getTokenSync(),
+                                }),
+                            },
+                            threadId: `${loginData?.email}${clientSettings?.client?.id}`,
+                            bridgeName: 'root',
                         };
+                        console.log('SendDataToChatbot ==>', payload);
+                        (window as any).SendDataToChatbot(payload);
+                        (window as any).openChatbot();
+                    };
 
-                        document.body.appendChild(scriptElement);
-                    });
-                }
-            });
-    }
-
-    private unsubscribeInterval(): void {
-        if (this.intervalSubscription) {
-            this.intervalSubscription.unsubscribe();
-        }
+                    document.body.appendChild(scriptElement);
+                });
+            }
+        });
     }
 
     public logOut() {
