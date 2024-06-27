@@ -62,10 +62,8 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
             takeUntil(this.destroy$)
         );
 
-        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-            const currentRoute = this.route.snapshot.firstChild?.routeConfig?.path;
-            this.showContainer = currentRoute === 'chatbot';
-
+        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+            this.showContainer = event?.url?.includes('chatbot');
             const container = document.getElementById('ChatbotContainer');
             if (container) {
                 container.style.display = this.showContainer ? 'block' : 'none';
