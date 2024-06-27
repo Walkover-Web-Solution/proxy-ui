@@ -1,10 +1,9 @@
-import { RootService } from '@proxy/services/proxy/root';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { VersionCheckService } from '@proxy/service';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -14,7 +13,6 @@ import { IAppState, selectClientSettings } from './ngrx';
 import { rootActions } from './ngrx/actions';
 import * as logInActions from './auth/ngrx/actions/login.action';
 import { IClientSettings, IFirebaseUserModel } from '@proxy/models/root-models';
-import { AuthService } from '@proxy/services/proxy/auth';
 
 @Component({
     selector: 'proxy-root',
@@ -35,9 +33,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         private router: Router,
         private actRoute: ActivatedRoute,
         private store: Store<IAppState>,
-        private versionCheckService: VersionCheckService,
-        private authService: AuthService,
-        private rootService: RootService
+        private versionCheckService: VersionCheckService
     ) {
         super();
 
@@ -101,35 +97,6 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                 }
             });
         }
-        combineLatest([this.logInData$, this.clientSettings$]).subscribe(([loginData, clientSettings]) => {
-            if (loginData && clientSettings) {
-                this.rootService.generateToken({ source: 'chatbot' }).subscribe((res) => {
-                    const scriptId = 'chatbot-main-script';
-                    if (document.getElementById(scriptId)) {
-                        document.getElementById(scriptId)?.remove();
-                    }
-                    const scriptElement = document.createElement('script');
-                    scriptElement.type = 'text/javascript';
-                    scriptElement.src = environment.interfaceScriptUrl;
-                    scriptElement.id = scriptId;
-                    scriptElement.setAttribute('embedToken', res?.data?.jwt);
-                    scriptElement.onload = () => {
-                        const payload = {
-                            variables: {
-                                variables: JSON.stringify({
-                                    session: this.authService.getTokenSync(),
-                                }),
-                            },
-                            threadId: `${loginData?.email}${clientSettings?.client?.id}`,
-                            bridgeName: 'root',
-                        };
-                        console.log('SendDataToChatbot ==>', payload);
-                        (window as any).SendDataToChatbot(payload);
-                    };
-                    document.body.appendChild(scriptElement);
-                });
-            }
-        });
     }
 
     public ngOnDestroy(): void {
