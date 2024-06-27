@@ -120,28 +120,21 @@
         <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
     </mat-form-field>
 </ng-template>
-<ng-template
-    #intlFormField
-    let-key="key"
-    let-label="label"
-    let-hint="hint"
-    let-required="required"
-    let-formControl="formControl"
->
-    <div [attr.id]="'init-contact-wrapper-' + key" class="register-user-details w-100">
+<ng-template #intlFormField let-label="label" let-hint="hint" let-required="required" let-formControl="formControl">
+    <div [attr.id]="init - contact - wrapper" class="register-user-details w-100">
         <input
             type="tel"
             class="w-100 border rounded-4 text-dark"
-            (keypress)="intlClass?.[key]?.onlyPhoneNumber($event) "
-            [attr.id]="'init-contact-' + key"
+            (keypress)="intlClass?.onlyPhoneNumber($event)"
+            [attr.id]="'init-contact-user'"
             [placeholder]="'Enter ' + label"
-            [ngClass]="{ 'invalid-input': formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber'] }"
-            (blur)="formControl?.markAsTouched(); formControl?.setValue(intlClass?.[key]?.phoneNumber?.replace('+', ''))"
+            [ngClass]="{ 'invalid-input': formControl.touched && !intlClass?.[required ? 'isRequiredValidNumber' : 'isValidNumber'] }"
+            (blur)="formControl?.markAsTouched(); formControl?.setValue(intlClass?.phoneNumber?.replace('+', ''))"
         />
 
         <div>
             <mat-error
-                *ngIf="formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']"
+                *ngIf="formControl.touched && !intlClass?.[required ? 'isRequiredValidNumber' : 'isValidNumber']"
             >
                 Please enter valid mobile number
             </mat-error>

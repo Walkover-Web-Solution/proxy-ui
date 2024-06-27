@@ -47,7 +47,7 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
             ]),
         }),
     });
-    public intlClass: { [key: string]: IntlPhoneLib } = {};
+    public intlClass: IntlPhoneLib;
     constructor(private store: Store<IAppState>, private service: UsersService, private toast: PrimeNgToastService) {
         super();
     }
@@ -73,14 +73,9 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
         const input = document.getElementById('init-contact-user');
         const customCssStyleURL = `${environment.baseUrl}/assets/utils/intl-tel-input-custom.css`;
         if (input) {
-            this.intlClass['user'] = new IntlPhoneLib(input, parentDom, customCssStyleURL);
+            this.intlClass = new IntlPhoneLib(input, parentDom, customCssStyleURL);
         }
     }
-
-    get f() {
-        return this.registrationForm.controls;
-    }
-
     // Submit method to handle form submission
     submit() {
         if (this.registrationForm.valid) {
