@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IClient, IClientSettings, IFirebaseUserModel, IPaginatedResponse } from '@proxy/models/root-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store, select } from '@ngrx/store';
 import { selectLogInData } from '../auth/ngrx/selector/login.selector';
-import { isEqual, take } from 'lodash';
+import { isEqual } from 'lodash';
 import {
     BehaviorSubject,
     Observable,
@@ -11,25 +11,24 @@ import {
     filter,
     takeUntil,
     combineLatest,
-    debounceTime,
+    Subscription,
+    interval,
+    switchMap,
 } from 'rxjs';
 import { ILogInFeatureStateWithRootState } from '../auth/ngrx/store/login.state';
 import * as logInActions from '../auth/ngrx/actions/login.action';
 import { rootActions } from '../ngrx/actions';
-import { CookieService } from 'ngx-cookie-service';
 import { selectAllClient, selectClientSettings, selectSwtichClientSuccess } from '../ngrx';
-import { AppComponent } from '../app.component';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { RootService } from '@proxy/services/proxy/root';
 import { environment } from '../../environments/environment';
 import { AuthService } from '@proxy/services/proxy/auth';
-
 @Component({
     selector: 'proxy-layout',
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.scss'],
 })
-export class LayoutComponent extends BaseComponent implements OnInit {
+export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy {
     public logInData$: Observable<IFirebaseUserModel>;
     public clientSettings$: Observable<IClientSettings>;
     public clients$: Observable<IPaginatedResponse<IClient[]>>;
@@ -43,11 +42,10 @@ export class LayoutComponent extends BaseComponent implements OnInit {
         itemsPerPage: 25,
         pageNo: 1,
     };
-
+    private intervalSubscription: Subscription | undefined;
     constructor(
         private store: Store<ILogInFeatureStateWithRootState>,
-        private cookieService: CookieService,
-        private appcomponent: AppComponent,
+
         private router: Router,
         private route: ActivatedRoute,
         private rootService: RootService,
@@ -75,28 +73,22 @@ export class LayoutComponent extends BaseComponent implements OnInit {
             takeUntil(this.destroy$)
         );
 
-        this.router.events
-            .pipe(
-                debounceTime(500),
-                filter((event) => event instanceof NavigationEnd)
-            )
-            .subscribe(() => {
-                const currentRoute = this.route.snapshot.firstChild?.routeConfig?.path;
-                this.showContainer = currentRoute === 'Ask-ai';
+        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+            const currentRoute = this.route.snapshot.firstChild?.routeConfig?.path;
+            this.showContainer = currentRoute === 'chatbot';
 
-                const container = document.getElementById('iframe-parent-container');
-                if (container) {
-                    this.showContainer ? (container.style.display = 'block') : (container.style.display = 'none');
-                } else {
-                    console.error('Element with ID "iframe-parent-container" not found');
-                }
-            });
+            const container = document.getElementById('ChatbotContainer');
+            if (container) {
+                this.showContainer ? (container.style.display = 'block') : (container.style.display = 'none');
+            } else {
+                console.error('Element with ID "chatbotContainer" not found');
+            }
+        });
     }
     ngOnInit(): void {
         this.getClients();
         this.getClientSettings();
         this.getCurrentTheme();
-        console.log('hello');
 
         if (this.isMobileDevice()) {
             this.toggleSideBarEvent();
@@ -106,40 +98,54 @@ export class LayoutComponent extends BaseComponent implements OnInit {
                 location.href = '/app';
             }
         });
-        combineLatest([this.logInData$, this.clientSettings$]).subscribe(([loginData, clientSettings]) => {
-            if (loginData && clientSettings) {
-                this.rootService.generateToken({ source: 'chatbot' }).subscribe((res) => {
-                    const scriptId = 'chatbot-main-script';
-                    if (document.getElementById(scriptId)) {
-                        document.getElementById(scriptId)?.remove();
-                    }
-                    const scriptElement = document.createElement('script');
-                    scriptElement.type = 'text/javascript';
-                    scriptElement.src = environment.interfaceScriptUrl;
-                    scriptElement.id = scriptId;
-                    scriptElement.setAttribute('embedToken', res?.data?.jwt);
-                    scriptElement.setAttribute('parentId', 'ChatbotContainer');
-                    scriptElement.setAttribute('fullScreen', 'true');
-                    scriptElement.setAttribute('hideIcon', 'true');
-                    scriptElement.setAttribute('hideCloseButton', 'true');
 
-                    scriptElement.onload = () => {
-                        const payload = {
-                            variables: {
-                                variables: JSON.stringify({
-                                    session: this.authService.getTokenSync(),
-                                }),
-                            },
-                            threadId: `${loginData?.email}${clientSettings?.client?.id}`,
-                            bridgeName: 'root',
+        this.intervalSubscription = interval(100)
+            .pipe(switchMap(() => combineLatest([this.logInData$, this.clientSettings$])))
+            .subscribe(([loginData, clientSettings]) => {
+                if (loginData && clientSettings) {
+                    this.rootService.generateToken({ source: 'chatbot' }).subscribe((res) => {
+                        const scriptId = 'chatbot-main-script';
+                        const existingScript = document.getElementById(scriptId);
+                        if (existingScript) {
+                            existingScript.remove();
+                        }
+                        const scriptElement = document.createElement('script');
+                        scriptElement.type = 'text/javascript';
+                        scriptElement.src = environment.interfaceScriptUrl;
+                        scriptElement.id = scriptId;
+                        scriptElement.setAttribute('embedToken', res?.data?.jwt);
+                        scriptElement.setAttribute('parentId', 'ChatbotContainer');
+                        scriptElement.setAttribute('fullScreen', 'true');
+                        scriptElement.setAttribute('hideIcon', 'true');
+                        scriptElement.setAttribute('hideCloseButton', 'true');
+
+                        scriptElement.onload = () => {
+                            const payload = {
+                                variables: {
+                                    variables: JSON.stringify({
+                                        session: this.authService.getTokenSync(),
+                                    }),
+                                },
+                                threadId: `${loginData?.email}${clientSettings?.client?.id}`,
+                                bridgeName: 'root',
+                            };
+                            console.log('SendDataToChatbot ==>', payload);
+                            (window as any).SendDataToChatbot(payload);
+
+                            (window as any).openChatbot();
+                            this.unsubscribeInterval();
                         };
-                        console.log('SendDataToChatbot ==>', payload);
-                        (window as any).SendDataToChatbot(payload);
-                    };
-                    document.body.appendChild(scriptElement);
-                });
-            }
-        });
+
+                        document.body.appendChild(scriptElement);
+                    });
+                }
+            });
+    }
+
+    private unsubscribeInterval(): void {
+        if (this.intervalSubscription) {
+            this.intervalSubscription.unsubscribe();
+        }
     }
 
     public logOut() {

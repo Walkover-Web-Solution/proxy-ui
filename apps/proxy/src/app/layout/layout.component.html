@@ -108,12 +108,13 @@
     <div class="app-main-container">
         <!-- Content::START -->
 
-        <div class="component-render-container" id="ChatbotContainer">
+        <div class="component-render-container">
             <ng-container *ngIf="!showContainer">
                 <div class="component-render-container-inner">
                     <router-outlet></router-outlet>
                 </div>
             </ng-container>
+            <div id="ChatbotContainer"></div>
         </div>
 
         <!-- Content::END -->

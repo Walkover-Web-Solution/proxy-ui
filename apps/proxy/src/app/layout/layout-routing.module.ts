@@ -26,7 +26,7 @@ const routes: Routes = [
                 loadChildren: () => import('../users/users.module').then((p) => p.UsersModule),
             },
             {
-                path: 'Ask-ai',
+                path: 'chatbot',
                 component: ChatbotComponent,
             },
         ],
