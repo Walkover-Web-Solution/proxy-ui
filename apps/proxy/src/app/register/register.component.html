@@ -34,7 +34,6 @@
                     <ng-container
                         [ngTemplateOutlet]="intlFormField"
                         [ngTemplateOutletContext]="{
-                
                             label: 'Mobile',
                             required: true,
                             formControl: registrationForm.get('user.mobile')
@@ -69,6 +68,10 @@
                             formControl: registrationForm.get('user.confirmPassword')
                         }"
                     ></ng-container>
+                </div>
+                <div class="font-12">
+                    <span class="font-14 fw-bolder">Note: </span>
+                    Password should contain atleast one Capital Letter, one Small Letter, one Digit and one Symbol
                 </div>
 
                 <div class="mt-4 d-flex justify-content-center align-items-center">
