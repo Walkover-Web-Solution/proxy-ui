@@ -3,6 +3,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { ServicesHttpWrapperNoAuthModule } from '@proxy/services/http-wrapper-no-auth';
 
 const routes: Routes = [
     { path: '', redirectTo: 'register', pathMatch: 'full' },
@@ -14,7 +15,7 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [],
-    imports: [CommonModule, RouterModule.forChild(routes)],
+    imports: [CommonModule, RouterModule.forChild(routes), ServicesHttpWrapperNoAuthModule],
     providers: [],
     exports: [RouterModule],
 })
