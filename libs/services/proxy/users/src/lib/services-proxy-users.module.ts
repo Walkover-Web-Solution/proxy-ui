@@ -1,6 +1,7 @@
 import { NgModule, Injectable, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
+import { HttpWrapperService as HttpWrapperServiceNoAuth } from '@proxy/services/http-wrapper-no-auth';
 import { BaseResponse, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
 import { IUser, IUserReq } from '@proxy/models/users-model';
 import { UsersUrl } from '@proxy/urls/users-urls';
@@ -15,7 +16,18 @@ export class ServicesProxyUsersModule {}
     providedIn: ServicesProxyUsersModule,
 })
 export class UsersService {
-    constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseURL: any) {}
+    public options = {
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        withCredentials: false,
+    };
+    constructor(
+        private http: HttpWrapperService,
+        @Inject(ProxyBaseUrls.BaseURL) private baseURL: any,
+        private httpNoAuth: HttpWrapperServiceNoAuth
+    ) {}
     // Get All Users
     public getUsers(params): Observable<BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>> {
         return this.http.get<BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>>(
@@ -23,7 +35,7 @@ export class UsersService {
             params
         );
     }
-    public register(url: any, formData: any): Observable<any> {
-        return this.http.post(url, formData);
+    public register(formData: any): Observable<any> {
+        return this.httpNoAuth.post(UsersUrl.register(this.baseURL), formData, this.options);
     }
 }

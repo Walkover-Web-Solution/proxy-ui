@@ -81,10 +81,7 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
         if (this.registrationForm.valid) {
             const formData = this.registrationForm.value;
 
-            // HTTP POST request to your API endpoint
-
-            const url = `${environment.baseUrl}/register`;
-            this.service.register(url, formData).subscribe(
+            this.service.register(formData).subscribe(
                 (response) => {
                     this.toast.success('Registration success');
                 },
