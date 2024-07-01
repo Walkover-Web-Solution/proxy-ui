@@ -15,4 +15,8 @@ export const appRoutes: Route[] = [
         data: { authGuardPipe: redirectUnauthorizedToLogin },
         canActivate: [AngularFireAuthGuard],
     },
+    {
+        path: 'p',
+        loadChildren: () => import('./public.module').then((p) => p.PublicModule),
+    },
 ];

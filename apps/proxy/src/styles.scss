@@ -94,3 +94,16 @@ canvas {
         display: block !important;
     }
 }
+.register-user-details {
+    margin-top: 5px;
+    #init-contact-user {
+        height: 39px;
+        font-size: 15px;
+    }
+    .invalid-input {
+        outline: 2px solid #f44336;
+    }
+    .iti--allow-dropdown {
+        width: 100%;
+    }
+}

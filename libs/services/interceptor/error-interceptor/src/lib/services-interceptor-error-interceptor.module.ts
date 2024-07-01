@@ -32,11 +32,13 @@ export class ErrorInterceptor implements HttpInterceptor {
     ) {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if (request.url.includes('api/googleLogin') || this.cookieService.get('authToken')) {
+        if (
+            request.url.includes('api/register') ||
+            request.url.includes('api/googleLogin') ||
+            this.cookieService.get('authToken')
+        ) {
             return next.handle(request).pipe(
-                tap((resp: HttpResponse<any>) => {
-                    // console.log(resp);
-                }),
+                tap((resp: HttpResponse<any>) => {}),
                 catchError((err) => {
                     if (err instanceof HttpErrorResponse) {
                         if (err.status === 401) {
