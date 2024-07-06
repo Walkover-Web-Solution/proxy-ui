@@ -24,6 +24,11 @@ const routes: Routes = [
                 path: 'users',
                 loadChildren: () => import('../users/users.module').then((p) => p.UsersModule),
             },
+            {
+                path: 'project',
+                loadChildren: () =>
+                    import('../create-project/create-project.module').then((p) => p.CreateProjectModule),
+            },
         ],
         data: { authGuardPipe: redirectUnauthorizedToLogin },
         canActivate: [CanActivateRouteGuard],

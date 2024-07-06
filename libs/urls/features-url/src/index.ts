@@ -4,4 +4,5 @@ export const FeaturesUrls = {
     getFeature: (baseUrl) => createUrl(baseUrl, 'features'),
     getFeatureType: (baseUrl) => createUrl(baseUrl, 'getFeatures'),
     getMethodService: (baseUrl) => createUrl(baseUrl, 'getMethodsService/:id'),
+    createproject: (baseUrl) => createUrl(baseUrl, 'projects'),
 };
