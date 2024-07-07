@@ -52,7 +52,7 @@
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
                     </button>
-                    <button mat-raised-button color="accent" (click)="submit()">Submit</button>
+                    <button mat-raised-button color="accent">Submit</button>
                 </div>
             </div>
         </mat-step>
@@ -131,9 +131,25 @@
         <div class="my-3 w-40">
             <h3>Provide your own</h3>
 
-            <mat-checkbox formControlName="urlControl">Same for all environments</mat-checkbox>
+            <mat-checkbox [checked]="checked" (change)="onChange($event); (false)"
+                >Same for all environments</mat-checkbox
+            >
+            <ng-container *ngIf="checked">
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: projectForm.get('gatewayUrlDetails.devUrl'),
+                            fieldConfig: {
+                                label: 'Development URL',
+                                patternErrorText: 'URL must contain only alphanumeric and underscore'
+                            }
+                        }
+                    "
+                ></ng-container>
+            </ng-container>
 
-            <ng-container>
+            <ng-container *ngIf="!checked">
                 <h3 class="mb-0">Development</h3>
                 <ng-container
                     *ngTemplateOutlet="
@@ -170,12 +186,13 @@
 
             <div>
                 <h4>Development</h4>
-                <a href="baseurl">{{ baseurl }}</a
-                ><mat-icon> content_copy </mat-icon>
+                <a href="baseurl">{{ baseurl }}</a>
+                <proxy-copy-button matSuffix [copyData]="baseurl" tooltip="Copy URL"></proxy-copy-button>
             </div>
             <div>
                 <h4>Production</h4>
-                <a href="baseurl">{{ baseurl }} </a><mat-icon> content_copy </mat-icon>
+                <a href="baseurl">{{ baseurl }} </a
+                ><proxy-copy-button matSuffix [copyData]="baseurl" tooltip="Copy URL"></proxy-copy-button>
             </div>
             <div class="font-12 mt-3">
                 <span class="fw-bolder">Note: </span>
@@ -225,7 +242,7 @@
                     *ngTemplateOutlet="
                         inputField;
                         context: {
-                            fieldControl: desnationUrlControl,
+                            fieldControl: projectForm.get('destinationUrl.devForward'),
                             fieldConfig: {
                                 label: 'Enter Url'
                             }
@@ -246,7 +263,7 @@
                     *ngTemplateOutlet="
                         inputField;
                         context: {
-                            fieldControl: desnationUrlControl,
+                            fieldControl: projectForm.get('destinationUrl.prodForward'),
                             fieldConfig: {
                                 label: 'Enter Url',
                                 patternErrorText: 'Name must contain only alphanumeric and underscore'

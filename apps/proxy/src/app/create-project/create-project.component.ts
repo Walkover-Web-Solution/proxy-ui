@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators, ValidatorFn, FormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, Validators, ValidatorFn, FormBuilder } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
 
 import { FeaturesService } from '@proxy/services/proxy/features';
 
@@ -15,6 +14,7 @@ import { FeaturesService } from '@proxy/services/proxy/features';
 export class CreateProjectComponent implements OnInit {
     public projectForm: FormGroup;
     public primaryDetails;
+    public checked: false;
 
     public baseurl = `${environment.baseUrl}/proxy/{companyid}/{projectslug}`;
     public apiUrl = `${environment.baseUrl}/projects`;
@@ -39,38 +39,27 @@ export class CreateProjectComponent implements OnInit {
             }),
 
             gatewayUrlDetails: new FormGroup({
-                urlControl: new FormControl(true),
-                devUrl: new FormControl<string>(null, []),
-                prodUrl: new FormControl<string>(null, []),
+                devUrl: new FormControl<string>(null, Validators.required),
+                prodUrl: new FormControl<string>(null, Validators.required),
             }),
 
             destinationUrl: new FormGroup({
-                uniqueIdentifiCation: new FormControl<string>(null, []),
-                devForward: new FormControl<string>(null, []),
-                prodForward: new FormControl<string>(null, []),
+                uniqueIdentifiCation: new FormControl<string>(null, Validators.required),
+                devForward: new FormControl<string>(null, Validators.required),
+                prodForward: new FormControl<string>(null, Validators.required),
             }),
         });
     }
 
     ngOnInit(): void {}
-    // primaryDetails = this.projectForm.get('primaryDetails').value;
-    // arrayToKeyObject(arr: string[]): { [key: string]: any } {
-    //     const obj: { [key: string]: any } = {};
-    //     arr.forEach(key => {
-    //         obj[key] = {
-    //             ratelimit: rateLimit
-    //         }; // Initial default value, adjust as needed
-    //     });
 
-    //     return obj;
-    // }
-    public submit(): void {
-        const formData = this.projectForm.value;
-        console.log(formData);
+    onChange(event) {
+        this.checked = event.checked;
     }
+
     public onSubmit(): void {
-        let { name, environments, rateLimit_hit, rateLimit_minute } = this.projectForm.get('primaryDetails').value;
-        let projectDetails = {
+        const { name, environments, rateLimit_hit, rateLimit_minute } = this.projectForm.get('primaryDetails').value;
+        const projectDetails = {
             'name': name,
             'environments': {
                 [environments[0]]: {
@@ -82,17 +71,9 @@ export class CreateProjectComponent implements OnInit {
             },
         };
         this.services.createproject(projectDetails).subscribe(
-            (response) => {
-                console.log('Registration success');
-            },
+            (response) => {},
             (error) => {}
         );
         console.log(projectDetails);
-
-        if (this.projectForm.valid) {
-            const formData = this.projectForm.value;
-        } else {
-            this.projectForm.markAllAsTouched(); // Mark all controls as touched to show validation errors
-        }
     }
 }

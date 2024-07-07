@@ -7,10 +7,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-import { MatSelect, MatSelectModule } from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ReactiveFormsModule } from '@angular/forms';
+import { UiCopyButtonModule } from '@proxy/ui/copy-button';
 
 import { FeaturesService } from '@proxy/services/proxy/features';
 
@@ -37,6 +38,7 @@ const routes: Routes = [
         MatCheckboxModule,
         MatCardModule,
         ReactiveFormsModule,
+        UiCopyButtonModule,
     ],
     providers: [FeaturesService],
     exports: [RouterModule],
