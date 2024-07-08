@@ -1,22 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IClient, IClientSettings, IFirebaseUserModel, IPaginatedResponse } from '@proxy/models/root-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store, select } from '@ngrx/store';
 import { selectLogInData } from '../auth/ngrx/selector/login.selector';
 import { isEqual } from 'lodash';
-import { BehaviorSubject, Observable, distinctUntilChanged, filter, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, distinctUntilChanged, filter, takeUntil, combineLatest } from 'rxjs';
 import { ILogInFeatureStateWithRootState } from '../auth/ngrx/store/login.state';
 import * as logInActions from '../auth/ngrx/actions/login.action';
 import { rootActions } from '../ngrx/actions';
-import { CookieService } from 'ngx-cookie-service';
 import { selectAllClient, selectClientSettings, selectSwtichClientSuccess } from '../ngrx';
-
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { RootService } from '@proxy/services/proxy/root';
+import { environment } from '../../environments/environment';
+import { AuthService } from '@proxy/services/proxy/auth';
 @Component({
     selector: 'proxy-layout',
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.scss'],
 })
-export class LayoutComponent extends BaseComponent implements OnInit {
+export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy {
     public logInData$: Observable<IFirebaseUserModel>;
     public clientSettings$: Observable<IClientSettings>;
     public clients$: Observable<IPaginatedResponse<IClient[]>>;
@@ -25,12 +27,19 @@ export class LayoutComponent extends BaseComponent implements OnInit {
     public isSideNavOpen = new BehaviorSubject<boolean>(true);
 
     public toggleMenuSideBar: boolean;
+    public showContainer = false;
     public clientsParams = {
         itemsPerPage: 25,
         pageNo: 1,
     };
+    constructor(
+        private store: Store<ILogInFeatureStateWithRootState>,
 
-    constructor(private store: Store<ILogInFeatureStateWithRootState>, private cookieService: CookieService) {
+        private router: Router,
+        private route: ActivatedRoute,
+        private rootService: RootService,
+        private authService: AuthService
+    ) {
         super();
         this.logInData$ = this.store.pipe(
             select(selectLogInData),
@@ -52,18 +61,66 @@ export class LayoutComponent extends BaseComponent implements OnInit {
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
-    }
 
+        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+            this.showContainer = event?.url?.includes('chatbot');
+            const container = document.getElementById('ChatbotContainer');
+            if (container) {
+                container.style.display = this.showContainer ? 'block' : 'none';
+            } else {
+                console.error('Element with ID "chatbotContainer" not found');
+            }
+        });
+    }
     ngOnInit(): void {
         this.getClients();
         this.getClientSettings();
         this.getCurrentTheme();
+
         if (this.isMobileDevice()) {
             this.toggleSideBarEvent();
         }
         this.swtichClientSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 location.href = '/app';
+            }
+        });
+
+        combineLatest([this.logInData$, this.clientSettings$]).subscribe(([loginData, clientSettings]) => {
+            if (loginData && clientSettings) {
+                this.rootService.generateToken({ source: 'chatbot' }).subscribe((res) => {
+                    const scriptId = 'chatbot-main-script';
+                    const existingScript = document.getElementById(scriptId);
+                    if (existingScript) {
+                        existingScript.remove();
+                    }
+                    const scriptElement = document.createElement('script');
+                    scriptElement.type = 'text/javascript';
+                    scriptElement.src = environment.interfaceScriptUrl;
+                    scriptElement.id = scriptId;
+                    scriptElement.setAttribute('embedToken', res?.data?.jwt);
+                    scriptElement.setAttribute('parentId', 'ChatbotContainer');
+                    scriptElement.setAttribute('fullScreen', 'true');
+                    scriptElement.setAttribute('hideIcon', 'true');
+                    scriptElement.setAttribute('hideCloseButton', 'true');
+
+                    scriptElement.onload = () => {
+                        const payload = {
+                            variables: {
+                                variables: JSON.stringify({
+                                    session: this.authService.getTokenSync(),
+                                }),
+                            },
+                            threadId: `${loginData?.email}${clientSettings?.client?.id}`,
+                            bridgeName: 'root',
+                        };
+                        console.log('SendDataToChatbot ==>', payload);
+                        (window as any).SendDataToChatbot(payload);
+                        (window as any).openChatbot();
+                    };
+
+                    document.body.appendChild(scriptElement);
+                });
             }
         });
     }
