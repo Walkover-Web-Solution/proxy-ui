@@ -25,7 +25,7 @@ export const DEFAULT_OPTIONS = {
 };
 
 @Injectable({
-    providedIn: ServicesHttpWrapperNoAuthModule,
+    providedIn: 'root',
 })
 export class HttpWrapperService {
     constructor(private http: HttpClient, @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any) {}
