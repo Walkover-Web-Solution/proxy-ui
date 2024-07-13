@@ -6,14 +6,17 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { MatListModule } from '@angular/material/list';
+import { MatListModule, MatListOption } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UiCopyButtonModule } from '@proxy/ui/copy-button';
+import { LogsService } from '@proxy/services/proxy/logs';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { FeaturesService } from '@proxy/services/proxy/features';
+import { CreateProjectService, ServicesProxyCreateProjectModule } from '@proxy/services/proxy/create-project';
 
 const routes: Routes = [
     {
@@ -39,8 +42,10 @@ const routes: Routes = [
         MatCardModule,
         ReactiveFormsModule,
         UiCopyButtonModule,
+        ServicesProxyCreateProjectModule,
+        MatAutocompleteModule,
     ],
-    providers: [FeaturesService],
+    providers: [CreateProjectService, LogsService],
     exports: [RouterModule],
 })
 export class CreateProjectModule {}

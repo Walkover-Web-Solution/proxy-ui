@@ -1,19 +1,22 @@
-import { NgModule, Injectable, Inject } from '@angular/core';
+import { NgModule, Injectable, Inject, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
-import { HttpWrapperService as HttpWrapperServiceNoAuth } from '@proxy/services/http-wrapper-no-auth';
+import {
+    HttpWrapperService as HttpWrapperServiceNoAuth,
+    ServicesHttpWrapperNoAuthModule,
+} from '@proxy/services/http-wrapper-no-auth';
 import { BaseResponse, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
 import { IUser, IUserReq } from '@proxy/models/users-model';
 import { UsersUrl } from '@proxy/urls/users-urls';
 import { Observable } from 'rxjs';
 
 @NgModule({
-    imports: [CommonModule],
+    imports: [CommonModule, ServicesHttpWrapperNoAuthModule],
 })
 export class ServicesProxyUsersModule {}
 
 @Injectable({
-    providedIn: ServicesProxyUsersModule,
+    providedIn: 'root',
 })
 export class UsersService {
     public options = {
@@ -23,11 +26,13 @@ export class UsersService {
         },
         withCredentials: false,
     };
+
     constructor(
         private http: HttpWrapperService,
         @Inject(ProxyBaseUrls.BaseURL) private baseURL: any,
-        private httpNoAuth: HttpWrapperServiceNoAuth
+        @Optional() private httpNoAuth: HttpWrapperServiceNoAuth
     ) {}
+
     // Get All Users
     public getUsers(params): Observable<BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>> {
         return this.http.get<BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>>(

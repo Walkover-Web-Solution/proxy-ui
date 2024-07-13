@@ -1,11 +1,11 @@
 <div class="app-content d-flex justify-content-center">
     <mat-stepper #stepper class="w-75 border rounded-8" labelPosition="bottom" [formGroup]="projectForm">
         <mat-step [stepControl]="projectForm.get('primaryDetails')">
-            <div class="d-flex flex-column h-100" formGroupName="primaryDetails">
+            <div class="d-flex flex-column h-100">
                 <h1 class="fw-bold">Create Project</h1>
                 <ng-container *ngTemplateOutlet="createProject"></ng-container>
                 <div class="d-flex align-items-center justify-content-end">
-                    <button type="submit" mat-flat-button color="primary" matStepperNext (click)="onSubmit()">
+                    <button mat-flat-button color="primary" matStepperNext (click)="onNextClick()">
                         Next
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
                     </button>
@@ -14,7 +14,7 @@
         </mat-step>
 
         <mat-step [stepControl]="projectForm.get('gatewayUrlDetails')">
-            <div class="d-flex flex-column h-100" formGroupName="gatewayUrlDetails">
+            <div class="d-flex flex-column h-100">
                 <ng-container>
                     <h1 class="fw-bold">Add Gateway URL</h1>
                     <p>
@@ -24,12 +24,8 @@
                 </ng-container>
 
                 <ng-container *ngTemplateOutlet="gateWayUrl"></ng-container>
-                <div class="d-flex align-items-center justify-content-between">
-                    <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
-                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
-                        >Back
-                    </button>
-                    <button type="button" mat-flat-button color="primary" matStepperNext>
+                <div class="d-flex align-items-center justify-content-end">
+                    <button type="button" mat-flat-button color="primary" matStepperNext (click)="checkInputfeild()">
                         Next
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
                     </button>
@@ -38,7 +34,7 @@
         </mat-step>
 
         <mat-step [stepControl]="projectForm.get('destinationUrl')">
-            <div class="d-flex flex-column h-100" formGroupName="destinationUrl">
+            <div class="d-flex flex-column h-100">
                 <ng-container>
                     <h1 class="fw-bold">Add Destination Url</h1>
                     <p class="mat-body-2 text-secondary fw-bold">
@@ -52,7 +48,7 @@
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
                     </button>
-                    <button mat-raised-button color="accent">Submit</button>
+                    <button mat-raised-button color="accent" (click)="submit()">Submit</button>
                 </div>
             </div>
         </mat-step>
@@ -76,17 +72,28 @@
                 "
             ></ng-container>
         </form>
-        <!-- <p class="mat-body-2 text-secondary fw-bold">Selec</p> -->
+
         <form class="w-50">
-            <mat-form-field class="w-100">
-                <mat-label>Select Multiple Environment</mat-label>
-                <mat-select [formControl]="projectForm.get('primaryDetails.environments')" multiple>
-                    <mat-option value="Dev">Dev</mat-option>
-                    <mat-option value="Prod">Prod</mat-option>
-                </mat-select>
-                <!-- <mat-error *ngIf="projectForm.get('primaryDetails.enviromentType').invalid">
-                    Please select at least one environment.
-                </mat-error> -->
+            <mat-form-field appearance="outline" class="no-padding w-xs-100">
+                <mat-label>Select Environment</mat-label>
+                <proxy-cdk-scroll scrollableElementId="environments">
+                    <mat-select multiple [formControl]="projectForm.get('primaryDetails.selectedEnvironmentsControl')">
+                        <mat-select-trigger>
+                            {{
+                                projectForm.get('primaryDetails.selectedEnvironmentsControl').value
+                                    ? projectForm.get('primaryDetails.selectedEnvironmentsControl').value.join(', ')
+                                    : 'Select Environment'
+                            }}
+                        </mat-select-trigger>
+                        <mat-option
+                            *ngFor="let environment of (environments$ | async)?.data"
+                            [value]="environment.name"
+                            class="mat-body-2"
+                        >
+                            {{ environment.name }}
+                        </mat-option>
+                    </mat-select>
+                </proxy-cdk-scroll>
             </mat-form-field>
         </form>
         <div class="d-flex rateLimitContainer">
@@ -127,21 +134,22 @@
     </div>
 </ng-template>
 <ng-template #gateWayUrl>
-    <div class="d-flex mt-5 h-75">
+    <div class="d-flex mt-5 h-75" [formGroup]="gatewayUrlDetails">
         <div class="my-3 w-40">
             <h3>Provide your own</h3>
 
-            <mat-checkbox [checked]="checked" (change)="onChange($event); (false)"
+            <mat-checkbox formControlName="useSameUrlForAll" (change)="onChange($event)"
                 >Same for all environments</mat-checkbox
             >
-            <ng-container *ngIf="checked">
+
+            <ng-container *ngIf="gatewayUrlDetails.get('useSameUrlForAll').value; else multiUrlTemplate">
                 <ng-container
                     *ngTemplateOutlet="
                         inputField;
                         context: {
-                            fieldControl: projectForm.get('gatewayUrlDetails.devUrl'),
+                            fieldControl: gatewayUrlDetails.get('singleUrl'),
                             fieldConfig: {
-                                label: 'Development URL',
+                                label: 'Same for All Url',
                                 patternErrorText: 'URL must contain only alphanumeric and underscore'
                             }
                         }
@@ -149,72 +157,74 @@
                 ></ng-container>
             </ng-container>
 
-            <ng-container *ngIf="!checked">
-                <h3 class="mb-0">Development</h3>
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: projectForm.get('gatewayUrlDetails.devUrl'),
-                            fieldConfig: {
-                                label: 'Development URL',
-                                patternErrorText: 'URL must contain only alphanumeric and underscore'
+            <ng-template #multiUrlTemplate>
+                <ng-container *ngFor="let control of gatewayUrls.controls; let i = index">
+                    <h3 class="mb-0">{{ environments_with_slug[i]?.name }}</h3>
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: control,
+                                fieldConfig: {
+                                    label: environments_with_slug[i]?.name,
+                                    patternErrorText: 'URL must contain only alphanumeric and underscore'
+                                }
                             }
-                        }
-                    "
-                ></ng-container>
-                <h3 class="mb-0">Production</h3>
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: projectForm.get('gatewayUrlDetails.prodUrl'),
-                            fieldConfig: {
-                                label: 'Production URL',
-                                patternErrorText: 'URL must contain only alphanumeric and underscore'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </ng-container>
+                        "
+                    ></ng-container>
+                </ng-container>
+            </ng-template>
         </div>
+
         <div class="p-5 mt-5">
             <h2>OR</h2>
         </div>
         <div class="w-50">
             <h3>Use ours</h3>
 
-            <div>
-                <h4>Development</h4>
-                <a href="baseurl">{{ baseurl }}</a>
-                <proxy-copy-button matSuffix [copyData]="baseurl" tooltip="Copy URL"></proxy-copy-button>
+            <div *ngFor="let slug of environments_with_slug">
+                <h4>{{ slug.name }}</h4>
+                <a href="slug.url">{{ slug.url }}</a>
+                <proxy-copy-button matSuffix [copyData]="slug.url" tooltip="Copy URL"></proxy-copy-button>
             </div>
-            <div>
-                <h4>Production</h4>
-                <a href="baseurl">{{ baseurl }} </a
-                ><proxy-copy-button matSuffix [copyData]="baseurl" tooltip="Copy URL"></proxy-copy-button>
-            </div>
+
+            <!-- </div > -->
+            <!-- <div *ngFor="let environment of environments_with_slug">
+        <h3>{{ environment.name }}</h3>
+        <p>URL: <a [href]="environment.url">{{ environment.url }}</a></p>
+    </div> -->
             <div class="font-12 mt-3">
                 <span class="fw-bolder">Note: </span>
                 please copy the provided Gateway URL and utilize it within your user interface to invoke the API by
                 specifying the desired endpoint for seamless request forwarding to the Proxy Server
             </div>
         </div>
+
+        <!-- <div>
+                <div *ngFor="let env of project.environments_with_slug">
+                    <h3>{{ env.name }}</h3>
+                    <ul>
+                        <li >
+                            <a [href]="env.url">{{ env.name }} URL</a>
+                        </li>
+                    </ul>
+                </div>
+            </div> -->
     </div>
 </ng-template>
 <ng-template #desnationUrl>
     <div class="my-3 flex-grow-1">
-        <form class="w-50">
+        <form class="w-50" *ngIf="showEndpoint">
             <p class="mat-body-2 text-secondary fw-bold">
                 project unique identification In URL
                 <span class="info-container" (mouseenter)="showCard = true" (mouseleave)="showCard = false">
                     <mat-icon>info</mat-icon>
-                    <mat-card class="info-card" *ngIf="showCard">
+                    <card class="info-card bg-primary-light mat-body-2 text-primary" *ngIf="showCard">
                         <mat-card-content>
-                            <!-- Your information here -->
-                            This is the information card displayed on hover.
+                            The "project identification in URL" is a key element used by the proxy server to route
+                            requests to the approoriate project and environment
                         </mat-card-content>
-                    </mat-card>
+                    </card>
                 </span>
             </p>
             <ng-container
@@ -231,6 +241,27 @@
             ></ng-container>
         </form>
         <form class="w-50">
+            <div class="d-flex" *ngFor="let control of forwardUrls.controls; let i = index">
+                <div>
+                    <h4 class="m-0 fw-bold">{{ environments_with_slug[i]?.name }}</h4>
+                    <mat-icon>double_arrow</mat-icon>
+                    <p class="m-0">forward to</p>
+                </div>
+                <ng-container
+                    class="pt-4"
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: control,
+                            fieldConfig: {
+                                label: environments_with_slug[i]?.name
+                            }
+                        }
+                    "
+                ></ng-container>
+            </div>
+        </form>
+        <!-- <form class="w-50">
             <div class="d-flex">
                 <div>
                     <h4 class="m-0 fw-bold">Development</h4>
@@ -250,8 +281,8 @@
                     "
                 ></ng-container>
             </div>
-        </form>
-        <form class="w-50">
+        </form> -->
+        <!-- <form class="w-50">
             <div class="d-flex pt-4">
                 <div>
                     <h4 class="m-0 fw-bold">Production</h4>
@@ -272,7 +303,7 @@
                     "
                 ></ng-container>
             </div>
-        </form>
+        </form> -->
     </div>
 </ng-template>
 <ng-template> </ng-template>
@@ -325,5 +356,4 @@
     <mat-error *ngIf="fieldControl.errors?.pattern">
         {{ patternErrorText ?? 'Enter valid ' + label }}
     </mat-error>
-    <!-- <mat-error *ngIf="fieldControl?.errors?.atleastOneValueInChipList"> Atleast One Value is Required </mat-error> -->
 </ng-template>

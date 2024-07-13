@@ -1,12 +1,12 @@
 .app-content {
     height: 100vh;
 }
-.mat-horizontal-stepper-header-container {
-    display: none !important;
-}
-.mat-horizontal-stepper-wrapper {
-    display: none;
-}
+// .mat-horizontal-stepper-header-container {
+//     display: none !important;
+// }
+// .mat-horizontal-stepper-wrapper {
+//     display: none;
+// }
 .rateInput {
     width: 10%;
     outline: 0 !important;
@@ -26,12 +26,12 @@
 
 .info-card {
     position: absolute;
-    top: 30px; /* Adjust as needed */
-    left: 0;
+    left: 30px;
     z-index: 1000;
-    width: 250px; /* Adjust width as needed */
+    width: 250px;
+
     padding: 10px;
-    background-color: rgb(24, 21, 21);
+
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     transition: opacity 0.3s;

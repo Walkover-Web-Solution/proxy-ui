@@ -51,7 +51,4 @@ export class FeaturesService {
     public updateFeature(id: string | number, body): Observable<BaseResponse<IFeature, void>> {
         return this.http.put<BaseResponse<IFeature, void>>(`${FeaturesUrls.getFeature(this.baseURL)}/${id}`, body);
     }
-    public createproject(body): Observable<BaseResponse<IFeature, void>> {
-        return this.http.post<BaseResponse<IFeature, void>>(FeaturesUrls.createproject(this.baseURL), body);
-    }
 }

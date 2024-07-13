@@ -1,0 +1,16 @@
+{
+    "name": "urls-create-project-urls",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/create-project-urls/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/create-project-urls/**/*.ts", "libs/urls/create-project-urls/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

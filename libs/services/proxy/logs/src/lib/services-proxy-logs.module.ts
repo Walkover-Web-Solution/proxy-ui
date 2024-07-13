@@ -12,7 +12,7 @@ import { LogsUrls } from '@proxy/urls/logs-urls';
 export class ServicesProxyLogsModule {}
 
 @Injectable({
-    providedIn: ServicesProxyLogsModule,
+    providedIn: 'root',
 })
 export class LogsService {
     constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.ProxyLogsUrl) private proxyLogsUrl: any) {}
