@@ -1,0 +1,22 @@
+.app-content {
+    height: 100vh;
+}
+.rateLimitContainer {
+    gap: 15px;
+}
+.info-container {
+    position: relative;
+    display: inline-block;
+}
+.info-card {
+    position: absolute;
+    left: 30px;
+    z-index: 1000;
+    width: 250px;
+
+    padding: 10px;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    transition: opacity 0.3s;
+}
