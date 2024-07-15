@@ -1,22 +1,19 @@
 import { NgModule, Injectable, Inject, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
-import {
-    HttpWrapperService as HttpWrapperServiceNoAuth,
-    ServicesHttpWrapperNoAuthModule,
-} from '@proxy/services/http-wrapper-no-auth';
+import { HttpWrapperService as HttpWrapperServiceNoAuth } from '@proxy/services/http-wrapper-no-auth';
 import { BaseResponse, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
 import { IUser, IUserReq } from '@proxy/models/users-model';
 import { UsersUrl } from '@proxy/urls/users-urls';
 import { Observable } from 'rxjs';
 
 @NgModule({
-    imports: [CommonModule, ServicesHttpWrapperNoAuthModule],
+    imports: [CommonModule],
 })
 export class ServicesProxyUsersModule {}
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: ServicesProxyUsersModule,
 })
 export class UsersService {
     public options = {

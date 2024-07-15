@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { IEnvironments, IProjects } from '@proxy/models/logs-models';
@@ -5,12 +6,10 @@ import { BaseResponse, IPaginatedResponse, IReqParams, errorResolver } from '@pr
 import { CreateProjectService } from '@proxy/services/proxy/create-project';
 
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
-import { LogsService } from '@proxy/services/proxy/logs';
 
 import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
 
 export interface ICreateProjectInitialState {
-    // isInitialized: boolean;
     projects: IPaginatedResponse<IProjects[]>;
     environments: IPaginatedResponse<IEnvironments[]>;
     sourceDomain: any;
@@ -19,19 +18,15 @@ export interface ICreateProjectInitialState {
 
 @Injectable()
 export class CreateProjectComponentStore extends ComponentStore<ICreateProjectInitialState> {
-    constructor(private service: CreateProjectService, private toast: PrimeNgToastService, logService: LogsService) {
+    constructor(private service: CreateProjectService, private toast: PrimeNgToastService, private router: Router) {
         super({
-            // isInitialized: false,
             projects: null,
             environments: null,
             sourceDomain: null,
             isLoading: false,
         });
     }
-    // readonly initializeStore = this.updater((state) => ({
-    //     ...state,
-    //     isInitialized: true,
-    // }));
+
     readonly projects$: Observable<IPaginatedResponse<IProjects[]>> = this.select((state) => state.projects);
     readonly environments$: Observable<IPaginatedResponse<IEnvironments[]>> = this.select(
         (state) => state.environments
@@ -42,7 +37,6 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
     readonly getEnvironment = this.effect((data: Observable<IReqParams>) => {
         return data.pipe(
             switchMap((req) => {
-                // this.patchState({ environmentsInProcess: true });
                 return this.service.getEnvironments(req).pipe(
                     tapResponse(
                         (res: BaseResponse<IPaginatedResponse<IEnvironments[]>, void>) => {
@@ -60,7 +54,6 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
                         (error: any) => {
                             this.showError(error.errors);
                             return this.patchState({
-                                // environmentsInProcess: false,
                                 environments: null,
                             });
                         }
@@ -94,7 +87,6 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
                             this.patchState({ isLoading: false });
                         }
                     )
-                    // catchError((err) => EMPTY)
                 );
             })
         );
@@ -102,11 +94,9 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
     readonly getProjects = this.effect((data) => {
         return data.pipe(
             switchMap((req) => {
-                // this.patchState({ projectsInProcess: true });
                 return this.service.getProjects().pipe(
                     tapResponse(
                         (res: BaseResponse<IPaginatedResponse<IProjects[]>, void>) => {
-                            console.log(res);
                             if (res.hasError) {
                                 this.showError(res.errors);
                             }
@@ -121,7 +111,6 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
                         (error: any) => {
                             this.showError(error.errors);
                             return this.patchState({
-                                // projectsInProcess: false,
                                 projects: null,
                             });
                         }
@@ -131,7 +120,7 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
             })
         );
     });
-    readonly createSource$ = this.effect((data: Observable<{ [key: string]: any }>) => {
+    readonly createSource = this.effect((data: Observable<{ [key: string]: unknown }>) => {
         return data.pipe(
             switchMap((req) => {
                 this.patchState({ isLoading: true });
@@ -144,7 +133,7 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
                             }
                             this.toast.success('Source created successfully');
 
-                            return this.patchState({
+                            this.patchState({
                                 isLoading: false,
                                 sourceDomain: res.data,
                             });
@@ -154,7 +143,6 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
                             this.patchState({ isLoading: false });
                         }
                     )
-                    // catchError((err) => EMPTY)
                 );
             })
         );
@@ -171,10 +159,8 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
                                 return this.patchState({ isLoading: false });
                             }
                             this.toast.success('project updated successfully');
-                            return this.patchState({
-                                isLoading: false,
-                                // createUpdateObject: res.data,
-                            });
+                            this.router.navigate(['/app']);
+                            return res;
                         },
                         (error: any) => {
                             this.showError(error.errors);

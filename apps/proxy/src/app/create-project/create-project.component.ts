@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormBuilder, FormArray } from '@angular/forms';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { FormGroup, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { environment } from '../../environments/environment';
 import { CreateProjectComponentStore } from './create-project.store';
-import { BehaviorSubject, Observable, filter, map, takeUntil } from 'rxjs';
+import { Observable } from 'rxjs';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import { IEnvironments, IProjects } from '@proxy/models/logs-models';
+
+import { MatStepper } from '@angular/material/stepper';
 
 @Component({
     selector: 'proxy-create-project',
@@ -15,54 +17,43 @@ import { IEnvironments, IProjects } from '@proxy/models/logs-models';
     providers: [CreateProjectComponentStore],
 })
 export class CreateProjectComponent implements OnInit {
-    public projectForm: FormGroup;
+    @ViewChildren('stepper') stepper: QueryList<MatStepper>;
+    public primaryDetails: FormGroup;
     public gatewayUrlDetails: FormGroup;
     public destinationUrl: FormGroup;
-    public primaryDetails;
     public checked: false;
-    public showEndpoint: boolean = false;
+    public showEndpoint = false;
     public environments_with_slug;
     public projectDetails;
     public selectedEnv;
     public environmentParams = {
-        itemsPerPage: 25,
+        itemsPerPage: 1,
         pageNo: 1,
     };
-
-    public selectedMethod = new BehaviorSubject<any>(null);
-    // public projectDetails$: Observable<any> = this.componentStore.getProjects;
     public projects$: Observable<IPaginatedResponse<IProjects[]>> = this.componentStore.projects$;
     public environments$: Observable<IPaginatedResponse<IEnvironments[]>> = this.componentStore.environments$;
     public sourceDomain$: Observable<any> = this.componentStore.sourceDomain$;
     public projectId;
-    public devProjectSlug;
-    public prodProjectSlug;
-
-    public baseurl;
-
-    environment$: Observable<any>;
 
     constructor(private componentStore: CreateProjectComponentStore, private fb: FormBuilder) {
-        this.projectForm = new FormGroup({
-            primaryDetails: new FormGroup({
-                name: new FormControl<string>('', [
+        this.primaryDetails = this.fb.group({
+            name: [
+                '',
+                [
                     Validators.required,
                     Validators.pattern(CAMPAIGN_NAME_REGEX),
                     CustomValidators.minLengthThreeWithoutSpace,
                     CustomValidators.noStartEndSpaces,
-                    Validators.maxLength(60),
-                ]),
-
-                rateLimit_hit: new FormControl<number>(null, [
-                    Validators.required,
-                    Validators.pattern(ONLY_INTEGER_REGEX),
-                ]),
-                rateLimit_minute: new FormControl<number>(null, [Validators.required]),
-                selectedEnvironmentsControl: new FormControl(),
-            }),
+                    Validators.maxLength(20),
+                ],
+            ],
+            rateLimit_hit: [null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]],
+            rateLimit_minute: [null, [Validators.required]],
+            selectedEnvironmentsControl: [''],
         });
+
         (this.destinationUrl = this.fb.group({
-            endpoint: [],
+            endpoint: ['', Validators.required],
             ForwardUrl: this.fb.array([]),
         })),
             (this.gatewayUrlDetails = this.fb.group({
@@ -72,19 +63,21 @@ export class CreateProjectComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // this.loadEnvironmentData();
         this.getEnvironment();
         this.projects$.subscribe((res) => {
-            res.data.forEach((project) => {
-                const baseUrl = `${environment.baseUrl}/proxy`;
-                this.projectId = project.id;
-                this.environments_with_slug = project.environments_with_slug.map((res) => ({
-                    name: res.name,
-                    url: `${baseUrl}/${this.projectId}/${res.project_slug}`,
-                }));
+            if (res) {
+                res.data.forEach((project) => {
+                    const baseUrl = `${environment.baseUrl}/proxy`;
+                    this.projectId = project.id;
+                    this.environments_with_slug = project.environments_with_slug.map((res) => ({
+                        name: res.name,
+                        url: `${baseUrl}/${this.projectId}/${res.project_slug}`,
+                    }));
+                });
+                this.stepper?.first?.next();
                 this.populateGatewayUrls();
                 this.populateForwardUrls();
-            });
+            }
         });
     }
 
@@ -111,7 +104,6 @@ export class CreateProjectComponent implements OnInit {
             this.gatewayUrls.clear();
             this.gatewayUrlDetails.get('useSameUrlForAll').setValue(true);
             this.gatewayUrlDetails.addControl('singleUrl', this.fb.control(''));
-            // this.gatewayUrls.push(this.fb.control(''))
         } else {
             this.gatewayUrlDetails.removeControl('singleUrl');
             this.gatewayUrlDetails.get('useSameUrlForAll').setValue(false);
@@ -137,24 +129,26 @@ export class CreateProjectComponent implements OnInit {
             const formData = this.gatewayUrlDetails.value.useSameUrlForAll
                 ? { data: [{ source: this.gatewayUrlDetails.value.singleUrl }] }
                 : { data: this.gatewayUrls.value.map((url) => ({ source: url })) };
-
-            this.componentStore.createSource$(formData);
-            this.sourceDomain$.pipe(filter(Boolean)).subscribe((res) => {
+            this.componentStore.createSource(formData);
+            this.sourceDomain$.subscribe((res) => {
                 if (res) {
-                    const putData = this.constructPutData(res.data.id);
-                    this.componentStore.updateProject({ id: this.projectId, body: putData });
+                    const data = this.forwardUrlData(res[0].client_id);
+
+                    this.updateproject(data);
+                } else {
+                    console.error('Response is missing necessary data:', res);
                 }
             });
         } else {
-            const putData = this.constructPutData();
-            this.componentStore.updateProject({ id: this.projectId, body: putData });
+            this.updateproject(this.forwardUrlData());
         }
     }
-    destroy$(destroy$: any) {
-        throw new Error('Method not implemented.');
+
+    updateproject(data) {
+        this.componentStore.updateProject({ id: this.projectId, body: data });
     }
 
-    private constructPutData(sourceDomainId?: string): any {
+    private forwardUrlData(sourceDomainId?: string): any {
         const putData = {
             environments: {},
         };
@@ -178,9 +172,8 @@ export class CreateProjectComponent implements OnInit {
         this.componentStore.getEnvironment(this.environmentParams);
     }
     onNextClick() {
-        if (this.projectForm.get('primaryDetails').valid) {
-            const { name, selectedEnvironmentsControl, rateLimit_hit, rateLimit_minute } =
-                this.projectForm.get('primaryDetails').value;
+        if (this.primaryDetails.valid) {
+            const { name, selectedEnvironmentsControl, rateLimit_hit, rateLimit_minute } = this.primaryDetails.value;
             this.selectedEnv = selectedEnvironmentsControl;
 
             const environmentsConfig = selectedEnvironmentsControl.reduce(
@@ -192,10 +185,7 @@ export class CreateProjectComponent implements OnInit {
             );
 
             this.projectDetails = { name, environments: environmentsConfig };
-
-            setTimeout(() => {
-                this.componentStore.createProject(this.projectDetails);
-            }, 100);
+            this.componentStore.createProject(this.projectDetails);
         }
     }
 }

@@ -1,11 +1,11 @@
-<div class="app-content d-flex justify-content-center">
-    <mat-stepper #stepper class="w-75 border rounded-8" labelPosition="bottom" [formGroup]="projectForm">
-        <mat-step [stepControl]="projectForm.get('primaryDetails')">
-            <div class="d-flex flex-column h-100">
+<div class="app-content d-flex justify-content-center create-project">
+    <mat-stepper #stepper class="w-75 border rounded-8" labelPosition="bottom">
+        <mat-step>
+            <div class="d-flex flex-column h-100 mt-3">
                 <h1 class="fw-bold">Create Project</h1>
                 <ng-container *ngTemplateOutlet="createProject"></ng-container>
                 <div class="d-flex align-items-center justify-content-end">
-                    <button mat-flat-button color="primary" matStepperNext (click)="onNextClick()">
+                    <button mat-flat-button color="primary" (click)="onNextClick()">
                         Next
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
                     </button>
@@ -13,8 +13,8 @@
             </div>
         </mat-step>
 
-        <mat-step [stepControl]="projectForm.get('gatewayUrlDetails')">
-            <div class="d-flex flex-column h-100">
+        <mat-step>
+            <div class="d-flex flex-column h-100 mt-3">
                 <ng-container>
                     <h1 class="fw-bold">Add Gateway URL</h1>
                     <p>
@@ -33,8 +33,8 @@
             </div>
         </mat-step>
 
-        <mat-step [stepControl]="projectForm.get('destinationUrl')">
-            <div class="d-flex flex-column h-100">
+        <mat-step>
+            <div class="d-flex flex-column h-100 mt-3">
                 <ng-container>
                     <h1 class="fw-bold">Add Destination Url</h1>
                     <p class="mat-body-2 text-secondary fw-bold">
@@ -55,14 +55,14 @@
     </mat-stepper>
 </div>
 
-<ng-template #createProject let-nameControl="nameControl">
+<ng-template #createProject>
     <div class="my-3 flex-grow-1 mt-5">
         <form class="w-50">
             <ng-container
                 *ngTemplateOutlet="
                     inputField;
                     context: {
-                        fieldControl: projectForm.get('primaryDetails.name'),
+                        fieldControl: primaryDetails.get('name'),
                         fieldConfig: {
                             label: 'Enter Your project name',
                             is_required: true,
@@ -77,11 +77,11 @@
             <mat-form-field appearance="outline" class="no-padding w-xs-100">
                 <mat-label>Select Environment</mat-label>
                 <proxy-cdk-scroll scrollableElementId="environments">
-                    <mat-select multiple [formControl]="projectForm.get('primaryDetails.selectedEnvironmentsControl')">
+                    <mat-select multiple [formControl]="primaryDetails.get('selectedEnvironmentsControl')">
                         <mat-select-trigger>
                             {{
-                                projectForm.get('primaryDetails.selectedEnvironmentsControl').value
-                                    ? projectForm.get('primaryDetails.selectedEnvironmentsControl').value.join(', ')
+                                primaryDetails.get('selectedEnvironmentsControl').value
+                                    ? primaryDetails.get('selectedEnvironmentsControl').value.join(', ')
                                     : 'Select Environment'
                             }}
                         </mat-select-trigger>
@@ -102,7 +102,7 @@
                     *ngTemplateOutlet="
                         inputField;
                         context: {
-                            fieldControl: projectForm.get('primaryDetails.rateLimit_hit'),
+                            fieldControl: primaryDetails.get('rateLimit_hit'),
                             fieldConfig: {
                                 label: 'Hits',
                                 type: 'number',
@@ -118,7 +118,7 @@
                     *ngTemplateOutlet="
                         inputField;
                         context: {
-                            fieldControl: projectForm.get('primaryDetails.rateLimit_minute'),
+                            fieldControl: primaryDetails.get('rateLimit_minute'),
                             fieldConfig: {
                                 label: 'number',
                                 type: 'number',
@@ -149,7 +149,7 @@
                         context: {
                             fieldControl: gatewayUrlDetails.get('singleUrl'),
                             fieldConfig: {
-                                label: 'Same for All Url',
+                                label: 'enter same url for all environment',
                                 patternErrorText: 'URL must contain only alphanumeric and underscore'
                             }
                         }
@@ -199,17 +199,6 @@
                 specifying the desired endpoint for seamless request forwarding to the Proxy Server
             </div>
         </div>
-
-        <!-- <div>
-                <div *ngFor="let env of project.environments_with_slug">
-                    <h3>{{ env.name }}</h3>
-                    <ul>
-                        <li >
-                            <a [href]="env.url">{{ env.name }} URL</a>
-                        </li>
-                    </ul>
-                </div>
-            </div> -->
     </div>
 </ng-template>
 <ng-template #desnationUrl>
@@ -231,7 +220,7 @@
                 *ngTemplateOutlet="
                     inputField;
                     context: {
-                        fieldControl: projectForm.get('destinationUrl.uniqueIdentifiCation'),
+                        fieldControl: destinationUrl.get('endpoint'),
                         fieldConfig: {
                             label: 'endpoint',
                             is_required: true
@@ -254,59 +243,16 @@
                         context: {
                             fieldControl: control,
                             fieldConfig: {
-                                label: environments_with_slug[i]?.name
+                                label: environments_with_slug[i]?.name,
+                                is_required: true
                             }
                         }
                     "
                 ></ng-container>
             </div>
         </form>
-        <!-- <form class="w-50">
-            <div class="d-flex">
-                <div>
-                    <h4 class="m-0 fw-bold">Development</h4>
-                    <mat-icon>double_arrow</mat-icon>
-                    <p class="m-0">forward to</p>
-                </div>
-                <ng-container
-                    class="pt-4"
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: projectForm.get('destinationUrl.devForward'),
-                            fieldConfig: {
-                                label: 'Enter Url'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </div>
-        </form> -->
-        <!-- <form class="w-50">
-            <div class="d-flex pt-4">
-                <div>
-                    <h4 class="m-0 fw-bold">Production</h4>
-                    <mat-icon>double_arrow</mat-icon>
-                    <p class="m-0">forward to</p>
-                </div>
-                <ng-container
-                    class="mt-30"
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: projectForm.get('destinationUrl.prodForward'),
-                            fieldConfig: {
-                                label: 'Enter Url',
-                                patternErrorText: 'Name must contain only alphanumeric and underscore'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </div>
-        </form> -->
     </div>
 </ng-template>
-<ng-template> </ng-template>
 
 <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
     <mat-form-field appearance="outline" class="w-100 pt-4">

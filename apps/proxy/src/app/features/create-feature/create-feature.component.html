@@ -44,6 +44,7 @@
         class="rounded-8 border flex-grow-1 mat-stepper-starched"
         labelPosition="bottom"
         [animationDuration]="0"
+        [linear]="true"
         [formGroup]="featureForm"
         (selectionChange)="stepChange($event)"
         *ngIf="!isEditMode"
