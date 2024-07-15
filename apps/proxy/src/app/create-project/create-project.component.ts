@@ -96,7 +96,7 @@ export class CreateProjectComponent implements OnInit {
     populateForwardUrls(): void {
         this.forwardUrls.clear();
         this.environments_with_slug.forEach((env) => {
-            this.forwardUrls.push(this.fb.control(''));
+            this.forwardUrls.push(this.fb.control('', Validators.required));
         });
     }
     onChange(event: any): void {
