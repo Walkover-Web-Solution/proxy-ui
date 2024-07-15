@@ -1,4 +1,4 @@
-import { NgModule, Injectable, Inject } from '@angular/core';
+import { NgModule, Injectable, Inject, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { HttpWrapperService as HttpWrapperServiceNoAuth } from '@proxy/services/http-wrapper-no-auth';
@@ -26,8 +26,8 @@ export class UsersService {
     constructor(
         private http: HttpWrapperService,
         @Inject(ProxyBaseUrls.BaseURL) private baseURL: any,
-        private httpNoAuth: HttpWrapperServiceNoAuth
-    ) {}
+        @Optional() private httpNoAuth: HttpWrapperServiceNoAuth
+    ) { }
     // Get All Users
     public getUsers(params): Observable<BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>> {
         return this.http.get<BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>>(
