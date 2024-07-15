@@ -33,7 +33,7 @@ export interface IProjects {
     updated_at: string;
     created_by?: ICreatedOrUpdatedBy;
     updated_by?: ICreatedOrUpdatedBy;
-    environments?: IEnvironments[];
+    environments_with_slug: IEnvironments[];
 }
 
 export interface IEnvironments {
@@ -45,6 +45,7 @@ export interface IEnvironments {
     created_by?: ICreatedOrUpdatedBy;
     updated_by?: ICreatedOrUpdatedBy;
     projects?: IProjects;
+    project_slug?: string;
 }
 
 export interface ICreatedOrUpdatedBy {

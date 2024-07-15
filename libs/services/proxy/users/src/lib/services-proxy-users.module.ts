@@ -23,11 +23,13 @@ export class UsersService {
         },
         withCredentials: false,
     };
+
     constructor(
         private http: HttpWrapperService,
         @Inject(ProxyBaseUrls.BaseURL) private baseURL: any,
         @Optional() private httpNoAuth: HttpWrapperServiceNoAuth
-    ) { }
+    ) {}
+
     // Get All Users
     public getUsers(params): Observable<BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>> {
         return this.http.get<BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>>(

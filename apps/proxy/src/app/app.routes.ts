@@ -16,6 +16,12 @@ export const appRoutes: Route[] = [
         canActivate: [AngularFireAuthGuard],
     },
     {
+        path: 'project',
+        loadChildren: () => import('../app/create-project/create-project.module').then((p) => p.CreateProjectModule),
+        data: { authGuardPipe: redirectUnauthorizedToLogin },
+        canActivate: [AngularFireAuthGuard],
+    },
+    {
         path: 'p',
         loadChildren: () => import('./public.module').then((p) => p.PublicModule),
     },
