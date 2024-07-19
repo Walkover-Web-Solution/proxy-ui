@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { OtpResModel, ISendOtpReq, IRetryOtpReq, IVerifyOtpReq, IWidgetResponse, IGetWidgetData } from '../model/otp';
 import { otpVerificationUrls } from './urls/otp-urls';
 import { HttpWrapperService } from '@proxy/services/http-wrapper-no-auth';
+import { O } from '@angular/cdk/keycodes';
 
 @Injectable()
 export class OtpService {
@@ -59,5 +60,16 @@ export class OtpService {
 
     public register(body: { proxy_state?: string }): Observable<any> {
         return this.http.post<any>(otpVerificationUrls.register(this.baseUrl), body, this.options);
+    }
+
+    public login(body): Observable<any> {
+        return this.http.post<any>(otpVerificationUrls.login(this.baseUrl), body, this.options);
+    }
+
+    public resetPassword(body): Observable<any> {
+        return this.http.post<any>(otpVerificationUrls.resetPassword(this.baseUrl), body, this.options);
+    }
+    public verfyResetPasswordOtp(body): Observable<any> {
+        return this.http.post<any>(otpVerificationUrls.verifyPasswordOtp(this.baseUrl), body, this.options);
     }
 }

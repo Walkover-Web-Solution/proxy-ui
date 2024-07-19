@@ -1,3 +1,5 @@
+import * as exp from 'constants';
+
 export type CreateMutable<Type> = {
     -readonly [Property in keyof Type]?: Type[Property];
 };
@@ -35,4 +37,19 @@ export interface IVerifyOtpReq {
     widgetId: string;
     otp: string;
     reqId: string;
+}
+export interface IlogInData {
+    state: string;
+    user: string;
+    password: string;
+}
+export interface IResetPassword {
+    state: string;
+    user: string;
+}
+export interface IOtpData {
+    state: string;
+    user: string;
+    password: string;
+    otp: number;
 }

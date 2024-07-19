@@ -1,0 +1,119 @@
+<div>
+    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
+
+    <div *ngIf="step === 1" [formGroup]="loginForm" proxyMarkAllAsTouched>
+        <p>Login</p>
+        <ng-container
+            [ngTemplateOutlet]="formField"
+            [ngTemplateOutletContext]="{
+                label: 'email',
+                formControl: loginForm.get('username')
+            }"
+        >
+        </ng-container>
+        <ng-container
+            [ngTemplateOutlet]="formField"
+            [ngTemplateOutletContext]="{
+                type: 'password',
+                label: 'Password',
+                formControl: loginForm.get('password')
+            }"
+        >
+        </ng-container>
+        <div class="one-line">
+            <div>
+                <a (click)="resetPassword()">Forgot Password?</a>
+            </div>
+            <div class="submit-btn">
+                <button mat-flat-button color="primary" (click)="login()">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="step === 2" [formGroup]="emailForm" proxyMarkAllAsTouched>
+        <p>Reset Password</p>
+        <ng-container
+            [ngTemplateOutlet]="formField"
+            [ngTemplateOutletContext]="{
+                type: 'email',
+                label: 'Email',
+                formControl: emailForm.get('email'),
+                is_required: true,
+                patternErrorText: 'Name must contain only alphanumeric and underscore'
+            }"
+        >
+        </ng-container>
+        <div>
+            <button mat-flat-button color="primary" (click)="sendOtp()">Send OTP</button>
+        </div>
+    </div>
+
+    <div *ngIf="step === 3" [formGroup]="resetPasswordForm" proxyMarkAllAsTouched>
+        <p>Reset Password</p>
+        <ng-container
+            [ngTemplateOutlet]="formField"
+            [ngTemplateOutletContext]="{
+                type: 'email',
+                label: emailForm.get('email').value,
+                formControl: resetPasswordForm.get('email')
+            }"
+        >
+        </ng-container>
+        <ng-container
+            [ngTemplateOutlet]="formField"
+            [ngTemplateOutletContext]="{
+                type: 'number',
+                label: ' otp',
+                formControl: resetPasswordForm.get('otp')
+            }"
+        >
+        </ng-container>
+        <ng-container
+            [ngTemplateOutlet]="formField"
+            [ngTemplateOutletContext]="{
+                type: 'password',
+                label: 'Password',
+                formControl: resetPasswordForm.get('password')
+            }"
+        >
+        </ng-container>
+        <ng-container
+            [ngTemplateOutlet]="formField"
+            [ngTemplateOutletContext]="{
+                type: 'password',
+                label: 'Confirm Password',
+                formControl: resetPasswordForm.get('confirmPassword')
+            }"
+        >
+        </ng-container>
+        <div>
+            <button mat-flat-button color="primary" (click)="verfiyOtp()">Submit</button>
+        </div>
+    </div>
+</div>
+
+<ng-template
+    #formField
+    let-type="type"
+    let-label="label"
+    let-hint="hint"
+    let-formControl="formControl"
+    let-patternError="patternError"
+>
+    <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>{{ label }}</mat-label>
+        <input
+            matInput
+            autocomplete="off"
+            [attr.type]="type ?? 'text'"
+            [formControl]="formControl"
+            [placeholder]="'Enter ' + label"
+            [readonly]="type === 'email' && step === 3"
+        />
+        <mat-error *ngIf="formControl.touched">
+            <mat-error *ngIf="formControl.errors?.required">{{ label }} is required.</mat-error>
+            <mat-error *ngIf="formControl.errors?.pattern">{{ label }} is invalid.</mat-error>
+        </mat-error>
+        <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
+    </mat-form-field>
+</ng-template>
