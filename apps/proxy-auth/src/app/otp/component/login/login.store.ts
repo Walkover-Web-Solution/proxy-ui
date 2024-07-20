@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
-import { Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { OtpService } from '../../service/otp.service';
 import { errorResolver } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
@@ -16,6 +16,7 @@ export interface ILoginInitialState {
 
 @Injectable()
 export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
+    public apiError = new BehaviorSubject<string[]>(null);
     constructor(private service: OtpService, private toast: PrimeNgToastService) {
         super({
             isLoading: false,
@@ -34,17 +35,19 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                     tapResponse(
                         (res) => {
                             if (res?.hasError) {
-                                this.showError(res.errors);
+                                this.apiError.next(errorResolver(res.error.error.data.message));
+
                                 return this.patchState({ isLoading: false });
                             }
-                            this.toast.success('login successful');
+
                             return this.patchState({
                                 isLoading: false,
                                 logInData: res,
                             });
                         },
                         (error: HttpErrorResponse) => {
-                            this.showError(error.error.data.message);
+                            this.apiError.next(errorResolver(error.error.data.message));
+
                             this.patchState({ isLoading: false });
                         }
                     )
@@ -55,21 +58,22 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
     readonly resetPassword = this.effect((data: Observable<{ [key: string]: any }>) => {
         return data.pipe(
             switchMap((req) => {
+                this.patchState({ isLoading: true });
                 return this.service.resetPassword(req).pipe(
                     tapResponse(
                         (res) => {
                             if (res?.hasError) {
-                                this.showError(res.errors);
+                                this.apiError.next(errorResolver(res.error.error.data.message));
                                 return this.patchState({ isLoading: false });
                             }
-                            this.toast.success(res.data.message);
+
                             return this.patchState({
                                 isLoading: false,
                                 otpData: res.data,
                             });
                         },
                         (error: HttpErrorResponse) => {
-                            this.showError(error.error.data.message);
+                            this.apiError.next(errorResolver(error.error.data.message));
                             this.patchState({ isLoading: false });
                         }
                     )
@@ -80,21 +84,23 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
     readonly verfyPasswordOtp = this.effect((data: Observable<{ [key: string]: any }>) => {
         return data.pipe(
             switchMap((req) => {
+                this.patchState({ isLoading: true });
                 return this.service.verfyResetPasswordOtp(req).pipe(
                     tapResponse(
                         (res) => {
                             if (res?.hasError) {
-                                this.showError(res.errors);
+                                this.apiError.next(errorResolver(res.error.error.data.message));
                                 return this.patchState({ isLoading: false });
                             }
-                            this.toast.success(res.data.message);
+
                             return this.patchState({
                                 isLoading: false,
                                 resetPassword: res.data,
                             });
                         },
                         (error: HttpErrorResponse) => {
-                            this.showError(error.error.data.message);
+                            this.apiError.next(errorResolver(error.error.data.message));
+
                             this.patchState({ isLoading: false });
                         }
                     )
@@ -102,10 +108,4 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
             })
         );
     });
-    private showError(error): void {
-        const errorMessage = errorResolver(error);
-        errorMessage.forEach((error) => {
-            this.toast.error(error);
-        });
-    }
 }

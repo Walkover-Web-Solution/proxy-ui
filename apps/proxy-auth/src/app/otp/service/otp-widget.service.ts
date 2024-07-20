@@ -10,7 +10,6 @@ export class OtpWidgetService {
     private tokenAuth: string;
     private scriptAdded = false;
     public showlogin = new BehaviorSubject<any>(false);
-    showLogin$ = this.showlogin.asObservable();
 
     public scriptLoading = new BehaviorSubject<boolean>(false);
     public otpWidgetToken = new BehaviorSubject<string>(null);

@@ -8,6 +8,8 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IlogInData, IOtpData, IResetPassword } from '../../model/otp';
+import { EMAIL_REGEX, PASSWORD_REGEX } from '@proxy/regex';
+import { CustomValidators } from '@proxy/custom-validator';
 
 @Component({
     selector: 'proxy-login',
@@ -23,17 +25,25 @@ export class LoginComponent extends BaseComponent implements OnInit {
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public resetPassword$: Observable<any> = this.componentStore.resetPassword$;
     public loginForm = new FormGroup({
-        username: new FormControl<string>(null, [Validators.required, Validators.email]),
+        username: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_REGEX)]),
         password: new FormControl<string>(null, [Validators.required]),
     });
     public emailForm = new FormGroup({
-        email: new FormControl<string | null>(null, [Validators.required, Validators.email]),
+        email: new FormControl<string>(null, [Validators.required]),
     });
     public resetPasswordForm = new FormGroup({
-        email: new FormControl<string | null>({ value: null, disabled: true }, [Validators.required, Validators.email]),
+        email: new FormControl<string | null>({ value: null, disabled: true }, [
+            Validators.required,
+            Validators.pattern(EMAIL_REGEX),
+        ]),
         otp: new FormControl<number>(null, Validators.required),
-        password: new FormControl<string | null>(null, [Validators.required]),
-        confirmPassword: new FormControl<string | null>(null, [Validators.required]),
+
+        password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
+        confirmPassword: new FormControl<string>(null, [
+            Validators.required,
+            Validators.pattern(PASSWORD_REGEX),
+            CustomValidators.valueSameAsControl('password'),
+        ]),
     });
 
     constructor(private componentStore: LoginComponentStore, private store: Store<IAppState>) {
@@ -55,6 +65,14 @@ export class LoginComponent extends BaseComponent implements OnInit {
                 this.step = 1;
             }
         });
+        this.resetPasswordForm
+            .get('password')
+            .valueChanges.pipe(takeUntil(this.destroy$))
+            .subscribe((res) => {
+                if (res) {
+                    this.resetPasswordForm.get('confirmPassword').updateValueAndValidity();
+                }
+            });
     }
 
     public login() {

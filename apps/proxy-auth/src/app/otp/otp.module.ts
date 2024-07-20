@@ -28,7 +28,7 @@ import { OtpWidgetService } from './service/otp-widget.service';
 import { RegisterComponent } from './component/register/register.component';
 import { DirectivesMarkAllAsTouchedModule } from '@proxy/directives/mark-all-as-touched';
 import { LoginComponent } from './component/login/login.component';
-import { UiPrimeNgToastModule } from '@proxy/ui/prime-ng-toast';
+import { UiLoaderModule } from '@proxy/ui/loader';
 
 export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent, RegisterComponent, LoginComponent];
 
@@ -46,7 +46,8 @@ export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent,
         MatProgressSpinnerModule,
         MatProgressBarModule,
         MatRadioModule,
-        UiPrimeNgToastModule,
+        UiLoaderModule,
+
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),
         StoreModule.forRoot(reducers, {
