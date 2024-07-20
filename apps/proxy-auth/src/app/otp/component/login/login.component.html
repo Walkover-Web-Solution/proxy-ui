@@ -1,5 +1,5 @@
 <div *ngIf="step === 1" [formGroup]="loginForm" proxyMarkAllAsTouched [buttonRef]="loginBtn" (valid)="login()">
-    <p>Login</p>
+    <h3>Login</h3>
     <ng-container
         [ngTemplateOutlet]="formField"
         [ngTemplateOutletContext]="{
@@ -17,6 +17,10 @@
         }"
     >
     </ng-container>
+    <div class="error-message" *ngIf="apiError$ | async">
+        {{ apiError$ | async }}
+        <br />
+    </div>
 
     <div class="loginBtn gap-3">
         <a href="javascript:void(0)" (click)="resetPassword()">Forgot Password?</a>
@@ -27,18 +31,22 @@
     </div>
 </div>
 
-<div *ngIf="step === 2" [formGroup]="emailForm" [buttonRef]="sendOtpBtn" (valid)="sendOtp()" proxyMarkAllAsTouched>
-    <p>Reset Password</p>
+<div *ngIf="step === 2" [formGroup]="sendOtpForm" [buttonRef]="sendOtpBtn" (valid)="sendOtp()" proxyMarkAllAsTouched>
+    <h3>Reset Password</h3>
     <ng-container
         [ngTemplateOutlet]="formField"
         [ngTemplateOutletContext]="{
             type: 'string',
             label: 'Email or Mobile',
-            formControl: emailForm.get('email'),
+            formControl: sendOtpForm.get('userDetails'),
             is_required: true
         }"
     >
     </ng-container>
+    <div class="error-message" *ngIf="apiError$ | async">
+        {{ apiError$ | async }}
+        <br />
+    </div>
     <div>
         <button mat-flat-button color="primary" #sendOtpBtn>Send OTP</button>
     </div>
@@ -51,9 +59,9 @@
     [buttonRef]="verifyOtpBtn"
     (valid)="verfiyOtp()"
 >
-    <p>Reset Password</p>
+    <h3>Reset Password</h3>
 
-    <p>{{ emailForm.get('email').value }}</p>
+    <p>{{ sendOtpForm.get('userDetails').value }}</p>
     <button mat-flat-button color="primary" (click)="resetPassword()">change Email</button>
 
     <ng-container
@@ -83,7 +91,10 @@
         }"
     >
     </ng-container>
-
+    <div class="error-message" *ngIf="apiError$ | async">
+        {{ apiError$ | async }}
+        <br />
+    </div>
     <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
     <button mat-flat-button color="primary" #verifyOtpBtn [disabled]="isLoading$ | async">
         <span *ngIf="!(isLoading$ | async)">Submit</span>

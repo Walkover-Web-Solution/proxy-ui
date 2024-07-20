@@ -19,7 +19,6 @@ import {
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { OtpWidgetService } from '../service/otp-widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { F } from '@angular/cdk/keycodes';
 
 @Component({
     selector: 'proxy-send-otp',
@@ -64,7 +63,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public otpWidgetData;
     public showRegistration = new BehaviorSubject<boolean>(false);
     public referenceElement: HTMLElement = null;
-    public showLogin = new BehaviorSubject<boolean>(false);
+    public showLogin: boolean = false;
     constructor(
         private ngZone: NgZone,
         private store: Store<IAppState>,
@@ -167,13 +166,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                                 take(1)
                             )
                             .subscribe(() => this.appendButton(element, buttonsData));
-                    } else if (buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication) {
-                        this.otpWidgetService.showlogin
-                            .pipe(
-                                filter((e) => !e),
-                                take(1)
-                            )
-                            .subscribe(() => this.appendButton(element, buttonsData));
                     } else {
                         this.appendButton(element, buttonsData);
                     }
@@ -261,7 +253,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             if (this.referenceElement) {
                 this.show$ = of(value);
             }
-            this.showLogin.next(value);
+            this.showLogin = value;
         });
     }
     public returnSuccessObj(obj) {

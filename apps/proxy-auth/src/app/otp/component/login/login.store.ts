@@ -12,22 +12,24 @@ export interface ILoginInitialState {
     logInData: IlogInData;
     resetPassword: IResetPassword;
     otpData: IOtpData;
+    apiError;
 }
 
 @Injectable()
 export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
-    public apiError = new BehaviorSubject<string[]>(null);
     constructor(private service: OtpService, private toast: PrimeNgToastService) {
         super({
             isLoading: false,
             logInData: null,
             resetPassword: null,
             otpData: null,
+            apiError: false,
         });
     }
     readonly otpdata$: Observable<any> = this.select((state) => state.otpData);
     readonly isLoading$: Observable<boolean> = this.select((state) => state.isLoading);
     readonly resetPassword$: Observable<IResetPassword> = this.select((state) => state.resetPassword);
+    readonly apiError$: Observable<any> = this.select((state) => state.apiError);
     readonly loginData = this.effect((data: Observable<{ [key: string]: any }>) => {
         return data.pipe(
             switchMap((req) => {
@@ -35,9 +37,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                     tapResponse(
                         (res) => {
                             if (res?.hasError) {
-                                this.apiError.next(errorResolver(res.error.error.data.message));
-
-                                return this.patchState({ isLoading: false });
+                                return this.patchState({ isLoading: false, apiError: res.error.error.data.message });
                             }
 
                             return this.patchState({
@@ -46,9 +46,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                             });
                         },
                         (error: HttpErrorResponse) => {
-                            this.apiError.next(errorResolver(error.error.data.message));
-
-                            this.patchState({ isLoading: false });
+                            this.patchState({ isLoading: false, apiError: error.error.data.message });
                         }
                     )
                 );
@@ -63,8 +61,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                     tapResponse(
                         (res) => {
                             if (res?.hasError) {
-                                this.apiError.next(errorResolver(res.error.error.data.message));
-                                return this.patchState({ isLoading: false });
+                                return this.patchState({ isLoading: false, apiError: res.error.error.data.message });
                             }
 
                             return this.patchState({
@@ -73,8 +70,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                             });
                         },
                         (error: HttpErrorResponse) => {
-                            this.apiError.next(errorResolver(error.error.data.message));
-                            this.patchState({ isLoading: false });
+                            this.patchState({ isLoading: false, apiError: error.error.data.message });
                         }
                     )
                 );
@@ -89,8 +85,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                     tapResponse(
                         (res) => {
                             if (res?.hasError) {
-                                this.apiError.next(errorResolver(res.error.error.data.message));
-                                return this.patchState({ isLoading: false });
+                                return this.patchState({ isLoading: false, apiError: res.error.error.data.message });
                             }
 
                             return this.patchState({
@@ -99,9 +94,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                             });
                         },
                         (error: HttpErrorResponse) => {
-                            this.apiError.next(errorResolver(error.error.data.message));
-
-                            this.patchState({ isLoading: false });
+                            this.patchState({ isLoading: false, apiError: error.error.data.message });
                         }
                     )
                 );

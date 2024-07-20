@@ -24,18 +24,15 @@ export class LoginComponent extends BaseComponent implements OnInit {
     public otpData$: Observable<any> = this.componentStore.otpdata$;
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public resetPassword$: Observable<any> = this.componentStore.resetPassword$;
+    public apiError$: Observable<any> = this.componentStore.apiError$;
     public loginForm = new FormGroup({
         username: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_REGEX)]),
         password: new FormControl<string>(null, [Validators.required]),
     });
-    public emailForm = new FormGroup({
-        email: new FormControl<string>(null, [Validators.required]),
+    public sendOtpForm = new FormGroup({
+        userDetails: new FormControl<string>(null, [Validators.required]),
     });
     public resetPasswordForm = new FormGroup({
-        email: new FormControl<string | null>({ value: null, disabled: true }, [
-            Validators.required,
-            Validators.pattern(EMAIL_REGEX),
-        ]),
         otp: new FormControl<number>(null, Validators.required),
 
         password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
@@ -76,38 +73,32 @@ export class LoginComponent extends BaseComponent implements OnInit {
     }
 
     public login() {
-        if (this.loginForm.valid) {
-            const loginData: IlogInData = {
-                'state': this.state,
-                'user': this.loginForm.get('username').value,
-                'password': this.loginForm.get('password').value,
-            };
+        const loginData: IlogInData = {
+            'state': this.state,
+            'user': this.loginForm.get('username').value,
+            'password': this.loginForm.get('password').value,
+        };
 
-            this.componentStore.loginData(loginData);
-        }
+        this.componentStore.loginData(loginData);
     }
     public resetPassword() {
         this.step = 2;
     }
     public sendOtp() {
-        if (this.emailForm.valid) {
-            const emailData: IResetPassword = {
-                'state': this.state,
-                'user': this.emailForm.get('email').value,
-            };
+        const emailData: IResetPassword = {
+            'state': this.state,
+            'user': this.sendOtpForm.get('userDetails').value,
+        };
 
-            this.componentStore.resetPassword(emailData);
-        }
+        this.componentStore.resetPassword(emailData);
     }
     public verfiyOtp() {
-        if (this.resetPasswordForm.valid) {
-            const verfyOtpData: IOtpData = {
-                'state': this.state,
-                'user': this.emailForm.get('email').value,
-                'password': this.resetPasswordForm.get('password').value,
-                'otp': this.resetPasswordForm.get('otp').value,
-            };
-            this.componentStore.verfyPasswordOtp(verfyOtpData);
-        }
+        const verfyOtpData: IOtpData = {
+            'state': this.state,
+            'user': this.sendOtpForm.get('userDetails').value,
+            'password': this.resetPasswordForm.get('password').value,
+            'otp': this.resetPasswordForm.get('otp').value,
+        };
+        this.componentStore.verfyPasswordOtp(verfyOtpData);
     }
 }
