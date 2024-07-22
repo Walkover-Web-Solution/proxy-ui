@@ -36,3 +36,18 @@ export interface IVerifyOtpReq {
     otp: string;
     reqId: string;
 }
+export interface IlogInData {
+    state: string;
+    user: string;
+    password: string;
+}
+export interface IResetPassword {
+    state: string;
+    user: string;
+}
+export interface IOtpData {
+    state: string;
+    user: string;
+    password: string;
+    otp: number;
+}

@@ -1,0 +1,124 @@
+<div *ngIf="step === 1" [formGroup]="loginForm" proxyMarkAllAsTouched [buttonRef]="loginBtn" (valid)="login()">
+    <h3>Login</h3>
+    <ng-container
+        [ngTemplateOutlet]="formField"
+        [ngTemplateOutletContext]="{
+            label: 'email',
+            formControl: loginForm.get('username')
+        }"
+    >
+    </ng-container>
+    <ng-container
+        [ngTemplateOutlet]="formField"
+        [ngTemplateOutletContext]="{
+            type: 'password',
+            label: 'Password',
+            formControl: loginForm.get('password')
+        }"
+    >
+    </ng-container>
+    <div class="error-message" *ngIf="apiError$ | async">
+        {{ apiError$ | async }}
+    </div>
+
+    <div class="loginBtn gap-3">
+        <a href="javascript:void(0)" (click)="resetPassword()">Forgot Password?</a>
+        <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
+        <button mat-flat-button color="primary" #loginBtn [disabled]="isLoading$ | async">
+            <span *ngIf="!(isLoading$ | async)">Login</span>
+        </button>
+    </div>
+</div>
+
+<div *ngIf="step === 2" [formGroup]="sendOtpForm" [buttonRef]="sendOtpBtn" (valid)="sendOtp()" proxyMarkAllAsTouched>
+    <h3>Reset Password</h3>
+    <ng-container
+        [ngTemplateOutlet]="formField"
+        [ngTemplateOutletContext]="{
+            type: 'string',
+            label: 'Email or Mobile',
+            formControl: sendOtpForm.get('userDetails'),
+            is_required: true
+        }"
+    >
+    </ng-container>
+    <div class="error-message" *ngIf="apiError$ | async">
+        {{ apiError$ | async }}
+    </div>
+
+    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
+    <button mat-flat-button color="primary" [disabled]="isLoading$ | async" #sendOtpBtn>Send Otp</button>
+</div>
+
+<div
+    *ngIf="step === 3"
+    [formGroup]="resetPasswordForm"
+    proxyMarkAllAsTouched
+    [buttonRef]="verifyOtpBtn"
+    (valid)="verfiyOtp()"
+>
+    <h3>Reset Password</h3>
+
+    <p>{{ sendOtpForm.get('userDetails').value }}</p>
+    <button mat-flat-button color="primary" (click)="resetPassword()">change Email</button>
+
+    <ng-container
+        [ngTemplateOutlet]="formField"
+        [ngTemplateOutletContext]="{
+            type: 'Number',
+            label: ' otp',
+            formControl: resetPasswordForm.get('otp')
+        }"
+    >
+    </ng-container>
+    <ng-container
+        [ngTemplateOutlet]="formField"
+        [ngTemplateOutletContext]="{
+            type: 'password',
+            label: 'Password',
+            formControl: resetPasswordForm.get('password')
+        }"
+    >
+    </ng-container>
+    <ng-container
+        [ngTemplateOutlet]="formField"
+        [ngTemplateOutletContext]="{
+            type: 'password',
+            label: 'Confirm Password',
+            formControl: resetPasswordForm.get('confirmPassword')
+        }"
+    >
+    </ng-container>
+    <div class="error-message" *ngIf="apiError$ | async">
+        {{ apiError$ | async }}
+    </div>
+    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
+    <button mat-flat-button color="primary" #verifyOtpBtn [disabled]="isLoading$ | async">
+        <span *ngIf="!(isLoading$ | async)">Submit</span>
+    </button>
+</div>
+
+<ng-template
+    #formField
+    let-type="type"
+    let-label="label"
+    let-hint="hint"
+    let-formControl="formControl"
+    let-patternError="patternError"
+>
+    <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>{{ label }}</mat-label>
+        <input
+            matInput
+            autocomplete="off"
+            [attr.type]="type ?? 'text'"
+            [formControl]="formControl"
+            [placeholder]="'Enter ' + label"
+        />
+        <mat-error *ngIf="formControl.touched">
+            <mat-error *ngIf="formControl.errors?.required">{{ label }} is required.</mat-error>
+            <mat-error *ngIf="formControl.errors?.pattern">{{ label }} is invalid.</mat-error>
+        </mat-error>
+        <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
+    </mat-form-field>
+</ng-template>

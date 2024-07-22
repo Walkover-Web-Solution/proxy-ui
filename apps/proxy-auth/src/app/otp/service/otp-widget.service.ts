@@ -9,6 +9,7 @@ export class OtpWidgetService {
     private widgetId: string;
     private tokenAuth: string;
     private scriptAdded = false;
+    public showlogin = new BehaviorSubject<any>(false);
 
     public scriptLoading = new BehaviorSubject<boolean>(false);
     public otpWidgetToken = new BehaviorSubject<string>(null);
@@ -55,5 +56,8 @@ export class OtpWidgetService {
         } else {
             this.loadScript(this.loadWidgetFunc);
         }
+    }
+    public openLogin(value: boolean) {
+        this.showlogin.next(value);
     }
 }
