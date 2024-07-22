@@ -33,6 +33,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
     readonly loginData = this.effect((data: Observable<{ [key: string]: any }>) => {
         return data.pipe(
             switchMap((req) => {
+                this.patchState({ isLoading: true });
                 return this.service.login(req).pipe(
                     tapResponse(
                         (res) => {

@@ -27,7 +27,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
     public apiError$: Observable<any> = this.componentStore.apiError$;
     public loginForm = new FormGroup({
         username: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_REGEX)]),
-        password: new FormControl<string>(null, [Validators.required]),
+        password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
     });
     public sendOtpForm = new FormGroup({
         userDetails: new FormControl<string>(null, [Validators.required]),

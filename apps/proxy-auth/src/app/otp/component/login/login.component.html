@@ -48,7 +48,8 @@
         <br />
     </div>
     <div>
-        <button mat-flat-button color="primary" #sendOtpBtn>Send OTP</button>
+        <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
+        <button mat-flat-button color="primary" [disabled]="isLoading$ | async" #sendOtpBtn>Send Otp</button>
     </div>
 </div>
 
