@@ -19,7 +19,6 @@
     </ng-container>
     <div class="error-message" *ngIf="apiError$ | async">
         {{ apiError$ | async }}
-        <br />
     </div>
 
     <div class="loginBtn gap-3">
@@ -45,12 +44,10 @@
     </ng-container>
     <div class="error-message" *ngIf="apiError$ | async">
         {{ apiError$ | async }}
-        <br />
     </div>
-    <div>
-        <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
-        <button mat-flat-button color="primary" [disabled]="isLoading$ | async" #sendOtpBtn>Send Otp</button>
-    </div>
+
+    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
+    <button mat-flat-button color="primary" [disabled]="isLoading$ | async" #sendOtpBtn>Send Otp</button>
 </div>
 
 <div
@@ -94,7 +91,6 @@
     </ng-container>
     <div class="error-message" *ngIf="apiError$ | async">
         {{ apiError$ | async }}
-        <br />
     </div>
     <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
     <button mat-flat-button color="primary" #verifyOtpBtn [disabled]="isLoading$ | async">
