@@ -109,6 +109,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
             this.hitCallbackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token });
         });
+        this.otpWidgetService.showlogin.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((value) => {
+            this.showLogin = value;
+        });
     }
 
     ngOnDestroy() {
