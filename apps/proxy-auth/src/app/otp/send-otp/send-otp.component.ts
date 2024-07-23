@@ -63,7 +63,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public otpWidgetData;
     public showRegistration = new BehaviorSubject<boolean>(false);
     public referenceElement: HTMLElement = null;
-    public showLogin$: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
+    public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
     constructor(
         private ngZone: NgZone,
         private store: Store<IAppState>,
