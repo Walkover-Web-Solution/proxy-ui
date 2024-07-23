@@ -9,7 +9,7 @@ export class OtpWidgetService {
     private widgetId: string;
     private tokenAuth: string;
     private scriptAdded = false;
-    public showlogin = new BehaviorSubject<any>(false);
+    public showlogin = new BehaviorSubject<boolean>(false);
 
     public scriptLoading = new BehaviorSubject<boolean>(false);
     public otpWidgetToken = new BehaviorSubject<string>(null);

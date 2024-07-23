@@ -63,7 +63,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public otpWidgetData;
     public showRegistration = new BehaviorSubject<boolean>(false);
     public referenceElement: HTMLElement = null;
-    public showLogin: boolean = false;
+    public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
     constructor(
         private ngZone: NgZone,
         private store: Store<IAppState>,
@@ -108,9 +108,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         });
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
             this.hitCallbackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token });
-        });
-        this.otpWidgetService.showlogin.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((value) => {
-            this.showLogin = value;
         });
     }
 
@@ -256,7 +253,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             if (this.referenceElement) {
                 this.show$ = of(value);
             }
-            this.showLogin = value;
+            this.otpWidgetService.openLogin(true);
         });
     }
     public returnSuccessObj(obj) {
