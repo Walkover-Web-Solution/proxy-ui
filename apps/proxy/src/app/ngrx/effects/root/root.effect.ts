@@ -72,6 +72,26 @@ export class RootEffects {
             })
         )
     );
+    getAllProject$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(rootActions.getAllProject),
+            switchMap((req) => {
+                return this.rootService.getProjects().pipe(
+                    map((res) => {
+                        if (res.hasError) {
+                            this.showError(res.errors);
+                            rootActions.getAllProjectsError();
+                        }
+                        return rootActions.getAllProjectSuccess({ response: res.data });
+                    }),
+                    catchError((err) => {
+                        this.showError(err.errors);
+                        return of(rootActions.getAllProjectsError);
+                    })
+                );
+            })
+        )
+    );
 
     private showError(error): void {
         const errorMessage = errorResolver(error);

@@ -1,58 +1,69 @@
 <div class="app-content d-flex justify-content-center create-project">
-    <mat-stepper #stepper class="w-75 border rounded-8" labelPosition="bottom">
-        <mat-step>
-            <div class="d-flex flex-column h-100 mt-3">
-                <h1 class="fw-bold">Create Project</h1>
-                <ng-container *ngTemplateOutlet="createProject"></ng-container>
-                <div class="d-flex align-items-center justify-content-end">
-                    <button mat-flat-button color="primary" (click)="onNextClick()">
-                        Next
-                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
-                    </button>
-                </div>
+    <div class="w-75 border rounded-8 bg-gray" labelPosition="bottom">
+        <div
+            *ngIf="currentstep === 1"
+            class="d-flex flex-column h-100 p-4"
+            [formGroup]="primaryDetailsForm"
+            proxyMarkAllAsTouched
+            [buttonRef]="createProjectBtn"
+            (valid)="onNextClick()"
+        >
+            <h1 class="fw-bold">Create Project</h1>
+            <ng-container *ngTemplateOutlet="createProject"></ng-container>
+            <div class="d-flex align-items-center justify-content-end">
+                <button mat-flat-button color="primary" #createProjectBtn>
+                    Next
+                    <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
+                </button>
             </div>
-        </mat-step>
+        </div>
 
-        <mat-step>
-            <div class="d-flex flex-column h-100 mt-3">
-                <ng-container>
-                    <h1 class="fw-bold">Add Gateway URL</h1>
-                    <p>
-                        The Gateway URL is the entry point through which incoming requests are received and forwarded to
-                        the Proxy Server for processing
-                    </p>
-                </ng-container>
+        <div
+            *ngIf="currentstep == 2"
+            class="d-flex flex-column h-100 p-4"
+            [formGroup]="gatewayUrlDetailsForm"
+            proxyMarkAllAsTouched
+            [buttonRef]="gatewayUrlBtn"
+            (valid)="checkInputfeild()"
+        >
+            <h1 class="fw-bold">Add Gateway URL</h1>
+            <p>
+                The Gateway URL is the entry point through which incoming requests are received and forwarded to the
+                Proxy Server for processing
+            </p>
 
-                <ng-container *ngTemplateOutlet="gateWayUrl"></ng-container>
-                <div class="d-flex align-items-center justify-content-end">
-                    <button type="button" mat-flat-button color="primary" matStepperNext (click)="checkInputfeild()">
-                        Next
-                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
-                    </button>
-                </div>
+            <ng-container *ngTemplateOutlet="gateWayUrl"></ng-container>
+            <div class="d-flex align-items-center justify-content-end">
+                <button mat-flat-button color="primary" #gatewayUrlBtn>
+                    Next
+                    <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
+                </button>
             </div>
-        </mat-step>
+        </div>
 
-        <mat-step>
-            <div class="d-flex flex-column h-100 mt-3">
-                <ng-container>
-                    <h1 class="fw-bold">Add Destination Url</h1>
-                    <p class="mat-body-2 text-secondary fw-bold">
-                        The destination URL refers to the targeted URL or endpoint where the request will be forwarded
-                        by the proxy Server.
-                    </p>
-                </ng-container>
-                <ng-container *ngTemplateOutlet="desnationUrl"></ng-container>
-                <div class="d-flex align-items-center justify-content-between">
-                    <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
-                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
-                        >Back
-                    </button>
-                    <button mat-raised-button color="accent" (click)="submit()">Submit</button>
-                </div>
+        <div
+            *ngIf="currentstep == 3"
+            class="d-flex flex-column h-100 p-4"
+            proxyMarkAllAsTouched
+            [formGroup]="gatewayUrlDetailsForm"
+            [buttonRef]="submitBtn"
+            (valid)="submit()"
+        >
+            <h1 class="fw-bold">Add Destination Url</h1>
+            <p class="mat-body-2 text-secondary fw-bold">
+                The destination URL refers to the targeted URL or endpoint where the request will be forwarded by the
+                proxy Server.
+            </p>
+
+            <ng-container *ngTemplateOutlet="desnationUrl"></ng-container>
+            <div class="d-flex align-items-center justify-content-between">
+                <button type="button" mat-flat-button class="flat-default" (click)="backStep()">
+                    <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon>Back
+                </button>
+                <button mat-raised-button color="accent" #submitBtn>Submit</button>
             </div>
-        </mat-step>
-    </mat-stepper>
+        </div>
+    </div>
 </div>
 
 <ng-template #createProject>
@@ -62,7 +73,7 @@
                 *ngTemplateOutlet="
                     inputField;
                     context: {
-                        fieldControl: primaryDetails.get('name'),
+                        fieldControl: primaryDetailsForm.get('name'),
                         fieldConfig: {
                             label: 'Enter Your project name',
                             is_required: true,
@@ -74,39 +85,32 @@
         </form>
 
         <form class="w-50">
-            <mat-form-field appearance="outline" class="no-padding w-xs-100">
-                <mat-label>Select Environment</mat-label>
-                <proxy-cdk-scroll scrollableElementId="environments">
-                    <mat-select multiple [formControl]="primaryDetails.get('selectedEnvironmentsControl')">
-                        <mat-select-trigger>
-                            {{
-                                primaryDetails.get('selectedEnvironmentsControl').value
-                                    ? primaryDetails.get('selectedEnvironmentsControl').value.join(', ')
-                                    : 'Select Environment'
-                            }}
-                        </mat-select-trigger>
-                        <mat-option
-                            *ngFor="let environment of (environments$ | async)?.data"
-                            [value]="environment.name"
-                            class="mat-body-2"
-                        >
-                            {{ environment.name }}
-                        </mat-option>
-                    </mat-select>
-                </proxy-cdk-scroll>
+            <mat-form-field appearance="outline" class="no-padding w-100">
+                <mat-select
+                    multiple
+                    [formControl]="primaryDetailsForm.get('selectedEnvironments')"
+                    placeholder="Select Environment"
+                >
+                    <mat-option
+                        *ngFor="let environment of (environments$ | async)?.data"
+                        [value]="environment.name"
+                        class="mat-body-2"
+                    >
+                        {{ environment.name }}
+                    </mat-option>
+                </mat-select>
             </mat-form-field>
         </form>
-        <div class="d-flex rateLimitContainer">
+        <div class="d-flex rateLimitContainer gap-3">
             <form class="rateInput">
                 <ng-container
                     *ngTemplateOutlet="
                         inputField;
                         context: {
-                            fieldControl: primaryDetails.get('rateLimit_hit'),
+                            fieldControl: primaryDetailsForm.get('rateLimitHit'),
                             fieldConfig: {
                                 label: 'Hits',
-                                type: 'number',
-                                patternErrorText: 'Name must contain only alphanumeric and underscore'
+                                type: 'number'
                             }
                         }
                     "
@@ -118,12 +122,10 @@
                     *ngTemplateOutlet="
                         inputField;
                         context: {
-                            fieldControl: primaryDetails.get('rateLimit_minute'),
+                            fieldControl: primaryDetailsForm.get('rateLimitMinute'),
                             fieldConfig: {
                                 label: 'number',
-                                type: 'number',
-
-                                patternErrorText: 'Name must contain only alphanumeric and underscore'
+                                type: 'number'
                             }
                         }
                     "
@@ -134,7 +136,7 @@
     </div>
 </ng-template>
 <ng-template #gateWayUrl>
-    <div class="d-flex mt-5 h-75" [formGroup]="gatewayUrlDetails">
+    <div class="d-flex mt-5 h-75" [formGroup]="gatewayUrlDetailsForm">
         <div class="my-3 w-40">
             <h3>Provide your own</h3>
 
@@ -142,12 +144,12 @@
                 >Same for all environments</mat-checkbox
             >
 
-            <ng-container *ngIf="gatewayUrlDetails.get('useSameUrlForAll').value; else multiUrlTemplate">
+            <ng-container *ngIf="gatewayUrlDetailsForm.get('useSameUrlForAll').value; else multiUrlTemplate">
                 <ng-container
                     *ngTemplateOutlet="
                         inputField;
                         context: {
-                            fieldControl: gatewayUrlDetails.get('singleUrl'),
+                            fieldControl: gatewayUrlDetailsForm.get('singleUrl'),
                             fieldConfig: {
                                 label: 'enter same url for all environment',
                                 patternErrorText: 'URL must contain only alphanumeric and underscore'
@@ -187,12 +189,6 @@
                 <a href="slug.url">{{ slug.url }}</a>
                 <proxy-copy-button matSuffix [copyData]="slug.url" tooltip="Copy URL"></proxy-copy-button>
             </div>
-
-            <!-- </div > -->
-            <!-- <div *ngFor="let environment of environments_with_slug">
-        <h3>{{ environment.name }}</h3>
-        <p>URL: <a [href]="environment.url">{{ environment.url }}</a></p>
-    </div> -->
             <div class="font-12 mt-3">
                 <span class="fw-bolder">Note: </span>
                 please copy the provided Gateway URL and utilize it within your user interface to invoke the API by
@@ -206,21 +202,19 @@
         <form class="w-50" *ngIf="showEndpoint">
             <p class="mat-body-2 text-secondary fw-bold">
                 project unique identification In URL
-                <span class="info-container" (mouseenter)="showCard = true" (mouseleave)="showCard = false">
-                    <mat-icon>info</mat-icon>
-                    <card class="info-card bg-primary-light mat-body-2 text-primary" *ngIf="showCard">
-                        <mat-card-content>
-                            The "project identification in URL" is a key element used by the proxy server to route
-                            requests to the approoriate project and environment
-                        </mat-card-content>
-                    </card>
+                <span
+                    matTooltip="The 'project identification in URL' is a key element used by the proxy server to route
+                            requests to the approoriate project and environment"
+                    matTooltipPosition="right"
+                >
+                    <mat-icon class="material-icons-outlined">info</mat-icon>
                 </span>
             </p>
             <ng-container
                 *ngTemplateOutlet="
                     inputField;
                     context: {
-                        fieldControl: destinationUrl.get('endpoint'),
+                        fieldControl: destinationUrlForm.get('endpoint'),
                         fieldConfig: {
                             label: 'endpoint',
                             is_required: true
@@ -231,13 +225,13 @@
         </form>
         <form class="w-50">
             <div class="d-flex" *ngFor="let control of forwardUrls.controls; let i = index">
-                <div>
+                <div class="w-40">
                     <h4 class="m-0 fw-bold">{{ environments_with_slug[i]?.name }}</h4>
                     <mat-icon>double_arrow</mat-icon>
                     <p class="m-0">forward to</p>
                 </div>
                 <ng-container
-                    class="pt-4"
+                    class="pt-4 w-100"
                     *ngTemplateOutlet="
                         inputField;
                         context: {

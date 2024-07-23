@@ -15,6 +15,8 @@ import { UiCopyButtonModule } from '@proxy/ui/copy-button';
 import { LogsService } from '@proxy/services/proxy/logs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CreateProjectService, ServicesProxyCreateProjectModule } from '@proxy/services/proxy/create-project';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { DirectivesMarkAllAsTouchedModule } from '@proxy/directives/mark-all-as-touched';
 
 const routes: Routes = [
     {
@@ -42,6 +44,8 @@ const routes: Routes = [
         UiCopyButtonModule,
         ServicesProxyCreateProjectModule,
         MatAutocompleteModule,
+        MatTooltipModule,
+        DirectivesMarkAllAsTouchedModule,
     ],
     providers: [CreateProjectService, LogsService],
     exports: [RouterModule],

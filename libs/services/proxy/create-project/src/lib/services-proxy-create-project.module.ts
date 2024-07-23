@@ -12,16 +12,13 @@ import { IEnvironments, IProjects } from '@proxy/models/logs-models';
 export class ServicesProxyCreateProjectModule {}
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: ServicesProxyCreateProjectModule,
 })
 export class CreateProjectService {
     constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseURL: any) {}
 
-    public createProject(body): Observable<any> {
+    public createProject(body): Observable<BaseResponse<IProjects[], void>> {
         return this.http.post(CreatProjectUrl.createProject(this.baseURL), body);
-    }
-    public getProjects(): Observable<BaseResponse<IPaginatedResponse<IProjects[]>, void>> {
-        return this.http.get(CreatProjectUrl.createProject(this.baseURL));
     }
     public getEnvironments(req: IReqParams): Observable<BaseResponse<IPaginatedResponse<IEnvironments[]>, void>> {
         return this.http.get<BaseResponse<IPaginatedResponse<IEnvironments[]>, void>>(
@@ -32,7 +29,7 @@ export class CreateProjectService {
     public createSource(body): Observable<any> {
         return this.http.post(CreatProjectUrl.createSource(this.baseURL), body);
     }
-    public updateProject(id: string | number, body): Observable<any> {
+    public updateProject(id: string | number, body): Observable<BaseResponse<IProjects[], void>> {
         return this.http.put<any>(`${CreatProjectUrl.updateProject(this.baseURL)}/${id}`, body);
     }
 }

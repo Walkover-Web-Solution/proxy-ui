@@ -1,31 +1,36 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, UrlTree, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
-import { CreateProjectService } from '@proxy/services/proxy/create-project';
+import { Observable, filter } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { rootActions } from '../ngrx/actions';
+import { select, Store } from '@ngrx/store';
+import { IAppState, selectAllProject } from '../ngrx';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ProjectGuard implements CanActivate {
-    constructor(private service: CreateProjectService, private router: Router) {}
+    public getProject$: Observable<boolean>;
+
+    constructor(private router: Router, private store: Store<IAppState>) {
+        this.getProject$ = this.store.pipe(select(selectAllProject));
+    }
 
     canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-        return this.service.getProjects().pipe(
-            map((projects) => {
-                if (projects.data.data.length == 0) {
-                    this.router.navigate(['/project']);
-                    return false;
-                } else {
-                    return true;
-                }
-            }),
-
-            tap((success) => {
-                if (!success) {
-                    this.router.navigate(['/error']);
-                }
-            })
-        );
+        return new Promise<boolean>((promiseResolve) => {
+            this.getProject$.pipe(take(1)).subscribe((res) => !res && this.store.dispatch(rootActions.getAllProject()));
+            this.getProject$
+                .pipe(
+                    filter((value) => value != null),
+                    take(1)
+                )
+                .subscribe((res) => {
+                    if (!res) {
+                        this.router.navigate(['/project']);
+                    } else {
+                        promiseResolve(true);
+                    }
+                });
+        });
     }
 }

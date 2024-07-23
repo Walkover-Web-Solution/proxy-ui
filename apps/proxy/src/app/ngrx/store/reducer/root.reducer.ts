@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { rootActions } from '../../actions';
 import { IClient, IClientSettings, IPaginatedResponse } from '@proxy/models/root-models';
+import { IProjects } from '@proxy/models/logs-models';
 
 export interface IRootState {
     errors: string[];
@@ -14,6 +15,10 @@ export interface IRootState {
     clients: IPaginatedResponse<IClient[]>;
     clientsInProcess: boolean;
     swtichClientSuccess: boolean;
+    //All project
+    projects: boolean;
+    allProjects: IPaginatedResponse<IProjects[]>;
+    projectInProcess: boolean;
 }
 
 export const initialState: IRootState = {
@@ -28,6 +33,9 @@ export const initialState: IRootState = {
     clients: null,
     clientsInProcess: false,
     swtichClientSuccess: false,
+    projects: null,
+    projectInProcess: false,
+    allProjects: null,
 };
 
 export function rootReducer(state: IRootState, action: Action) {
@@ -108,6 +116,28 @@ const _rootReducer = createReducer(
             ...state,
             clientsInProcess: false,
             swtichClientSuccess: false,
+        };
+    }),
+
+    on(rootActions.getAllProject, (state) => {
+        return {
+            ...state,
+            projectInProcess: true,
+        };
+    }),
+    on(rootActions.getAllProjectSuccess, (state, { response }) => {
+        return {
+            ...state,
+            projects: Boolean(Object.keys(response.data ?? {})?.length),
+            allProjects: response,
+            projectInProcess: false,
+        };
+    }),
+    on(rootActions.getAllProjectsError, (state) => {
+        return {
+            ...state,
+            projects: null,
+            projectInProcess: false,
         };
     })
 );
