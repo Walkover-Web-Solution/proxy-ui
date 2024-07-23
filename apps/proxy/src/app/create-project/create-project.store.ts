@@ -76,12 +76,13 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
                         (res: any) => {
                             if (res?.hasError) {
                                 this.showError(res.errors);
-                                return this.patchState({ isLoading: false, getProject: true });
+                                return this.patchState({ isLoading: false });
                             }
                             this.toast.success('Project created successfully');
 
                             return this.patchState({
                                 isLoading: false,
+                                getProject: true,
                             });
                         },
                         (error: any) => {
