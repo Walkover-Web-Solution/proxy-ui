@@ -14,6 +14,7 @@ export interface ICreateProjectInitialState {
     environments: IPaginatedResponse<IEnvironments[]>;
     sourceDomain: any;
     isLoading: boolean;
+    getProject: boolean;
 }
 
 @Injectable()
@@ -24,6 +25,7 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
             environments: null,
             sourceDomain: null,
             isLoading: false,
+            getProject: false,
         });
     }
 
@@ -32,8 +34,9 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
         (state) => state.environments
     );
     readonly sourceDomain$: Observable<any> = this.select((state) => state.sourceDomain);
+    readonly getProject$: Observable<boolean> = this.select((state) => state.getProject);
+    readonly isLoading$: Observable<boolean> = this.select((state) => state.isLoading);
 
-    s;
     readonly getEnvironment = this.effect((data: Observable<IReqParams>) => {
         return data.pipe(
             switchMap((req) => {
@@ -76,13 +79,13 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
                                 return this.patchState({ isLoading: false });
                             }
                             this.toast.success('Project created successfully');
-                            this.getProjects();
+
                             return this.patchState({
                                 isLoading: false,
+                                getProject: true,
                             });
                         },
                         (error: any) => {
-                            this.getProjects();
                             this.showError(error.errors);
                             this.patchState({ isLoading: false });
                         }
@@ -91,35 +94,7 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
             })
         );
     });
-    readonly getProjects = this.effect((data) => {
-        return data.pipe(
-            switchMap((req) => {
-                return this.service.getProjects().pipe(
-                    tapResponse(
-                        (res: BaseResponse<IPaginatedResponse<IProjects[]>, void>) => {
-                            if (res.hasError) {
-                                this.showError(res.errors);
-                            }
-                            return this.patchState((state) => ({
-                                projectsInProcess: false,
-                                projects:
-                                    res?.data?.pageNo > 1
-                                        ? { ...res.data, data: [...state.projects.data, ...res.data.data] }
-                                        : res.data,
-                            }));
-                        },
-                        (error: any) => {
-                            this.showError(error.errors);
-                            return this.patchState({
-                                projects: null,
-                            });
-                        }
-                    ),
-                    catchError((err) => EMPTY)
-                );
-            })
-        );
-    });
+
     readonly createSource = this.effect((data: Observable<{ [key: string]: unknown }>) => {
         return data.pipe(
             switchMap((req) => {
