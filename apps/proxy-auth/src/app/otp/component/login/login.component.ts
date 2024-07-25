@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { LoginComponentStore } from './login.store';
-import { Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import { IAppState } from '../../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { selectWidgetData } from '../../store/selectors';
@@ -18,19 +18,21 @@ import { CustomValidators } from '@proxy/custom-validator';
     providers: [LoginComponentStore],
 })
 export class LoginComponent extends BaseComponent implements OnInit {
+    @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
+    @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
     public state: string;
-    public step: number = 1;
+    public step: number = 3;
     public selectWidgetData$: Observable<any>;
+    private apiError = new BehaviorSubject<any>(null);
     public otpData$: Observable<any> = this.componentStore.otpdata$;
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public resetPassword$: Observable<any> = this.componentStore.resetPassword$;
-    public apiError$: Observable<any> = this.componentStore.apiError$;
     public loginForm = new FormGroup({
         username: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_REGEX)]),
         password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
     });
     public sendOtpForm = new FormGroup({
-        userDetails: new FormControl<string>(null, [Validators.required]),
+        userDetails: new FormControl<string>(null, [Validators.required, CustomValidators.noWhitespaceValidator]),
     });
     public resetPasswordForm = new FormGroup({
         otp: new FormControl<number>(null, Validators.required),
@@ -55,11 +57,13 @@ export class LoginComponent extends BaseComponent implements OnInit {
         this.otpData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.step = 3;
+                this.apiError.next(null);
             }
         });
         this.resetPassword$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.step = 1;
+                this.apiError.next(null);
             }
         });
         this.resetPasswordForm
@@ -70,6 +74,23 @@ export class LoginComponent extends BaseComponent implements OnInit {
                     this.resetPasswordForm.get('confirmPassword').updateValueAndValidity();
                 }
             });
+        this.componentStore.apiError$.subscribe((error) => {
+            this.apiError.next(error);
+        });
+    }
+    public backToLogin() {
+        this.step = 1;
+        this.apiError.next(null);
+    }
+    public close(closeByUser: boolean = false): void {
+        this.togglePopUp.emit();
+        if (closeByUser) {
+            this.failureReturn.emit({
+                code: 0,
+                closeByUser,
+                message: 'User cancelled the login  process.',
+            });
+        }
     }
 
     public login() {
@@ -83,6 +104,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
     }
     public resetPassword() {
         this.step = 2;
+        this.apiError.next(null);
     }
     public sendOtp() {
         const emailData: IResetPassword = {
