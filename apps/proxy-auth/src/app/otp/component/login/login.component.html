@@ -1,127 +1,119 @@
-<ng-container>
-    <div class="dialog-header">
-        <button *ngIf="step != 1" mat-icon-button class="back-button" (click)="backToLogin()">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368">
-                <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
-            </svg>
-        </button>
-        <button mat-icon-button mat-dialog-close class="close-dialog" (click)="close(true)">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
-                    fill="#5D6164"
-                />
-            </svg>
-        </button>
-    </div>
-    <div *ngIf="step === 1" [formGroup]="loginForm" proxyMarkAllAsTouched [buttonRef]="loginBtn" (valid)="login()">
-        <div class="heading">Login</div>
-        <ng-container
-            [ngTemplateOutlet]="formField"
-            [ngTemplateOutletContext]="{
-                label: 'Email',
-                formControl: loginForm.get('username')
-            }"
-        >
-        </ng-container>
-        <ng-container
-            [ngTemplateOutlet]="formField"
-            [ngTemplateOutletContext]="{
-                type: 'password',
-                label: 'Password',
-                formControl: loginForm.get('password')
-            }"
-        >
-        </ng-container>
-        <div class="error-message" *ngIf="apiError | async">
-            {{ apiError | async }}
-        </div>
-
-        <div class="loginBtn">
-            <a href="javascript:void(0)" (click)="resetPassword()">Forgot Password?</a>
-            <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
-            <button mat-flat-button color="primary" #loginBtn [disabled]="isLoading$ | async">
-                <span *ngIf="!(isLoading$ | async)">Login</span>
-            </button>
-        </div>
-    </div>
-
-    <div
-        *ngIf="step === 2"
-        [formGroup]="sendOtpForm"
-        [buttonRef]="sendOtpBtn"
-        (valid)="sendOtp()"
-        proxyMarkAllAsTouched
+<div class="dialog-header">
+    <button *ngIf="step !== 1" mat-icon-button class="back-button" (click)="changeStep(1)">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368">
+            <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+        </svg>
+    </button>
+    <button mat-icon-button mat-dialog-close class="close-dialog" (click)="close(true)">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
+                fill="#5D6164"
+            />
+        </svg>
+    </button>
+</div>
+<div *ngIf="step === 1" [formGroup]="loginForm" proxyMarkAllAsTouched [buttonRef]="loginBtn" (valid)="login()">
+    <div class="heading">Login</div>
+    <ng-container
+        [ngTemplateOutlet]="formField"
+        [ngTemplateOutletContext]="{
+            label: 'Email',
+            formControl: loginForm.get('username')
+        }"
     >
-        <div class="heading">Reset Password</div>
-        <ng-container
-            [ngTemplateOutlet]="formField"
-            [ngTemplateOutletContext]="{
-                type: 'string',
-                label: 'Email or Mobile',
-                formControl: sendOtpForm.get('userDetails'),
-                is_required: true
-            }"
-        >
-        </ng-container>
-        <div class="error-message" *ngIf="apiError | async">
-            {{ apiError | async }}
-        </div>
-
-        <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
-        <button mat-flat-button color="primary" [disabled]="isLoading$ | async" #sendOtpBtn>Send OTP</button>
-    </div>
-
-    <div
-        *ngIf="step === 3"
-        [formGroup]="resetPasswordForm"
-        proxyMarkAllAsTouched
-        [buttonRef]="verifyOtpBtn"
-        (valid)="verfiyOtp()"
+    </ng-container>
+    <ng-container
+        [ngTemplateOutlet]="formField"
+        [ngTemplateOutletContext]="{
+            type: 'password',
+            label: 'Password',
+            formControl: loginForm.get('password')
+        }"
     >
-        <div class="heading">Change Password</div>
-
-        <p>{{ sendOtpForm.get('userDetails').value }}</p>
-
-        <ng-container
-            [ngTemplateOutlet]="formField"
-            [ngTemplateOutletContext]="{
-                type: 'Number',
-                label: ' OTP',
-                formControl: resetPasswordForm.get('otp')
-            }"
-        >
-        </ng-container>
-        <ng-container
-            [ngTemplateOutlet]="formField"
-            [ngTemplateOutletContext]="{
-                type: 'password',
-                label: 'New Password',
-                formControl: resetPasswordForm.get('password')
-            }"
-        >
-        </ng-container>
-        <ng-container
-            [ngTemplateOutlet]="formField"
-            [ngTemplateOutletContext]="{
-                type: 'password',
-                label: ' New Confirm Password',
-                formControl: resetPasswordForm.get('confirmPassword')
-            }"
-        >
-        </ng-container>
-        <div class="error-message" *ngIf="apiError | async">
-            {{ apiError | async }}
-        </div>
-        <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
-        <div class="button-wrapper">
-            <button mat-flat-button color="primary" (click)="resetPassword()">Change Email</button>
-            <button mat-flat-button color="primary" #verifyOtpBtn [disabled]="isLoading$ | async">
-                <span *ngIf="!(isLoading$ | async)">Submit</span>
-            </button>
-        </div>
+    </ng-container>
+    <div class="error-message" *ngIf="apiError | async">
+        {{ apiError | async }}
     </div>
-</ng-container>
+
+    <div class="loginBtn">
+        <a href="javascript:void(0)" (click)="changeStep(2)">Forgot Password?</a>
+        <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
+        <button mat-flat-button color="primary" #loginBtn [disabled]="isLoading$ | async">
+            <span *ngIf="!(isLoading$ | async)">Login</span>
+        </button>
+    </div>
+</div>
+
+<div *ngIf="step === 2" [formGroup]="sendOtpForm" [buttonRef]="sendOtpBtn" (valid)="sendOtp()" proxyMarkAllAsTouched>
+    <div class="heading">Reset Password</div>
+    <ng-container
+        [ngTemplateOutlet]="formField"
+        [ngTemplateOutletContext]="{
+            type: 'string',
+            label: 'Email or Mobile',
+            formControl: sendOtpForm.get('userDetails'),
+            is_required: true
+        }"
+    >
+    </ng-container>
+    <div class="error-message" *ngIf="apiError | async">
+        {{ apiError | async }}
+    </div>
+
+    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
+    <button mat-flat-button color="primary" [disabled]="isLoading$ | async" #sendOtpBtn>Send OTP</button>
+</div>
+
+<div
+    *ngIf="step === 3"
+    [formGroup]="resetPasswordForm"
+    proxyMarkAllAsTouched
+    [buttonRef]="verifyOtpBtn"
+    (valid)="verfiyOtp()"
+>
+    <div class="heading">Change Password</div>
+
+    <p>{{ sendOtpForm.get('userDetails').value }}</p>
+
+    <ng-container
+        [ngTemplateOutlet]="formField"
+        [ngTemplateOutletContext]="{
+            type: 'Number',
+            label: ' OTP',
+            formControl: resetPasswordForm.get('otp')
+        }"
+    >
+    </ng-container>
+    <ng-container
+        [ngTemplateOutlet]="formField"
+        [ngTemplateOutletContext]="{
+            type: 'password',
+            label: 'New Password',
+            formControl: resetPasswordForm.get('password')
+        }"
+    >
+    </ng-container>
+    <ng-container
+        [ngTemplateOutlet]="formField"
+        [ngTemplateOutletContext]="{
+            type: 'password',
+            label: ' New Confirm Password',
+            formControl: resetPasswordForm.get('confirmPassword')
+        }"
+    >
+    </ng-container>
+    <div class="error-message" *ngIf="apiError | async">
+        {{ apiError | async }}
+    </div>
+    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
+    <div class="button-wrapper">
+        <button mat-flat-button color="primary" (click)="resetPassword()">Change Email</button>
+        <button mat-flat-button color="primary" #verifyOtpBtn [disabled]="isLoading$ | async">
+            <span *ngIf="!(isLoading$ | async)">Submit</span>
+        </button>
+    </div>
+</div>
 
 <ng-template
     #formField
@@ -143,6 +135,7 @@
         <mat-error *ngIf="formControl.touched">
             <mat-error *ngIf="formControl.errors?.required">{{ label }} is required.</mat-error>
             <mat-error *ngIf="formControl.errors?.pattern">{{ label }} is invalid.</mat-error>
+            <mat-error *ngIf="formControl.errors?.cannotContainSpace"> Whitespace not allowed</mat-error>
         </mat-error>
         <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
     </mat-form-field>

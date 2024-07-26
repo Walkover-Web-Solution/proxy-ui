@@ -21,7 +21,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
     public state: string;
-    public step: number = 3;
+    public step: number = 1;
     public selectWidgetData$: Observable<any>;
     private apiError = new BehaviorSubject<any>(null);
     public otpData$: Observable<any> = this.componentStore.otpdata$;
@@ -32,7 +32,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
         password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
     });
     public sendOtpForm = new FormGroup({
-        userDetails: new FormControl<string>(null, [Validators.required, CustomValidators.noWhitespaceValidator]),
+        userDetails: new FormControl<string>(null, [Validators.required, CustomValidators.cannotContainSpace]),
     });
     public resetPasswordForm = new FormGroup({
         otp: new FormControl<number>(null, Validators.required),
@@ -56,14 +56,12 @@ export class LoginComponent extends BaseComponent implements OnInit {
         });
         this.otpData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
-                this.step = 3;
-                this.apiError.next(null);
+                this.changeStep(3);
             }
         });
         this.resetPassword$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
-                this.step = 1;
-                this.apiError.next(null);
+                this.changeStep(1);
             }
         });
         this.resetPasswordForm
@@ -78,9 +76,10 @@ export class LoginComponent extends BaseComponent implements OnInit {
             this.apiError.next(error);
         });
     }
-    public backToLogin() {
-        this.step = 1;
+
+    public changeStep(nextStep: number) {
         this.apiError.next(null);
+        this.step = nextStep;
     }
     public close(closeByUser: boolean = false): void {
         this.togglePopUp.emit();
@@ -101,10 +100,6 @@ export class LoginComponent extends BaseComponent implements OnInit {
         };
 
         this.componentStore.loginData(loginData);
-    }
-    public resetPassword() {
-        this.step = 2;
-        this.apiError.next(null);
     }
     public sendOtp() {
         const emailData: IResetPassword = {
