@@ -253,7 +253,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             if (this.referenceElement) {
                 this.show$ = of(value);
             }
-            this.otpWidgetService.openLogin(true);
+            this.otpWidgetService.openLogin(value);
         });
     }
     public returnSuccessObj(obj) {
