@@ -1,9 +1,9 @@
 <div class="dialog-header">
     <button *ngIf="step !== 1" mat-icon-button class="back-button close-dialog" (click)="changeStep(1)">
-        <img src="assets/logos/back-button-logo.svg" />
+        <img src="assets/logos/back-button-logo.svg" alt="back-button" loading="lazy" />
     </button>
     <button mat-icon-button mat-dialog-close class="close-dialog close-button" (click)="close(true)">
-        <img src="assets/logos/close-button.svg" />
+        <img src="assets/logos/close-button.svg" alt="close-button" loading="lazy" />
     </button>
 </div>
 <div *ngIf="step === 1" [formGroup]="loginForm" proxyMarkAllAsTouched [buttonRef]="loginBtn" (valid)="login()">
