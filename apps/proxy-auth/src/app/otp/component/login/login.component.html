@@ -1,16 +1,9 @@
 <div class="dialog-header">
-    <button *ngIf="step !== 1" mat-icon-button class="back-button" (click)="changeStep(1)">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368">
-            <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
-        </svg>
+    <button *ngIf="step !== 1" mat-icon-button class="back-button close-dialog" (click)="changeStep(1)">
+        <img src="assets/logos/back-button-logo.svg" />
     </button>
-    <button mat-icon-button mat-dialog-close class="close-dialog" (click)="close(true)">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-                d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
-                fill="#5D6164"
-            />
-        </svg>
+    <button mat-icon-button mat-dialog-close class="close-dialog close-button" (click)="close(true)">
+        <img src="assets/logos/close-button.svg" />
     </button>
 </div>
 <div *ngIf="step === 1" [formGroup]="loginForm" proxyMarkAllAsTouched [buttonRef]="loginBtn" (valid)="login()">

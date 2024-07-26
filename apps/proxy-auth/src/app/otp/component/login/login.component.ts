@@ -87,7 +87,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
             this.failureReturn.emit({
                 code: 0,
                 closeByUser,
-                message: 'User cancelled the login  process.',
+                message: 'User cancelled the login process.',
             });
         }
     }

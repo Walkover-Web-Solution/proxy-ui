@@ -16,7 +16,6 @@
 }
 .close-dialog {
     position: absolute;
-    right: 16px;
     top: 16px;
     width: 20px;
     height: 20px;
@@ -31,16 +30,10 @@
     justify-content: space-between;
 }
 .back-button {
-    position: absolute;
     left: 16px;
-    top: 16px;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-
-    @media only screen and (max-width: 768px) {
-        position: fixed;
-    }
+}
+.close-button {
+    right: 16px;
 }
 .heading {
     font-size: 16px;
