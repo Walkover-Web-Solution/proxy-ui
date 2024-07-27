@@ -16,7 +16,6 @@ export interface IRootState {
     clientsInProcess: boolean;
     swtichClientSuccess: boolean;
     //All project
-    projects: boolean;
     allProjects: IPaginatedResponse<IProjects[]>;
     projectInProcess: boolean;
 }
@@ -33,7 +32,6 @@ export const initialState: IRootState = {
     clients: null,
     clientsInProcess: false,
     swtichClientSuccess: false,
-    projects: null,
     projectInProcess: false,
     allProjects: null,
 };
@@ -128,7 +126,6 @@ const _rootReducer = createReducer(
     on(rootActions.getAllProjectSuccess, (state, { response }) => {
         return {
             ...state,
-            projects: Boolean(Object.keys(response.data ?? {})?.length),
             allProjects: response,
             projectInProcess: false,
         };

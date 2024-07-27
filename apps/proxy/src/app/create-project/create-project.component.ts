@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { environment } from '../../environments/environment';
@@ -11,6 +11,12 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
 import { IAppState, selectAllProjectList } from '../ngrx';
 import { rootActions } from '../ngrx/actions';
+import {
+    IDestinationUrlForm,
+    IFormArray,
+    IGatewayUrlDetailsForm,
+    IPrimaryDetailsForm,
+} from '@proxy/models/project-model';
 
 @Component({
     selector: 'proxy-create-project',
@@ -19,9 +25,9 @@ import { rootActions } from '../ngrx/actions';
     providers: [CreateProjectComponentStore],
 })
 export class CreateProjectComponent extends BaseComponent implements OnInit {
-    public primaryDetailsForm: FormGroup;
-    public gatewayUrlDetailsForm: FormGroup;
-    public destinationUrlForm: FormGroup;
+    public primaryDetailsForm: FormGroup<IPrimaryDetailsForm>;
+    public gatewayUrlDetailsForm: FormGroup<IGatewayUrlDetailsForm>;
+    public destinationUrlForm: FormGroup<IDestinationUrlForm>;
     public currentstep: number = 1;
     public checked: Boolean = false;
     public showEndpoint: Boolean = false;
@@ -44,30 +50,28 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
     ) {
         super();
         this.projects$ = this.store.pipe(select(selectAllProjectList));
-        this.primaryDetailsForm = this.fb.group({
-            name: [
-                '',
-                [
-                    Validators.required,
-                    Validators.pattern(CAMPAIGN_NAME_REGEX),
-                    CustomValidators.minLengthThreeWithoutSpace,
-                    CustomValidators.noStartEndSpaces,
-                    Validators.maxLength(20),
-                ],
-            ],
-            rateLimitHit: [null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]],
-            rateLimitMinute: [null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]],
-            selectedEnvironments: [''],
-        });
 
-        (this.destinationUrlForm = this.fb.group({
-            endpoint: ['', Validators.required],
-            ForwardUrl: this.fb.array([]),
-        })),
-            (this.gatewayUrlDetailsForm = this.fb.group({
-                useSameUrlForAll: [false],
-                gatewayUrls: this.fb.array([]),
-            }));
+        this.primaryDetailsForm = this.fb.group<IPrimaryDetailsForm>({
+            name: this.fb.control('', [
+                Validators.required,
+                Validators.pattern(CAMPAIGN_NAME_REGEX),
+                CustomValidators.minLengthThreeWithoutSpace,
+                CustomValidators.noStartEndSpaces,
+                Validators.maxLength(20),
+            ]),
+            rateLimitHit: this.fb.control(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
+            rateLimitMinite: this.fb.control(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
+            selectedEnvironments: this.fb.control([]),
+        });
+        this.gatewayUrlDetailsForm = this.fb.group<IGatewayUrlDetailsForm>({
+            useSameUrlForAll: this.fb.control(false),
+            gatewayUrls: this.fb.array<FormControl<string>>([]),
+            singleUrl: this.fb.control(''),
+        });
+        this.destinationUrlForm = this.fb.group<IDestinationUrlForm>({
+            endpoint: this.fb.control(''),
+            ForwardUrl: this.fb.array<FormControl<string>>([]),
+        });
     }
 
     ngOnInit(): void {
@@ -90,17 +94,17 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
         });
         this.getProject$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
-                this.currentstep = 2;
+                this.changeStep(2);
                 this.store.dispatch(rootActions.getAllProject());
             }
         });
     }
 
-    get gatewayUrls(): FormArray {
-        return this.gatewayUrlDetailsForm.get('gatewayUrls') as FormArray;
+    get gatewayUrls(): IFormArray<string> {
+        return this.gatewayUrlDetailsForm.get('gatewayUrls') as IFormArray<string>;
     }
-    get forwardUrls(): FormArray {
-        return this.destinationUrlForm.get('ForwardUrl') as FormArray;
+    get forwardUrls(): IFormArray<string> {
+        return this.destinationUrlForm.get('ForwardUrl') as IFormArray<string>;
     }
     populateGatewayUrls(): void {
         this.gatewayUrls.clear();
@@ -114,6 +118,12 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
             this.forwardUrls.push(this.fb.control('', [Validators.required, Validators.pattern(URL_REGEX)]));
         });
     }
+    public changeStep(stepChange: number) {
+        this.currentstep = stepChange;
+        if (stepChange === 3) {
+            this.showEndpoint = this.isAnyUrlInputProvided();
+        }
+    }
     onChange(event: any): void {
         if (event.checked) {
             this.gatewayUrls.clear();
@@ -124,14 +134,6 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
             this.gatewayUrlDetailsForm.get('useSameUrlForAll').setValue(false);
             this.populateGatewayUrls();
         }
-    }
-
-    checkInputfeild() {
-        this.showEndpoint = this.isAnyUrlInputProvided();
-        this.currentstep = 3;
-    }
-    backStep() {
-        this.currentstep = 2;
     }
 
     isAnyUrlInputProvided(): boolean {
@@ -192,12 +194,12 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
         this.componentStore.getEnvironment(this.environmentParams);
     }
     onNextClick() {
-        const { name, selectedEnvironments, rateLimitHit, rateLimitMinute } = this.primaryDetailsForm.value;
+        const { name, selectedEnvironments, rateLimitHit, rateLimitMinite } = this.primaryDetailsForm.value;
 
         const environmentsConfig = selectedEnvironments.reduce(
             (acc, env) => ({
                 ...acc,
-                [env]: { rate_limiter: `${rateLimitHit}:${rateLimitMinute}` },
+                [env]: { rate_limiter: `${rateLimitHit}:${rateLimitMinite}` },
             }),
             {}
         );

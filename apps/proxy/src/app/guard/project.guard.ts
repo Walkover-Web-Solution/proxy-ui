@@ -4,16 +4,18 @@ import { Observable, filter } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { rootActions } from '../ngrx/actions';
 import { select, Store } from '@ngrx/store';
-import { IAppState, selectAllProject } from '../ngrx';
+import { IAppState, selectAllProjectList } from '../ngrx';
+import { IPaginatedResponse } from '@proxy/models/root-models';
+import { IProjects } from '@proxy/models/logs-models';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ProjectGuard implements CanActivate {
-    public getProject$: Observable<boolean>;
+    public getProject$: Observable<IPaginatedResponse<IProjects[]>>;
 
     constructor(private router: Router, private store: Store<IAppState>) {
-        this.getProject$ = this.store.pipe(select(selectAllProject));
+        this.getProject$ = this.store.pipe(select(selectAllProjectList));
     }
 
     canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
@@ -25,7 +27,7 @@ export class ProjectGuard implements CanActivate {
                     take(1)
                 )
                 .subscribe((res) => {
-                    if (!res) {
+                    if (res.data.length === 0) {
                         this.router.navigate(['/project']);
                     } else {
                         promiseResolve(true);

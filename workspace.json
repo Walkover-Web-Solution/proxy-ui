@@ -15,6 +15,7 @@
         "directives-timeago-directive": "libs/directives/timeago-directive",
         "models-features-model": "libs/models/features-model",
         "models-logs-models": "libs/models/logs-models",
+        "models-project-model": "libs/models/project-model",
         "models-root-models": "libs/models/root-models",
         "models-users-model": "libs/models/users-model",
         "pipes-chart-date-add": "libs/pipes/chart-date-add",

@@ -47,7 +47,7 @@ const routes: Routes = [
         MatTooltipModule,
         DirectivesMarkAllAsTouchedModule,
     ],
-    providers: [CreateProjectService, LogsService],
+    providers: [CreateProjectService],
     exports: [RouterModule],
 })
 export class CreateProjectModule {}
