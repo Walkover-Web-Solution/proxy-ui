@@ -67,3 +67,5 @@ export const NON_ASCII_PRINTABLE_CHARACTERS_REGEX = /[^\t\r\n\x20-\x7E]/;
 export const FULL_NAME_REGEX = /^([\w])+\s+([\w\s])+$/i;
 export const PASSWORD_REGEX = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).*/; // Should Contain at least one lowercase letter, one uppercase letter, one number and one symbol
 export const NAME_REGEX = /^([a-zA-Z]+\s)*[a-zA-Z]+$/i;
+export const EMAIL_OR_MOBILE_REGEX =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$|^[0-9]{7,15}$/;

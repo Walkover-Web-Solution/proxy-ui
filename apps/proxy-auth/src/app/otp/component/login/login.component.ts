@@ -8,8 +8,9 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IlogInData, IOtpData, IResetPassword } from '../../model/otp';
-import { EMAIL_REGEX, PASSWORD_REGEX } from '@proxy/regex';
+import { EMAIL_OR_MOBILE_REGEX, EMAIL_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
+import { META_TAG_ID } from '@proxy/constant';
 
 @Component({
     selector: 'proxy-login',
@@ -19,6 +20,7 @@ import { CustomValidators } from '@proxy/custom-validator';
 })
 export class LoginComponent extends BaseComponent implements OnInit {
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
+    @Output() public closePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
     public state: string;
     public step: number = 1;
@@ -29,10 +31,10 @@ export class LoginComponent extends BaseComponent implements OnInit {
     public resetPassword$: Observable<any> = this.componentStore.resetPassword$;
     public loginForm = new FormGroup({
         username: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_REGEX)]),
-        password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
+        password: new FormControl<string>(null, [Validators.required, CustomValidators.cannotContainSpace]),
     });
     public sendOtpForm = new FormGroup({
-        userDetails: new FormControl<string>(null, [Validators.required, CustomValidators.cannotContainSpace]),
+        userDetails: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_OR_MOBILE_REGEX)]),
     });
     public resetPasswordForm = new FormGroup({
         otp: new FormControl<number>(null, Validators.required),
@@ -80,13 +82,19 @@ export class LoginComponent extends BaseComponent implements OnInit {
     public changeStep(nextStep: number) {
         this.apiError.next(null);
         this.step = nextStep;
+        if (this.step === 0) {
+            this.closePopUp.emit();
+        }
     }
     public close(closeByUser: boolean = false): void {
+        document.getElementById(META_TAG_ID)?.remove();
+
         this.togglePopUp.emit();
+
         if (closeByUser) {
             this.failureReturn.emit({
-                code: 0,
-                closeByUser,
+                code: 0, // code use for close by user
+                closeByUser, // boolean value for status
                 message: 'User cancelled the login process.',
             });
         }
