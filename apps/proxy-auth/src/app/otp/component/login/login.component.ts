@@ -20,7 +20,7 @@ import { META_TAG_ID } from '@proxy/constant';
 })
 export class LoginComponent extends BaseComponent implements OnInit {
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
-    @Output() public loginPopUp: EventEmitter<any> = new EventEmitter();
+    @Output() public closePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
     public state: string;
     public step: number = 1;
@@ -81,14 +81,9 @@ export class LoginComponent extends BaseComponent implements OnInit {
 
     public changeStep(nextStep: number) {
         this.apiError.next(null);
-        if (nextStep === 0) {
-            this.step--;
-
-            if (this.step === 0) {
-                this.loginPopUp.emit();
-            }
-        } else {
-            this.step = nextStep;
+        this.step = nextStep;
+        if (this.step === 0) {
+            this.closePopUp.emit();
         }
     }
     public close(closeByUser: boolean = false): void {

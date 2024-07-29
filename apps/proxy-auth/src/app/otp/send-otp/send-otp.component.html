@@ -30,7 +30,7 @@
         <proxy-login
             *ngIf="showLogin | async"
             (togglePopUp)="toggleSendOtp()"
-            (loginPopUp)="setShowLogin(false)"
+            (closePopUp)="setShowLogin(false)"
             (failureReturn)="returnFailureObj($event)"
         >
         </proxy-login>
