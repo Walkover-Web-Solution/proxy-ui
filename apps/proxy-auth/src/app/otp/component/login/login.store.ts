@@ -41,6 +41,8 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                                 return this.patchState({ isLoading: false, apiError: res.error.error.data.message });
                             }
 
+                            window.location.href = res.data.redirect_url;
+
                             return this.patchState({
                                 isLoading: false,
                                 logInData: res,

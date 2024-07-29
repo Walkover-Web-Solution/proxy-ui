@@ -1,6 +1,6 @@
 <div class="dialog-header">
-    <button *ngIf="step !== 1" mat-icon-button class="back-button close-dialog" (click)="changeStep(1)">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368">
+    <button mat-icon-button class="back-button close-dialog" (click)="changeStep(0)">
+        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#5f6368">
             <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
         </svg>
     </button>
@@ -74,7 +74,9 @@
 >
     <div class="heading">Change Password</div>
 
-    <p>{{ sendOtpForm.get('userDetails').value }}</p>
+    <p class="userInfo">
+        {{ sendOtpForm.get('userDetails').value }} <a href="javascript:void(0)" (click)="changeStep(2)">Change </a>
+    </p>
 
     <ng-container
         [ngTemplateOutlet]="formField"
@@ -90,7 +92,9 @@
         [ngTemplateOutletContext]="{
             type: 'password',
             label: 'New Password',
-            formControl: resetPasswordForm.get('password')
+            formControl: resetPasswordForm.get('password'),
+            patternError:
+                'Password should contain atleast one Capital Letter, one Small Letter, one Digit and one Symbol'
         }"
     >
     </ng-container>
@@ -99,7 +103,9 @@
         [ngTemplateOutletContext]="{
             type: 'password',
             label: ' New Confirm Password',
-            formControl: resetPasswordForm.get('confirmPassword')
+            formControl: resetPasswordForm.get('confirmPassword'),
+            patternError:
+                'Password should contain atleast one Capital Letter, one Small Letter, one Digit and one Symbol'
         }"
     >
     </ng-container>
@@ -108,7 +114,6 @@
     </div>
     <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
     <div class="button-wrapper">
-        <button mat-flat-button color="primary" (click)="resetPassword()">Change Email</button>
         <button mat-flat-button color="primary" #verifyOtpBtn [disabled]="isLoading$ | async">
             <span *ngIf="!(isLoading$ | async)">Submit</span>
         </button>
@@ -134,7 +139,9 @@
         />
         <mat-error *ngIf="formControl.touched">
             <mat-error *ngIf="formControl.errors?.required">{{ label }} is required.</mat-error>
-            <mat-error *ngIf="formControl.errors?.pattern">{{ label }} is invalid.</mat-error>
+            <mat-error *ngIf="formControl.errors?.pattern">{{
+                patternError ? patternError : 'Enter valid ' + label
+            }}</mat-error>
             <mat-error *ngIf="formControl.errors?.cannotContainSpace"> Whitespace not allowed</mat-error>
         </mat-error>
         <mat-hint *ngIf="hint">{{ hint }}</mat-hint>

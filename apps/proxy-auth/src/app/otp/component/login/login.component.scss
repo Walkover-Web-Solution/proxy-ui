@@ -4,11 +4,16 @@
     gap: 16px;
     font-size: medium;
     font-weight: 600;
-    a {
-        font-size: medium;
-        font-weight: 400;
-    }
 }
+a {
+    font-size: small;
+    font-weight: 400;
+    text-align: left;
+}
+.userInfo {
+    font-size: medium;
+}
+
 .error-message {
     font-size: 14px;
     color: #f44336;
