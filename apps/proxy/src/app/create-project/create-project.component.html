@@ -24,7 +24,7 @@
             [formGroup]="gatewayUrlDetailsForm"
             proxyMarkAllAsTouched
             [buttonRef]="gatewayUrlBtn"
-            (valid)="checkInputfeild()"
+            (valid)="changeStep(3)"
         >
             <h1 class="fw-bold">Add Gateway URL</h1>
             <p>
@@ -57,7 +57,7 @@
 
             <ng-container *ngTemplateOutlet="desnationUrl"></ng-container>
             <div class="d-flex align-items-center justify-content-between">
-                <button type="button" mat-flat-button class="flat-default" (click)="backStep()">
+                <button type="button" mat-flat-button class="flat-default" (click)="changeStep(2)">
                     <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon>Back
                 </button>
                 <button mat-raised-button color="accent" #submitBtn>Submit</button>
@@ -122,16 +122,16 @@
                     *ngTemplateOutlet="
                         inputField;
                         context: {
-                            fieldControl: primaryDetailsForm.get('rateLimitMinute'),
+                            fieldControl: primaryDetailsForm.get('rateLimitMinite'),
                             fieldConfig: {
-                                label: 'number',
+                                label: 'Number',
                                 type: 'number'
                             }
                         }
                     "
                 ></ng-container>
             </form>
-            <p class="fw-bold mt-5">minute</p>
+            <p class="fw-bold mt-5">Minute</p>
         </div>
     </div>
 </ng-template>
@@ -151,7 +151,7 @@
                         context: {
                             fieldControl: gatewayUrlDetailsForm.get('singleUrl'),
                             fieldConfig: {
-                                label: 'enter same url for all environment',
+                                label: 'Enter same url for all environment',
                                 patternErrorText: 'URL must contain only alphanumeric and underscore'
                             }
                         }
@@ -201,7 +201,7 @@
     <div class="my-3 flex-grow-1">
         <form class="w-50" *ngIf="showEndpoint">
             <p class="mat-body-2 text-secondary fw-bold">
-                project unique identification In URL
+                Project unique identification In URL
                 <span
                     matTooltip="The 'project identification in URL' is a key element used by the proxy server to route
                             requests to the approoriate project and environment"
@@ -216,7 +216,7 @@
                     context: {
                         fieldControl: destinationUrlForm.get('endpoint'),
                         fieldConfig: {
-                            label: 'endpoint',
+                            label: 'Endpoint',
                             is_required: true
                         }
                     }
@@ -254,15 +254,14 @@
             >{{ fieldConfig?.label }} <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span>
         </mat-label>
 
-        <ng-container>
-            <input
-                matInput
-                [type]="fieldConfig?.type"
-                placeholder="Enter {{ fieldConfig?.label }}"
-                autocomplete="off"
-                [formControl]="fieldControl"
-            />
-        </ng-container>
+        <input
+            matInput
+            [type]="fieldConfig?.type"
+            placeholder="Enter {{ fieldConfig?.label }}"
+            autocomplete="off"
+            [formControl]="fieldControl"
+        />
+
         <mat-error *ngIf="fieldControl?.touched">
             <ng-container
                 *ngTemplateOutlet="

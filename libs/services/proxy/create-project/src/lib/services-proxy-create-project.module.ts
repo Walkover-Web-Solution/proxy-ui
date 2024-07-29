@@ -5,6 +5,7 @@ import { BaseResponse, IPaginatedResponse, IReqParams, ProxyBaseUrls } from '@pr
 import { Observable } from 'rxjs';
 import { CreatProjectUrl } from '@proxy/urls/create-project-urls';
 import { IEnvironments, IProjects } from '@proxy/models/logs-models';
+import { ICreateSource } from '@proxy/models/project-model';
 
 @NgModule({
     imports: [CommonModule],
@@ -26,10 +27,13 @@ export class CreateProjectService {
             req
         );
     }
-    public createSource(body): Observable<any> {
-        return this.http.post(CreatProjectUrl.createSource(this.baseURL), body);
+    public createSource(body: ICreateSource): Observable<ICreateSource> {
+        return this.http.post<BaseResponse<ICreateSource[], void>>(CreatProjectUrl.createSource(this.baseURL), body);
     }
     public updateProject(id: string | number, body): Observable<BaseResponse<IProjects[], void>> {
-        return this.http.put<any>(`${CreatProjectUrl.updateProject(this.baseURL)}/${id}`, body);
+        return this.http.put<BaseResponse<IProjects[], void>>(
+            `${CreatProjectUrl.updateProject(this.baseURL)}/${id}`,
+            body
+        );
     }
 }

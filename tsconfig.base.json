@@ -36,6 +36,7 @@
             "@proxy/directives/timeago-directive": ["libs/directives/timeago-directive/src/index.ts"],
             "@proxy/models/features-model": ["libs/models/features-model/src/index.ts"],
             "@proxy/models/logs-models": ["libs/models/logs-models/src/index.ts"],
+            "@proxy/models/project-model": ["libs/models/project-model/src/index.ts"],
             "@proxy/models/root-models": ["libs/models/root-models/src/index.ts"],
             "@proxy/models/users-model": ["libs/models/users-model/src/index.ts"],
             "@proxy/pipes/ChartDateAdd": ["libs/pipes/chart-date-add/src/index.ts"],

@@ -8,6 +8,7 @@ import { CreateProjectService } from '@proxy/services/proxy/create-project';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 
 import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
+import { ICreateSource } from '@proxy/models/project-model';
 
 export interface ICreateProjectInitialState {
     projects: IPaginatedResponse<IProjects[]>;
@@ -95,7 +96,7 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
         );
     });
 
-    readonly createSource = this.effect((data: Observable<{ [key: string]: unknown }>) => {
+    readonly createSource = this.effect((data: Observable<ICreateSource>) => {
         return data.pipe(
             switchMap((req) => {
                 this.patchState({ isLoading: true });
