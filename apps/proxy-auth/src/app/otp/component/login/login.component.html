@@ -143,6 +143,9 @@
             <mat-error *ngIf="formControl.errors?.pattern">{{
                 patternError ? patternError : 'Enter valid ' + label
             }}</mat-error>
+            <mat-error *ngIf="formControl.errors?.minlength as minLengthError">
+                Min required length is {{ minLengthError?.requiredLength }}
+            </mat-error>
             <mat-error *ngIf="formControl.errors?.cannotContainSpace"> Whitespace not allowed</mat-error>
         </mat-error>
         <mat-hint *ngIf="hint">{{ hint }}</mat-hint>

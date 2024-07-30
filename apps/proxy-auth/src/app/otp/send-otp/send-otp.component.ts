@@ -93,6 +93,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     ngOnInit() {
         this.toggleSendOtp();
         this.loadExternalFonts();
+        this.showLogin.subscribe((res) => {
+            console.log(res);
+        });
         this.store.dispatch(
             getWidgetData({
                 referenceId: this.referenceId,
@@ -130,6 +133,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     public toggleSendOtp() {
+        this.setShowLogin(false);
         this.referenceElement = document.getElementById(this.referenceId);
         if (!this.referenceElement) {
             this.show$.pipe(take(1)).subscribe((res) => {

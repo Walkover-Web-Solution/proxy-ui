@@ -24,7 +24,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
     @Output() public openPopUp: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
     public state: string;
-    public step: number = 1;
+    public step: number = 3;
     public selectWidgetData$: Observable<any>;
     private apiError = new BehaviorSubject<any>(null);
     public otpData$: Observable<any> = this.componentStore.otpdata$;
@@ -40,9 +40,14 @@ export class LoginComponent extends BaseComponent implements OnInit {
     public resetPasswordForm = new FormGroup({
         otp: new FormControl<number>(null, Validators.required),
 
-        password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
+        password: new FormControl<string>(null, [
+            Validators.required,
+            Validators.pattern(PASSWORD_REGEX),
+            Validators.minLength(8),
+        ]),
         confirmPassword: new FormControl<string>(null, [
             Validators.required,
+            Validators.minLength(8),
             Validators.pattern(PASSWORD_REGEX),
             CustomValidators.valueSameAsControl('password'),
         ]),
@@ -96,7 +101,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
         this.openPopUp.emit();
     }
     public close(closeByUser: boolean = false): void {
-        document.getElementById(META_TAG_ID)?.remove();
+        // document.getElementById(META_TAG_ID)?.remove();
 
         this.togglePopUp.emit();
 
