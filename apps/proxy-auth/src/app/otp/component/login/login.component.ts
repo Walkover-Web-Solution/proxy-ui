@@ -24,7 +24,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
     @Output() public openPopUp: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
     public state: string;
-    public step: number = 3;
+    public step: number = 1;
     public selectWidgetData$: Observable<any>;
     private apiError = new BehaviorSubject<any>(null);
     public otpData$: Observable<any> = this.componentStore.otpdata$;
@@ -101,7 +101,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
         this.openPopUp.emit();
     }
     public close(closeByUser: boolean = false): void {
-        // document.getElementById(META_TAG_ID)?.remove();
+        document.getElementById(META_TAG_ID)?.remove();
 
         this.togglePopUp.emit();
 
