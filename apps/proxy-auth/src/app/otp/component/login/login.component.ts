@@ -79,7 +79,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
             this.apiError.next(error);
         });
         this.componentStore.showRegistration$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((res) => {
-            if (res == true) {
+            if (res) {
                 this.showRegistration();
             }
         });
