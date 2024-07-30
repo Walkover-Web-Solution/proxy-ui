@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { LoginComponentStore } from './login.store';
-import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, Observable, takeUntil } from 'rxjs';
 import { IAppState } from '../../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { selectWidgetData } from '../../store/selectors';
@@ -21,6 +21,7 @@ import { META_TAG_ID } from '@proxy/constant';
 export class LoginComponent extends BaseComponent implements OnInit {
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public closePopUp: EventEmitter<any> = new EventEmitter();
+    @Output() public openPopUp: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
     public state: string;
     public step: number = 1;
@@ -77,6 +78,11 @@ export class LoginComponent extends BaseComponent implements OnInit {
         this.componentStore.apiError$.subscribe((error) => {
             this.apiError.next(error);
         });
+        this.componentStore.showRegistration$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.showRegistration();
+            }
+        });
     }
 
     public changeStep(nextStep: number) {
@@ -85,6 +91,9 @@ export class LoginComponent extends BaseComponent implements OnInit {
         if (this.step === 0) {
             this.closePopUp.emit();
         }
+    }
+    public showRegistration() {
+        this.openPopUp.emit();
     }
     public close(closeByUser: boolean = false): void {
         document.getElementById(META_TAG_ID)?.remove();

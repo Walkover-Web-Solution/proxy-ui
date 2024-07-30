@@ -42,6 +42,7 @@
         <button mat-flat-button color="primary" #loginBtn [disabled]="isLoading$ | async">
             <span *ngIf="!(isLoading$ | async)">Login</span>
         </button>
+        <p>New User? <a href="javascript:void(0)" (click)="showRegistration()"> Create Account</a></p>
     </div>
 </div>
 
