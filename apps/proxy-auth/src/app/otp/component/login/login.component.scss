@@ -5,10 +5,16 @@
     font-size: medium;
     font-weight: 600;
 }
-a {
+a,
+p {
     font-size: small;
     font-weight: 400;
+}
+.forgotPassword {
     text-align: left;
+}
+.showRegistration {
+    text-align: center;
 }
 .userInfo {
     font-size: medium;

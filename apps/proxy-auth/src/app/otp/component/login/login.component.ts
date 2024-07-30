@@ -80,7 +80,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
         });
         this.componentStore.showRegistration$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((res) => {
             if (res == true) {
-                this.openPopUp.emit();
+                this.showRegistration();
             }
         });
     }
@@ -91,6 +91,9 @@ export class LoginComponent extends BaseComponent implements OnInit {
         if (this.step === 0) {
             this.closePopUp.emit();
         }
+    }
+    public showRegistration() {
+        this.openPopUp.emit();
     }
     public close(closeByUser: boolean = false): void {
         document.getElementById(META_TAG_ID)?.remove();
