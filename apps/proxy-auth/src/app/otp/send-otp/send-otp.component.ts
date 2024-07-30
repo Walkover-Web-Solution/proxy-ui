@@ -130,13 +130,13 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     public toggleSendOtp() {
-        this.setShowLogin(false);
         this.referenceElement = document.getElementById(this.referenceId);
         if (!this.referenceElement) {
             this.show$.pipe(take(1)).subscribe((res) => {
                 this.ngZone.run(() => {
                     if (res) {
                         this.animate = true;
+                        this.setShowLogin(false);
                         setTimeout(() => {
                             this.show$ = of(!res);
                             this.animate = false;
