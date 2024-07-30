@@ -37,8 +37,7 @@
     </div>
 
     <div class="loginBtn">
-        <a href="javascript:void(0)" class="forgotPassword" (click)="changeStep(2)">Forgot Password?</a>
-
+        <a href="javascript:void(0)" (click)="changeStep(2)">Forgot Password?</a>
         <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
         <button mat-flat-button color="primary" #loginBtn [disabled]="isLoading$ | async">
             <span *ngIf="!(isLoading$ | async)">Login</span>
