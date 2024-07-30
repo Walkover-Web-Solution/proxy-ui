@@ -246,6 +246,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 this.show$ = of(value);
             }
             this.showRegistration.next(value);
+            this.setShowLogin(false);
         });
     }
     public setShowLogin(value: boolean) {
