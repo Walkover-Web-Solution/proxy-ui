@@ -33,7 +33,7 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
     public showEndpoint: Boolean = false;
     public environments_with_slug;
     public environmentParams = {
-        itemsPerPage: 5,
+        itemsPerPage: 10,
         pageNo: 1,
     };
     public projects$: Observable<IPaginatedResponse<IProjects[]>>;
@@ -78,7 +78,10 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
         this.getEnvironment();
         this.projects$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
-                const latestProject = res.data.slice().reverse();
+                const latestProject = [];
+                for (let i = res.data.length - 1; i >= 0; i--) {
+                    latestProject.push(res.data[i]);
+                }
 
                 latestProject.forEach((project) => {
                     const baseUrl = `${environment.baseUrl}/proxy`;

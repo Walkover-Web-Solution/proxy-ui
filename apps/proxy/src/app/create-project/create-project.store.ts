@@ -49,10 +49,7 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
                             }
                             return this.patchState((state) => ({
                                 environmentsInProcess: false,
-                                environments:
-                                    res?.data?.pageNo > 1
-                                        ? { ...res.data, data: [...state.environments.data, ...res.data.data] }
-                                        : res.data,
+                                environments: res.data,
                             }));
                         },
                         (error: any) => {
@@ -88,7 +85,7 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
                         },
                         (error: any) => {
                             this.showError(error.errors);
-                            this.patchState({ isLoading: false });
+                            this.patchState({ isLoading: false, getProject: true });
                         }
                     )
                 );
