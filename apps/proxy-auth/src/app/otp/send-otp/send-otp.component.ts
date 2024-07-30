@@ -136,6 +136,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 this.ngZone.run(() => {
                     if (res) {
                         this.animate = true;
+                        this.setShowLogin(false);
                         setTimeout(() => {
                             this.show$ = of(!res);
                             this.animate = false;

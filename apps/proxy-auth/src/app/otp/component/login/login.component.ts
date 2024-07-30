@@ -40,9 +40,14 @@ export class LoginComponent extends BaseComponent implements OnInit {
     public resetPasswordForm = new FormGroup({
         otp: new FormControl<number>(null, Validators.required),
 
-        password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
+        password: new FormControl<string>(null, [
+            Validators.required,
+            Validators.pattern(PASSWORD_REGEX),
+            Validators.minLength(8),
+        ]),
         confirmPassword: new FormControl<string>(null, [
             Validators.required,
+            Validators.minLength(8),
             Validators.pattern(PASSWORD_REGEX),
             CustomValidators.valueSameAsControl('password'),
         ]),
