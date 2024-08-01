@@ -127,4 +127,5 @@ export const ProxyAuthScriptUrl = (baseUrl: string, time?: number) =>
 export enum FeatureServiceIds {
     Msg91OtpService = 6,
     GoogleAuthentication = 7,
+    PasswordAuthentication = 9,
 }

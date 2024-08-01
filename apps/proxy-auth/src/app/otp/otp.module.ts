@@ -27,8 +27,10 @@ import { OtpUtilityService } from './service/otp-utility.service';
 import { OtpWidgetService } from './service/otp-widget.service';
 import { RegisterComponent } from './component/register/register.component';
 import { DirectivesMarkAllAsTouchedModule } from '@proxy/directives/mark-all-as-touched';
+import { LoginComponent } from './component/login/login.component';
+import { UiLoaderModule } from '@proxy/ui/loader';
 
-export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent, RegisterComponent];
+export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent, RegisterComponent, LoginComponent];
 
 @NgModule({
     imports: [
@@ -44,6 +46,8 @@ export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent,
         MatProgressSpinnerModule,
         MatProgressBarModule,
         MatRadioModule,
+        UiLoaderModule,
+
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),
         StoreModule.forRoot(reducers, {
