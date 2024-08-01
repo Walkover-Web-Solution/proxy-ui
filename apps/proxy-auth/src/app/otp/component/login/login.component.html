@@ -95,9 +95,9 @@
         color="primary"
         class="mt-1 ml-3"
         (click)="sendOtp()"
-        [disabled]="(remainingSeconds$ | async) > 0 || (apiError | async)"
+        [disabled]="remainingSeconds > 0 || (apiError | async)"
     >
-        Resend OTP {{ (remainingSeconds$ | async) ? (remainingSeconds$ | async) : '' }}
+        Resend OTP {{ remainingSeconds }}
     </button>
 
     <ng-container

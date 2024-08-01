@@ -1,6 +1,6 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { LoginComponentStore } from './login.store';
-import { BehaviorSubject, filter, map, NEVER, Observable, switchMap, takeUntil, takeWhile, timer } from 'rxjs';
+import { BehaviorSubject, filter, interval, Observable, Subscription, takeUntil } from 'rxjs';
 import { IAppState } from '../../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { selectWidgetData } from '../../store/selectors';
@@ -20,17 +20,18 @@ import { OtpUtilityService } from '../../service/otp-utility.service';
     styleUrls: ['./login.component.scss'],
     providers: [LoginComponentStore],
 })
-export class LoginComponent extends BaseComponent implements OnInit {
+export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public closePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public openPopUp: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
     public state: string;
-    public step: number = 3;
+    public step: number = 1;
     public showPassword: boolean = false;
+    public remainingSeconds: number;
+    public timerSubscription: Subscription;
     public selectWidgetData$: Observable<any>;
     private apiError = new BehaviorSubject<any>(null);
-    public remainingSeconds$: Observable<number>;
     public otpData$: Observable<any> = this.componentStore.otpdata$;
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public resetPassword$: Observable<any> = this.componentStore.resetPassword$;
@@ -162,14 +163,18 @@ export class LoginComponent extends BaseComponent implements OnInit {
         this.componentStore.verfyPasswordOtp(verfyOtpData);
     }
     private startTimer() {
-        const toRemainingSeconds = (t: number) => 60 - t;
-        const toggle$ = new BehaviorSubject(true);
-        this.remainingSeconds$ = toggle$.pipe(
-            switchMap((running: boolean) => {
-                return running ? timer(0, 1000) : NEVER;
-            }),
-            map(toRemainingSeconds),
-            takeWhile((t) => t >= 0)
-        );
+        this.remainingSeconds = 60;
+        this.timerSubscription = interval(1000).subscribe(() => {
+            if (this.remainingSeconds > 0) {
+                this.remainingSeconds--;
+            } else {
+                this.timerSubscription.unsubscribe();
+            }
+        });
+    }
+    ngOnDestroy(): void {
+        if (this.timerSubscription) {
+            this.timerSubscription.unsubscribe();
+        }
     }
 }
