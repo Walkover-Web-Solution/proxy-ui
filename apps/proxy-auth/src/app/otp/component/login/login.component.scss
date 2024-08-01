@@ -1,23 +1,30 @@
-.loginBtn {
+.text-style {
+    font-size: 12px;
+    line-height: 18px;
+}
+.input-width {
+    width: 100%;
+}
+
+.login-btn {
     display: flex;
     flex-direction: column;
     gap: 16px;
     font-size: medium;
     font-weight: 600;
+    .forgot-password {
+        text-align: right;
+    }
 }
 a,
 p {
     font-size: small;
     font-weight: 400;
+    margin: 0px;
 }
-.forgotPassword {
-    text-align: left;
-}
-
 .userInfo {
     font-size: medium;
 }
-
 .error-message {
     font-size: 14px;
     color: #f44336;
@@ -34,10 +41,6 @@ p {
         position: fixed;
     }
 }
-.button-wrapper {
-    display: flex;
-    justify-content: space-between;
-}
 .back-button {
     left: 16px;
 }
@@ -49,4 +52,30 @@ p {
     line-height: 20px;
     font-weight: 600;
     margin-bottom: 16px;
+}
+.subheading {
+    @extend .text-style;
+    font-weight: 600;
+}
+
+.note {
+    @extend .text-style;
+    margin-bottom: 16px;
+}
+
+.mat-icon-button {
+    vertical-align: text-bottom;
+}
+
+.resize-icon {
+    position: relative;
+    top: 2px;
+}
+.password-field {
+    @extend .input-width;
+    padding-bottom: 4px;
+}
+.login-field {
+    @extend .input-width;
+    margin-top: 16px;
 }

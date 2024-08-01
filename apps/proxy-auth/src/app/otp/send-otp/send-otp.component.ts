@@ -61,7 +61,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public animate: boolean = false;
 
     public otpWidgetData;
+    public loginWidgetData;
     public showRegistration = new BehaviorSubject<boolean>(false);
+    public RegistrationViaLogin: boolean = true;
+    public prefillDetails: string;
     public referenceElement: HTMLElement = null;
     public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
     constructor(
@@ -105,6 +108,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 this.otpWidgetService.setWidgetConfig(this.otpWidgetData?.widget_id, this.otpWidgetData?.token_auth);
                 this.otpWidgetService.loadScript();
             }
+            this.loginWidgetData = widgetData?.find(
+                (widget) => widget?.service_id === FeatureServiceIds.PasswordAuthentication
+            );
         });
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
             this.hitCallbackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token });
@@ -236,18 +242,22 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             (error: HttpErrorResponse) => {
                 if (error?.status === 403) {
                     this.setShowRegistration(true);
+                    this.RegistrationViaLogin = false;
                 }
             }
         );
     }
 
-    public setShowRegistration(value: boolean) {
+    public setShowRegistration(value: boolean, data?: string) {
         this.ngZone.run(() => {
             if (this.referenceElement) {
                 this.show$ = of(value);
             }
             this.showRegistration.next(value);
             this.setShowLogin(false);
+            if (data) {
+                this.prefillDetails = data;
+            }
         });
     }
     public setShowLogin(value: boolean) {

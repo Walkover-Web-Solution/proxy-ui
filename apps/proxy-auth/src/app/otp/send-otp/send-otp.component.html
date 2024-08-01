@@ -23,15 +23,18 @@
             *ngIf="showRegistration | async"
             [referenceId]="referenceId"
             [serviceData]="otpWidgetData"
+            [loginServiceData]="loginWidgetData"
+            [registrationViaLogin]="RegistrationViaLogin"
             (togglePopUp)="setShowRegistration(false)"
             (successReturn)="setShowRegistration(false)"
             (failureReturn)="returnFailureObj($event)"
+            [prefillDetails]="prefillDetails"
         ></proxy-register>
         <proxy-login
             *ngIf="showLogin | async"
             (togglePopUp)="toggleSendOtp()"
             (closePopUp)="setShowLogin(false)"
-            (openPopUp)="setShowRegistration(true)"
+            (openPopUp)="setShowRegistration(true, $event)"
             (failureReturn)="returnFailureObj($event)"
         >
         </proxy-login>

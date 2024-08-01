@@ -1,6 +1,6 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { LoginComponentStore } from './login.store';
-import { BehaviorSubject, filter, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, interval, Observable, Subscription, takeUntil } from 'rxjs';
 import { IAppState } from '../../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { selectWidgetData } from '../../store/selectors';
@@ -8,9 +8,11 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IlogInData, IOtpData, IResetPassword } from '../../model/otp';
-import { EMAIL_OR_MOBILE_REGEX, EMAIL_REGEX, PASSWORD_REGEX } from '@proxy/regex';
+import { EMAIL_OR_MOBILE_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { META_TAG_ID } from '@proxy/constant';
+import { environment } from 'apps/proxy-auth/src/environments/environment';
+import { OtpUtilityService } from '../../service/otp-utility.service';
 
 @Component({
     selector: 'proxy-login',
@@ -18,20 +20,24 @@ import { META_TAG_ID } from '@proxy/constant';
     styleUrls: ['./login.component.scss'],
     providers: [LoginComponentStore],
 })
-export class LoginComponent extends BaseComponent implements OnInit {
+export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public closePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public openPopUp: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
     public state: string;
     public step: number = 1;
+    public showPassword: boolean = false;
+    public remainingSeconds: number;
+    public timerSubscription: Subscription;
     public selectWidgetData$: Observable<any>;
     private apiError = new BehaviorSubject<any>(null);
     public otpData$: Observable<any> = this.componentStore.otpdata$;
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public resetPassword$: Observable<any> = this.componentStore.resetPassword$;
+    public prefillDetails: string;
     public loginForm = new FormGroup({
-        username: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_REGEX)]),
+        username: new FormControl<string>(null, [Validators.required]),
         password: new FormControl<string>(null, [Validators.required, CustomValidators.cannotContainSpace]),
     });
     public sendOtpForm = new FormGroup({
@@ -53,7 +59,11 @@ export class LoginComponent extends BaseComponent implements OnInit {
         ]),
     });
 
-    constructor(private componentStore: LoginComponentStore, private store: Store<IAppState>) {
+    constructor(
+        private componentStore: LoginComponentStore,
+        private store: Store<IAppState>,
+        private otpUtilityService: OtpUtilityService
+    ) {
         super();
         this.selectWidgetData$ = this.store.pipe(select(selectWidgetData), takeUntil(this.destroy$));
     }
@@ -65,6 +75,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
         this.otpData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.changeStep(3);
+                this.startTimer();
             }
         });
         this.resetPassword$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
@@ -85,7 +96,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
         });
         this.componentStore.showRegistration$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
-                this.showRegistration();
+                this.prefillDetails = this.loginForm.get('username').value;
+                this.showRegistration(this.prefillDetails);
             }
         });
     }
@@ -97,8 +109,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
             this.closePopUp.emit();
         }
     }
-    public showRegistration() {
-        this.openPopUp.emit();
+    public showRegistration(prefillDetails: string) {
+        this.openPopUp.emit(prefillDetails);
     }
     public close(closeByUser: boolean = false): void {
         document.getElementById(META_TAG_ID)?.remove();
@@ -113,12 +125,21 @@ export class LoginComponent extends BaseComponent implements OnInit {
             });
         }
     }
+    public encryptPassword(password: string): string {
+        return this.otpUtilityService.aesEncrypt(
+            JSON.stringify(password),
+            environment.uiEncodeKey,
+            environment.uiIvKey,
+            true
+        );
+    }
 
     public login() {
+        const encodedPassword = this.encryptPassword(this.loginForm.get('password').value);
         const loginData: IlogInData = {
             'state': this.state,
             'user': this.loginForm.get('username').value,
-            'password': this.loginForm.get('password').value,
+            'password': encodedPassword,
         };
 
         this.componentStore.loginData(loginData);
@@ -132,12 +153,28 @@ export class LoginComponent extends BaseComponent implements OnInit {
         this.componentStore.resetPassword(emailData);
     }
     public verfiyOtp() {
+        const encodedPassword = this.encryptPassword(this.resetPasswordForm.get('password').value);
         const verfyOtpData: IOtpData = {
             'state': this.state,
             'user': this.sendOtpForm.get('userDetails').value,
-            'password': this.resetPasswordForm.get('password').value,
+            'password': encodedPassword,
             'otp': this.resetPasswordForm.get('otp').value,
         };
         this.componentStore.verfyPasswordOtp(verfyOtpData);
+    }
+    private startTimer() {
+        this.remainingSeconds = 60;
+        this.timerSubscription = interval(1000).subscribe(() => {
+            if (this.remainingSeconds > 0) {
+                this.remainingSeconds--;
+            } else {
+                this.timerSubscription.unsubscribe();
+            }
+        });
+    }
+    ngOnDestroy(): void {
+        if (this.timerSubscription) {
+            this.timerSubscription.unsubscribe();
+        }
     }
 }
