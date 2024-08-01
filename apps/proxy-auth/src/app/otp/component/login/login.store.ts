@@ -14,6 +14,7 @@ export interface ILoginInitialState {
     otpData: IOtpData;
     apiError;
     showRegistration: boolean;
+    prefillDetails: string;
 }
 
 @Injectable()
@@ -26,6 +27,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
             otpData: null,
             apiError: false,
             showRegistration: null,
+            prefillDetails: null,
         });
     }
     readonly otpdata$: Observable<any> = this.select((state) => state.otpData);
@@ -33,6 +35,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
     readonly resetPassword$: Observable<IResetPassword> = this.select((state) => state.resetPassword);
     readonly apiError$: Observable<any> = this.select((state) => state.apiError);
     readonly showRegistration$: Observable<boolean> = this.select((state) => state.showRegistration);
+    readonly prefillDetails$: Observable<string> = this.select((state) => state.prefillDetails);
     readonly loginData = this.effect((data: Observable<{ [key: string]: any }>) => {
         return data.pipe(
             switchMap((req) => {
@@ -57,7 +60,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                                 this.patchState({ showRegistration: true });
                             }
 
-                            this.patchState({ isLoading: false, apiError: error.error.data.message });
+                            this.patchState({ isLoading: false, apiError: error.error.message });
                         }
                     )
                 );

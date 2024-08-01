@@ -11,7 +11,7 @@ p {
     font-weight: 400;
 }
 .forgotPassword {
-    text-align: left;
+    text-align: right;
 }
 
 .userInfo {
@@ -34,10 +34,6 @@ p {
         position: fixed;
     }
 }
-.button-wrapper {
-    display: flex;
-    justify-content: space-between;
-}
 .back-button {
     left: 16px;
 }
@@ -49,4 +45,19 @@ p {
     line-height: 20px;
     font-weight: 600;
     margin-bottom: 16px;
+}
+.subheading {
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+}
+
+.note {
+    font-size: 12px;
+    line-height: 18px;
+    margin-bottom: 16px;
+}
+
+.mat-icon-button {
+    vertical-align: text-bottom;
 }
