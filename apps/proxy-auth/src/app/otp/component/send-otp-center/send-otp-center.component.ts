@@ -384,6 +384,8 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
             this.openLink(widgetData?.urlLink);
         } else if (widgetData?.service_id === FeatureServiceIds.Msg91OtpService) {
             this.otpWidgetService.openWidget();
+        } else if (widgetData?.service_id === FeatureServiceIds.PasswordAuthentication) {
+            this.otpWidgetService.openLogin(true);
         }
     }
 }
