@@ -24,7 +24,7 @@
             [referenceId]="referenceId"
             [serviceData]="otpWidgetData"
             [loginServiceData]="loginWidgetData"
-            [registrationViaLogin]="registrationViaLogin"
+            [registrationViaLogin]="RegistrationViaLogin"
             (togglePopUp)="setShowRegistration(false)"
             (successReturn)="setShowRegistration(false)"
             (failureReturn)="returnFailureObj($event)"
@@ -36,7 +36,6 @@
             (closePopUp)="setShowLogin(false)"
             (openPopUp)="setShowRegistration(true, $event)"
             (failureReturn)="returnFailureObj($event)"
-            [serviceData]="otpWidgetData"
         >
         </proxy-login>
     </div>

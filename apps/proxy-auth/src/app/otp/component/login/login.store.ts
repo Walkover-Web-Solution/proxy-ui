@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
-import { BehaviorSubject, Observable, switchMap } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { OtpService } from '../../service/otp.service';
-import { errorResolver } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IlogInData, IOtpData, IResetPassword } from '../../model/otp';
@@ -14,7 +13,6 @@ export interface ILoginInitialState {
     otpData: IOtpData;
     apiError;
     showRegistration: boolean;
-    prefillDetails: string;
 }
 
 @Injectable()
@@ -27,7 +25,6 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
             otpData: null,
             apiError: false,
             showRegistration: null,
-            prefillDetails: null,
         });
     }
     readonly otpdata$: Observable<any> = this.select((state) => state.otpData);
@@ -35,7 +32,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
     readonly resetPassword$: Observable<IResetPassword> = this.select((state) => state.resetPassword);
     readonly apiError$: Observable<any> = this.select((state) => state.apiError);
     readonly showRegistration$: Observable<boolean> = this.select((state) => state.showRegistration);
-    readonly prefillDetails$: Observable<string> = this.select((state) => state.prefillDetails);
+
     readonly loginData = this.effect((data: Observable<{ [key: string]: any }>) => {
         return data.pipe(
             switchMap((req) => {

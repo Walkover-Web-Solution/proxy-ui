@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { LoginComponentStore } from './login.store';
-import { BehaviorSubject, filter, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, map, NEVER, Observable, switchMap, takeUntil, takeWhile, timer } from 'rxjs';
 import { IAppState } from '../../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { selectWidgetData } from '../../store/selectors';
@@ -26,10 +26,11 @@ export class LoginComponent extends BaseComponent implements OnInit {
     @Output() public openPopUp: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
     public state: string;
-    public step: number = 1;
+    public step: number = 3;
     public showPassword: boolean = false;
     public selectWidgetData$: Observable<any>;
     private apiError = new BehaviorSubject<any>(null);
+    public remainingSeconds$: Observable<number>;
     public otpData$: Observable<any> = this.componentStore.otpdata$;
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public resetPassword$: Observable<any> = this.componentStore.resetPassword$;
@@ -73,6 +74,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
         this.otpData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.changeStep(3);
+                this.startTimer();
             }
         });
         this.resetPassword$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
@@ -95,11 +97,6 @@ export class LoginComponent extends BaseComponent implements OnInit {
             if (res) {
                 this.prefillDetails = this.loginForm.get('username').value;
                 this.showRegistration(this.prefillDetails);
-            }
-        });
-        this.componentStore.prefillDetails$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
-            if (res) {
-                this.showRegistration(res);
             }
         });
     }
@@ -163,5 +160,16 @@ export class LoginComponent extends BaseComponent implements OnInit {
             'otp': this.resetPasswordForm.get('otp').value,
         };
         this.componentStore.verfyPasswordOtp(verfyOtpData);
+    }
+    private startTimer() {
+        const toRemainingSeconds = (t: number) => 60 - t;
+        const toggle$ = new BehaviorSubject(true);
+        this.remainingSeconds$ = toggle$.pipe(
+            switchMap((running: boolean) => {
+                return running ? timer(0, 1000) : NEVER;
+            }),
+            map(toRemainingSeconds),
+            takeWhile((t) => t >= 0)
+        );
     }
 }

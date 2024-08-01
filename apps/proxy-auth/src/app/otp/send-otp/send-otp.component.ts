@@ -63,7 +63,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public otpWidgetData;
     public loginWidgetData;
     public showRegistration = new BehaviorSubject<boolean>(false);
-    public registrationViaLogin: boolean = true;
+    public RegistrationViaLogin: boolean = true;
     public prefillDetails: string;
     public referenceElement: HTMLElement = null;
     public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
@@ -242,7 +242,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             (error: HttpErrorResponse) => {
                 if (error?.status === 403) {
                     this.setShowRegistration(true);
-                    this.registrationViaLogin = false;
+                    this.RegistrationViaLogin = false;
                 }
             }
         );

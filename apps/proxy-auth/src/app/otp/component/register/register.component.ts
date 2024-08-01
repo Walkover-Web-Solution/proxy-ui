@@ -44,7 +44,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 Validators.maxLength(25),
             ]),
             email: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_REGEX)]),
-            mobile: new FormControl<any>(null, [Validators.required]),
+            mobile: new FormControl<string>(null, [Validators.required]),
             password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
             confirmPassword: new FormControl<string>(null, [
                 Validators.required,
@@ -82,7 +82,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             });
     }
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.prefillDetails && changes.prefillDetails.currentValue) {
+        if (changes?.prefillDetails?.currentValue) {
             this.checkPrefillDetails();
         }
     }
