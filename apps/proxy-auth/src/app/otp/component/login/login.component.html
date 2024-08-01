@@ -39,7 +39,7 @@
             [formControl]="passwordControl"
         />
 
-        <button matSuffix mat-icon-button (click)="showPassword = !showPassword">
+        <button matSuffix mat-icon-button (click)="showPassword = !showPassword" class="resize-icon">
             <ng-container matSuffix *ngIf="!showPassword; else showIcon">
                 <svg
                     matSuffix
@@ -79,8 +79,8 @@
     <div class="error-message" *ngIf="apiError | async">
         {{ apiError | async }}
     </div>
-    <div class="loginBtn">
-        <a href="javascript:void(0)" class="forgotPassword" (click)="changeStep(2)">Forgot Password?</a>
+    <div class="login-btn">
+        <a href="javascript:void(0)" class="forgot-password" (click)="changeStep(2)">Forgot Password?</a>
         <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
         <button mat-flat-button color="primary" #loginBtn [disabled]="isLoading$ | async">
             <span *ngIf="!(isLoading$ | async)">Login</span>

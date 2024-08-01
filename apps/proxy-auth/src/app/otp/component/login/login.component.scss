@@ -1,23 +1,26 @@
-.loginBtn {
+.text-style {
+    font-size: 12px;
+    line-height: 18px;
+}
+
+.login-btn {
     display: flex;
     flex-direction: column;
     gap: 16px;
     font-size: medium;
     font-weight: 600;
+    .forgot-password {
+        text-align: right;
+    }
 }
 a,
 p {
     font-size: small;
     font-weight: 400;
 }
-.forgotPassword {
-    text-align: right;
-}
-
 .userInfo {
     font-size: medium;
 }
-
 .error-message {
     font-size: 14px;
     color: #f44336;
@@ -47,17 +50,20 @@ p {
     margin-bottom: 16px;
 }
 .subheading {
-    font-size: 12px;
-    line-height: 18px;
+    @extend .text-style;
     font-weight: 600;
 }
 
 .note {
-    font-size: 12px;
-    line-height: 18px;
+    @extend .text-style;
     margin-bottom: 16px;
 }
 
 .mat-icon-button {
     vertical-align: text-bottom;
+}
+
+.resize-icon {
+    position: relative;
+    top: 2px;
 }
