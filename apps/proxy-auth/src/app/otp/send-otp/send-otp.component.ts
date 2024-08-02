@@ -94,7 +94,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     ngOnInit() {
-        this.registrationViaLogin = true;
         this.toggleSendOtp();
         this.loadExternalFonts();
         this.store.dispatch(

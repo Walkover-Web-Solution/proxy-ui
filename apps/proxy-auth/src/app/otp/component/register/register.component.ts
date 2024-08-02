@@ -72,7 +72,6 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     ngOnInit(): void {
-        console.log(this.registrationViaLogin);
         this.registrationForm
             .get('user.password')
             .valueChanges.pipe(takeUntil(this.destroy$))
@@ -83,7 +82,6 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             });
     }
     ngOnChanges(changes: SimpleChanges) {
-        console.log(this.registrationViaLogin);
         if (changes?.prefillDetails?.currentValue) {
             this.checkPrefillDetails();
         }
