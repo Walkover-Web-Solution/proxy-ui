@@ -69,6 +69,9 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.apiError.subscribe((res) => {
+            console.log(res);
+        });
         this.selectWidgetData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             this.state = res.find((service) => service.service_id === FeatureServiceIds.PasswordAuthentication).state;
         });
@@ -103,7 +106,11 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     public changeStep(nextStep: number) {
-        this.apiError.next(null);
+        if (this.apiError.value !== null) {
+            this.apiError.next(null);
+            console.log(this.apiError);
+        }
+
         this.step = nextStep;
         if (this.step === 0) {
             this.closePopUp.emit();
@@ -163,7 +170,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         this.componentStore.verfyPasswordOtp(verfyOtpData);
     }
     private startTimer() {
-        this.remainingSeconds = 60;
+        this.remainingSeconds = 30;
         this.timerSubscription = interval(1000).subscribe(() => {
             if (this.remainingSeconds > 0) {
                 this.remainingSeconds--;
