@@ -24,7 +24,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     @Input() public referenceId: string;
     @Input() public serviceData: any;
     @Input() public loginServiceData: any;
-    @Input() public registrationVialogin: boolean;
+    @Input() public registrationViaLogin: boolean;
     @Input() public prefillDetails;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public successReturn: EventEmitter<any> = new EventEmitter();
@@ -72,6 +72,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     ngOnInit(): void {
+        console.log(this.registrationViaLogin);
         this.registrationForm
             .get('user.password')
             .valueChanges.pipe(takeUntil(this.destroy$))
@@ -82,6 +83,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             });
     }
     ngOnChanges(changes: SimpleChanges) {
+        console.log(this.registrationViaLogin);
         if (changes?.prefillDetails?.currentValue) {
             this.checkPrefillDetails();
         }
@@ -151,7 +153,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         const formData = removeEmptyKeys(cloneDeep(this.registrationForm.value), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
-                this.registrationVialogin ? this.loginServiceData.state : this.serviceData?.state ?? '',
+                this.registrationViaLogin ? this.loginServiceData.state : this.serviceData?.state ?? '',
                 environment.uiEncodeKey,
                 environment.uiIvKey,
                 true
@@ -170,7 +172,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         }
         const payload = {
             reference_id: this.referenceId,
-            service_id: this.registrationVialogin ? this.loginServiceData.service_id : this.serviceData.service_id,
+            service_id: this.registrationViaLogin ? this.loginServiceData.service_id : this.serviceData.service_id,
             url_unique_id: state?.url_unique_id,
             request_data: formData,
         };

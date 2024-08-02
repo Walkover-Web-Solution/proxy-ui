@@ -63,7 +63,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public otpWidgetData;
     public loginWidgetData;
     public showRegistration = new BehaviorSubject<boolean>(false);
-    public RegistrationViaLogin: boolean = true;
+    public registrationViaLogin: boolean = true;
     public prefillDetails: string;
     public referenceElement: HTMLElement = null;
     public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
@@ -94,6 +94,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     ngOnInit() {
+        this.registrationViaLogin = true;
         this.toggleSendOtp();
         this.loadExternalFonts();
         this.store.dispatch(
@@ -242,7 +243,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             (error: HttpErrorResponse) => {
                 if (error?.status === 403) {
                     this.setShowRegistration(true);
-                    this.RegistrationViaLogin = false;
+                    this.registrationViaLogin = false;
                 }
             }
         );
