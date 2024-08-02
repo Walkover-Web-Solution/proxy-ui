@@ -36,7 +36,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
     readonly loginData = this.effect((data: Observable<{ [key: string]: any }>) => {
         return data.pipe(
             switchMap((req) => {
-                this.patchState({ isLoading: true });
+                this.patchState({ isLoading: true, apiError: null });
                 return this.service.login(req).pipe(
                     tapResponse(
                         (res) => {
@@ -67,7 +67,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
     readonly resetPassword = this.effect((data: Observable<{ [key: string]: any }>) => {
         return data.pipe(
             switchMap((req) => {
-                this.patchState({ isLoading: true });
+                this.patchState({ isLoading: true, apiError: null });
                 return this.service.resetPassword(req).pipe(
                     tapResponse(
                         (res) => {
@@ -91,7 +91,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
     readonly verfyPasswordOtp = this.effect((data: Observable<{ [key: string]: any }>) => {
         return data.pipe(
             switchMap((req) => {
-                this.patchState({ isLoading: true });
+                this.patchState({ isLoading: true, apiError: null });
                 return this.service.verfyResetPasswordOtp(req).pipe(
                     tapResponse(
                         (res) => {

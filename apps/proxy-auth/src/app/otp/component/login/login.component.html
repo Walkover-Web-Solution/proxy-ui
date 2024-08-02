@@ -90,14 +90,8 @@
     <p class="userInfo">
         {{ sendOtpForm.get('userDetails').value }} <a href="javascript:void(0)" (click)="changeStep(2)">Change </a>
     </p>
-    <button
-        mat-button
-        color="primary"
-        class="mt-1 ml-3"
-        (click)="sendOtp()"
-        [disabled]="remainingSeconds > 0 || (apiError | async)"
-    >
-        Resend OTP {{ remainingSeconds }}
+    <button mat-button color="primary" (click)="sendOtp()" [disabled]="remainingSeconds > 0">
+        Resend OTP <span *ngIf="remainingSeconds > 0">{{ remainingSeconds }}</span>
     </button>
 
     <ng-container
