@@ -182,7 +182,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         );
         this.otpService.register({ proxy_state: encodedData }).subscribe(
             (response) => {
-                this.returnSuccess(response);
+                window.location.href = response.data.redirect_url;
             },
             (err) => {
                 this.apiError.next(errorResolver(err?.error.errors));
