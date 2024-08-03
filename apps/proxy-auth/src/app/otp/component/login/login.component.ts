@@ -163,7 +163,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         this.componentStore.verfyPasswordOtp(verfyOtpData);
     }
     private startTimer() {
-        this.remainingSeconds = 30;
+        this.remainingSeconds = 15;
         this.timerSubscription = interval(1000).subscribe(() => {
             if (this.remainingSeconds > 0) {
                 this.remainingSeconds--;
