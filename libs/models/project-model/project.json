@@ -1,0 +1,16 @@
+{
+    "name": "models-project-model",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/models/project-model/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/models/project-model/**/*.ts", "libs/models/project-model/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}
