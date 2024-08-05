@@ -206,7 +206,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             color: #3f4346;
             margin: 8px 8px 16px 8px;
             cursor: pointer;
-            width: 210px;
+            width: 225px;
         `;
         image.style.cssText = `
             height: 20px;
@@ -258,11 +258,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
     public setShowRegistration(value: boolean, data?: string) {
         this.ngZone.run(() => {
-            if (this.registrationViaLogin) {
-                if (!value) {
-                    this.show$ = of(true);
-                    this.setShowLogin(true);
-                }
+            if (this.registrationViaLogin && !value) {
+                this.show$ = of(true);
+                this.setShowLogin(true);
             } else {
                 this.setShowLogin(false);
                 if (this.referenceElement) {
