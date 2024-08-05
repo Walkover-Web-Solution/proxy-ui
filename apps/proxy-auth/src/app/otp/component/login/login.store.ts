@@ -57,7 +57,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                                 this.patchState({ showRegistration: true });
                             }
 
-                            this.patchState({ isLoading: false, apiError: error.error.message });
+                            this.patchState({ isLoading: false, apiError: error.error.data.message });
                         }
                     )
                 );

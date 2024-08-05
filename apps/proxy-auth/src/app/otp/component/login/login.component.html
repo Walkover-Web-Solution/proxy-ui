@@ -49,7 +49,7 @@
         {{ apiError | async }}
     </div>
     <div class="login-btn">
-        <a href="javascript:void(0)" class="forgot-password" (click)="changeStep(2)">Forgot Password?</a>
+        <p class="forgot-password"><a href="javascript:void(0)" (click)="changeStep(2)">Forgot Password?</a></p>
         <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
         <button mat-flat-button color="primary" #loginBtn [disabled]="isLoading$ | async">
             <span *ngIf="!(isLoading$ | async)">Login</span>
