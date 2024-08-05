@@ -258,9 +258,13 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
     public setShowRegistration(value: boolean, data?: string) {
         this.ngZone.run(() => {
-            if (this.registrationViaLogin && !value) {
+            if (this.registrationViaLogin) {
+                if (value) {
+                    this.setShowLogin(false);
+                } else {
+                    this.setShowLogin(true);
+                }
                 this.show$ = of(true);
-                this.setShowLogin(true);
             } else {
                 this.setShowLogin(false);
                 if (this.referenceElement) {
