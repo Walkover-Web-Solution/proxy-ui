@@ -94,7 +94,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     ngOnInit() {
-        this.toggleSendOtp();
+        this.toggleSendOtp(true);
         this.loadExternalFonts();
         this.store.dispatch(
             getWidgetData({
@@ -135,7 +135,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         document.getElementsByTagName('head')[0].appendChild(metaTag);
     }
 
-    public toggleSendOtp() {
+    public toggleSendOtp(intial: boolean = false) {
         this.referenceElement = document.getElementById(this.referenceId);
         if (!this.referenceElement) {
             this.show$.pipe(take(1)).subscribe((res) => {
@@ -153,7 +153,14 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 });
             });
         } else {
-            this.addButtonsToReferenceElement(this.referenceElement);
+            this.setShowLogin(false);
+
+            this.show$ = of(false);
+            this.animate = false;
+
+            if (intial) {
+                this.addButtonsToReferenceElement(this.referenceElement);
+            }
         }
     }
 
@@ -199,7 +206,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             color: #3f4346;
             margin: 8px 8px 16px 8px;
             cursor: pointer;
-            width: 210px;
+            width: 225px;
         `;
         image.style.cssText = `
             height: 20px;
@@ -242,6 +249,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             (error: HttpErrorResponse) => {
                 if (error?.status === 403) {
                     this.setShowRegistration(true);
+                    this.show$ = of(true);
                     this.registrationViaLogin = false;
                 }
             }
@@ -250,11 +258,20 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
     public setShowRegistration(value: boolean, data?: string) {
         this.ngZone.run(() => {
-            if (this.referenceElement) {
-                this.show$ = of(value);
+            if (this.registrationViaLogin) {
+                if (value) {
+                    this.setShowLogin(false);
+                } else {
+                    this.setShowLogin(true);
+                }
+                this.show$ = of(true);
+            } else {
+                this.setShowLogin(false);
+                if (this.referenceElement) {
+                    this.show$ = of(value);
+                }
             }
             this.showRegistration.next(value);
-            this.setShowLogin(false);
             if (data) {
                 this.prefillDetails = data;
             }
