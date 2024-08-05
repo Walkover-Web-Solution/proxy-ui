@@ -1,8 +1,8 @@
-<div class="app-content d-flex justify-content-center container">
+<div class="app-content d-flex justify-content-center project">
     <div class="w-75 border rounded-8 bg-gray" labelPosition="bottom">
         <div
             *ngIf="currentstep === 1"
-            class="d-flex flex-column h-100 pl-4"
+            class="d-flex flex-column h-100 pl-4 align-items-start"
             [formGroup]="primaryDetailsForm"
             proxyMarkAllAsTouched
             [buttonRef]="createProjectBtn"
@@ -10,19 +10,16 @@
         >
             <h4 class="fw-bold text-secondary mat-body-1">Create Project</h4>
             <ng-container *ngTemplateOutlet="createProject"></ng-container>
-            <div>
-                <button mat-flat-button color="primary" #createProjectBtn>
-                    Next
-                    <mat-icon matSuffix class="material-icons-outlined mat-icon-18 mat-icon-suffix"
-                        >navigate_next</mat-icon
-                    >
-                </button>
-            </div>
+
+            <button mat-flat-button color="primary" #createProjectBtn>
+                Next
+                <mat-icon matSuffix class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
+            </button>
         </div>
 
         <div
             *ngIf="currentstep == 2"
-            class="d-flex flex-column h-100 pl-4"
+            class="d-flex flex-column h-100 pl-4 align-items-start"
             [formGroup]="gatewayUrlDetailsForm"
             proxyMarkAllAsTouched
             [buttonRef]="gatewayUrlBtn"
@@ -35,19 +32,16 @@
             </p>
 
             <ng-container *ngTemplateOutlet="gateWayUrl"></ng-container>
-            <div>
-                <button mat-flat-button color="primary" #gatewayUrlBtn>
-                    Next
-                    <mat-icon matSuffix class="material-icons-outlined mat-icon-18 mat-icon-suffix"
-                        >navigate_next</mat-icon
-                    >
-                </button>
-            </div>
+
+            <button mat-flat-button color="primary" #gatewayUrlBtn>
+                Next
+                <mat-icon matSuffix class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
+            </button>
         </div>
 
         <div
             *ngIf="currentstep == 3"
-            class="d-flex flex-column h-100 pl-4"
+            class="d-flex flex-column h-100 pl-4 align-items-start"
             proxyMarkAllAsTouched
             [formGroup]="gatewayUrlDetailsForm"
             [buttonRef]="submitBtn"
@@ -74,70 +68,64 @@
 
 <ng-template #createProject>
     <div class="mb-3">
-        <form class="w-50">
+        <ng-container
+            *ngTemplateOutlet="
+                inputField;
+                context: {
+                    fieldControl: primaryDetailsForm.get('name'),
+                    fieldConfig: {
+                        label: ' Your project name',
+                        is_required: true,
+                        patternErrorText: 'Name must contain only alphanumeric and underscore'
+                    }
+                }
+            "
+        ></ng-container>
+
+        <mat-form-field appearance="outline" class="no-padding w-100">
+            <mat-select
+                multiple
+                [formControl]="primaryDetailsForm.get('selectedEnvironments')"
+                placeholder="Select Environment"
+            >
+                <mat-option
+                    *ngFor="let environment of (environments$ | async)?.data"
+                    [value]="environment.name"
+                    class="mat-body-2"
+                >
+                    {{ environment.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div class="d-flex gap-2 mt-3 w-50">
             <ng-container
                 *ngTemplateOutlet="
                     inputField;
                     context: {
-                        fieldControl: primaryDetailsForm.get('name'),
+                        fieldControl: primaryDetailsForm.get('rateLimitHit'),
                         fieldConfig: {
-                            label: ' Your project name',
-                            is_required: true,
-                            patternErrorText: 'Name must contain only alphanumeric and underscore'
+                            label: 'Hits',
+                            type: 'number'
                         }
                     }
                 "
             ></ng-container>
-        </form>
 
-        <form class="w-50">
-            <mat-form-field appearance="outline" class="no-padding w-100">
-                <mat-select
-                    multiple
-                    [formControl]="primaryDetailsForm.get('selectedEnvironments')"
-                    placeholder="Select Environment"
-                >
-                    <mat-option
-                        *ngFor="let environment of (environments$ | async)?.data"
-                        [value]="environment.name"
-                        class="mat-body-2"
-                    >
-                        {{ environment.name }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </form>
-        <div class="d-flex gap-2 mt-3 w-50">
-            <form class="w-25">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: primaryDetailsForm.get('rateLimitHit'),
-                            fieldConfig: {
-                                label: 'Hits',
-                                type: 'number'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </form>
+            <p class="font-14 white-space-pre">Hits per</p>
 
-            <p class="font-14">Hits per</p>
-            <form class="w-25">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: primaryDetailsForm.get('rateLimitMinite'),
-                            fieldConfig: {
-                                label: 'Number',
-                                type: 'number'
-                            }
+            <ng-container
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: primaryDetailsForm.get('rateLimitMinite'),
+                        fieldConfig: {
+                            label: 'Number',
+                            type: 'number'
                         }
-                    "
-                ></ng-container>
-            </form>
+                    }
+                "
+            ></ng-container>
 
             <p class="font-14">Minute</p>
         </div>
@@ -191,7 +179,7 @@
             <h5 class="fw-bold text-secondary mat-body-1 ml-1">OR</h5>
             <mat-divider [vertical]="true" style="height: 90px" class="mx-3"></mat-divider>
         </div>
-        <div class="w-50">
+        <div class="w-40">
             <h5 class="fw-bold text-secondary mat-body-1">Use Ours</h5>
 
             <div *ngFor="let slug of environments_with_slug">
@@ -210,8 +198,8 @@
     </div>
 </ng-template>
 <ng-template #desnationUrl>
-    <div class="my-3">
-        <form class="w-50 d-flex" *ngIf="showEndpoint">
+    <div class="my-3 w-40">
+        <form class="d-flex" *ngIf="showEndpoint">
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Endpoint</mat-label>
                 <input matInput [formControl]="destinationUrlForm.get('endpoint')" required />
@@ -227,28 +215,26 @@
             </mat-form-field>
         </form>
 
-        <form class="w-50">
-            <div class="d-flex" *ngFor="let control of forwardUrls.controls; let i = index">
-                <div class="width-md-200 d-flex forwardUrl">
-                    <h5 class="m-0 font-14 fw-bold">{{ environments_with_slug[i]?.name }}</h5>
-                    <mat-icon matSuffix>keyboard_arrow_right</mat-icon>
-                    <p class="m-0 font-14 fw-bold">forward to</p>
-                </div>
-                <ng-container
-                    class="w-100"
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: control,
-                            fieldConfig: {
-                                label: environments_with_slug[i]?.name,
-                                is_required: true
-                            }
-                        }
-                    "
-                ></ng-container>
+        <div class="d-flex" *ngFor="let control of forwardUrls.controls; let i = index">
+            <div class="width-md-200 d-flex forward-url">
+                <h5 class="m-0 font-14 fw-bold">{{ environments_with_slug[i]?.name }}</h5>
+                <mat-icon matSuffix>keyboard_arrow_right</mat-icon>
+                <p class="m-0 font-14 fw-bold">forward to</p>
             </div>
-        </form>
+            <ng-container
+                class="w-100"
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: control,
+                        fieldConfig: {
+                            label: environments_with_slug[i]?.name,
+                            is_required: true
+                        }
+                    }
+                "
+            ></ng-container>
+        </div>
     </div>
 </ng-template>
 
