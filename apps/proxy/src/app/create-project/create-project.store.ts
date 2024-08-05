@@ -85,7 +85,7 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
                         },
                         (error: any) => {
                             this.showError(error.errors);
-                            this.patchState({ isLoading: false, getProject: true });
+                            this.patchState({ isLoading: false });
                         }
                     )
                 );
