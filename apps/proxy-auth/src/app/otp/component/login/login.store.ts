@@ -5,6 +5,7 @@ import { OtpService } from '../../service/otp.service';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IlogInData, IOtpData, IResetPassword } from '../../model/otp';
+import { errorResolver } from '@proxy/models/root-models';
 
 export interface ILoginInitialState {
     isLoading: boolean;
@@ -41,7 +42,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                     tapResponse(
                         (res) => {
                             if (res?.hasError) {
-                                return this.patchState({ isLoading: false, apiError: res.error.error.data.message });
+                                return this.patchState({ isLoading: false, apiError: errorResolver(res.errors)?.[0] });
                             }
 
                             if (res.data.redirect_url) {
@@ -57,7 +58,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                                 this.patchState({ showRegistration: true });
                             }
 
-                            this.patchState({ isLoading: false, apiError: error.error.message });
+                            this.patchState({ isLoading: false, apiError: errorResolver(error.error.errors)?.[0] });
                         }
                     )
                 );
@@ -72,7 +73,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                     tapResponse(
                         (res) => {
                             if (res?.hasError) {
-                                return this.patchState({ isLoading: false, apiError: res.error.error.data.message });
+                                return this.patchState({ isLoading: false, apiError: errorResolver(res.errors)?.[0] });
                             }
 
                             return this.patchState({
@@ -81,7 +82,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                             });
                         },
                         (error: HttpErrorResponse) => {
-                            this.patchState({ isLoading: false, apiError: error.error.data.message });
+                            this.patchState({ isLoading: false, apiError: errorResolver(error.error.errors)?.[0] });
                         }
                     )
                 );
@@ -96,7 +97,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                     tapResponse(
                         (res) => {
                             if (res?.hasError) {
-                                return this.patchState({ isLoading: false, apiError: res.error.error.data.message });
+                                return this.patchState({ isLoading: false, apiError: errorResolver(res.errors)?.[0] });
                             }
 
                             return this.patchState({
@@ -105,7 +106,7 @@ export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
                             });
                         },
                         (error: HttpErrorResponse) => {
-                            this.patchState({ isLoading: false, apiError: error.error.data.message });
+                            this.patchState({ isLoading: false, apiError: errorResolver(error.error.errors)?.[0] });
                         }
                     )
                 );

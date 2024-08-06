@@ -49,10 +49,11 @@
         {{ apiError | async }}
     </div>
     <div class="login-btn">
-        <a href="javascript:void(0)" class="forgot-password" (click)="changeStep(2)">Forgot Password?</a>
-        <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
+        <p class="forgot-password"><a href="javascript:void(0)" (click)="changeStep(2)">Forgot Password?</a></p>
         <button mat-flat-button color="primary" #loginBtn [disabled]="isLoading$ | async">
-            <span *ngIf="!(isLoading$ | async)">Login</span>
+            <div class="loader">
+                <mat-spinner matPrefix diameter="20" *ngIf="isLoading$ | async"></mat-spinner>Login
+            </div>
         </button>
         <p>New User? <a href="javascript:void(0)" (click)="showRegistration()"> Create Account</a></p>
     </div>
@@ -74,8 +75,9 @@
         {{ apiError | async }}
     </div>
 
-    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
-    <button mat-flat-button color="primary" [disabled]="isLoading$ | async" #sendOtpBtn>Send OTP</button>
+    <button mat-flat-button color="primary" [disabled]="isLoading$ | async" #sendOtpBtn>
+        <div class="loader"><mat-spinner matPrefix diameter="20" *ngIf="isLoading$ | async"></mat-spinner>Send OTP</div>
+    </button>
 </div>
 
 <div
@@ -87,7 +89,7 @@
 >
     <div class="heading">Change Password</div>
 
-    <p class="userInfo">
+    <p class="user-info">
         {{ sendOtpForm.get('userDetails').value }} <a href="javascript:void(0)" (click)="changeStep(2)">Change </a>
     </p>
     <button mat-button color="primary" (click)="sendOtp()" [disabled]="remainingSeconds > 0">
@@ -144,9 +146,8 @@
     <div class="error-message" *ngIf="apiError | async">
         {{ apiError | async }}
     </div>
-    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
     <button mat-flat-button color="primary" #verifyOtpBtn [disabled]="isLoading$ | async">
-        <span>Submit</span>
+        <div class="loader"><mat-spinner matPrefix diameter="20" *ngIf="isLoading$ | async"></mat-spinner>Submit</div>
     </button>
 </div>
 
