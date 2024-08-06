@@ -89,7 +89,7 @@
 >
     <div class="heading">Change Password</div>
 
-    <p class="userInfo">
+    <p class="user-info">
         {{ sendOtpForm.get('userDetails').value }} <a href="javascript:void(0)" (click)="changeStep(2)">Change </a>
     </p>
     <button mat-button color="primary" (click)="sendOtp()" [disabled]="remainingSeconds > 0">
