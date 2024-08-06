@@ -79,3 +79,8 @@ p {
     @extend .input-width;
     margin-top: 16px;
 }
+.loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
