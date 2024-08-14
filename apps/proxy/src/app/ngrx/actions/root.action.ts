@@ -23,3 +23,6 @@ export const getAllClientsError = createAction('[Client Setting] Get All Clients
 export const switchClient = createAction('[Client Setting] Switch Client', props<{ request: { client_id: number } }>());
 export const switchClientSuccess = createAction('[Client Setting] Switch Client Success');
 export const switchClientError = createAction('[[Client Setting] Switch Client Error');
+export const getAllProject = createAction('[project] Get All Projests');
+export const getAllProjectSuccess = createAction('[project] Get All Projects Success', props<{ response: any }>());
+export const getAllProjectsError = createAction('[project] Get All Project Error');

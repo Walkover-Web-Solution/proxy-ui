@@ -26,6 +26,10 @@ const routes: Routes = [
                 loadChildren: () => import('../users/users.module').then((p) => p.UsersModule),
             },
             {
+                path: 'endpoints',
+                loadChildren: () => import('../endpoints/endpoint.module').then((p) => p.EndpointModule),
+            },
+            {
                 path: 'chatbot',
                 component: ChatbotComponent,
             },

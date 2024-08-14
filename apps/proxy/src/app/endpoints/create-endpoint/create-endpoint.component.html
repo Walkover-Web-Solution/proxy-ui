@@ -1,0 +1,125 @@
+<div class="app-content">
+    <div class="d-flex align-items-center">
+        <button type="button" mat-icon-button color="primary" [routerLink]="['/app', 'features']">
+            <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
+        </button>
+        <h4 class="my-0 text-secondary mat-body-1 fw-bold">Add New Features</h4>
+    </div>
+    <mat-card class="p-0 outline-card responsive-card flex-grow-1 m-2">
+        <mat-card-content>
+            <div class="table-scroll p-4" style="height: calc(100vh - 100px)" [formGroup]="endpointForm">
+                <div class="d-flex w-50 gap-3">
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-24">
+                        <!-- <mat-label>Select method type</mat-label> -->
+                        <mat-hint>Define Request type & Endpoint</mat-hint>
+                        <mat-select placeholder="Select" formControlName="methodType">
+                            <mat-option [value]="type" *ngFor="let type of methodTypes">{{ type }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: endpointForm.get('endpoint'),
+                                fieldConfig: {
+                                    label: 'endpoint',
+                                    is_required: true
+                                }
+                            }
+                        "
+                    ></ng-container>
+                </div>
+                <div class="d-flex align-items-baseline gap-5">
+                    <mat-checkbox formControlName="useSameUrlForAll">Policy as per Project</mat-checkbox>
+                    <div>
+                        <h5>OR</h5>
+                    </div>
+                    <mat-form-field appearance="outline" floatLabel="always" class="ml-2 w-25">
+                        <!-- <mat-label>Select method type</mat-label> -->
+                        <mat-hint>Define Request type & Endpoint</mat-hint>
+                        <mat-select placeholder="Select" formControlName="methodType">
+                            <mat-option [value]="type" *ngFor="let type of verificationMethod">{{ type }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="selectedValue">
+                        <mat-button-toggle *ngFor="let option of methodTypes" [value]="option">
+                            {{ option }}
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+                <div class="d-flex w-50 gap-3">
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: endpointForm.get('endpoint'),
+                                fieldConfig: {
+                                    label: 'endpoint',
+                                    is_required: true
+                                }
+                            }
+                        "
+                    ></ng-container>
+                    <mat-form-field appearance="outline" floatLabel="always" class="w-24">
+                        <!-- <mat-label>Select method type</mat-label> -->
+                        <mat-hint>Define Request type & Endpoint</mat-hint>
+                        <mat-select placeholder="Select" formControlName="methodType">
+                            <mat-option [value]="type" *ngFor="let type of methodTypes">{{ type }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>
+<ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
+    <mat-form-field appearance="outline" class="w-100">
+        <mat-label
+            >{{ fieldConfig?.label }} <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span>
+        </mat-label>
+
+        <input
+            matInput
+            [type]="fieldConfig?.type"
+            placeholder="Enter {{ fieldConfig?.label }}"
+            autocomplete="off"
+            [formControl]="fieldControl"
+        />
+
+        <mat-error *ngIf="fieldControl?.touched">
+            <ng-container
+                *ngTemplateOutlet="
+                    matErrors;
+                    context: {
+                        fieldControl,
+                        label: fieldConfig.label,
+                        patternErrorText: fieldConfig?.patternErrorText
+                    }
+                "
+            ></ng-container>
+        </mat-error>
+
+        <mat-hint *ngIf="fieldConfig?.hint">{{ fieldConfig?.hint }}</mat-hint>
+    </mat-form-field>
+</ng-template>
+
+<ng-template #matErrors let-label="label" let-fieldControl="fieldControl" let-patternErrorText="patternErrorText">
+    <mat-error *ngIf="fieldControl?.errors?.customError as customError"> {{ customError }} </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.required"> {{ label }} is required. </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.noStartEndSpaces"> Start and End spaces are not allowed</mat-error>
+    <mat-error *ngIf="fieldControl.errors?.min as minError"> Min value required is {{ minError?.min }} </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.max as maxError"> Max value allowed is {{ maxError?.max }} </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.minlength as minLengthError">
+        Min required length is {{ minLengthError?.requiredLength }}
+    </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.maxlength as maxLengthError">
+        Max allowed length is {{ maxLengthError?.requiredLength }}
+    </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.pattern">
+        {{ patternErrorText ?? 'Enter valid ' + label }}
+    </mat-error>
+    <mat-error *ngIf="fieldControl?.errors?.atleastOneValueInChipList"> Atleast One Value is Required </mat-error>
+</ng-template>
