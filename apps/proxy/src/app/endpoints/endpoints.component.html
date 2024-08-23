@@ -34,16 +34,16 @@
     </ng-container>
 
     <ng-container *ngIf="step === 2">
-        <div class="d-flex align-items-center gap-3 ml-auto m-4">
+        <div class="d-flex align-items-center justify-content-between m-4">
             <h4 class="my-0 text-secondary mat-body-1 fw-bold">Project Name</h4>
 
             <button mat-flat-button color="primary" class="mat-btn-xs" [routerLink]="['/app', 'endpoints', 'create']">
                 <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
                 <span class="hide-xs">Add New Endpoint</span>
             </button>
-            <button mat-flat-button class="flat-icon-btn flat-default" matTooltip="Refresh" matTooltipPosition="above">
+            <!-- <button mat-flat-button class="flat-icon-btn flat-default" matTooltip="Refresh" matTooltipPosition="above">
                 <mat-icon class="mat-icon-18">refresh</mat-icon>
-            </button>
+            </button> -->
         </div>
         <mat-card class="p-0 outline-card responsive-card flex-grow-1">
             <mat-card-content>

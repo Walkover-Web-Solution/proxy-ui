@@ -16,4 +16,11 @@ export class CreateEndpointComponent implements OnInit {
     constructor() {}
 
     ngOnInit(): void {}
+    selectTime(time: string): void {
+        this.selectedValue = time;
+    }
+
+    isSelected(time: string): boolean {
+        return this.selectedValue === time;
+    }
 }

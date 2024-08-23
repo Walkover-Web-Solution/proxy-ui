@@ -11,7 +11,7 @@ import { select, Store } from '@ngrx/store';
     styleUrls: ['./endpoints.component.scss'],
 })
 export class EndpointsComponent implements OnInit {
-    public step = 1;
+    public step = 2;
     public displayedColumns: string[] = [
         'endpoint',
         'verification',
