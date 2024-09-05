@@ -3,10 +3,9 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { omit } from 'lodash';
 import { PAGE_SIZE_OPTIONS } from '@proxy/constant';
 import { MatDialog } from '@angular/material/dialog';
-import { NewMethodDialogComponent } from '../new-method-dialog/new-method-dialog.component';
 import { EnvProjectComponentStore } from './env-project.store';
 import { Observable } from 'rxjs';
-import { IProjects } from '@proxy/models/logs-models';
+import { IEnvProject } from '@proxy/models/endpoint';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 
 @Component({
@@ -27,7 +26,7 @@ export class EndpointsComponent extends BaseComponent implements OnInit {
     public displayedColumns: string[] = ['endpoint', 'forward_to', 'rate_limit', 'status', 'manage'];
     /** Params for fetching endPoint data */
     public params: any = {};
-    public envProject$: Observable<IPaginatedResponse<IProjects[]>> = this.componentStore.envProject$;
+    public envProject$: Observable<IPaginatedResponse<IEnvProject[]>> = this.componentStore.envProject$;
 
     // /** Store current API inprogress state */
     public loading$: Observable<{ [key: string]: boolean }> = this.componentStore.loading$;
@@ -39,18 +38,7 @@ export class EndpointsComponent extends BaseComponent implements OnInit {
     ngOnInit() {
         this.getEnvProject();
     }
-    // public showdialog(value:string): void {
-    //     this.dialog.open(NewMethodDialogComponent, {
-    //         panelClass: ['mat-dialog', 'mat-right-dialog', 'mat-dialog-xlg'],
-    //         height: 'calc(100vh - 20px)',
-    //         data: { value }
 
-    //     });
-    // }
-    // public changeStep(value) {
-    //     this.step = value
-
-    // }
     public getEnvProject() {
         this.componentStore.getEnvProject({ ...this.params });
     }

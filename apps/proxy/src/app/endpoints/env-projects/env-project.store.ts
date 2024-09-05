@@ -1,34 +1,36 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
-import { IEnvironments, IProjects } from '@proxy/models/logs-models';
+import { IEnvProject } from '@proxy/models/endpoint';
 import { BaseResponse, errorResolver, IPaginatedResponse, IReqParams } from '@proxy/models/root-models';
 import { EndpointService } from '@proxy/services/proxy/endpoint';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { catchError, EMPTY, Observable, switchMap } from 'rxjs';
 
 export interface IEnvProjectInitialState {
-    envProjects: IPaginatedResponse<IProjects[]>;
+    envProjects: IPaginatedResponse<IEnvProject[]>;
+    isLoading: boolean;
 }
 
 @Injectable()
-export class EnvProjectComponentStore extends ComponentStore<any> {
+export class EnvProjectComponentStore extends ComponentStore<IEnvProjectInitialState> {
     constructor(private service: EndpointService, private toast: PrimeNgToastService) {
         super({
             envProjects: null,
+            isLoading: null,
         });
     }
     readonly loading$: Observable<{ [key: string]: boolean }> = this.select((state) => ({
         dataLoading: state.isLoading,
     }));
 
-    readonly envProject$: Observable<IPaginatedResponse<IProjects[]>> = this.select((state) => state.envProjects);
+    readonly envProject$: Observable<IPaginatedResponse<IEnvProject[]>> = this.select((state) => state.envProjects);
     readonly getEnvProject = this.effect((data: Observable<IReqParams>) => {
         return data.pipe(
             switchMap((req) => {
                 this.patchState({ isLoading: true });
                 return this.service.getEnvProject(req).pipe(
                     tapResponse(
-                        (res: BaseResponse<IPaginatedResponse<IEnvironments[]>, void>) => {
+                        (res: BaseResponse<IPaginatedResponse<IEnvProject[]>, void>) => {
                             if (res.hasError) {
                                 this.showError(res.errors);
                             }

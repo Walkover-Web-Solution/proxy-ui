@@ -6,6 +6,7 @@ import { filter, Observable, takeUntil } from 'rxjs';
 import { EndPointListComponentStore } from './endpoint-list.store';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import { IProjects } from '@proxy/models/logs-models';
+import { IEndpointsRes } from '@proxy/models/endpoint';
 
 @Component({
     selector: 'proxy-endpoint-list',
@@ -28,8 +29,8 @@ export class EndpointListComponent extends BaseComponent implements OnInit {
     constructor(private activatedRoute: ActivatedRoute, private componentStore: EndPointListComponentStore) {
         super();
     }
-    public endPointData$: Observable<IPaginatedResponse<IProjects[]>> = this.componentStore.endPointData$;
-    public deleteEndpoint$: Observable<any> = this.componentStore.deleteEndpoint$;
+    public endPointData$: Observable<IPaginatedResponse<IEndpointsRes[]>> = this.componentStore.endPointData$;
+    public deleteEndpoint$: Observable<boolean> = this.componentStore.deleteEndpoint$;
 
     ngOnInit(): void {
         this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {

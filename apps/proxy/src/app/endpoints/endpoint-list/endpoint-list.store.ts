@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
-import { IProjects } from '@proxy/models/logs-models';
+import { IEndpointsRes } from '@proxy/models/endpoint';
 import { errorResolver, IPaginatedResponse } from '@proxy/models/root-models';
 import { EndpointService } from '@proxy/services/proxy/endpoint';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { catchError, EMPTY, Observable, switchMap } from 'rxjs';
 export interface IEndpointInitialState {
-    endPointData: IPaginatedResponse<IProjects[]>;
+    endPointData: IPaginatedResponse<IEndpointsRes[]>;
     isLoading: boolean;
     deleteEndpoint: boolean;
 }
@@ -24,8 +24,10 @@ export class EndPointListComponentStore extends ComponentStore<any> {
     readonly loading$: Observable<{ [key: string]: boolean }> = this.select((state) => ({
         dataLoading: state.isLoading,
     }));
-    readonly endPointData$: Observable<IPaginatedResponse<IProjects[]>> = this.select((state) => state.endPointData);
-    readonly deleteEndpoint$: Observable<boolean> = this.select((state) => state.deleteEndpoint);
+    readonly endPointData$: Observable<IPaginatedResponse<IEndpointsRes[]>> = this.select(
+        (state) => state.endPointData
+    );
+    readonly deleteEndpoint$: Observable<any> = this.select((state) => state.deleteEndpoint);
     readonly getEndpointData = this.effect((data: Observable<{ id: string | number }>) => {
         return data.pipe(
             switchMap((req) => {

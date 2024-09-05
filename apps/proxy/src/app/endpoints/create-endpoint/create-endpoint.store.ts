@@ -1,4 +1,3 @@
-import { state } from '@angular/animations';
 import { Injectable } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
@@ -8,24 +7,24 @@ import { errorResolver, IPaginatedResponse } from '@proxy/models/root-models';
 import { EndpointService } from '@proxy/services/proxy/endpoint';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { Observable, switchMap } from 'rxjs';
+import { IEndpointsRes } from '@proxy/models/endpoint';
 
 export interface ICreateEndpointInitialState {
-    singleEndpointData: IPaginatedResponse<IProjects[]>;
+    singleEndpointData: IPaginatedResponse<IEndpointsRes[]>;
+    isLoading: boolean;
 }
 
 @Injectable()
-export class CreateEndpointComponentStore extends ComponentStore<any> {
-    constructor(
-        private service: EndpointService,
-        private toast: PrimeNgToastService,
-        private router: Router,
-        private location: Location
-    ) {
+export class CreateEndpointComponentStore extends ComponentStore<ICreateEndpointInitialState> {
+    constructor(private service: EndpointService, private toast: PrimeNgToastService, private router: Router) {
         super({
             singleEndpointData: null,
+            isLoading: null,
         });
     }
-    readonly singleEndpointData$: Observable<any> = this.select((state) => state.singleEndpointData);
+    readonly singleEndpointData$: Observable<IPaginatedResponse<IEndpointsRes[]>> = this.select(
+        (state) => state.singleEndpointData
+    );
 
     readonly createEndpoint = this.effect((data: Observable<{ id: string | number; body: { [key: string]: any } }>) => {
         return data.pipe(
@@ -33,7 +32,7 @@ export class CreateEndpointComponentStore extends ComponentStore<any> {
                 this.patchState({ isLoading: true });
                 return this.service.createEndpoint(req.id, req.body).pipe(
                     tapResponse(
-                        (res: any) => {
+                        (res) => {
                             if (res?.hasError) {
                                 this.showError(res.errors);
                                 return this.patchState({ isLoading: false });

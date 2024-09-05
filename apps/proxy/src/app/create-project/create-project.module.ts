@@ -12,7 +12,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UiCopyButtonModule } from '@proxy/ui/copy-button';
-import { LogsService } from '@proxy/services/proxy/logs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CreateProjectService, ServicesProxyCreateProjectModule } from '@proxy/services/proxy/create-project';
 import { MatTooltipModule } from '@angular/material/tooltip';

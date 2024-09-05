@@ -31,7 +31,7 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
     public primaryDetailsForm: FormGroup<IPrimaryDetailsForm>;
     public gatewayUrlDetailsForm: FormGroup<IGatewayUrlDetailsForm>;
     public destinationUrlForm: FormGroup<IDestinationUrlForm>;
-    public currentstep: number = 3;
+    public currentstep: number = 1;
     public checked: Boolean = false;
     public showEndpoint: Boolean = false;
     public defineNewMethod: string = 'Define New Method';

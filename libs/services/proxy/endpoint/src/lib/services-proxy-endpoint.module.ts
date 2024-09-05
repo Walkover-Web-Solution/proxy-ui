@@ -5,6 +5,7 @@ import { BaseResponse, IPaginatedResponse, IReqParams, ProxyBaseUrls } from '@pr
 import { Observable } from 'rxjs';
 import { IEnvironments, IProjects } from '@proxy/models/logs-models';
 import { EndpointUrl } from '@proxy/urls/endpoint-urls';
+import { IEndpointsRes, IEnvProject } from '@proxy/models/endpoint';
 
 @NgModule({
     imports: [CommonModule],
@@ -16,38 +17,54 @@ export class ServicesProxyEndpointModule {}
 })
 export class EndpointService {
     constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseURL: any) {}
-    public getEnvProject(req: IReqParams): Observable<BaseResponse<IPaginatedResponse<IEnvironments[]>, void>> {
-        return this.http.get<BaseResponse<IPaginatedResponse<IEnvironments[]>, void>>(
+    public getEnvProject(req: IReqParams): Observable<BaseResponse<IPaginatedResponse<IEnvProject[]>, void>> {
+        return this.http.get<BaseResponse<IPaginatedResponse<IEnvProject[]>, void>>(
             EndpointUrl.getEnvProject(this.baseURL),
             req
         );
     }
-    public getEndpointData(id: string | number): Observable<BaseResponse<IProjects[], void>> {
-        return this.http.get<BaseResponse<IProjects[], void>>(
+    public getEndpointData(id: string | number): Observable<BaseResponse<IPaginatedResponse<IEndpointsRes[]>, void>> {
+        return this.http.get<BaseResponse<IPaginatedResponse<IEndpointsRes[]>, void>>(
             `${EndpointUrl.projectUrl(this.baseURL)}/${id}/endpoints`
         );
     }
     public deleteEndpoint(projectId: string | number, id: string | number): Observable<any> {
-        return this.http.delete<any>(`${EndpointUrl.projectUrl(this.baseURL)}/${projectId}/endpoints/${id}`);
+        return this.http.delete<Observable<any>>(
+            `${EndpointUrl.projectUrl(this.baseURL)}/${projectId}/endpoints/${id}`
+        );
     }
-    public createEndpoint(id: string | number, body): Observable<BaseResponse<IProjects[], void>> {
-        return this.http.post<any>(`${EndpointUrl.projectUrl(this.baseURL)}/${id}/endpoints`, body);
+    public createEndpoint(
+        id: string | number,
+        body
+    ): Observable<BaseResponse<IPaginatedResponse<IEndpointsRes[]>, void>> {
+        return this.http.post<BaseResponse<IPaginatedResponse<IEndpointsRes[]>, void>>(
+            `${EndpointUrl.projectUrl(this.baseURL)}/${id}/endpoints`,
+            body
+        );
     }
     public getSingleEndpont(
         projecyId: string | number,
         endPointId: string | number
-    ): Observable<BaseResponse<any, void>> {
-        return this.http.get<any>(`${EndpointUrl.projectUrl(this.baseURL)}/${projecyId}/endpoints/${endPointId}`);
+    ): Observable<BaseResponse<IPaginatedResponse<IEndpointsRes[]>, void>> {
+        return this.http.get<BaseResponse<IPaginatedResponse<IEndpointsRes[]>, void>>(
+            `${EndpointUrl.projectUrl(this.baseURL)}/${projecyId}/endpoints/${endPointId}`
+        );
     }
     public updateEndpoint(
         projectId: string | number,
         endPointId: string | number,
         body
-    ): Observable<BaseResponse<IProjects[], void>> {
-        return this.http.put<any>(`${EndpointUrl.projectUrl(this.baseURL)}/${projectId}/endpoints/${endPointId}`, body);
+    ): Observable<BaseResponse<IPaginatedResponse<IEndpointsRes[]>, void>> {
+        return this.http.put<BaseResponse<IPaginatedResponse<IEndpointsRes[]>, void>>(
+            `${EndpointUrl.projectUrl(this.baseURL)}/${projectId}/endpoints/${endPointId}`,
+            body
+        );
     }
 
-    public verficationIntegration(body): Observable<BaseResponse<any, void>> {
-        return this.http.post<any>(`${EndpointUrl.verficationIntegration(this.baseURL)}`, body);
+    public verficationIntegration(body): Observable<BaseResponse<IPaginatedResponse<IProjects[]>, void>> {
+        return this.http.post<BaseResponse<IPaginatedResponse<IProjects[]>, void>>(
+            `${EndpointUrl.verficationIntegration(this.baseURL)}`,
+            body
+        );
     }
 }

@@ -103,10 +103,7 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
     }
 
     isSelected(value: string): boolean {
-        console.log(value);
-        const test = this.selectedButton === value;
-        console.log(test);
-        return test;
+        return this.selectedButton === value;
     }
 
     public showdialog(value): void {
@@ -124,7 +121,6 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
     }
     selectButton(value: any): void {
         this.selectedButton = value;
-        console.log(this.selectedButton);
         if (this.selectedButton === 'Configure Viasocket') {
             this.forwardToNum = 2;
             this.showdialog({ type: 'viasocket' });
@@ -144,7 +140,6 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
         }
     }
     public onSaveUpdate() {
-        console.log(this.endpointForm.value.endpoint);
         const endpointFromData = this.endpointForm.value;
         const payload = {
             ...endpointFromData,
