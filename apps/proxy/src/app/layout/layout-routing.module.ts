@@ -26,8 +26,17 @@ const routes: Routes = [
                 loadChildren: () => import('../users/users.module').then((p) => p.UsersModule),
             },
             {
+                path: 'endpoints',
+                loadChildren: () => import('../endpoints/endpoint.module').then((p) => p.EndpointModule),
+            },
+            {
                 path: 'chatbot',
                 component: ChatbotComponent,
+            },
+            {
+                path: 'project',
+                loadChildren: () =>
+                    import('../create-project/create-project.module').then((p) => p.CreateProjectModule),
             },
         ],
         data: { authGuardPipe: redirectUnauthorizedToLogin },

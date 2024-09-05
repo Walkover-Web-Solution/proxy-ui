@@ -4,12 +4,12 @@ import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex
 import { CustomValidators } from '@proxy/custom-validator';
 import { environment } from '../../environments/environment';
 import { CreateProjectComponentStore } from './create-project.store';
-import { Observable, takeUntil } from 'rxjs';
+import { distinctUntilChanged, Observable, takeUntil } from 'rxjs';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import { IEnvironments, IProjects } from '@proxy/models/logs-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
-import { IAppState, selectAllProjectList } from '../ngrx';
+import { IAppState, selectAllProjectList, selectAllVerificationIntegration } from '../ngrx';
 import { rootActions } from '../ngrx/actions';
 import {
     IDestinationUrlForm,
@@ -17,6 +17,9 @@ import {
     IGatewayUrlDetailsForm,
     IPrimaryDetailsForm,
 } from '@proxy/models/project-model';
+import { isEqual } from 'lodash';
+import { NewMethodDialogComponent } from '../endpoints/new-method-dialog/new-method-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'proxy-create-project',
@@ -28,10 +31,12 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
     public primaryDetailsForm: FormGroup<IPrimaryDetailsForm>;
     public gatewayUrlDetailsForm: FormGroup<IGatewayUrlDetailsForm>;
     public destinationUrlForm: FormGroup<IDestinationUrlForm>;
-    public currentstep: number = 1;
+    public currentstep: number = 3;
     public checked: Boolean = false;
     public showEndpoint: Boolean = false;
+    public defineNewMethod: string = 'Define New Method';
     public environments_with_slug;
+    public projectSlug: String;
     public environmentParams = {
         itemsPerPage: 10,
         pageNo: 1,
@@ -42,14 +47,21 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
     public getProject$: Observable<boolean> = this.componentStore.getProject$;
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public projectId: number;
+    public getVerficationIntgration$: Observable<IPaginatedResponse<IProjects[]>>;
 
     constructor(
         private componentStore: CreateProjectComponentStore,
         private fb: FormBuilder,
-        private store: Store<IAppState>
+        private store: Store<IAppState>,
+        public dialog: MatDialog
     ) {
         super();
         this.projects$ = this.store.pipe(select(selectAllProjectList));
+        this.getVerficationIntgration$ = this.store.pipe(
+            select(selectAllVerificationIntegration),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
 
         this.primaryDetailsForm = this.fb.group<IPrimaryDetailsForm>({
             name: this.fb.control('', [
@@ -60,13 +72,14 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
                 Validators.maxLength(20),
             ]),
             rateLimitHit: this.fb.control(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
-            rateLimitMinite: this.fb.control(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
+            rateLimitMinute: this.fb.control(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
             selectedEnvironments: this.fb.control([]),
         });
         this.gatewayUrlDetailsForm = this.fb.group<IGatewayUrlDetailsForm>({
             useSameUrlForAll: this.fb.control(false),
             gatewayUrls: this.fb.array<FormControl<string>>([]),
             singleUrl: this.fb.control(''),
+            verficationMethod: this.fb.control(''),
         });
         this.destinationUrlForm = this.fb.group<IDestinationUrlForm>({
             endpoint: this.fb.control(''),
@@ -76,6 +89,7 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
 
     ngOnInit(): void {
         this.getEnvironment();
+        this.store.dispatch(rootActions.getVerificationIntegration());
         this.projects$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 const latestProject = [];
@@ -120,6 +134,12 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
         this.environments_with_slug.forEach((env) => {
             this.forwardUrls.push(this.fb.control('', [Validators.required, Validators.pattern(URL_REGEX)]));
         });
+    }
+    onSelectionChange(event: any): void {
+        const selectedValue = event.value;
+        if (selectedValue === this.defineNewMethod) {
+            this.showdialog({ type: 'newMethod', projectSlug: this.projectSlug });
+        }
     }
     public changeStep(stepChange: number) {
         this.currentstep = stepChange;
@@ -197,17 +217,24 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
         this.componentStore.getEnvironment(this.environmentParams);
     }
     onNextClick() {
-        const { name, selectedEnvironments, rateLimitHit, rateLimitMinite } = this.primaryDetailsForm.value;
+        const { name, selectedEnvironments, rateLimitHit, rateLimitMinute } = this.primaryDetailsForm.value;
 
         const environmentsConfig = selectedEnvironments.reduce(
             (acc, env) => ({
                 ...acc,
-                [env]: { rate_limiter: `${rateLimitHit}:${rateLimitMinite}` },
+                [env]: { rate_limiter: `${rateLimitHit}:${rateLimitMinute}` },
             }),
             {}
         );
 
         const projectDetails = { name, environments: environmentsConfig };
         this.componentStore.createProject(projectDetails);
+    }
+    public showdialog(value): void {
+        this.dialog.open(NewMethodDialogComponent, {
+            panelClass: ['mat-dialog', 'mat-right-dialog', 'mat-dialog-xlg'],
+            height: 'calc(100vh - 20px)',
+            data: { value },
+        });
     }
 }

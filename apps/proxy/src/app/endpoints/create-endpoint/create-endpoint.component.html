@@ -1,0 +1,180 @@
+<div class="app-content">
+    <div class="d-flex align-items-center">
+        <button type="button" mat-icon-button color="primary" [routerLink]="[updateEndpoint ? '../../' : '../']">
+            <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
+        </button>
+        <h4 class="my-0 text-secondary mat-body-1 fw-bold">Back</h4>
+    </div>
+    <mat-card class="outline-card responsive-card flex-grow-1 m-2">
+        <h4 class="text-secondary mat-body-1 fw-bold">Define New Endpoint</h4>
+        <mat-card-content>
+            <div class="table-scroll" [formGroup]="endpointForm">
+                <p class="mat-body-2 mt-0 fw-bold">Step-1</p>
+                <div class="d-flex w-50 gap-3">
+                    <mat-form-field class="w-24">
+                        <mat-hint>Define Request type & Endpoint</mat-hint>
+                        <mat-select placeholder="Select" formControlName="methodType">
+                            <mat-option [value]="type" *ngFor="let type of requestTypes">{{ type }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: endpointForm.get('endpoint'),
+                                fieldConfig: {
+                                    label: 'endpoint',
+                                    is_required: true
+                                }
+                            }
+                        "
+                    ></ng-container>
+                    <mat-form-field class="w-24">
+                        <mat-hint>Choose Position</mat-hint>
+                        <mat-select placeholder="Select" formControlName="position">
+                            <mat-option [value]="type" *ngFor="let type of position">{{ type }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <p class="mat-body-2 fw-bold">Step-2</p>
+                <div class="d-flex align-items-baseline gap-5">
+                    <mat-checkbox formControlName="sameAsProject" (change)="onChange($event)"
+                        >Policy as per Project</mat-checkbox
+                    >
+
+                    <p class="mat-body-2">OR</p>
+
+                    <mat-form-field appearance="outline" floatLabel="always" class="ml-2 w-25">
+                        <mat-hint>Verificaton</mat-hint>
+                        <mat-select
+                            placeholder="Select"
+                            formControlName="verificationMethod"
+                            [disabled]="isVerfiacationDisable"
+                            (selectionChange)="onSelectionChange($event)"
+                        >
+                            <mat-option value="Define New Method">{{ defineNewMethod }}</mat-option>
+                            <mat-option [value]="type.name" *ngFor="let type of getVerficationIntgration$ | async">{{
+                                type.name
+                            }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <p class="mat-body-2 fw-bold">Step-3</p>
+                <h5 class="my-0 text-secondary mat-body-2 fw-bold">Forward To</h5>
+                <div class="d-flex">
+                    <div *ngFor="let option of forwardTo; let last = last" class="d-flex align-items-center">
+                        <button mat-stroked-button color="primary" (click)="selectButton(option)" class="width-md-200">
+                            <mat-icon *ngIf="isSelected(option)">check</mat-icon>
+                            {{ option }}
+                        </button>
+                        <p class="mat-body-2 m-4" *ngIf="!last">OR</p>
+                    </div>
+                </div>
+                <p class="mat-body-2 fw-bold">Step-4</p>
+                <div class="d-flex w-50 gap-3">
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: endpointForm.get('sessionTime'),
+                                fieldConfig: {
+                                    label: 'sessionTime',
+                                    is_required: true,
+                                    type: 'number'
+                                }
+                            }
+                        "
+                    ></ng-container>
+                    <mat-form-field class="w-100">
+                        <mat-hint>Session time</mat-hint>
+
+                        <mat-select placeholder="Select Unit" formControlName="timeUnit">
+                            <mat-option [value]="type" *ngFor="let type of timeUnit">{{ type }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="d-flex gap-3 w-50">
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: endpointForm.get('rateLimitHit'),
+                                fieldConfig: {
+                                    label: 'Hits',
+                                    type: 'number',
+                                    hint: 'Hits per'
+                                }
+                            }
+                        "
+                    ></ng-container>
+
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: endpointForm.get('rateLimitMinute'),
+                                fieldConfig: {
+                                    label: 'Minute',
+                                    type: 'number',
+                                    hint: 'Minute'
+                                }
+                            }
+                        "
+                    ></ng-container>
+                </div>
+                <button mat-flat-button color="primary" class="mt-4" (click)="onSaveUpdate()">
+                    {{ updateEndpoint ? 'update' : 'save' }}
+                </button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>
+<ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
+    <mat-form-field appearance="outline" class="w-100">
+        <mat-label
+            >{{ fieldConfig?.label }} <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span>
+        </mat-label>
+
+        <input
+            matInput
+            [type]="fieldConfig?.type"
+            placeholder="Enter {{ fieldConfig?.label }}"
+            autocomplete="off"
+            [formControl]="fieldControl"
+        />
+
+        <mat-error *ngIf="fieldControl?.touched">
+            <ng-container
+                *ngTemplateOutlet="
+                    matErrors;
+                    context: {
+                        fieldControl,
+                        label: fieldConfig.label,
+                        patternErrorText: fieldConfig?.patternErrorText
+                    }
+                "
+            ></ng-container>
+        </mat-error>
+
+        <mat-hint *ngIf="fieldConfig?.hint">{{ fieldConfig?.hint }}</mat-hint>
+    </mat-form-field>
+</ng-template>
+
+<ng-template #matErrors let-label="label" let-fieldControl="fieldControl" let-patternErrorText="patternErrorText">
+    <mat-error *ngIf="fieldControl?.errors?.customError as customError"> {{ customError }} </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.required"> {{ label }} is required. </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.noStartEndSpaces"> Start and End spaces are not allowed</mat-error>
+    <mat-error *ngIf="fieldControl.errors?.min as minError"> Min value required is {{ minError?.min }} </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.max as maxError"> Max value allowed is {{ maxError?.max }} </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.minlength as minLengthError">
+        Min required length is {{ minLengthError?.requiredLength }}
+    </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.maxlength as maxLengthError">
+        Max allowed length is {{ maxLengthError?.requiredLength }}
+    </mat-error>
+    <mat-error *ngIf="fieldControl.errors?.pattern">
+        {{ patternErrorText ?? 'Enter valid ' + label }}
+    </mat-error>
+    <mat-error *ngIf="fieldControl?.errors?.atleastOneValueInChipList"> Atleast One Value is Required </mat-error>
+</ng-template>

@@ -10,4 +10,5 @@ export const envVariables = {
 
     // VIASOCKET INTERFACE
     interfaceScriptUrl: process.env.INTERFACE_SCRIPT_URL,
+    viasocketEmbededURl: process.env.INTERFACE_Embeded_URL,
 };

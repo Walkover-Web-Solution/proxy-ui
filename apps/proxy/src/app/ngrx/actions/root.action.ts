@@ -27,3 +27,10 @@ export const switchClientError = createAction('[[Client Setting] Switch Client E
 export const getAllProject = createAction('[project] Get All Projests');
 export const getAllProjectSuccess = createAction('[project] Get All Projects Success', props<{ response: any }>());
 export const getAllProjectsError = createAction('[project] Get All Project Error');
+
+export const getVerificationIntegration = createAction('[verfication] Get All Integration');
+export const getVerificationIntegrationSuccess = createAction(
+    '[verfication] Get All Integration Success',
+    props<{ response: any }>()
+);
+export const getVerificationIntegrationError = createAction('[verfication] Get All Integration Error');

@@ -1,0 +1,42 @@
+<div class="app-content d-flex flex-column">
+    <ng-container *ngIf="step === 1">
+        <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+            <proxy-lib-search
+                [matFormFieldClass]="'no-padding w-xs-100'"
+                [placeholder]="'Search Project'"
+                class="w-xs-100"
+                (inputChanges)="search($event)"
+            ></proxy-lib-search>
+            <div class="d-flex align-items-center gap-3 ml-auto">
+                <button mat-flat-button color="primary" class="mat-btn-xs" [routerLink]="['/app', 'project']">
+                    <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
+                    <span class="hide-xs">Add New Project</span>
+                </button>
+                <button
+                    mat-flat-button
+                    class="flat-icon-btn flat-default"
+                    (click)="getEnvProject()"
+                    matTooltip="Refresh"
+                    matTooltipPosition="above"
+                >
+                    <mat-icon class="mat-icon-18">refresh</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div class="flex-grow-1">
+            <div class="project-layout">
+                <div
+                    class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center project-card bg-light-grey cursor-pointer"
+                    *ngFor="let project of (envProject$ | async)?.data"
+                    [routerLink]="[project.project_name, project.slug, project?.id]"
+                >
+                    <p class="mat-body-2">{{ project.project_name }}</p>
+                    <p class="mat-body-2 text-secondary fw-bold">{{ project.environment_name }}</p>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>
+<ng-template #loadingRef>
+    <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>
+</ng-template>

@@ -1,6 +1,7 @@
 import { createSelector } from '@ngrx/store';
 import { IAppState } from '../app.state';
 import { IRootState } from '../reducer/root.reducer';
+import { rootActions } from '../../actions';
 
 export const selectState = (state: IAppState) => state;
 
@@ -31,4 +32,13 @@ export const selectAllProjectList = createSelector(selectRootState, ({ allProjec
 export const selectProjectInProcess = createSelector(
     selectRootState,
     (rootState: IRootState) => rootState.projectInProcess
+);
+
+export const selectAllVerificationIntegration = createSelector(
+    selectRootState,
+    (rootState: IRootState) => rootState.allVerficationIntegration
+);
+export const selectVerficationIntergrationInProcess = createSelector(
+    selectRootState,
+    (rootState: IRootState) => rootState.verificationIntegrationProcess
 );

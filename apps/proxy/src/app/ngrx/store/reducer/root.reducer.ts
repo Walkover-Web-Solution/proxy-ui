@@ -18,6 +18,10 @@ export interface IRootState {
     //All project
     allProjects: IPaginatedResponse<IProjects[]>;
     projectInProcess: boolean;
+
+    //  All Verfication Integrations
+    allVerficationIntegration: IPaginatedResponse<IProjects[]>;
+    verificationIntegrationProcess: boolean;
 }
 
 export const initialState: IRootState = {
@@ -32,8 +36,12 @@ export const initialState: IRootState = {
     clients: null,
     clientsInProcess: false,
     swtichClientSuccess: false,
+    //All Projects
     projectInProcess: false,
     allProjects: null,
+    //All Integration
+    allVerficationIntegration: null,
+    verificationIntegrationProcess: false,
 };
 
 export function rootReducer(state: IRootState, action: Action) {
@@ -116,7 +124,7 @@ const _rootReducer = createReducer(
             swtichClientSuccess: false,
         };
     }),
-
+    //Get all Project
     on(rootActions.getAllProject, (state) => {
         return {
             ...state,
@@ -135,6 +143,27 @@ const _rootReducer = createReducer(
             ...state,
             projects: null,
             projectInProcess: false,
+        };
+    }),
+    // Get all VerficationIntegration
+    on(rootActions.getVerificationIntegration, (state) => {
+        return {
+            ...state,
+            verificationIntegrationProcess: true,
+        };
+    }),
+    on(rootActions.getVerificationIntegrationSuccess, (state, { response }) => {
+        return {
+            ...state,
+            allVerficationIntegration: response,
+            verificationIntegrationProcess: false,
+        };
+    }),
+    on(rootActions.getVerificationIntegrationError, (state) => {
+        return {
+            ...state,
+            allVerficationIntegration: null,
+            verificationIntegrationProcess: false,
         };
     })
 );

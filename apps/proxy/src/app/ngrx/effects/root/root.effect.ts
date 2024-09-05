@@ -92,6 +92,26 @@ export class RootEffects {
             })
         )
     );
+    getAllVerficationIntegration = createEffect(() =>
+        this.actions$.pipe(
+            ofType(rootActions.getVerificationIntegration),
+            switchMap((req) => {
+                return this.rootService.getVerficationIntegration().pipe(
+                    map((res) => {
+                        if (res.hasError) {
+                            this.showError(res.errors);
+                            rootActions.getVerificationIntegrationError();
+                        }
+                        return rootActions.getVerificationIntegrationSuccess({ response: res.data });
+                    }),
+                    catchError((err) => {
+                        this.showError(err.errors);
+                        return of(rootActions.getVerificationIntegrationError);
+                    })
+                );
+            })
+        )
+    );
 
     private showError(error): void {
         const errorMessage = errorResolver(error);

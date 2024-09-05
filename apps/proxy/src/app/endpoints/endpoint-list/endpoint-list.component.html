@@ -1,0 +1,146 @@
+<div class="app-content d-flex flex-column" *ngIf="loading$ | async as loading">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="d-flex align-items-center">
+            <button type="button" mat-icon-button color="primary" [routerLink]="['/app', 'endpoints']">
+                <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
+            </button>
+            <p class="my-0 text-secondary mat-body-1 fw-bold">{{ projectName }}</p>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 ml-auto">
+            <button mat-flat-button color="primary" class="mat-btn-xs" [routerLink]="['create']">
+                <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
+                <span class="hide-xs">Add New Endpoint</span>
+            </button>
+            <button
+                mat-flat-button
+                class="flat-icon-btn flat-default"
+                matTooltip="Refresh"
+                matTooltipPosition="above"
+                (click)="showEndpoint()"
+            >
+                <mat-icon class="mat-icon-18">refresh</mat-icon>
+            </button>
+        </div>
+    </div>
+    <mat-card class="p-0 outline-card responsive-card flex-grow-1">
+        <mat-card-content>
+            <div class="table-scroll" style="height: calc(100vh - 180px)">
+                <table
+                    mat-table
+                    [dataSource]="
+                        (endPointData$ | async)?.data?.length
+                            ? (endPointData$ | async)?.data
+                            : loading.dataLoading
+                            ? [1, 2, 3, 4]
+                            : []
+                    "
+                    class="default-table responsive-table"
+                >
+                    <!-- Endpoint Column -->
+                    <ng-container matColumnDef="endpoint">
+                        <th mat-header-cell *matHeaderCellDef>Endpoint</th>
+                        <td mat-cell *matCellDef="let element" data-label="Endpoint">
+                            <ng-container *ngIf="!loading.dataLoading; else loadingRef">
+                                <span
+                                    >{{ element?.request_type }} {{ element?.endpoint }} <br />
+                                    {{ element?.position }}
+                                </span>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- User IP Column -->
+                    <ng-container matColumnDef="forward_to">
+                        <th mat-header-cell *matHeaderCellDef>Forward To</th>
+                        <td mat-cell *matCellDef="let element" data-label="Forward_to">
+                            <ng-container *ngIf="!loading.dataLoading; else loadingRef">
+                                <ng-container [ngSwitch]="element?.forward_to">
+                                    <button *ngSwitchCase="2" mat-stroked-button color="primary">
+                                        Configure viasocket
+                                    </button>
+                                    <span *ngSwitchCase="1">Same as endpoint</span>
+                                    <span *ngSwitchCase="3">Perform operation</span>
+                                </ng-container>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                    <!-- Rate Limit Column -->
+                    <ng-container matColumnDef="rate_limit">
+                        <th mat-header-cell *matHeaderCellDef>Rate Limit</th>
+                        <td mat-cell *matCellDef="let element" data-label="Rate Limit">
+                            <ng-container *ngIf="!loading.dataLoading; else loadingRef"
+                                >{{ element?.rate_limiter }}
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- Status Column -->
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef>Status</th>
+                        <td mat-cell *matCellDef="let element" data-label="Status">
+                            <ng-container *ngIf="!loading.dataLoading; else loadingRef">
+                                <mat-slide-toggle
+                                    [checked]="element?.is_active"
+                                    [disabled]="!element?.is_active"
+                                ></mat-slide-toggle>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="manage">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let element" data-label="Manage">
+                            <ng-container *ngIf="!loading.dataLoading">
+                                <div class="actions d-flex gap-3">
+                                    <button
+                                        mat-stroked-button
+                                        color="primary"
+                                        [routerLink]="['update', element.id]"
+                                        class="mat-btn-md"
+                                    >
+                                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
+                                            >edit</mat-icon
+                                        >Edit
+                                    </button>
+                                    <button
+                                        mat-stroked-button
+                                        color="Danger"
+                                        (click)="deleteSingleEndpoint(element.id)"
+                                        class="mat-btn-md"
+                                    >
+                                        <mat-icon
+                                            class="material-icons-outlined mat-icon-18 mat-icon-prefix text-denger"
+                                            >delete</mat-icon
+                                        >Delete
+                                    </button>
+                                </div>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                    <tr
+                        mat-row
+                        *matRowDef="let row; columns: displayedColumns; let i = index"
+                        class="hover-action"
+                        [ngClass]="{ 'last-child': i + 1 === pageSizeOptions[0] }"
+                        title="Click here to view endpoints details"
+                    ></tr>
+
+                    <tr *matNoDataRow>
+                        <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
+                            <proxy-no-record-found [title]="'endpoints'" [showBtn]="false"></proxy-no-record-found>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <mat-paginator-goto
+                [length]="(endPointData$ | async)?.totalEntityCount"
+                [pageSize]="(endPointData$ | async)?.itemsPerPage || 25"
+                [pageSizeOptions]="pageSizeOptions"
+                [pageIndex]="(endPointData$ | async)?.pageNumber - 1"
+                class="box-shadow-none"
+            ></mat-paginator-goto>
+        </mat-card-content>
+    </mat-card>
+</div>

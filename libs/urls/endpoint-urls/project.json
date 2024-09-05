@@ -1,0 +1,16 @@
+{
+    "name": "urls-endpoint-urls",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/urls/endpoint-urls/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/urls/endpoint-urls/**/*.ts", "libs/urls/endpoint-urls/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

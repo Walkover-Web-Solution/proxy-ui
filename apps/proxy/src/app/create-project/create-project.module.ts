@@ -17,6 +17,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CreateProjectService, ServicesProxyCreateProjectModule } from '@proxy/services/proxy/create-project';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DirectivesMarkAllAsTouchedModule } from '@proxy/directives/mark-all-as-touched';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ServicesProxyEndpointModule } from '@proxy/services/proxy/endpoint';
 
 const routes: Routes = [
     {
@@ -43,9 +45,11 @@ const routes: Routes = [
         ReactiveFormsModule,
         UiCopyButtonModule,
         ServicesProxyCreateProjectModule,
+        ServicesProxyEndpointModule,
         MatAutocompleteModule,
         MatTooltipModule,
         DirectivesMarkAllAsTouchedModule,
+        MatDialogModule,
     ],
     providers: [CreateProjectService],
     exports: [RouterModule],

@@ -6,4 +6,5 @@ export const RootUrls = {
     switchClient: (baseUrl) => createUrl(baseUrl, 'switchclient'),
     generateToken: (baseUrl) => createUrl(baseUrl, 'generateToken'),
     getProject: (baseUrl) => createUrl(baseUrl, 'projects'),
+    getVerficationIntegration: (baseUrl) => createUrl(baseUrl, 'policies'),
 };

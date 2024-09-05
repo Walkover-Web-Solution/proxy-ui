@@ -1,0 +1,16 @@
+{
+    "name": "services-proxy-endpoint",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/services/proxy/endpoint/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/services/proxy/endpoint/**/*.ts", "libs/services/proxy/endpoint/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

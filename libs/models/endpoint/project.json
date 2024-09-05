@@ -1,0 +1,16 @@
+{
+    "name": "models-endpoint",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "libs/models/endpoint/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "options": {
+                "lintFilePatterns": ["libs/models/endpoint/**/*.ts", "libs/models/endpoint/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

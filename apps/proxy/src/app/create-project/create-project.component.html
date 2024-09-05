@@ -118,7 +118,7 @@
                 *ngTemplateOutlet="
                     inputField;
                     context: {
-                        fieldControl: primaryDetailsForm.get('rateLimitMinite'),
+                        fieldControl: primaryDetailsForm.get('rateLimitMinute'),
                         fieldConfig: {
                             label: 'Number',
                             type: 'number'
@@ -172,6 +172,19 @@
                     </ng-container>
                 </ng-template>
             </div>
+            <p class="fw-bold text-secondary mat-body-2">Choose Verificaton Method</p>
+            <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                <mat-select
+                    placeholder="Select"
+                    formControlName="verficationMethod"
+                    (selectionChange)="onSelectionChange($event)"
+                >
+                    <mat-option value="Define New Method">{{ defineNewMethod }}</mat-option>
+                    <mat-option [value]="type.name" *ngFor="let type of (getVerficationIntgration$ | async)?.data">{{
+                        type.name
+                    }}</mat-option>
+                </mat-select>
+            </mat-form-field>
         </div>
 
         <div class="p-4">
