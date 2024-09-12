@@ -99,7 +99,7 @@
                                         mat-stroked-button
                                         color="primary"
                                         (click)="stopPropagation($event)"
-                                        [routerLink]="['update', element.id]"
+                                        [routerLink]="[element.environment_project.id, 'update', element.id]"
                                         class="mat-btn-md"
                                     >
                                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
@@ -109,7 +109,7 @@
                                     <button
                                         mat-stroked-button
                                         color="Danger"
-                                        (click)="deleteSingleEndpoint(element.id)"
+                                        (click)="deleteSingleEndpoint(element.environment_project.id, element.id)"
                                         class="mat-btn-md"
                                     >
                                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"

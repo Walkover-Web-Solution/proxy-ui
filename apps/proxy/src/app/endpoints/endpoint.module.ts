@@ -43,7 +43,7 @@ const routes: Routes = [
         loadChildren: () => import('./create-endpoint/create-endpoint.module').then((p) => p.CreateEndpointModule),
     },
     {
-        path: ':projectName/:projectSlug/:projectId/:envProjectId/update/:endpointId',
+        path: ':projectId/:projectName/:envProjectId/update/:endpointId',
         loadChildren: () => import('./create-endpoint/create-endpoint.module').then((p) => p.CreateEndpointModule),
     },
 ];

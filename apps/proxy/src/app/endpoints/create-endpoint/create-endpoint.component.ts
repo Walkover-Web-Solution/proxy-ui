@@ -155,7 +155,7 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
             rate_limiter: `${endpointFromData.rateLimitHit}:${endpointFromData.rateLimitMinute}`,
         };
         if (!this.updateEndpoint) {
-            this.componentStore.createEndpoint({ id: this.projectId, body: payload });
+            this.componentStore.createEndpoint({ id: this.envProjectId, body: payload });
         }
         if (this.updateEndpoint) {
             this.componentStore.updateEndpoint({

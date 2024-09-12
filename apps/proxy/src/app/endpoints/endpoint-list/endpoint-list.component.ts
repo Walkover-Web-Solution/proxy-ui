@@ -86,8 +86,8 @@ export class EndpointListComponent extends BaseComponent implements OnInit {
     public stopPropagation(event) {
         event.stopPropagation();
     }
-    public deleteSingleEndpoint(id: number) {
+    public deleteSingleEndpoint(projectId: string, id: number) {
         event.stopPropagation();
-        this.componentStore.deleteEndpoint({ projectId: this.envProjectId, endpointId: id });
+        this.componentStore.deleteEndpoint({ projectId: projectId, endpointId: id });
     }
 }
