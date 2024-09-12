@@ -4,15 +4,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { NewMethodDialogComponent } from '../new-method-dialog/new-method-dialog.component';
 import { distinctUntilChanged, Observable, takeUntil } from 'rxjs';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { IFirebaseUserModel, IPaginatedResponse } from '@proxy/models/root-models';
+import { IFirebaseUserModel, IPaginatedResponse, IPoliciesData } from '@proxy/models/root-models';
 import { CreateEndpointComponentStore } from './create-endpoint.store';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { IAppState, selectAllVerificationIntegration } from '../../ngrx';
+import { IAppState, selectAllPolicies } from '../../ngrx';
 import { IProjects } from '@proxy/models/logs-models';
 import { isEqual } from 'lodash';
 import { rootActions } from '../../ngrx/actions';
-import { ONLY_INTEGER_REGEX } from '@proxy/regex';
+import { ButtonLabels, FormwardToNum, IEndpointsRes } from '@proxy/models/endpoint';
 
 @Component({
     selector: 'proxy-create-endpoint',
@@ -24,21 +24,30 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
     public requestTypes: Array<string> = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
     public defineNewMethod: string = 'Define New Method';
     public forwardTo: string[] = ['Same as Endpoint', 'Perform operation', 'Configure Viasocket'];
-    public timeUnit: Array<string> = ['Hour', 'Day'];
+    // public timeUnit: Array<string> = ['Hour', 'Day'];
     public position: Array<string> = ['exactMatch', 'endsWith', 'startsWith'];
     public isVerfiacationDisable = false;
     public selectedButton: String;
     public forwardToNum: number;
-    public updateForm: boolean = false;
-    public singleEndpointData: any;
+    // public updateForm: boolean = false;
+    // public singleEndpointData: any;
     public projectId: number;
     public projectName: string;
+    public envProjectId: number;
     public endpointId: number;
     public projectSlug: string;
-    public selectedValue: string;
+    // public selectedValue: string;
+    public buttonLable: ButtonLabels;
+    public forward: FormwardToNum;
+    public selectedPolicy: string;
+    public getPolicies$: Observable<IPaginatedResponse<IPoliciesData[]>>;
     public updateEndpoint: boolean = false;
-    public getVerficationIntgration$: Observable<IPaginatedResponse<IProjects[]>>;
+    // public getVerficationIntgration$: Observable<IPaginatedResponse<IProjects[]>>;
     public logInData$: Observable<IFirebaseUserModel>;
+    public environmentParams = {
+        itemsPerPage: 10,
+        pageNo: 1,
+    };
     public endpointForm = new FormGroup({
         endpoint: new FormControl<string>(null, [Validators.required]),
         methodType: new FormControl<string>(null, [Validators.required]),
@@ -47,9 +56,6 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
         position: new FormControl<string>(null),
         rateLimitHit: new FormControl<number>(null, [Validators.required]),
         rateLimitMinute: new FormControl<number>(null, [Validators.required]),
-
-        sessionTime: new FormControl<string>(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
-        timeUnit: new FormControl<string>(null, Validators.required),
     });
     constructor(
         public dialog: MatDialog,
@@ -59,13 +65,14 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
     ) {
         super();
 
-        this.getVerficationIntgration$ = this.store.pipe(
-            select(selectAllVerificationIntegration),
+        this.getPolicies$ = this.store.pipe(
+            select(selectAllPolicies),
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
     }
-    public singleEndpointData$: Observable<any> = this.componentStore.singleEndpointData$;
+    public singleEndpointData$: Observable<IPaginatedResponse<IEndpointsRes[]>> =
+        this.componentStore.singleEndpointData$;
 
     ngOnInit(): void {
         this.loadPolicyData();
@@ -75,18 +82,18 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
         this.singleEndpointData$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
             if (data) {
                 this.setUpdateFormData(data);
-                this.singleEndpointData = data;
+                // this.singleEndpointData = data;
             }
         });
     }
     public loadPolicyData() {
-        this.store.dispatch(rootActions.getVerificationIntegration());
+        this.store.dispatch(rootActions.getPolicies());
     }
     private extractParams(params) {
         this.projectId = params?.projectId;
         this.projectSlug = params?.projectSlug;
         this.projectName = params?.projectName;
-
+        this.envProjectId = params?.envProjectId;
         if (params?.endpointId) {
             this.endpointId = params.endpointId;
             this.updateEndpoint = true;
@@ -94,11 +101,14 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
         }
     }
     private setUpdateFormData(data: any): void {
+        const [limit, time] = data.rate_limiter.split(':');
         this.endpointForm.patchValue({
             endpoint: data.endpoint,
             methodType: data.request_type,
             sameAsProject: data.use_config_from === 'project',
             position: data.position,
+            rateLimitHit: limit,
+            rateLimitMinute: time,
         });
     }
 
@@ -110,43 +120,38 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
         this.dialog.open(NewMethodDialogComponent, {
             panelClass: ['mat-dialog', 'mat-right-dialog', 'mat-dialog-xlg'],
             height: 'calc(100vh - 20px)',
-            data: { value },
+            data: value,
         });
     }
-    onSelectionChange(event: any): void {
-        this.selectedValue = event.value;
-        if (this.selectedValue === this.defineNewMethod) {
+    onSelectionChange(value: string): void {
+        if (value === this.defineNewMethod) {
             this.showdialog({ type: 'newMethod', projectSlug: this.projectSlug });
+        } else {
+            this.selectedPolicy = value;
         }
     }
     selectButton(value: any): void {
-        this.selectedButton = value;
-        if (this.selectedButton === 'Configure Viasocket') {
-            this.forwardToNum = 2;
+        if (value === ButtonLabels.ConfigureViasocket) {
+            this.forwardToNum = FormwardToNum.Viasocket;
             this.showdialog({ type: 'viasocket' });
         }
-        if ((this.selectedButton = 'Perform operation')) {
-            this.forwardToNum = 3;
+        if (value === ButtonLabels.PerformOperation) {
+            this.forwardToNum = FormwardToNum.Operation;
         }
-        if ((this.selectedButton = 'Same as Endpoint')) {
-            this.forwardToNum = 1;
-        }
-    }
-    onChange(event: any) {
-        if (event.checked) {
-            this.isVerfiacationDisable = true;
-        } else {
-            this.isVerfiacationDisable = false;
+        if (value === ButtonLabels.SameAsEndpoint) {
+            this.forwardToNum = FormwardToNum.Endpoint;
         }
     }
-    public onSaveUpdate() {
+    onChange(value) {
+        this.isVerfiacationDisable = value;
+    }
+    public onSaveUpdate(): void {
         const endpointFromData = this.endpointForm.value;
         const payload = {
             ...endpointFromData,
-            use_config_from: endpointFromData.sameAsProject ? 'project' : this.selectedValue,
+            use_config_from: endpointFromData.sameAsProject ? 'project' : 'endpoint',
             request_type: endpointFromData.methodType,
             forward_to: this.forwardToNum,
-            session_time: endpointFromData.sessionTime,
             rate_limiter: `${endpointFromData.rateLimitHit}:${endpointFromData.rateLimitMinute}`,
         };
         if (!this.updateEndpoint) {
@@ -154,13 +159,13 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
         }
         if (this.updateEndpoint) {
             this.componentStore.updateEndpoint({
-                projectId: this.projectId,
+                envProjectId: this.envProjectId,
                 endpointId: this.endpointId,
                 body: payload,
             });
         }
     }
-    public editEndpoint(endPointId: number) {
-        this.componentStore.getSingleEndpoint({ projectId: this.projectId, endpointId: endPointId });
+    public editEndpoint(endPointId: number): void {
+        this.componentStore.getSingleEndpoint({ envProjectId: this.envProjectId, endpointId: endPointId });
     }
 }

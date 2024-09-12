@@ -25,7 +25,7 @@ export class EndpointService {
     }
     public getEndpointData(id: string | number): Observable<BaseResponse<IPaginatedResponse<IEndpointsRes[]>, void>> {
         return this.http.get<BaseResponse<IPaginatedResponse<IEndpointsRes[]>, void>>(
-            `${EndpointUrl.projectUrl(this.baseURL)}/${id}/endpoints`
+            `${EndpointUrl.getEndpoint(this.baseURL)}${id}/projectEndpoints`
         );
     }
     public deleteEndpoint(projectId: string | number, id: string | number): Observable<any> {
@@ -62,8 +62,13 @@ export class EndpointService {
     }
 
     public verficationIntegration(body): Observable<BaseResponse<IPaginatedResponse<IProjects[]>, void>> {
-        return this.http.post<BaseResponse<IPaginatedResponse<IProjects[]>, void>>(
-            `${EndpointUrl.verficationIntegration(this.baseURL)}`,
+        return this.http.get<BaseResponse<IPaginatedResponse<IProjects[]>, void>>(
+            `${EndpointUrl.verficationIntegration(this.baseURL)}`
+        );
+    }
+    public createPolicy(body): Observable<BaseResponse<IPaginatedResponse<IEndpointsRes[]>, void>> {
+        return this.http.post<BaseResponse<IPaginatedResponse<IEndpointsRes[]>, void>>(
+            `${EndpointUrl.createPolicy(this.baseURL)}`,
             body
         );
     }

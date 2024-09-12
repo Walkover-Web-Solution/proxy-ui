@@ -136,7 +136,7 @@
         <div class="w-40">
             <h5 class="fw-bold text-secondary mat-body-1">Provide your own</h5>
 
-            <mat-checkbox formControlName="useSameUrlForAll" (change)="onChange($event)"
+            <mat-checkbox formControlName="useSameUrlForAll" (change)="onChange($event.checked)"
                 >Same for all environments</mat-checkbox
             >
             <div class="mt-2">
@@ -180,7 +180,7 @@
                     (selectionChange)="onSelectionChange($event)"
                 >
                     <mat-option value="Define New Method">{{ defineNewMethod }}</mat-option>
-                    <mat-option [value]="type.name" *ngFor="let type of (getVerficationIntgration$ | async)?.data">{{
+                    <mat-option [value]="type.name" *ngFor="let type of (getPolicies$ | async)?.data">{{
                         type.name
                     }}</mat-option>
                 </mat-select>

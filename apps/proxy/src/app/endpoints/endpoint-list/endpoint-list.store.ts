@@ -9,21 +9,25 @@ export interface IEndpointInitialState {
     endPointData: IPaginatedResponse<IEndpointsRes[]>;
     isLoading: boolean;
     deleteEndpoint: boolean;
+    statusUpdate: boolean;
 }
 
 @Injectable()
-export class EndPointListComponentStore extends ComponentStore<any> {
+export class EndPointListComponentStore extends ComponentStore<IEndpointInitialState> {
     constructor(private service: EndpointService, private toast: PrimeNgToastService) {
         super({
             endPointData: null,
             isLoading: null,
             deleteEndpoint: null,
+            statusUpdate: null,
         });
     }
     /** Selector for API progress */
     readonly loading$: Observable<{ [key: string]: boolean }> = this.select((state) => ({
         dataLoading: state.isLoading,
     }));
+
+    readonly statusupdate$: Observable<boolean> = this.select((state) => state.statusUpdate);
     readonly endPointData$: Observable<IPaginatedResponse<IEndpointsRes[]>> = this.select(
         (state) => state.endPointData
     );
@@ -37,6 +41,7 @@ export class EndPointListComponentStore extends ComponentStore<any> {
                         (res) => {
                             if (res.hasError) {
                                 this.showError(res.errors);
+                                this.patchState({ isLoading: false });
                             }
                             return this.patchState((state) => ({
                                 endPointData: res.data,
@@ -46,7 +51,6 @@ export class EndPointListComponentStore extends ComponentStore<any> {
                         (error: any) => {
                             this.showError(error.errors);
                             return this.patchState({
-                                envProjects: null,
                                 isLoading: false,
                             });
                         }
@@ -86,6 +90,41 @@ export class EndPointListComponentStore extends ComponentStore<any> {
             })
         );
     });
+    readonly updateEndpoint = this.effect(
+        (
+            data: Observable<{
+                envProjectId: string | number;
+                endpointId: string | number;
+                body: { [key: string]: any };
+            }>
+        ) => {
+            return data.pipe(
+                switchMap((req) => {
+                    this.patchState({ isLoading: true, statusUpdate: false });
+                    return this.service.updateEndpoint(req.envProjectId, req.endpointId, req.body).pipe(
+                        tapResponse(
+                            (res: any) => {
+                                if (res?.hasError) {
+                                    this.showError(res.errors);
+                                    return this.patchState({ isLoading: false, statusUpdate: false });
+                                }
+                                this.toast.success('Endpoint update successfully');
+
+                                return this.patchState({
+                                    isLoading: false,
+                                    statusUpdate: true,
+                                });
+                            },
+                            (error: any) => {
+                                this.showError(error.errors);
+                                this.patchState({ isLoading: false });
+                            }
+                        )
+                    );
+                })
+            );
+        }
+    );
 
     private showError(error): void {
         const errorMessage = errorResolver(error);

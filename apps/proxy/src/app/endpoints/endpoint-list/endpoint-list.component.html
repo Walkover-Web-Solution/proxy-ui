@@ -1,4 +1,5 @@
 <div class="app-content d-flex flex-column" *ngIf="loading$ | async as loading">
+    <proxy-loader *ngIf="loading.dataLoading"></proxy-loader>
     <div class="d-flex align-items-center justify-content-between mb-3">
         <div class="d-flex align-items-center">
             <button type="button" mat-icon-button color="primary" [routerLink]="['/app', 'endpoints']">
@@ -28,13 +29,7 @@
             <div class="table-scroll" style="height: calc(100vh - 180px)">
                 <table
                     mat-table
-                    [dataSource]="
-                        (endPointData$ | async)?.data?.length
-                            ? (endPointData$ | async)?.data
-                            : loading.dataLoading
-                            ? [1, 2, 3, 4]
-                            : []
-                    "
+                    [dataSource]="loading.dataLoading ? [1, 2, 3] : (endPointData$ | async)?.data"
                     class="default-table responsive-table"
                 >
                     <!-- Endpoint Column -->
@@ -82,7 +77,14 @@
                             <ng-container *ngIf="!loading.dataLoading; else loadingRef">
                                 <mat-slide-toggle
                                     [checked]="element?.is_active"
-                                    [disabled]="!element?.is_active"
+                                    (click)="stopPropagation($event)"
+                                    (change)="
+                                        endpointToggle(
+                                            !element.is_active,
+                                            element?.environment_project?.id,
+                                            element?.id
+                                        )
+                                    "
                                 ></mat-slide-toggle>
                             </ng-container>
                         </td>
@@ -96,6 +98,7 @@
                                     <button
                                         mat-stroked-button
                                         color="primary"
+                                        (click)="stopPropagation($event)"
                                         [routerLink]="['update', element.id]"
                                         class="mat-btn-md"
                                     >
@@ -109,8 +112,7 @@
                                         (click)="deleteSingleEndpoint(element.id)"
                                         class="mat-btn-md"
                                     >
-                                        <mat-icon
-                                            class="material-icons-outlined mat-icon-18 mat-icon-prefix text-denger"
+                                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                                             >delete</mat-icon
                                         >Delete
                                     </button>
@@ -124,6 +126,7 @@
                         *matRowDef="let row; columns: displayedColumns; let i = index"
                         class="hover-action"
                         [ngClass]="{ 'last-child': i + 1 === pageSizeOptions[0] }"
+                        (click)="getSingleEndpointData('endpointData', row?.environment_project?.id, row?.id)"
                         title="Click here to view endpoints details"
                     ></tr>
 

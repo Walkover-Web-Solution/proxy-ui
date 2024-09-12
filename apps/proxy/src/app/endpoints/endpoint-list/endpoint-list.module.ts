@@ -15,6 +15,7 @@ import { UiMatPaginatorGotoModule } from '@proxy/ui/mat-paginator-goto';
 import { MatSelectModule } from '@angular/material/select';
 import { UiNoRecordFoundModule } from '@proxy/ui/no-record-found';
 import { DirectivesSkeletonModule } from '@proxy/directives/skeleton';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 const routes: Routes = [
     {
@@ -41,6 +42,7 @@ const routes: Routes = [
         ReactiveFormsModule,
         UiMatPaginatorGotoModule,
         MatSelectModule,
+        MatSlideToggleModule,
         UiNoRecordFoundModule,
         DirectivesSkeletonModule,
     ],

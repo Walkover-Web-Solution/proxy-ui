@@ -5,11 +5,11 @@ import { CustomValidators } from '@proxy/custom-validator';
 import { environment } from '../../environments/environment';
 import { CreateProjectComponentStore } from './create-project.store';
 import { distinctUntilChanged, Observable, takeUntil } from 'rxjs';
-import { IPaginatedResponse } from '@proxy/models/root-models';
+import { IPaginatedResponse, IPoliciesData } from '@proxy/models/root-models';
 import { IEnvironments, IProjects } from '@proxy/models/logs-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
-import { IAppState, selectAllProjectList, selectAllVerificationIntegration } from '../ngrx';
+import { IAppState, selectAllProjectList, selectAllPolicies } from '../ngrx';
 import { rootActions } from '../ngrx/actions';
 import {
     IDestinationUrlForm,
@@ -47,7 +47,7 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
     public getProject$: Observable<boolean> = this.componentStore.getProject$;
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public projectId: number;
-    public getVerficationIntgration$: Observable<IPaginatedResponse<IProjects[]>>;
+    public getPolicies$: Observable<IPaginatedResponse<IPoliciesData[]>>;
 
     constructor(
         private componentStore: CreateProjectComponentStore,
@@ -57,8 +57,8 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
     ) {
         super();
         this.projects$ = this.store.pipe(select(selectAllProjectList));
-        this.getVerficationIntgration$ = this.store.pipe(
-            select(selectAllVerificationIntegration),
+        this.getPolicies$ = this.store.pipe(
+            select(selectAllPolicies),
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
@@ -89,7 +89,7 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
 
     ngOnInit(): void {
         this.getEnvironment();
-        this.store.dispatch(rootActions.getVerificationIntegration());
+        this.store.dispatch(rootActions.getPolicies());
         this.projects$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 const latestProject = [];
@@ -136,8 +136,7 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
         });
     }
     onSelectionChange(event: any): void {
-        const selectedValue = event.value;
-        if (selectedValue === this.defineNewMethod) {
+        if (event.value === this.defineNewMethod) {
             this.showdialog({ type: 'newMethod', projectSlug: this.projectSlug });
         }
     }
@@ -147,8 +146,8 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
             this.showEndpoint = this.isAnyUrlInputProvided();
         }
     }
-    onChange(event: any): void {
-        if (event.checked) {
+    onChange(value: boolean): void {
+        if (value) {
             this.gatewayUrls.clear();
             this.gatewayUrlDetailsForm.get('useSameUrlForAll').setValue(true);
             this.gatewayUrlDetailsForm.addControl('singleUrl', this.fb.control(''));
@@ -234,7 +233,7 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
         this.dialog.open(NewMethodDialogComponent, {
             panelClass: ['mat-dialog', 'mat-right-dialog', 'mat-dialog-xlg'],
             height: 'calc(100vh - 20px)',
-            data: { value },
+            data: value,
         });
     }
 }

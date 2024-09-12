@@ -7,6 +7,9 @@ import { EnvProjectComponentStore } from './env-project.store';
 import { Observable } from 'rxjs';
 import { IEnvProject } from '@proxy/models/endpoint';
 import { IPaginatedResponse } from '@proxy/models/root-models';
+import { IProjects } from '@proxy/models/logs-models';
+import { IAppState, selectAllProjectList } from '../../ngrx';
+import { select, Store } from '@ngrx/store';
 
 @Component({
     selector: 'proxy-endpoints',
@@ -15,10 +18,10 @@ import { IPaginatedResponse } from '@proxy/models/root-models';
     providers: [EnvProjectComponentStore],
 })
 export class EndpointsComponent extends BaseComponent implements OnInit {
-    public step = 1;
     public projectId: number;
     public projectName: string;
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
+    public getProject$: Observable<IPaginatedResponse<IProjects[]>>;
     public environmentParams = {
         itemsPerPage: 10,
         pageNo: 1,
@@ -31,8 +34,13 @@ export class EndpointsComponent extends BaseComponent implements OnInit {
     // /** Store current API inprogress state */
     public loading$: Observable<{ [key: string]: boolean }> = this.componentStore.loading$;
 
-    constructor(public dialog: MatDialog, private componentStore: EnvProjectComponentStore) {
+    constructor(
+        public dialog: MatDialog,
+        private componentStore: EnvProjectComponentStore,
+        private store: Store<IAppState>
+    ) {
         super();
+        this.getProject$ = this.store.pipe(select(selectAllProjectList));
     }
 
     ngOnInit() {
@@ -49,9 +57,6 @@ export class EndpointsComponent extends BaseComponent implements OnInit {
         if (projectName) {
             this.projectName = projectName;
         }
-        if (slug) {
-        }
-        this.step = 2;
     }
     /**
      *  Search by searchKeyword

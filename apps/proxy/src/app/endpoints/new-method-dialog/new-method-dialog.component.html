@@ -12,237 +12,75 @@
         <div [formGroup]="defineMethodForm" *ngIf="showPage === 'newMethod'">
             <div class="d-flex align-items-center gap-4">
                 <mat-form-field appearance="outline" floatLabel="always" class="w-25">
-                    <mat-select
-                        placeholder="Select Verfication Method"
-                        (selectionChange)="onSelectionChange($event)"
-                        formControlName="methodVerfication"
-                    >
-                        <mat-option [value]="method" *ngFor="let method of veriFicationMethod">{{ method }}</mat-option>
+                    <mat-select placeholder="Select Verfication Method" (selectionChange)="onSelectionChange($event)">
+                        <mat-option [value]="method" *ngFor="let method of policyType$ | async; let i = index">{{
+                            method.name
+                        }}</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <ng-container *ngIf="dialogStep == 1">
-                    <ng-container
-                        *ngTemplateOutlet="
-                            inputField;
-                            context: {
-                                fieldControl: defineMethodForm.get('policyName'),
-                                fieldConfig: {
-                                    label: 'Policy name',
-                                    is_required: true
-                                }
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: defineMethodForm.get('policyName'),
+                            fieldConfig: {
+                                label: ' Your Policy name',
+                                is_required: true,
+                                patternErrorText: 'Name must contain only alphanumeric and underscore'
                             }
-                        "
-                    ></ng-container>
+                        }
+                    "
+                >
                 </ng-container>
             </div>
             <mat-divider class="mb-3"></mat-divider>
-            <ng-container *ngIf="dialogStep === 1">
-                <p class="mat-body-2 fw-bold mt-0 mb-3">Inbound Configuration</p>
-                <div class="border pl-4 rounded-8 mb-3">
-                    <div class="d-flex">
-                        <div class="w-50">
-                            <div class="d-flex align-items-center gap-2">
-                                <h5 class="mat-body-2">Key</h5>
-                                <mat-icon
-                                    matSuffix
-                                    class="material-icons-outlined mat-icon-20"
-                                    matTooltip="The 'project identification in URL' is a key element used by the proxy server to route requests to the appropriate project and environment"
-                                    matTooltipPosition="right"
-                                >
-                                    info
-                                </mat-icon>
-                            </div>
-
-                            <ng-container
-                                class="w-75"
-                                *ngTemplateOutlet="
-                                    inputField;
-                                    context: {
-                                        fieldControl: defineMethodForm.get('authorizationKey'),
-                                        fieldConfig: {
-                                            label: 'Authorization',
-                                            is_required: true
-                                        }
-                                    }
-                                "
-                            >
-                            </ng-container>
-                        </div>
-
-                        <div class="w-50">
-                            <div class="d-flex align-items-center gap-2">
-                                <h5 class="mat-body-2">Key location</h5>
-                                <mat-icon
-                                    matSuffix
-                                    class="material-icons-outlined mat-icon-20"
-                                    matTooltip="The 'project identification in URL' is a key element used by the proxy server to route requests to the appropriate project and environment"
-                                    matTooltipPosition="right"
-                                >
-                                    info
-                                </mat-icon>
-                            </div>
-                            <ng-container>
-                                <mat-form-field appearance="outline" floatLabel="always" class="w-75">
-                                    <mat-select placeholder="Select" formControlName="inboundKeyLocation">
-                                        <mat-option [value]="location" *ngFor="let location of keyLocation">{{
-                                            location
-                                        }}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </ng-container>
-                        </div>
-                    </div>
-                </div>
-
-                <p class="mat-body-2 fw-bold mt-0">Verificaton Configuration</p>
-                <div class="border pl-4 rounded-8 mb-3">
-                    <div class="d-flex align-items-center gap-2">
-                        <h5 class="mat-body-2">Verificaton Url</h5>
-                        <mat-icon
-                            matSuffix
-                            class="material-icons-outlined mat-icon-20"
-                            matTooltip="The 'project identification in URL' is a key element used by the proxy server to route requests to the appropriate project and environment"
-                            matTooltipPosition="right"
-                        >
-                            info
-                        </mat-icon>
-                    </div>
-                    <div class="d-flex gap-4">
-                        <mat-form-field appearance="outline" floatLabel="always" class="w-25">
-                            <mat-select placeholder="Select" formControlName="requestType">
-                                <mat-option [value]="method" *ngFor="let method of requestTypes">{{
-                                    method
-                                }}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
+            <form [formGroup]="policy" *ngIf="defineMethodForm.get('policyDetails')?.controls.at(i) as policy">
+                <ng-container *ngIf="(selectedPolicy | async)?.configurations?.fields as configurationsFields">
+                    <p class="mat-body-2 fw-bold mt-0 mb-3">Configuration</p>
+                    <div class="border rounded-8 d-flex flex-wrap p-3 gap-3 align-items-baseline">
                         <ng-container
-                            *ngTemplateOutlet="
-                                inputField;
-                                context: {
-                                    fieldControl: defineMethodForm.get('verificationUrl'),
-                                    fieldConfig: {
-                                        label: 'Verfication Url',
-                                        is_required: true
-                                    }
-                                }
-                            "
+                            *ngFor="let controlKeyValue of policy.controls.configurations.controls | keyvalue"
                         >
-                        </ng-container>
-                    </div>
-
-                    <div class="d-flex">
-                        <div class="w-50">
-                            <div class="d-flex align-items-center gap-2">
-                                <h5 class="mat-body-2">Key</h5>
-                                <mat-icon
-                                    matSuffix
-                                    class="material-icons-outlined mat-icon-20"
-                                    matTooltip="The 'project identification in URL' is a key element used by the proxy server to route requests to the appropriate project and environment"
-                                    matTooltipPosition="right"
-                                >
-                                    info
-                                </mat-icon>
-                            </div>
-                            <ng-container
-                                *ngTemplateOutlet="
-                                    inputField;
-                                    context: {
-                                        fieldControl: defineMethodForm.get('authKey'),
-                                        fieldConfig: {
-                                            label: 'Auth Key',
-                                            is_required: true
+                            <div class="d-flex w-40">
+                                <ng-container
+                                    *ngTemplateOutlet="
+                                        inputField;
+                                        context: {
+                                            fieldControl: controlKeyValue.value,
+                                            fieldConfig: configurationsFields[controlKeyValue.key]
                                         }
-                                    }
-                                "
-                            >
-                            </ng-container>
-                        </div>
-                        <div class="w-50">
-                            <div class="d-flex align-items-center gap-2">
-                                <h5 class="mat-body-2">Key Location</h5>
-                                <mat-icon
-                                    matSuffix
-                                    class="material-icons-outlined mat-icon-20"
-                                    matTooltip="The 'project identification in URL' is a key element used by the proxy server to route requests to the appropriate project and environment"
-                                    matTooltipPosition="right"
+                                    "
                                 >
-                                    info
-                                </mat-icon>
+                                </ng-container>
                             </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
 
-                            <mat-form-field appearance="outline" floatLabel="always" class="w-75">
-                                <mat-select
-                                    placeholder="Select Input Location"
-                                    formControlName="verficationKeyLocation"
+                <ng-container *ngIf="(selectedPolicy | async)?.requirements as requirements">
+                    <p class="mat-body-2 fw-bold mt-0 mb-3 mt-3">requirements</p>
+                    <div class="border rounded-8 d-flex flex-wrap p-3 gap-3">
+                        <ng-container *ngFor="let controlKeyValue of policy.controls.requirements.controls | keyvalue">
+                            <div class="d-flex w-40">
+                                <ng-container
+                                    *ngTemplateOutlet="
+                                        inputField;
+                                        context: {
+                                            fieldControl: controlKeyValue.value,
+                                            fieldConfig: requirements[controlKeyValue.key]
+                                        }
+                                    "
                                 >
-                                    <mat-option [value]="location" *ngFor="let location of keyLocation">{{
-                                        location
-                                    }}</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </div>
-                <p class="mat-body-2 fw-bold mt-0">Response Configuration</p>
-                <div class="border pl-4 rounded-8 d-flex">
-                    <div class="w-50">
-                        <div class="d-flex align-items-center gap-2">
-                            <h5 class="mat-body-2">Key</h5>
-                            <mat-icon
-                                matSuffix
-                                class="material-icons-outlined mat-icon-20"
-                                matTooltip="The 'project identification in URL' is a key element used by the proxy server to route requests to the appropriate project and environment"
-                                matTooltipPosition="right"
-                            >
-                                info
-                            </mat-icon>
-                        </div>
-
-                        <ng-container
-                            class="w-75"
-                            *ngTemplateOutlet="
-                                inputField;
-                                context: {
-                                    fieldControl: defineMethodForm.get('responseAuthorizationKey'),
-                                    fieldConfig: {
-                                        label: 'Authorization',
-                                        is_required: true
-                                    }
-                                }
-                            "
-                        >
+                                </ng-container>
+                            </div>
                         </ng-container>
                     </div>
+                </ng-container>
 
-                    <div class="w-50">
-                        <div class="d-flex align-items-center gap-2">
-                            <h5 class="mat-body-2">Key Type</h5>
-                            <mat-icon
-                                matSuffix
-                                class="material-icons-outlined mat-icon-20"
-                                matTooltip="The 'project identification in URL' is a key element used by the proxy server to route requests to the appropriate project and environment"
-                                matTooltipPosition="right"
-                            >
-                                info
-                            </mat-icon>
-                        </div>
-                        <ng-container>
-                            <mat-form-field appearance="outline" floatLabel="always" class="w-75">
-                                <mat-select placeholder="Select" formControlName="keyType">
-                                    <mat-option [value]="'jwt'">jwt</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </ng-container>
-                    </div>
+                <div class="d-flex justify-content-end col-gap-2 mt-4">
+                    <button (click)="onsave()" mat-flat-button color="primary">Save</button>
                 </div>
-            </ng-container>
-            <ng-container *ngIf="dialogStep == 2">
-                <p class="mat-body-2 fw-bold mt-0 mb-3">Inbound Configuration</p>
-                <div class="border p-3 rounded-8" style="min-height: calc(100vh - 290px)"></div>
-            </ng-container>
-            <div class="d-flex justify-content-end col-gap-2 mt-4">
-                <button (click)="onsave()" mat-flat-button color="primary" *ngIf="dialogStep > 0">Save</button>
-            </div>
+            </form>
         </div>
         <ng-container *ngIf="showPage === 'viasocket'">
             <button mat-icon-button mat-dialog-close color="primary">
@@ -250,37 +88,101 @@
             </button>
             <div class="h-100" id="viasocket-embed-Container"></div>
         </ng-container>
-        <ng-container *ngIf="showPage === 'updateEndpoint'"> </ng-container>
+
+        <ng-container *ngIf="showPage === 'endpointData'">
+            <button mat-icon-button mat-dialog-close color="primary">
+                <mat-icon>close</mat-icon>
+            </button>
+            <ng-container
+                [ngTemplateOutlet]="jsonCard"
+                [ngTemplateOutletContext]="{ title: 'Headers', jsonData: (singleEndpointData$ | async) }"
+            >
+            </ng-container>
+        </ng-container>
     </div>
 </div>
 
 <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
-    <mat-form-field appearance="outline" class="w-75">
+    <mat-form-field appearance="outline" class="w-100 d-flex" [ngSwitch]="fieldConfig?.type">
         <mat-label
             >{{ fieldConfig?.label }} <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span>
         </mat-label>
-
-        <input
-            matInput
-            [type]="fieldConfig?.type"
-            placeholder="Enter {{ fieldConfig?.label }}"
-            autocomplete="off"
-            [formControl]="fieldControl"
-        />
-
-        <mat-error *ngIf="fieldControl?.touched">
+        <ng-container *ngSwitchCase="policyFieldType.ReadFile">
+            <input
+                matInput
+                type="text"
+                placeholder="Choose {{ fieldConfig?.label }} ==>"
+                autocomplete="off"
+                [formControl]="fieldControl"
+                readonly
+            />
+        </ng-container>
+        <ng-container *ngSwitchCase="policyFieldType.Dropdown">
+            <ng-container *ngIf="fieldConfig?.type === policyFieldType.Dropdown">
+                <mat-select disableRipple [placeholder]="fieldConfig?.name" [formControl]="fieldControl">
+                    <mat-option [value]="dropData.value" *ngFor="let dropData of dropdownData[fieldConfig.name]">
+                        {{ dropData.label }}
+                    </mat-option>
+                </mat-select>
+            </ng-container>
+        </ng-container>
+        <div *ngSwitchDefault class="d-flex">
+            <input
+                matInput
+                type="text"
+                placeholder="Enter {{ fieldConfig?.label }}"
+                autocomplete="off"
+                [formControl]="fieldControl"
+            />
+            <mat-icon
+                *ngIf="fieldConfig?.description"
+                matSuffix
+                class="material-icons-outlined mat-icon-20"
+                matTooltip=" {{ fieldConfig?.description }}"
+            >
+                info
+            </mat-icon>
+        </div>
+        <mat-error *ngIf="fieldControl.touched">
             <ng-container
                 *ngTemplateOutlet="
                     matErrors;
                     context: {
                         fieldControl,
                         label: fieldConfig.label,
+                        hint: fieldConfig.description,
                         patternErrorText: fieldConfig?.patternErrorText
                     }
                 "
             ></ng-container>
         </mat-error>
-
+        <div matSuffix>
+            <ng-container
+                *ngIf="
+                    fieldConfig?.type === policyFieldType.ReadFile &&
+                    fieldConfig?.label + '_' + this.selectedServiceIndex as fileKey
+                "
+            >
+                <button
+                    color="warn"
+                    mat-icon-button
+                    *ngIf="fieldControl?.value"
+                    (click)="fileInput.files = null; updateFileValue(fileKey, fieldConfig, fieldControl, null)"
+                >
+                    <mat-icon class="material-icons-outlined mat-icon-18"> close </mat-icon>
+                </button>
+                <input
+                    #fileInput
+                    hidden
+                    type="file"
+                    [accept]="fieldConfig?.allowed_types ?? ''"
+                    (change)="updateFileValue(fileKey, fieldConfig, fieldControl, fileInput.files)"
+                />
+                <button color="primary" mat-icon-button (click)="fileInput.click()">
+                    <mat-icon class="material-icons-outlined mat-icon-18"> attach_file </mat-icon>
+                </button>
+            </ng-container>
+        </div>
         <mat-hint *ngIf="fieldConfig?.hint">{{ fieldConfig?.hint }}</mat-hint>
     </mat-form-field>
 </ng-template>
@@ -300,5 +202,12 @@
     <mat-error *ngIf="fieldControl.errors?.pattern">
         {{ patternErrorText ?? 'Enter valid ' + label }}
     </mat-error>
-    <mat-error *ngIf="fieldControl?.errors?.atleastOneValueInChipList"> Atleast One Value is Required </mat-error>
+</ng-template>
+<ng-template #jsonCard let-title="title" let-jsonData="jsonData">
+    <span class="mb-2 mt-1 mat-body-2 fw-bold"></span>
+    <mat-card class="outline-card overflow-y w-break">
+        <mat-card-content>
+            <pre [innerHtml]="jsonData | json"></pre>
+        </mat-card-content>
+    </mat-card>
 </ng-template>

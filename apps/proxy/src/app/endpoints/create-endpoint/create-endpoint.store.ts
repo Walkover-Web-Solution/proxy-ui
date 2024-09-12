@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
-import { IProjects } from '@proxy/models/logs-models';
 import { errorResolver, IPaginatedResponse } from '@proxy/models/root-models';
 import { EndpointService } from '@proxy/services/proxy/endpoint';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
@@ -56,12 +54,16 @@ export class CreateEndpointComponentStore extends ComponentStore<ICreateEndpoint
     });
     readonly updateEndpoint = this.effect(
         (
-            data: Observable<{ projectId: string | number; endpointId: string | number; body: { [key: string]: any } }>
+            data: Observable<{
+                envProjectId: string | number;
+                endpointId: string | number;
+                body: { [key: string]: any };
+            }>
         ) => {
             return data.pipe(
                 switchMap((req) => {
                     this.patchState({ isLoading: true });
-                    return this.service.updateEndpoint(req.projectId, req.endpointId, req.body).pipe(
+                    return this.service.updateEndpoint(req.envProjectId, req.endpointId, req.body).pipe(
                         tapResponse(
                             (res: any) => {
                                 if (res?.hasError) {
@@ -89,11 +91,11 @@ export class CreateEndpointComponentStore extends ComponentStore<ICreateEndpoint
         }
     );
     readonly getSingleEndpoint = this.effect(
-        (data: Observable<{ projectId: string | number; endpointId: string | number }>) => {
+        (data: Observable<{ envProjectId: string | number; endpointId: string | number }>) => {
             return data.pipe(
                 switchMap((req) => {
                     this.patchState({ isLoading: true });
-                    return this.service.getSingleEndpont(req.projectId, req.endpointId).pipe(
+                    return this.service.getSingleEndpont(req.envProjectId, req.endpointId).pipe(
                         tapResponse(
                             (res: any) => {
                                 if (res?.hasError) {
@@ -102,6 +104,7 @@ export class CreateEndpointComponentStore extends ComponentStore<ICreateEndpoint
                                 }
                                 return this.patchState({
                                     singleEndpointData: res.data,
+                                    isLoading: false,
                                 });
                             },
                             (error: any) => {

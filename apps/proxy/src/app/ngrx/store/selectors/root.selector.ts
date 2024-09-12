@@ -34,11 +34,8 @@ export const selectProjectInProcess = createSelector(
     (rootState: IRootState) => rootState.projectInProcess
 );
 
-export const selectAllVerificationIntegration = createSelector(
-    selectRootState,
-    (rootState: IRootState) => rootState.allVerficationIntegration
-);
+export const selectAllPolicies = createSelector(selectRootState, (rootState: IRootState) => rootState.allPolicies);
 export const selectVerficationIntergrationInProcess = createSelector(
     selectRootState,
-    (rootState: IRootState) => rootState.verificationIntegrationProcess
+    (rootState: IRootState) => rootState.policiesProcess
 );

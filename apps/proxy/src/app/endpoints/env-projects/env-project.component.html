@@ -1,5 +1,6 @@
-<div class="app-content d-flex flex-column">
-    <ng-container *ngIf="step === 1">
+<div class="app-content d-flex flex-column" *ngIf="loading$ | async as loading">
+    <proxy-loader *ngIf="loading.dataLoading"></proxy-loader>
+    <ng-container>
         <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
             <proxy-lib-search
                 [matFormFieldClass]="'no-padding w-xs-100'"
@@ -27,11 +28,10 @@
             <div class="project-layout">
                 <div
                     class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center project-card bg-light-grey cursor-pointer"
-                    *ngFor="let project of (envProject$ | async)?.data"
-                    [routerLink]="[project.project_name, project.slug, project?.id]"
+                    *ngFor="let project of (getProject$ | async)?.data"
+                    [routerLink]="[project?.id, project?.name]"
                 >
-                    <p class="mat-body-2">{{ project.project_name }}</p>
-                    <p class="mat-body-2 text-secondary fw-bold">{{ project.environment_name }}</p>
+                    <p class="mat-body-2">{{ project.name }}</p>
                 </div>
             </div>
         </div>

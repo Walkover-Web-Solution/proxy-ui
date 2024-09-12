@@ -1,15 +1,24 @@
-<div class="app-content">
-    <div class="d-flex align-items-center">
+<div class="app-content p-4">
+    <div class="d-flex align-items-center mb-3">
         <button type="button" mat-icon-button color="primary" [routerLink]="[updateEndpoint ? '../../' : '../']">
             <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
         </button>
-        <h4 class="my-0 text-secondary mat-body-1 fw-bold">Back</h4>
+        <p class="my-0 text-secondary mat-body-1 fw-bold">{{ projectName }}</p>
     </div>
-    <mat-card class="outline-card responsive-card flex-grow-1 m-2">
-        <h4 class="text-secondary mat-body-1 fw-bold">Define New Endpoint</h4>
+    <mat-card class="outline-card responsive-card flex-grow-1">
+        <h4 class="text-secondary mat-body-1 fw-bold">Choose Environment</h4>
         <mat-card-content>
             <div class="table-scroll" [formGroup]="endpointForm">
                 <p class="mat-body-2 mt-0 fw-bold">Step-1</p>
+                <div class="d-flex w-50 gap-3">
+                    <mat-form-field class="w-24">
+                        <mat-hint>Choose Environment</mat-hint>
+                        <mat-select placeholder="Select" formControlName="methodType">
+                            <mat-option [value]="type" *ngFor="let type of requestTypes">{{ type }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <p class="mat-body-2 mt-0 fw-bold">Step-2</p>
                 <div class="d-flex w-50 gap-3">
                     <mat-form-field class="w-24">
                         <mat-hint>Define Request type & Endpoint</mat-hint>
@@ -36,9 +45,9 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <p class="mat-body-2 fw-bold">Step-2</p>
+                <p class="mat-body-2 fw-bold">Step-3</p>
                 <div class="d-flex align-items-baseline gap-5">
-                    <mat-checkbox formControlName="sameAsProject" (change)="onChange($event)"
+                    <mat-checkbox formControlName="sameAsProject" (change)="onChange($event.checked)"
                         >Policy as per Project</mat-checkbox
                     >
 
@@ -50,16 +59,16 @@
                             placeholder="Select"
                             formControlName="verificationMethod"
                             [disabled]="isVerfiacationDisable"
-                            (selectionChange)="onSelectionChange($event)"
+                            (selectionChange)="onSelectionChange($event.value)"
                         >
                             <mat-option value="Define New Method">{{ defineNewMethod }}</mat-option>
-                            <mat-option [value]="type.name" *ngFor="let type of getVerficationIntgration$ | async">{{
+                            <mat-option [value]="type.name" *ngFor="let type of (getPolicies$ | async)?.data">{{
                                 type.name
                             }}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <p class="mat-body-2 fw-bold">Step-3</p>
+                <p class="mat-body-2 fw-bold">Step-4</p>
                 <h5 class="my-0 text-secondary mat-body-2 fw-bold">Forward To</h5>
                 <div class="d-flex">
                     <div *ngFor="let option of forwardTo; let last = last" class="d-flex align-items-center">
@@ -70,29 +79,8 @@
                         <p class="mat-body-2 m-4" *ngIf="!last">OR</p>
                     </div>
                 </div>
-                <p class="mat-body-2 fw-bold">Step-4</p>
-                <div class="d-flex w-50 gap-3">
-                    <ng-container
-                        *ngTemplateOutlet="
-                            inputField;
-                            context: {
-                                fieldControl: endpointForm.get('sessionTime'),
-                                fieldConfig: {
-                                    label: 'sessionTime',
-                                    is_required: true,
-                                    type: 'number'
-                                }
-                            }
-                        "
-                    ></ng-container>
-                    <mat-form-field class="w-100">
-                        <mat-hint>Session time</mat-hint>
+                <p class="mat-body-2 fw-bold">Step-5</p>
 
-                        <mat-select placeholder="Select Unit" formControlName="timeUnit">
-                            <mat-option [value]="type" *ngFor="let type of timeUnit">{{ type }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
                 <div class="d-flex gap-3 w-50">
                     <ng-container
                         *ngTemplateOutlet="

@@ -47,13 +47,10 @@ const routes: Routes = [
 
         MatListModule,
         ServicesProxyFeaturesModule,
-        MatChipsModule,
         MatCheckboxModule,
-        MatButtonToggleModule,
 
-        MatTabsModule,
         MatSlideToggleModule,
-        UiCopyButtonModule,
+
         MatDialogModule,
     ],
     exports: [],

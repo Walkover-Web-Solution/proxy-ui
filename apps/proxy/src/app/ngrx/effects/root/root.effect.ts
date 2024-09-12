@@ -92,21 +92,21 @@ export class RootEffects {
             })
         )
     );
-    getAllVerficationIntegration = createEffect(() =>
+    getAllPolicies = createEffect(() =>
         this.actions$.pipe(
-            ofType(rootActions.getVerificationIntegration),
+            ofType(rootActions.getPolicies),
             switchMap((req) => {
-                return this.rootService.getVerficationIntegration().pipe(
+                return this.rootService.getPolicies().pipe(
                     map((res) => {
                         if (res.hasError) {
                             this.showError(res.errors);
-                            rootActions.getVerificationIntegrationError();
+                            rootActions.getPoliciesError();
                         }
-                        return rootActions.getVerificationIntegrationSuccess({ response: res.data });
+                        return rootActions.getPoliciesSuccess({ response: res.data });
                     }),
                     catchError((err) => {
                         this.showError(err.errors);
-                        return of(rootActions.getVerificationIntegrationError);
+                        return of(rootActions.getPoliciesError);
                     })
                 );
             })

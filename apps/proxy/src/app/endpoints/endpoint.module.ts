@@ -26,6 +26,7 @@ import { NewMethodDialogComponent } from './new-method-dialog/new-method-dialog.
 import { ServicesProxyEndpointModule } from '@proxy/services/proxy/endpoint';
 import { DirectivesSkeletonModule } from '@proxy/directives/skeleton';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const routes: Routes = [
     {
@@ -34,15 +35,15 @@ const routes: Routes = [
         pathMatch: 'full',
     },
     {
-        path: ':projectName/:projectSlug/:projectId',
+        path: ':projectId/:projectName',
         loadChildren: () => import('./endpoint-list/endpoint-list.module').then((p) => p.EndpointListModule),
     },
     {
-        path: ':projectName/:projectSlug/:projectId/create',
+        path: ':projectId/:projectName/create',
         loadChildren: () => import('./create-endpoint/create-endpoint.module').then((p) => p.CreateEndpointModule),
     },
     {
-        path: ':projectName/:projectSlug/:projectId/update/:endpointId',
+        path: ':projectName/:projectSlug/:projectId/:envProjectId/update/:endpointId',
         loadChildren: () => import('./create-endpoint/create-endpoint.module').then((p) => p.CreateEndpointModule),
     },
 ];
@@ -75,6 +76,7 @@ const routes: Routes = [
         ServicesProxyEndpointModule,
         DirectivesSkeletonModule,
         MatSlideToggleModule,
+        MatTooltipModule,
     ],
     exports: [RouterModule],
 })

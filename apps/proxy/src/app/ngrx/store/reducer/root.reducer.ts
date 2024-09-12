@@ -1,6 +1,6 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { rootActions } from '../../actions';
-import { IClient, IClientSettings, IPaginatedResponse } from '@proxy/models/root-models';
+import { IClient, IClientSettings, IPaginatedResponse, IPoliciesData } from '@proxy/models/root-models';
 import { IProjects } from '@proxy/models/logs-models';
 
 export interface IRootState {
@@ -20,8 +20,8 @@ export interface IRootState {
     projectInProcess: boolean;
 
     //  All Verfication Integrations
-    allVerficationIntegration: IPaginatedResponse<IProjects[]>;
-    verificationIntegrationProcess: boolean;
+    allPolicies: IPaginatedResponse<IPoliciesData[]>;
+    policiesProcess: boolean;
 }
 
 export const initialState: IRootState = {
@@ -40,8 +40,8 @@ export const initialState: IRootState = {
     projectInProcess: false,
     allProjects: null,
     //All Integration
-    allVerficationIntegration: null,
-    verificationIntegrationProcess: false,
+    allPolicies: null,
+    policiesProcess: false,
 };
 
 export function rootReducer(state: IRootState, action: Action) {
@@ -146,24 +146,24 @@ const _rootReducer = createReducer(
         };
     }),
     // Get all VerficationIntegration
-    on(rootActions.getVerificationIntegration, (state) => {
+    on(rootActions.getPolicies, (state) => {
         return {
             ...state,
-            verificationIntegrationProcess: true,
+            policiesProcess: true,
         };
     }),
-    on(rootActions.getVerificationIntegrationSuccess, (state, { response }) => {
+    on(rootActions.getPoliciesSuccess, (state, { response }) => {
         return {
             ...state,
-            allVerficationIntegration: response,
-            verificationIntegrationProcess: false,
+            allPolicies: response,
+            policiesProcess: false,
         };
     }),
-    on(rootActions.getVerificationIntegrationError, (state) => {
+    on(rootActions.getPoliciesError, (state) => {
         return {
             ...state,
-            allVerficationIntegration: null,
-            verificationIntegrationProcess: false,
+            allPolicies: null,
+            policiesProcess: false,
         };
     })
 );
