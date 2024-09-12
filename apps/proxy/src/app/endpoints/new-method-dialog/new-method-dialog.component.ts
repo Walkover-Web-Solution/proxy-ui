@@ -107,8 +107,6 @@ export class NewMethodDialogComponent extends BaseComponent implements OnInit {
                 });
             }
             this.defineMethodForm.controls.policyDetails.push(PolicyFormGroup);
-            console.log(PolicyFormGroup);
-            console.log(this.defineMethodForm.get('policyDetails'));
         });
 
         if (this.showPage === 'viasocket') {
@@ -144,11 +142,9 @@ export class NewMethodDialogComponent extends BaseComponent implements OnInit {
     }
     public onsave() {
         const selectedPolicies = cloneDeep(this.selectedPolicy.getValue());
-        console.log(this.selectedPolicy);
-        console.log(selectedPolicies);
+
         const formData = this.defineMethodForm.value;
-        console.log(formData);
-        console.log('hello');
+
         const data = this.getPolicyPayload(selectedPolicies);
         const payload = {
             name: this.defineMethodForm.get('policyName').value,
