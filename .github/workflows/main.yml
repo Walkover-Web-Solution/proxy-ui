@@ -22,40 +22,45 @@ jobs:
     steps:
       # Checkout your repository using the latest version
       - name: Check out Git repository
-        uses: actions/checkout@v4  # Update to v4
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
+          fetch-depth: 0  # Fetch full history to avoid merge-base issues
 
-      - name: Fetch branches
-        run: git fetch --no-tags --prune --depth=5
+      # Fetch all branches fully to ensure 'nx affected' works correctly
+      - name: Fetch all branches
+        run: git fetch origin +refs/heads/*:refs/remotes/origin/*
 
       # Install Node.js & NPM using the latest setup-node action
       - name: Install Node.js & NPM
-        uses: actions/setup-node@v3  # Ensure v3 is used here
+        uses: actions/setup-node@v3
         with:
           node-version: "20"  # Ensure Node.js 20 is used
 
       # Runs npm install
-      - uses: bahmutov/npm-install@v1
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
         env:
           CYPRESS_INSTALL_BINARY: 0
         with:
           useRollingCache: true
-          working-directory: .
           install-command: npm ci --audit false
 
+      # Extract branch name
       - name: Starting build check
         shell: bash
         run: echo "branch_name=${GITHUB_REF##*/}" >> $GITHUB_ENV
         id: extract_branch
 
       # Conditional build steps based on the target branch
-      - if: ${{github.event.pull_request.base.ref == 'main'}}
-        run: npx nx affected --target=build --base='origin/main' --configuration=local
+      - name: Build for main branch
+        if: ${{github.event.pull_request.base.ref == 'main'}}
+        run: npx nx affected --target=build --base='origin/main' --head=HEAD --configuration=local
 
-      - if: ${{github.event.pull_request.base.ref == 'production'}}
-        run: npx nx affected --target=build --base='origin/production' --configuration=local
+      - name: Build for production branch
+        if: ${{github.event.pull_request.base.ref == 'production'}}
+        run: npx nx affected --target=build --base='origin/production' --head=HEAD --configuration=local
 
-      - if: ${{github.event.pull_request.base.ref == 'development'}}
-        run: npx nx affected --target=build --base='origin/development' --configuration=local
+      - name: Build for development branch
+        if: ${{github.event.pull_request.base.ref == 'development'}}
+        run: npx nx affected --target=build --base='origin/development' --head=HEAD --configuration=local
