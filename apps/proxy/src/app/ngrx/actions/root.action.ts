@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { IClient, IClientSettings, IPaginatedResponse } from '@proxy/models/root-models';
+import { IProjects } from '@proxy/models/logs-models';
+import { IClient, IClientSettings, IPaginatedResponse, IPoliciesData } from '@proxy/models/root-models';
 
 export const headerTitleAction = createAction('[Set header name] Header Title Action ', props<{ title: string }>());
 
@@ -27,3 +28,7 @@ export const switchClientError = createAction('[[Client Setting] Switch Client E
 export const getAllProject = createAction('[project] Get All Projests');
 export const getAllProjectSuccess = createAction('[project] Get All Projects Success', props<{ response: any }>());
 export const getAllProjectsError = createAction('[project] Get All Project Error');
+
+export const getPolicies = createAction('[verfication] Get All Integration');
+export const getPoliciesSuccess = createAction('[verfication] Get All Integration Success', props<{ response: any }>());
+export const getPoliciesError = createAction('[verfication] Get All Integration Error');

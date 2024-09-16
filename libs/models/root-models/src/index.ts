@@ -1,3 +1,5 @@
+import { ICreatedOrUpdatedBy } from '@proxy/models/logs-models';
+
 export class BaseResponse<T, TRequest> {
     public data: T;
     public status: 'success' | 'fail';
@@ -109,4 +111,13 @@ export interface IClient {
     deleted_at?: string;
     stage: string;
     settings: { [key: string]: any };
+}
+export interface IPoliciesData {
+    id: number;
+    name: string;
+    configuration_id: number;
+    created_at: string;
+    updated_at: string;
+    created_by?: ICreatedOrUpdatedBy;
+    updated_by?: ICreatedOrUpdatedBy;
 }

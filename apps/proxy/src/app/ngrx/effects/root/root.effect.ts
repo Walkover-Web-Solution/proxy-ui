@@ -92,6 +92,26 @@ export class RootEffects {
             })
         )
     );
+    getAllPolicies = createEffect(() =>
+        this.actions$.pipe(
+            ofType(rootActions.getPolicies),
+            switchMap((req) => {
+                return this.rootService.getPolicies().pipe(
+                    map((res) => {
+                        if (res.hasError) {
+                            this.showError(res.errors);
+                            rootActions.getPoliciesError();
+                        }
+                        return rootActions.getPoliciesSuccess({ response: res.data });
+                    }),
+                    catchError((err) => {
+                        this.showError(err.errors);
+                        return of(rootActions.getPoliciesError);
+                    })
+                );
+            })
+        )
+    );
 
     private showError(error): void {
         const errorMessage = errorResolver(error);

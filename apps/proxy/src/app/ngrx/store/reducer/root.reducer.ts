@@ -1,6 +1,6 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { rootActions } from '../../actions';
-import { IClient, IClientSettings, IPaginatedResponse } from '@proxy/models/root-models';
+import { IClient, IClientSettings, IPaginatedResponse, IPoliciesData } from '@proxy/models/root-models';
 import { IProjects } from '@proxy/models/logs-models';
 
 export interface IRootState {
@@ -18,6 +18,10 @@ export interface IRootState {
     //All project
     allProjects: IPaginatedResponse<IProjects[]>;
     projectInProcess: boolean;
+
+    //  All Verfication Integrations
+    allPolicies: IPaginatedResponse<IPoliciesData[]>;
+    policiesProcess: boolean;
 }
 
 export const initialState: IRootState = {
@@ -32,8 +36,12 @@ export const initialState: IRootState = {
     clients: null,
     clientsInProcess: false,
     swtichClientSuccess: false,
+    //All Projects
     projectInProcess: false,
     allProjects: null,
+    //All Integration
+    allPolicies: null,
+    policiesProcess: false,
 };
 
 export function rootReducer(state: IRootState, action: Action) {
@@ -116,7 +124,7 @@ const _rootReducer = createReducer(
             swtichClientSuccess: false,
         };
     }),
-
+    //Get all Project
     on(rootActions.getAllProject, (state) => {
         return {
             ...state,
@@ -135,6 +143,27 @@ const _rootReducer = createReducer(
             ...state,
             projects: null,
             projectInProcess: false,
+        };
+    }),
+    // Get all VerficationIntegration
+    on(rootActions.getPolicies, (state) => {
+        return {
+            ...state,
+            policiesProcess: true,
+        };
+    }),
+    on(rootActions.getPoliciesSuccess, (state, { response }) => {
+        return {
+            ...state,
+            allPolicies: response,
+            policiesProcess: false,
+        };
+    }),
+    on(rootActions.getPoliciesError, (state) => {
+        return {
+            ...state,
+            allPolicies: null,
+            policiesProcess: false,
         };
     })
 );

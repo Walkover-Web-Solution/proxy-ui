@@ -43,4 +43,7 @@ export class RootService {
     public getProjects(): Observable<BaseResponse<IProjects, void>> {
         return this.http.get<BaseResponse<IProjects, void>>(RootUrls.getProject(this.baseUrl));
     }
+    public getPolicies(): Observable<BaseResponse<IProjects[], void>> {
+        return this.http.get<BaseResponse<IProjects, void>>(RootUrls.getPolicies(this.baseUrl));
+    }
 }

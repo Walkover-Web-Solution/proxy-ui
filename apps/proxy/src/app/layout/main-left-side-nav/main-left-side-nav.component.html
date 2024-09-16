@@ -37,6 +37,18 @@
         </a>
         <a
             mat-list-item
+            [routerLink]="['endpoints']"
+            routerLinkActive="active-list-item"
+            [matTooltipPosition]="'right'"
+            [matTooltip]="isSideNavOpen ? 'Endpoints' : ''"
+        >
+            <mat-icon matListIcon class="mat-icon-20 material-icons-outlined p-0" aria-hidden="false"
+                >subdirectory_arrow_right</mat-icon
+            >
+            <span matLine class="menu-list-span menu-label">Endpoints</span>
+        </a>
+        <a
+            mat-list-item
             [routerLink]="['chatbot']"
             routerLinkActive="active-list-item"
             [matTooltipPosition]="'right'"
