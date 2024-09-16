@@ -50,6 +50,7 @@ export class EndpointsComponent extends BaseComponent implements OnInit {
     public getEnvProject() {
         this.componentStore.getEnvProject({ ...this.params });
     }
+
     public showEndpoints(id?: any, projectName?: string, slug?: string) {
         if (id) {
             this.projectId = id;

@@ -20,6 +20,7 @@ export class CreateEndpointComponentStore extends ComponentStore<ICreateEndpoint
             isLoading: null,
         });
     }
+
     readonly singleEndpointData$: Observable<IPaginatedResponse<IEndpointsRes[]>> = this.select(
         (state) => state.singleEndpointData
     );
@@ -52,6 +53,7 @@ export class CreateEndpointComponentStore extends ComponentStore<ICreateEndpoint
             })
         );
     });
+
     readonly updateEndpoint = this.effect(
         (
             data: Observable<{
@@ -90,6 +92,7 @@ export class CreateEndpointComponentStore extends ComponentStore<ICreateEndpoint
             );
         }
     );
+
     readonly getSingleEndpoint = this.effect(
         (data: Observable<{ envProjectId: string | number; endpointId: string | number }>) => {
             return data.pipe(
@@ -117,6 +120,7 @@ export class CreateEndpointComponentStore extends ComponentStore<ICreateEndpoint
             );
         }
     );
+
     private showError(error): void {
         const errorMessage = errorResolver(error);
         errorMessage.forEach((error) => {

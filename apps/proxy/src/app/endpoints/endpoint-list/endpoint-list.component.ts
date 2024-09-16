@@ -50,16 +50,22 @@ export class EndpointListComponent extends BaseComponent implements OnInit {
                 this.showEndpoint();
             }
         });
+
         this.deleteEndpoint$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((value) => {
             this.showEndpoint();
         });
+
         this.statusUpdat$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
             this.showEndpoint();
         });
     }
-    endpointToggle(value, projectId: number, id: number) {
-        event.stopPropagation();
 
+    public onToggleChange(event, element) {
+        event.stopPropagation();
+        this.endpointToggle(!element.is_active, element?.environment_project?.id, element?.id);
+    }
+
+    public endpointToggle(value, projectId: number, id: number) {
         const payload = {
             is_active: value,
         };
@@ -69,9 +75,11 @@ export class EndpointListComponent extends BaseComponent implements OnInit {
             body: payload,
         });
     }
+
     public getSingleEndpointData(value: string, projectId: number, endPointId: number) {
         this.showdialog({ type: value, projectId: projectId, endpointId: endPointId });
     }
+
     public showdialog(value): void {
         this.dialog.open(NewMethodDialogComponent, {
             panelClass: ['mat-dialog', 'mat-right-dialog', 'mat-dialog-xlg'],
@@ -83,11 +91,11 @@ export class EndpointListComponent extends BaseComponent implements OnInit {
     public showEndpoint() {
         this.componentStore.getEndpointData({ id: this.projectId });
     }
-    public stopPropagation(event) {
-        event.stopPropagation();
-    }
-    public deleteSingleEndpoint(projectId: string, id: number) {
-        event.stopPropagation();
+    // public stopPropagation(event) {
+    //     event.stopPropagation();
+    // }
+    public deleteSingleEndpoint(projectId: string, id: number, event) {
+        event.stopPropagation(event);
         this.componentStore.deleteEndpoint({ projectId: projectId, endpointId: id });
     }
 }

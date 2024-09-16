@@ -50,3 +50,8 @@ export enum FormwardToNum {
     Operation = 3,
     Endpoint = 1,
 }
+export enum DialogPage {
+    NewPolicy = 'newMethod',
+    Viasocket = 'viasocket',
+    EndpointList = 'endpointData',
+}

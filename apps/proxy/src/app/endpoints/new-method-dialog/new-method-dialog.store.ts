@@ -52,6 +52,7 @@ export class NewMethodDialogComponentStore extends ComponentStore<IPoliciesIniti
             })
         );
     });
+
     readonly createPolicies = this.effect((data: Observable<{ [key: string]: any }>) => {
         return data.pipe(
             switchMap((req) => {
@@ -77,6 +78,7 @@ export class NewMethodDialogComponentStore extends ComponentStore<IPoliciesIniti
             })
         );
     });
+
     readonly getSingleEndpointData = this.effect(
         (data: Observable<{ projectId: string | number; endpointId: string | number }>) => {
             return data.pipe(
@@ -104,6 +106,7 @@ export class NewMethodDialogComponentStore extends ComponentStore<IPoliciesIniti
             );
         }
     );
+
     private showError(error): void {
         const errorMessage = errorResolver(error);
         errorMessage.forEach((error) => {

@@ -24,25 +24,20 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
     public requestTypes: Array<string> = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
     public defineNewMethod: string = 'Define New Method';
     public forwardTo: string[] = ['Same as Endpoint', 'Perform operation', 'Configure Viasocket'];
-    // public timeUnit: Array<string> = ['Hour', 'Day'];
     public position: Array<string> = ['exactMatch', 'endsWith', 'startsWith'];
     public isVerfiacationDisable = false;
     public selectedButton: String;
     public forwardToNum: number;
-    // public updateForm: boolean = false;
-    // public singleEndpointData: any;
     public projectId: number;
     public projectName: string;
     public envProjectId: number;
     public endpointId: number;
     public projectSlug: string;
-    // public selectedValue: string;
     public buttonLable: ButtonLabels;
     public forward: FormwardToNum;
     public selectedPolicy: string;
     public getPolicies$: Observable<IPaginatedResponse<IPoliciesData[]>>;
     public updateEndpoint: boolean = false;
-    // public getVerficationIntgration$: Observable<IPaginatedResponse<IProjects[]>>;
     public logInData$: Observable<IFirebaseUserModel>;
     public environmentParams = {
         itemsPerPage: 10,
@@ -76,19 +71,22 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadPolicyData();
+
         this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
             this.extractParams(params);
         });
+
         this.singleEndpointData$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
             if (data) {
                 this.setUpdateFormData(data);
-                // this.singleEndpointData = data;
             }
         });
     }
+
     public loadPolicyData() {
         this.store.dispatch(rootActions.getPolicies());
     }
+
     private extractParams(params) {
         this.projectId = params?.projectId;
         this.projectSlug = params?.projectSlug;
@@ -100,6 +98,7 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
             this.editEndpoint(this.endpointId);
         }
     }
+
     private setUpdateFormData(data: any): void {
         const [limit, time] = data.rate_limiter.split(':');
         this.endpointForm.patchValue({
@@ -123,6 +122,7 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
             data: value,
         });
     }
+
     onSelectionChange(value: string): void {
         if (value === this.defineNewMethod) {
             this.showdialog({ type: 'newMethod', projectSlug: this.projectSlug });
@@ -130,6 +130,7 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
             this.selectedPolicy = value;
         }
     }
+
     selectButton(value: any): void {
         if (value === ButtonLabels.ConfigureViasocket) {
             this.forwardToNum = FormwardToNum.Viasocket;
@@ -142,9 +143,11 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
             this.forwardToNum = FormwardToNum.Endpoint;
         }
     }
+
     onChange(value) {
         this.isVerfiacationDisable = value;
     }
+
     public onSaveUpdate(): void {
         const endpointFromData = this.endpointForm.value;
         const payload = {
@@ -165,6 +168,7 @@ export class CreateEndpointComponent extends BaseComponent implements OnInit {
             });
         }
     }
+
     public editEndpoint(endPointId: number): void {
         this.componentStore.getSingleEndpoint({ envProjectId: this.envProjectId, endpointId: endPointId });
     }

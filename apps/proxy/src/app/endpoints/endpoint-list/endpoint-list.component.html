@@ -77,14 +77,7 @@
                             <ng-container *ngIf="!loading.dataLoading; else loadingRef">
                                 <mat-slide-toggle
                                     [checked]="element?.is_active"
-                                    (click)="stopPropagation($event)"
-                                    (change)="
-                                        endpointToggle(
-                                            !element.is_active,
-                                            element?.environment_project?.id,
-                                            element?.id
-                                        )
-                                    "
+                                    (click)="onToggleChange($event, element)"
                                 ></mat-slide-toggle>
                             </ng-container>
                         </td>
@@ -109,7 +102,9 @@
                                     <button
                                         mat-stroked-button
                                         color="Danger"
-                                        (click)="deleteSingleEndpoint(element.environment_project.id, element.id)"
+                                        (click)="
+                                            deleteSingleEndpoint(element.environment_project.id, element.id, $event)
+                                        "
                                         class="mat-btn-md"
                                     >
                                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"

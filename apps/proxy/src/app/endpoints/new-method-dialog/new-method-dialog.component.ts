@@ -31,6 +31,7 @@ type PolicyFormGroup = FormGroup<{
 })
 export class NewMethodDialogComponent extends BaseComponent implements OnInit {
     public dialogStep = 0;
+
     public showPage: string;
     public projectSlug: string;
     public projectId: number | string;
@@ -81,9 +82,11 @@ export class NewMethodDialogComponent extends BaseComponent implements OnInit {
                 this.projectSlug = params.projectSlug;
             }
         });
+
         if (this.showPage === 'newMethod') {
             this.getPolicy();
         }
+
         this.selectedPolicy.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((policy) => {
             this.defineMethodForm.controls.policyDetails.clear();
             const PolicyFormGroup: PolicyFormGroup = new FormGroup({
@@ -132,14 +135,17 @@ export class NewMethodDialogComponent extends BaseComponent implements OnInit {
             });
         }
     }
+
     public closeDialog(): void {
         this.dialogRef.close();
     }
+
     onSelectionChange(event: any) {
         const policy = this.getValueFromObservable(this.policyType$);
         this.configureId = event.value.service_id;
         this.selectedPolicy.next(policy.find((policy) => policy.name === event.value.name));
     }
+
     public onsave() {
         const selectedPolicies = cloneDeep(this.selectedPolicy.getValue());
 
@@ -158,6 +164,7 @@ export class NewMethodDialogComponent extends BaseComponent implements OnInit {
         };
         this.ComponentStore.createPolicies(payload);
     }
+
     private getPolicyPayload(selectedPolicies) {
         const policies = [];
         this.defineMethodForm.controls.policyDetails.controls.forEach((formGroup, index) => {
@@ -172,6 +179,7 @@ export class NewMethodDialogComponent extends BaseComponent implements OnInit {
         });
         return policies;
     }
+
     private setFormDataInPayload(
         payloadObject: { [key: string]: any },
         formDataObject: { [key: string]: any },
@@ -187,6 +195,7 @@ export class NewMethodDialogComponent extends BaseComponent implements OnInit {
             }
         });
     }
+
     public getValueOtherThanForm(config, index: number): Promise<any> {
         const key = `${config.label}_${index}`;
         if (config.type === PolicyFieldType.ReadFile) {
@@ -201,6 +210,7 @@ export class NewMethodDialogComponent extends BaseComponent implements OnInit {
             return null;
         }
     }
+
     private isFileAllowed(file: File, fileRegex: string): boolean {
         if (file?.type) {
             return Boolean(file?.type?.match(fileRegex));
@@ -209,6 +219,7 @@ export class NewMethodDialogComponent extends BaseComponent implements OnInit {
             return Boolean(('.' + nameSplit[nameSplit?.length - 1])?.match(fileRegex));
         }
     }
+
     public updateFileValue(fileKey: string, fieldConfig, fieldControl: FormControl, value: FileList): void {
         if (value) {
             let fileRegex = null;
@@ -239,6 +250,7 @@ export class NewMethodDialogComponent extends BaseComponent implements OnInit {
             fieldControl.reset();
         }
     }
+
     public createFormControl(config: any, index?: number, value: any = null) {
         if (!config.is_hidden) {
             const validators: ValidatorFn[] = [];
@@ -272,6 +284,7 @@ export class NewMethodDialogComponent extends BaseComponent implements OnInit {
             return null;
         }
     }
+
     public handleDropdownData(data: any[], controlName: string): void {
         if (data && typeof data[0] === 'string') {
             this.dropdownData[controlName] = data.map((val) => ({
@@ -285,9 +298,11 @@ export class NewMethodDialogComponent extends BaseComponent implements OnInit {
         }
         this.fetchDropdownData[controlName].next(false);
     }
+
     public getSingleEndpointData(projectId, endpointId) {
         this.ComponentStore.getSingleEndpointData({ projectId: projectId, endpointId: endpointId });
     }
+
     private getPolicy() {
         this.ComponentStore.getPolicies();
     }

@@ -32,6 +32,7 @@ export class EndPointListComponentStore extends ComponentStore<IEndpointInitialS
         (state) => state.endPointData
     );
     readonly deleteEndpoint$: Observable<any> = this.select((state) => state.deleteEndpoint);
+
     readonly getEndpointData = this.effect((data: Observable<{ id: string | number }>) => {
         return data.pipe(
             switchMap((req) => {
@@ -60,6 +61,7 @@ export class EndPointListComponentStore extends ComponentStore<IEndpointInitialS
             })
         );
     });
+
     deleteEndpoint = this.effect((data: Observable<{ projectId: string | number; endpointId: string | number }>) => {
         return data.pipe(
             switchMap((req) => {
@@ -90,6 +92,7 @@ export class EndPointListComponentStore extends ComponentStore<IEndpointInitialS
             })
         );
     });
+
     readonly updateEndpoint = this.effect(
         (
             data: Observable<{

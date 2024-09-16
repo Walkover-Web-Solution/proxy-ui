@@ -19,11 +19,13 @@ export class EnvProjectComponentStore extends ComponentStore<IEnvProjectInitialS
             isLoading: null,
         });
     }
+
     readonly loading$: Observable<{ [key: string]: boolean }> = this.select((state) => ({
         dataLoading: state.isLoading,
     }));
 
     readonly envProject$: Observable<IPaginatedResponse<IEnvProject[]>> = this.select((state) => state.envProjects);
+
     readonly getEnvProject = this.effect((data: Observable<IReqParams>) => {
         return data.pipe(
             switchMap((req) => {
@@ -52,6 +54,7 @@ export class EnvProjectComponentStore extends ComponentStore<IEnvProjectInitialS
             })
         );
     });
+
     private showError(error): void {
         const errorMessage = errorResolver(error);
         errorMessage.forEach((error) => {
