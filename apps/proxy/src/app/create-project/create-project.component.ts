@@ -55,13 +55,13 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
             name: this.fb.control('', [
                 Validators.required,
                 Validators.pattern(CAMPAIGN_NAME_REGEX),
-                CustomValidators.minLengthThreeWithoutSpace,
+                CustomValidators.minLengthFourWithoutSpace,
                 CustomValidators.noStartEndSpaces,
-                Validators.maxLength(20),
+                Validators.maxLength(50),
             ]),
             rateLimitHit: this.fb.control(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
             rateLimitMinite: this.fb.control(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
-            selectedEnvironments: this.fb.control([]),
+            selectedEnvironments: this.fb.control([], Validators.required),
         });
         this.gatewayUrlDetailsForm = this.fb.group<IGatewayUrlDetailsForm>({
             useSameUrlForAll: this.fb.control(false),
