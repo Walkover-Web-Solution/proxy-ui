@@ -97,7 +97,7 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-
+        <mat-error *ngIf="primaryDetailsForm.get('selectedEnvironments')?.touched"> environment is required </mat-error>
         <div class="d-flex gap-2 mt-3 w-50">
             <ng-container
                 *ngTemplateOutlet="
@@ -106,7 +106,9 @@
                         fieldControl: primaryDetailsForm.get('rateLimitHit'),
                         fieldConfig: {
                             label: 'Hits',
-                            type: 'number'
+                            type: 'number',
+                            is_required: true,
+                            hint: 'Define rate limit hit'
                         }
                     }
                 "
@@ -121,7 +123,9 @@
                         fieldControl: primaryDetailsForm.get('rateLimitMinite'),
                         fieldConfig: {
                             label: 'Number',
-                            type: 'number'
+                            type: 'number',
+                            is_required: true,
+                            hint: 'Define rate limit minute'
                         }
                     }
                 "
@@ -184,10 +188,8 @@
 
             <div *ngFor="let slug of environments_with_slug">
                 <h5 class="fw-bold text-secondary mat-body-1 mb-1">{{ slug.name }}</h5>
-                <a class="link" href="slug.url"
-                    >{{ slug.url
-                    }}<proxy-copy-button matSuffix [copyData]="slug.url" tooltip="Copy URL"></proxy-copy-button
-                ></a>
+                <a class="link" href="slug.url">{{ slug.url }} </a>
+                <proxy-copy-button matSuffix [copyData]="slug.url" tooltip="Copy URL"></proxy-copy-button>
             </div>
             <div class="font-12 mt-3">
                 <span class="fw-bolder">Note: </span>
