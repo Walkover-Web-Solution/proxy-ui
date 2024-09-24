@@ -82,7 +82,7 @@
             "
         ></ng-container>
 
-        <mat-form-field appearance="outline" class="no-padding w-100">
+        <mat-form-field appearance="outline" class="w-100">
             <mat-select
                 multiple
                 [formControl]="primaryDetailsForm.get('selectedEnvironments')"
@@ -96,8 +96,13 @@
                     {{ environment.name }}
                 </mat-option>
             </mat-select>
+            <mat-error *ngIf="primaryDetailsForm.get('selectedEnvironments').touched">
+                <mat-error *ngIf="primaryDetailsForm.get('selectedEnvironments')?.errors?.required">
+                    environment is required
+                </mat-error>
+            </mat-error>
         </mat-form-field>
-        <mat-error *ngIf="primaryDetailsForm.get('selectedEnvironments')?.touched"> environment is required </mat-error>
+
         <div class="d-flex gap-2 mt-3 w-50">
             <ng-container
                 *ngTemplateOutlet="

@@ -27,7 +27,8 @@ export class ProjectGuard implements CanActivate {
                     take(1)
                 )
                 .subscribe((res) => {
-                    if (res.data.length === 0) {
+                    // if (res.data.length === 0) {
+                    if (true) {
                         this.router.navigate(['/project']);
                     } else {
                         promiseResolve(true);
