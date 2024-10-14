@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { CreatProjectUrl } from '@proxy/urls/create-project-urls';
 import { IEnvironments, IProjects } from '@proxy/models/logs-models';
 import { ICreateSource } from '@proxy/models/project-model';
+import { IClientData } from '@proxy/models/users-model';
 
 @NgModule({
     imports: [CommonModule],
@@ -24,6 +25,12 @@ export class CreateProjectService {
     public getEnvironments(req: IReqParams): Observable<BaseResponse<IPaginatedResponse<IEnvironments[]>, void>> {
         return this.http.get<BaseResponse<IPaginatedResponse<IEnvironments[]>, void>>(
             CreatProjectUrl.getEnvironment(this.baseURL),
+            req
+        );
+    }
+    public getClientData(req: IReqParams): Observable<BaseResponse<IPaginatedResponse<IClientData[]>, void>> {
+        return this.http.get<BaseResponse<IPaginatedResponse<IClientData[]>, void>>(
+            CreatProjectUrl.getClient(this.baseURL),
             req
         );
     }

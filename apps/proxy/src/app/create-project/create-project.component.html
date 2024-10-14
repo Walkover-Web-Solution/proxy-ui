@@ -193,7 +193,7 @@
 
             <div *ngFor="let slug of environments_with_slug">
                 <h5 class="fw-bold text-secondary mat-body-1 mb-1">{{ slug.name }}</h5>
-                <a class="link" href="slug.url">{{ slug.url }} </a>
+                <a class="link" target="_blank" [href]="slug.url">{{ slug.url }} </a>
                 <proxy-copy-button matSuffix [copyData]="slug.url" tooltip="Copy URL"></proxy-copy-button>
             </div>
             <div class="font-12 mt-3">

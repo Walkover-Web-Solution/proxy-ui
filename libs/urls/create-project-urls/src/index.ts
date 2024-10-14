@@ -5,4 +5,5 @@ export const CreatProjectUrl = {
     getEnvironment: (baseUrl) => createUrl(baseUrl, 'environments'),
     createSource: (baseUrl) => createUrl(baseUrl, 'sourceDomains'),
     updateProject: (baseUrl) => createUrl(baseUrl, 'projects'),
+    getClient: (baseUrl) => createUrl(baseUrl, 'clients'),
 };
