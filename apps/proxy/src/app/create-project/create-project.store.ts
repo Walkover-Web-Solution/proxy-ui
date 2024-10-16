@@ -9,13 +9,15 @@ import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 
 import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
 import { ICreateSource } from '@proxy/models/project-model';
+import { IClientData } from '@proxy/models/users-model';
 
 export interface ICreateProjectInitialState {
     projects: IPaginatedResponse<IProjects[]>;
     environments: IPaginatedResponse<IEnvironments[]>;
     sourceDomain: any;
     isLoading: boolean;
-    getProject: boolean;
+    createProjectSuccess: IProjects;
+    clientData: IPaginatedResponse<IClientData[]>;
 }
 
 @Injectable()
@@ -26,7 +28,8 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
             environments: null,
             sourceDomain: null,
             isLoading: false,
-            getProject: false,
+            createProjectSuccess: null,
+            clientData: null,
         });
     }
 
@@ -35,7 +38,8 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
         (state) => state.environments
     );
     readonly sourceDomain$: Observable<any> = this.select((state) => state.sourceDomain);
-    readonly getProject$: Observable<boolean> = this.select((state) => state.getProject);
+    readonly createProjectSuccess$: Observable<IProjects> = this.select((state) => state.createProjectSuccess);
+    readonly clientData$: Observable<IPaginatedResponse<IClientData[]>> = this.select((state) => state.clientData);
     readonly isLoading$: Observable<boolean> = this.select((state) => state.isLoading);
 
     readonly getEnvironment = this.effect((data: Observable<IReqParams>) => {
@@ -64,6 +68,31 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
             })
         );
     });
+    readonly getClientData = this.effect((data: Observable<IReqParams>) => {
+        return data.pipe(
+            switchMap((req) => {
+                return this.service.getClientData(req).pipe(
+                    tapResponse(
+                        (res: BaseResponse<IPaginatedResponse<IClientData[]>, void>) => {
+                            if (res.hasError) {
+                                this.showError(res.errors);
+                            }
+                            return this.patchState((state) => ({
+                                clientData: res.data,
+                            }));
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            return this.patchState({
+                                clientData: null,
+                            });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
 
     readonly createProject = this.effect((data: Observable<{ [key: string]: any }>) => {
         return data.pipe(
@@ -80,7 +109,7 @@ export class CreateProjectComponentStore extends ComponentStore<ICreateProjectIn
 
                             return this.patchState({
                                 isLoading: false,
-                                getProject: true,
+                                createProjectSuccess: res.data,
                             });
                         },
                         (error: any) => {
