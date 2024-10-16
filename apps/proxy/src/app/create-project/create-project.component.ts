@@ -81,6 +81,25 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
         this.getEnvironment();
         this.clientData$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((res) => {
             this.urlUniqId = res.data[0].url_unique_id;
+            this.projects$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+                if (res) {
+                    const latestProject = [];
+                    for (let i = res.data.length - 1; i >= 0; i--) {
+                        latestProject.push(res.data[i]);
+                    }
+
+                    latestProject.forEach((project) => {
+                        const baseUrl = `${environment.baseUrl}/proxy`;
+                        this.projectId = project.id;
+                        this.environments_with_slug = project.environments_with_slug.map((res) => ({
+                            name: res.name,
+                            url: `${baseUrl}/${this.urlUniqId}/${res.project_slug}`,
+                        }));
+                    });
+                    this.populateGatewayUrls();
+                    this.populateForwardUrls();
+                }
+            });
         });
         this.projects$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
