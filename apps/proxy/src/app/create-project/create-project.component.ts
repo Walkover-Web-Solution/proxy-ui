@@ -228,7 +228,7 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
         const environmentsConfig = selectedEnvironments.reduce(
             (acc, env) => ({
                 ...acc,
-                [env]: { rate_limiter: `${rateLimitHit}:${rateLimitMinite}` },
+                [env]: { rate_limiter: `${rateLimitMinite}:${rateLimitHit}` },
             }),
             {}
         );
