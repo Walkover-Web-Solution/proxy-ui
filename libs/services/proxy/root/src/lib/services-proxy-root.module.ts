@@ -4,6 +4,7 @@ import { BaseResponse, IClientSettings, IClient, IPaginatedResponse, ProxyBaseUr
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { Observable } from 'rxjs';
 import { RootUrls } from '@proxy/urls/root-urls';
+import { IProjects } from '@proxy/models/logs-models';
 
 @NgModule({
     imports: [CommonModule],
@@ -38,5 +39,8 @@ export class RootService {
 
     public generateToken(params: { [key: string]: any } = {}): Observable<BaseResponse<{ jwt: string }, void>> {
         return this.http.get<BaseResponse<{ jwt: string }, void>>(RootUrls.generateToken(this.baseUrl), params);
+    }
+    public getProjects(): Observable<BaseResponse<IProjects, void>> {
+        return this.http.get<BaseResponse<IProjects, void>>(RootUrls.getProject(this.baseUrl));
     }
 }
