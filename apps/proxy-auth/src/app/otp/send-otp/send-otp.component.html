@@ -12,7 +12,7 @@
             "
         ></mat-progress-bar>
         <proxy-send-otp-center
-            *ngIf="(showRegistration | async) === false"
+            *ngIf="!((showRegistration | async) || (showLogin | async))"
             [referenceId]="referenceId"
             [target]="target"
             (togglePopUp)="toggleSendOtp()"
@@ -23,10 +23,21 @@
             *ngIf="showRegistration | async"
             [referenceId]="referenceId"
             [serviceData]="otpWidgetData"
+            [loginServiceData]="loginWidgetData"
+            [registrationViaLogin]="registrationViaLogin"
             (togglePopUp)="setShowRegistration(false)"
             (successReturn)="setShowRegistration(false)"
             (failureReturn)="returnFailureObj($event)"
+            [prefillDetails]="prefillDetails"
         ></proxy-register>
+        <proxy-login
+            *ngIf="showLogin | async"
+            (togglePopUp)="toggleSendOtp()"
+            (closePopUp)="setShowLogin(false)"
+            (openPopUp)="setShowRegistration(true, $event)"
+            (failureReturn)="returnFailureObj($event)"
+        >
+        </proxy-login>
     </div>
     <div class="otp-verification-footer">
         <span>Secured by</span>

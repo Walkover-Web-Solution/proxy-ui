@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash-es';
 import { OtpService } from './../../service/otp.service';
 import { environment } from './../../../../environments/environment';
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { resetAll } from '../../store/actions/otp.action';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store } from '@ngrx/store';
@@ -23,6 +23,9 @@ import { BehaviorSubject, takeUntil } from 'rxjs';
 export class RegisterComponent extends BaseComponent implements AfterViewInit, OnDestroy, OnInit {
     @Input() public referenceId: string;
     @Input() public serviceData: any;
+    @Input() public loginServiceData: any;
+    @Input() public registrationViaLogin: boolean;
+    @Input() public prefillDetails;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public successReturn: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
@@ -58,6 +61,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
     public intlClass: { [key: string]: IntlPhoneLib } = {};
     public apiError = new BehaviorSubject<string[]>(null);
+    public prefilledNumber: Number;
 
     constructor(
         private store: Store<IAppState>,
@@ -77,7 +81,21 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 }
             });
     }
-
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes?.prefillDetails?.currentValue) {
+            this.checkPrefillDetails();
+        }
+    }
+    checkPrefillDetails() {
+        if (isNaN(Number(this.prefillDetails))) {
+            this.registrationForm.get('user.email').setValue(this.prefillDetails);
+            this.registrationForm.get('user.mobile').setValue(null);
+        } else {
+            this.registrationForm.get('user.email').setValue(null);
+            this.prefilledNumber = this.prefillDetails;
+            this.registrationForm.get('user.mobile').setValue(this.prefillDetails);
+        }
+    }
     ngAfterViewInit(): void {
         this.initIntl('user');
         let count = 0;
@@ -103,6 +121,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         const customCssStyleURL = `${environment.baseUrl}/assets/utils/intl-tel-input-custom.css`;
         if (input) {
             this.intlClass[key] = new IntlPhoneLib(input, parentDom, customCssStyleURL);
+            if (this.prefilledNumber) {
+                input.setAttribute('value', `+${this.prefilledNumber}`);
+            }
         }
     }
 
@@ -130,7 +151,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         const formData = removeEmptyKeys(cloneDeep(this.registrationForm.value), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
-                this.serviceData?.state ?? '',
+                this.registrationViaLogin ? this.loginServiceData.state : this.serviceData?.state ?? '',
                 environment.uiEncodeKey,
                 environment.uiIvKey,
                 true
@@ -149,7 +170,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         }
         const payload = {
             reference_id: this.referenceId,
-            service_id: this.serviceData?.service_id,
+            service_id: this.registrationViaLogin ? this.loginServiceData.service_id : this.serviceData.service_id,
             url_unique_id: state?.url_unique_id,
             request_data: formData,
         };
@@ -161,7 +182,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         );
         this.otpService.register({ proxy_state: encodedData }).subscribe(
             (response) => {
-                this.returnSuccess(response);
+                window.location.href = response.data.redirect_url;
             },
             (err) => {
                 this.apiError.next(errorResolver(err?.error.errors));
