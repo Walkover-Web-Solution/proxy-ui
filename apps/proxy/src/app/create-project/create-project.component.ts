@@ -4,7 +4,7 @@ import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex
 import { CustomValidators } from '@proxy/custom-validator';
 import { environment } from '../../environments/environment';
 import { CreateProjectComponentStore } from './create-project.store';
-import { Observable, takeUntil } from 'rxjs';
+import { filter, Observable, takeUntil } from 'rxjs';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import { IEnvironments, IProjects } from '@proxy/models/logs-models';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -17,6 +17,7 @@ import {
     IGatewayUrlDetailsForm,
     IPrimaryDetailsForm,
 } from '@proxy/models/project-model';
+import { IClientData } from '@proxy/models/users-model';
 
 @Component({
     selector: 'proxy-create-project',
@@ -39,9 +40,11 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
     public projects$: Observable<IPaginatedResponse<IProjects[]>>;
     public environments$: Observable<IPaginatedResponse<IEnvironments[]>> = this.componentStore.environments$;
     public sourceDomain$: Observable<any> = this.componentStore.sourceDomain$;
-    public getProject$: Observable<boolean> = this.componentStore.getProject$;
+    public createProjectSuccess$: Observable<IProjects> = this.componentStore.createProjectSuccess$;
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
+    public clientData$: Observable<IPaginatedResponse<IClientData[]>> = this.componentStore.clientData$;
     public projectId: number;
+    public urlUniqId: string;
 
     constructor(
         private componentStore: CreateProjectComponentStore,
@@ -55,13 +58,13 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
             name: this.fb.control('', [
                 Validators.required,
                 Validators.pattern(CAMPAIGN_NAME_REGEX),
-                CustomValidators.minLengthThreeWithoutSpace,
+                CustomValidators.minLengthFourWithoutSpace,
                 CustomValidators.noStartEndSpaces,
-                Validators.maxLength(20),
+                Validators.maxLength(50),
             ]),
             rateLimitHit: this.fb.control(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
             rateLimitMinite: this.fb.control(null, [Validators.required, Validators.pattern(ONLY_INTEGER_REGEX)]),
-            selectedEnvironments: this.fb.control([]),
+            selectedEnvironments: this.fb.control([], Validators.required),
         });
         this.gatewayUrlDetailsForm = this.fb.group<IGatewayUrlDetailsForm>({
             useSameUrlForAll: this.fb.control(false),
@@ -76,6 +79,28 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
 
     ngOnInit(): void {
         this.getEnvironment();
+        this.clientData$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((res) => {
+            this.urlUniqId = res.data[0].url_unique_id;
+            this.projects$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+                if (res) {
+                    const latestProject = [];
+                    for (let i = res.data.length - 1; i >= 0; i--) {
+                        latestProject.push(res.data[i]);
+                    }
+
+                    latestProject.forEach((project) => {
+                        const baseUrl = `${environment.baseUrl}/proxy`;
+                        this.projectId = project.id;
+                        this.environments_with_slug = project.environments_with_slug.map((res) => ({
+                            name: res.name,
+                            url: `${baseUrl}/${this.urlUniqId}/${res.project_slug}`,
+                        }));
+                    });
+                    this.populateGatewayUrls();
+                    this.populateForwardUrls();
+                }
+            });
+        });
         this.projects$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 const latestProject = [];
@@ -88,17 +113,18 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
                     this.projectId = project.id;
                     this.environments_with_slug = project.environments_with_slug.map((res) => ({
                         name: res.name,
-                        url: `${baseUrl}/${this.projectId}/${res.project_slug}`,
+                        url: `${baseUrl}/${this.urlUniqId}/${res.project_slug}`,
                     }));
                 });
                 this.populateGatewayUrls();
                 this.populateForwardUrls();
             }
         });
-        this.getProject$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+        this.createProjectSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.changeStep(2);
                 this.store.dispatch(rootActions.getAllProject());
+                this.getClientData(res.client_id);
             }
         });
     }
@@ -202,12 +228,15 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
         const environmentsConfig = selectedEnvironments.reduce(
             (acc, env) => ({
                 ...acc,
-                [env]: { rate_limiter: `${rateLimitHit}:${rateLimitMinite}` },
+                [env]: { rate_limiter: `${rateLimitMinite}:${rateLimitHit}` },
             }),
             {}
         );
 
         const projectDetails = { name, environments: environmentsConfig };
         this.componentStore.createProject(projectDetails);
+    }
+    public getClientData(clientId) {
+        this.componentStore.getClientData(clientId);
     }
 }
