@@ -11,6 +11,7 @@ import { IAppState } from '../ngrx/store/app.state';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { UsersService } from '@proxy/services/proxy/users';
 import { IntlPhoneLib } from '@proxy/utils';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-register-component',
@@ -46,9 +47,17 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
                 CustomValidators.valueSameAsControl('password'),
             ]),
         }),
+            company: new FormGroup({
+                name: new FormControl<string>(null,[Validators.required]),
+                email: new FormControl<string>(null),
+                mobile: new FormControl(null)
+            }),
     });
     public intlClass: IntlPhoneLib;
-    constructor(private store: Store<IAppState>, private service: UsersService, private toast: PrimeNgToastService) {
+    constructor(private store: Store<IAppState>, private service: UsersService, private toast: PrimeNgToastService,
+                private router: Router
+
+    ) {
         super();
     }
 
@@ -93,5 +102,8 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
             // Mark all fields as touched to display validation errors
             this.registrationForm.markAllAsTouched();
         }
+    }
+     login() {
+        this.router.navigate(['/login'])
     }
 }

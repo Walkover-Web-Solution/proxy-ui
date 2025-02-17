@@ -2,6 +2,7 @@
     <mat-card class="outline-card reg-form">
         <h2 class="d-flex justify-content-center">Register</h2>
         <div>
+            <h3>User Details</h3>
             <div [formGroup]="registrationForm" proxyMarkAllAsTouched (valid)="submit()">
                 <ng-container
                     [ngTemplateOutlet]="formField"
@@ -74,12 +75,34 @@
                     Password should contain atleast one Capital Letter, one Small Letter, one Digit and one Symbol
                 </div>
 
+                <h3>Company Details</h3>
+                <div>
+                    <ng-container [ngTemplateOutlet]="formField" [ngTemplateOutletContext]="{
+                    label: 'Name',
+                    required: true,
+                    formControl: registrationForm.get('company.name')
+                  }">
+                    </ng-container>
+
+                    <ng-container [ngTemplateOutlet]="formField" [ngTemplateOutletContext]="{
+                        label: 'Email',
+                        formControl: registrationForm.get('company.email')
+                        }">
+                    </ng-container>
+
+                    <ng-container [ngTemplateOutlet]="formField" [ngTemplateOutletContext]="{
+                        label: 'mobile',
+                        formControl: registrationForm.get('company.mobile')
+                        }">
+                    </ng-container>
+                </div>
                 <div class="mt-4 d-flex justify-content-center align-items-center">
                     <button mat-flat-button color="primary" (click)="submit()">Submit</button>
                 </div>
             </div>
         </div>
     </mat-card>
+    <div class="heading">Have an account,<span class="login" (click)="login()">Login Here</span></div>
 </div>
 
 <ng-template

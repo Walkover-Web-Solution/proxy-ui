@@ -91,4 +91,8 @@ export class AuthComponent extends BaseComponent implements OnInit {
     login() {
         this._store.dispatch(logInActions.logInAction());
     }
+    
+    register() {
+        this.router.navigate(['/p/register']);
+      }
 }

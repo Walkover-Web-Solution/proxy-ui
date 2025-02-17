@@ -1,5 +1,6 @@
 import { Route } from '@angular/router';
 import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
+import { RegisterComponent } from './register/register.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
@@ -24,5 +25,9 @@ export const appRoutes: Route[] = [
     {
         path: 'p',
         loadChildren: () => import('./public.module').then((p) => p.PublicModule),
+    },
+    {
+        path: 'p/register',
+        loadChildren: () => import('./register/register.module').then((p) => p.RegisterModule),
     },
 ];
