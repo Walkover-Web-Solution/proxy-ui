@@ -30,12 +30,7 @@
 }
 
 .register {
-    text-decoration: underline;
     cursor: pointer;
-    color: black; 
-    transition: color 0.3s ease; 
-  }
-  
-  .register:hover {
-    color: #3f51b5; 
+    color: darkblue;
+    text-decoration: underline;
   }

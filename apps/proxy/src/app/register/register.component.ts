@@ -47,7 +47,7 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
                 CustomValidators.valueSameAsControl('password'),
             ]),
         }),
-            company: new FormGroup({
+            clientDetails: new FormGroup({
                 name: new FormControl<string>(null,[Validators.required]),
                 email: new FormControl<string>(null),
                 mobile: new FormControl(null)
@@ -93,6 +93,7 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
             this.service.register(formData).subscribe(
                 (response) => {
                     this.toast.success('Registration success');
+                    this.router.navigate(['login'])
                 },
                 (error) => {
                     this.toast.error(error);

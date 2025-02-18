@@ -80,19 +80,19 @@
                     <ng-container [ngTemplateOutlet]="formField" [ngTemplateOutletContext]="{
                     label: 'Name',
                     required: true,
-                    formControl: registrationForm.get('company.name')
+                    formControl: registrationForm.get('clientDetails.name')
                   }">
                     </ng-container>
 
                     <ng-container [ngTemplateOutlet]="formField" [ngTemplateOutletContext]="{
                         label: 'Email',
-                        formControl: registrationForm.get('company.email')
+                        formControl: registrationForm.get('clientDetails.email')
                         }">
                     </ng-container>
 
                     <ng-container [ngTemplateOutlet]="formField" [ngTemplateOutletContext]="{
                         label: 'mobile',
-                        formControl: registrationForm.get('company.mobile')
+                        formControl: registrationForm.get('clientDetails.mobile')
                         }">
                     </ng-container>
                 </div>
@@ -101,8 +101,8 @@
                 </div>
             </div>
         </div>
+        <div class="heading">Have an account <a class="login" (click)="login()">Login Here</a></div>
     </mat-card>
-    <div class="heading">Have an account,<span class="login" (click)="login()">Login Here</span></div>
 </div>
 
 <ng-template
