@@ -47,7 +47,7 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
                 CustomValidators.valueSameAsControl('password'),
             ]),
         }),
-            clientDetails: new FormGroup({
+            client: new FormGroup({
                 name: new FormControl<string>(null,[Validators.required]),
                 email: new FormControl<string>(null),
                 mobile: new FormControl(null)
