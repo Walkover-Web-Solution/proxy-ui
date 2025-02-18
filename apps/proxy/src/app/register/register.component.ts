@@ -4,7 +4,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { Store } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as _ from 'lodash';
-import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from '@proxy/regex';
+import { EMAIL_REGEX, MOBILE_NUMBER_REGEX, NAME_REGEX, PASSWORD_REGEX} from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { takeUntil } from 'rxjs';
 import { IAppState } from '../ngrx/store/app.state';
@@ -49,8 +49,8 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
         }),
             client: new FormGroup({
                 name: new FormControl<string>(null,[Validators.required]),
-                email: new FormControl<string>(null),
-                mobile: new FormControl(null)
+                email: new FormControl<string>(null,[Validators.pattern(EMAIL_REGEX)]),
+                mobile: new FormControl<string>(null,[Validators.pattern(MOBILE_NUMBER_REGEX)])
             }),
     });
     public intlClass: IntlPhoneLib;
@@ -87,10 +87,24 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
     }
     // Submit method to handle form submission
     submit() {
-        if (this.registrationForm.valid) {
-            const formData = this.registrationForm.value;
 
-            this.service.register(formData).subscribe(
+        if (this.registrationForm.valid) {
+            const formData = this.registrationForm.getRawValue();
+
+            if (formData.client?.email === "") {
+                delete formData.client.email;
+            }
+
+            if (formData.client?.mobile === "") {
+                delete formData.client.mobile;
+            }
+
+            const data = {
+                ...formData,
+                client: CustomValidators.removeNullKeys(formData.client)
+              };
+
+            this.service.register(data).subscribe(
                 (response) => {
                     this.toast.success('Registration success');
                     this.router.navigate(['login'])
@@ -107,4 +121,5 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
      login() {
         this.router.navigate(['/login'])
     }
+
 }
