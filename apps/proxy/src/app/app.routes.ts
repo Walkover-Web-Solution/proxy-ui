@@ -26,8 +26,4 @@ export const appRoutes: Route[] = [
         path: 'p',
         loadChildren: () => import('./public.module').then((p) => p.PublicModule),
     },
-    {
-        path: 'p/register',
-        loadChildren: () => import('./register/register.module').then((p) => p.RegisterModule),
-    },
 ];

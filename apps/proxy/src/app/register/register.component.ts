@@ -91,14 +91,6 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
         if (this.registrationForm.valid) {
             const formData = this.registrationForm.getRawValue();
 
-            if (formData.client?.email === "") {
-                delete formData.client.email;
-            }
-
-            if (formData.client?.mobile === "") {
-                delete formData.client.mobile;
-            }
-
             const data = {
                 ...formData,
                 client: CustomValidators.removeNullKeys(formData.client)
@@ -118,8 +110,8 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
             this.registrationForm.markAllAsTouched();
         }
     }
-     login() {
-        this.router.navigate(['/login'])
-    }
+    //  login() {
+    //     this.router.navigate(['/login'])
+    // }
 
 }
