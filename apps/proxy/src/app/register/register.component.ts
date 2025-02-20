@@ -110,8 +110,4 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
             this.registrationForm.markAllAsTouched();
         }
     }
-    //  login() {
-    //     this.router.navigate(['/login'])
-    // }
-
 }
