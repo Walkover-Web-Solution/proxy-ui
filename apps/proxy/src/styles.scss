@@ -60,9 +60,8 @@
 
 /*Main*/
 .app-content {
-    padding: 16px;
     min-height: 100%;
-    height: calc(100vh - 55px);
+    height: 100vh;
     overflow-y: auto;
     background-color: var(--color-common-app-bg);
     @media (max-width: 768px) {

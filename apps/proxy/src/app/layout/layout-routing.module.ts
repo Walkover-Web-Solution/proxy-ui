@@ -4,7 +4,12 @@ import { LayoutComponent } from './layout.component';
 import { CanActivateRouteGuard } from '../auth/authguard';
 import { redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { ProjectGuard } from '../guard/project.guard';
+import { ProjectGuard } from '../guard/project.guard';
 import { ChatbotComponent } from '../chatbot/chatbot.component';
+=========
+import { ProjectGuard } from '../guard/project.guard';
+>>>>>>>>> Temporary merge branch 2
+
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
 const routes: Routes = [
