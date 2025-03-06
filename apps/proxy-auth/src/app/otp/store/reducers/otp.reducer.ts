@@ -190,7 +190,7 @@ const _otpReducer = createReducer(
             errors: null,
         };
     }),
-    on(otpActions.getOtpResendActionComplete, (state, { response }) => {
+    on(otpActions.getUserDetailsComplete, (state, { response }) => {
         return {
             ...state,
             userProfileDataInProcess: false,
@@ -198,7 +198,7 @@ const _otpReducer = createReducer(
             userProfileData: response,
         };
     }),
-    on(otpActions.getOtpResendActionError, (state, { errors, errorResponse }) => {
+    on(otpActions.getUserDetailsError, (state, { errors, errorResponse }) => {
         return {
             ...state,
             userProfileDataInProcess: false,

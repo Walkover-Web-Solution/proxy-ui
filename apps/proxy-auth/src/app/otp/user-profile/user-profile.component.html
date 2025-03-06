@@ -21,25 +21,28 @@
     <h3>Company Details</h3>
     <!-- <mat-spinner *ngIf="userInProcess$ | async"></mat-spinner> -->
 
-    <table mat-table [dataSource]="userDetails$ | async" class="mat-elevation-z8">
+    <table mat-table [dataSource]="(userDetails$ | async)?.c_companies" class="mat-elevation-z8">
         <ng-container matColumnDef="sno">
             <th mat-header-cell *matHeaderCellDef>SNo.</th>
-            <td mat-cell *matCellDef="let company; let i = index">{{ i + 1 }}</td>
+            <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
         </ng-container>
 
         <ng-container matColumnDef="companyName">
             <th mat-header-cell *matHeaderCellDef>Company Name</th>
-            <td mat-cell *matCellDef="let company">{{ company.name }}</td>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
         </ng-container>
 
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef>Action</th>
-            <td mat-cell *matCellDef="let company">
-                <span *ngIf="(currentCompanyId$ | async) === company.company_uname" class="status-active">
+            <td mat-cell *matCellDef="let element">
+                <span
+                    *ngIf="this.companyDetails?.currentCompany?.company_uname === element.company_uname"
+                    class="status-active"
+                >
                     Current Company
                 </span>
                 <button
-                    *ngIf="(currentCompanyId$ | async) !== company.company_uname"
+                    *ngIf="this.companyDetails?.currentCompany?.company_uname !== element.company_uname"
                     mat-button
                     color="warn"
                     (click)="openModal(company.id)"
@@ -53,5 +56,5 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
 
-    <p class="no-data">Nothing Here, There are no companies to show</p>
+    <!-- <p *ngIf="" class="no-data">Nothing Here, There are no companies to show</p> -->
 </div>

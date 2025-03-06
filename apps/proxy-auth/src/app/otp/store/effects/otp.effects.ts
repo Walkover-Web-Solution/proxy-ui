@@ -143,7 +143,7 @@ export class OtpEffects {
                     map((res: any) => {
                         if (res.type !== 'error') {
                             return otpActions.getUserDetailsComplete({
-                                response: res,
+                                response: res?.data[0],
                             });
                         }
                         return otpActions.getUserDetailsError({
