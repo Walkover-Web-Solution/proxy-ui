@@ -5,8 +5,7 @@ import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil } fro
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { getUserDetails } from '../store/actions/otp.action';
-import { getUserProfileInProcess, getUserProfileSuccess } from '../store/selectors';
-import { isEqual } from 'lodash';
+import { getUserProfileData, getUserProfileInProcess, getUserProfileSuccess } from '../store/selectors';
 import { BaseComponent } from '@proxy/ui/base-component';
 
 @Component({
@@ -42,6 +41,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     @Input() public otherData: { [key: string]: any } = {};
     public userDetails$: Observable<any>;
     public userInProcess$: Observable<boolean>;
+    public companyDetails;
     // authToken: string = '';
 
     clientForm = new FormGroup({
@@ -54,7 +54,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     constructor(private store: Store<IAppState>) {
         super();
         this.userDetails$ = this.store.pipe(
-            select(getUserProfileSuccess),
+            select(getUserProfileData),
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
@@ -66,12 +66,19 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.userDetails$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.companyDetails = res;
+                this.clientForm.get('name').setValue(res?.name);
+                this.clientForm.get('email').setValue(res?.email);
+                this.clientForm.get('mobile').setValue(res?.mobile);
+            }
+        });
         this.store.dispatch(
             getUserDetails({
                 request:
                     'RU41cHVVVlpmOFU3eERFejNFdFJielo3Y25Cd01ucFdHbHNjeFNaR1lINXBobzBaZE1GVGpCb0xlcTNVZFk4cEhmZHdHSmFDdlJBYjNtd1lISWs5WlBQODd1cXovYXNXa05ObGZPc2lpWTJtL2I0c0ovVXYzdXJDNDIxUEJ5NC81MG9YdFdvUGlVMXVJQ3M1aFZqdDB0QlI5M1d5NmJvdlIxSWdXSlZYTU9jPQ==',
             })
         );
-        console.log('hej');
     }
 }
