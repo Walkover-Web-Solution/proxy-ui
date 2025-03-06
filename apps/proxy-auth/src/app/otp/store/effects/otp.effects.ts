@@ -135,4 +135,32 @@ export class OtpEffects {
             })
         )
     );
+    getUserDetails$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.getUserDetails),
+            switchMap((p) => {
+                return this.otpService.getUserDetailsData(p.request).pipe(
+                    map((res: any) => {
+                        if (res.type !== 'error') {
+                            return otpActions.getUserDetailsComplete({
+                                response: res,
+                            });
+                        }
+                        return otpActions.getUserDetailsError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.getUserDetailsError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
 }

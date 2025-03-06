@@ -1,5 +1,5 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, flatMap } from 'lodash-es';
 import { IGetOtpRes, IWidgetResponse } from '../../model/otp';
 import * as otpActions from '../actions/otp.action';
 export interface IOtpState {
@@ -21,6 +21,10 @@ export interface IOtpState {
     closeWidgetApiFailed: boolean;
 
     widgetData: any;
+
+    userProfileData: any;
+    userProfileDataInProcess: boolean;
+    userDetailsSuccess: boolean;
 }
 
 export const initialState: IOtpState = {
@@ -42,6 +46,9 @@ export const initialState: IOtpState = {
     closeWidgetApiFailed: false,
 
     widgetData: null,
+    userProfileData: null,
+    userProfileDataInProcess: false,
+    userDetailsSuccess: false,
 };
 
 export function otpReducer(state: IOtpState, action: Action) {
@@ -173,6 +180,31 @@ const _otpReducer = createReducer(
             errors: errors,
             apiErrorResponse: errorResponse,
             closeWidgetApiFailed: true,
+        };
+    }),
+    on(otpActions.getUserDetails, (state, { request }) => {
+        return {
+            ...state,
+            userProfileDataInProcess: true,
+            userDetailsSuccess: false,
+            errors: null,
+        };
+    }),
+    on(otpActions.getOtpResendActionComplete, (state, { response }) => {
+        return {
+            ...state,
+            userProfileDataInProcess: false,
+            userDetailsSuccess: true,
+            userProfileData: response,
+        };
+    }),
+    on(otpActions.getOtpResendActionError, (state, { errors, errorResponse }) => {
+        return {
+            ...state,
+            userProfileDataInProcess: false,
+            userDetailsSuccess: false,
+            errors: errors,
+            apiErrorResponse: errorResponse,
         };
     })
 );

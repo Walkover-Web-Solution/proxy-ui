@@ -26,7 +26,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     public initOtpProvider() {
         if (!environment.production) {
             const sendOTPConfig = {
-                referenceId: '137401i1700563847655c8b8703c52',
+                authToken: '137401i1700563847655c8b8703c52',
                 target: '_self',
                 success: (data) => {
                     console.log('success response', data);
@@ -38,4 +38,19 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
             window.initVerification(sendOTPConfig);
         }
     }
+    //  public initUserDetails(){
+    //         if (!environment.production) {
+    //             const sendOTPConfig = {
+    //                 referenceId: '137401i1700563847655c8b8703c52',
+    //                 target: '_self',
+    //                 success: (data) => {
+    //                     console.log('success response', data);
+    //                 },
+    //                 failure: (error) => {
+    //                     console.log('failure reason', error);
+    //                 },
+    //             };
+    //             window.initVerification(sendOTPConfig);
+    //         }
+    //     }
 }
