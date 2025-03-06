@@ -69,7 +69,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         this.store.dispatch(
             getUserDetails({
                 request:
-                    'c3kyc1d0RUZYbXNkS3U4SHVxR21yR1BxZ1VoT2pGMDlEbFZIVDNad1hpRzhUMHRlODM2RzY5VE9aV1E5R21XbmJEWmNOeHBCa1BwWnBIbGtscFErZEpjeXdZZ0NSbkxvZUtUNS9HbWJNOGUrMCtKbjcyZTIvR09nYm9vZ3dHT090dG1EMEh0Vm92aWpsZDRCZ0dZaFhzQ3pmd2tyL3VLbGxSSFh2VVlhUXprPQ==',
+                    'RU41cHVVVlpmOFU3eERFejNFdFJielo3Y25Cd01ucFdHbHNjeFNaR1lINXBobzBaZE1GVGpCb0xlcTNVZFk4cEhmZHdHSmFDdlJBYjNtd1lISWs5WlBQODd1cXovYXNXa05ObGZPc2lpWTJtL2I0c0ovVXYzdXJDNDIxUEJ5NC81MG9YdFdvUGlVMXVJQ3M1aFZqdDB0QlI5M1d5NmJvdlIxSWdXSlZYTU9jPQ==',
             })
         );
         console.log('hej');

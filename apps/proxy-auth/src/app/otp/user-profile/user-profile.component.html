@@ -1,18 +1,18 @@
 <div class="container">
     <h2>Client Details</h2>
 
-    <form [formGroup]="clientForm">
-        <mat-form-field appearance="outline" class="full-width">
+    <form [formGroup]="clientForm" class="form">
+        <mat-form-field appearance="outline" class="full-width w-100">
             <mat-label>Name</mat-label>
             <input matInput formControlName="name" placeholder="Enter your name" />
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field appearance="outline" class="full-width w-100">
             <mat-label>Mobile</mat-label>
             <input matInput formControlName="mobile" placeholder="Enter your mobile number" />
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
+        <mat-form-field appearance="outline" class="full-width w-100">
             <mat-label>Email</mat-label>
             <input matInput formControlName="email" placeholder="Enter your email" disabled />
         </mat-form-field>

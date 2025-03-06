@@ -11,25 +11,32 @@ body {
     box-shadow: 0 4px 8px rgb(0 0 0 / 48%);
     text-align: left;
 }
-.input-group {
-    margin: 10px 0;
-    width: 280px;
-    font-weight: 500;
-    margin-top: 4px;
+.full-width {
+    max-width: 300px;
 }
-label {
-    font-weight: 500;
-    display: block;
+.form {
+    display: flex;
+    flex-direction: column;
 }
-input {
-    width: 100%;
-    padding: 10px 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-.dropdown {
-    position: relative;
-}
+// .input-group {
+//     margin: 10px 0;
+//     width: 280px;
+//     font-weight: 500;
+//     margin-top: 4px;
+// }
+// label {
+//     font-weight: 500;
+//     display: block;
+// }
+// input {
+//     width: 100%;
+//     padding: 10px 10px;
+//     border: 1px solid #ccc;
+//     border-radius: 5px;
+// }
+// .dropdown {
+//     position: relative;
+// }
 .dropdown-btn {
     width: 100%;
     padding: 8px;
