@@ -49,7 +49,6 @@ window['initVerification'] = (config: any) => {
             document.getElementsByTagName('body')[0].append(sendOtpElement);
             window['libLoaded'] = true;
         } else if (config?.authToken) {
-            console.log('hello hemant');
             const findOtpProvider = document.querySelector('user-profile');
             if (findOtpProvider) {
                 document.body.removeChild(findOtpProvider);
