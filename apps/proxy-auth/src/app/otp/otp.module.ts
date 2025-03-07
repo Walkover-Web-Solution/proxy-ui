@@ -31,6 +31,7 @@ import { DirectivesMarkAllAsTouchedModule } from '@proxy/directives/mark-all-as-
 import { LoginComponent } from './component/login/login.component';
 import { UiLoaderModule } from '@proxy/ui/loader';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { UserDialogModule } from './user-profile/user-dialog/user-dialog.module';
 import { MatCardModule } from '@angular/material/card';
 
 export const CHAT_COMPONENTS: any[] = [
@@ -57,6 +58,7 @@ export const CHAT_COMPONENTS: any[] = [
         MatRadioModule,
         UiLoaderModule,
         MatTableModule,
+        UserDialogModule,
         MatCardModule,
 
         DirectivesRemoveCharacterDirectiveModule,

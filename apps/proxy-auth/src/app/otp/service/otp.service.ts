@@ -7,7 +7,9 @@ import { OtpResModel, ISendOtpReq, IRetryOtpReq, IVerifyOtpReq, IWidgetResponse,
 import { otpVerificationUrls } from './urls/otp-urls';
 import { HttpWrapperService } from '@proxy/services/http-wrapper-no-auth';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+})
 export class OtpService {
     public options = {
         headers: {
