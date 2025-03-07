@@ -1,0 +1,60 @@
+<div class="container">
+    <h2>Client Details</h2>
+
+    <form [formGroup]="clientForm" class="form">
+        <mat-form-field appearance="outline" class="full-width w-100">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" placeholder="Enter your name" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width w-100">
+            <mat-label>Mobile</mat-label>
+            <input matInput formControlName="mobile" placeholder="Enter your mobile number" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width w-100">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" placeholder="Enter your email" disabled />
+        </mat-form-field>
+    </form>
+
+    <h3>Company Details</h3>
+    <!-- <mat-spinner *ngIf="userInProcess$ | async"></mat-spinner> -->
+
+    <table mat-table [dataSource]="(userDetails$ | async)?.c_companies" class="mat-elevation-z8">
+        <ng-container matColumnDef="sno">
+            <th mat-header-cell *matHeaderCellDef>SNo.</th>
+            <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="companyName">
+            <th mat-header-cell *matHeaderCellDef>Company Name</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let element">
+                <span
+                    *ngIf="this.companyDetails?.currentCompany?.company_uname === element.company_uname"
+                    class="status-active"
+                >
+                    Current Company
+                </span>
+                <button
+                    *ngIf="this.companyDetails?.currentCompany?.company_uname !== element.company_uname"
+                    mat-button
+                    color="warn"
+                    (click)="openModal(element?.id)"
+                >
+                    Leave
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <p class="no-data">Nothing Here, There are no companies to show</p>
+</div>

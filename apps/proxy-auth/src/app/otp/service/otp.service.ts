@@ -71,4 +71,17 @@ export class OtpService {
     public verfyResetPasswordOtp(body): Observable<any> {
         return this.http.post<any>(otpVerificationUrls.verifyPasswordOtp(this.baseUrl), body, this.options);
     }
+    public getUserDetailsData(
+        requestId: any,
+        payload?: { [key: string]: any }
+    ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+        this.options.headers['proxy_auth_token'] = requestId;
+        const url = otpVerificationUrls.getUserDetails('https://routes.msg91.com/api');
+        return this.http.get<BaseResponse<IWidgetResponse, IGetWidgetData>>(url, payload ?? {}, this.options);
+    }
+    public leaveCompanyUser(companyId: any, authToken): Observable<any> {
+        this.options.headers['proxy_auth_token'] = authToken;
+        const url = otpVerificationUrls.leaveCompany('https://routes.msg91.com/api');
+        return this.http.post<any>(url, { company_id: companyId }, this.options);
+    }
 }
