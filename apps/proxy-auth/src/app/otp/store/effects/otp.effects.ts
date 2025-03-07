@@ -166,8 +166,8 @@ export class OtpEffects {
     leaveCompany$ = createEffect(() =>
         this.actions$.pipe(
             ofType(otpActions.leaveCompany),
-            switchMap(({ companyId }) => {
-                return this.otpService.leaveCompanyUser(companyId).pipe(
+            switchMap(({ companyId, authToken }) => {
+                return this.otpService.leaveCompanyUser(companyId, authToken).pipe(
                     map((res: any) => {
                         if (res.type !== 'error') {
                             return otpActions.leaveCompanyComplete({

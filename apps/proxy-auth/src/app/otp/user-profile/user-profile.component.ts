@@ -97,7 +97,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     openModal(companyId: string): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '400px',
-            data: { companyId },
+            data: { companyId: companyId, authToken: this.authToken },
         });
 
         dialogRef.afterClosed().subscribe((result) => {

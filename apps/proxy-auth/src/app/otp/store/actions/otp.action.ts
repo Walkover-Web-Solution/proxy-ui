@@ -41,7 +41,7 @@ export const getUserDetailsError = createAction(
     '[OTP] Get User Details Error',
     props<{ errors: string[]; errorResponse: any }>()
 );
-export const leaveCompany = createAction('[OTP] Leave Company', props<{ companyId: number }>());
+export const leaveCompany = createAction('[OTP] Leave Company', props<{ companyId: number; authToken: string }>());
 export const leaveCompanyComplete = createAction('[OTP] Leave Company Complete', props<{ response: any }>());
 export const leaveCompanyError = createAction(
     '[OTP] Leave Company Error',

@@ -45,7 +45,7 @@
                     *ngIf="this.companyDetails?.currentCompany?.company_uname !== element.company_uname"
                     mat-button
                     color="warn"
-                    (click)="openModal(id)"
+                    (click)="openModal(element?.id)"
                 >
                     Leave
                 </button>
@@ -56,5 +56,5 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
 
-    <!-- <p *ngIf="" class="no-data">Nothing Here, There are no companies to show</p> -->
+    <p class="no-data">Nothing Here, There are no companies to show</p>
 </div>

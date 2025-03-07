@@ -4,21 +4,23 @@ import { Store } from '@ngrx/store';
 import { leaveCompany } from '../../store/actions/otp.action';
 
 @Component({
-    selector: 'app-confirmation-dialog',
+    selector: 'proxy-confirmation-dialog',
     templateUrl: './user-dialog.component.html',
     styleUrls: ['./user-dialog.component.scss'],
 })
 export class ConfirmationDialogComponent {
     constructor(
         public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { companyId: any },
+        @Inject(MAT_DIALOG_DATA) public data: { companyId: any; authToken },
         private store: Store
     ) {}
 
     confirmleave() {
+        console.log(this.data);
         this.store.dispatch(
             leaveCompany({
                 companyId: this.data.companyId,
+                authToken: this.data.authToken,
             })
         );
     }
