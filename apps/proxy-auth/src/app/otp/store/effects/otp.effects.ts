@@ -163,4 +163,32 @@ export class OtpEffects {
             })
         )
     );
+    leaveCompany$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.leaveCompany),
+            switchMap(({ companyId }) => {
+                return this.otpService.leaveCompanyUser(companyId).pipe(
+                    map((res: any) => {
+                        if (res.type !== 'error') {
+                            return otpActions.leaveCompanyComplete({
+                                response: res?.data[0],
+                            });
+                        }
+                        return otpActions.leaveCompanyError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.leaveCompanyError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
 }

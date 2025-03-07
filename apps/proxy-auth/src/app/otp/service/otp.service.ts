@@ -79,4 +79,8 @@ export class OtpService {
         const url = otpVerificationUrls.getUserDetails('https://routes.msg91.com/api');
         return this.http.get<BaseResponse<IWidgetResponse, IGetWidgetData>>(url, payload ?? {}, this.options);
     }
+    public leaveCompanyUser(companyId: any): Observable<any> {
+        const url = otpVerificationUrls.leaveCompany('https://routes.msg91.com/api');
+        return this.http.post<any>(url, { company_id: companyId });
+    }
 }

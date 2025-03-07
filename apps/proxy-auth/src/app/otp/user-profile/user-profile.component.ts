@@ -5,9 +5,16 @@ import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil } fro
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { getUserDetails } from '../store/actions/otp.action';
-import { getUserProfileData, getUserProfileInProcess, getUserProfileSuccess } from '../store/selectors';
+import {
+    getUserProfileData,
+    getUserProfileInProcess,
+    getUserProfileSuccess,
+    leaveCompanyData,
+} from '../store/selectors';
 import { BaseComponent } from '@proxy/ui/base-component';
-
+import { isEqual } from 'lodash';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component';
 @Component({
     selector: 'proxy-user-profile',
     templateUrl: './user-profile.component.html',
@@ -41,6 +48,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     @Input() public otherData: { [key: string]: any } = {};
     public userDetails$: Observable<any>;
     public userInProcess$: Observable<boolean>;
+    public deleteCompany$: Observable<boolean>;
     public companyDetails;
     // authToken: string = '';
 
@@ -51,7 +59,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     });
 
     displayedColumns: string[] = ['sno', 'companyName', 'action'];
-    constructor(private store: Store<IAppState>) {
+    constructor(private store: Store<IAppState>, public dialog: MatDialog) {
         super();
         this.userDetails$ = this.store.pipe(
             select(getUserProfileData),
@@ -60,6 +68,11 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         );
         this.userInProcess$ = this.store.pipe(
             select(getUserProfileInProcess),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.deleteCompany$ = this.store.pipe(
+            select(leaveCompanyData),
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
@@ -80,5 +93,17 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
                     'RU41cHVVVlpmOFU3eERFejNFdFJielo3Y25Cd01ucFdHbHNjeFNaR1lINXBobzBaZE1GVGpCb0xlcTNVZFk4cEhmZHdHSmFDdlJBYjNtd1lISWs5WlBQODd1cXovYXNXa05ObGZPc2lpWTJtL2I0c0ovVXYzdXJDNDIxUEJ5NC81MG9YdFdvUGlVMXVJQ3M1aFZqdDB0QlI5M1d5NmJvdlIxSWdXSlZYTU9jPQ==',
             })
         );
+    }
+
+    openModal(companyId: string): void {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '400px',
+            data: { companyId },
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result === 'confirmed') {
+            }
+        });
     }
 }

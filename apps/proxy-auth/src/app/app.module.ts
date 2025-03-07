@@ -5,7 +5,7 @@ import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppComponent } from './app.component';
 import { ElementModule } from './element.module';
-
+import { UserDialogModule } from './otp/user-profile/user-dialog/user-dialog.module';
 let conditional_imports = [];
 if (environment.production) {
     conditional_imports = [];
@@ -19,7 +19,7 @@ if (environment.production) {
 }
 @NgModule({
     declarations: [AppComponent],
-    imports: [BrowserModule, BrowserAnimationsModule, ElementModule, ...conditional_imports],
+    imports: [BrowserModule, BrowserAnimationsModule, ElementModule, ...conditional_imports, UserDialogModule],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

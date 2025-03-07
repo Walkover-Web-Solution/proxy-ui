@@ -26,3 +26,7 @@ export const selectWidgetData = createSelector(selectRootState, (p) => p.widgetD
 export const getUserProfileData = createSelector(selectRootState, (p) => p.userProfileData);
 export const getUserProfileSuccess = createSelector(selectRootState, (p) => p.userDetailsSuccess);
 export const getUserProfileInProcess = createSelector(selectRootState, (p) => p.userProfileDataInProcess);
+
+export const leaveCompanyData = createSelector(selectRootState, (p) => p.leaveCompanyData);
+export const leaveCompanySuccess = createSelector(selectRootState, (p) => p.leaveCompanySuccess);
+export const leaveCompanyDataInProcess = createSelector(selectRootState, (p) => p.leaveCompanyDataInProcess);

@@ -25,6 +25,10 @@ export interface IOtpState {
     userProfileData: any;
     userProfileDataInProcess: boolean;
     userDetailsSuccess: boolean;
+
+    leaveCompanyData: any;
+    leaveCompanyDataInProcess: boolean;
+    leaveCompanySuccess: boolean;
 }
 
 export const initialState: IOtpState = {
@@ -49,6 +53,10 @@ export const initialState: IOtpState = {
     userProfileData: null,
     userProfileDataInProcess: false,
     userDetailsSuccess: false,
+
+    leaveCompanyData: null,
+    leaveCompanyDataInProcess: false,
+    leaveCompanySuccess: false,
 };
 
 export function otpReducer(state: IOtpState, action: Action) {
@@ -203,6 +211,32 @@ const _otpReducer = createReducer(
             ...state,
             userProfileDataInProcess: false,
             userDetailsSuccess: false,
+            errors: errors,
+            apiErrorResponse: errorResponse,
+        };
+    }),
+
+    on(otpActions.leaveCompany, (state, { companyId }) => {
+        return {
+            ...state,
+            leaveCompanyDataInProcess: true,
+            leaveCompanySuccess: false,
+            errors: null,
+        };
+    }),
+    on(otpActions.leaveCompanyComplete, (state, { response }) => {
+        return {
+            ...state,
+            leaveCompanyDataInProcess: false,
+            leaveCompanySuccess: true,
+            leaveCompanyData: response,
+        };
+    }),
+    on(otpActions.leaveCompanyError, (state, { errors, errorResponse }) => {
+        return {
+            ...state,
+            leaveCompanyDataInProcess: false,
+            leaveCompanySuccess: false,
             errors: errors,
             apiErrorResponse: errorResponse,
         };
