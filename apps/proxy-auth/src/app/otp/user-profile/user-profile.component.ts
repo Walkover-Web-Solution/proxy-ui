@@ -1,7 +1,7 @@
 import { NgStyle } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil } from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { getUserDetails, leaveCompany } from '../store/actions/otp.action';
@@ -14,6 +14,7 @@ import {
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash';
 import { MatDialog } from '@angular/material/dialog';
+
 import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component';
 @Component({
     selector: 'proxy-user-profile',
@@ -21,6 +22,7 @@ import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component
     styleUrls: ['./user-profile.component.scss'],
 })
 export class UserProfileComponent extends BaseComponent implements OnInit {
+    @ViewChild('dialogTemplate') dialogTemplate!: TemplateRef<any>;
     @Input() public authToken: string;
     @Input() public target: string;
     @Input()
@@ -90,7 +92,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         this.store.dispatch(
             getUserDetails({
                 request:
-                    'OVJMMXZ6ckhEa2hrK3pZTUtaYkNIR3pmRy82d25WaTA5SWdUdUJzY3dyV1Y1dFdkVDA3SXAwVjByNkttZHZBL1FncExqcDdrejkwNmtCQ2JFa2puTlUxclBSWnNlcnA5UDZHdVpjekVGQWpkenpoRXExejlVbzJ0dDk0UjlMcW83c29sOVErbG9lNjYzOHhGWFRVdW1TWVpnNEZLdW03cXBxdUhEZkx1U3ZRPQ==',
+                    'VGtBUVNXN3F4VkN0RTVZVEZJb2lJbGs3TGNrNDdnRy9rZzBrU3lrdU9ka2k0T3NwcVlFSE5UTEx3ZmFWWnhQQ2hJNWxaUGhzOGNtb2M4QW1VblR0Z2hOVTZPQUZKOUtxdjVwcTV5Zno5UkRjVmdMM3pNSkJTQ2VKUnA2NGliZ2hndVl2TVhJWTVHUURleG15U09hU1NhWUhQWUlUblFZKzlIb1hiVWYzU1pnPQ==',
             })
         );
     }
@@ -109,7 +111,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
                     this.store.dispatch(
                         getUserDetails({
                             request:
-                                'OVJMMXZ6ckhEa2hrK3pZTUtaYkNIR3pmRy82d25WaTA5SWdUdUJzY3dyV1Y1dFdkVDA3SXAwVjByNkttZHZBL1FncExqcDdrejkwNmtCQ2JFa2puTlUxclBSWnNlcnA5UDZHdVpjekVGQWpkenpoRXExejlVbzJ0dDk0UjlMcW83c29sOVErbG9lNjYzOHhGWFRVdW1TWVpnNEZLdW03cXBxdUhEZkx1U3ZRPQ==',
+                                'VGtBUVNXN3F4VkN0RTVZVEZJb2lJbGs3TGNrNDdnRy9rZzBrU3lrdU9ka2k0T3NwcVlFSE5UTEx3ZmFWWnhQQ2hJNWxaUGhzOGNtb2M4QW1VblR0Z2hOVTZPQUZKOUtxdjVwcTV5Zno5UkRjVmdMM3pNSkJTQ2VKUnA2NGliZ2hndVl2TVhJWTVHUURleG15U09hU1NhWUhQWUlUblFZKzlIb1hiVWYzU1pnPQ==',
                         })
                     );
                 });
