@@ -65,7 +65,7 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.failureReturn = config.failure;
 
             // omitting keys which are not required in API payload
-            sendOtpElement.otherData = omit(config, RESERVED_KEYS);
+            // sendOtpElement.otherData = omit(config, RESERVED_KEYS);
 
             document.getElementsByTagName('body')[0].append(sendOtpElement);
             window['libLoaded'] = true;
