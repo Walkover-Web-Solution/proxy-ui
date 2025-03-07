@@ -110,7 +110,7 @@ export class ElementModule implements DoBootstrap {
             const userProfileComponent = createCustomElement(UserProfileComponent, {
                 injector: this.injector,
             });
-            customElements.define('proxy-auth', userProfileComponent);
+            customElements.define('user-details', userProfileComponent);
         }
     }
 }
