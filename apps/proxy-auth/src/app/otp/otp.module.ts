@@ -31,6 +31,7 @@ import { DirectivesMarkAllAsTouchedModule } from '@proxy/directives/mark-all-as-
 import { LoginComponent } from './component/login/login.component';
 import { UiLoaderModule } from '@proxy/ui/loader';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { UserDialogModule } from './user-profile/user-dialog/user-dialog.module';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
@@ -56,6 +57,7 @@ export const CHAT_COMPONENTS: any[] = [
         MatRadioModule,
         UiLoaderModule,
         MatTableModule,
+        UserDialogModule,
 
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),
