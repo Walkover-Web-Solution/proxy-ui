@@ -89,8 +89,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         });
         this.store.dispatch(
             getUserDetails({
-                request:
-                    'RU41cHVVVlpmOFU3eERFejNFdFJielo3Y25Cd01ucFdHbHNjeFNaR1lINXBobzBaZE1GVGpCb0xlcTNVZFk4cEhmZHdHSmFDdlJBYjNtd1lISWs5WlBQODd1cXovYXNXa05ObGZPc2lpWTJtL2I0c0ovVXYzdXJDNDIxUEJ5NC81MG9YdFdvUGlVMXVJQ3M1aFZqdDB0QlI5M1d5NmJvdlIxSWdXSlZYTU9jPQ==',
+                request: this.authToken,
             })
         );
     }
@@ -102,8 +101,8 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe((result) => {
-            if (result === 'confirmed') {
-            }
+            // if (result === 'confirmed') {
+            // }
         });
     }
 }
