@@ -1,10 +1,10 @@
 import { NgStyle } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map, Observable, take, takeUntil } from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
-import { getUserDetails } from '../store/actions/otp.action';
+import { getUserDetails, leaveCompany } from '../store/actions/otp.action';
 import {
     getUserProfileData,
     getUserProfileInProcess,
@@ -48,7 +48,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     @Input() public otherData: { [key: string]: any } = {};
     public userDetails$: Observable<any>;
     public userInProcess$: Observable<boolean>;
-    public deleteCompany$: Observable<boolean>;
+    public deleteCompany$: Observable<any>;
     public companyDetails;
     // authToken: string = '';
 
@@ -89,20 +89,31 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         });
         this.store.dispatch(
             getUserDetails({
-                request: this.authToken,
+                request:
+                    'OVJMMXZ6ckhEa2hrK3pZTUtaYkNIR3pmRy82d25WaTA5SWdUdUJzY3dyV1Y1dFdkVDA3SXAwVjByNkttZHZBL1FncExqcDdrejkwNmtCQ2JFa2puTlUxclBSWnNlcnA5UDZHdVpjekVGQWpkenpoRXExejlVbzJ0dDk0UjlMcW83c29sOVErbG9lNjYzOHhGWFRVdW1TWVpnNEZLdW03cXBxdUhEZkx1U3ZRPQ==',
             })
         );
     }
 
-    openModal(companyId: string): void {
+    openModal(companyId: number): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '400px',
             data: { companyId: companyId, authToken: this.authToken },
         });
 
         dialogRef.afterClosed().subscribe((result) => {
-            // if (result === 'confirmed') {
-            // }
+            if (result === 'confirmed') {
+                this.store.dispatch(leaveCompany({ companyId: companyId, authToken: this.authToken }));
+
+                this.deleteCompany$.subscribe((response) => {
+                    this.store.dispatch(
+                        getUserDetails({
+                            request:
+                                'OVJMMXZ6ckhEa2hrK3pZTUtaYkNIR3pmRy82d25WaTA5SWdUdUJzY3dyV1Y1dFdkVDA3SXAwVjByNkttZHZBL1FncExqcDdrejkwNmtCQ2JFa2puTlUxclBSWnNlcnA5UDZHdVpjekVGQWpkenpoRXExejlVbzJ0dDk0UjlMcW83c29sOVErbG9lNjYzOHhGWFRVdW1TWVpnNEZLdW03cXBxdUhEZkx1U3ZRPQ==',
+                        })
+                    );
+                });
+            }
         });
     }
 }
