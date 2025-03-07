@@ -96,6 +96,7 @@ th {
     background-color: #f4f4f4;
     font-size: small;
     height: 22px;
+    padding-left: 24px !important;
 }
 td {
     font-size: small;
@@ -213,4 +214,7 @@ td {
     margin: 40% auto;
     font-weight: bold;
     font-size: large;
+}
+.mat-button-wrapper {
+    text-decoration: underline;
 }
