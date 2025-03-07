@@ -7,11 +7,7 @@ import { OtpService } from '../../service/otp.service';
 
 @NgModule({
     declarations: [ConfirmationDialogComponent],
-    imports: [
-        CommonModule,
-        MatDialogModule,
-        MatButtonModule, // Required for buttons in the dialog
-    ],
+    imports: [CommonModule, MatDialogModule, MatButtonModule],
     exports: [ConfirmationDialogComponent],
     providers: [OtpService],
 })
