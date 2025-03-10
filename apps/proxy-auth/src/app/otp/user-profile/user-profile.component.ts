@@ -56,8 +56,8 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     // authToken: string = '';
 
     clientForm = new FormGroup({
-        name: new FormControl(''),
-        mobile: new FormControl(''),
+        name: new FormControl({ value: '', disabled: true }),
+        mobile: new FormControl({ value: '', disabled: true }),
         email: new FormControl({ value: '', disabled: true }),
     });
 
