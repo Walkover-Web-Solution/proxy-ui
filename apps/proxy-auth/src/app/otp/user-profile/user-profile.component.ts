@@ -1,5 +1,5 @@
 import { NgStyle } from '@angular/common';
-import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil } from 'rxjs';
 import { IAppState } from '../store/app.state';
@@ -10,6 +10,8 @@ import {
     getUserProfileInProcess,
     getUserProfileSuccess,
     leaveCompanyData,
+    leaveCompanyDataInProcess,
+    leaveCompanySuccess,
 } from '../store/selectors';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash';
@@ -22,7 +24,6 @@ import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component
     styleUrls: ['./user-profile.component.scss'],
 })
 export class UserProfileComponent extends BaseComponent implements OnInit {
-    @ViewChild('dialogTemplate') dialogTemplate!: TemplateRef<any>;
     @Input() public authToken: string;
     @Input() public target: string;
     @Input()
@@ -74,7 +75,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
             takeUntil(this.destroy$)
         );
         this.deleteCompany$ = this.store.pipe(
-            select(leaveCompanyData),
+            select(leaveCompanySuccess),
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
@@ -91,8 +92,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         });
         this.store.dispatch(
             getUserDetails({
-                request:
-                    'VGtBUVNXN3F4VkN0RTVZVEZJb2lJbGs3TGNrNDdnRy9rZzBrU3lrdU9ka2k0T3NwcVlFSE5UTEx3ZmFWWnhQQ2hJNWxaUGhzOGNtb2M4QW1VblR0Z2hOVTZPQUZKOUtxdjVwcTV5Zno5UkRjVmdMM3pNSkJTQ2VKUnA2NGliZ2hndVl2TVhJWTVHUURleG15U09hU1NhWUhQWUlUblFZKzlIb1hiVWYzU1pnPQ==',
+                request: this.authToken,
             })
         );
     }
@@ -105,16 +105,11 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((result) => {
             if (result === 'confirmed') {
-                this.store.dispatch(leaveCompany({ companyId: companyId, authToken: this.authToken }));
-
-                this.deleteCompany$.subscribe((response) => {
-                    this.store.dispatch(
-                        getUserDetails({
-                            request:
-                                'VGtBUVNXN3F4VkN0RTVZVEZJb2lJbGs3TGNrNDdnRy9rZzBrU3lrdU9ka2k0T3NwcVlFSE5UTEx3ZmFWWnhQQ2hJNWxaUGhzOGNtb2M4QW1VblR0Z2hOVTZPQUZKOUtxdjVwcTV5Zno5UkRjVmdMM3pNSkJTQ2VKUnA2NGliZ2hndVl2TVhJWTVHUURleG15U09hU1NhWUhQWUlUblFZKzlIb1hiVWYzU1pnPQ==',
-                        })
-                    );
-                });
+                this.store.dispatch(
+                    getUserDetails({
+                        request: this.authToken,
+                    })
+                );
             }
         });
     }

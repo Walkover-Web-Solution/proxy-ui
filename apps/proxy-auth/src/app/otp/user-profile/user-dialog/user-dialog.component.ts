@@ -2,8 +2,10 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { select, Store } from '@ngrx/store';
 import { leaveCompany } from '../../store/actions/otp.action';
-import { Observable, take } from 'rxjs';
-import { leaveCompanyData } from '../../store/selectors';
+import { distinctUntilChanged, Observable, take, takeUntil } from 'rxjs';
+import { leaveCompanyData, leaveCompanyDataInProcess, leaveCompanySuccess } from '../../store/selectors';
+import { IAppState } from '../../store/app.state';
+import { isEqual } from 'lodash';
 
 @Component({
     selector: 'proxy-confirmation-dialog',
@@ -14,10 +16,10 @@ export class ConfirmationDialogComponent {
     deleteCompany$: Observable<any>;
     constructor(
         public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { companyId: any; authToken },
-        private store: Store
+        @Inject(MAT_DIALOG_DATA) public data: { companyId: any; authToken: string },
+        private store: Store<IAppState>
     ) {
-        this.deleteCompany$ = this.store.pipe(select(leaveCompanyData));
+        this.deleteCompany$ = this.store.pipe(select(leaveCompanySuccess));
     }
 
     confirmleave() {
@@ -28,9 +30,10 @@ export class ConfirmationDialogComponent {
             })
         );
 
-        this.deleteCompany$.pipe(take(1)).subscribe((res) => {
-            console.log({ res });
-            this.dialogRef.close('confirmed');
+        this.deleteCompany$.pipe().subscribe((res) => {
+            if (res) {
+                this.dialogRef.close('confirmed');
+            }
         });
     }
 

@@ -3,8 +3,6 @@ body {
     text-align: center;
     background: #f9f9f9;
     padding: 20px;
-    min-height: 100vh;
-    overflow-y: auto;
 }
 .container {
     background: #ffffff;
@@ -12,6 +10,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgb(0 0 0 / 48%);
     text-align: left;
+    position: relative;
 }
 .full-width {
     max-width: 300px;
@@ -20,25 +19,7 @@ body {
     display: flex;
     flex-direction: column;
 }
-// .input-group {
-//     margin: 10px 0;
-//     width: 280px;
-//     font-weight: 500;
-//     margin-top: 4px;
-// }
-// label {
-//     font-weight: 500;
-//     display: block;
-// }
-// input {
-//     width: 100%;
-//     padding: 10px 10px;
-//     border: 1px solid #ccc;
-//     border-radius: 5px;
-// }
-// .dropdown {
-//     position: relative;
-// }
+
 .dropdown-btn {
     width: 100%;
     padding: 8px;
@@ -217,7 +198,4 @@ td {
     margin: 40% auto;
     font-weight: bold;
     font-size: large;
-}
-.mat-button-wrapper {
-    text-decoration: underline;
 }
