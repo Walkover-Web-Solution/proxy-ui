@@ -78,7 +78,7 @@ export class OtpService {
         payload?: { [key: string]: any }
     ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = requestId;
-        const url = otpVerificationUrls.getUserDetails('https://routes.msg91.com/api');
+        const url = otpVerificationUrls.getUserDetails('https://apitest.msg91.com/api');
         return this.http.get<BaseResponse<IWidgetResponse, IGetWidgetData>>(url, payload ?? {}, this.options);
     }
     public leaveCompanyUser(
@@ -86,7 +86,13 @@ export class OtpService {
         authToken: string
     ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;
-        const url = otpVerificationUrls.leaveCompany('https://routes.msg91.com/api');
+        const url = otpVerificationUrls.leaveCompany('https://apitest.msg91.com/api');
         return this.http.post<any>(url, { company_id: companyId }, this.options);
+    }
+
+    public updateUser(name: string, authToken: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+        this.options.headers['proxy_auth_token'] = authToken;
+        const url = otpVerificationUrls.updateUser('https://apitest.msg91.com/api');
+        return this.http.put<any>(url, { user: { name } }, this.options);
     }
 }
