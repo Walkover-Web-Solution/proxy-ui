@@ -1,4 +1,11 @@
-<div class="container" *ngIf="show$ | async">
+<div
+    class="container"
+    *ngIf="show$ | async"
+    [ngClass]="{
+        'with-reference-id': referenceId,
+        'without-reference-id': authToken
+    }"
+>
     <div
         class="otp-verification-dialog"
         [ngClass]="{ 'animation-complete': animate, 'register-user': showRegistration | async }"
