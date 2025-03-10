@@ -5,17 +5,23 @@
         <form [formGroup]="clientForm" class="form">
             <mat-form-field appearance="outline" class="full-width w-100">
                 <mat-label>Name</mat-label>
-                <input matInput formControlName="name" placeholder="Enter your name" />
+                <input matInput formControlName="name" placeholder="Enter your name" disabled class="input-field" />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width w-100">
                 <mat-label>Mobile</mat-label>
-                <input matInput formControlName="mobile" placeholder="Enter your mobile number" />
+                <input
+                    matInput
+                    formControlName="mobile"
+                    placeholder="Enter your mobile number"
+                    disabled
+                    class="input-field"
+                />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width w-100">
                 <mat-label>Email</mat-label>
-                <input matInput formControlName="email" placeholder="Enter your email" disabled />
+                <input matInput formControlName="email" placeholder="Enter your email" disabled class="input-field" />
             </mat-form-field>
         </form>
 
