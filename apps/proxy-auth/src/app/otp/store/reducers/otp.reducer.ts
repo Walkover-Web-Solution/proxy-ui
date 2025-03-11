@@ -29,6 +29,10 @@ export interface IOtpState {
     leaveCompanyData: any;
     leaveCompanyDataInProcess: boolean;
     leaveCompanySuccess: boolean;
+
+    updateUser: string;
+    loading: boolean;
+    error: any;
 }
 
 export const initialState: IOtpState = {
@@ -57,6 +61,10 @@ export const initialState: IOtpState = {
     leaveCompanyData: null,
     leaveCompanyDataInProcess: false,
     leaveCompanySuccess: false,
+
+    updateUser: '',
+    loading: false,
+    error: null,
 };
 
 export function otpReducer(state: IOtpState, action: Action) {
@@ -240,5 +248,25 @@ const _otpReducer = createReducer(
             errors: errors,
             apiErrorResponse: errorResponse,
         };
-    })
+    }),
+
+    on(otpActions.updateUser, (state) => ({
+        ...state,
+        loading: true,
+        error: null,
+    })),
+
+    on(otpActions.updateUserComplete, (state, { response }) => ({
+        ...state,
+        name: response.user.name, // Update name from API response
+        loading: false,
+        error: null,
+    })),
+
+    on(otpActions.updateUserError, (state, { errors, errorResponse }) => ({
+        ...state,
+        loading: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+    }))
 );

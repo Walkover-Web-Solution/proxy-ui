@@ -16,8 +16,8 @@ import {
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash';
 import { MatDialog } from '@angular/material/dialog';
-
 import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component';
+import { updateUser } from '../store/actions/otp.action';
 @Component({
     selector: 'proxy-user-profile',
     templateUrl: './user-profile.component.html',
@@ -56,7 +56,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     // authToken: string = '';
 
     clientForm = new FormGroup({
-        name: new FormControl({ value: '', disabled: true }),
+        name: new FormControl(''),
         mobile: new FormControl({ value: '', disabled: true }),
         email: new FormControl({ value: '', disabled: true }),
     });
@@ -87,7 +87,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
                 this.companyDetails = res;
                 this.clientForm.get('name').setValue(res?.name);
                 this.clientForm.get('email').setValue(res?.email);
-                this.clientForm.get('mobile').setValue(res?.mobile);
+                this.clientForm.get('mobile').setValue(res?.mobile ? res.mobile : '--Not Provided--');
             }
         });
         this.store.dispatch(
@@ -112,5 +112,12 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
                 );
             }
         });
+    }
+
+    updateUser() {
+        const name = this.clientForm.get('name')?.value;
+        if (name) {
+            this.store.dispatch(updateUser({ name, authToken: this.authToken }));
+        }
     }
 }

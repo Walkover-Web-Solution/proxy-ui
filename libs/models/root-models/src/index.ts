@@ -32,6 +32,7 @@ export enum ProxyBaseUrls {
     Env = 'ENV',
     IToken = 'IToken',
     ProxyLogsUrl = 'PROXY_LOGS_URL',
+    ClientURL = 'CLIENT_BASE_URL',
 }
 
 export interface IToken {

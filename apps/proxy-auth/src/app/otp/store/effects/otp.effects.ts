@@ -191,4 +191,33 @@ export class OtpEffects {
             })
         )
     );
+
+    UpdateUser$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.updateUser),
+            switchMap(({ name, authToken }) => {
+                return this.otpService.updateUser(name, authToken).pipe(
+                    map((res: any) => {
+                        if (res.type !== 'error') {
+                            return otpActions.updateUserComplete({
+                                response: res?.data[0],
+                            });
+                        }
+                        return otpActions.updateUserError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.updateUserError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
 }
