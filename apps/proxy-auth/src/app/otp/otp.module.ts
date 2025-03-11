@@ -1,3 +1,4 @@
+import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -29,8 +30,17 @@ import { RegisterComponent } from './component/register/register.component';
 import { DirectivesMarkAllAsTouchedModule } from '@proxy/directives/mark-all-as-touched';
 import { LoginComponent } from './component/login/login.component';
 import { UiLoaderModule } from '@proxy/ui/loader';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { UserDialogModule } from './user-profile/user-dialog/user-dialog.module';
+import { MatCardModule } from '@angular/material/card';
 
-export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent, RegisterComponent, LoginComponent];
+export const CHAT_COMPONENTS: any[] = [
+    SendOtpComponent,
+    SendOtpCenterComponent,
+    RegisterComponent,
+    LoginComponent,
+    UserProfileComponent,
+];
 
 @NgModule({
     imports: [
@@ -47,6 +57,9 @@ export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent,
         MatProgressBarModule,
         MatRadioModule,
         UiLoaderModule,
+        MatTableModule,
+        UserDialogModule,
+        MatCardModule,
 
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),
@@ -67,6 +80,10 @@ export const CHAT_COMPONENTS: any[] = [SendOtpComponent, SendOtpCenterComponent,
         { provide: ProxyBaseUrls.Env, useValue: environment.env },
         {
             provide: ProxyBaseUrls.BaseURL,
+            useValue: environment.apiUrl + environment.msgMidProxy,
+        },
+        {
+            provide: ProxyBaseUrls.ClientURL,
             useValue: environment.apiUrl + environment.msgMidProxy,
         },
     ],

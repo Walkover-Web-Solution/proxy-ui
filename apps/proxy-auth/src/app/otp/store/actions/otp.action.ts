@@ -35,3 +35,22 @@ export const getOtpVerifyActionError = createAction(
     '[OTP] Get OTP Verify Error',
     props<{ errors: string[]; errorResponse: any }>()
 );
+export const getUserDetails = createAction('[OTP] Get User Details', props<{ request: any }>());
+export const getUserDetailsComplete = createAction('[OTP] Get User Details Complete', props<{ response: any }>());
+export const getUserDetailsError = createAction(
+    '[OTP] Get User Details Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+export const leaveCompany = createAction('[OTP] Leave Company', props<{ companyId: number; authToken: string }>());
+export const leaveCompanyComplete = createAction('[OTP] Leave Company Complete', props<{ response: any }>());
+export const leaveCompanyError = createAction(
+    '[OTP] Leave Company Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+
+export const updateUser = createAction('[OTP] Update Field', props<{ name: string; authToken: string }>());
+export const updateUserComplete = createAction('[OTP] Update User Success', props<{ response: any }>());
+export const updateUserError = createAction(
+    '[OTP] Update User Failure',
+    props<{ errors: string[]; errorResponse: any }>()
+);
