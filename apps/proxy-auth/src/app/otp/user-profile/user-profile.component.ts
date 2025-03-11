@@ -1,17 +1,19 @@
 import { NgStyle } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map, Observable, of, takeUntil } from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { getUserDetails, leaveCompany } from '../store/actions/otp.action';
 import {
+    error,
     getUserProfileData,
     getUserProfileInProcess,
     getUserProfileSuccess,
     leaveCompanyData,
     leaveCompanyDataInProcess,
     leaveCompanySuccess,
+    loading,
 } from '../store/selectors';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash';
@@ -26,6 +28,7 @@ import { updateUser } from '../store/actions/otp.action';
 export class UserProfileComponent extends BaseComponent implements OnInit {
     @Input() public authToken: string;
     @Input() public target: string;
+    updateMessage: string = '';
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
@@ -52,6 +55,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     public userDetails$: Observable<any>;
     public userInProcess$: Observable<boolean>;
     public deleteCompany$: Observable<any>;
+    public update$: Observable<any>;
     public companyDetails;
     // authToken: string = '';
 
@@ -79,6 +83,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
+        this.update$ = this.store.pipe(select(loading), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
     }
 
     ngOnInit(): void {
@@ -115,9 +120,17 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     }
 
     updateUser() {
+        const currentName = this.companyDetails?.name;
+        const enteredName = this.clientForm.get('name')?.value;
         const name = this.clientForm.get('name')?.value;
-        if (name) {
-            this.store.dispatch(updateUser({ name, authToken: this.authToken }));
+        if (!enteredName || enteredName === currentName) {
+            return;
         }
+
+        this.store.dispatch(updateUser({ name, authToken: this.authToken }));
+        this.update$ = of(true);
+        setTimeout(() => {
+            this.update$ = of(false);
+        }, 2000);
     }
 }
