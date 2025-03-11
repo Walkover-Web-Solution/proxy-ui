@@ -19,7 +19,11 @@ export class OtpService {
         withCredentials: false,
     };
 
-    constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any) {}
+    constructor(
+        private http: HttpWrapperService,
+        @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any,
+        @Inject(ProxyBaseUrls.ClientURL) private clientUrl: any
+    ) {}
 
     public getWidgetData(
         requestId: string,
@@ -78,7 +82,7 @@ export class OtpService {
         payload?: { [key: string]: any }
     ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = requestId;
-        const url = otpVerificationUrls.getUserDetails('https://apitest.msg91.com/api');
+        const url = otpVerificationUrls.getUserDetails(this.clientUrl);
         return this.http.get<BaseResponse<IWidgetResponse, IGetWidgetData>>(url, payload ?? {}, this.options);
     }
     public leaveCompanyUser(
@@ -86,13 +90,13 @@ export class OtpService {
         authToken: string
     ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;
-        const url = otpVerificationUrls.leaveCompany('https://apitest.msg91.com/api');
+        const url = otpVerificationUrls.leaveCompany(this.clientUrl);
         return this.http.post<any>(url, { company_id: companyId }, this.options);
     }
 
     public updateUser(name: string, authToken: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;
-        const url = otpVerificationUrls.updateUser('https://apitest.msg91.com/api');
+        const url = otpVerificationUrls.updateUser(this.clientUrl);
         return this.http.put<any>(url, { user: { name } }, this.options);
     }
 }

@@ -82,6 +82,10 @@ export const CHAT_COMPONENTS: any[] = [
             provide: ProxyBaseUrls.BaseURL,
             useValue: environment.apiUrl + environment.msgMidProxy,
         },
+        {
+            provide: ProxyBaseUrls.ClientURL,
+            useValue: environment.apiUrl + environment.msgMidProxy,
+        },
     ],
     exports: [SendOtpComponent],
 })
