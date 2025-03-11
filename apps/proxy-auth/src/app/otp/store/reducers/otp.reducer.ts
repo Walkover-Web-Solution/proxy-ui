@@ -1,5 +1,5 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, flatMap } from 'lodash-es';
 import { IGetOtpRes, IWidgetResponse } from '../../model/otp';
 import * as otpActions from '../actions/otp.action';
 export interface IOtpState {
@@ -21,6 +21,18 @@ export interface IOtpState {
     closeWidgetApiFailed: boolean;
 
     widgetData: any;
+
+    userProfileData: any;
+    userProfileDataInProcess: boolean;
+    userDetailsSuccess: boolean;
+
+    leaveCompanyData: any;
+    leaveCompanyDataInProcess: boolean;
+    leaveCompanySuccess: boolean;
+
+    updateUser: string;
+    loading: boolean;
+    error: any;
 }
 
 export const initialState: IOtpState = {
@@ -42,6 +54,17 @@ export const initialState: IOtpState = {
     closeWidgetApiFailed: false,
 
     widgetData: null,
+    userProfileData: null,
+    userProfileDataInProcess: false,
+    userDetailsSuccess: false,
+
+    leaveCompanyData: null,
+    leaveCompanyDataInProcess: false,
+    leaveCompanySuccess: false,
+
+    updateUser: '',
+    loading: false,
+    error: null,
 };
 
 export function otpReducer(state: IOtpState, action: Action) {
@@ -174,5 +197,76 @@ const _otpReducer = createReducer(
             apiErrorResponse: errorResponse,
             closeWidgetApiFailed: true,
         };
-    })
+    }),
+    on(otpActions.getUserDetails, (state, { request }) => {
+        return {
+            ...state,
+            userProfileDataInProcess: true,
+            userDetailsSuccess: false,
+            errors: null,
+        };
+    }),
+    on(otpActions.getUserDetailsComplete, (state, { response }) => {
+        return {
+            ...state,
+            userProfileDataInProcess: false,
+            userDetailsSuccess: true,
+            userProfileData: response,
+        };
+    }),
+    on(otpActions.getUserDetailsError, (state, { errors, errorResponse }) => {
+        return {
+            ...state,
+            userProfileDataInProcess: false,
+            userDetailsSuccess: false,
+            errors: errors,
+            apiErrorResponse: errorResponse,
+        };
+    }),
+
+    on(otpActions.leaveCompany, (state, { companyId }) => {
+        return {
+            ...state,
+            leaveCompanyDataInProcess: true,
+            leaveCompanySuccess: false,
+            errors: null,
+        };
+    }),
+    on(otpActions.leaveCompanyComplete, (state, { response }) => {
+        return {
+            ...state,
+            leaveCompanyDataInProcess: false,
+            leaveCompanySuccess: true,
+            leaveCompanyData: response,
+        };
+    }),
+    on(otpActions.leaveCompanyError, (state, { errors, errorResponse }) => {
+        return {
+            ...state,
+            leaveCompanyDataInProcess: false,
+            leaveCompanySuccess: false,
+            errors: errors,
+            apiErrorResponse: errorResponse,
+        };
+    }),
+
+    on(otpActions.updateUser, (state) => ({
+        ...state,
+        loading: true,
+        error: null,
+    })),
+
+    on(otpActions.updateUserComplete, (state, { response }) => ({
+        ...state,
+        name: response.user.name, // Update name from API response
+        loading: false,
+        error: null,
+    })),
+
+    on(otpActions.updateUserError, (state, { errors, errorResponse }) => ({
+        ...state,
+        loading: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+    }))
 );

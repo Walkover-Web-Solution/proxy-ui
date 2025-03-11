@@ -135,4 +135,89 @@ export class OtpEffects {
             })
         )
     );
+    getUserDetails$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.getUserDetails),
+            switchMap((p) => {
+                return this.otpService.getUserDetailsData(p.request).pipe(
+                    map((res: any) => {
+                        if (res.type !== 'error') {
+                            return otpActions.getUserDetailsComplete({
+                                response: res?.data[0],
+                            });
+                        }
+                        return otpActions.getUserDetailsError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.getUserDetailsError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
+    leaveCompany$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.leaveCompany),
+            switchMap(({ companyId, authToken }) => {
+                return this.otpService.leaveCompanyUser(companyId, authToken).pipe(
+                    map((res: any) => {
+                        if (res.type !== 'error') {
+                            return otpActions.leaveCompanyComplete({
+                                response: res?.data[0],
+                            });
+                        }
+                        return otpActions.leaveCompanyError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.leaveCompanyError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
+
+    UpdateUser$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.updateUser),
+            switchMap(({ name, authToken }) => {
+                return this.otpService.updateUser(name, authToken).pipe(
+                    map((res: any) => {
+                        if (res.type !== 'error') {
+                            return otpActions.updateUserComplete({
+                                response: res?.data[0],
+                            });
+                        }
+                        return otpActions.updateUserError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.updateUserError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
 }

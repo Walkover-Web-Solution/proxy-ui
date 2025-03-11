@@ -23,3 +23,14 @@ export const selectApiErrorResponse = createSelector(selectRootState, (p) => p.a
 export const closeWidgetApiFailed = createSelector(selectRootState, (p) => p.closeWidgetApiFailed);
 
 export const selectWidgetData = createSelector(selectRootState, (p) => p.widgetData);
+export const getUserProfileData = createSelector(selectRootState, (p) => p.userProfileData);
+export const getUserProfileSuccess = createSelector(selectRootState, (p) => p.userDetailsSuccess);
+export const getUserProfileInProcess = createSelector(selectRootState, (p) => p.userProfileDataInProcess);
+
+export const leaveCompanyData = createSelector(selectRootState, (p) => p.leaveCompanyData);
+export const leaveCompanySuccess = createSelector(selectRootState, (p) => p.leaveCompanySuccess);
+export const leaveCompanyDataInProcess = createSelector(selectRootState, (p) => p.leaveCompanyDataInProcess);
+
+export const updateUser = createSelector(selectRootState, (p) => p.updateUser);
+export const loading = createSelector(selectRootState, (p) => p.loading);
+export const error = createSelector(selectRootState, (p) => p.error);

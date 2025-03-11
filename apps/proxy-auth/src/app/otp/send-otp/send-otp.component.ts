@@ -29,6 +29,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy {
     @Input() public referenceId: string;
     @Input() public target: string;
+    @Input() public authToken: string;
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
@@ -94,6 +95,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     ngOnInit() {
+        console.log(this.authToken);
         this.toggleSendOtp(true);
         this.loadExternalFonts();
         this.store.dispatch(
