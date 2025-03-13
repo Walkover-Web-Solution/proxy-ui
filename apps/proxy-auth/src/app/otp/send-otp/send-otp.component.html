@@ -47,7 +47,7 @@
         >
         </proxy-login>
     </div>
-    <proxy-user-profile *ngIf="authToken" [authToken]="authToken"></proxy-user-profile>
+    <proxy-user-profile *ngIf="authToken" [authToken]="authToken" (togglePopUp)="toggle()"></proxy-user-profile>
     <div class="otp-verification-footer">
         <span>Secured by</span>
         <svg
