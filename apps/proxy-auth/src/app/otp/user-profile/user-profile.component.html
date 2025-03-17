@@ -1,6 +1,25 @@
-<div class="container">
-    <h2>Client Details</h2>
+<ng-container [ngClass]="{ 'with-card': showCard, 'without-card': !showCard }">
+    <mat-card *ngIf="showCard">
+        <div class="container">
+            <h2>Client Details</h2>
+            <ng-container *ngTemplateOutlet="clientDetails"></ng-container>
+        </div>
+    </mat-card>
 
+    <div *ngIf="!showCard" class="container">
+        <h2>Client Details</h2>
+        <ng-container *ngTemplateOutlet="clientDetails"></ng-container>
+    </div>
+</ng-container>
+
+<ng-template #withoutCard>
+    <div class="container">
+        <h2>Client Details</h2>
+        <ng-container *ngTemplateOutlet="clientDetails"></ng-container>
+    </div>
+</ng-template>
+
+<ng-template #clientDetails>
     <form [formGroup]="clientForm" class="form">
         <mat-form-field appearance="outline" class="full-width w-100">
             <mat-label>Name</mat-label>
@@ -67,4 +86,4 @@
     </table>
 
     <p class="no-data" *ngIf="!(userDetails$ | async)?.c_companies">Nothing Here, There are no companies to show</p>
-</div>
+</ng-template>

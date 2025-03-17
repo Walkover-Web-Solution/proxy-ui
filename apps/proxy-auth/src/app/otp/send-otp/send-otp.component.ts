@@ -60,6 +60,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public selectResendOtpInProcess$: Observable<boolean>;
     public selectVerifyOtpInProcess$: Observable<boolean>;
     public animate: boolean = false;
+    public showCard: boolean = false;
 
     public otpWidgetData;
     public loginWidgetData;
@@ -97,7 +98,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
     ngOnInit() {
         this.toggleSendOtp(true);
-        this.toggleUserDetail(true);
+        this.toggleUserDetail();
         this.loadExternalFonts();
         this.store.dispatch(
             getWidgetData({
@@ -300,22 +301,14 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         }
     }
 
-    public toggleUserDetail(intial: boolean = false) {
+    public toggleUserDetail() {
         this.authReference = document.getElementById(this.authToken);
-        if (this.authReference) {
-            this.show$.pipe().subscribe((res) => {
-                this.ngZone.run(() => {
-                    this.animate = true;
-                    this.show$ = of(res);
-                    this.animate = false;
-                });
-            });
-        } else {
-            this.show$ = of(false);
-            this.animate = false;
-            if (intial) {
-                this.addButtonsToReferenceElement(this.authReference);
+        this.ngZone.run(() => {
+            if (this.authReference) {
+                this.showCard = false;
+            } else {
+                this.showCard = true;
             }
-        }
+        });
     }
 }
