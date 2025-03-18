@@ -6,6 +6,8 @@
             <mat-form-field appearance="outline" class="full-width w-100">
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="name" placeholder="Enter your name" disabled class="input-field" />
+                <mat-error *ngIf="clientForm.get('name')?.hasError('required')"> Name is required. </mat-error>
+                <mat-error *ngIf="clientForm.get('name')?.hasError('pattern')"> Invalid name format. </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width w-100">
@@ -31,7 +33,6 @@
         <p *ngIf="update$ | async" class="success-message">Information successfully updated</p>
 
         <h3>Company Details</h3>
-        <!-- <mat-spinner *ngIf="userInProcess$ | async"></mat-spinner> -->
 
         <table mat-table [dataSource]="(userDetails$ | async)?.c_companies" class="mat-elevation-z8">
             <ng-container matColumnDef="sno">

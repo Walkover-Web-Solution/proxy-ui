@@ -1,12 +1,11 @@
 import { NgStyle } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, of, takeUntil } from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { getUserDetails, leaveCompany } from '../store/actions/otp.action';
 import {
-    error,
     getUserProfileData,
     getUserProfileInProcess,
     getUserProfileSuccess,
@@ -20,6 +19,7 @@ import { isEqual } from 'lodash';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component';
 import { updateUser } from '../store/actions/otp.action';
+import { UPDATE_REGEX } from '@proxy/regex';
 @Component({
     selector: 'proxy-user-profile',
     templateUrl: './user-profile.component.html',
@@ -28,7 +28,7 @@ import { updateUser } from '../store/actions/otp.action';
 export class UserProfileComponent extends BaseComponent implements OnInit {
     @Input() public authToken: string;
     @Input() public target: string;
-    updateMessage: string = '';
+    @Input() public showCard: boolean;
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
@@ -60,7 +60,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     // authToken: string = '';
 
     clientForm = new FormGroup({
-        name: new FormControl(''),
+        name: new FormControl('', [Validators.required, Validators.pattern(UPDATE_REGEX)]),
         mobile: new FormControl({ value: '', disabled: true }),
         email: new FormControl({ value: '', disabled: true }),
     });
@@ -120,14 +120,17 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     }
 
     updateUser() {
+        const nameControl = this.clientForm.get('name');
         const currentName = this.companyDetails?.name;
-        const enteredName = this.clientForm.get('name')?.value;
-        const name = this.clientForm.get('name')?.value;
+        const enteredName = nameControl?.value?.trim();
+
         if (!enteredName || enteredName === currentName) {
             return;
         }
-
-        this.store.dispatch(updateUser({ name, authToken: this.authToken }));
+        if (nameControl.invalid) {
+            return;
+        }
+        this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken }));
         this.update$ = of(true);
         setTimeout(() => {
             this.update$ = of(false);
