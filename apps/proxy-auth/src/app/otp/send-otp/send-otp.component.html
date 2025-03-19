@@ -48,6 +48,7 @@
         </proxy-login>
     </div>
     <proxy-user-profile
+        *ngIf="authToken"
         [authToken]="authToken"
         (togglePopUp)="toggleUserDetail()"
         [showCard]="showCard"
