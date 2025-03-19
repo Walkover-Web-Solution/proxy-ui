@@ -56,6 +56,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     public userInProcess$: Observable<boolean>;
     public deleteCompany$: Observable<any>;
     public update$: Observable<any>;
+    public previousName: string;
     public companyDetails;
     // authToken: string = '';
 
@@ -89,12 +90,20 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         this.userDetails$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
+                this.previousName = res?.name;
                 this.companyDetails = res;
                 this.clientForm.get('name').setValue(res?.name);
                 this.clientForm.get('email').setValue(res?.email);
                 this.clientForm.get('mobile').setValue(res?.mobile ? res.mobile : '--Not Provided--');
             }
         });
+
+        this.clientForm.get('name').valueChanges.subscribe((value) => {
+            if (value.trim() !== this.previousName) {
+                this.clientForm.get('name').markAsTouched();
+            }
+        });
+
         this.store.dispatch(
             getUserDetails({
                 request: this.authToken,
@@ -121,13 +130,9 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
 
     updateUser() {
         const nameControl = this.clientForm.get('name');
-        const currentName = this.companyDetails?.name;
         const enteredName = nameControl?.value?.trim();
 
-        if (!enteredName || enteredName === currentName) {
-            return;
-        }
-        if (nameControl.invalid) {
+        if (!enteredName || enteredName === this.previousName || nameControl.invalid) {
             return;
         }
         this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken }));
@@ -135,5 +140,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         setTimeout(() => {
             this.update$ = of(false);
         }, 2000);
+
+        this.previousName = enteredName;
     }
 }
