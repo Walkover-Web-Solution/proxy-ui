@@ -28,7 +28,6 @@ import { UPDATE_REGEX } from '@proxy/regex';
 export class UserProfileComponent extends BaseComponent implements OnInit {
     @Input() public authToken: string;
     @Input() public target: string;
-    @Input() public showCard: boolean;
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
