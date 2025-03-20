@@ -97,7 +97,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     ngOnInit() {
-        console.log(this.authToken);
         this.toggleSendOtp(true);
         this.toggleUserDetail();
         this.loadExternalFonts();
