@@ -1,7 +1,7 @@
 import { NgStyle } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil } from 'rxjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { BehaviorSubject, distinctUntilChanged, map, Observable, of, takeUntil } from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { getUserDetails, leaveCompany } from '../store/actions/otp.action';
@@ -12,12 +12,14 @@ import {
     leaveCompanyData,
     leaveCompanyDataInProcess,
     leaveCompanySuccess,
+    loading,
 } from '../store/selectors';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component';
 import { updateUser } from '../store/actions/otp.action';
+import { UPDATE_REGEX } from '@proxy/regex';
 @Component({
     selector: 'proxy-user-profile',
     templateUrl: './user-profile.component.html',
@@ -53,11 +55,13 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     public userDetails$: Observable<any>;
     public userInProcess$: Observable<boolean>;
     public deleteCompany$: Observable<any>;
+    public update$: Observable<any>;
+    public previousName: string;
     public companyDetails;
     // authToken: string = '';
 
     clientForm = new FormGroup({
-        name: new FormControl(''),
+        name: new FormControl('', [Validators.required, Validators.pattern(UPDATE_REGEX)]),
         mobile: new FormControl({ value: '', disabled: true }),
         email: new FormControl({ value: '', disabled: true }),
     });
@@ -80,17 +84,26 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
+        this.update$ = this.store.pipe(select(loading), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
     }
 
     ngOnInit(): void {
         this.userDetails$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
+                this.previousName = res?.name;
                 this.companyDetails = res;
                 this.clientForm.get('name').setValue(res?.name);
                 this.clientForm.get('email').setValue(res?.email);
                 this.clientForm.get('mobile').setValue(res?.mobile ? res.mobile : '--Not Provided--');
             }
         });
+
+        this.clientForm.get('name').valueChanges.subscribe((value) => {
+            if (value.trim() !== this.previousName) {
+                this.clientForm.get('name').markAsTouched();
+            }
+        });
+
         this.store.dispatch(
             getUserDetails({
                 request: this.authToken,
@@ -116,9 +129,18 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     }
 
     updateUser() {
-        const name = this.clientForm.get('name')?.value;
-        if (name) {
-            this.store.dispatch(updateUser({ name, authToken: this.authToken }));
+        const nameControl = this.clientForm.get('name');
+        const enteredName = nameControl?.value?.trim();
+
+        if (!enteredName || enteredName === this.previousName || nameControl.invalid) {
+            return;
         }
+        this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken }));
+        this.update$ = of(true);
+        setTimeout(() => {
+            this.update$ = of(false);
+        }, 2000);
+
+        this.previousName = enteredName;
     }
 }

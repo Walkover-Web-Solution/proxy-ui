@@ -13,12 +13,13 @@
         <ng-container *ngTemplateOutlet="clientDetails"></ng-container>
     </div>
 </ng-template>
-
 <ng-template #clientDetails>
     <form [formGroup]="clientForm" class="form">
         <mat-form-field appearance="outline" class="full-width w-100">
             <mat-label>Name</mat-label>
             <input matInput formControlName="name" placeholder="Enter your name" disabled class="input-field" />
+            <mat-error *ngIf="clientForm.get('name')?.hasError('required')"> Name is required. </mat-error>
+            <mat-error *ngIf="clientForm.get('name')?.hasError('pattern')"> Invalid name format. </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width w-100">
@@ -39,8 +40,9 @@
     </form>
 
     <ng-container>
-        <button mat-flat-button (click)="updateUser()" color="primary">Update</button>
+        <button type="button" mat-flat-button (click)="updateUser()" color="primary">Update</button>
     </ng-container>
+    <p *ngIf="update$ | async" class="success-message">Information successfully updated</p>
 
     <h3>Company Details</h3>
 
@@ -54,6 +56,7 @@
             <th mat-header-cell *matHeaderCellDef>Company Name</th>
             <td mat-cell *matCellDef="let element">{{ element.name }}</td>
         </ng-container>
+        <h3>Company Details</h3>
 
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef>Action</th>
