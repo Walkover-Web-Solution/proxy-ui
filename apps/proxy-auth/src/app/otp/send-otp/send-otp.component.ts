@@ -67,6 +67,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public registrationViaLogin: boolean = true;
     public prefillDetails: string;
     public referenceElement: HTMLElement = null;
+    public authReference: HTMLElement = null;
+    public showCard: boolean = false;
     public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
     constructor(
         private ngZone: NgZone,
@@ -95,8 +97,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     ngOnInit() {
-        console.log(this.authToken);
         this.toggleSendOtp(true);
+        this.toggleUserDetail();
         this.loadExternalFonts();
         this.store.dispatch(
             getWidgetData({
@@ -296,6 +298,15 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public returnFailureObj(obj) {
         if (typeof this.failureReturn === 'function') {
             this.failureReturn(obj);
+        }
+    }
+
+    public toggleUserDetail() {
+        this.authReference = document.getElementById(this.authToken);
+        if (this.authReference) {
+            this.showCard = false;
+        } else {
+            this.showCard = true;
         }
     }
 }
