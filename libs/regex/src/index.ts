@@ -69,3 +69,4 @@ export const PASSWORD_REGEX = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).*/; // 
 export const NAME_REGEX = /^([a-zA-Z]+\s)*[a-zA-Z]+$/i;
 export const EMAIL_OR_MOBILE_REGEX =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$|^[0-9]{7,15}$/;
+export const UPDATE_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9_\s]+$/;

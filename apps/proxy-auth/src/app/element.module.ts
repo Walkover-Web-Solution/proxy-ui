@@ -47,9 +47,13 @@ window['initVerification'] = (config: any) => {
 
             // omitting keys which are not required in API payload
             sendOtpElement.otherData = omit(config, RESERVED_KEYS);
-
-            document.getElementsByTagName('body')[0].append(sendOtpElement);
+            if (document.getElementById('proxyContainer')) {
+                document.getElementById('proxyContainer').append(sendOtpElement);
+            } else {
+                document.getElementsByTagName('body')[0].append(sendOtpElement);
+            }
             window['libLoaded'] = true;
+
             // } else if (config?.authToken) {
             //     const findOtpProvider = document.querySelector('user-profile');
             //     if (findOtpProvider) {
