@@ -98,7 +98,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
     ngOnInit() {
         this.toggleSendOtp(true);
-        this.toggleUserDetail();
         this.loadExternalFonts();
         this.store.dispatch(
             getWidgetData({
@@ -298,15 +297,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public returnFailureObj(obj) {
         if (typeof this.failureReturn === 'function') {
             this.failureReturn(obj);
-        }
-    }
-
-    public toggleUserDetail() {
-        this.authReference = document.getElementById(this.authToken);
-        if (this.authReference) {
-            this.showCard = false;
-        } else {
-            this.showCard = true;
         }
     }
 }

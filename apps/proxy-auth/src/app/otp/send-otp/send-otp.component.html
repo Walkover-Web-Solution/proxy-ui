@@ -47,13 +47,8 @@
         >
         </proxy-login>
     </div>
-    <proxy-user-profile
-        *ngIf="authToken"
-        [authToken]="authToken"
-        (togglePopUp)="toggleUserDetail()"
-        [showCard]="showCard"
-    ></proxy-user-profile>
-    <div class="otp-verification-footer">
+    <proxy-user-profile *ngIf="authToken" [authToken]="authToken"></proxy-user-profile>
+    <div class="otp-verification-footer" *ngIf="!authToken && referenceId">
         <span>Secured by</span>
         <svg
             width="56"
