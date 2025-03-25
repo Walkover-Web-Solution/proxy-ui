@@ -12,7 +12,7 @@ body {
     text-align: left;
     position: relative;
     min-height: 600px;
-    height: auto;
+    height: 100%;
 }
 .full-width {
     max-width: 300px;
@@ -224,46 +224,6 @@ td {
     padding: 10px;
 }
 
-// #proxyContainer input,
-// #proxyContainer select {
-//     width: 100%;
-//     min-width: 180px; /* Ensures they don't shrink too much */
-//     max-width: 100%;
-//     padding: 8px;
-//     border: 1px solid #ccc;
-//     border-radius: 5px;
-// }
-
-// @media (max-width: 768px) {
-//     .container{
-//         flex-direction: column;
-//         align-items: center;
-//     }
-//     #proxyContainer {
-//         width: 90%;
-//         min-width: 180px;
-//     }
-// }
-
-// @media (max-width: 355px) {
-//     #proxyContainer {
-//         width: 100%;
-//         min-width: 220px;
-//     }
-// }
-
-// @media (max-width: 150px) {
-//     #proxyContainer {
-//         width: 100%;
-//         min-width: 180px; /* Ensures it doesn't shrink below 180px */
-//     }
-//     #proxyContainer input,
-//     #proxyContainer select {
-//         min-width: 180px; /* Keeps inputs readable */
-//     }
-// }
-
-/* Responsive Design */
 @media (max-width: 1024px) {
     .container {
         padding: 15px;
