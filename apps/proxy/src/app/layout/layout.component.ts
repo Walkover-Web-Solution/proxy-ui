@@ -113,10 +113,14 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
                             },
                             threadId: `${loginData?.email}${clientSettings?.client?.id}`,
                             bridgeName: 'root',
+                            parentId: 'ChatbotContainer',
+                            fullScreen: true,
                         };
                         console.log('SendDataToChatbot ==>', payload);
-                        (window as any).SendDataToChatbot(payload);
-                        (window as any).openChatbot();
+                        setTimeout(() => {
+                            (window as any).SendDataToChatbot(payload);
+                            (window as any).openChatbot();
+                        }, 2000);
                     };
 
                     document.body.appendChild(scriptElement);
