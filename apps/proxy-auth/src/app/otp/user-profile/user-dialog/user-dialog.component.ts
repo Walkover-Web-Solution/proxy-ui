@@ -32,6 +32,10 @@ export class ConfirmationDialogComponent {
 
         this.deleteCompany$.pipe().subscribe((res) => {
             if (res) {
+                window.parent.postMessage(
+                    { eventtype: 'USER_LEFT', data: { event: 'userLeftCompany', companyId: this.data.companyId } },
+                    '*'
+                );
                 this.dialogRef.close('confirmed');
             }
         });
