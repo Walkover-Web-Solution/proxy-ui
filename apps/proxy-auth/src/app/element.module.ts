@@ -53,12 +53,6 @@ window['initVerification'] = (config: any) => {
                 document.getElementsByTagName('body')[0].append(sendOtpElement);
             }
 
-            const materialCssLink = document.createElement('link');
-            materialCssLink.rel = 'stylesheet';
-            materialCssLink.href = 'https://unpkg.com/@angular/material@14.2.7/prebuilt-themes/indigo-pink.css';
-            document.head.appendChild(materialCssLink);
-            window['libLoaded'] = true;
-
             // } else if (config?.authToken) {
             //     const findOtpProvider = document.querySelector('user-profile');
             //     if (findOtpProvider) {
