@@ -52,7 +52,6 @@ window['initVerification'] = (config: any) => {
             } else {
                 document.getElementsByTagName('body')[0].append(sendOtpElement);
             }
-            window['libLoaded'] = true;
 
             // } else if (config?.authToken) {
             //     const findOtpProvider = document.querySelector('user-profile');
