@@ -141,6 +141,8 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
             this.update$ = of(false);
         }, 2000);
 
+        window.parent.postMessage({ type: 'proxy', data: { event: 'userNameUpdated', enteredName: enteredName } }, '*');
+
         this.previousName = enteredName;
     }
 }

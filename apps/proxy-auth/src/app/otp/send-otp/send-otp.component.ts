@@ -209,7 +209,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             color: #3f4346;
             margin: 8px 8px 16px 8px;
             cursor: pointer;
-            width: 225px;
+            width: 230px;
         `;
         image.style.cssText = `
             height: 20px;
