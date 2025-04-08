@@ -4,10 +4,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, of, takeUntil } from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
-import { getUserDetails, leaveCompany } from '../store/actions/otp.action';
+import { getUserDetails, leaveCompany, updateUserError } from '../store/actions/otp.action';
 import {
+    error,
     getUserProfileData,
     getUserProfileInProcess,
+    updateSuccess,
     getUserProfileSuccess,
     leaveCompanyData,
     leaveCompanyDataInProcess,
@@ -57,6 +59,8 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     public deleteCompany$: Observable<any>;
     public update$: Observable<any>;
     public previousName: string;
+    public errorMessage: string;
+    public error$: Observable<any>;
     public companyDetails;
     // authToken: string = '';
 
@@ -84,7 +88,8 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
-        this.update$ = this.store.pipe(select(loading), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
+        this.update$ = this.store.pipe(select(updateSuccess), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
+        this.error$ = this.store.pipe(select(error), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
     }
 
     ngOnInit(): void {
@@ -135,12 +140,37 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         if (!enteredName || enteredName === this.previousName || nameControl.invalid) {
             return;
         }
-        this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken }));
-        this.update$ = of(true);
-        setTimeout(() => {
-            this.update$ = of(false);
-        }, 2000);
 
+        if (!navigator.onLine) {
+            this.errorMessage = 'Something went wrong, Please try again!';
+            this.clear();
+            return;
+        }
+
+        this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken }));
+
+        this.update$.pipe().subscribe((res) => {
+            if (res) {
+                setTimeout(() => {
+                    this.update$ = of(false);
+                }, 3000);
+            }
+        });
+
+        this.error$.pipe().subscribe((err) => {
+            if (err) {
+                setTimeout(() => {
+                    this.error$ = of(false);
+                }, 3000);
+            }
+        });
+        window.parent.postMessage({ type: 'proxy', data: { event: 'userNameUpdated', enteredName: enteredName } }, '*');
         this.previousName = enteredName;
+    }
+
+    public clear() {
+        setTimeout(() => {
+            this.errorMessage = '';
+        }, 3000);
     }
 }
