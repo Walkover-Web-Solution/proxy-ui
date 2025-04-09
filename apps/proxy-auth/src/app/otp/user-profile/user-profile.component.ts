@@ -148,7 +148,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
 
         this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken }));
 
-        this.update$.pipe().subscribe((res) => {
+        this.update$.subscribe((res) => {
             if (res) {
                 setTimeout(() => {
                     this.update$ = of(false);
@@ -156,13 +156,14 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
             }
         });
 
-        this.error$.pipe().subscribe((err) => {
+        this.error$.subscribe((err) => {
             if (err) {
                 setTimeout(() => {
                     this.error$ = of(false);
                 }, 3000);
             }
         });
+
         window.parent.postMessage({ type: 'proxy', data: { event: 'userNameUpdated', enteredName: enteredName } }, '*');
         this.previousName = enteredName;
     }
