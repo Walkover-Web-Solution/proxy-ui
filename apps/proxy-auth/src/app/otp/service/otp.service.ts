@@ -63,7 +63,7 @@ export class OtpService {
         return this.http.get<any>(requestUrl, params, this.options);
     }
 
-    public register(body: { proxy_state?: string }): Observable<any> {
+    public register(body: { proxy_state?: string; state?: string }): Observable<any> {
         return this.http.post<any>(otpVerificationUrls.register(this.baseUrl), body, this.options);
     }
 
