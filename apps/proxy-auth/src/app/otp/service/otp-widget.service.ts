@@ -8,6 +8,7 @@ declare var window;
 export class OtpWidgetService {
     private widgetId: string;
     private tokenAuth: string;
+    private userState: string;
     private scriptAdded = false;
     public showlogin = new BehaviorSubject<boolean>(false);
 
@@ -21,6 +22,7 @@ export class OtpWidgetService {
         const configuration = {
             widgetId: this.widgetId,
             tokenAuth: this.tokenAuth,
+            state: this.userState,
             success: (data) => {
                 // get verified token in response
                 this.otpWidgetToken.next(data.message);
@@ -33,9 +35,10 @@ export class OtpWidgetService {
         window.initSendOTP(configuration);
     };
 
-    public setWidgetConfig(widgetId: string, tokenAuth: string) {
+    public setWidgetConfig(widgetId: string, tokenAuth: string, state: string) {
         this.widgetId = widgetId;
         this.tokenAuth = tokenAuth;
+        this.userState = state;
     }
 
     public loadScript(onLoadFunc: () => void = () => this.scriptLoading.next(false)): void {

@@ -22,6 +22,7 @@
         <proxy-send-otp-center
             *ngIf="!((showRegistration | async) || (showLogin | async))"
             [referenceId]="referenceId"
+            [serviceData]="otpWidgetData"
             [target]="target"
             (togglePopUp)="toggleSendOtp()"
             (successReturn)="returnSuccessObj($event)"
@@ -42,6 +43,7 @@
             *ngIf="showLogin | async"
             (togglePopUp)="toggleSendOtp()"
             (closePopUp)="setShowLogin(false)"
+            [loginServiceData]="loginWidgetData"
             (openPopUp)="setShowRegistration(true, $event)"
             (failureReturn)="returnFailureObj($event)"
         >
