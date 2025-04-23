@@ -142,14 +142,14 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         }
 
         if (!navigator.onLine) {
-            this.errorMessage = 'Something went wrong, Please try again!';
+            this.errorMessage = 'Something went wrong';
             this.clear();
             return;
         }
 
         this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken }));
 
-        this.update$.subscribe((res) => {
+        this.update$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 setTimeout(() => {
                     this.update$ = of(false);
@@ -157,7 +157,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
             }
         });
 
-        this.error$.subscribe((err) => {
+        this.error$.pipe(takeUntil(this.destroy$)).subscribe((err) => {
             if (err) {
                 setTimeout(() => {
                     this.error$ = of(false);
