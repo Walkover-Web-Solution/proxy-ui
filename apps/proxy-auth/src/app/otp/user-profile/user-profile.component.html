@@ -1,4 +1,5 @@
 <div class="container">
+    <h2>Client Details</h2>
     <form [formGroup]="clientForm" class="form">
         <mat-form-field appearance="outline" class="full-width w-100">
             <mat-label>Name</mat-label>
@@ -28,6 +29,7 @@
         <button type="button" mat-flat-button (click)="updateUser()" color="primary">Update</button>
     </ng-container>
     <p *ngIf="update$ | async" class="success-message">Information successfully updated</p>
+    <p *ngIf="(error$ | async) || errorMessage" class="error-message">Something went wrong</p>
 
     <h3>Company Details</h3>
 
