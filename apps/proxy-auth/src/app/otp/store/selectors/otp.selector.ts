@@ -32,5 +32,6 @@ export const leaveCompanySuccess = createSelector(selectRootState, (p) => p.leav
 export const leaveCompanyDataInProcess = createSelector(selectRootState, (p) => p.leaveCompanyDataInProcess);
 
 export const updateUser = createSelector(selectRootState, (p) => p.updateUser);
+export const updateSuccess = createSelector(selectRootState, (p) => p.updateSuccess);
 export const loading = createSelector(selectRootState, (p) => p.loading);
 export const error = createSelector(selectRootState, (p) => p.error);

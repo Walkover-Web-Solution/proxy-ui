@@ -32,6 +32,7 @@ export interface IOtpState {
 
     updateUser: string;
     loading: boolean;
+    updateSuccess: boolean;
     error: any;
 }
 
@@ -64,6 +65,7 @@ export const initialState: IOtpState = {
 
     updateUser: '',
     loading: false,
+    updateSuccess: false,
     error: null,
 };
 
@@ -252,15 +254,17 @@ const _otpReducer = createReducer(
 
     on(otpActions.updateUser, (state) => ({
         ...state,
-        loading: true,
+        loading: false,
         error: null,
+        updateSuccess: false,
     })),
 
     on(otpActions.updateUserComplete, (state, { response }) => ({
         ...state,
-        name: response.user.name, // Update name from API response
-        loading: false,
+        name: response.name,
+        loading: true,
         error: null,
+        updateSuccess: true,
     })),
 
     on(otpActions.updateUserError, (state, { errors, errorResponse }) => ({
@@ -268,5 +272,6 @@ const _otpReducer = createReducer(
         loading: false,
         error: errors,
         apiErrorResponse: errorResponse,
+        updateSuccess: false,
     }))
 );

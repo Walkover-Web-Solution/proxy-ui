@@ -200,7 +200,7 @@ export class OtpEffects {
                     map((res: any) => {
                         if (res.type !== 'error') {
                             return otpActions.updateUserComplete({
-                                response: res?.data[0],
+                                response: res,
                             });
                         }
                         return otpActions.updateUserError({
