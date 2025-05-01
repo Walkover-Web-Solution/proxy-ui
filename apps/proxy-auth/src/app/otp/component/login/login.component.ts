@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { LoginComponentStore } from './login.store';
 import { BehaviorSubject, filter, interval, Observable, Subscription, takeUntil } from 'rxjs';
 import { IAppState } from '../../store/app.state';
@@ -21,6 +21,7 @@ import { OtpUtilityService } from '../../service/otp-utility.service';
     providers: [LoginComponentStore],
 })
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
+    @Input() public loginServiceData: any;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public closePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public openPopUp: EventEmitter<any> = new EventEmitter();

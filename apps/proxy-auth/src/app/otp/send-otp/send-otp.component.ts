@@ -108,7 +108,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         this.selectWidgetData$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((widgetData) => {
             this.otpWidgetData = widgetData?.find((widget) => widget?.service_id === FeatureServiceIds.Msg91OtpService);
             if (this.otpWidgetData) {
-                this.otpWidgetService.setWidgetConfig(this.otpWidgetData?.widget_id, this.otpWidgetData?.token_auth);
+                this.otpWidgetService.setWidgetConfig(
+                    this.otpWidgetData?.widget_id,
+                    this.otpWidgetData?.token_auth,
+                    this.otpWidgetData?.state
+                );
                 this.otpWidgetService.loadScript();
             }
             this.loginWidgetData = widgetData?.find(
