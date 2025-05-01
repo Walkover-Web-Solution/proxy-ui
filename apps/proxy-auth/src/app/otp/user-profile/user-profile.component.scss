@@ -12,8 +12,7 @@ body {
     position: relative;
     min-height: 600px;
     height: 100%;
-    min-height: 600px;
-    height: 100%;
+    z-index: 10;
 }
 .full-width {
     max-width: 300px;
@@ -211,6 +210,11 @@ td {
 
 .success-message {
     color: #008000;
+    font-size: small;
+    font-weight: bold;
+}
+.error-message {
+    color: #ff0000;
     font-size: small;
     font-weight: bold;
 }

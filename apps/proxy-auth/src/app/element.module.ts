@@ -53,6 +53,8 @@ window['initVerification'] = (config: any) => {
                 document.getElementsByTagName('body')[0].append(sendOtpElement);
             }
 
+            window['libLoaded'] = true;
+
             // } else if (config?.authToken) {
             //     const findOtpProvider = document.querySelector('user-profile');
             //     if (findOtpProvider) {
