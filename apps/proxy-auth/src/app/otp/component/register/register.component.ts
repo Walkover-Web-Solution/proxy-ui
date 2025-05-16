@@ -180,7 +180,8 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             environment.uiIvKey,
             true
         );
-        this.otpService.register({ proxy_state: encodedData }).subscribe(
+        const registrationState = this.registrationViaLogin ? this.loginServiceData.state : this.serviceData.state;
+        this.otpService.register({ proxy_state: encodedData, state: registrationState }).subscribe(
             (response) => {
                 window.location.href = response.data.redirect_url;
             },

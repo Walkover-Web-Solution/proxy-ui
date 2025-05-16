@@ -60,6 +60,7 @@ export enum OtpErrorCodes {
 export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('initContact') initContact: ElementRef;
     @Input() public referenceId: string;
+    @Input() public serviceData: any;
     @Input() public tokenAuth: string;
     @Input() public target: string;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
