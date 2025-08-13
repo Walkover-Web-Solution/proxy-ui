@@ -23,16 +23,4 @@ if (environment.production) {
     imports: [BrowserModule, BrowserAnimationsModule, ElementModule, ...conditional_imports],
     bootstrap: [AppComponent],
 })
-export class AppModule {
-    constructor(private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer) {
-        this.matIconRegistry.addSvgIcon(
-            'visibility',
-            this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/visibility.svg')
-        );
-
-        this.matIconRegistry.addSvgIcon(
-            'visibility_off',
-            this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/visibility_off.svg')
-        );
-    }
-}
+export class AppModule {}

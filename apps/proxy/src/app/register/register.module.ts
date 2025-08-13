@@ -9,7 +9,6 @@ import { DirectivesMarkAllAsTouchedModule } from '@proxy/directives/mark-all-as-
 import { UsersService } from '@proxy/services/proxy/users';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 
 const routes: Routes = [
     {
@@ -30,7 +29,6 @@ const routes: Routes = [
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-        MatIconModule,
         RouterModule.forChild(routes),
         DirectivesMarkAllAsTouchedModule,
     ],

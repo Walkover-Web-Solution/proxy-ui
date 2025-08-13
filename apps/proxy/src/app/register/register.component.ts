@@ -18,6 +18,8 @@ import { IntlPhoneLib } from '@proxy/utils';
     styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent extends BaseComponent implements OnDestroy, OnInit {
+    public showPassword: boolean = false;
+    public showConfirmPassword: boolean = false;
     public registrationForm = new FormGroup({
         user: new FormGroup({
             fname: new FormControl<string>(null, [
@@ -47,11 +49,6 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
             ]),
         }),
     });
-
-    public hideField: Record<string, boolean> = {
-        'Password': true,
-        'Confirm Password': true,
-    };
 
     public intlClass: IntlPhoneLib;
     constructor(private store: Store<IAppState>, private service: UsersService, private toast: PrimeNgToastService) {
