@@ -47,6 +47,12 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
             ]),
         }),
     });
+
+    public hideField: Record<string, boolean> = {
+        'Password': true,
+        'Confirm Password': true,
+    };
+
     public intlClass: IntlPhoneLib;
     constructor(private store: Store<IAppState>, private service: UsersService, private toast: PrimeNgToastService) {
         super();

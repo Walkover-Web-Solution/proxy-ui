@@ -146,6 +146,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         this.successReturn.emit(successResponse);
     }
 
+    public hideField: Record<string, boolean> = {
+        'Password': true,
+        'Confirm Password': true,
+    };
+
     public submit(): void {
         this.apiError.next(null);
         const formData = removeEmptyKeys(cloneDeep(this.registrationForm.value), true);

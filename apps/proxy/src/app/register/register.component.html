@@ -95,10 +95,27 @@
         <input
             matInput
             autocomplete="off"
-            [attr.type]="type ?? 'text'"
+            [attr.type]="
+                type === 'password' || type === 'confirm password'
+                    ? hideField[label]
+                        ? 'password'
+                        : 'text'
+                    : type ?? 'text'
+            "
             [formControl]="formControl"
             [placeholder]="'Enter ' + label"
         />
+
+        <button
+            *ngIf="(type === 'password' || type === 'confirm password') && formControl?.value"
+            matSuffix
+            mat-icon-button
+            (click)="hideField[label] = !hideField[label]"
+            [attr.aria-label]="'Toggle ' + label + ' visibility'"
+        >
+            <mat-icon>{{ hideField[label] ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+
         <mat-error *ngIf="formControl.touched">
             <mat-error *ngIf="formControl.errors?.required"> {{ label }} is required. </mat-error>
             <mat-error *ngIf="formControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
