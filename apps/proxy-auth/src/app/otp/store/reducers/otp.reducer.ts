@@ -273,5 +273,31 @@ const _otpReducer = createReducer(
         error: errors,
         apiErrorResponse: errorResponse,
         updateSuccess: false,
-    }))
+    })),
+
+    on(otpActions.getUserManagementDetails, (state, { request }) => {
+        return {
+            ...state,
+            userManagementDataInProcess: true,
+            userManagementSuccess: false,
+            errors: null,
+        };
+    }),
+    on(otpActions.getUserManagementDetailsComplete, (state, { response }) => {
+        return {
+            ...state,
+            userManagementDataInProcess: false,
+            userManagementSuccess: true,
+            userManagementData: response,
+        };
+    }),
+    on(otpActions.getUserManagementDetailsError, (state, { errors, errorResponse }) => {
+        return {
+            ...state,
+            userManagementDataInProcess: false,
+            userManagementSuccess: false,
+            errors: errors,
+            apiErrorResponse: errorResponse,
+        };
+    })
 );

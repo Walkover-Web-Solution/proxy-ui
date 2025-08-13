@@ -33,6 +33,7 @@ import { UiLoaderModule } from '@proxy/ui/loader';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserDialogModule } from './user-profile/user-dialog/user-dialog.module';
 import { MatCardModule } from '@angular/material/card';
+import { UserManagementComponent } from './user-management/user-management.component';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
@@ -40,6 +41,7 @@ export const CHAT_COMPONENTS: any[] = [
     RegisterComponent,
     LoginComponent,
     UserProfileComponent,
+    UserManagementComponent,
 ];
 
 @NgModule({

@@ -4,6 +4,13 @@
 
 @import 'assets/scss/component/form-field';
 
+/* Layout*/
+@import 'assets/scss/layout/display.scss';
+@import 'assets/scss/layout/flex.scss';
+
+@import 'assets/scss/component/table';
+@import 'assets/scss/component/card';
+
 :root {
     --color-common-dark: #212528;
     --color-common-slate: #3f4346;

@@ -1,0 +1,31 @@
+.container {
+    background: #ffffff;
+    padding: 15px 60px;
+    text-align: left;
+    position: relative;
+    min-height: 600px;
+    height: 100%;
+}
+
+.default-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.app-content {
+    padding: 16px;
+    background-color: var(--color-common-app-bg);
+    height: calc(100vh - var(--sip-calling-height));
+    overflow-y: auto;
+
+    &.app-bg {
+        background-color: var(--color-common-app-bg);
+    }
+}
+
+// .table-scroll {
+//     tr {
+//         cursor: pointer;
+//     }
+// }

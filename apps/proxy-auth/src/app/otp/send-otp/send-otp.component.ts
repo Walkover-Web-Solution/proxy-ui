@@ -30,6 +30,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public referenceId: string;
     @Input() public target: string;
     @Input() public authToken: string;
+    @Input() public userManage: string;
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
@@ -97,6 +98,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     ngOnInit() {
+        console.log('userManage in parent before binding:', this.userManage);
         this.toggleSendOtp(true);
         this.loadExternalFonts();
         this.store.dispatch(

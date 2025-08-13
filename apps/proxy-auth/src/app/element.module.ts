@@ -6,6 +6,7 @@ import { OtpModule } from './otp/otp.module';
 import { SendOtpComponent } from './otp/send-otp/send-otp.component';
 import { omit } from 'lodash-es';
 import { UserProfileComponent } from './otp/user-profile/user-profile.component';
+import { UserManagementComponent } from './otp/user-management/user-management.component';
 
 export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure'];
 
@@ -28,14 +29,17 @@ function documentReady(fn: any) {
 
 window['initVerification'] = (config: any) => {
     documentReady(() => {
-        if (config?.referenceId || config?.authToken) {
+        if (config?.referenceId || config?.authToken || config?.userManage) {
             const findOtpProvider = document.querySelector('proxy-auth');
             if (findOtpProvider) {
+                console.log('hello');
                 document.body.removeChild(findOtpProvider);
             }
             const sendOtpElement = document.createElement('proxy-auth') as NgElement & WithProperties<SendOtpComponent>;
+            console.log('Created proxy-auth element:', sendOtpElement);
             sendOtpElement.referenceId = config?.referenceId;
             sendOtpElement.authToken = config?.authToken;
+            sendOtpElement.userManage = config?.userManage;
 
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;
@@ -76,7 +80,32 @@ window['initVerification'] = (config: any) => {
 
             //     document.getElementsByTagName('body')[0].append(sendOtpElement);
             //     window['libLoaded'] = true;
-        } else {
+        }
+        // else if (config?.userManage) {
+
+        //     console.log("helllo")
+        //     const findOtpProvider = document.querySelector('proxy-user-management');
+        //     if (findOtpProvider) {
+        //         document.body.removeChild(findOtpProvider);
+        //     }
+        //     const sendOtpElement = document.createElement('proxy-user-management') as any;
+        //         console.log('config.userManage before setting:', config.userManage);
+        //     sendOtpElement.userManage = config?.userManage;
+        //     sendOtpElement.target = config?.target ?? '_self';
+        //     sendOtpElement.css = config.style;
+        //     if (!config.success || typeof config.success !== 'function') {
+        //         throw Error('success callback function missing !');
+        //     }
+        //     sendOtpElement.successReturn = config.success;
+        //     sendOtpElement.failureReturn = config.failure;
+
+        //     // omitting keys which are not required in API payload
+        //     sendOtpElement.otherData = omit(config, RESERVED_KEYS);
+
+        //     document.getElementsByTagName('body')[0].append(sendOtpElement);
+        //     window['libLoaded'] = true;
+        // }
+        else {
             if (!config?.referenceId) {
                 throw Error('Reference Id is missing!');
             } else {

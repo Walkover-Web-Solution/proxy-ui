@@ -54,3 +54,13 @@ export const updateUserError = createAction(
     '[OTP] Update User Failure',
     props<{ errors: string[]; errorResponse: any }>()
 );
+
+export const getUserManagementDetails = createAction('[OTP] Get User Management Details', props<{ request: any }>());
+export const getUserManagementDetailsComplete = createAction(
+    '[OTP] Get User Management Details Complete',
+    props<{ response: any }>()
+);
+export const getUserManagementDetailsError = createAction(
+    '[OTP] Get User Management Details Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);

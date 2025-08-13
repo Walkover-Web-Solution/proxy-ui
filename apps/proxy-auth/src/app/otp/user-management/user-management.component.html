@@ -1,0 +1,71 @@
+<h2 class="d-flex justify-content-center">User Management Details</h2>
+<mat-card class="p-0 outline-card responsive-card flex-grow-1">
+    <mat-card-content>
+        <div class="d-flex gap-3 justify-content-end">
+            <button mat-raised-button color="primary">
+                <mat-icon fontIcon="add">add</mat-icon>
+                <span class="hide-xs">Invite User</span>
+            </button>
+        </div>
+        <div class="table-scroll" style="height: calc(100vh - 180px)">
+            <table mat-table [dataSource]="dataSource" class="default-table responsive-table w-100">
+                <!-- Time Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                    <td mat-cell *matCellDef="let element" data-label="Name">
+                        <span> UserDetails123 </span>
+                    </td>
+                </ng-container>
+
+                <!-- Project name Column -->
+                <ng-container matColumnDef="user">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>User</th>
+                    <td mat-cell *matCellDef="let element" data-label="User">userdetails@walkover.in</td>
+                </ng-container>
+
+                <!-- User IP Column -->
+                <ng-container matColumnDef="rule">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Rule</th>
+                    <td mat-cell *matCellDef="let element" data-label="Rule">Admin</td>
+                </ng-container>
+
+                <!-- Status Code Column -->
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let element" data-label="Action">
+                        <ng-container>
+                            <div class="d-flex">
+                                <button mat-icon-button color="primary" class="icon-btn-md">
+                                    <mat-icon class="mat-icon-18 material-icons-outlined">edit</mat-icon>
+                                </button>
+                                <ng-container>
+                                    <button mat-icon-button color="warn" class="icon-btn-md">
+                                        <mat-icon class="mat-icon-18 material-icons-outlined">delete </mat-icon>
+                                    </button>
+                                </ng-container>
+                                <ng-container>
+                                    <!-- <button
+                                                    mat-icon-button
+                                                    class="icon-btn-md"
+                                                    color="primary"
+                                                >
+                                                    <mat-icon class="text-dark mat-icon-18">more_vert</mat-icon>
+                                                </button> -->
+                                </ng-container>
+                            </div>
+                        </ng-container>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" class="cursor-pointer"></tr>
+
+                <tr *matNoDataRow>
+                    <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
+                        <!-- <proxy-no-record-found [title]="'logs'" [showBtn]="false"></proxy-no-record-found> -->
+                    </td>
+                </tr>
+            </table>
+        </div></mat-card-content
+    ></mat-card
+>

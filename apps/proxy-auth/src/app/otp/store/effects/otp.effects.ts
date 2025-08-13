@@ -220,4 +220,33 @@ export class OtpEffects {
             })
         )
     );
+
+    getUserManagementDetails$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.getUserManagementDetails),
+            switchMap((p) => {
+                return this.otpService.getUserManagementData(p.request).pipe(
+                    map((res: any) => {
+                        if (res.type !== 'error') {
+                            return otpActions.getUserManagementDetailsComplete({
+                                response: res?.data[0],
+                            });
+                        }
+                        return otpActions.getUserManagementDetailsError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.getUserManagementDetailsError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
 }

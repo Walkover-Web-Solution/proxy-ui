@@ -99,4 +99,13 @@ export class OtpService {
         const url = otpVerificationUrls.updateUser(this.clientUrl);
         return this.http.put<any>(url, { user: { name } }, this.options);
     }
+
+    public getUserManagementData(
+        userManage: string,
+        payload?: { [key: string]: any }
+    ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+        this.options.headers['proxy_auth_Token'] = userManage;
+        const url = otpVerificationUrls.getUserManagement(this.clientUrl);
+        return this.http.get<BaseResponse<IWidgetResponse, IGetWidgetData>>(url, payload ?? {}, this.options);
+    }
 }

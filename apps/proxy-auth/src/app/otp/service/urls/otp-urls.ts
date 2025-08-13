@@ -12,4 +12,5 @@ export const otpVerificationUrls = {
     getUserDetails: (baseUrl) => createUrl(baseUrl, 'c/getDetails'),
     leaveCompany: (baseUrl) => createUrl(baseUrl, 'c/inviteAction/leave'),
     updateUser: (baseUrl) => createUrl(baseUrl, 'c/updateUser'),
+    getUserManagement: (baseUrl) => createUrl(baseUrl, 'c/getCCompanyUsers'),
 };
