@@ -4,7 +4,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { Store } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as _ from 'lodash';
-import { EMAIL_REGEX, MOBILE_NUMBER_REGEX, NAME_REGEX, PASSWORD_REGEX} from '@proxy/regex';
+import { EMAIL_REGEX, MOBILE_NUMBER_REGEX, NAME_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { takeUntil } from 'rxjs';
 import { IAppState } from '../ngrx/store/app.state';
@@ -19,6 +19,8 @@ import { Router } from '@angular/router';
     styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent extends BaseComponent implements OnDestroy, OnInit {
+    public showPassword: boolean = false;
+    public showConfirmPassword: boolean = false;
     public registrationForm = new FormGroup({
         user: new FormGroup({
             fname: new FormControl<string>(null, [
@@ -47,16 +49,19 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
                 CustomValidators.valueSameAsControl('password'),
             ]),
         }),
-            client: new FormGroup({
-                name: new FormControl<string>(null,[Validators.required]),
-                email: new FormControl<string>(null,[Validators.pattern(EMAIL_REGEX)]),
-                mobile: new FormControl<string>(null,[Validators.pattern(MOBILE_NUMBER_REGEX)])
-            }),
+        client: new FormGroup({
+            name: new FormControl<string>(null, [Validators.required]),
+            email: new FormControl<string>(null, [Validators.pattern(EMAIL_REGEX)]),
+            mobile: new FormControl<string>(null, [Validators.pattern(MOBILE_NUMBER_REGEX)]),
+        }),
     });
-    public intlClass: IntlPhoneLib;
-    constructor(private store: Store<IAppState>, private service: UsersService, private toast: PrimeNgToastService,
-                private router: Router
 
+    public intlClass: IntlPhoneLib;
+    constructor(
+        private store: Store<IAppState>,
+        private service: UsersService,
+        private toast: PrimeNgToastService,
+        private router: Router
     ) {
         super();
     }
@@ -87,19 +92,18 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
     }
     // Submit method to handle form submission
     submit() {
-
         if (this.registrationForm.valid) {
             const formData = this.registrationForm.getRawValue();
 
             const data = {
                 ...formData,
-                client: CustomValidators.removeNullKeys(formData.client)
-              };
+                client: CustomValidators.removeNullKeys(formData.client),
+            };
 
             this.service.register(data).subscribe(
                 (response) => {
                     this.toast.success('Registration success');
-                    this.router.navigate(['login'])
+                    this.router.navigate(['login']);
                 },
                 (error) => {
                     this.toast.error(error);

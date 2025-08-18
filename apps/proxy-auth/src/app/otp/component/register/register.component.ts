@@ -26,6 +26,8 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     @Input() public loginServiceData: any;
     @Input() public registrationViaLogin: boolean;
     @Input() public prefillDetails;
+    public showPassword: boolean = false;
+    public showConfirmPassword: boolean = false;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public successReturn: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
