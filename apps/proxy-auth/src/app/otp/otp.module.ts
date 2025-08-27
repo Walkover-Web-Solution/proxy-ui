@@ -33,6 +33,7 @@ import { UiLoaderModule } from '@proxy/ui/loader';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserDialogModule } from './user-profile/user-dialog/user-dialog.module';
 import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
@@ -60,6 +61,7 @@ export const CHAT_COMPONENTS: any[] = [
         MatTableModule,
         UserDialogModule,
         MatCardModule,
+        MatDividerModule,
 
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),

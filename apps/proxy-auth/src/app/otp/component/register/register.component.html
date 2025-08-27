@@ -18,7 +18,7 @@
             [buttonRef]="submitBtn"
             (valid)="submit()"
         >
-            <p class="subheading">User Details</p>
+            <p class="heading">User Details</p>
             <div class="one-line">
                 <ng-container
                     [ngTemplateOutlet]="formField"
@@ -44,15 +44,109 @@
                     formControl: registrationForm.get('user.email')
                 }"
             ></ng-container>
-            <ng-container
-                [ngTemplateOutlet]="intlFormField"
-                [ngTemplateOutletContext]="{
-                    key: 'user',
-                    label: 'Mobile',
-                    required: true,
-                    formControl: registrationForm.get('user.mobile')
-                }"
-            ></ng-container>
+            <div class="one-line">
+                <ng-container
+                    [ngTemplateOutlet]="intlFormField"
+                    [ngTemplateOutletContext]="{
+                        key: 'user',
+                        label: 'Mobile',
+                        required: true,
+                        formControl: registrationForm.get('user.mobile'),
+                        isFieldFocused: isNumberChanged
+                    }"
+                ></ng-container>
+                <div class="submit-btn mt-2" *ngIf="!isOtpVerified">
+                    <button
+                        (click)="isOtpSent ? resendOtp() : getOtp()"
+                        mat-flat-button
+                        color="primary"
+                        [disabled]="(selectGetOtpInProcess$ | async) || (isOtpSent && !canResendOtp)"
+                    >
+                        <span *ngIf="!isOtpSent">
+                            {{ (selectGetOtpInProcess$ | async) ? 'Sending...' : 'Get OTP' }}
+                        </span>
+                        <span *ngIf="isOtpSent && !canResendOtp"> Resend OTP in {{ resendTimer }}s </span>
+                        <span *ngIf="isOtpSent && canResendOtp && !(selectGetOtpInProcess$ | async)"> Resend OTP </span>
+                        <span *ngIf="isOtpSent && canResendOtp && (selectGetOtpInProcess$ | async)"> Sending... </span>
+                    </button>
+                </div>
+                <div *ngIf="isOtpVerified" class="submit-btn mt-2">
+                    <span class="success-message font-12">
+                        Verified
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="20px"
+                            viewBox="0 -960 960 960"
+                            width="20px"
+                            fill="#4caf50"
+                        >
+                            <path
+                                d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+                            />
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div *ngIf="isNumberChanged || isOtpVerified" class="one-line otp-verify-btn d-flex justify-content-end">
+                <a href="javascript:void(0)" (click)="numberChanged()" class="verify-otp-link">Change Number</a>
+            </div>
+
+            <div *ngIf="isOtpSent && !isOtpVerified" class="one-line otp-verify-btn">
+                <div class="otp-container" [formGroup]="otpForm">
+                    <input
+                        type="text"
+                        class="otp-input"
+                        maxlength="1"
+                        formControlName="otp1"
+                        (input)="onOtpInput($event, 'otp1', otp2)"
+                        (keyup)="onOtpKeyup($event, 'otp1')"
+                        (keydown)="onOtpKeydown($event, 'otp1')"
+                        (paste)="onOtpPaste($event)"
+                        #otp1
+                    />
+                    <input
+                        type="text"
+                        class="otp-input"
+                        maxlength="1"
+                        formControlName="otp2"
+                        (input)="onOtpInput($event, 'otp2', otp3)"
+                        (keyup)="onOtpKeyup($event, 'otp2')"
+                        (keydown)="onOtpKeydown($event, 'otp2', otp1)"
+                        #otp2
+                    />
+                    <input
+                        type="text"
+                        class="otp-input"
+                        maxlength="1"
+                        formControlName="otp3"
+                        (input)="onOtpInput($event, 'otp3', otp4)"
+                        (keyup)="onOtpKeyup($event, 'otp3')"
+                        (keydown)="onOtpKeydown($event, 'otp3', otp2)"
+                        #otp3
+                    />
+                    <input
+                        type="text"
+                        class="otp-input"
+                        maxlength="1"
+                        formControlName="otp4"
+                        (input)="onOtpInput($event, 'otp4')"
+                        (keyup)="onOtpKeyup($event, 'otp4')"
+                        (keydown)="onOtpKeydown($event, 'otp4', otp3)"
+                        #otp4
+                    />
+                </div>
+                <div class="otp-container">
+                    <a
+                        href="javascript:void(0)"
+                        (click)="verifyOtp()"
+                        class="verify-otp-link"
+                        [class.disabled]="selectVerifyOtpV2InProcess$ | async"
+                        [style.pointer-events]="(selectVerifyOtpV2InProcess$ | async) ? 'none' : 'auto'"
+                    >
+                        {{ (selectVerifyOtpV2InProcess$ | async) ? 'Verifying...' : 'Verify OTP' }}
+                    </a>
+                </div>
+            </div>
             <div class="one-line">
                 <ng-container
                     [ngTemplateOutlet]="formField"
@@ -77,8 +171,8 @@
                 <span class="subheading">Note: </span>
                 Password should contain atleast one Capital Letter, one Small Letter, one Digit and one Symbol
             </div>
-
-            <div class="subheading">Company Details (Optional)</div>
+            <mat-divider class="company-details"></mat-divider>
+            <div class="heading">Company Details (Optional)</div>
             <ng-container
                 [ngTemplateOutlet]="formField"
                 [ngTemplateOutletContext]="{
@@ -127,7 +221,7 @@
     let-formControl="formControl"
     let-patternError="patternError"
 >
-    <div class="position-relative d-flex gap-3 w-100">
+    <div class="register-user-details-formField position-relative d-flex gap-3 w-100">
         <mat-form-field appearance="outline" style="width: 100%">
             <mat-label>{{ label }} </mat-label>
             <ng-container *ngIf="type === 'password' || type === 'confirm password'; else normalField">
@@ -200,6 +294,7 @@
     let-hint="hint"
     let-required="required"
     let-formControl="formControl"
+    let-isFieldFocused="isFieldFocused"
 >
     <div
         [attr.id]="'init-contact-wrapper-' + key"
@@ -213,7 +308,9 @@
             [attr.id]="'init-contact-' + key"
             [placeholder]="'Enter ' + label + (required ? ' *' : '')"
             [ngClass]="{ 'invalid-input': formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber'] }"
+            (input)="onMobileInput($event)"
             (blur)="formControl?.markAsTouched(); formControl?.setValue(intlClass?.[key]?.phoneNumber?.replace('+', ''))"
+            [disabled]="isFieldFocused"
         />
         <div>
             <mat-error
@@ -221,6 +318,8 @@
             >
                 Please enter valid mobile number
             </mat-error>
+
+            <mat-error *ngIf="formControl.errors?.otpVerificationFailed">Please verify the mobile number</mat-error>
         </div>
     </div>
 </ng-template>
