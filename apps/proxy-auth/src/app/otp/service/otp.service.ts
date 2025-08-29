@@ -36,7 +36,7 @@ export class OtpService {
 
     public sendOtp(request: ISendOtpReq): Observable<OtpResModel> {
         const referenceId = request.referenceId;
-        this.options.headers['authkey'] = environment.sendOtpAuthKey;
+        // this.options.headers['authkey'] = environment.sendOtpAuthKey;
         return this.http.post<OtpResModel>(
             otpVerificationUrls.sendOtp(this.baseUrl).replace(':referenceId', referenceId),
             omit(request, 'referenceId'),
