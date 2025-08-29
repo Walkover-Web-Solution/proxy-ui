@@ -375,21 +375,23 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         }
 
         const mobileControl = this.registrationForm.get('user.mobile');
+        console.log(mobileControl.invalid);
         if (mobileControl.invalid) {
             return;
         }
         const isMobileValid = this.intlClass['user']?.isRequiredValidNumber;
+        console.log(isMobileValid);
 
-        if (mobileControl.valid && isMobileValid) {
-            this.store.dispatch(
-                sendOtpAction({
-                    request: {
-                        referenceId: this.referenceId,
-                        mobile: mobileControl.value,
-                    },
-                })
-            );
-        }
+        // if (mobileControl.valid && isMobileValid) {
+        this.store.dispatch(
+            sendOtpAction({
+                request: {
+                    referenceId: this.referenceId,
+                    mobile: mobileControl.value,
+                },
+            })
+        );
+        // }
     }
     public verifyOtp() {
         const otpValues = this.otpForm.value;
