@@ -1,5 +1,4 @@
 :host {
-    width: 550px;
     min-height: 100px;
     display: flex;
     flex-direction: column;
@@ -39,6 +38,14 @@
 .error-message {
     font-size: 14px;
     color: #f44336;
+}
+
+.success-message {
+    color: #4caf50 !important;
+    font-size: 12px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
 }
 
 #init-contact {
@@ -90,6 +97,7 @@ input[matinput]::-webkit-inner-spin-button {
         display: flex;
         width: 100%;
         gap: 16px;
+        align-items: baseline;
         @media only screen and (max-width: 768px) {
             flex-wrap: wrap;
             gap: 0px;
@@ -155,4 +163,95 @@ input[matinput]::-webkit-inner-spin-button {
 .toggle-icon {
     top: 12px;
     right: 10px;
+}
+.register-user-details-formfield {
+    width: 100%;
+    box-sizing: content-box;
+    #init-contact-user,
+    #init-contact-company {
+        border: 0px !important;
+    }
+    .invalid-input {
+        outline: 2px solid #f44336;
+    }
+}
+
+.otp-section {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fafafa;
+
+    .otp-actions {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-top: 16px;
+        gap: 8px;
+
+        @media only screen and (max-width: 768px) {
+            flex-direction: column;
+            align-items: stretch;
+
+            button {
+                margin-left: 0 !important;
+                margin-bottom: 8px;
+            }
+        }
+    }
+}
+.otp-container {
+    display: flex;
+    gap: 10px;
+    .otp-input {
+        width: 30px;
+        height: 30px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+    }
+}
+
+.resend-otp-container {
+    margin-top: 8px;
+    text-align: center;
+
+    .resend-otp-link {
+        color: #1976d2;
+        text-decoration: none;
+        font-size: 14px;
+        cursor: pointer;
+        transition: color 0.3s ease;
+
+        &:hover:not(.disabled) {
+            color: #1565c0;
+            text-decoration: underline;
+        }
+
+        &.disabled {
+            color: #9e9e9e;
+            cursor: not-allowed;
+            text-decoration: none;
+        }
+    }
+}
+.otp-verify-section {
+    margin-bottom: 10px;
+}
+.otp-verify-btn {
+    margin-block: -12px 15px;
+}
+.company-details {
+    width: 100%;
+    border-top-width: 3px !important;
+    margin-bottom: 20px;
+}
+.one-line-mobile {
+    margin-bottom: 0px !important;
+}
+.verify-otp-link {
+    font-size: 12px;
 }
