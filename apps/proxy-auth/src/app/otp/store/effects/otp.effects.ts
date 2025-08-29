@@ -83,11 +83,18 @@ export class OtpEffects {
             switchMap((p) => {
                 return this.otpService.verifyOtpV2(p.request).pipe(
                     map((res: any) => {
-                        return otpActions.verifyOtpActionComplete({
-                            response: res,
+                        if (res.status === 'success') {
+                            return otpActions.verifyOtpActionComplete({
+                                response: res,
+                            });
+                        }
+                        return otpActions.verifyOtpActionError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
                         });
                     }),
                     catchError((err) => {
+                        console.log('err', err);
                         return of(
                             otpActions.verifyOtpActionError({
                                 errors: errorResolver(err.errors),

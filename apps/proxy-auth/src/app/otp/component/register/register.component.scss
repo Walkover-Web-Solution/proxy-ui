@@ -215,6 +215,13 @@ input[matinput]::-webkit-inner-spin-button {
     }
 }
 
+.otp-error-message {
+    color: #f44336;
+    font-size: 12px;
+    margin-top: 8px;
+    text-align: center;
+}
+
 .resend-otp-container {
     margin-top: 8px;
     text-align: center;
