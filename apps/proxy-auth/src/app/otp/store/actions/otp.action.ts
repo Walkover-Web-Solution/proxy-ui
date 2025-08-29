@@ -22,6 +22,13 @@ export const sendOtpActionError = createAction(
     props<{ errors: string[]; errorResponse: any }>()
 );
 
+export const verifyOtpAction = createAction('[OTP] Verify OTP', props<{ request: any }>());
+export const verifyOtpActionComplete = createAction('[OTP] Verify OTP Complete', props<{ response: any }>());
+export const verifyOtpActionError = createAction(
+    '[OTP] Verify OTP Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+
 export const getOtpResendAction = createAction('[OTP] Get OTP Resend', props<{ request: any }>());
 export const getOtpResendActionComplete = createAction('[OTP] Get OTP Resend Complete', props<{ response: any }>());
 export const getOtpResendActionError = createAction(
