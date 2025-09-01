@@ -322,10 +322,10 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
     public submit(): void {
         this.apiError.next(null);
-        if (!this.isOtpVerified) {
-            this.registrationForm.get('user.mobile').setErrors({ otpVerificationFailed: true });
-            return;
-        }
+        // if (!this.isOtpVerified) {
+        //     this.registrationForm.get('user.mobile').setErrors({ otpVerificationFailed: true });
+        //     return;
+        // }
         const formData = removeEmptyKeys(cloneDeep(this.registrationForm.value), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
@@ -375,23 +375,21 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         }
 
         const mobileControl = this.registrationForm.get('user.mobile');
-        console.log(mobileControl.invalid);
         if (mobileControl.invalid) {
             return;
         }
         const isMobileValid = this.intlClass['user']?.isRequiredValidNumber;
-        console.log(isMobileValid);
 
-        // if (mobileControl.valid && isMobileValid) {
-        this.store.dispatch(
-            sendOtpAction({
-                request: {
-                    referenceId: this.referenceId,
-                    mobile: mobileControl.value,
-                },
-            })
-        );
-        // }
+        if (mobileControl.valid && isMobileValid) {
+            this.store.dispatch(
+                sendOtpAction({
+                    request: {
+                        referenceId: this.referenceId,
+                        mobile: mobileControl.value,
+                    },
+                })
+            );
+        }
     }
     public verifyOtp() {
         const otpValues = this.otpForm.value;
