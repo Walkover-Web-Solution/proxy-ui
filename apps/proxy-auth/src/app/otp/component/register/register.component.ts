@@ -322,10 +322,10 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
     public submit(): void {
         this.apiError.next(null);
-        // if (!this.isOtpVerified) {
-        //     this.registrationForm.get('user.mobile').setErrors({ otpVerificationFailed: true });
-        //     return;
-        // }
+        if (!this.isOtpVerified) {
+            this.registrationForm.get('user.mobile').setErrors({ otpVerificationFailed: true });
+            return;
+        }
         const formData = removeEmptyKeys(cloneDeep(this.registrationForm.value), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
