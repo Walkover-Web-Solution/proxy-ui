@@ -17,7 +17,11 @@ import { MarkdownModule } from 'ngx-markdown';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UiCopyButtonModule } from '@proxy/ui/copy-button';
-
+import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { HttpClientModule } from '@angular/common/http';
+import { SimpleDialogComponent } from './simple-dialog/simple-dialog.component';
 const routes: Routes = [
     {
         path: '',
@@ -27,7 +31,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [CreateFeatureComponent],
+    declarations: [CreateFeatureComponent, SimpleDialogComponent],
     imports: [
         CommonModule,
         RouterModule.forChild(routes),
@@ -46,6 +50,10 @@ const routes: Routes = [
         MatTabsModule,
         MatSlideToggleModule,
         UiCopyButtonModule,
+        MatTableModule,
+        MatDialogModule,
+        MatSelectModule,
+        HttpClientModule,
     ],
     exports: [RouterModule],
 })

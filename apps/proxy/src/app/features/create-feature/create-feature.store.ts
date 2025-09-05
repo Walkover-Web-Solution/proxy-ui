@@ -11,6 +11,11 @@ export interface ICreateFeatureInitialState {
     serviceMethods: IMethod[];
     createUpdateObject: IFeature;
     featureDetails: IFeatureDetails;
+    lagoFeature: any;
+    billableMetrics: any;
+    createBillableMetric: any;
+    updateBillableMetric: any;
+    billableMetricForm: any;
 }
 
 @Injectable()
@@ -22,6 +27,11 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             serviceMethods: null,
             createUpdateObject: null,
             featureDetails: null,
+            lagoFeature: null,
+            billableMetrics: null,
+            createBillableMetric: null,
+            updateBillableMetric: null,
+            billableMetricForm: null,
         });
     }
     /** Selector for API progress  */
@@ -34,6 +44,16 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly createUpdateObject$: Observable<IFeature> = this.select((state) => state.createUpdateObject);
     /** Selector for Feature Details*/
     readonly featureDetails$: Observable<IFeatureDetails> = this.select((state) => state.featureDetails);
+    /** Selector for lago feature data */
+    readonly lagoFeature$: Observable<any> = this.select((state) => state.lagoFeature);
+    /** Selector for billable metrics data */
+    readonly billableMetrics$: Observable<any> = this.select((state) => state.billableMetrics);
+    /** Selector for create billable metric data */
+    readonly createBillableMetric$: Observable<any> = this.select((state) => state.createBillableMetric);
+    /** Selector for update billable metric data */
+    readonly updateBillableMetric$: Observable<any> = this.select((state) => state.updateBillableMetric);
+    /** Selector for billable metric form data */
+    readonly billableMetricForm$: Observable<any> = this.select((state) => state.billableMetricForm);
 
     /** Get feature type data */
     readonly getFeatureType = this.effect((data) => {
@@ -167,6 +187,139 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                         (error: any) => {
                             this.showError(error.errors);
                             this.patchState({ isLoading: false, featureDetails: null });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly createLagoFeature = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.createLagoFeature(req).pipe(
+                    tapResponse(
+                        (res: BaseResponse<IFeature, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Lago feature created successfully');
+                            return this.patchState({
+                                isLoading: false,
+                                lagoFeature: res.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    )
+                );
+            })
+        );
+    });
+
+    readonly getAllBillableMetrics = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getAllBillableMetrics(req.refId).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({
+                                isLoading: false,
+                                billableMetrics: res.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    )
+                );
+            })
+        );
+    });
+
+    readonly createBillableMetric = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.createBillableMetric(req.body).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Billable metric created successfully');
+                            return this.patchState({
+                                isLoading: false,
+                                createBillableMetric: res.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly updateBillableMetric = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.updateBillableMetric(req.refId, req.body).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Billable metric updated successfully');
+                            return this.patchState({
+                                isLoading: false,
+                                createBillableMetric: res.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly getBillableMetricForm = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getBillableMetricForm().pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, billableMetricForm: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
                         }
                     ),
                     catchError((err) => EMPTY)

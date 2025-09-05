@@ -22,7 +22,9 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { environment } from '../../../environments/environment';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { MatStepper } from '@angular/material/stepper';
+import { MatDialog } from '@angular/material/dialog';
 import { getAcceptedTypeRegex } from '@proxy/utils';
+import { SimpleDialogComponent } from './simple-dialog/simple-dialog.component';
 
 type ServiceFormGroup = FormGroup<{
     requirements: FormGroup<{
@@ -34,6 +36,12 @@ type ServiceFormGroup = FormGroup<{
     is_enable: FormControl<boolean>;
 }>;
 
+export interface PeriodicElement {
+    name: string;
+    position: number;
+    weight: number;
+    symbol: string;
+}
 @Component({
     selector: 'proxy-create-feature',
     templateUrl: './create-feature.component.html',
@@ -42,6 +50,137 @@ type ServiceFormGroup = FormGroup<{
 })
 export class CreateFeatureComponent extends BaseComponent implements OnDestroy, OnInit {
     @ViewChildren('stepper') stepper: QueryList<MatStepper>;
+    public integrationChoiceJson = [
+        {
+            id: 10,
+            name: 'Lago Billing',
+            icon: 'https://campaignfileupload.s3.ap-south-1.amazonaws.com/featureServiceIcon/billinglogo.png',
+        },
+    ];
+    public billableMetricForm: any = {
+        'name': {
+            'is_required': true,
+            'is_hidden': false,
+            'has_default': false,
+            'label': 'Name',
+            'value_type': 'string',
+            'type': 'text',
+            'regex': '^.{1,255}$',
+            'source': '',
+            'sourceFieldLabel': '',
+            'sourceFieldValue': '',
+            'value': '',
+        },
+        'code': {
+            'is_required': true,
+            'is_hidden': false,
+            'has_default': false,
+            'label': 'Code',
+            'value_type': 'string',
+            'type': 'text',
+            'regex': '^[a-z0-9_]{1,255}$',
+            'unique': true,
+            'source': '',
+            'sourceFieldLabel': '',
+            'sourceFieldValue': '',
+            'value': '',
+        },
+        'description': {
+            'is_required': false,
+            'is_hidden': false,
+            'has_default': false,
+            'label': 'Description',
+            'value_type': 'string',
+            'type': 'textarea',
+            'regex': '^.{0,255}$',
+            'source': '',
+            'sourceFieldLabel': '',
+            'sourceFieldValue': '',
+            'value': '',
+        },
+        'recurring': {
+            'is_required': true,
+            'is_hidden': false,
+            'has_default': false,
+            'label': 'Type',
+            'value_type': 'string',
+            'type': 'select',
+            'regex': '^(recurring|metered)$',
+            'source': '',
+            'sourceFieldLabel': '',
+            'sourceFieldValue': '',
+            'value': 'recurring',
+        },
+        'aggregation_type': {
+            'is_required': true,
+            'is_hidden': false,
+            'has_default': false,
+            'label': 'Aggregation Type',
+            'value_type': 'string',
+            'type': 'select',
+            'regex': '^(count_agg|sum_agg|max_agg|unique_count_agg|weighted_sum_agg|latest_agg)$',
+            'source': '/api/aggregation-types',
+            'sourceFieldLabel': 'label',
+            'sourceFieldValue': 'value',
+            'value': '',
+        },
+        'field_name': {
+            'is_required': false,
+            'is_hidden': false,
+            'has_default': false,
+            'label': 'Field Name',
+            'value_type': 'string',
+            'type': 'text',
+            'regex': '^.{0,255}$',
+            'source': '',
+            'sourceFieldLabel': '',
+            'sourceFieldValue': '',
+            'value': '',
+            'conditional_rule':
+                "Only allowed when aggregation_type is in ['unique_count_agg','latest_agg','max_agg','sum_agg','weighted_sum_agg']",
+        },
+        'rounding_function': {
+            'is_required': false,
+            'is_hidden': false,
+            'has_default': false,
+            'label': 'Rounding Function',
+            'value_type': 'string',
+            'type': 'select',
+            'regex': '^(round|ceil|floor)?$',
+            'source': '',
+            'sourceFieldLabel': '',
+            'sourceFieldValue': '',
+            'value': '',
+        },
+        'rounding_precision': {
+            'is_required': false,
+            'is_hidden': false,
+            'has_default': false,
+            'label': 'Rounding Precision',
+            'value_type': 'integer',
+            'type': 'number',
+            'regex': '^[0-9]+$',
+            'source': '',
+            'sourceFieldLabel': '',
+            'sourceFieldValue': '',
+            'value': '',
+        },
+    };
+
+    public ELEMENT_DATA: PeriodicElement[] = [
+        { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
+        { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
+        { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
+        { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
+        { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
+        { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
+        { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
+        { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
+        { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
+        { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
+    ];
+    public displayedColumns: string[] = ['name', 'code', 'type', 'aggregation', 'action'];
+    public dataSource = this.ELEMENT_DATA;
 
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public featureType$: Observable<IFeatureType[]> = this.componentStore.featureType$;
@@ -56,6 +195,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public nameFieldEditMode = false;
     public loadingScript = new BehaviorSubject<boolean>(false);
     public scriptLoaded = new BehaviorSubject<boolean>(false);
+    public showApiConfigurationErrors = false;
 
     public featureFieldType = FeatureFieldType;
     public proxyAuthScript = ProxyAuthScript(environment.proxyServer);
@@ -93,6 +233,34 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 CustomValidators.minLengthThreeWithoutSpace,
             ]),
         }),
+        // New form controls for conditional steps
+        integrationChoice: new FormGroup({
+            integrationType: new FormControl<string>(null, [Validators.required]),
+        }),
+        organizationDetails: new FormGroup({
+            legalName: new FormControl<string>(null),
+            legalNumber: new FormControl<string>(null),
+            taxId: new FormControl<string>(null),
+            email: new FormControl<string>(null),
+            addressLine1: new FormControl<string>(null),
+            addressLine2: new FormControl<string>(null),
+            city: new FormControl<string>(null),
+            state: new FormControl<string>(null),
+            country: new FormControl<string>(null),
+            postalCode: new FormControl<string>(null),
+            phone: new FormControl<string>(null),
+        }),
+        billableMetrics: new FormGroup({
+            apiCalls: new FormControl<boolean>(false),
+            dataStorage: new FormControl<boolean>(false),
+        }),
+        createPlan: new FormGroup({
+            planName: new FormControl<string>(null, [Validators.required]),
+            price: new FormControl<number>(null, [Validators.required, Validators.min(0)]),
+        }),
+        plansOverview: new FormGroup({
+            planSelected: new FormControl<string>(null, [Validators.required]),
+        }),
     });
     public demoDiv$: Observable<string> = of(null);
 
@@ -100,7 +268,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         private componentStore: CreateFeatureComponentStore,
         private activatedRoute: ActivatedRoute,
         private toast: PrimeNgToastService,
-        private ngZone: NgZone
+        private ngZone: NgZone,
+        private dialog: MatDialog
     ) {
         super();
     }
@@ -115,6 +284,18 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.getFeatureType();
             }
         });
+        this.featureForm
+            .get('integrationChoice.integrationType')
+            .valueChanges.pipe(takeUntil(this.destroy$))
+            .subscribe((value) => {
+                console.log(value);
+            });
+        this.featureForm
+            .get('primaryDetails.method_id')
+            .valueChanges.pipe(takeUntil(this.destroy$))
+            .subscribe((value) => {
+                console.log(value);
+            });
         if (!this.isEditMode) {
             this.featureType$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((features) => {
                 this.featureForm.get('primaryDetails.feature_id').setValue(features[0].id);
@@ -124,6 +305,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             });
             // Selecting first method because there is no form for `method_id` selection currently
             this.serviceMethods$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((methods) => {
+                console.log(methods);
                 this.featureForm.get('primaryDetails.method_id').setValue(methods[0].id);
             });
         } else {
@@ -397,7 +579,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         serviceFormArray.controls.forEach((formGroup) => formGroup.dirty && formGroup.invalid && (isValid = false));
         return isValid && serviceFormArray.dirty;
     }
-
     public markDirtyServiceFormTouched(): void {
         const serviceFormArray = this.featureForm.controls.serviceDetails;
         serviceFormArray.controls.forEach(
@@ -476,6 +657,51 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             const nameSplit = file?.name?.split('.');
             return Boolean(('.' + nameSplit[nameSplit?.length - 1])?.match(fileRegex));
         }
+    }
+
+    public addBillableMetric(): void {
+        console.log('Opening dialog with data:', this.billableMetricForm);
+        console.log('Form config type:', typeof this.billableMetricForm);
+        console.log('Form config keys:', Object.keys(this.billableMetricForm));
+
+        try {
+            const dialogRef = this.dialog.open(SimpleDialogComponent, {
+                width: '600px',
+                height: 'auto',
+                maxHeight: '90vh',
+                autoFocus: false,
+                restoreFocus: false,
+                hasBackdrop: true,
+                data: {
+                    message: 'Add New Metric',
+                    formConfig: this.billableMetricForm,
+                },
+            });
+
+            console.log('Dialog reference created:', dialogRef);
+
+            dialogRef.afterClosed().subscribe((result) => {
+                console.log('Dialog closed with result:', result);
+                if (result) {
+                    // Add the new metric to the table
+                    this.addMetricToTable(result);
+                }
+            });
+        } catch (error) {
+            console.error('Error opening dialog:', error);
+        }
+    }
+
+    private addMetricToTable(metricData: any): void {
+        // Add the new metric to the data source
+        const newMetric: PeriodicElement = {
+            position: this.ELEMENT_DATA.length + 1,
+            name: metricData.name,
+            weight: 0, // Default weight
+            symbol: metricData.code || 'N/A',
+        };
+        this.ELEMENT_DATA.push(newMetric);
+        this.dataSource = [...this.ELEMENT_DATA];
     }
 
     public previewFeature(): void {

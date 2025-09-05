@@ -51,4 +51,30 @@ export class FeaturesService {
     public updateFeature(id: string | number, body): Observable<BaseResponse<IFeature, void>> {
         return this.http.put<BaseResponse<IFeature, void>>(`${FeaturesUrls.getFeature(this.baseURL)}/${id}`, body);
     }
+
+    // create lago feature
+    public createLagoFeature(body): Observable<BaseResponse<IFeature, void>> {
+        return this.http.post<BaseResponse<IFeature, void>>(FeaturesUrls.getLagoFeature(this.baseURL), body);
+    }
+
+    // get all billable metrics
+    public getAllBillableMetrics(refId: string | number): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getBillableMetrics(this.baseURL, refId));
+    }
+    // create billable metric
+    public createBillableMetric(body): Observable<BaseResponse<any, void>> {
+        const refId = body.refId;
+        return this.http.post<BaseResponse<any, void>>(FeaturesUrls.getBillableMetrics(this.baseURL, refId), body);
+    }
+    // update billable metric
+    public updateBillableMetric(refId: string | number, body): Observable<BaseResponse<any, void>> {
+        return this.http.put<BaseResponse<any, void>>(FeaturesUrls.updateBillableMetric(this.baseURL, refId), body);
+    }
+    // delete billable metric
+    public deleteBillableMetric(refId: string | number): Observable<BaseResponse<any, void>> {
+        return this.http.delete<BaseResponse<any, void>>(FeaturesUrls.deleteBillableMetric(this.baseURL, refId));
+    }
+    public getBillableMetricForm(): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getBillableMetricForm(this.baseURL));
+    }
 }
