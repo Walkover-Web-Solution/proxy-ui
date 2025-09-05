@@ -283,6 +283,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                     request: {
                         referenceId: this.referenceId,
                         mobile: mobileControl.value,
+                        authkey: environment.sendOtpAuthKey,
                     },
                 })
             );
@@ -386,6 +387,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                     request: {
                         referenceId: this.referenceId,
                         mobile: mobileControl.value,
+                        authkey: environment.sendOtpAuthKey,
                     },
                 })
             );
@@ -405,6 +407,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                         referenceId: this.referenceId,
                         mobile: mobileControl.value,
                         otp: otpString,
+                        authkey: environment.sendOtpAuthKey,
                     },
                 })
             );
