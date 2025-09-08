@@ -12,6 +12,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
+import { NgHcaptchaModule } from 'ng-hcaptcha';
 
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -62,6 +63,9 @@ export const CHAT_COMPONENTS: any[] = [
         UserDialogModule,
         MatCardModule,
         MatDividerModule,
+        NgHcaptchaModule.forRoot({
+            siteKey: environment.hCaptchaSiteKey,
+        }),
 
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),

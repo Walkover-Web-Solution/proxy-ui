@@ -40,6 +40,7 @@ export interface IlogInData {
     state: string;
     user: string;
     password: string;
+    hCaptchaToken?: string;
 }
 export interface IResetPassword {
     state: string;
