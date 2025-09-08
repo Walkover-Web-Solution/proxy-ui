@@ -24,6 +24,7 @@ export interface IGetOtpRes {
 export interface ISendOtpReq {
     referenceId: string;
     variables?: any;
+    authkey?: string;
 }
 
 export interface IRetryOtpReq extends ISendOtpReq {

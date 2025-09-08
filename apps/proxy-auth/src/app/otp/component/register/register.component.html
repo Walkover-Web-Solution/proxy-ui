@@ -146,6 +146,9 @@
                         {{ (selectVerifyOtpV2InProcess$ | async) ? 'Verifying...' : 'Verify OTP' }}
                     </a>
                 </div>
+                <div *ngIf="otpError" class="otp-error-message">
+                    {{ otpError }}
+                </div>
             </div>
             <div class="one-line">
                 <ng-container

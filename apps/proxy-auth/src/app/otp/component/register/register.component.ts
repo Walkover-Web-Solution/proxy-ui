@@ -102,6 +102,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public isOtpVerified: boolean = false;
     public isOtpSent: boolean = false;
     public isNumberChanged: boolean = false;
+    public otpError: string = '';
 
     // Resend OTP timer properties
     public resendTimer: number = 0;
@@ -164,6 +165,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             .valueChanges.pipe(takeUntil(this.destroy$))
             .subscribe((res) => {
                 this.isOtpVerified = false;
+                this.otpError = ''; // Clear error when mobile number changes
             });
         this.registrationForm
             .get('user.password')
@@ -176,6 +178,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
         this.selectVerifyOtpV2Success$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             this.isOtpVerified = res;
+            if (res) {
+                this.otpError = ''; // Clear error on successful verification
+            }
         });
         this.selectGetOtpSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             this.isOtpSent = res;
@@ -185,6 +190,16 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 this.isNumberChanged = true;
             }
         });
+
+        // Handle OTP verification errors
+        this.selectApiErrorResponse$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res && this.isOtpSent && !this.isOtpVerified) {
+                this.otpError = 'Please enter valid OTP';
+                // Clear OTP form to allow user to retry
+                this.otpForm.reset();
+            }
+        });
+
         // Add global paste event listener
         document.addEventListener('paste', this.handleGlobalPaste.bind(this));
     }
@@ -268,6 +283,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                     request: {
                         referenceId: this.referenceId,
                         mobile: mobileControl.value,
+                        authkey: environment.sendOtpAuthKey,
                     },
                 })
             );
@@ -371,6 +387,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                     request: {
                         referenceId: this.referenceId,
                         mobile: mobileControl.value,
+                        authkey: environment.sendOtpAuthKey,
                     },
                 })
             );
@@ -390,6 +407,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                         referenceId: this.referenceId,
                         mobile: mobileControl.value,
                         otp: otpString,
+                        authkey: environment.sendOtpAuthKey,
                     },
                 })
             );
@@ -405,6 +423,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             input.value = value;
         }
         this.otpForm.get(controlName).setValue(value);
+
+        // Clear error when user starts typing
+        if (this.otpError) {
+            this.otpError = '';
+        }
 
         this.cdr.detectChanges();
 
@@ -430,6 +453,12 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 this.otpForm.get(controlName).setValue(digit);
             }
         });
+
+        // Clear error when user pastes OTP
+        if (this.otpError) {
+            this.otpError = '';
+        }
+
         this.cdr.detectChanges();
         const lastFilledIndex = Math.min(otpDigits.length - 1, 3);
         setTimeout(() => {
