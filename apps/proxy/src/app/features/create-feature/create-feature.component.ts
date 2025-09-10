@@ -1632,16 +1632,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     // Separate function for API calls
     private getApiOptions(fieldConfig: any): any[] {
-        // For now, return empty array - you'll need to implement actual API calls
-        // This is where you would make HTTP requests to the API endpoints
-        console.log('API call needed for:', fieldConfig.label, 'URL:', fieldConfig.source);
-
-        // Extract options from API response data
         if (fieldConfig.label === 'Tax Codes') {
-            // Extract tax options from the taxes API response
             return this.getTaxOptionsFromData();
         } else if (fieldConfig.label === 'Billable Metric') {
-            // Use the actual billable metric list data
             return this.blliableMetricList.map((metric) => ({
                 label: metric.name,
                 value: metric.code,
