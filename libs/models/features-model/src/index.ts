@@ -96,6 +96,8 @@ export enum FeatureFieldType {
     Text = 'text',
     ChipList = 'chipList',
     ReadFile = 'readFile',
+    Select = 'select',
+    TextArea = 'textarea',
 }
 
 export const ProxyAuthScript = (

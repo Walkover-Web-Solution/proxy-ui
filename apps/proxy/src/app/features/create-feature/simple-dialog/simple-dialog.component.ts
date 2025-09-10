@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 @Component({
     selector: 'proxy-simple-dialog',
     template: `
-        <h2 mat-dialog-title>Add New Metric</h2>
+        <h2 mat-dialog-title>{{ dialogTitle }}</h2>
 
         <mat-dialog-content>
             <form [formGroup]="metricForm" class="metric-form">
@@ -30,7 +30,7 @@ import { HttpClient } from '@angular/common/http';
         <mat-dialog-actions align="end">
             <button mat-button (click)="onClose()">Cancel</button>
             <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!metricForm.valid">
-                Add Metric
+                {{ submitButtonText }}
             </button>
         </mat-dialog-actions>
 
@@ -93,162 +93,63 @@ import { HttpClient } from '@angular/common/http';
 export class SimpleDialogComponent implements OnInit {
     public metricForm: FormGroup;
     public formConfig: any;
-    public aggregationTypes: any[] = [];
-    public roundingFunctions: any[] = [];
+    public dialogTitle: string;
+    public submitButtonText: string;
     private optionsCache: { [key: string]: any[] } = {};
 
     constructor(
         private fb: FormBuilder,
         private http: HttpClient,
         public dialogRef: MatDialogRef<SimpleDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { message: string; formConfig: any }
+        @Inject(MAT_DIALOG_DATA)
+        public data: {
+            message: string;
+            formConfig: any;
+            dialogTitle?: string;
+            submitButtonText?: string;
+            editData?: any;
+        }
     ) {
         this.formConfig = data.formConfig;
+        this.dialogTitle = data.dialogTitle || 'Add New Item';
+        this.submitButtonText = data.submitButtonText || 'Submit';
     }
 
     ngOnInit(): void {
         this.initializeForm();
-        // this.loadAggregationTypes();
-        // this.loadRoundingFunctions();
     }
 
     private initializeForm(): void {
         const formControls: { [key: string]: FormControl } = {};
-
-        // Create form controls based on the form configuration
         Object.keys(this.formConfig).forEach((key) => {
             const config = this.formConfig[key];
             const validators = [];
-
-            // Add required validator
             if (config.is_required) {
                 validators.push(Validators.required);
             }
-
-            // Add regex validator
             if (config.regex) {
                 validators.push(Validators.pattern(config.regex));
             }
-
-            // Add custom validators for specific fields
-            if (key === 'name') {
-                validators.push(CustomValidators.minLengthThreeWithoutSpace);
-                validators.push(CustomValidators.noStartEndSpaces);
+            if (config.custom_validators) {
+                config.custom_validators.forEach((validatorName: string) => {
+                    if (CustomValidators[validatorName]) {
+                        validators.push(CustomValidators[validatorName]);
+                    }
+                });
             }
-
-            formControls[key] = new FormControl(config.value || '', validators);
+            const initialValue = this.getInitialValue(key, config);
+            formControls[key] = new FormControl(initialValue, validators);
         });
 
         this.metricForm = this.fb.group(formControls);
 
-        // Add dynamic conditional validation
+        if (this.data.editData) {
+            setTimeout(() => {
+                this.updateFormControlsWithEditData();
+            }, 0);
+        }
         this.setupConditionalValidation();
     }
-
-    // private loadAggregationTypes(): void {
-    //     const aggregationConfig = this.formConfig['aggregation_type'];
-
-    //     if (aggregationConfig?.source) {
-    //         // Fetch aggregation types dynamically from API
-    //         this.http.get(aggregationConfig.source).subscribe({
-    //             next: (response: any) => {
-    //                 // Map the response based on sourceFieldLabel and sourceFieldValue
-    //                 this.aggregationTypes = response.map(item => ({
-    //                     label: item[aggregationConfig.sourceFieldLabel || 'label'],
-    //                     value: item[aggregationConfig.sourceFieldValue || 'value']
-    //                 }));
-    //                 // Update cache
-    //                 this.optionsCache['Aggregation Type'] = this.aggregationTypes;
-    //             },
-    //             error: (error) => {
-    //                 console.error('Error fetching aggregation types:', error);
-    //                 // Fallback to default values if API fails
-    //                 this.loadDefaultAggregationTypes();
-    //             }
-    //         });
-    //     } else {
-    //         // Use default values if no source is specified
-    //         this.loadDefaultAggregationTypes();
-    //     }
-    // }
-
-    // private loadDefaultAggregationTypes(): void {
-    //     const aggregationConfig = this.formConfig['aggregation_type'];
-
-    //     // Extract default values from regex pattern if available
-    //     if (aggregationConfig?.regex) {
-    //         const regex = aggregationConfig.regex;
-    //         // Extract values from regex pattern like "^(count_agg|sum_agg|max_agg|unique_count_agg|weighted_sum_agg|latest_agg)$"
-    //         const match = regex.match(/\^\(([^)]+)\)\$/);
-    //         if (match && match[1]) {
-    //             const values = match[1].split('|');
-    //             this.aggregationTypes = values.map(value => ({
-    //                 label: this.formatLabel(value),
-    //                 value: value
-    //             }));
-    //             // Update cache
-    //             this.optionsCache['Aggregation Type'] = this.aggregationTypes;
-    //             return;
-    //         }
-    //     }
-
-    //     // Fallback to empty array if no pattern found
-    //     this.aggregationTypes = [];
-    // }
-
-    // private loadRoundingFunctions(): void {
-    //     const roundingConfig = this.formConfig['rounding_function'];
-
-    //     if (roundingConfig?.source) {
-    //         // Fetch rounding functions dynamically from API
-    //         this.http.get(roundingConfig.source).subscribe({
-    //             next: (response: any) => {
-    //                 // Map the response based on sourceFieldLabel and sourceFieldValue
-    //                 this.roundingFunctions = response.map(item => ({
-    //                     label: item[roundingConfig.sourceFieldLabel || 'label'],
-    //                     value: item[roundingConfig.sourceFieldValue || 'value']
-    //                 }));
-    //                 // Update cache
-    //                 this.optionsCache['Rounding Function'] = this.roundingFunctions;
-    //             },
-    //             error: (error) => {
-    //                 console.error('Error fetching rounding functions:', error);
-    //                 // Fallback to default values if API fails
-    //                 this.loadDefaultRoundingFunctions();
-    //             }
-    //         });
-    //     } else {
-    //         // Use default values if no source is specified
-    //         this.loadDefaultRoundingFunctions();
-    //     }
-    // }
-
-    // private loadDefaultRoundingFunctions(): void {
-    //     const roundingConfig = this.formConfig['rounding_function'];
-
-    //     // Extract default values from regex pattern if available
-    //     if (roundingConfig?.regex) {
-    //         const regex = roundingConfig.regex;
-    //         // Extract values from regex pattern like "^(round|ceil|floor)?$"
-    //         const match = regex.match(/\^\(([^)]+)\)\?\$/);
-    //         if (match && match[1]) {
-    //             const values = match[1].split('|');
-    //             this.roundingFunctions = [
-    //                 { label: 'None', value: '' }, // Always include None option
-    //                 ...values.map(value => ({
-    //                     label: this.formatLabel(value),
-    //                     value: value
-    //                 }))
-    //             ];
-    //             // Update cache
-    //             this.optionsCache['Rounding Function'] = this.roundingFunctions;
-    //             return;
-    //         }
-    //     }
-
-    //     // Fallback to empty array if no pattern found
-    //     this.roundingFunctions = [{ label: 'None', value: '' }];
-    // }
 
     public onSubmit(): void {
         if (this.metricForm.valid) {
@@ -260,6 +161,26 @@ export class SimpleDialogComponent implements OnInit {
 
     public onClose(): void {
         this.dialogRef.close();
+    }
+
+    private updateFormControlsWithEditData(): void {
+        Object.keys(this.data.editData).forEach((key) => {
+            const control = this.metricForm.get(key);
+            if (control && this.data.editData[key] !== undefined) {
+                control.setValue(this.data.editData[key]);
+                control.markAsTouched();
+            }
+        });
+    }
+
+    private getInitialValue(key: string, config: any): any {
+        let initialValue = this.data.editData ? this.data.editData[key] || config.value || '' : config.value || '';
+
+        if (config.type === 'select' && config.value_type === 'boolean' && typeof initialValue === 'boolean') {
+            return Boolean(initialValue);
+        }
+
+        return initialValue;
     }
 
     public getFormFields(): string[] {
@@ -274,69 +195,33 @@ export class SimpleDialogComponent implements OnInit {
         if (!fieldConfig?.label) {
             return [];
         }
-
-        // Check cache first
-        if (this.optionsCache[fieldConfig.label]) {
-            return this.optionsCache[fieldConfig.label];
+        const cacheKey = this.getCacheKey(fieldConfig);
+        if (this.optionsCache[cacheKey]) {
+            return this.optionsCache[cacheKey];
         }
 
         let options: any[] = [];
-
-        switch (fieldConfig.label) {
-            case 'Aggregation Type':
-                options = this.getAggregationTypeOptions();
-                break;
-            case 'Rounding Function':
-                options = this.extractOptionsFromRegex(fieldConfig.regex);
-                break;
-            case 'Type':
-                options = this.extractOptionsFromRegex(fieldConfig.regex);
-                break;
-            default:
-                options = [];
+        if (
+            fieldConfig.sourceFieldLabel &&
+            fieldConfig.sourceFieldValue &&
+            Array.isArray(fieldConfig.sourceFieldLabel) &&
+            Array.isArray(fieldConfig.sourceFieldValue)
+        ) {
+            options = fieldConfig.sourceFieldLabel.map((label: string, index: number) => ({
+                label: label,
+                value: fieldConfig.sourceFieldValue[index],
+            }));
+        } else if (fieldConfig.regex) {
+            options = this.extractOptionsFromRegex(fieldConfig.regex);
         }
-
-        // Cache the result
-        this.optionsCache[fieldConfig.label] = options;
+        if (fieldConfig.filter_conditions) {
+            options = this.applyFilterConditions(fieldConfig, options);
+        }
+        this.optionsCache[cacheKey] = options;
         return options;
     }
 
-    private getAggregationTypeOptions(): any[] {
-        // Get the current value of the Type field
-        const typeValue = this.metricForm?.get('recurring')?.value;
-
-        if (typeValue === 'recurring') {
-            // If recurring: sum_agg, weighted_sum_agg, unique_count_agg
-            return [
-                { label: 'Sum Agg', value: 'sum_agg' },
-                { label: 'Weighted Sum Agg', value: 'weighted_sum_agg' },
-                { label: 'Unique Count Agg', value: 'unique_count_agg' },
-            ];
-        } else if (typeValue === 'metered') {
-            // If metered: sum_agg, weighted_sum_agg, unique_count_agg, count_agg, max_agg, latest_agg
-            return [
-                { label: 'Sum Agg', value: 'sum_agg' },
-                { label: 'Weighted Sum Agg', value: 'weighted_sum_agg' },
-                { label: 'Unique Count Agg', value: 'unique_count_agg' },
-                { label: 'Count Agg', value: 'count_agg' },
-                { label: 'Max Agg', value: 'max_agg' },
-                { label: 'Latest Agg', value: 'latest_agg' },
-            ];
-        }
-
-        // Default: return all options
-        return [
-            { label: 'Sum Agg', value: 'sum_agg' },
-            { label: 'Weighted Sum Agg', value: 'weighted_sum_agg' },
-            { label: 'Unique Count Agg', value: 'unique_count_agg' },
-            { label: 'Count Agg', value: 'count_agg' },
-            { label: 'Max Agg', value: 'max_agg' },
-            { label: 'Latest Agg', value: 'latest_agg' },
-        ];
-    }
-
     private extractOptionsFromRegex(regex: string): any[] {
-        // Extract options from regex patterns like "^(option1|option2|option3)$"
         const match = regex.match(/\^\(([^)]+)\)\$/);
         if (match && match[1]) {
             const values = match[1].split('|');
@@ -346,7 +231,6 @@ export class SimpleDialogComponent implements OnInit {
             }));
         }
 
-        // Handle optional patterns like "^(option1|option2)?$"
         const optionalMatch = regex.match(/\^\(([^)]+)\)\?\$/);
         if (optionalMatch && optionalMatch[1]) {
             const values = optionalMatch[1].split('|');
@@ -379,15 +263,13 @@ export class SimpleDialogComponent implements OnInit {
     }
 
     public isFieldHidden(fieldName: string): boolean {
-        // Check if field is hidden by config
         if (this.formConfig[fieldName]?.is_hidden) {
             return true;
         }
 
-        // Special case: hide field_name when aggregation_type is count_agg
-        if (fieldName === 'field_name') {
-            const aggregationValue = this.metricForm?.get('aggregation_type')?.value;
-            return aggregationValue === 'count_agg';
+        const fieldConfig = this.formConfig[fieldName];
+        if (fieldConfig?.filter_conditions) {
+            return this.checkFieldVisibility(fieldConfig.filter_conditions);
         }
 
         return false;
@@ -398,48 +280,34 @@ export class SimpleDialogComponent implements OnInit {
     }
 
     private setupConditionalValidation(): void {
-        // Handle Type field changes to update Aggregation Type options
-        const typeField = this.metricForm.get('recurring');
-        if (typeField) {
-            typeField.valueChanges.subscribe((value) => {
-                // Clear cache for Aggregation Type to force refresh
-                delete this.optionsCache['Aggregation Type'];
-
-                // Reset aggregation type when type changes
-                const aggregationField = this.metricForm.get('aggregation_type');
-                if (aggregationField) {
-                    aggregationField.setValue('');
-                }
-            });
-        }
-
-        // Handle Aggregation Type changes to update Field Name requirements
-        const aggregationField = this.metricForm.get('aggregation_type');
-        if (aggregationField) {
-            aggregationField.valueChanges.subscribe((value) => {
-                const fieldNameField = this.metricForm.get('field_name');
-                if (fieldNameField) {
-                    if (value === 'count_agg') {
-                        // If count_agg: field name not available (hide/disable)
-                        fieldNameField.setValue('');
-                        fieldNameField.clearValidators();
-                        fieldNameField.disable();
-                    } else {
-                        // For other aggregation types: field name available but not required
-                        fieldNameField.enable();
-                        fieldNameField.clearValidators();
-                    }
-                    fieldNameField.updateValueAndValidity();
-                }
-            });
-        }
-
-        // Handle existing conditional rules
         Object.keys(this.formConfig).forEach((fieldKey) => {
             const fieldConfig = this.formConfig[fieldKey];
 
+            if (fieldConfig?.filter_conditions) {
+                fieldConfig.filter_conditions.forEach((condition: any) => {
+                    if (condition.when?.field) {
+                        const triggerField = this.metricForm.get(condition.when.field);
+                        if (triggerField) {
+                            triggerField.valueChanges.subscribe((newValue) => {
+                                Object.keys(this.optionsCache).forEach((key) => {
+                                    if (key.startsWith(fieldConfig.label)) {
+                                        delete this.optionsCache[key];
+                                    }
+                                });
+
+                                const affectedField = this.metricForm.get(fieldKey);
+                                if (affectedField) {
+                                    affectedField.updateValueAndValidity();
+                                }
+
+                                this.metricForm.updateValueAndValidity();
+                            });
+                        }
+                    }
+                });
+            }
+
             if (fieldConfig?.conditional_rule) {
-                // Parse conditional rule to find the trigger field and conditions
                 const conditionalInfo = this.parseConditionalRule(fieldConfig.conditional_rule);
 
                 if (conditionalInfo) {
@@ -462,14 +330,11 @@ export class SimpleDialogComponent implements OnInit {
     }
 
     private parseConditionalRule(rule: string): { triggerField: string; requiredValues: string[] } | null {
-        // Parse rules like: "Only allowed when aggregation_type is in ['unique_count_agg','latest_agg','max_agg','sum_agg','weighted_sum_agg']"
         const match = rule.match(/when (\w+) is in \[([^\]]+)\]/);
 
         if (match && match[1] && match[2]) {
             const triggerField = match[1];
             const valuesString = match[2];
-
-            // Extract values from the array string
             const values = valuesString
                 .split(',')
                 .map((v) => v.trim().replace(/'/g, '').replace(/"/g, ''))
@@ -484,11 +349,89 @@ export class SimpleDialogComponent implements OnInit {
         return null;
     }
 
+    private applyFilterConditions(fieldConfig: any, options: any[]): any[] {
+        if (!fieldConfig.filter_conditions || !Array.isArray(fieldConfig.filter_conditions)) {
+            return options;
+        }
+
+        // Find the matching condition based on current form values
+        for (const condition of fieldConfig.filter_conditions) {
+            if (this.evaluateCondition(condition.when)) {
+                if (condition.hide) {
+                    return [];
+                }
+                if (condition.allowed_values) {
+                    return options.filter((option) => condition.allowed_values.includes(option.value));
+                }
+                return options;
+            }
+        }
+
+        return options;
+    }
+
+    private checkFieldVisibility(filterConditions: any[]): boolean {
+        if (!Array.isArray(filterConditions)) {
+            return false;
+        }
+
+        // Find the matching condition based on current form values
+        for (const condition of filterConditions) {
+            if (this.evaluateCondition(condition.when)) {
+                return condition.hide === true;
+            }
+        }
+
+        return false; // Default: show field
+    }
+
+    private evaluateCondition(whenCondition: any): boolean {
+        if (!whenCondition || !whenCondition.field) {
+            return false;
+        }
+
+        const fieldValue = this.metricForm?.get(whenCondition.field)?.value;
+
+        if (whenCondition.equals !== undefined) {
+            // Handle single value comparison
+            if (typeof whenCondition.equals === 'string' && whenCondition.equals.includes('|')) {
+                // Handle multiple values separated by |
+                const allowedValues = whenCondition.equals.split('|');
+                return allowedValues.includes(fieldValue);
+            }
+            return fieldValue === whenCondition.equals;
+        }
+
+        return false;
+    }
+
     private formatLabel(value: string): string {
         // Convert snake_case to Title Case
         return value
             .split('_')
             .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ');
+    }
+
+    private getCacheKey(fieldConfig: any): string {
+        let cacheKey = fieldConfig.label;
+
+        // If field has filter conditions, include the current form values that affect it
+        if (fieldConfig.filter_conditions) {
+            const affectingValues: string[] = [];
+            fieldConfig.filter_conditions.forEach((condition: any) => {
+                if (condition.when?.field) {
+                    const fieldValue = this.metricForm?.get(condition.when.field)?.value;
+                    // Handle null/undefined values properly
+                    const value = fieldValue !== null && fieldValue !== undefined ? fieldValue : 'null';
+                    affectingValues.push(`${condition.when.field}:${value}`);
+                }
+            });
+            if (affectingValues.length > 0) {
+                cacheKey += `_${affectingValues.join('_')}`;
+            }
+        }
+
+        return cacheKey;
     }
 }

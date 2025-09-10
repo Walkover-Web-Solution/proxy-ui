@@ -9,4 +9,6 @@ export const FeaturesUrls = {
     updateBillableMetric: (baseUrl, refId) => createUrl(baseUrl, `lago/${refId}/billable-metrics/storage_1`),
     deleteBillableMetric: (baseUrl, refId) => createUrl(baseUrl, `lago/${refId}/billable-metrics/storage`),
     getBillableMetricForm: (baseUrl) => createUrl(baseUrl, 'getBillableMetricForm'),
+    getPlansForm: (baseUrl, refId) => createUrl(baseUrl, `subscription/${refId}/plans`),
+    getTaxes: (baseUrl, refId) => createUrl(baseUrl, `subscription/${refId}/taxes`),
 };

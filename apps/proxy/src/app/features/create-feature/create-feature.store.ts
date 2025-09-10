@@ -16,6 +16,8 @@ export interface ICreateFeatureInitialState {
     createBillableMetric: any;
     updateBillableMetric: any;
     billableMetricForm: any;
+    plansForm: any;
+    taxes: any;
 }
 
 @Injectable()
@@ -32,6 +34,8 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             createBillableMetric: null,
             updateBillableMetric: null,
             billableMetricForm: null,
+            plansForm: null,
+            taxes: null,
         });
     }
     /** Selector for API progress  */
@@ -54,6 +58,196 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly updateBillableMetric$: Observable<any> = this.select((state) => state.updateBillableMetric);
     /** Selector for billable metric form data */
     readonly billableMetricForm$: Observable<any> = this.select((state) => state.billableMetricForm);
+    /** Selector for plans form data */
+    readonly plansForm$: Observable<any> = this.select((state) => state.plansForm);
+
+    public dummyData = {
+        'data': [
+            {
+                'id': 4,
+                'name': 'Subscription',
+                'service_use': 'multiple',
+                'icon': 'none',
+                'method_services': [
+                    {
+                        'name': 'Lago Billing',
+                        'method_id': 4,
+                        'service_id': 10,
+                        'configurations': {
+                            'fields': {
+                                'legal_name': {
+                                    'is_required': true,
+                                    'is_hidden': false,
+                                    'label': 'Legal Name',
+                                    'value_type': 'string',
+                                    'type': 'text',
+                                    'regex': '^.{1,255}$',
+                                    'source': '',
+                                    'sourceFieldLabel': 'name',
+                                    'sourceFieldValue': 'name',
+                                    'value': '',
+                                    'allowed_types': null,
+                                    'fileName': null,
+                                },
+                                'legal_number': {
+                                    'is_required': false,
+                                    'is_hidden': false,
+                                    'label': 'Legal Number',
+                                    'value_type': 'string',
+                                    'type': 'text',
+                                    'regex': '^.{0,255}$',
+                                    'source': '',
+                                    'sourceFieldLabel': 'name',
+                                    'sourceFieldValue': 'name',
+                                    'value': '',
+                                    'allowed_types': null,
+                                    'fileName': null,
+                                },
+                                'tax_identification_number': {
+                                    'is_required': false,
+                                    'is_hidden': false,
+                                    'label': 'Tax Identification Number',
+                                    'value_type': 'string',
+                                    'type': 'text',
+                                    'regex': '^.{0,255}$',
+                                    'source': '',
+                                    'sourceFieldLabel': 'name',
+                                    'sourceFieldValue': 'name',
+                                    'value': '',
+                                    'allowed_types': null,
+                                    'fileName': null,
+                                },
+                                'email': {
+                                    'is_required': true,
+                                    'is_hidden': false,
+                                    'label': 'Email',
+                                    'value_type': 'email',
+                                    'type': 'text',
+                                    'regex': '^[\\w.%+-]+@[\\w.-]+\\.[A-Za-z]{2,}$',
+                                    'source': '',
+                                    'sourceFieldLabel': 'name',
+                                    'sourceFieldValue': 'name',
+                                    'value': '',
+                                    'allowed_types': null,
+                                    'fileName': null,
+                                },
+                                'address_line1': {
+                                    'is_required': false,
+                                    'is_hidden': false,
+                                    'label': 'Address Line 1',
+                                    'value_type': 'string',
+                                    'type': 'text',
+                                    'regex': '^.{0,255}$',
+                                    'source': '',
+                                    'sourceFieldLabel': 'name',
+                                    'sourceFieldValue': 'name',
+                                    'value': '',
+                                    'allowed_types': null,
+                                    'fileName': null,
+                                },
+                                'address_line2': {
+                                    'is_required': false,
+                                    'is_hidden': false,
+                                    'label': 'Address Line 2',
+                                    'value_type': 'string',
+                                    'type': 'text',
+                                    'regex': '^.{0,255}$',
+                                    'source': '',
+                                    'sourceFieldLabel': 'name',
+                                    'sourceFieldValue': 'name',
+                                    'value': '',
+                                    'allowed_types': null,
+                                    'fileName': null,
+                                },
+                                'postal_code': {
+                                    'is_required': false,
+                                    'is_hidden': false,
+                                    'label': 'Postal Code',
+                                    'value_type': 'string',
+                                    'type': 'text',
+                                    'regex': '^[A-Za-z0-9\\s-]{0,10}$',
+                                    'source': '',
+                                    'sourceFieldLabel': 'name',
+                                    'sourceFieldValue': 'name',
+                                    'value': '',
+                                    'allowed_types': null,
+                                    'fileName': null,
+                                },
+                                'city': {
+                                    'is_required': false,
+                                    'is_hidden': false,
+                                    'label': 'City',
+                                    'value_type': 'string',
+                                    'type': 'text',
+                                    'regex': '^[a-zA-Z\\s]{0,50}$',
+                                    'source': '',
+                                    'sourceFieldLabel': 'name',
+                                    'sourceFieldValue': 'name',
+                                    'value': '',
+                                    'allowed_types': null,
+                                    'fileName': null,
+                                },
+                                'state': {
+                                    'is_required': false,
+                                    'is_hidden': false,
+                                    'label': 'State',
+                                    'value_type': 'string',
+                                    'type': 'text',
+                                    'regex': '^[a-zA-Z\\s]{0,50}$',
+                                    'source': '',
+                                    'sourceFieldLabel': 'name',
+                                    'sourceFieldValue': 'name',
+                                    'value': '',
+                                    'allowed_types': null,
+                                    'fileName': null,
+                                },
+                                'country': {
+                                    'is_required': false,
+                                    'is_hidden': false,
+                                    'label': 'Country',
+                                    'value_type': 'string',
+                                    'type': 'select',
+                                    'regex': '^[A-Z]{2}$',
+                                    'source': '/api/countries',
+                                    'sourceFieldLabel': 'name',
+                                    'sourceFieldValue': 'code',
+                                    'value': '',
+                                    'allowed_types': null,
+                                    'fileName': null,
+                                },
+                            },
+                            'mappings': [],
+                        },
+                        'requirements': {},
+                    },
+                ],
+                'authorization_format': {
+                    'format': {
+                        'company': {
+                            'id': "_COMPANY['id']",
+                            'name': "_COMPANY['name']",
+                            'email': "_COMPANY['email']",
+                            'mobile': "_COMPANY['mobile']",
+                            'timezone': "_COMPANY['timezone']",
+                        },
+                        'user': {
+                            'id': "_USER['id']",
+                            'name': "_USER['name']",
+                            'email': "_USER['email']",
+                            'mobile': "_USER['mobile']",
+                        },
+                        'ip': '_IP',
+                    },
+                    'encode_type': 'JWT',
+                    'key': 'Authorization',
+                },
+            },
+        ],
+        'status': 'success',
+        'hasError': false,
+        'errors': [],
+        'proxy_duration': 44,
+    };
 
     /** Get feature type data */
     readonly getFeatureType = this.effect((data) => {
@@ -89,13 +283,13 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                 this.patchState({ isLoading: true });
                 return this.service.getMethodService(req).pipe(
                     tapResponse(
-                        (res: BaseResponse<IMethod[], void>) => {
+                        (res: BaseResponse<any[], void>) => {
                             if (res?.hasError) {
                                 this.showError(res.errors);
                             }
                             return this.patchState({
                                 isLoading: false,
-                                serviceMethods: res?.data ?? null,
+                                serviceMethods: this.dummyData.data ?? null,
                             });
                         },
                         (error: any) => {
@@ -316,6 +510,53 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                                 return this.patchState({ isLoading: false });
                             }
                             return this.patchState({ isLoading: false, billableMetricForm: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly getPlansForm = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getPlansForm(req.refId).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, plansForm: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly getTaxes = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getTaxes(req.refId).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, taxes: res.data });
                         },
                         (error: any) => {
                             this.showError(error.errors);

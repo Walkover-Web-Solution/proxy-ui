@@ -77,4 +77,11 @@ export class FeaturesService {
     public getBillableMetricForm(): Observable<BaseResponse<any, void>> {
         return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getBillableMetricForm(this.baseURL));
     }
+    // get plans form
+    public getPlansForm(refId: string | number): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getPlansForm(this.baseURL, refId));
+    }
+    public getTaxes(refId: string | number): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getTaxes(this.baseURL, refId));
+    }
 }

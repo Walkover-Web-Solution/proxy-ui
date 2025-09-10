@@ -166,7 +166,7 @@
                                 >navigate_before</mat-icon
                             >Back
                         </button>
-                        <button type="button" mat-flat-button color="primary" matStepperNext>
+                        <button type="button" mat-flat-button color="primary" (click)="getPlansForm()" matStepperNext>
                             Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                                 >navigate_next</mat-icon
                             >
@@ -564,7 +564,8 @@
         [ngClass]="{
             'no-padding': fieldConfig?.type === featureFieldType.ChipList,
             'mat-form-field-invalid':
-                fieldConfig?.type === featureFieldType.ChipList && fieldControl?.touched && fieldControl?.errors
+                fieldConfig?.type === featureFieldType.ChipList && fieldControl?.touched && fieldControl?.errors,
+            'full-width': fieldConfig?.type === featureFieldType.TextArea
         }"
     >
         <mat-label
@@ -599,6 +600,22 @@
                     (matChipInputTokenEnd)="updateChipListValues('add', chipListKey, fieldControl, $event.value)"
                 />
             </mat-chip-list>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="featureFieldType.Select">
+            <mat-select [formControl]="fieldControl" [placeholder]="'Selectasdfasfsdadsfsdf ' + fieldConfig?.label">
+                <mat-option *ngFor="let option of getSelectOptions(fieldConfig)" [value]="option.value">
+                    {{ option.label }}
+                </mat-option>
+            </mat-select>
+        </ng-container>
+        <ng-container *ngSwitchCase="featureFieldType.TextArea">
+            <textarea
+                matInput
+                [placeholder]="'Enter ' + fieldConfig?.label"
+                [formControl]="fieldControl"
+                rows="2"
+            ></textarea>
         </ng-container>
         <ng-container *ngSwitchCase="featureFieldType.ReadFile">
             <input
@@ -722,7 +739,7 @@
                 </div>
             </div>
         </div> -->
-        <div class="d-flex gap-3 my-3 flex-grow-1" style="min-height: 400px">
+        <!-- <div class="d-flex gap-3 my-3 flex-grow-1" style="min-height: 400px">
             <div class="d-flex flex-column gap-1 pr-3 service-list">
                 <p class="mat-body-2 fw-bolder mt-0">Services</p>
                 <mat-list role="list" class="default-list pt-0">
@@ -752,6 +769,37 @@
                     </mat-list-item>
                 </mat-list>
             </div>
+        </div> -->
+
+        <div class="flex-grow-1">
+            <div class="features-layout">
+                <div
+                    *ngFor="let service of (selectedMethod | async)?.method_services; let i = index"
+                    class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center feature-card bg-light-grey cursor-pointer"
+                    (click)="selectedServiceIndex = i"
+                    [ngClass]="{ 'active': selectedServiceIndex === i }"
+                >
+                    <p class="mat-body-2 fe-bold mb-1">{{ service.name }}</p>
+
+                    <!-- Validation/Error Icon -->
+                    <ng-container *ngIf="featureForm.get('serviceDetails')?.at(i) as serviceForm">
+                        <mat-icon
+                            class="material-icons-outlined mat-icon-18 text-danger mt-1"
+                            *ngIf="
+                                i !== selectedServiceIndex &&
+                                serviceForm.dirty &&
+                                serviceForm.touched &&
+                                serviceForm.invalid
+                            "
+                        >
+                            error
+                        </mat-icon>
+                    </ng-container>
+
+                    <!-- Hidden radio (for accessibility/consistency if needed) -->
+                    <input type="radio" name="serviceChoice" hidden [checked]="selectedServiceIndex === i" />
+                </div>
+            </div>
         </div>
     </div>
 </ng-template>
@@ -759,41 +807,23 @@
 <ng-template #organizationDetails>
     <div class="d-flex flex-column h-100 w-75">
         <h5 class="mat-h5 mb-3">Organization Details</h5>
-        <p class="mat-body-2 text-secondary">Provide your organization information.</p>
         <p class="mat-body-2 text-secondary"><strong>Note:</strong> These details will be shown on the invoice..</p>
-        <!-- <div class="auth-credentials px-3" class="width-md-700 w-md-100">
+        <div class="auth-credentials px-3" class="width-md-700 w-md-100">
             <div class="d-flex flex-column">
                 <ng-container *ngIf="(selectedMethod | async)?.method_services as methodServices">
                     <form
+                        class="organization-details-form"
                         [formGroup]="serviceForm"
                         *ngIf="featureForm.get('serviceDetails')?.at(selectedServiceIndex) as serviceForm"
                     >
-                        <ng-container *ngIf="methodServices?.[selectedServiceIndex]?.requirements as requirements">
-                            <p class="mat-body-2 fw-bolder mt-0">Credentials</p>
-                            <ng-container
-                                *ngFor="let controlKeyValue of serviceForm.controls.requirements.controls | keyvalue"
-                            >
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <ng-container
-                                            *ngTemplateOutlet="
-                                                inputField;
-                                                context: {
-                                                    fieldControl: controlKeyValue.value,
-                                                    fieldConfig: requirements[controlKeyValue.key]
-                                                }
-                                            "
-                                        ></ng-container>
-                                    </div>
-                                </div>
-                            </ng-container>
-                        </ng-container>
                         <ng-container
                             *ngIf="methodServices?.[selectedServiceIndex]?.configurations?.fields as configurationsFields"
                         >
-                            <p class="mat-body-2 fw-bolder mt-0">Configurations</p>
                             <ng-container
-                                *ngFor="let controlKeyValue of serviceForm.controls.configurations.controls | keyvalue"
+                                *ngFor="
+                                    let controlKeyValue of serviceForm.controls.configurations.controls
+                                        | keyvalue: keepOrder
+                                "
                             >
                                 <div class="row">
                                     <div class="col-md-12 w-100">
@@ -830,195 +860,8 @@
                         >
                             Enable Service
                         </mat-slide-toggle>
-                        <button
-                            type="button"
-                            mat-flat-button
-                            class="flat-default"
-                            (click)="resetFormGroup(serviceForm, this.selectedServiceIndex)"
-                        >
-                            Reset
-                        </button>
                     </form>
                 </ng-container>
-            </div>
-        </div> -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('organizationDetails.legalName'),
-                            fieldConfig: {
-                                label: 'Legal Name',
-                                is_required: false,
-                                hint: 'Enter the legal name of your organization'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </div>
-            <div class="col-md-6">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('organizationDetails.legalNumber'),
-                            fieldConfig: {
-                                label: 'Legal Number',
-                                is_required: false,
-                                hint: 'Enter the legal registration number'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('organizationDetails.taxId'),
-                            fieldConfig: {
-                                label: 'Tax ID',
-                                is_required: false,
-                                hint: 'Enter your tax identification number'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </div>
-            <div class="col-md-6">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('organizationDetails.email'),
-                            fieldConfig: {
-                                label: 'Email',
-                                is_required: false,
-                                hint: 'Enter your business email address'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('organizationDetails.addressLine1'),
-                            fieldConfig: {
-                                label: 'Address Line 1',
-                                is_required: false,
-                                hint: 'Enter your street address'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </div>
-            <div class="col-md-6">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('organizationDetails.addressLine2'),
-                            fieldConfig: {
-                                label: 'Address Line 2',
-                                is_required: false,
-                                hint: 'Enter additional address information (optional)'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('organizationDetails.city'),
-                            fieldConfig: {
-                                label: 'City',
-                                is_required: false,
-                                hint: 'Enter your city'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </div>
-            <div class="col-md-4">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('organizationDetails.state'),
-                            fieldConfig: {
-                                label: 'State',
-                                is_required: false,
-                                hint: 'Enter your state or province'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </div>
-            <div class="col-md-4">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('organizationDetails.country'),
-                            fieldConfig: {
-                                label: 'Country (ISO Code)',
-                                is_required: false,
-                                hint: 'Enter 2-letter country code (e.g., US, CA, GB)'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('organizationDetails.postalCode'),
-                            fieldConfig: {
-                                label: 'Postal Code',
-                                is_required: false,
-                                hint: 'Enter your postal or ZIP code'
-                            }
-                        }
-                    "
-                ></ng-container>
-            </div>
-            <div class="col-md-6">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('organizationDetails.phone'),
-                            fieldConfig: {
-                                label: 'Phone',
-                                is_required: false,
-                                hint: 'Enter your business phone number'
-                            }
-                        }
-                    "
-                ></ng-container>
             </div>
         </div>
     </div>
@@ -1037,7 +880,7 @@
             <mat-card class="w-100 outline-card responsive-card flex-grow-1 mt-3">
                 <mat-card-content>
                     <div class="table-scroll">
-                        <table mat-table class="default-table responsive-table">
+                        <table mat-table [dataSource]="dataSource" class="default-table responsive-table">
                             <!-- Name Column -->
                             <ng-container matColumnDef="name">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
@@ -1082,8 +925,23 @@
 
                             <ng-container matColumnDef="action">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Action</th>
-                                <td mat-cell *matCellDef="let element" data-label="Action">
-                                    <ng-container>{{ element.action }}</ng-container>
+                                <td mat-cell *matCellDef="let element; let i = index" data-label="Action">
+                                    <button
+                                        mat-icon-button
+                                        color="primary"
+                                        (click)="editMetric(element, i)"
+                                        matTooltip="Edit Metric"
+                                    >
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button
+                                        mat-icon-button
+                                        color="warn"
+                                        (click)="deleteMetric(i)"
+                                        matTooltip="Delete Metric"
+                                    >
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
                                 </td>
                             </ng-container>
 
@@ -1092,7 +950,6 @@
                                 mat-row
                                 *matRowDef="let row; columns: displayedColumns; let i = index"
                                 class="hover-action"
-                                [ngClass]="{ 'last-child': i + 1 === pageSizeOptions[0] }"
                             ></tr>
 
                             <tr *matNoDataRow>
@@ -1115,7 +972,118 @@
 <ng-template #createPlan>
     <div class="d-flex flex-column h-100">
         <h5 class="mat-h5 mb-3">Create Plan</h5>
-        <p class="mat-body-2 text-secondary">Set up pricing plans for your feature.</p>
+        <div class="d-flex flex-column h-100">
+            <p class="mat-body-2 text-secondary"><strong>Note:</strong> These details will be shown on the invoice..</p>
+            <div class="auth-credentials px-3" class="width-md-800 w-md-100">
+                <div class="d-flex flex-column">
+                    <ng-container *ngIf="(selectedMethod | async)?.method_services as methodServices">
+                        <form
+                            class="single-form-layout"
+                            [formGroup]="serviceForm"
+                            *ngIf="featureForm.get('serviceDetails')?.at(selectedServiceIndex) as serviceForm"
+                        >
+                            <!-- Plan Details Section -->
+                            <div class="form-section">
+                                <p class="heading"><strong>Plan Details</strong></p>
+                                <div class="form-grid">
+                                    <ng-container
+                                        *ngFor="
+                                            let controlKeyValue of serviceForm.controls.createPlanForm.controls
+                                                | keyvalue: keepOrder
+                                        "
+                                    >
+                                        <ng-container
+                                            *ngTemplateOutlet="
+                                                inputField;
+                                                context: {
+                                                    fieldControl: controlKeyValue.value,
+                                                    fieldConfig: createPlanForm[controlKeyValue.key]
+                                                }
+                                            "
+                                        ></ng-container>
+                                    </ng-container>
+                                </div>
+                            </div>
+
+                            <!-- Charges Section -->
+                            <mat-card class="charges-card">
+                                <mat-card-header>
+                                    <mat-card-title class="heading"><strong>Charges</strong></mat-card-title>
+                                </mat-card-header>
+                                <mat-card-content>
+                                    <div class="form-grid">
+                                        <ng-container
+                                            *ngFor="
+                                                let controlKeyValue of serviceForm.controls.chargesForm.controls
+                                                    | keyvalue: keepOrder
+                                            "
+                                        >
+                                            <ng-container
+                                                *ngTemplateOutlet="
+                                                    inputField;
+                                                    context: {
+                                                        fieldControl: controlKeyValue.value,
+                                                        fieldConfig: createPlanForm[controlKeyValue.key]
+                                                    }
+                                                "
+                                            ></ng-container>
+                                        </ng-container>
+                                        <div>
+                                            <button mat-flat-button color="primary" (click)="addCharge()">
+                                                Add Charge
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Charges Table -->
+                                    <div class="charges-table-container" *ngIf="chargesList && chargesList.length > 0">
+                                        <table mat-table [dataSource]="chargesList" class="charges-table">
+                                            <!-- Metric Column -->
+                                            <ng-container matColumnDef="metric">
+                                                <th mat-header-cell *matHeaderCellDef>Metric</th>
+                                                <td mat-cell *matCellDef="let charge">{{ charge.metric || 'N/A' }}</td>
+                                            </ng-container>
+
+                                            <!-- Model Column -->
+                                            <ng-container matColumnDef="model">
+                                                <th mat-header-cell *matHeaderCellDef>Model</th>
+                                                <td mat-cell *matCellDef="let charge">{{ charge.model || 'N/A' }}</td>
+                                            </ng-container>
+
+                                            <!-- Min Amount Column -->
+                                            <ng-container matColumnDef="minAmount">
+                                                <th mat-header-cell *matHeaderCellDef>Min Amount</th>
+                                                <td mat-cell *matCellDef="let charge">
+                                                    {{ charge.minAmount || '$0.00' }}
+                                                </td>
+                                            </ng-container>
+
+                                            <!-- Actions Column -->
+                                            <ng-container matColumnDef="actions">
+                                                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                                                <td mat-cell *matCellDef="let charge; let i = index">
+                                                    <button
+                                                        mat-icon-button
+                                                        color="warn"
+                                                        (click)="removeCharge(i)"
+                                                        matTooltip="Remove Charge"
+                                                    >
+                                                        <mat-icon>delete</mat-icon>
+                                                    </button>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="chargesDisplayedColumns"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: chargesDisplayedColumns"></tr>
+                                        </table>
+                                    </div>
+                                </mat-card-content>
+                            </mat-card>
+                        </form>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+
         <!-- Add your plan creation form here -->
     </div>
 </ng-template>
