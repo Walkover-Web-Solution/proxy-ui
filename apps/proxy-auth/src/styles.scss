@@ -115,3 +115,12 @@ proxy-auth,
         background-color: var(--color-email-primary) !important;
     }
 }
+
+.common-btn {
+    &.mat-button {
+        color: #000000 !important;
+        .mat-button-focus-overlay {
+            background-color: #000000 !important;
+        }
+    }
+}

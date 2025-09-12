@@ -220,4 +220,118 @@ export class OtpEffects {
             })
         )
     );
+    addUser$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.addUser),
+            switchMap(({ name, email, authToken }) => {
+                return this.otpService.addUser(name, email, authToken).pipe(
+                    map((res: any) => {
+                        if (res.type === 'success') {
+                            return otpActions.addUserComplete({
+                                response: res,
+                            });
+                        }
+                        return otpActions.addUserError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.addUserError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
+    getRoles$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.getRoles),
+            switchMap(({ authToken }) => {
+                return this.otpService.getRoles(authToken).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.getRolesComplete({
+                                response: res,
+                            });
+                        }
+                        return otpActions.getRolesError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.getRolesError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
+
+    createRole$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.createRole),
+            switchMap(({ name, permissions, authToken }) => {
+                return this.otpService.createRole(name, permissions, authToken).pipe(
+                    map((res: any) => {
+                        if (res.type === 'success') {
+                            return otpActions.createRoleComplete({
+                                response: res,
+                            });
+                        }
+                        return otpActions.createRoleError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.createRoleError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
+
+    getCompanyUsers$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.getCompanyUsers),
+            switchMap(({ authToken }) => {
+                return this.otpService.getCompanyUsers(authToken).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.getCompanyUsersComplete({
+                                response: res,
+                            });
+                        }
+                        return otpActions.getCompanyUsersError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.getCompanyUsersError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
 }

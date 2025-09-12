@@ -1,4 +1,5 @@
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -33,6 +34,9 @@ import { UiLoaderModule } from '@proxy/ui/loader';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserDialogModule } from './user-profile/user-dialog/user-dialog.module';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { UserManagementComponent } from './user-management/user-management.component';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
@@ -40,6 +44,7 @@ export const CHAT_COMPONENTS: any[] = [
     RegisterComponent,
     LoginComponent,
     UserProfileComponent,
+    UserManagementComponent,
 ];
 
 @NgModule({
@@ -58,8 +63,11 @@ export const CHAT_COMPONENTS: any[] = [
         MatRadioModule,
         UiLoaderModule,
         MatTableModule,
+        MatPaginatorModule,
         UserDialogModule,
         MatCardModule,
+        MatDialogModule,
+        MatSelectModule,
 
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),

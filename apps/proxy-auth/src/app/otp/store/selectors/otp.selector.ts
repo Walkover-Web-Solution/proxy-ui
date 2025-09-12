@@ -34,4 +34,17 @@ export const leaveCompanyDataInProcess = createSelector(selectRootState, (p) => 
 export const updateUser = createSelector(selectRootState, (p) => p.updateUser);
 export const updateSuccess = createSelector(selectRootState, (p) => p.updateSuccess);
 export const loading = createSelector(selectRootState, (p) => p.loading);
+
+export const addUserData = createSelector(selectRootState, (p) => p.addUserData);
+export const addUserInProcess = createSelector(selectRootState, (p) => p.addUserInProcess);
+export const addUserSuccess = createSelector(selectRootState, (p) => p.addUserSuccess);
+
+export const rolesData = createSelector(selectRootState, (p) => p.rolesData);
+export const rolesDataInProcess = createSelector(selectRootState, (p) => p.rolesDataInProcess);
+export const rolesSuccess = createSelector(selectRootState, (p) => p.rolesSuccess);
+
+export const companyUsersData = createSelector(selectRootState, (p) => p.companyUsersData);
+export const companyUsersDataInProcess = createSelector(selectRootState, (p) => p.companyUsersDataInProcess);
+export const companyUsersSuccess = createSelector(selectRootState, (p) => p.companyUsersSuccess);
+
 export const error = createSelector(selectRootState, (p) => p.error);

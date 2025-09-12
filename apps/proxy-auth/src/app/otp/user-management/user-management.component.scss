@@ -1,0 +1,372 @@
+@import url('https://unpkg.com/@angular/material@14.2.7/prebuilt-themes/indigo-pink.css');
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f9f9f9;
+    padding: 20px;
+}
+.container {
+    background: #ffffff;
+    padding: 15px 60px;
+    text-align: left;
+    position: relative;
+    min-height: 600px;
+    height: 100%;
+    z-index: 10;
+}
+
+.users-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.user-item {
+    margin-bottom: 16px;
+}
+
+.user-info-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label {
+    font-weight: 600;
+    color: #666;
+    font-size: 14px;
+}
+
+.value {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.user-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+.full-width {
+    max-width: 300px;
+}
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-btn {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #ffffff;
+    text-align: left;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+.dropdown-content .input-group {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+.dropdown-content .input-group:last-child {
+    border-bottom: none;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.table-container {
+    margin-top: 20px;
+    display: none;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    box-shadow: none !important;
+}
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    padding: 14px;
+}
+td.mat-cell {
+    padding: 10px;
+}
+th {
+    color: #000000;
+    font-weight: 600;
+    height: 22px;
+    padding-left: 24px !important;
+}
+td {
+    font-size: small;
+    height: 22px;
+    color: #434242;
+}
+.toggle-btn {
+    display: block;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.toggle-btn:hover {
+    background-color: #0056b3;
+}
+
+.status-active {
+    color: #008000;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: underline;
+    font-style: italic;
+}
+.status-rejected {
+    text-decoration: underline;
+    color: #ff0000;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+}
+.no-company {
+    font-size: medium;
+    font-weight: 500;
+}
+
+.input-label {
+    margin-bottom: 2px;
+    margin-left: 10px;
+    color: #404040;
+    font-weight: 700;
+}
+
+.confirm {
+    text-align: left;
+    font-weight: 600;
+}
+.company {
+    text-align: left;
+    font-weight: 600;
+    font-size: medium;
+}
+.current {
+    text-align: center;
+}
+
+.company-modal {
+    text-align: left;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+.modal-content {
+    background-color: #ffffff;
+    margin: 15% auto;
+    padding: 32px 26px;
+    border-radius: 10px;
+    width: 480px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.modal-buttons {
+    margin-top: 10px;
+    text-align: end;
+}
+.modal-buttons button {
+    padding: 8px 20px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+.btn-yes {
+    background-color: #ff0000;
+    color: #ffffff;
+    border-radius: 8px;
+}
+.btn-no {
+    color: #000000;
+    border-radius: 8px;
+}
+
+.no-data {
+    text-align: center;
+    font-size: medium;
+    font-weight: 700;
+    margin-top: 30px;
+}
+
+.no-company {
+    text-align: center;
+    font-size: medium;
+    font-weight: bold;
+}
+.error {
+    margin: 40% auto;
+    font-weight: bold;
+    font-size: large;
+}
+.input-field {
+    color: black;
+}
+
+.success-message {
+    color: #008000;
+    font-size: small;
+    font-weight: bold;
+}
+.error-message {
+    color: #ff0000;
+    font-size: small;
+    font-weight: bold;
+}
+
+#proxyContainer {
+    width: 100%;
+    max-width: 600px;
+    min-width: 180px;
+    height: auto;
+    min-height: 100px;
+    border: 1px dashed red;
+    padding: 10px;
+}
+
+@media (max-width: 1024px) {
+    .container {
+        padding: 15px;
+        width: 100%;
+    }
+
+    .full-width {
+        max-width: 100%;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        width: 100%;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th,
+    td {
+        padding: 6px;
+    }
+
+    .toggle-btn,
+    .modal-buttons button {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 8px;
+    }
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    .modal-content {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .toggle-btn,
+    .modal-buttons button {
+        font-size: 12px;
+        padding: 6px;
+    }
+}
+.button-add {
+    background-color: #000000;
+    color: #ffffff;
+}
+.add-button {
+    display: flex;
+    justify-content: end;
+    gap: 20px;
+}
+.add-user-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.full-width {
+    width: 100%;
+}

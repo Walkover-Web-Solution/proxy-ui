@@ -33,6 +33,19 @@ export interface IOtpState {
     updateUser: string;
     loading: boolean;
     updateSuccess: boolean;
+
+    addUserData: any;
+    addUserInProcess: boolean;
+    addUserSuccess: boolean;
+
+    rolesData: any;
+    rolesDataInProcess: boolean;
+    rolesSuccess: boolean;
+
+    companyUsersData: any;
+    companyUsersDataInProcess: boolean;
+    companyUsersSuccess: boolean;
+
     error: any;
 }
 
@@ -66,6 +79,19 @@ export const initialState: IOtpState = {
     updateUser: '',
     loading: false,
     updateSuccess: false,
+
+    addUserData: null,
+    addUserInProcess: false,
+    addUserSuccess: false,
+
+    rolesData: null,
+    rolesDataInProcess: false,
+    rolesSuccess: false,
+
+    companyUsersData: null,
+    companyUsersDataInProcess: false,
+    companyUsersSuccess: false,
+
     error: null,
 };
 
@@ -273,5 +299,72 @@ const _otpReducer = createReducer(
         error: errors,
         apiErrorResponse: errorResponse,
         updateSuccess: false,
+    })),
+
+    on(otpActions.addUser, (state) => ({
+        ...state,
+        addUserInProcess: false,
+        error: null,
+        addUserSuccess: false,
+    })),
+
+    on(otpActions.addUserComplete, (state, { response }) => ({
+        ...state,
+        addUserData: response,
+        addUserInProcess: true,
+        error: null,
+        addUserSuccess: true,
+    })),
+
+    on(otpActions.addUserError, (state, { errors, errorResponse }) => ({
+        ...state,
+        addUserInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        addUserSuccess: false,
+    })),
+
+    on(otpActions.getRoles, (state) => ({
+        ...state,
+        rolesDataInProcess: false,
+        error: null,
+        rolesSuccess: false,
+    })),
+    on(otpActions.getRolesComplete, (state, { response }) => ({
+        ...state,
+        rolesData: response,
+        rolesDataInProcess: true,
+        error: null,
+        rolesSuccess: true,
+    })),
+    on(otpActions.getRolesError, (state, { errors, errorResponse }) => ({
+        ...state,
+        rolesDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        rolesSuccess: false,
+    })),
+
+    on(otpActions.getCompanyUsers, (state) => ({
+        ...state,
+        companyUsersDataInProcess: false,
+        error: null,
+        companyUsersSuccess: false,
+    })),
+
+    on(otpActions.getCompanyUsersComplete, (state, { response }) => ({
+        ...state,
+        companyUsersData: response,
+        companyUsersDataInProcess: true,
+        error: null,
+        companyUsersSuccess: true,
+    })),
+
+    on(otpActions.getCompanyUsersError, (state, { errors, errorResponse }) => ({
+        ...state,
+        companyUsersDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        companyUsersSuccess: false,
     }))
 );
