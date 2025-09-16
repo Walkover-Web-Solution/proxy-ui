@@ -69,10 +69,15 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             ]),
             email: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_REGEX)]),
             mobile: new FormControl<string>(null, [Validators.required]),
-            password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
+            password: new FormControl<string>(null, [
+                Validators.required,
+                Validators.pattern(PASSWORD_REGEX),
+                Validators.maxLength(15),
+            ]),
             confirmPassword: new FormControl<string>(null, [
                 Validators.required,
                 Validators.pattern(PASSWORD_REGEX),
+                Validators.maxLength(15),
                 CustomValidators.valueSameAsControl('password'),
             ]),
         }),
