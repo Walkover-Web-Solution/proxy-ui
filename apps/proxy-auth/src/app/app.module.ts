@@ -5,6 +5,7 @@ import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppComponent } from './app.component';
 import { ElementModule } from './element.module';
+import { NgHcaptchaModule } from 'ng-hcaptcha';
 
 let conditional_imports = [];
 if (environment.production) {
@@ -19,7 +20,15 @@ if (environment.production) {
 }
 @NgModule({
     declarations: [AppComponent],
-    imports: [BrowserModule, BrowserAnimationsModule, ElementModule, ...conditional_imports],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        ElementModule,
+        NgHcaptchaModule.forRoot({
+            siteKey: environment.hCaptchaSiteKey,
+        }),
+        ...conditional_imports,
+    ],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
