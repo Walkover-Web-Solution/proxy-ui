@@ -11,6 +11,10 @@ export const selectGetOtpRes = createSelector(selectRootState, (p) => p.otpGener
 export const selectGetOtpInProcess = createSelector(selectRootState, (p) => p.getOtpInProcess);
 export const selectGetOtpSuccess = createSelector(selectRootState, (p) => p.getOtpSuccess);
 
+export const selectVerifyOtpV2Data = createSelector(selectRootState, (p) => p.verifyOtpV2Data);
+export const selectVerifyOtpV2InProcess = createSelector(selectRootState, (p) => p.verifyOtpV2InProcess);
+export const selectVerifyOtpV2Success = createSelector(selectRootState, (p) => p.verifyOtpV2Success);
+
 export const selectResendOtpInProcess = createSelector(selectRootState, (p) => p.resendOtpInProcess);
 export const selectResendOtpSuccess = createSelector(selectRootState, (p) => p.resendOtpSuccess);
 
