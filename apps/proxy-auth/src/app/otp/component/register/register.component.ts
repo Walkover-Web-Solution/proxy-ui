@@ -69,10 +69,15 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             ]),
             email: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_REGEX)]),
             mobile: new FormControl<string>(null, [Validators.required]),
-            password: new FormControl<string>(null, [Validators.required, Validators.pattern(PASSWORD_REGEX)]),
+            password: new FormControl<string>(null, [
+                Validators.required,
+                Validators.pattern(PASSWORD_REGEX),
+                Validators.maxLength(15),
+            ]),
             confirmPassword: new FormControl<string>(null, [
                 Validators.required,
                 Validators.pattern(PASSWORD_REGEX),
+                Validators.maxLength(15),
                 CustomValidators.valueSameAsControl('password'),
             ]),
         }),
@@ -283,6 +288,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                     request: {
                         referenceId: this.referenceId,
                         mobile: mobileControl.value,
+                        authkey: environment.sendOtpAuthKey,
                     },
                 })
             );
@@ -322,10 +328,10 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
     public submit(): void {
         this.apiError.next(null);
-        // if (!this.isOtpVerified) {
-        //     this.registrationForm.get('user.mobile').setErrors({ otpVerificationFailed: true });
-        //     return;
-        // }
+        if (!this.isOtpVerified) {
+            this.registrationForm.get('user.mobile').setErrors({ otpVerificationFailed: true });
+            return;
+        }
         const formData = removeEmptyKeys(cloneDeep(this.registrationForm.value), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
@@ -386,6 +392,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                     request: {
                         referenceId: this.referenceId,
                         mobile: mobileControl.value,
+                        authkey: environment.sendOtpAuthKey,
                     },
                 })
             );
@@ -405,6 +412,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                         referenceId: this.referenceId,
                         mobile: mobileControl.value,
                         otp: otpString,
+                        authkey: environment.sendOtpAuthKey,
                     },
                 })
             );

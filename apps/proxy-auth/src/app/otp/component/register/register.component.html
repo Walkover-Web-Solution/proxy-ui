@@ -55,7 +55,7 @@
                         isFieldFocused: isNumberChanged
                     }"
                 ></ng-container>
-                <!-- <div class="submit-btn mt-2" *ngIf="!isOtpVerified">
+                <div class="submit-btn mt-2" *ngIf="!isOtpVerified">
                     <button
                         (click)="isOtpSent ? resendOtp() : getOtp()"
                         mat-flat-button
@@ -69,7 +69,7 @@
                         <span *ngIf="isOtpSent && canResendOtp && !(selectGetOtpInProcess$ | async)"> Resend OTP </span>
                         <span *ngIf="isOtpSent && canResendOtp && (selectGetOtpInProcess$ | async)"> Sending... </span>
                     </button>
-                </div> -->
+                </div>
                 <div *ngIf="isOtpVerified" class="submit-btn mt-2">
                     <span class="success-message font-12">
                         Verified
@@ -234,6 +234,7 @@
                     [type]="(type === 'password' ? showPassword : showConfirmPassword) ? 'text' : 'password'"
                     [formControl]="formControl"
                     [placeholder]="'Enter ' + label"
+                    maxlength="15"
                 />
             </ng-container>
 

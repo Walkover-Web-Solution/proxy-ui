@@ -97,6 +97,7 @@
         "jssip": "3.10.0",
         "lodash-es": "4.17.21",
         "ng-click-outside": "9.0.1",
+        "ng-hcaptcha": "^2.6.0",
         "ng-otp-input": "1.8.5",
         "ngrx-store-localstorage": "14.0.0",
         "ngx-bootstrap": "9.0.0",

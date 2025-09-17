@@ -1,0 +1,37 @@
+.hcaptcha-container {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+}
+
+.captcha-status {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: #e8f5e8;
+    border: 1px solid #4caf50;
+    border-radius: 4px;
+
+    p {
+        margin: 0 0 10px 0;
+        color: #2e7d32;
+        font-weight: 500;
+    }
+
+    button {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+
+        &:hover {
+            background-color: #d32f2f;
+        }
+    }
+}

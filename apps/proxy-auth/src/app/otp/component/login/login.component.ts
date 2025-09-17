@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { LoginComponentStore } from './login.store';
 import { BehaviorSubject, filter, interval, Observable, Subscription, takeUntil } from 'rxjs';
 import { IAppState } from '../../store/app.state';
@@ -13,6 +13,7 @@ import { CustomValidators } from '@proxy/custom-validator';
 import { META_TAG_ID } from '@proxy/constant';
 import { environment } from 'apps/proxy-auth/src/environments/environment';
 import { OtpUtilityService } from '../../service/otp-utility.service';
+import { NgHcaptchaComponent } from 'ng-hcaptcha';
 
 @Component({
     selector: 'proxy-login',
@@ -33,6 +34,9 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public timerSubscription: Subscription;
     public selectWidgetData$: Observable<any>;
     private apiError = new BehaviorSubject<any>(null);
+    public hCaptchaToken: string = '';
+    public hCaptchaVerified: boolean = false;
+    @ViewChild(NgHcaptchaComponent) hCaptchaComponent: NgHcaptchaComponent;
     public otpData$: Observable<any> = this.componentStore.otpdata$;
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public resetPassword$: Observable<any> = this.componentStore.resetPassword$;
@@ -94,6 +98,14 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
             });
         this.componentStore.apiError$.subscribe((error) => {
             this.apiError.next(error);
+            // Reset hCaptcha on error
+            if (error) {
+                this.hCaptchaToken = '';
+                this.hCaptchaVerified = false;
+                if (this.hCaptchaComponent) {
+                    this.hCaptchaComponent.reset();
+                }
+            }
         });
         this.componentStore.showRegistration$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
@@ -106,6 +118,9 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public changeStep(nextStep: number) {
         this.apiError.next(null);
         this.step = nextStep;
+        // Reset hCaptcha when changing steps
+        this.hCaptchaToken = '';
+        this.hCaptchaVerified = false;
         if (this.step === 0) {
             this.closePopUp.emit();
         }
@@ -136,11 +151,17 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     public login() {
+        if (!this.hCaptchaVerified) {
+            this.apiError.next('Please complete the hCaptcha verification');
+            return;
+        }
+
         const encodedPassword = this.encryptPassword(this.loginForm.get('password').value);
         const loginData: IlogInData = {
             'state': this.state,
             'user': this.loginForm.get('username').value,
             'password': encodedPassword,
+            'hCaptchaToken': this.hCaptchaToken, // Include hCaptcha token in login data
         };
 
         this.componentStore.loginData(loginData);
@@ -162,6 +183,23 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
             'otp': this.resetPasswordForm.get('otp').value,
         };
         this.componentStore.verfyPasswordOtp(verfyOtpData);
+    }
+
+    // hCaptcha event handlers
+    public onHCaptchaVerify(token: string) {
+        this.hCaptchaToken = token;
+        this.hCaptchaVerified = true;
+    }
+
+    public onHCaptchaExpired() {
+        this.hCaptchaToken = '';
+        this.hCaptchaVerified = false;
+    }
+
+    public onHCaptchaError(error: any) {
+        this.hCaptchaToken = '';
+        this.hCaptchaVerified = false;
+        console.error('hCaptcha error:', error);
     }
     private startTimer() {
         this.remainingSeconds = 15;
