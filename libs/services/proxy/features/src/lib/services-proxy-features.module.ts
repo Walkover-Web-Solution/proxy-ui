@@ -63,16 +63,19 @@ export class FeaturesService {
     }
     // create billable metric
     public createBillableMetric(body): Observable<BaseResponse<any, void>> {
-        const refId = body.refId;
+        const refId = body.reference_id;
         return this.http.post<BaseResponse<any, void>>(FeaturesUrls.getBillableMetrics(this.baseURL, refId), body);
     }
     // update billable metric
-    public updateBillableMetric(refId: string | number, body): Observable<BaseResponse<any, void>> {
-        return this.http.put<BaseResponse<any, void>>(FeaturesUrls.updateBillableMetric(this.baseURL, refId), body);
+    public updateBillableMetric(refId: string | number, code: string, body): Observable<BaseResponse<any, void>> {
+        return this.http.put<BaseResponse<any, void>>(
+            FeaturesUrls.updateBillableMetric(this.baseURL, refId, code),
+            body
+        );
     }
     // delete billable metric
-    public deleteBillableMetric(refId: string | number): Observable<BaseResponse<any, void>> {
-        return this.http.delete<BaseResponse<any, void>>(FeaturesUrls.deleteBillableMetric(this.baseURL, refId));
+    public deleteBillableMetric(refId: string | number, code: string): Observable<BaseResponse<any, void>> {
+        return this.http.delete<BaseResponse<any, void>>(FeaturesUrls.deleteBillableMetric(this.baseURL, refId, code));
     }
     public getBillableMetricForm(): Observable<BaseResponse<any, void>> {
         return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getBillableMetricForm(this.baseURL));
@@ -83,5 +86,21 @@ export class FeaturesService {
     }
     public getTaxes(refId: string | number): Observable<BaseResponse<any, void>> {
         return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getTaxes(this.baseURL, refId));
+    }
+    // create plan
+    public createPlan(refId: string | number, body): Observable<BaseResponse<any, void>> {
+        return this.http.post<BaseResponse<any, void>>(FeaturesUrls.createPlan(this.baseURL, refId), body);
+    }
+    //get all plans
+    public getAllPlans(refId: string | number): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.createPlan(this.baseURL, refId));
+    }
+    // update plan
+    public updatePlan(refId: string | number, code: string, body): Observable<BaseResponse<any, void>> {
+        return this.http.put<BaseResponse<any, void>>(FeaturesUrls.updatePlan(this.baseURL, refId, code), body);
+    }
+    // delete plan
+    public deletePlan(refId: string | number, code: string): Observable<BaseResponse<any, void>> {
+        return this.http.delete<BaseResponse<any, void>>(FeaturesUrls.deletePlan(this.baseURL, refId, code));
     }
 }

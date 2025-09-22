@@ -30,6 +30,10 @@ export interface IOtpState {
     leaveCompanyDataInProcess: boolean;
     leaveCompanySuccess: boolean;
 
+    subscriptionPlansData: any;
+    subscriptionPlansDataInProcess: boolean;
+    subscriptionPlansDataSuccess: boolean;
+
     updateUser: string;
     loading: boolean;
     updateSuccess: boolean;
@@ -62,6 +66,10 @@ export const initialState: IOtpState = {
     leaveCompanyData: null,
     leaveCompanyDataInProcess: false,
     leaveCompanySuccess: false,
+
+    subscriptionPlansData: null,
+    subscriptionPlansDataInProcess: false,
+    subscriptionPlansDataSuccess: false,
 
     updateUser: '',
     loading: false,
@@ -273,5 +281,25 @@ const _otpReducer = createReducer(
         error: errors,
         apiErrorResponse: errorResponse,
         updateSuccess: false,
+    })),
+
+    on(otpActions.getSubscriptionPlans, (state, { referenceId }) => ({
+        ...state,
+        subscriptionPlansDataInProcess: true,
+        subscriptionPlansDataSuccess: false,
+        errors: null,
+    })),
+    on(otpActions.getSubscriptionPlansComplete, (state, { response }) => ({
+        ...state,
+        subscriptionPlansDataInProcess: false,
+        subscriptionPlansDataSuccess: true,
+        subscriptionPlansData: response,
+    })),
+    on(otpActions.getSubscriptionPlansError, (state, { errors, errorResponse }) => ({
+        ...state,
+        subscriptionPlansDataInProcess: false,
+        subscriptionPlansDataSuccess: false,
+        errors: errors,
+        apiErrorResponse: errorResponse,
     }))
 );

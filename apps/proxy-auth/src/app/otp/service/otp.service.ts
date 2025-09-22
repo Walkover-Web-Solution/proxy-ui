@@ -99,4 +99,8 @@ export class OtpService {
         const url = otpVerificationUrls.updateUser(this.clientUrl);
         return this.http.put<any>(url, { user: { name } }, this.options);
     }
+    public getSubscriptionPlans(referenceId: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+        const url = otpVerificationUrls.getSubscriptionPlans(this.clientUrl).replace(':referenceId', referenceId);
+        return this.http.get<any>(url);
+    }
 }

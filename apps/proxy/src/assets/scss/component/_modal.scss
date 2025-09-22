@@ -5,6 +5,12 @@
     border-radius: var(--border-common-radius) !important;
 }
 
+.mat-dialog-md {
+    .mat-dialog-container {
+        width: 100% !important;
+    }
+}
+
 .mat-dialog {
     &.mat-dialog-lg {
         .mat-dialog-container {

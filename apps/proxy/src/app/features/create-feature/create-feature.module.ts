@@ -22,6 +22,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import { SimpleDialogComponent } from './simple-dialog/simple-dialog.component';
+import { CreatePlanDialogComponent } from './create-plan-dialog/create-plan-dialog.component';
 const routes: Routes = [
     {
         path: '',
@@ -31,7 +32,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [CreateFeatureComponent, SimpleDialogComponent],
+    declarations: [CreateFeatureComponent, SimpleDialogComponent, CreatePlanDialogComponent],
     imports: [
         CommonModule,
         RouterModule.forChild(routes),

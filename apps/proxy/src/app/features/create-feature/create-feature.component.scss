@@ -7,6 +7,39 @@
     }
 }
 
+// Utility classes to replace Bootstrap
+.d-flex {
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.justify-content-end {
+    justify-content: flex-end;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.align-items-end {
+    align-items: flex-end;
+}
+
+.gap-3 {
+    gap: 1rem;
+}
+
+.h-100 {
+    height: 100%;
+}
+
 .code-snippet-view {
     border-radius: var(--border-common-radius-4);
     transition: min-height 0.2s linear;
@@ -441,5 +474,9 @@
                 }
             }
         }
+    }
+    .add-plan-edit {
+        height: calc(100vh - 650px);
+        overflow: auto;
     }
 }

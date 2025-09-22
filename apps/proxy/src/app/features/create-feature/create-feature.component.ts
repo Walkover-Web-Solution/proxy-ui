@@ -23,9 +23,11 @@ import { environment } from '../../../environments/environment';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { MatStepper } from '@angular/material/stepper';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { getAcceptedTypeRegex } from '@proxy/utils';
 import { SimpleDialogComponent } from './simple-dialog/simple-dialog.component';
-
+import { CreatePlanDialogComponent } from './create-plan-dialog/create-plan-dialog.component';
+import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 type ServiceFormGroup = FormGroup<{
     requirements: FormGroup<{
         [key: string]: FormControl<any>;
@@ -33,7 +35,15 @@ type ServiceFormGroup = FormGroup<{
     configurations: FormGroup<{
         [key: string]: FormControl<any>;
     }>;
+    createPlanForm: FormGroup<{
+        [key: string]: FormControl<any>;
+    }>;
+    chargesForm: FormGroup<{
+        [key: string]: FormControl<any>;
+    }>;
     is_enable: FormControl<boolean>;
+}>;
+type PlanFormGroup = FormGroup<{
     createPlanForm: FormGroup<{
         [key: string]: FormControl<any>;
     }>;
@@ -59,698 +69,29 @@ export interface PeriodicElement {
 })
 export class CreateFeatureComponent extends BaseComponent implements OnDestroy, OnInit {
     @ViewChildren('stepper') stepper: QueryList<MatStepper>;
-    public taxes: any = {
-        'data': {
-            'taxes': [
-                {
-                    'lago_id': '441b1269-89e5-41ae-b229-66da1df1571e',
-                    'name': 'GST 18',
-                    'code': 'gst_18',
-                    'rate': 18,
-                    'description': 'GST with 18 percent rate.',
-                    'applied_to_organization': false,
-                    'add_ons_count': 0,
-                    'customers_count': 0,
-                    'plans_count': 0,
-                    'charges_count': 0,
-                    'commitments_count': 0,
-                    'created_at': '2025-08-29T12:09:07Z',
-                },
-            ],
-            'meta': {
-                'current_page': 1,
-                'next_page': null,
-                'prev_page': null,
-                'total_pages': 1,
-                'total_count': 1,
-            },
-        },
-        'status': 'success',
-        'hasError': false,
-        'errors': [],
-        'proxy_duration': 545,
-    };
-    public blliableMetricList: any = [
-        {
-            'lago_id': '5ce242d4-54d3-4cd6-b623-dc6997ecced5',
-            'name': 'ViaSocket Credits',
-            'code': 'viasocket_credits',
-            'description': 'Number of ViaSocket Credits',
-            'aggregation_type': 'sum_agg',
-            'weighted_interval': null,
-            'recurring': false,
-            'rounding_function': null,
-            'rounding_precision': null,
-            'created_at': '2025-09-03T11:45:50Z',
-            'field_name': 'credits',
-            'expression': null,
-            'active_subscriptions_count': 0,
-            'draft_invoices_count': 0,
-            'plans_count': 0,
-            'filters': [],
-        },
-        {
-            'lago_id': '078c7925-a420-4c63-aa42-8206b994c814',
-            'name': 'Storage',
-            'code': 'storage',
-            'description': '',
-            'aggregation_type': 'sum_agg',
-            'weighted_interval': null,
-            'recurring': true,
-            'rounding_function': null,
-            'rounding_precision': null,
-            'created_at': '2025-09-01T12:54:47Z',
-            'field_name': 'GB',
-            'expression': null,
-            'active_subscriptions_count': 0,
-            'draft_invoices_count': 0,
-            'plans_count': 0,
-            'filters': [],
-        },
-    ];
-
-    public createPlanForm: any = {
-        'name': {
-            'is_required': true,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Name',
-            'value_type': 'string',
-            'type': 'text',
-            'regex': '^.{1,255}$',
-            'source': '',
-            'sourceFieldLabel': '',
-            'sourceFieldValue': '',
-            'value': '',
-        },
-        'code': {
-            'is_required': true,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Code',
-            'value_type': 'string',
-            'type': 'text',
-            'regex': '^[a-z0-9_]{1,255}$',
-            'unique': true,
-            'source': '',
-            'sourceFieldLabel': '',
-            'sourceFieldValue': '',
-            'value': '',
-        },
-        'description': {
-            'is_required': false,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Description',
-            'value_type': 'string',
-            'type': 'textarea',
-            'regex': '^.{0,500}$',
-            'source': '',
-            'sourceFieldLabel': '',
-            'sourceFieldValue': '',
-            'value': '',
-        },
-        'interval': {
-            'is_required': true,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Interval',
-            'value_type': 'string',
-            'type': 'select',
-            'regex': '^(monthly|yearly|weekly|quarterly)$',
-            'source': '',
-            'sourceFieldLabel': ['Monthly', 'Yearly', 'Weekly', 'Quarterly'],
-            'sourceFieldValue': ['monthly', 'yearly', 'weekly', 'quarterly'],
-            'value': '',
-        },
-        'amount_cents': {
-            'is_required': true,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Plan Price',
-            'value_type': 'integer',
-            'type': 'number',
-            'regex': '^[0-9]+$',
-            'source': [],
-            'sourceFieldLabel': '',
-            'sourceFieldValue': '',
-            'value': 0,
-        },
-        'amount_currency': {
-            'is_required': true,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Currency',
-            'value_type': 'string',
-            'type': 'select',
-            'regex': '^[A-Z]{3}$',
-            'source': [
-                'AED',
-                'AFN',
-                'ALL',
-                'AMD',
-                'ANG',
-                'AOA',
-                'ARS',
-                'AUD',
-                'AWG',
-                'AZN',
-                'BAM',
-                'BBD',
-                'BDT',
-                'BGN',
-                'BIF',
-                'BMD',
-                'BND',
-                'BOB',
-                'BRL',
-                'BSD',
-                'BWP',
-                'BYN',
-                'BZD',
-                'CAD',
-                'CDF',
-                'CHF',
-                'CLF',
-                'CLP',
-                'CNY',
-                'COP',
-                'CRC',
-                'CVE',
-                'CZK',
-                'DJF',
-                'DKK',
-                'DOP',
-                'DZD',
-                'EGP',
-                'ETB',
-                'EUR',
-                'FJD',
-                'FKP',
-                'GBP',
-                'GEL',
-                'GHS',
-                'GIP',
-                'GMD',
-                'GNF',
-                'GTQ',
-                'GYD',
-                'HKD',
-                'HNL',
-                'HRK',
-                'HTG',
-                'HUF',
-                'IDR',
-                'ILS',
-                'INR',
-                'ISK',
-                'JMD',
-                'JPY',
-                'KES',
-                'KGS',
-                'KHR',
-                'KMF',
-                'KRW',
-                'KYD',
-                'KZT',
-                'LAK',
-                'LBP',
-                'LKR',
-                'LRD',
-                'LSL',
-                'MAD',
-                'MDL',
-                'MGA',
-                'MKD',
-                'MMK',
-                'MNT',
-                'MOP',
-                'MRO',
-                'MUR',
-                'MVR',
-                'MWK',
-                'MXN',
-                'MYR',
-                'MZN',
-                'NAD',
-                'NGN',
-                'NIO',
-                'NOK',
-                'NPR',
-                'NZD',
-                'PAB',
-                'PEN',
-                'PGK',
-                'PHP',
-                'PKR',
-                'PLN',
-                'PYG',
-                'QAR',
-                'RON',
-                'RSD',
-                'RUB',
-                'RWF',
-                'SAR',
-                'SBD',
-                'SCR',
-                'SEK',
-                'SGD',
-                'SHP',
-                'SLL',
-                'SOS',
-                'SRD',
-                'STD',
-                'SZL',
-                'THB',
-                'TJS',
-                'TOP',
-                'TRY',
-                'TTD',
-                'TWD',
-                'TZS',
-                'UAH',
-                'UGX',
-                'USD',
-                'UYU',
-                'UZS',
-                'VND',
-                'VUV',
-                'WST',
-                'XAF',
-                'XCD',
-                'XOF',
-                'XPF',
-                'YER',
-                'ZAR',
-                'ZMW',
-            ],
-            'sourceFieldLabel': '',
-            'sourceFieldValue': '',
-            'value': '',
-        },
-        'trial_period': {
-            'is_required': false,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Trial Period (days)',
-            'value_type': 'integer',
-            'type': 'number',
-            'regex': '^[0-9]{1,3}$',
-            'source': '',
-            'sourceFieldLabel': '',
-            'sourceFieldValue': '',
-            'value': 0,
-        },
-        'pay_in_advance': {
-            'is_required': true,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Pay in Advance',
-            'value_type': 'boolean',
-            'type': 'select',
-            'regex': '^(true|false)$',
-            'source': '',
-            'sourceFieldLabel': ['Yes', 'No'],
-            'sourceFieldValue': [true, false],
-            'value': false,
-        },
-        'tax_codes': {
-            'is_required': false,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Tax Codes',
-            'value_type': 'array',
-            'type': 'select',
-            'regex': '^[a-zA-Z0-9_\\-]+$',
-            'source': 'https://apitest.msg91.com/api/subscription/{{ref_id}}/taxes',
-            'sourceFieldLabel': 'name',
-            'sourceFieldValue': 'code',
-            'value': [],
-        },
-        'billable_metric_code': {
-            'is_required': false,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Billable Metric',
-            'value_type': 'string',
-            'type': 'select',
-            'regex': '^[a-z0-9_]{1,255}$',
-            'source': 'https://apitest.msg91.com/api/subscription/{{ref_id}}/billable-metrics',
-            'sourceFieldLabel': 'name',
-            'sourceFieldValue': 'code',
-            'value': '',
-        },
-        'charge_model': {
-            'is_required': false,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Charge Model',
-            'value_type': 'string',
-            'type': 'select',
-            'regex': '^(standard)$',
-            'source': '',
-            'sourceFieldLabel': ['Standard'],
-            'sourceFieldValue': ['standard'],
-            'value': '',
-        },
-        'min_amount_cents': {
-            'is_required': false,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Amount',
-            'value_type': 'integer',
-            'type': 'number',
-            'regex': '^[0-9]+$',
-            'source': [],
-            'sourceFieldLabel': '',
-            'sourceFieldValue': '',
-            'value': 0,
-        },
-    };
-    public billableMetricForm: any = {
-        'name': {
-            'is_required': true,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Name',
-            'value_type': 'string',
-            'type': 'text',
-            'regex': '^.{1,255}$',
-            'source': '',
-            'sourceFieldLabel': '',
-            'sourceFieldValue': '',
-            'value': '',
-        },
-        'code': {
-            'is_required': true,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Code',
-            'value_type': 'string',
-            'type': 'text',
-            'regex': '^[a-z0-9_]{1,255}$',
-            'unique': true,
-            'source': '',
-            'sourceFieldLabel': '',
-            'sourceFieldValue': '',
-            'value': '',
-        },
-        'description': {
-            'is_required': false,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Description',
-            'value_type': 'string',
-            'type': 'textarea',
-            'regex': '^.{0,255}$',
-            'source': '',
-            'sourceFieldLabel': '',
-            'sourceFieldValue': '',
-            'value': '',
-        },
-        'recurring': {
-            'is_required': true,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Metered or Recurring',
-            'value_type': 'boolean',
-            'type': 'select',
-            'regex': '',
-            'source': '',
-            'sourceFieldLabel': ['Metered', 'Recurring'],
-            'sourceFieldValue': [false, true],
-            'value': '',
-        },
-        'aggregation_type': {
-            'is_required': true,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Aggregation Type',
-            'value_type': 'string',
-            'type': 'select',
-            'regex': '^(count_agg|sum_agg|max_agg|unique_count_agg|weighted_sum_agg|latest_agg)$',
-            'source': '/api/aggregation-types',
-            'sourceFieldLabel': ['Count', 'Sum', 'Max', 'Unique Count', 'Weighted Sum', 'Latest'],
-            'sourceFieldValue': [
-                'count_agg',
-                'sum_agg',
-                'max_agg',
-                'unique_count_agg',
-                'weighted_sum_agg',
-                'latest_agg',
-            ],
-            'value': '',
-            'filter_conditions': [
-                {
-                    'when': {
-                        'field': 'recurring',
-                        'equals': false,
-                    },
-                    'hide': false,
-                    'allowed_values': [
-                        'count_agg',
-                        'sum_agg',
-                        'max_agg',
-                        'unique_count_agg',
-                        'weighted_sum_agg',
-                        'latest_agg',
-                    ],
-                },
-                {
-                    'when': {
-                        'field': 'recurring',
-                        'equals': true,
-                    },
-                    'hide': false,
-                    'allowed_values': ['count_agg', 'sum_agg', 'weighted_sum_agg'],
-                },
-            ],
-        },
-        'field_name': {
-            'is_required': false,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Field Name',
-            'value_type': 'string',
-            'type': 'text',
-            'regex': '^.{0,255}$',
-            'source': '',
-            'sourceFieldLabel': '',
-            'sourceFieldValue': '',
-            'value': '',
-            'filter_conditions': [
-                {
-                    'when': {
-                        'field': 'aggregation_type',
-                        'equals': 'sum_agg|max_agg|unique_count_agg|weighted_sum_agg|latest_agg',
-                    },
-                    'hide': false,
-                },
-                {
-                    'when': {
-                        'field': 'aggregation_type',
-                        'equals': 'count_agg',
-                    },
-                    'hide': true,
-                },
-            ],
-        },
-        'rounding_function': {
-            'is_required': false,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Rounding Function',
-            'value_type': 'string',
-            'type': 'select',
-            'regex': '^(round|ceil|floor)?$',
-            'source': '',
-            'sourceFieldLabel': ['Round', 'Ceil', 'Floor'],
-            'sourceFieldValue': ['round', 'ceil', 'floor'],
-            'value': '',
-        },
-        'rounding_precision': {
-            'is_required': false,
-            'is_hidden': false,
-            'has_default': false,
-            'label': 'Rounding Precision',
-            'value_type': 'integer',
-            'type': 'number',
-            'regex': '^[0-9]+$',
-            'source': '',
-            'sourceFieldLabel': '',
-            'sourceFieldValue': '',
-            'value': '',
-        },
-    };
-
-    public dummyData = {
-        'id': 4,
-        'name': 'Subscription',
-        'service_use': 'multiple',
-        'icon': 'none',
-        'method_services': [
-            {
-                'name': 'Lago Billing',
-                'method_id': 4,
-                'service_id': 10,
-                'configurations': {
-                    'fields': {
-                        'redirect_uri': {
-                            'type': 'text',
-                            'label': 'Redirect URL',
-                            'regex': '^(http?|https):\\/\\/[^\\s$.?#].[^\\s]*$',
-                            'value': '',
-                            'source': '',
-                            'is_hidden': false,
-                            'value_type': 'url',
-                            'is_required': false,
-                            'sourceFieldLabel': 'name',
-                            'sourceFieldValue': 'name',
-                        },
-                    },
-                    'mappings': [],
-                },
-                'requirements': {
-                    'api_key': {
-                        'type': 'text',
-                        'label': 'API Key',
-                        'regex': '^[^\\s]*$',
-                        'value': '',
-                        'source': '',
-                        'is_hidden': false,
-                        'value_type': 'string',
-                        'has_default': false,
-                        'is_required': true,
-                        'sourceFieldLabel': 'name',
-                        'sourceFieldValue': 'name',
-                    },
-                    'instance_url': {
-                        'type': 'text',
-                        'label': 'Instance URL',
-                        'regex': '^https?:\\/\\/(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}(?:\\/[^\\s]*)?$/',
-                        'value': '',
-                        'source': '',
-                        'is_hidden': false,
-                        'value_type': 'url',
-                        'has_default': false,
-                        'is_required': true,
-                        'sourceFieldLabel': 'name',
-                        'sourceFieldValue': 'name',
-                    },
-                    'stripe_secret_key': {
-                        'type': 'text',
-                        'label': 'API Key',
-                        'regex': '^[^\\s]*$',
-                        'value': '',
-                        'source': '',
-                        'is_hidden': false,
-                        'value_type': 'string',
-                        'has_default': false,
-                        'is_required': true,
-                        'sourceFieldLabel': 'name',
-                        'sourceFieldValue': 'name',
-                    },
-                },
-            },
-        ],
-        'authorization_format': {
-            'format': {
-                'company': {
-                    'id': "_COMPANY['id']",
-                    'name': "_COMPANY['name']",
-                    'email': "_COMPANY['email']",
-                    'mobile': "_COMPANY['mobile']",
-                    'timezone': "_COMPANY['timezone']",
-                },
-                'user': {
-                    'id': "_USER['id']",
-                    'name': "_USER['name']",
-                    'email': "_USER['email']",
-                    'mobile': "_USER['mobile']",
-                },
-                'ip': '_IP',
-            },
-            'encode_type': 'JWT',
-            'key': 'Authorization',
-        },
-    };
-
-    public ELEMENT_DATA: PeriodicElement[] = [
-        {
-            position: 1,
-            name: 'API Calls',
-            weight: 0,
-            symbol: 'api_calls',
-            type: 'Metered',
-            aggregation: 'Count',
-            code: 'api_calls',
-        },
-        {
-            position: 2,
-            name: 'Data Storage',
-            weight: 0,
-            symbol: 'data_storage',
-            type: 'Metered',
-            aggregation: 'Sum',
-            code: 'data_storage',
-        },
-        {
-            position: 3,
-            name: 'Monthly Subscription',
-            weight: 0,
-            symbol: 'monthly_sub',
-            type: 'Recurring',
-            aggregation: 'Count',
-            code: 'monthly_sub',
-        },
-        {
-            position: 4,
-            name: 'Bandwidth Usage',
-            weight: 0,
-            symbol: 'bandwidth',
-            type: 'Metered',
-            aggregation: 'Sum',
-            code: 'bandwidth',
-        },
-        {
-            position: 5,
-            name: 'Active Users',
-            weight: 0,
-            symbol: 'active_users',
-            type: 'Metered',
-            aggregation: 'Unique Count',
-            code: 'active_users',
-        },
-        {
-            position: 6,
-            name: 'Premium Features',
-            weight: 0,
-            symbol: 'premium_features',
-            type: 'Recurring',
-            aggregation: 'Weighted Sum',
-            code: 'premium_features',
-        },
-        {
-            position: 7,
-            name: 'File Uploads',
-            weight: 0,
-            symbol: 'file_uploads',
-            type: 'Metered',
-            aggregation: 'Count',
-            code: 'file_uploads',
-        },
-        {
-            position: 8,
-            name: 'Database Queries',
-            weight: 0,
-            symbol: 'db_queries',
-            type: 'Metered',
-            aggregation: 'Sum',
-            code: 'db_queries',
-        },
-    ];
+    public taxes: any;
+    public createPlanForm: any;
+    public billableMetricstabledata: any[];
+    public createdPlanData: any[];
     public displayedColumns: string[] = ['name', 'code', 'type', 'aggregation', 'action'];
-    public dataSource = this.ELEMENT_DATA;
+    public plansOverviewDisplayedColumns: string[] = [
+        'planName',
+        'code',
+        'billingPeriod',
+        'price',
+        'currency',
+        'status',
+    ];
+    public dataSource: any;
+
+    // Getter for dynamic plans overview columns
+    public get plansOverviewColumns(): string[] {
+        const baseColumns = ['planName', 'code', 'billingPeriod', 'price', 'currency', 'status'];
+        if (this.selectedSubscriptionServiceIndex === -1 && this.isEditMode) {
+            return [...baseColumns, 'action'];
+        }
+        return baseColumns;
+    }
     public pageSizeOptions: number[] = [5, 10, 25, 100];
 
     // Charges table properties
@@ -762,15 +103,28 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public serviceMethods$: Observable<IMethod[]> = this.componentStore.serviceMethods$;
     public createUpdateObject$: Observable<IFeature> = this.componentStore.createUpdateObject$;
     public featureDetails$: Observable<IFeatureDetails> = this.componentStore.featureDetails$;
+    public createBillableMetric$: Observable<any> = this.componentStore.createBillableMetric$;
+    public billableMetrics$: Observable<any> = this.componentStore.billableMetrics$;
+    public deleteBillableMetric$: Observable<any> = this.componentStore.deleteBillableMetric$;
+    public updateBillableMetric$: Observable<any> = this.componentStore.updateBillableMetric$;
+    public taxes$: Observable<any> = this.componentStore.taxes$;
+    public createPlan$: Observable<any> = this.componentStore.createPlan$;
+    public planData$: Observable<any> = this.componentStore.planData$;
+    public deletePlan$: Observable<any> = this.componentStore.deletePlan$;
+    public updatePlan$: Observable<any> = this.componentStore.updatePlan$;
 
     public isEditMode = false;
     public selectedServiceIndex = 0;
+    public selectedSubscriptionServiceIndex = -2;
+
     public selectedMethod = new BehaviorSubject<IMethod>(null);
     public featureId: number = null;
     public nameFieldEditMode = false;
     public loadingScript = new BehaviorSubject<boolean>(false);
     public scriptLoaded = new BehaviorSubject<boolean>(false);
     public showApiConfigurationErrors = false;
+    public canCreatePlansFormControls = false;
+    public billableMetricsFormFields: any;
 
     public featureFieldType = FeatureFieldType;
     public proxyAuthScript = ProxyAuthScript(environment.proxyServer);
@@ -799,6 +153,10 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             method_id: new FormControl<number>(null, [Validators.required]),
         }),
         serviceDetails: new FormArray<ServiceFormGroup>([]),
+        planDetails: new FormArray<any>([]),
+        plansOverview: new FormGroup({
+            planSelected: new FormControl<string>(null, [Validators.required]),
+        }),
         authorizationDetails: new FormGroup({
             session_time: new FormControl<number>(null, [
                 Validators.required,
@@ -812,33 +170,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             ]),
         }),
         // New form controls for conditional steps
-        integrationChoice: new FormGroup({
-            integrationType: new FormControl<string>(null, [Validators.required]),
-        }),
-        organizationDetails: new FormGroup({
-            legalName: new FormControl<string>(null),
-            legalNumber: new FormControl<string>(null),
-            taxId: new FormControl<string>(null),
-            email: new FormControl<string>(null),
-            addressLine1: new FormControl<string>(null),
-            addressLine2: new FormControl<string>(null),
-            city: new FormControl<string>(null),
-            state: new FormControl<string>(null),
-            country: new FormControl<string>(null),
-            postalCode: new FormControl<string>(null),
-            phone: new FormControl<string>(null),
-        }),
-        billableMetrics: new FormGroup({
-            apiCalls: new FormControl<boolean>(false),
-            dataStorage: new FormControl<boolean>(false),
-        }),
-        createPlan: new FormGroup({
-            planName: new FormControl<string>(null, [Validators.required]),
-            price: new FormControl<number>(null, [Validators.required, Validators.min(0)]),
-        }),
-        plansOverview: new FormGroup({
-            planSelected: new FormControl<string>(null, [Validators.required]),
-        }),
     });
     public demoDiv$: Observable<string> = of(null);
     public keepOrder = () => 0;
@@ -886,8 +217,20 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 )
                 .subscribe((feature) => {
                     this.getServiceMethods(feature.feature_id);
-                    this.proxyAuthScript = ProxyAuthScript(environment.proxyServer, feature.reference_id);
+
+                    this.proxyAuthScript = ProxyAuthScript(
+                        environment.proxyServer,
+                        feature.reference_id,
+                        feature.feature_id === 1 ? 'authorization' : 'subscription'
+                    );
                     this.demoDiv$ = of(`<div id="${feature.reference_id}"></div>`);
+
+                    // Initialize billable metrics form fields for edit mode
+                    if (feature.feature_id === 2) {
+                        this.getAllBillableMetrics(feature.reference_id);
+                        this.getAllPlans(feature.reference_id);
+                        this.createBillableMetricsFormControls();
+                    }
                 });
             this.featureDetails$
                 .pipe(filter(Boolean), distinctUntilChanged(isEqual), takeUntil(this.destroy$))
@@ -917,6 +260,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         this.selectedMethod.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((method) => {
             this.featureForm.controls.serviceDetails.clear();
             const featureDetails: IFeatureDetails = this.getValueFromObservable(this.featureDetails$);
+
+            // Initialize billable metrics form fields when method is loaded in edit mode
+            if (this.isEditMode && featureDetails?.feature_id === 2) {
+                this.createBillableMetricsFormControls();
+            }
+
             method.method_services.forEach((service, index) => {
                 const serviceValues = featureDetails?.service_configurations?.[service?.service_id];
                 const serviceFormGroup: ServiceFormGroup = new FormGroup({
@@ -947,42 +296,81 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             serviceFormGroup.controls.configurations.addControl(key, formControl);
                         }
                     });
-                    // Get all keys except the last 3
-                    const allKeys = Object.keys(this.createPlanForm);
-                    const keysToInclude = allKeys.slice(0, -3);
-
-                    keysToInclude.forEach((key) => {
-                        const config = this.createPlanForm[key];
-                        const formControl = this.createFormControl(config as IFieldConfig, index, null);
-                        if (formControl) {
-                            serviceFormGroup.controls.createPlanForm.addControl(key, formControl);
-                        }
-                    });
-
-                    // Add the last 3 keys
-                    const lastKeys = allKeys.slice(-3);
-                    lastKeys.forEach((key) => {
-                        const config = this.createPlanForm[key];
-                        const formControl = this.createFormControl(config as IFieldConfig, index, null);
-                        if (formControl) {
-                            serviceFormGroup.controls.chargesForm.addControl(key, formControl);
-                        }
-                    });
                 }
-                console.log(this.createPlanForm);
-                console.log(serviceFormGroup);
                 this.featureForm.controls.serviceDetails.push(serviceFormGroup);
             });
         });
         this.createUpdateObject$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((obj) => {
-            this.proxyAuthScript = ProxyAuthScript(environment.proxyServer, obj.reference_id);
+            this.proxyAuthScript = ProxyAuthScript(
+                environment.proxyServer,
+                obj.reference_id,
+                obj.feature_id === 1 ? 'authorization' : 'subscription'
+            );
+
             if (this.isEditMode) {
                 this.nameFieldEditMode = false;
                 this.getFeatureDetalis();
+            }
+            if (obj?.feature_id === 2) {
+                const referenceId = obj.reference_id;
+                this.getAllBillableMetrics(referenceId);
+                this.getTaxes(referenceId);
+                setTimeout(() => {
+                    this.stepper?.first?.next();
+                }, 10);
             } else {
                 setTimeout(() => {
                     this.stepper?.first?.next();
                 }, 10);
+            }
+        });
+
+        this.createBillableMetric$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((metric) => {
+            if (metric) {
+                this.getAllBillableMetrics();
+            }
+        });
+        this.billableMetrics$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((metrics) => {
+            if (metrics) {
+                this.billableMetricstabledata = metrics.billable_metrics;
+            }
+        });
+        this.deleteBillableMetric$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((metric) => {
+            if (metric) {
+                this.getAllBillableMetrics();
+            }
+        });
+        this.updateBillableMetric$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((metric) => {
+            if (metric) {
+                this.getAllBillableMetrics();
+            }
+        });
+        this.taxes$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((taxes) => {
+            if (taxes) {
+                this.taxes = taxes.taxes;
+            }
+        });
+        this.createPlan$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((plan) => {
+            if (plan) {
+                this.getAllPlans();
+                setTimeout(() => {
+                    this.stepper?.first?.next();
+                }, 10);
+            }
+        });
+        this.planData$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((plan) => {
+            if (plan) {
+                this.createdPlanData = plan.plans;
+            }
+        });
+        this.deletePlan$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((plan) => {
+            if (plan) {
+                this.getAllPlans();
+            }
+        });
+        this.updatePlan$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((plan) => {
+            if (plan) {
+                this.getAllPlans();
             }
         });
     }
@@ -1178,6 +566,53 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         );
     }
 
+    private createPlansFormControls(): void {
+        const selectedMethod = this.selectedMethod.getValue();
+        if (!selectedMethod) return;
+        this.billableMetricsFormFields = (
+            selectedMethod.method_services[0].configurations as any
+        ).billable_metrics?.fields;
+        const planForm = (selectedMethod.method_services[0].configurations as any).plans?.fields;
+        this.createPlanForm = planForm;
+        const planFormGroup: PlanFormGroup = new FormGroup({
+            createPlanForm: new FormGroup({}),
+            chargesForm: new FormGroup({}),
+        });
+
+        selectedMethod.method_services.forEach((service, index) => {
+            if (
+                planFormGroup.controls.createPlanForm.controls &&
+                Object.keys(planFormGroup.controls.createPlanForm.controls).length > 0
+            ) {
+                return;
+            }
+
+            if ((service.configurations as any)?.plans?.fields) {
+                const allKeys = Object.keys((service.configurations as any)?.plans?.fields);
+                const keysToInclude = allKeys.slice(0, -3);
+
+                keysToInclude.forEach((key) => {
+                    const config = planForm[key];
+                    const formControl = this.createFormControl(config as IFieldConfig, index, null);
+                    if (formControl) {
+                        planFormGroup.controls.createPlanForm.addControl(key, formControl);
+                    }
+                });
+
+                const lastKeys = allKeys.slice(-3);
+                lastKeys.forEach((key) => {
+                    const config = planForm[key];
+                    const formControl = this.createFormControl(config as IFieldConfig, index, null);
+                    if (formControl) {
+                        planFormGroup.controls.chargesForm.addControl(key, formControl);
+                    }
+                });
+            }
+        });
+
+        this.featureForm.controls.planDetails.push(planFormGroup);
+    }
+
     public resetFormGroup(formGroup: FormGroup, index: number): void {
         formGroup.reset();
         Object.keys(this.chipListValues)
@@ -1261,13 +696,19 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 hasBackdrop: true,
                 data: {
                     message: 'Add New Metric',
-                    formConfig: this.billableMetricForm,
+                    formConfig: this.billableMetricsFormFields,
                 },
             });
             dialogRef.afterClosed().subscribe((result) => {
                 if (result) {
-                    //    need to call the create api here
-                    console.log(result);
+                    const referenceId = this.getReferenceId();
+                    this.componentStore.createBillableMetric({
+                        referenceId: referenceId,
+                        body: {
+                            ...result,
+                            reference_id: referenceId,
+                        },
+                    });
                 }
             });
         } catch (error) {
@@ -1275,35 +716,11 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }
     }
 
-    private addMetricToTable(metricData: any): void {
-        // Add the new metric to the data source
-        const newMetric: PeriodicElement = {
-            position: this.ELEMENT_DATA.length + 1,
-            name: metricData.name,
-            weight: 0, // Default weight
-            symbol: metricData.code || 'N/A',
-            code: metricData.code || 'N/A',
-            type: this.getTypeLabel(metricData.recurring),
-            aggregation: this.getAggregationLabel(metricData.aggregation_type),
-        };
-        this.ELEMENT_DATA.push(newMetric);
-        this.dataSource = [...this.ELEMENT_DATA];
-    }
-
-    private getTypeLabel(recurringValue: boolean): string {
-        // Extract type mapping from form configuration dynamically
-        const recurringConfig = this.billableMetricForm.recurring;
-        if (recurringConfig.sourceFieldLabel && recurringConfig.sourceFieldValue) {
-            const index = recurringConfig.sourceFieldValue.indexOf(recurringValue);
-            return index !== -1 ? recurringConfig.sourceFieldLabel[index] : 'N/A';
-        }
-        return 'N/A';
-    }
-
-    public editMetric(metric: PeriodicElement, index: number): void {
-        debugger;
-        // Transform PeriodicElement data to match form configuration
+    public editMetric(metric: any, index: number): void {
+        // Transform API data to match form configuration
         const editData = this.transformMetricToFormData(metric);
+
+        const billableMetricsFormFields = this.billableMetricsFormFields;
 
         const dialogRef = this.dialog.open(SimpleDialogComponent, {
             width: '600px',
@@ -1314,7 +731,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             hasBackdrop: true,
             data: {
                 message: 'Edit Metric',
-                formConfig: this.billableMetricForm,
+                formConfig: this.billableMetricsFormFields,
                 dialogTitle: 'Edit Metric',
                 submitButtonText: 'Update Metric',
                 editData: editData, // Pass transformed data for editing
@@ -1329,18 +746,35 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     }
 
     public deleteMetric(index: number): void {
-        // need to call the delete api here
-        console.log(index);
+        const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
+        const componentInstance = dialogRef.componentInstance;
+        componentInstance.confirmationMessage = `Are you sure to delete this metric?`;
+        componentInstance.confirmButtonText = 'Delete';
+        dialogRef.afterClosed().subscribe((action) => {
+            if (action === 'yes') {
+                this.componentStore.deleteBillableMetric({
+                    refId: this.getReferenceId(),
+                    code: this.billableMetricstabledata[index].code,
+                });
+            }
+        });
     }
 
     private updateMetricInTable(metricData: any, index: number): void {
-        // need to call the update api
-        console.log(index);
+        this.componentStore.updateBillableMetric({
+            refId: this.getReferenceId(),
+            code: this.billableMetricstabledata[index].code,
+            body: metricData,
+        });
     }
 
     private getAggregationLabel(aggregationType: string): string {
         // Extract aggregation mapping from form configuration dynamically
-        const aggregationConfig = this.billableMetricForm.aggregation_type;
+        if (!this.billableMetricsFormFields || !this.billableMetricsFormFields.aggregation_type) {
+            return aggregationType || 'N/A';
+        }
+
+        const aggregationConfig = this.billableMetricsFormFields.aggregation_type;
         if (aggregationConfig.sourceFieldLabel && aggregationConfig.sourceFieldValue) {
             const index = aggregationConfig.sourceFieldValue.indexOf(aggregationType);
             return index !== -1 ? aggregationConfig.sourceFieldLabel[index] : 'N/A';
@@ -1348,90 +782,21 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         return 'N/A';
     }
 
-    private transformMetricToFormData(metric: PeriodicElement): any {
-        // Dynamic field mapping configuration
-        const fieldMappings = this.getFieldMappings();
+    private transformMetricToFormData(metric: any): any {
         const formData: any = {};
 
-        // Apply field mappings dynamically
-        Object.keys(fieldMappings).forEach((formField) => {
-            const mapping = fieldMappings[formField];
-            if (mapping.directField && metric[mapping.directField] !== undefined) {
-                formData[formField] = metric[mapping.directField];
-            } else if (mapping.transformFunction) {
-                formData[formField] = mapping.transformFunction(metric);
-            } else if (mapping.defaultValue !== undefined) {
-                formData[formField] = mapping.defaultValue;
+        // Map each field directly from the metric object
+        Object.keys(this.billableMetricsFormFields).forEach((formField) => {
+            if (metric[formField] !== undefined) {
+                formData[formField] = metric[formField];
+            } else {
+                // Set default values for missing fields
+                const fieldConfig = this.billableMetricsFormFields[formField];
+                formData[formField] = this.getDefaultValue(fieldConfig);
             }
         });
 
         return formData;
-    }
-
-    private getFieldMappings(): { [key: string]: any } {
-        const mappings: { [key: string]: any } = {};
-
-        // Dynamically extract keys from billableMetricForm
-        Object.keys(this.billableMetricForm).forEach((key) => {
-            const fieldConfig = this.billableMetricForm[key];
-
-            // Determine mapping type based on field configuration
-            if (this.shouldUseDirectField(fieldConfig)) {
-                mappings[key] = { directField: key };
-            } else if (this.shouldUseTransformFunction(fieldConfig)) {
-                mappings[key] = this.getTransformFunction(key, fieldConfig);
-            } else {
-                mappings[key] = { defaultValue: this.getDefaultValue(fieldConfig) };
-            }
-        });
-
-        return mappings;
-    }
-
-    private shouldUseDirectField(fieldConfig: any): boolean {
-        // Use direct field for simple text fields that are required and have no special logic
-        return (
-            fieldConfig.type === 'text' &&
-            fieldConfig.is_required === true &&
-            !fieldConfig.source &&
-            !fieldConfig.sourceFieldValue
-        );
-    }
-
-    private shouldUseTransformFunction(fieldConfig: any): boolean {
-        // Use transform function for fields with sourceFieldValue (select fields with mappings)
-        return (
-            fieldConfig.sourceFieldValue &&
-            Array.isArray(fieldConfig.sourceFieldValue) &&
-            fieldConfig.sourceFieldValue.length > 0
-        );
-    }
-
-    private getTransformFunction(key: string, fieldConfig: any): any {
-        // Create transform function based on field type
-        if (key === 'recurring') {
-            return {
-                transformFunction: (metric: PeriodicElement) => {
-                    const typeMapping = this.getTypeMapping();
-                    return typeMapping[metric.type] !== undefined ? typeMapping[metric.type] : false;
-                },
-            };
-        } else if (key === 'aggregation_type') {
-            return {
-                transformFunction: (metric: PeriodicElement) => {
-                    const aggregationMapping = this.getAggregationMapping();
-                    return aggregationMapping[metric.aggregation] || '';
-                },
-            };
-        } else {
-            // Generic transform function for other fields with sourceFieldValue
-            return {
-                transformFunction: (metric: PeriodicElement) => {
-                    // You can extend this logic based on your specific needs
-                    return fieldConfig.value || '';
-                },
-            };
-        }
     }
 
     private getDefaultValue(fieldConfig: any): any {
@@ -1445,57 +810,31 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }
     }
 
-    private getTypeMapping(): { [key: string]: boolean } {
-        // Extract type mapping from form configuration
-        const recurringConfig = this.billableMetricForm.recurring;
-        if (recurringConfig.sourceFieldLabel && recurringConfig.sourceFieldValue) {
-            const mapping: { [key: string]: boolean } = {};
-            recurringConfig.sourceFieldLabel.forEach((label: string, index: number) => {
-                mapping[label] = recurringConfig.sourceFieldValue[index];
-            });
-            return mapping;
-        }
-        return { 'Metered': false, 'Recurring': true };
-    }
-
-    private getAggregationMapping(): { [key: string]: string } {
-        // Extract aggregation mapping from form configuration
-        const aggregationConfig = this.billableMetricForm.aggregation_type;
-        if (aggregationConfig.sourceFieldLabel && aggregationConfig.sourceFieldValue) {
-            const mapping: { [key: string]: string } = {};
-            aggregationConfig.sourceFieldLabel.forEach((label: string, index: number) => {
-                mapping[label] = aggregationConfig.sourceFieldValue[index];
-            });
-            return mapping;
-        }
-        return {};
-    }
-
     // Charges table methods
     public addCharge(): void {
         // Get the current form values from chargesForm
-        const serviceDetailsArray = this.featureForm.get('serviceDetails') as FormArray;
+        const serviceDetailsArray = this.featureForm.get('planDetails') as FormArray;
         const serviceForm = serviceDetailsArray?.at(this.selectedServiceIndex);
         if (serviceForm) {
             const chargesForm = serviceForm.get('chargesForm');
+            const createPlanForm = serviceForm.get('createPlanForm');
 
             // Add charge even if form is not completely valid, just check if we have some data
-            const metricValue = chargesForm?.get('billable_metric_code')?.value;
+            const metricValue = chargesForm?.get('billable_metric_id')?.value;
             const modelValue = chargesForm?.get('charge_model')?.value;
-            const amountValue = chargesForm?.get('min_amount_cents')?.value;
+            const amountValue = chargesForm?.get('amount')?.value;
 
             if (metricValue || modelValue || amountValue) {
                 const chargeData = {
-                    metric: metricValue || 'N/A',
-                    model: modelValue || 'N/A',
-                    minAmount: this.formatAmount(amountValue || 0),
+                    billable_metric_id: metricValue || 'N/A',
+                    charge_model: modelValue || 'N/A',
+                    properties: {
+                        amount: String(amountValue * 100 || 0),
+                    },
                 };
-
                 this.chargesList.push(chargeData);
                 // Force change detection by creating a new array reference
                 this.chargesList = [...this.chargesList];
-
-                // Reset the form after adding
                 chargesForm?.reset();
             }
         }
@@ -1503,14 +842,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     public removeCharge(index: number): void {
         this.chargesList.splice(index, 1);
-        // Force change detection by creating a new array reference
         this.chargesList = [...this.chargesList];
     }
-
-    private formatAmount(amountCents: number): string {
-        return `$${(amountCents / 100).toFixed(2)}`;
-    }
-
     public previewFeature(): void {
         const configuration = {
             referenceId:
@@ -1553,8 +886,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         const featureFormData = this.featureForm.value;
 
         const originalService = selectedMethod?.method_services?.[0];
-
         const transformedObjects = this.mergeObjects(featureFormData, originalService);
+
         setTimeout(() => {
             this.componentStore.createFeature(transformedObjects);
         }, 100);
@@ -1594,19 +927,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
         let options: any[] = [];
 
-        // Handle specific API fields
         if (fieldConfig.label === 'Tax Codes' || fieldConfig.label === 'Billable Metric') {
             options = this.getApiOptions(fieldConfig);
-        }
-        // Handle source as array (like currency codes)
-        else if (fieldConfig.source && Array.isArray(fieldConfig.source)) {
+        } else if (fieldConfig.source && Array.isArray(fieldConfig.source)) {
             options = fieldConfig.source.map((value: string) => ({
                 label: value,
                 value: value,
             }));
-        }
-        // Handle sourceFieldLabel and sourceFieldValue arrays
-        else if (
+        } else if (
             fieldConfig.sourceFieldLabel &&
             fieldConfig.sourceFieldValue &&
             Array.isArray(fieldConfig.sourceFieldLabel) &&
@@ -1631,23 +959,22 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     }
 
     // Separate function for API calls
-    private getApiOptions(fieldConfig: any): any[] {
+    public getApiOptions(fieldConfig: any): any[] {
         if (fieldConfig.label === 'Tax Codes') {
             return this.getTaxOptionsFromData();
-        } else if (fieldConfig.label === 'Billable Metric') {
-            return this.blliableMetricList.map((metric) => ({
+        } else if (fieldConfig.label === 'Billable Metric' && this.billableMetricstabledata) {
+            return this.billableMetricstabledata.map((metric) => ({
                 label: metric.name,
-                value: metric.code,
+                value: metric.lago_id,
             }));
         }
 
         return [];
     }
 
-    private getTaxOptionsFromData(): any[] {
-        // Extract tax options from the taxes API response data
-        if (this.taxes && this.taxes.data && this.taxes.data.taxes) {
-            return this.taxes.data.taxes.map((tax: any) => ({
+    public getTaxOptionsFromData(): any[] {
+        if (this.taxes) {
+            return this.taxes.map((tax: any) => ({
                 label: `${tax.name} (${tax.rate}%)`,
                 value: tax.code,
                 lago_id: tax.lago_id,
@@ -1658,8 +985,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         return [];
     }
 
-    private extractOptionsFromRegex(regex: string): any[] {
-        // Extract options from regex patterns like "^(option1|option2|option3)$"
+    public extractOptionsFromRegex(regex: string): any[] {
         const match = regex.match(/\^\(([^)]+)\)\$/);
         if (match && match[1]) {
             const values = match[1].split('|');
@@ -1668,8 +994,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 value: value,
             }));
         }
-
-        // Handle optional patterns like "^(option1|option2)?$"
         const optionalMatch = regex.match(/\^\(([^)]+)\)\?\$/);
         if (optionalMatch && optionalMatch[1]) {
             const values = optionalMatch[1].split('|');
@@ -1685,7 +1009,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         return [];
     }
 
-    private applyFilterConditions(fieldConfig: any, options: any[]): any[] {
+    public applyFilterConditions(fieldConfig: any, options: any[]): any[] {
         if (!fieldConfig.filter_conditions || !Array.isArray(fieldConfig.filter_conditions)) {
             return options;
         }
@@ -1704,7 +1028,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         return options;
     }
 
-    private evaluateCondition(whenCondition: any): boolean {
+    public evaluateCondition(whenCondition: any): boolean {
         if (!whenCondition || !whenCondition.field) {
             return false;
         }
@@ -1712,9 +1036,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         const fieldValue = this.featureForm?.get(whenCondition.field)?.value;
 
         if (whenCondition.equals !== undefined) {
-            // Handle single value comparison
             if (typeof whenCondition.equals === 'string' && whenCondition.equals.includes('|')) {
-                // Handle multiple values separated by |
                 const allowedValues = whenCondition.equals.split('|');
                 return allowedValues.includes(fieldValue);
             }
@@ -1752,5 +1074,300 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }
 
         return cacheKey;
+    }
+
+    public get isOrganizationDetailsValid(): boolean {
+        let isValid = true;
+        const serviceFormArray = this.featureForm.controls.serviceDetails;
+        serviceFormArray.controls.forEach((formGroup) => formGroup.dirty && formGroup.invalid && (isValid = false));
+        this.canCreatePlansFormControls = true;
+        return isValid && serviceFormArray.dirty;
+    }
+    public markDirtyOrganizationDetailsFormTouched(): void {
+        const serviceFormArray = this.featureForm.controls.serviceDetails;
+
+        serviceFormArray.controls.forEach(
+            (formGroup, index) =>
+                (formGroup.dirty || index === this.selectedServiceIndex) && formGroup.markAllAsTouched()
+        );
+        if (this.isOrganizationDetailsValid) {
+            this.createPlansFormControlsOnDemand();
+        }
+    }
+    public createPlansFormControlsOnDemand(): void {
+        if (this.canCreatePlansFormControls) {
+            this.createBillableMetricsFormControls();
+            this.getPlansForm();
+            this.getAllBillableMetrics();
+        }
+    }
+    // Function to get reference ID
+    public getReferenceId(): string | null {
+        const createUpdateObject = this.getValueFromObservable(this.createUpdateObject$);
+        const featureDetails = this.getValueFromObservable(this.featureDetails$);
+
+        return createUpdateObject?.reference_id ?? featureDetails?.reference_id ?? null;
+    }
+    public getAllBillableMetrics(referenceId?: string) {
+        const refId = referenceId || this.getReferenceId();
+        if (refId) {
+            this.componentStore.getAllBillableMetrics({ referenceId: refId });
+        }
+    }
+    public createPlanAndGenerateSnippet(): void {
+        this.markDirtyCreatePlansFormControlsTouched();
+
+        const serviceDetailsArray = this.featureForm.get('planDetails') as FormArray;
+        const serviceForm = serviceDetailsArray?.at(this.selectedServiceIndex);
+
+        if (serviceForm) {
+            const chargesForm = serviceForm.get('chargesForm');
+            const createPlanForm = serviceForm.get('createPlanForm');
+
+            const createPlanFormData = createPlanForm.value;
+
+            // Process the payload - preserve original amount type
+            const processedCharges = this.chargesList.map((charge) => ({
+                billable_metric_id: charge.billable_metric_id,
+                charge_model: charge.charge_model,
+                properties: charge.properties,
+            }));
+
+            const payload = {
+                ...createPlanFormData, // flatten instead of nesting
+                amount_cents:
+                    typeof createPlanFormData.amount_cents === 'string'
+                        ? parseFloat(createPlanFormData.amount_cents)
+                        : createPlanFormData.amount_cents,
+                tax_codes: createPlanFormData.tax_codes
+                    ? Array.isArray(createPlanFormData.tax_codes)
+                        ? createPlanFormData.tax_codes
+                        : [createPlanFormData.tax_codes]
+                    : [],
+                charges: processedCharges,
+                refId: this.getReferenceId(),
+            };
+            if (this.isCreatePlansFormControlsValid) {
+                this.componentStore.createPlan(of(payload));
+            }
+        }
+    }
+
+    public get isCreatePlansFormControlsValid(): boolean {
+        let isValid = true;
+        const serviceFormArray = this.featureForm.controls.planDetails;
+        serviceFormArray.controls.forEach((formGroup) => formGroup.dirty && formGroup.invalid && (isValid = false));
+        return isValid && serviceFormArray.dirty;
+    }
+    public markDirtyCreatePlansFormControlsTouched(): void {
+        const serviceFormArray = this.featureForm.controls.planDetails;
+        serviceFormArray.controls.forEach((formGroup) => formGroup.markAllAsTouched());
+    }
+    public getCreatePlansFormData(): void {
+        this.createPlansFormControls();
+    }
+    public createBillableMetricsFormControls(): void {
+        const selectedMethod = this.selectedMethod.getValue();
+        if (!selectedMethod) return;
+        this.billableMetricsFormFields = (
+            selectedMethod.method_services[0].configurations as any
+        ).billable_metrics?.fields;
+    }
+    public getTaxes(referenceId?: string): void {
+        this.componentStore.getTaxes({ refId: referenceId || this.getReferenceId() });
+    }
+    public getAllPlans(referenceId?: string): void {
+        this.componentStore.getAllPlans({ refId: referenceId || this.getReferenceId() });
+    }
+    public editPlan(plan: any): void {
+        if (!this.billableMetricstabledata || this.billableMetricstabledata.length === 0) {
+            this.getAllBillableMetrics();
+        }
+
+        if (!this.taxes || this.taxes.length === 0) {
+            this.getTaxes();
+        }
+
+        // Wait a bit for data to load, then open dialog
+        setTimeout(() => {
+            this.openEditPlanDialog(plan);
+        }, 500);
+    }
+
+    private openEditPlanDialog(plan: any, isAddPlan: boolean = false): void {
+        try {
+            if (!this.createPlanForm) {
+                this.createPlansFormControls();
+            }
+            const formConfig = {
+                createPlanForm: this.createPlanForm || {},
+                chargesForm: this.getChargesFormConfig() || {},
+            };
+            const editData = isAddPlan ? null : this.transformPlanToFormData(plan);
+            const optionsData = {
+                taxes: Array.isArray(this.taxes) ? this.taxes : [],
+                billableMetrics: Array.isArray(this.billableMetricstabledata) ? this.billableMetricstabledata : [],
+            };
+            const dialogRef = this.dialog.open(CreatePlanDialogComponent, {
+                width: '800px',
+                height: 'auto',
+                maxHeight: '90vh',
+                autoFocus: false,
+                restoreFocus: false,
+                hasBackdrop: true,
+                data: {
+                    formConfig: formConfig,
+                    dialogTitle: isAddPlan ? 'Add Plan' : 'Edit Plan',
+                    submitButtonText: isAddPlan ? 'Add Plan' : 'Update Plan',
+                    editData: editData,
+                    chargesList: isAddPlan ? [] : Array.isArray(plan.charges) ? plan.charges : [],
+                    optionsData: optionsData,
+                },
+                panelClass: 'mat-dialog-md',
+            });
+
+            dialogRef.afterClosed().subscribe((result) => {
+                if (result) {
+                    if (isAddPlan) {
+                        // For Add Plan, include reference ID
+                        const createPayload = {
+                            refId: this.getReferenceId(),
+                            ...result,
+                        };
+                        this.componentStore.createPlan(of(createPayload));
+                    } else {
+                        // For Edit Plan, include reference ID and code from the original plan
+                        const updatePayload = {
+                            refId: this.getReferenceId(),
+                            code: plan.code,
+                            body: result,
+                        };
+                        this.componentStore.updatePlan(of(updatePayload));
+                    }
+                }
+            });
+        } catch (error) {
+            this.toast.error('Failed to open edit dialog: ' + error.message);
+        }
+    }
+    public deletePlan(plan: any): void {
+        const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
+        const componentInstance = dialogRef.componentInstance;
+        componentInstance.confirmationMessage = `Are you sure to delete this metric?`;
+        componentInstance.confirmButtonText = 'Delete';
+        dialogRef.afterClosed().subscribe((action) => {
+            if (action === 'yes') {
+                this.componentStore.deletePlan({ refId: this.getReferenceId(), code: plan.code });
+            }
+        });
+    }
+
+    private getChargesFormConfig(): any {
+        const selectedMethod = this.selectedMethod.getValue();
+        if (!selectedMethod) return {};
+
+        const planForm = (selectedMethod.method_services[0].configurations as any).plans?.fields;
+        if (!planForm) return {};
+
+        const allKeys = Object.keys(planForm);
+        const lastKeys = allKeys.slice(-3); // Get the last 3 keys for charges form
+
+        const chargesConfig = {};
+        lastKeys.forEach((key) => {
+            chargesConfig[key] = planForm[key];
+        });
+
+        return chargesConfig;
+    }
+
+    private transformPlanToFormData(plan: any): any {
+        const createPlanFormData = {};
+        const chargesFormData = {};
+
+        // Dynamic mapping based on form configuration
+        if (this.createPlanForm) {
+            Object.keys(this.createPlanForm).forEach((fieldKey) => {
+                const fieldConfig = this.createPlanForm[fieldKey];
+                const fieldLabel = fieldConfig?.label?.toLowerCase();
+
+                // Map plan properties to form fields based on field labels and common patterns
+                let value = this.getPlanValueForField(plan, fieldKey, fieldLabel);
+
+                if (value !== undefined && value !== null) {
+                    createPlanFormData[fieldKey] = value;
+                }
+            });
+        }
+
+        return {
+            createPlanForm: createPlanFormData,
+            chargesForm: chargesFormData,
+            charges: plan.charges || [],
+        };
+    }
+
+    private getPlanValueForField(plan: any, fieldKey: string, fieldLabel: string): any {
+        // Direct field mapping
+        if (plan[fieldKey] !== undefined) {
+            return plan[fieldKey];
+        }
+
+        // Label-based mapping
+        if (fieldLabel) {
+            // Handle amount fields
+            if (fieldLabel.includes('amount') && plan.amount_cents !== undefined) {
+                return plan.amount_cents; // Convert cents to dollars
+            }
+
+            // Handle currency fields
+            if (fieldLabel.includes('currency') && plan.amount_currency) {
+                return plan.amount_currency;
+            }
+
+            // Handle billing period/interval fields
+            if (
+                (fieldLabel.includes('billing') || fieldLabel.includes('period') || fieldLabel.includes('interval')) &&
+                plan.interval
+            ) {
+                return plan.interval;
+            }
+
+            // Handle trial period fields
+            if (fieldLabel.includes('trial') && plan.trial_period !== undefined) {
+                return plan.trial_period;
+            }
+
+            // Handle pay in advance fields
+            if (fieldLabel.includes('advance') && plan.pay_in_advance !== undefined) {
+                return plan.pay_in_advance;
+            }
+
+            // Handle tax fields
+            if (fieldLabel.includes('tax') && plan.taxes && Array.isArray(plan.taxes)) {
+                const taxCodes = plan.taxes.map((tax) => tax.code);
+                // Return array for multi-select, single value for single select
+                return taxCodes.length === 1 ? taxCodes[0] : taxCodes;
+            }
+        }
+
+        return undefined;
+    }
+
+    public addPlan(): void {
+        // Ensure taxes and billable metrics are loaded before opening dialog
+        if (!this.billableMetricstabledata || this.billableMetricstabledata.length === 0) {
+            this.getAllBillableMetrics();
+        }
+
+        if (!this.taxes || this.taxes.length === 0) {
+            this.getTaxes();
+        } // Wait a bit for data to load, then open dialog
+        setTimeout(() => {
+            this.openEditPlanDialog(null, true);
+        }, 500);
+    }
+    public getBillableMetricName(billableMetricId: string): string {
+        const billableMetric = this.billableMetricstabledata.find((metric: any) => metric.lago_id === billableMetricId);
+        return billableMetric ? billableMetric.name : '';
     }
 }

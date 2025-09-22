@@ -133,9 +133,7 @@
             <mat-step [editable]="!(createUpdateObject$ | async)">
                 <ng-template matStepLabel>Integration Choice</ng-template>
                 <div class="d-flex flex-column justify-content-between h-100">
-                    <form [formGroup]="featureForm.get('integrationChoice')">
-                        <ng-container *ngTemplateOutlet="integrationChoice"></ng-container>
-                    </form>
+                    <ng-container *ngTemplateOutlet="integrationChoice"></ng-container>
                     <div class="d-flex align-items-center justify-content-between">
                         <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                             <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
@@ -151,13 +149,10 @@
                 </div>
             </mat-step>
 
-            <mat-step [editable]="!(createUpdateObject$ | async)">
+            <mat-step [editable]="!(createUpdateObject$ | async)" [completed]="isOrganizationDetailsValid">
                 <ng-template matStepLabel>Organization Details</ng-template>
                 <div class="d-flex flex-column justify-content-between h-100">
-                    <form [formGroup]="featureForm.get('organizationDetails')">
-                        <ng-container *ngTemplateOutlet="organizationDetails"></ng-container>
-                    </form>
-
+                    <ng-container *ngTemplateOutlet="organizationDetails"></ng-container>
                     <mat-divider class="company-details"></mat-divider>
 
                     <div class="d-flex align-items-center justify-content-between">
@@ -166,7 +161,12 @@
                                 >navigate_before</mat-icon
                             >Back
                         </button>
-                        <button type="button" mat-flat-button color="primary" (click)="getPlansForm()" matStepperNext>
+                        <button
+                            type="button"
+                            mat-flat-button
+                            color="primary"
+                            (click)="markDirtyOrganizationDetailsFormTouched()"
+                        >
                             Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                                 >navigate_next</mat-icon
                             >
@@ -178,16 +178,16 @@
             <mat-step [editable]="!(createUpdateObject$ | async)">
                 <ng-template matStepLabel>Billable Metrics / Items</ng-template>
                 <div class="d-flex flex-column justify-content-between gap-3 h-100">
-                    <form [formGroup]="featureForm.get('billableMetrics')">
-                        <ng-container *ngTemplateOutlet="billableMetrics"></ng-container>
-                    </form>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
-                            <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
-                                >navigate_before</mat-icon
-                            >Back
-                        </button>
-                        <button type="button" mat-flat-button color="primary" matStepperNext>
+                    <ng-container *ngTemplateOutlet="billableMetrics"></ng-container>
+
+                    <div class="d-flex align-items-end justify-content-end">
+                        <button
+                            type="button"
+                            mat-flat-button
+                            color="primary"
+                            (click)="getCreatePlansFormData()"
+                            matStepperNext
+                        >
                             Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                                 >navigate_next</mat-icon
                             >
@@ -196,41 +196,34 @@
                 </div>
             </mat-step>
 
-            <mat-step [editable]="!(createUpdateObject$ | async)">
+            <mat-step [editable]="!(createUpdateObject$ | async)" [completed]="isCreatePlansFormControlsValid">
                 <ng-template matStepLabel>Create Plan</ng-template>
                 <div class="d-flex flex-column h-100">
-                    <form [formGroup]="featureForm.get('createPlan')">
-                        <ng-container *ngTemplateOutlet="createPlan"></ng-container>
-                    </form>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
-                            <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
-                                >navigate_before</mat-icon
-                            >Back
-                        </button>
-                        <button type="button" mat-flat-button color="primary" matStepperNext>
-                            Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
-                                >navigate_next</mat-icon
-                            >
+                    <ng-container *ngTemplateOutlet="createPlan"></ng-container>
+                    <div class="d-flex align-items-end justify-content-end">
+                        <button type="button" mat-flat-button color="primary" (click)="createPlanAndGenerateSnippet()">
+                            Create Plan & Generate Snippet
                         </button>
                     </div>
                 </div>
             </mat-step>
 
-            <mat-step [editable]="!(createUpdateObject$ | async)">
+            <mat-step [completed]="(createPlan$ | async) && (planData$ | async)">
                 <ng-template matStepLabel>Plans Overview & Subscription Snippet</ng-template>
                 <div class="d-flex flex-column h-100">
                     <form [formGroup]="featureForm.get('plansOverview')">
                         <ng-container *ngTemplateOutlet="plansOverview"></ng-container>
                     </form>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
-                            <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
-                                >navigate_before</mat-icon
-                            >Back
-                        </button>
-                        <button type="button" mat-flat-button color="primary" matStepperNext>
-                            Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
+                    <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
+                    <div class="d-flex align-items-end justify-content-end">
+                        <button
+                            type="button"
+                            mat-flat-button
+                            color="primary"
+                            *ngIf="createUpdateObject$ | async as createUpdateObject"
+                            [routerLink]="['/app/features/manage', createUpdateObject?.id]"
+                        >
+                            Manage Feature<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                                 >navigate_next</mat-icon
                             >
                         </button>
@@ -242,7 +235,6 @@
         <mat-step
             *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
             [completed]="(createUpdateObject$ | async) && featureForm.get('authorizationDetails')?.valid"
-            [editable]="!(createUpdateObject$ | async)"
         >
             <ng-template matStepLabel>Authorization Setup</ng-template>
             <div class="d-flex flex-column h-100">
@@ -284,9 +276,17 @@
         <mat-tab-group animationDuration="0ms">
             <mat-tab label="Service">
                 <div class="d-flex flex-column h-100 p-4">
-                    <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
+                    <ng-container *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1">
+                        <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="featureForm.get('primaryDetails.feature_id')?.value !== 1">
+                        <ng-container *ngTemplateOutlet="manageSubscription"></ng-container>
+                    </ng-container>
                     <mat-divider></mat-divider>
-                    <div class="d-flex align-items-center justify-content-start mt-3">
+                    <div
+                        class="d-flex align-items-center justify-content-start mt-3"
+                        *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
+                    >
                         <button type="button" mat-flat-button color="primary" (click)="updateFeature('service')">
                             Update
                         </button>
@@ -297,7 +297,10 @@
                 <div class="d-flex flex-column h-100 p-4">
                     <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
                     <mat-divider></mat-divider>
-                    <div class="d-flex align-items-center justify-content-start mt-3">
+                    <div
+                        class="d-flex align-items-center justify-content-start mt-3"
+                        *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
+                    >
                         <button type="button" mat-flat-button color="primary" (click)="updateFeature('authorization')">
                             Update
                         </button>
@@ -603,7 +606,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="featureFieldType.Select">
-            <mat-select [formControl]="fieldControl" [placeholder]="'Selectasdfasfsdadsfsdf ' + fieldConfig?.label">
+            <mat-select [formControl]="fieldControl" [placeholder]="'Select ' + fieldConfig?.label">
                 <mat-option *ngFor="let option of getSelectOptions(fieldConfig)" [value]="option.value">
                     {{ option.label }}
                 </mat-option>
@@ -716,61 +719,6 @@
 <ng-template #integrationChoice>
     <div class="d-flex flex-column h-100">
         <h5 class="mat-h5 mb-3">Integration Choice</h5>
-        <p class="mat-body-2 text-secondary">Choose your integration method for this feature.</p>
-
-        <!-- <div class="flex-grow-1">
-            <div class="features-layout">
-                <div
-                    *ngFor="let item of integrationChoiceJson"
-                    class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center feature-card bg-light-grey cursor-pointer"
-                    (click)="radioInput.click()"
-                    [ngClass]="{ 'active': featureForm.get('integrationChoice.integrationType')?.value === item.id }"
-                >
-                    <img [src]="item.icon" alt="Lago" class="img-fluid" />
-                    <p class="mat-body-2 text-secondary fe-bold">{{item.name}}</p>
-                    <input
-                        type="radio"
-                        name="featureType"
-                        hidden
-                        #radioInput
-                        [formControl]="featureForm.get('integrationChoice.integrationType')"
-                        [value]="item.id"
-                    />
-                </div>
-            </div>
-        </div> -->
-        <!-- <div class="d-flex gap-3 my-3 flex-grow-1" style="min-height: 400px">
-            <div class="d-flex flex-column gap-1 pr-3 service-list">
-                <p class="mat-body-2 fw-bolder mt-0">Services</p>
-                <mat-list role="list" class="default-list pt-0">
-                    <mat-list-item
-                        role="listitem"
-                        class="rounded-4"
-                        *ngFor="let service of (selectedMethod | async)?.method_services; let i = index"
-                        [ngClass]="{ 'active': selectedServiceIndex === i }"
-                        (click)="selectedServiceIndex = i"
-                    >
-                        <div class="d-flex align-items-center flex-grow-1">
-                            {{ service.name }}
-                            <ng-container *ngIf="featureForm.get('serviceDetails')?.at(i) as serviceForm">
-                                <mat-icon
-                                    class="material-icons-outlined mat-icon-18 text-danger ml-1 mt-1"
-                                    *ngIf="
-                                        i !== selectedServiceIndex &&
-                                        serviceForm.dirty &&
-                                        serviceForm.touched &&
-                                        serviceForm.invalid
-                                    "
-                                >
-                                    error
-                                </mat-icon>
-                            </ng-container>
-                        </div>
-                    </mat-list-item>
-                </mat-list>
-            </div>
-        </div> -->
-
         <div class="flex-grow-1">
             <div class="features-layout">
                 <div
@@ -880,7 +828,7 @@
             <mat-card class="w-100 outline-card responsive-card flex-grow-1 mt-3">
                 <mat-card-content>
                     <div class="table-scroll">
-                        <table mat-table [dataSource]="dataSource" class="default-table responsive-table">
+                        <table mat-table [dataSource]="billableMetricstabledata" class="default-table responsive-table">
                             <!-- Name Column -->
                             <ng-container matColumnDef="name">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
@@ -909,7 +857,7 @@
                             <ng-container matColumnDef="type">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Type</th>
                                 <td mat-cell *matCellDef="let element" data-label="Type">
-                                    <ng-container>{{ element.type }}</ng-container>
+                                    <ng-container>{{ element.recurring ? 'Recurring' : 'Metered' }}</ng-container>
                                 </td>
                             </ng-container>
 
@@ -919,7 +867,7 @@
                                     Aggregation
                                 </th>
                                 <td mat-cell *matCellDef="let element" data-label="Aggregation">
-                                    <ng-container>{{ element.aggregation }}</ng-container>
+                                    <ng-container>{{ getAggregationLabel(element?.aggregation_type) }}</ng-container>
                                 </td>
                             </ng-container>
 
@@ -980,7 +928,7 @@
                         <form
                             class="single-form-layout"
                             [formGroup]="serviceForm"
-                            *ngIf="featureForm.get('serviceDetails')?.at(selectedServiceIndex) as serviceForm"
+                            *ngIf="featureForm.get('planDetails')?.at(selectedServiceIndex) as serviceForm"
                         >
                             <!-- Plan Details Section -->
                             <div class="form-section">
@@ -1040,20 +988,29 @@
                                             <!-- Metric Column -->
                                             <ng-container matColumnDef="metric">
                                                 <th mat-header-cell *matHeaderCellDef>Metric</th>
-                                                <td mat-cell *matCellDef="let charge">{{ charge.metric || 'N/A' }}</td>
+                                                <td mat-cell *matCellDef="let charge">
+                                                    {{
+                                                        getBillableMetricName(
+                                                            charge.billable_metric_id ||
+                                                                charge.lago_billable_metric_code
+                                                        ) || 'N/A'
+                                                    }}
+                                                </td>
                                             </ng-container>
 
                                             <!-- Model Column -->
                                             <ng-container matColumnDef="model">
                                                 <th mat-header-cell *matHeaderCellDef>Model</th>
-                                                <td mat-cell *matCellDef="let charge">{{ charge.model || 'N/A' }}</td>
+                                                <td mat-cell *matCellDef="let charge">
+                                                    {{ charge.charge_model || 'N/A' }}
+                                                </td>
                                             </ng-container>
 
                                             <!-- Min Amount Column -->
                                             <ng-container matColumnDef="minAmount">
                                                 <th mat-header-cell *matHeaderCellDef>Min Amount</th>
                                                 <td mat-cell *matCellDef="let charge">
-                                                    {{ charge.minAmount || '$0.00' }}
+                                                    ${{ charge.properties.amount / 100 || '0.00' }}
                                                 </td>
                                             </ng-container>
 
@@ -1089,9 +1046,151 @@
 </ng-template>
 
 <ng-template #plansOverview>
-    <div class="d-flex flex-column h-100">
-        <h5 class="mat-h5 mb-3">Plans Overview & Subscription Snippet</h5>
-        <p class="mat-body-2 text-secondary">Review your plans and get the subscription integration code.</p>
-        <!-- Add your plans overview and subscription snippet here -->
+    <div class="d-flex flex-column">
+        <h5 class="mat-h5 mb-3">Created Plans</h5>
+        <div>
+            <button
+                mat-flat-button
+                color="primary"
+                (click)="addPlan()"
+                *ngIf="isEditMode && selectedSubscriptionServiceIndex === -1"
+            >
+                <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Plan
+            </button>
+        </div>
+
+        <mat-card class="w-100 outline-card responsive-card flex-grow-1 mt-3 add-plan-edit">
+            <mat-card-content>
+                <table mat-table [dataSource]="createdPlanData" class="default-table responsive-table">
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="planName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
+                        <td mat-cell *matCellDef="let element" data-label="Name">
+                            <ng-container>
+                                {{ element.name }}
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- reference_id Column -->
+                    <ng-container matColumnDef="code">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Code</th>
+                        <td mat-cell *matCellDef="let element" data-label="Reference Id">
+                            <ng-container>
+                                {{ element.code }}
+                                <proxy-copy-button
+                                    [copyData]="element.code"
+                                    tooltip="Copy Reference Id"
+                                ></proxy-copy-button>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- Method Column -->
+                    <ng-container matColumnDef="billingPeriod">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Billing Period</th>
+                        <td mat-cell *matCellDef="let element" data-label="Type">
+                            <ng-container>{{ element.interval }}</ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- Type Column -->
+                    <ng-container matColumnDef="price">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Price</th>
+                        <td mat-cell *matCellDef="let element" data-label="Aggregation">
+                            <ng-container>${{ element.amount_cents / 100 }}</ng-container>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="currency">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Currency</th>
+                        <td mat-cell *matCellDef="let element" data-label="Aggregation">
+                            <ng-container>{{ element.amount_currency }}</ng-container>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Status</th>
+                        <td mat-cell *matCellDef="let element" data-label="Aggregation">
+                            <ng-container>{{ getAggregationLabel(element?.aggregation_type) }}</ng-container>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action" *ngIf="selectedSubscriptionServiceIndex === -1 && isEditMode">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Action</th>
+                        <td mat-cell *matCellDef="let element" data-label="Action">
+                            <button type="button" mat-icon-button color="primary" (click)="editPlan(element)">
+                                <mat-icon class="material-icons-outlined mat-icon-18"> edit </mat-icon>
+                            </button>
+                            <button type="button" mat-icon-button color="warn" (click)="deletePlan(element)">
+                                <mat-icon class="material-icons-outlined mat-icon-18"> delete </mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="plansOverviewColumns; sticky: true"></tr>
+                    <tr
+                        mat-row
+                        *matRowDef="let row; columns: plansOverviewColumns; let i = index"
+                        class="hover-action"
+                    ></tr>
+
+                    <tr *matNoDataRow>
+                        <td class="mat-cell border-none" [attr.colspan]="plansOverviewColumns.length">
+                            <proxy-no-record-found [title]="'features'" [showBtn]="false"></proxy-no-record-found>
+                        </td>
+                    </tr>
+                </table>
+
+                <mat-paginator-goto></mat-paginator-goto>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</ng-template>
+<ng-template #manageSubscription>
+    <div class="d-flex gap-3 my-3 flex-grow-1" style="min-height: 400px">
+        <div class="d-flex flex-column gap-1 border-right pr-3 service-list">
+            <p class="mat-body-2 fw-bolder mt-0">Services</p>
+            <mat-list role="list" class="default-list pt-0">
+                <!-- Billable Metric item -->
+                <mat-list-item
+                    role="listitem"
+                    class="rounded-4"
+                    [ngClass]="{ 'active': selectedSubscriptionServiceIndex === -2 }"
+                    (click)="selectedSubscriptionServiceIndex = -2"
+                >
+                    <div class="d-flex align-items-center flex-grow-1">Billable Metric</div>
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
+                </mat-list-item>
+
+                <!-- Plans item -->
+                <mat-list-item
+                    role="listitem"
+                    class="rounded-4"
+                    [ngClass]="{ 'active': selectedSubscriptionServiceIndex === -1 }"
+                    (click)="selectedSubscriptionServiceIndex = -1"
+                >
+                    <div class="d-flex align-items-center flex-grow-1">Plans</div>
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
+                </mat-list-item>
+            </mat-list>
+        </div>
+
+        <!-- Right panel content -->
+        <div class="auth-credentials px-3" class="width-md-700 w-md-100">
+            <div class="d-flex flex-column">
+                <!-- Plans content -->
+                <div *ngIf="selectedSubscriptionServiceIndex === -1">
+                    <h3>Plans</h3>
+                    <ng-container *ngTemplateOutlet="plansOverview"></ng-container>
+                </div>
+
+                <!-- Billable Metric content -->
+                <div *ngIf="selectedSubscriptionServiceIndex === -2">
+                    <h3>Billable Metric</h3>
+                    <ng-container *ngTemplateOutlet="billableMetrics"></ng-container>
+                </div>
+            </div>
+        </div>
     </div>
 </ng-template>

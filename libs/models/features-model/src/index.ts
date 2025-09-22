@@ -103,10 +103,12 @@ export enum FeatureFieldType {
 export const ProxyAuthScript = (
     baseUrl: string,
     referenceId = '<reference_id>',
+    type = '<type>',
     time?: number
 ) => `<script type="text/javascript">
     var configuration = {
         referenceId: '${referenceId}',
+        type: '${type}',
         success: (data) => {
             // get verified token in response
             console.log('success response', data);

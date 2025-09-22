@@ -7,8 +7,12 @@ import { HttpClient } from '@angular/common/http';
 @Component({
     selector: 'proxy-simple-dialog',
     template: `
-        <h2 mat-dialog-title>{{ dialogTitle }}</h2>
-
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 mat-dialog-title>{{ dialogTitle }}</h2>
+            <button mat-icon-button mat-dialog-close (click)="onClose()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
         <mat-dialog-content>
             <form [formGroup]="metricForm" class="metric-form">
                 <ng-container *ngFor="let fieldKey of getFormFields()">
@@ -267,6 +271,16 @@ export class SimpleDialogComponent implements OnInit {
             return true;
         }
 
+        // Special case for field_name: hide when recurring is true and aggregation_type is count_agg
+        if (fieldName === 'field_name') {
+            const recurringValue = this.metricForm?.get('recurring')?.value;
+            const aggregationTypeValue = this.metricForm?.get('aggregation_type')?.value;
+
+            if (recurringValue === true && aggregationTypeValue === 'count_agg') {
+                return true;
+            }
+        }
+
         const fieldConfig = this.formConfig[fieldName];
         if (fieldConfig?.filter_conditions) {
             return this.checkFieldVisibility(fieldConfig.filter_conditions);
@@ -280,6 +294,26 @@ export class SimpleDialogComponent implements OnInit {
     }
 
     private setupConditionalValidation(): void {
+        // Handle field_name visibility based on recurring and aggregation_type
+        const recurringField = this.metricForm.get('recurring');
+        const aggregationTypeField = this.metricForm.get('aggregation_type');
+        const fieldNameField = this.metricForm.get('field_name');
+
+        if (recurringField && aggregationTypeField && fieldNameField) {
+            const updateFieldNameVisibility = () => {
+                const recurringValue = recurringField.value;
+                const aggregationTypeValue = aggregationTypeField.value;
+
+                if (recurringValue === true && aggregationTypeValue === 'count_agg') {
+                    // Clear field_name value when it should be hidden
+                    fieldNameField.setValue('');
+                }
+            };
+
+            recurringField.valueChanges.subscribe(updateFieldNameVisibility);
+            aggregationTypeField.valueChanges.subscribe(updateFieldNameVisibility);
+        }
+
         Object.keys(this.formConfig).forEach((fieldKey) => {
             const fieldConfig = this.formConfig[fieldKey];
 

@@ -15,9 +15,14 @@ export interface ICreateFeatureInitialState {
     billableMetrics: any;
     createBillableMetric: any;
     updateBillableMetric: any;
+    deleteBillableMetric: any;
     billableMetricForm: any;
+    createPlan: any;
     plansForm: any;
     taxes: any;
+    planData: any;
+    updatePlan: any;
+    deletePlan: any;
 }
 
 @Injectable()
@@ -33,9 +38,14 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             billableMetrics: null,
             createBillableMetric: null,
             updateBillableMetric: null,
+            deleteBillableMetric: null,
             billableMetricForm: null,
             plansForm: null,
+            createPlan: null,
             taxes: null,
+            planData: null,
+            updatePlan: null,
+            deletePlan: null,
         });
     }
     /** Selector for API progress  */
@@ -56,198 +66,22 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly createBillableMetric$: Observable<any> = this.select((state) => state.createBillableMetric);
     /** Selector for update billable metric data */
     readonly updateBillableMetric$: Observable<any> = this.select((state) => state.updateBillableMetric);
+    /** Selector for delete billable metric data */
+    readonly deleteBillableMetric$: Observable<any> = this.select((state) => state.deleteBillableMetric);
     /** Selector for billable metric form data */
     readonly billableMetricForm$: Observable<any> = this.select((state) => state.billableMetricForm);
     /** Selector for plans form data */
     readonly plansForm$: Observable<any> = this.select((state) => state.plansForm);
-
-    public dummyData = {
-        'data': [
-            {
-                'id': 4,
-                'name': 'Subscription',
-                'service_use': 'multiple',
-                'icon': 'none',
-                'method_services': [
-                    {
-                        'name': 'Lago Billing',
-                        'method_id': 4,
-                        'service_id': 10,
-                        'configurations': {
-                            'fields': {
-                                'legal_name': {
-                                    'is_required': true,
-                                    'is_hidden': false,
-                                    'label': 'Legal Name',
-                                    'value_type': 'string',
-                                    'type': 'text',
-                                    'regex': '^.{1,255}$',
-                                    'source': '',
-                                    'sourceFieldLabel': 'name',
-                                    'sourceFieldValue': 'name',
-                                    'value': '',
-                                    'allowed_types': null,
-                                    'fileName': null,
-                                },
-                                'legal_number': {
-                                    'is_required': false,
-                                    'is_hidden': false,
-                                    'label': 'Legal Number',
-                                    'value_type': 'string',
-                                    'type': 'text',
-                                    'regex': '^.{0,255}$',
-                                    'source': '',
-                                    'sourceFieldLabel': 'name',
-                                    'sourceFieldValue': 'name',
-                                    'value': '',
-                                    'allowed_types': null,
-                                    'fileName': null,
-                                },
-                                'tax_identification_number': {
-                                    'is_required': false,
-                                    'is_hidden': false,
-                                    'label': 'Tax Identification Number',
-                                    'value_type': 'string',
-                                    'type': 'text',
-                                    'regex': '^.{0,255}$',
-                                    'source': '',
-                                    'sourceFieldLabel': 'name',
-                                    'sourceFieldValue': 'name',
-                                    'value': '',
-                                    'allowed_types': null,
-                                    'fileName': null,
-                                },
-                                'email': {
-                                    'is_required': true,
-                                    'is_hidden': false,
-                                    'label': 'Email',
-                                    'value_type': 'email',
-                                    'type': 'text',
-                                    'regex': '^[\\w.%+-]+@[\\w.-]+\\.[A-Za-z]{2,}$',
-                                    'source': '',
-                                    'sourceFieldLabel': 'name',
-                                    'sourceFieldValue': 'name',
-                                    'value': '',
-                                    'allowed_types': null,
-                                    'fileName': null,
-                                },
-                                'address_line1': {
-                                    'is_required': false,
-                                    'is_hidden': false,
-                                    'label': 'Address Line 1',
-                                    'value_type': 'string',
-                                    'type': 'text',
-                                    'regex': '^.{0,255}$',
-                                    'source': '',
-                                    'sourceFieldLabel': 'name',
-                                    'sourceFieldValue': 'name',
-                                    'value': '',
-                                    'allowed_types': null,
-                                    'fileName': null,
-                                },
-                                'address_line2': {
-                                    'is_required': false,
-                                    'is_hidden': false,
-                                    'label': 'Address Line 2',
-                                    'value_type': 'string',
-                                    'type': 'text',
-                                    'regex': '^.{0,255}$',
-                                    'source': '',
-                                    'sourceFieldLabel': 'name',
-                                    'sourceFieldValue': 'name',
-                                    'value': '',
-                                    'allowed_types': null,
-                                    'fileName': null,
-                                },
-                                'postal_code': {
-                                    'is_required': false,
-                                    'is_hidden': false,
-                                    'label': 'Postal Code',
-                                    'value_type': 'string',
-                                    'type': 'text',
-                                    'regex': '^[A-Za-z0-9\\s-]{0,10}$',
-                                    'source': '',
-                                    'sourceFieldLabel': 'name',
-                                    'sourceFieldValue': 'name',
-                                    'value': '',
-                                    'allowed_types': null,
-                                    'fileName': null,
-                                },
-                                'city': {
-                                    'is_required': false,
-                                    'is_hidden': false,
-                                    'label': 'City',
-                                    'value_type': 'string',
-                                    'type': 'text',
-                                    'regex': '^[a-zA-Z\\s]{0,50}$',
-                                    'source': '',
-                                    'sourceFieldLabel': 'name',
-                                    'sourceFieldValue': 'name',
-                                    'value': '',
-                                    'allowed_types': null,
-                                    'fileName': null,
-                                },
-                                'state': {
-                                    'is_required': false,
-                                    'is_hidden': false,
-                                    'label': 'State',
-                                    'value_type': 'string',
-                                    'type': 'text',
-                                    'regex': '^[a-zA-Z\\s]{0,50}$',
-                                    'source': '',
-                                    'sourceFieldLabel': 'name',
-                                    'sourceFieldValue': 'name',
-                                    'value': '',
-                                    'allowed_types': null,
-                                    'fileName': null,
-                                },
-                                'country': {
-                                    'is_required': false,
-                                    'is_hidden': false,
-                                    'label': 'Country',
-                                    'value_type': 'string',
-                                    'type': 'select',
-                                    'regex': '^[A-Z]{2}$',
-                                    'source': '/api/countries',
-                                    'sourceFieldLabel': 'name',
-                                    'sourceFieldValue': 'code',
-                                    'value': '',
-                                    'allowed_types': null,
-                                    'fileName': null,
-                                },
-                            },
-                            'mappings': [],
-                        },
-                        'requirements': {},
-                    },
-                ],
-                'authorization_format': {
-                    'format': {
-                        'company': {
-                            'id': "_COMPANY['id']",
-                            'name': "_COMPANY['name']",
-                            'email': "_COMPANY['email']",
-                            'mobile': "_COMPANY['mobile']",
-                            'timezone': "_COMPANY['timezone']",
-                        },
-                        'user': {
-                            'id': "_USER['id']",
-                            'name': "_USER['name']",
-                            'email': "_USER['email']",
-                            'mobile': "_USER['mobile']",
-                        },
-                        'ip': '_IP',
-                    },
-                    'encode_type': 'JWT',
-                    'key': 'Authorization',
-                },
-            },
-        ],
-        'status': 'success',
-        'hasError': false,
-        'errors': [],
-        'proxy_duration': 44,
-    };
+    /** Selector for create plan data */
+    readonly createPlan$: Observable<any> = this.select((state) => state.createPlan);
+    /** Selector for taxes data */
+    readonly taxes$: Observable<any> = this.select((state) => state.taxes);
+    /** Selector for plan data */
+    readonly planData$: Observable<any> = this.select((state) => state.planData);
+    /** Selector for update plan data */
+    readonly updatePlan$: Observable<any> = this.select((state) => state.updatePlan);
+    /** Selector for delete plan data */
+    readonly deletePlan$: Observable<any> = this.select((state) => state.deletePlan);
 
     /** Get feature type data */
     readonly getFeatureType = this.effect((data) => {
@@ -289,7 +123,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                             }
                             return this.patchState({
                                 isLoading: false,
-                                serviceMethods: this.dummyData.data ?? null,
+                                serviceMethods: res?.data ?? null,
                             });
                         },
                         (error: any) => {
@@ -420,7 +254,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
         return data.pipe(
             switchMap((req) => {
                 this.patchState({ isLoading: true });
-                return this.service.getAllBillableMetrics(req.refId).pipe(
+                return this.service.getAllBillableMetrics(req.referenceId).pipe(
                     tapResponse(
                         (res: BaseResponse<any, void>) => {
                             if (res?.hasError) {
@@ -474,7 +308,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
         return data.pipe(
             switchMap((req) => {
                 this.patchState({ isLoading: true });
-                return this.service.updateBillableMetric(req.refId, req.body).pipe(
+                return this.service.updateBillableMetric(req.refId, req.code, req.body).pipe(
                     tapResponse(
                         (res: BaseResponse<any, void>) => {
                             if (res?.hasError) {
@@ -486,6 +320,31 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                                 isLoading: false,
                                 createBillableMetric: res.data,
                             });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly deleteBillableMetric = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.deleteBillableMetric(req.refId, req.code).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Billable metric deleted successfully');
+                            return this.patchState({ isLoading: false, deleteBillableMetric: res.data });
                         },
                         (error: any) => {
                             this.showError(error.errors);
@@ -557,6 +416,101 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                                 return this.patchState({ isLoading: false });
                             }
                             return this.patchState({ isLoading: false, taxes: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly createPlan = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.createPlan(req.refId, req).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, createPlan: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly getAllPlans = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getAllPlans(req.refId).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, planData: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly updatePlan = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.updatePlan(req.refId, req.code, req.body).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, updatePlan: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly deletePlan = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.deletePlan(req.refId, req.code).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Plan deleted successfully');
+                            return this.patchState({ isLoading: false, deletePlan: res.data });
                         },
                         (error: any) => {
                             this.showError(error.errors);
