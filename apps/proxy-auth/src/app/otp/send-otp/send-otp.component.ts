@@ -163,7 +163,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         } else {
             this.setShowLogin(false);
 
-            this.show$ = of(true);
+            this.show$ = of(false);
             this.animate = false;
 
             if (intial) {
