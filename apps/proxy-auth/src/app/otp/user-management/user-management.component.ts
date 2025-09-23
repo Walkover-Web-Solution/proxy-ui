@@ -48,6 +48,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             email: 'john.doe@example.com',
             role: 'Admin',
             permissions: ['Full Access', 'User Management', 'System Settings', 'Reports', 'Database Admin'],
+            additionalPermissions: ['API Access', 'Backup Management', 'Security Settings'],
         },
         {
             userId: '002',
@@ -55,6 +56,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             email: 'jane.smith@example.com',
             role: 'User',
             permissions: ['Read Only', 'View Reports'],
+            additionalPermissions: ['Export Data', 'Print Reports'],
         },
         {
             userId: '003',
@@ -62,6 +64,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             email: 'mike.johnson@example.com',
             role: 'Manager',
             permissions: ['User Management', 'View Reports', 'Edit Content', 'Moderate Comments'],
+            additionalPermissions: ['Team Management', 'Budget Access'],
         },
         {
             userId: '004',
@@ -69,6 +72,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             email: 'sarah.wilson@example.com',
             role: 'Editor',
             permissions: ['Edit Content', 'View Reports', 'Publish Articles'],
+            additionalPermissions: ['Media Upload', 'SEO Settings'],
         },
         {
             userId: '005',
@@ -76,6 +80,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             email: 'david.brown@example.com',
             role: 'Viewer',
             permissions: ['Read Only'],
+            additionalPermissions: ['Bookmark Content'],
         },
         {
             userId: '001',
@@ -332,12 +337,22 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
     getPermissionsTooltip(user: UserData): string {
         console.log('User data for tooltip:', user); // Debug log
+        let tooltipText = '';
+
         if (user && user.permissions && user.permissions.length > 0) {
             const permissionsText = user.permissions.join('\n• ');
-            console.log('Permissions text:', permissionsText); // Debug log
-            return `Permissions:\n• ${permissionsText}`;
+            tooltipText = `Permissions:\n• ${permissionsText}`;
+        } else {
+            tooltipText = 'No permissions assigned';
         }
-        return 'No permissions assigned';
+
+        if (user && user.additionalPermissions && user.additionalPermissions.length > 0) {
+            const additionalPermissionsText = user.additionalPermissions.join('\n+ ');
+            tooltipText += `\n\nAdditional Permissions:\n+ ${additionalPermissionsText}`;
+        }
+
+        console.log('Tooltip text:', tooltipText); // Debug log
+        return tooltipText;
     }
 
     applyFilter(): void {
