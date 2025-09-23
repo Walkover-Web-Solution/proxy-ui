@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { select, Store } from '@ngrx/store';
 import { IAppState } from '../store/app.state';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -23,13 +24,17 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     @ViewChild('editPermissionDialog') editPermissionDialog!: TemplateRef<any>;
     @ViewChild('addPermissionDialog') addPermissionDialog!: TemplateRef<any>;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatSort) sort!: MatSort;
     private addUserDialogRef: any;
     private editPermissionDialogRef: any;
     private addPermissionDialogRef: any;
     public getRoles$: Observable<any>;
     public roles: any[] = [];
-    public displayedColumns: string[] = ['name', 'email', 'role', 'permission', 'action'];
+    public displayedColumns: string[] = ['name', 'email', 'role'];
     public dataSource = new MatTableDataSource<UserData>([]);
+    public searchTerm: string = '';
+    public filteredData: UserData[] = [];
+    public emailVisibility: { [key: number]: boolean } = {};
     public addUserForm: FormGroup;
     public editPermissionForm: FormGroup;
     public addPermissionForm: FormGroup;
@@ -42,7 +47,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             name: 'John Doe',
             email: 'john.doe@example.com',
             role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
+            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports', 'Database Admin'],
         },
         {
             userId: '002',
@@ -52,18 +57,25 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             permissions: ['Read Only', 'View Reports'],
         },
         {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
+            userId: '003',
+            name: 'Mike Johnson',
+            email: 'mike.johnson@example.com',
+            role: 'Manager',
+            permissions: ['User Management', 'View Reports', 'Edit Content', 'Moderate Comments'],
         },
         {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
+            userId: '004',
+            name: 'Sarah Wilson',
+            email: 'sarah.wilson@example.com',
+            role: 'Editor',
+            permissions: ['Edit Content', 'View Reports', 'Publish Articles'],
+        },
+        {
+            userId: '005',
+            name: 'David Brown',
+            email: 'david.brown@example.com',
+            role: 'Viewer',
+            permissions: ['Read Only'],
         },
         {
             userId: '001',
@@ -286,14 +298,16 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
 
         // Initialize dataSource with userData
-        this.dataSource.data = this.userData;
+        this.filteredData = [...this.userData];
+        this.dataSource.data = this.filteredData;
     }
 
     ngAfterViewInit(): void {
         this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
     }
 
-    editUser(user: UserData): void {
+    editUser(user: UserData, index: number): void {
         this.isEditRole = true;
         this.currentEditingUser = user;
         const roleId = this.getRoleIdByName(user.role);
@@ -307,6 +321,79 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             width: '500px',
             disableClose: true,
         });
+    }
+
+    deleteUser(user: UserData, index: number): void {
+        if (confirm(`Are you sure you want to delete ${user.name}?`)) {
+            this.userData.splice(index, 1);
+            this.applyFilter(); // Reapply filter after deletion
+        }
+    }
+
+    getPermissionsTooltip(user: UserData): string {
+        console.log('User data for tooltip:', user); // Debug log
+        if (user && user.permissions && user.permissions.length > 0) {
+            const permissionsText = user.permissions.join('\n• ');
+            console.log('Permissions text:', permissionsText); // Debug log
+            return `Permissions:\n• ${permissionsText}`;
+        }
+        return 'No permissions assigned';
+    }
+
+    applyFilter(): void {
+        if (!this.searchTerm || this.searchTerm.trim() === '') {
+            this.filteredData = [...this.userData];
+        } else {
+            const searchLower = this.searchTerm.toLowerCase().trim();
+            this.filteredData = this.userData.filter(
+                (user) =>
+                    user.name.toLowerCase().includes(searchLower) ||
+                    user.email.toLowerCase().includes(searchLower) ||
+                    user.role.toLowerCase().includes(searchLower) ||
+                    (user.permissions &&
+                        user.permissions.some((permission) => permission.toLowerCase().includes(searchLower)))
+            );
+        }
+        this.dataSource.data = this.filteredData;
+    }
+
+    clearSearch(): void {
+        this.searchTerm = '';
+        this.applyFilter();
+    }
+
+    maskEmail(email: string): string {
+        if (!email || !email.includes('@')) {
+            return email;
+        }
+
+        const [localPart, domain] = email.split('@');
+
+        if (localPart.length <= 2) {
+            // For very short usernames, show first character and mask the rest
+            return `${localPart[0]}***@${domain}`;
+        } else if (localPart.length <= 4) {
+            // For short usernames, show first 2 characters
+            return `${localPart.substring(0, 2)}***@${domain}`;
+        } else {
+            // For longer usernames, show first 2 and last 1 character
+            const firstPart = localPart.substring(0, 2);
+            const lastPart = localPart.substring(localPart.length - 1);
+            const maskedPart = '*'.repeat(Math.max(3, localPart.length - 3));
+            return `${firstPart}${maskedPart}${lastPart}@${domain}`;
+        }
+    }
+
+    getEmailDisplay(email: string, index: number): string {
+        return this.isEmailVisible(index) ? email : this.maskEmail(email);
+    }
+
+    isEmailVisible(index: number): boolean {
+        return this.emailVisibility[index] || false;
+    }
+
+    toggleEmailVisibility(index: number): void {
+        this.emailVisibility[index] = !this.emailVisibility[index];
     }
 
     getRoleIdByName(roleName: string): number | undefined {

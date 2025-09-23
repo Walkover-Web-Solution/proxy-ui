@@ -1,52 +1,96 @@
 <div class="container">
-    <h2>User Management</h2>
-    <div class="width-100 add-button">
-        <button mat-flat-button class="button-add" (click)="addUser()">Add User</button>
-        <button mat-flat-button class="button-add" (click)="addRole()">Add Role</button>
+    <h2>Members</h2>
+
+    <!-- Search Bar -->
+    <div class="search-and-button-container">
+        <div class="search-container">
+            <mat-form-field appearance="outline" class="search-field">
+                <mat-label>Search users...</mat-label>
+                <input
+                    matInput
+                    [(ngModel)]="searchTerm"
+                    (input)="applyFilter()"
+                    placeholder="Search by name, email, or role"
+                    autocomplete="off"
+                />
+            </mat-form-field>
+        </div>
     </div>
-    <div class="width-100">
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <div class="add-button-container">
+        <button mat-flat-button class="button-add" (click)="addUser()">Add User</button>
+    </div>
+    <div class="">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 default-table">
             <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Name</th>
-                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Name</th>
+                <td mat-cell *matCellDef="let element" class="text-left width-md-200">{{ element.name }}</td>
             </ng-container>
 
             <ng-container matColumnDef="email">
-                <th mat-header-cell *matHeaderCellDef>Email</th>
-                <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+                <th mat-header-cell *matHeaderCellDef class="width-md-150">Email</th>
+                <td mat-cell *matCellDef="let element; let i = index" class="text-left width-md-150">
+                    <div class="email-container">
+                        <span class="email-text">{{ getEmailDisplay(element.email, i) }}</span>
+                        <button
+                            mat-icon-button
+                            class="email-toggle-btn"
+                            (click)="toggleEmailVisibility(i)"
+                            matTooltip="{{ isEmailVisible(i) ? 'Hide email' : 'Show email' }}"
+                        >
+                            <svg
+                                width="16"
+                                height="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                            >
+                                <path
+                                    *ngIf="!isEmailVisible(i)"
+                                    d="M12.01 20c-5.065 0-9.586-4.211-12.01-8.424 2.418-4.103 6.943-7.576 12.01-7.576 5.135 0 9.635 3.453 11.999 7.564-2.241 4.43-6.726 8.436-11.999 8.436zm-10.842-8.416c.843 1.331 5.018 7.416 10.842 7.416 6.305 0 10.112-6.103 10.851-7.405-.772-1.198-4.606-6.595-10.851-6.595-6.116 0-10.025 5.355-10.842 6.584zm10.832-4.584c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5zm0 1c2.208 0 4 1.792 4 4s-1.792 4-4 4-4-1.792-4-4 1.792-4 4-4z"
+                                />
+                                <path
+                                    *ngIf="isEmailVisible(i)"
+                                    d="M12.01 20c-5.065 0-9.586-4.211-12.01-8.424 2.418-4.103 6.943-7.576 12.01-7.576 5.135 0 9.635 3.453 11.999 7.564-2.241 4.43-6.726 8.436-11.999 8.436zm-10.842-8.416c.843 1.331 5.018 7.416 10.842 7.416 6.305 0 10.112-6.103 10.851-7.405-.772-1.198-4.606-6.595-10.851-6.595-6.116 0-10.025 5.355-10.842 6.584zm10.832-4.584c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5zm0 1c2.208 0 4 1.792 4 4s-1.792 4-4 4-4-1.792-4-4 1.792-4 4-4z"
+                                />
+                                <path
+                                    *ngIf="isEmailVisible(i)"
+                                    d="M2.5 2.5l19 19"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="role">
-                <th mat-header-cell *matHeaderCellDef>Role</th>
-                <td mat-cell *matCellDef="let element">{{ element.role }}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="permission">
-                <th mat-header-cell *matHeaderCellDef>Permission</th>
-                <td mat-cell *matCellDef="let element">
-                    <mat-list dense>
-                        <mat-list-item *ngFor="let permission of element.permissions">
-                            <div mat-line>• {{ permission }}</div>
-                        </mat-list-item>
-                    </mat-list>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-150">Roles & Permissions</th>
+                <td mat-cell *matCellDef="let element; let i = index" class="text-left width-md-150">
+                    <div class="cell-content">
+                        <span
+                            [matTooltip]="getPermissionsTooltip(element)"
+                            matTooltipPosition="right"
+                            matTooltipClass="permissions-tooltip"
+                        >
+                            {{ element.role }}
+                        </span>
+                        <div class="actions">
+                            <button mat-flat-button color="primary" (click)="editUser(element, i)" class="button-add">
+                                Edit
+                            </button>
+                        </div>
+                    </div>
                 </td>
             </ng-container>
-
-            <ng-container matColumnDef="action">
-                <th mat-header-cell *matHeaderCellDef>Action</th>
-                <td mat-cell *matCellDef="let element">
-                    <button mat-button color="primary" class="common-btn" (click)="editUser(element)">Edit Role</button>
-                    <button mat-button color="primary" class="common-btn" (click)="editPermission(element)">
-                        Edit Permission
-                    </button>
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="table-header"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover-action table-row"></tr>
         </table>
         <mat-paginator
-            [pageSizeOptions]="[5, 10, 20]"
+            [pageSizeOptions]="[10, 20, 50, 100, 1000]"
+            [pageSize]="1000"
             showFirstLastButtons
             aria-label="Select page of periodic elements"
         >

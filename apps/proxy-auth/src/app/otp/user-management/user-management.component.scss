@@ -132,7 +132,7 @@ th {
     color: #000000;
     font-weight: 600;
     height: 22px;
-    padding-left: 24px !important;
+    padding-left: 12px !important;
 }
 td {
     font-size: small;
@@ -369,4 +369,217 @@ td {
 }
 .full-width {
     width: 100%;
+}
+
+// Search and button container styling
+.search-and-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px 0;
+    gap: 20px;
+}
+
+// Search bar styling
+.search-container {
+    flex: 1;
+    max-width: 400px;
+
+    .search-field {
+        width: 100%;
+
+        .mat-form-field-wrapper {
+            padding-bottom: 0;
+        }
+
+        .mat-form-field-outline {
+            border-radius: 8px;
+        }
+
+        .mat-input-element {
+            font-size: 14px;
+        }
+    }
+}
+
+// Add button container styling
+.add-button-container {
+    width: 50%;
+    display: flex;
+    justify-content: end;
+    gap: 20px;
+}
+
+// Email container styling
+.email-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .email-text {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .email-toggle-btn {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        opacity: 0.7;
+        transition: opacity 0.2s ease-in-out;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            stroke: currentColor;
+        }
+    }
+}
+
+// Enhanced table styling
+.default-table {
+    width: 50%;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .mat-header-cell {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--color-table-head, #374151);
+        background-color: var(--color-table-head-bg, #f9fafb);
+        border-bottom: 2px solid var(--color-table-head-border, #e5e7eb);
+        padding: 16px 12px;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .mat-cell {
+        padding: 16px 12px;
+        border-bottom: 1px solid var(--color-table-cell-border, #e5e7eb);
+        color: var(--color-table-cell, #374151);
+        font-size: 14px;
+        vertical-align: middle;
+        text-align: left;
+    }
+
+    .table-row {
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+
+        .cell-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+
+            .actions {
+                opacity: 0;
+                transition: opacity 0.2s ease-in-out;
+                display: flex;
+                align-items: center;
+
+                .edit-btn {
+                    font-size: 12px;
+                    padding: 4px 12px;
+                    min-width: auto;
+                    height: 28px;
+                    line-height: 20px;
+                }
+            }
+        }
+
+        &:hover {
+            background-color: var(--color-table-hover, #f3f4f6);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+            .cell-content .actions {
+                opacity: 1;
+            }
+        }
+
+        &:nth-child(even) {
+            background-color: var(--color-table-even, #ffffff);
+        }
+
+        &:nth-child(even):hover {
+            background-color: var(--color-table-hover, #f3f4f6);
+        }
+    }
+
+    .table-header {
+        background-color: var(--color-table-head-bg, #f9fafb);
+    }
+}
+
+// Column width utilities
+.width-md-100 {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+}
+
+.width-md-150 {
+    width: 40px;
+    min-width: 40px;
+    max-width: 40px;
+}
+
+.width-md-200 {
+    width: 25px;
+    min-width: 25px;
+    max-width: 25px;
+}
+
+.width-md-300 {
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+}
+
+// Text alignment utilities
+.text-left {
+    text-align: left !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+// Role text and tooltip styling
+.role-text {
+    cursor: help;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: #666;
+
+    &:hover {
+        color: var(--color-primary, #1976d2);
+    }
+}
+
+// Custom tooltip styling
+::ng-deep .permissions-tooltip {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    color: white !important;
+    font-size: 12px !important;
+    max-width: 250px !important;
+    white-space: pre-line !important;
+    border-radius: 4px !important;
+    padding: 10px 12px !important;
+    line-height: 1.4 !important;
+    text-align: left !important;
+
+    .mat-tooltip {
+        white-space: pre-line !important;
+    }
 }

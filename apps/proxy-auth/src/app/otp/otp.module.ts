@@ -1,5 +1,6 @@
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -37,6 +38,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { UserManagementComponent } from './user-management/user-management.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
@@ -64,11 +66,12 @@ export const CHAT_COMPONENTS: any[] = [
         UiLoaderModule,
         MatTableModule,
         MatPaginatorModule,
+        MatSortModule,
         UserDialogModule,
         MatCardModule,
         MatDialogModule,
         MatSelectModule,
-
+        MatTooltipModule,
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),
         StoreModule.forRoot(reducers, {
