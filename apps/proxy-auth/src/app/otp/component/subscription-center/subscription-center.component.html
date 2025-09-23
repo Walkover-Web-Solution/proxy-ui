@@ -22,32 +22,35 @@
             >
                 <!-- Popular Badge -->
                 <div *ngIf="plan.isPopular" class="popular-badge">Popular</div>
+                <div>
+                    <!-- Plan Title -->
+                    <h1 class="plan-title">{{ plan.title }}</h1>
 
-                <!-- Plan Title -->
-                <h3 class="plan-title">{{ plan.title }}</h3>
+                    <!-- Plan Price -->
+                    <div class="plan-price">
+                        <span class="price-amount">{{ plan.price }}</span>
+                        <span class="price-period">{{ plan.period }}</span>
+                    </div>
 
-                <!-- Plan Price -->
-                <div class="plan-price">
-                    <span class="price-amount">{{ plan.price }}</span>
-                    <span class="price-period">{{ plan.period }}</span>
-                </div>
+                    <!-- Action Button -->
+                    <button
+                        *ngIf="!plan.subscribeButtonHidden"
+                        class="plan-button"
+                        [ngClass]="{
+                            'primary': plan.buttonStyle === 'primary',
+                            'secondary': plan.buttonStyle === 'secondary'
+                        }"
+                        (click)="selectPlan(plan); $event.stopPropagation()"
+                    >
+                        {{ plan.buttonText }}
+                    </button>
 
-                <!-- Action Button -->
-                <button
-                    *ngIf="!plan.subscribeButtonHidden"
-                    class="plan-button"
-                    [ngClass]="{
-                        'primary': plan.buttonStyle === 'primary',
-                        'secondary': plan.buttonStyle === 'secondary'
-                    }"
-                    (click)="selectPlan(plan); $event.stopPropagation()"
-                >
-                    {{ plan.buttonText }}
-                </button>
+                    <!-- Hidden Button State -->
+                    <div *ngIf="plan.subscribeButtonHidden" class="plan-button-hidden">
+                        {{ plan.buttonText }}
+                    </div>
 
-                <!-- Hidden Button State -->
-                <div *ngIf="plan.subscribeButtonHidden" class="plan-button-hidden">
-                    {{ plan.buttonText }}
+                    <div class="divider"></div>
                 </div>
 
                 <!-- Plan Features (if any) -->

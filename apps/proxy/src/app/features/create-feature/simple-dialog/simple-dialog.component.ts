@@ -61,7 +61,7 @@ import { HttpClient } from '@angular/common/http';
                     matInput
                     [formControl]="fieldControl"
                     [type]="fieldConfig?.type === 'number' ? 'number' : 'text'"
-                    [placeholder]="'Enter ' + fieldConfig?.label"
+                    [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
                     [required]="fieldConfig?.is_required"
                 />
 
@@ -70,7 +70,7 @@ import { HttpClient } from '@angular/common/http';
                     *ngIf="fieldConfig?.type === 'textarea'"
                     matInput
                     [formControl]="fieldControl"
-                    [placeholder]="'Enter ' + fieldConfig?.label"
+                    [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
                     rows="3"
                     [required]="fieldConfig?.is_required"
                 ></textarea>

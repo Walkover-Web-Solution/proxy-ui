@@ -23,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import { SimpleDialogComponent } from './simple-dialog/simple-dialog.component';
 import { CreatePlanDialogComponent } from './create-plan-dialog/create-plan-dialog.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 const routes: Routes = [
     {
         path: '',
@@ -55,6 +56,7 @@ const routes: Routes = [
         MatDialogModule,
         MatSelectModule,
         HttpClientModule,
+        MatTooltipModule,
     ],
     exports: [RouterModule],
 })

@@ -480,3 +480,28 @@
         overflow: auto;
     }
 }
+
+// Info icon styling
+.info-icon {
+    color: var(--color-common-primary, #1976d2);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    cursor: help;
+    opacity: 0.7;
+    transition: opacity 0.2s ease-in-out;
+    position: absolute;
+    right: 8px;
+    top: 40%;
+    transform: translateY(-50%);
+    z-index: 1;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+// Ensure form field has relative positioning for absolute icon
+::ng-deep .mat-form-field {
+    position: relative;
+}

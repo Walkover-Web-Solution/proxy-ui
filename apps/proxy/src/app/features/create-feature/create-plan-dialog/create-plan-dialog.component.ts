@@ -89,7 +89,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
                                     <ng-container matColumnDef="minAmount">
                                         <th mat-header-cell *matHeaderCellDef>Min Amount</th>
                                         <td mat-cell *matCellDef="let charge">
-                                            {{ '$' + charge.properties.amount / 100 || 'N/A' }}
+                                            {{ charge.properties.amount / 100 || 'N/A' }}
                                         </td>
                                     </ng-container>
 
@@ -149,7 +149,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
                     matInput
                     [formControl]="fieldControl"
                     [type]="fieldConfig?.type === 'number' ? 'number' : 'text'"
-                    [placeholder]="'Enter ' + fieldConfig?.label"
+                    [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
                     [required]="fieldConfig?.is_required"
                 />
 
@@ -158,7 +158,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
                     *ngIf="fieldConfig?.type === 'textarea'"
                     matInput
                     [formControl]="fieldControl"
-                    [placeholder]="'Enter ' + fieldConfig?.label"
+                    [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
                     rows="3"
                     [required]="fieldConfig?.is_required"
                 ></textarea>
