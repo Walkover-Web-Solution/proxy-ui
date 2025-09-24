@@ -39,6 +39,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
@@ -72,6 +73,7 @@ export const CHAT_COMPONENTS: any[] = [
         MatDialogModule,
         MatSelectModule,
         MatTooltipModule,
+        MatTabsModule,
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),
         StoreModule.forRoot(reducers, {

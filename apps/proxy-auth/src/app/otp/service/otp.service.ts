@@ -103,14 +103,10 @@ export class OtpService {
         const url = otpVerificationUrls.updateUser(this.clientUrl);
         return this.http.put<any>(url, { user: { name, mobile } }, this.options);
     }
-    public addUser(
-        name: string,
-        email: string,
-        authToken: string
-    ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+    public addUser(payload: any, authToken: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;
         const url = otpVerificationUrls.addUser(this.clientUrl);
-        return this.http.post<any>(url, { user: { name, email } }, this.options);
+        return this.http.post<any>(url, payload, this.options);
     }
 
     public getRoles(authToken: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
@@ -120,16 +116,32 @@ export class OtpService {
     }
     public createRole(
         name: string,
-        permissions: string[],
+        cPermissions: string[],
         authToken: string
     ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;
         const url = otpVerificationUrls.createRole(this.clientUrl);
-        return this.http.post<any>(url, { role: { name, permissions } }, this.options);
+        return this.http.post<any>(url, { name, cPermissions }, this.options);
     }
     public getCompanyUsers(authToken: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;
         const url = otpVerificationUrls.getCompanyUsers(this.clientUrl);
+        return this.http.get<any>(url, {}, this.options);
+    }
+    public createPermission(
+        name: string,
+        authToken: string
+    ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+        console.log('name', name);
+
+        console.log('authToken', authToken);
+        this.options.headers['proxy_auth_token'] = authToken;
+        const url = otpVerificationUrls.createPermission(this.clientUrl);
+        return this.http.post<any>(url, { name }, this.options);
+    }
+    public getPermissions(authToken: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+        this.options.headers['proxy_auth_token'] = authToken;
+        const url = otpVerificationUrls.createPermission(this.clientUrl);
         return this.http.get<any>(url, {}, this.options);
     }
 }

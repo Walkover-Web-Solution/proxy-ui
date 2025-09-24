@@ -31,6 +31,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public target: string;
     @Input() public authToken: string;
     @Input() public userToken: string;
+    @Input() public pass: string;
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
     }

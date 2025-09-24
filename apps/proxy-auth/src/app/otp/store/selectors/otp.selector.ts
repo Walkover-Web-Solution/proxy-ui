@@ -43,6 +43,18 @@ export const rolesData = createSelector(selectRootState, (p) => p.rolesData);
 export const rolesDataInProcess = createSelector(selectRootState, (p) => p.rolesDataInProcess);
 export const rolesSuccess = createSelector(selectRootState, (p) => p.rolesSuccess);
 
+export const roleCreateData = createSelector(selectRootState, (p) => p.roleCreateData);
+export const roleCreateDataInProcess = createSelector(selectRootState, (p) => p.roleCreateDataInProcess);
+export const roleCreateSuccess = createSelector(selectRootState, (p) => p.roleCreateSuccess);
+
+export const permissionCreateData = createSelector(selectRootState, (p) => p.permissionCreateData);
+export const permissionCreateDataInProcess = createSelector(selectRootState, (p) => p.permissionCreateDataInProcess);
+export const permissionCreateSuccess = createSelector(selectRootState, (p) => p.permissionCreateSuccess);
+
+export const permissionData = createSelector(selectRootState, (p) => p.permissionData);
+export const permissionDataInProcess = createSelector(selectRootState, (p) => p.permissionDataInProcess);
+export const permissionSuccess = createSelector(selectRootState, (p) => p.permissionSuccess);
+
 export const companyUsersData = createSelector(selectRootState, (p) => p.companyUsersData);
 export const companyUsersDataInProcess = createSelector(selectRootState, (p) => p.companyUsersDataInProcess);
 export const companyUsersSuccess = createSelector(selectRootState, (p) => p.companyUsersSuccess);

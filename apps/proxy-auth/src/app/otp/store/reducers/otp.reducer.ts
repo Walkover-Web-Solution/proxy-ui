@@ -42,9 +42,21 @@ export interface IOtpState {
     rolesDataInProcess: boolean;
     rolesSuccess: boolean;
 
+    roleCreateData: any;
+    roleCreateDataInProcess: boolean;
+    roleCreateSuccess: boolean;
+
     companyUsersData: any;
     companyUsersDataInProcess: boolean;
     companyUsersSuccess: boolean;
+
+    permissionCreateData: any;
+    permissionCreateDataInProcess: boolean;
+    permissionCreateSuccess: boolean;
+
+    permissionData: any;
+    permissionDataInProcess: boolean;
+    permissionSuccess: boolean;
 
     error: any;
 }
@@ -88,9 +100,21 @@ export const initialState: IOtpState = {
     rolesDataInProcess: false,
     rolesSuccess: false,
 
+    roleCreateData: null,
+    roleCreateDataInProcess: false,
+    roleCreateSuccess: false,
+
     companyUsersData: null,
     companyUsersDataInProcess: false,
     companyUsersSuccess: false,
+
+    permissionCreateData: null,
+    permissionCreateDataInProcess: false,
+    permissionCreateSuccess: false,
+
+    permissionData: null,
+    permissionDataInProcess: false,
+    permissionSuccess: false,
 
     error: null,
 };
@@ -366,5 +390,72 @@ const _otpReducer = createReducer(
         error: errors,
         apiErrorResponse: errorResponse,
         companyUsersSuccess: false,
+    })),
+
+    on(otpActions.createRole, (state) => ({
+        ...state,
+        roleCreateDataInProcess: false,
+        error: null,
+        roleCreateSuccess: false,
+    })),
+
+    on(otpActions.createRoleComplete, (state, { response }) => ({
+        ...state,
+        roleCreateData: response,
+        roleCreateDataInProcess: true,
+        error: null,
+        roleCreateSuccess: true,
+    })),
+    on(otpActions.createRoleError, (state, { errors, errorResponse }) => ({
+        ...state,
+        roleCreateDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        roleCreateSuccess: false,
+    })),
+
+    on(otpActions.createPermission, (state) => ({
+        ...state,
+        permissionCreateDataInProcess: false,
+        error: null,
+        permissionCreateSuccess: false,
+    })),
+
+    on(otpActions.createPermissionComplete, (state, { response }) => ({
+        ...state,
+        permissionCreateData: response,
+        permissionCreateDataInProcess: true,
+        error: null,
+        permissionCreateSuccess: true,
+    })),
+
+    on(otpActions.createPermissionError, (state, { errors, errorResponse }) => ({
+        ...state,
+        permissionCreateDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        permissionCreateSuccess: false,
+    })),
+    on(otpActions.getPermissions, (state) => ({
+        ...state,
+        permissionDataInProcess: false,
+        error: null,
+        permissionSuccess: false,
+    })),
+
+    on(otpActions.getPermissionsComplete, (state, { response }) => ({
+        ...state,
+        permissionData: response,
+        permissionDataInProcess: true,
+        error: null,
+        permissionSuccess: true,
+    })),
+
+    on(otpActions.getPermissionsError, (state, { errors, errorResponse }) => ({
+        ...state,
+        permissionDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        permissionSuccess: false,
     }))
 );

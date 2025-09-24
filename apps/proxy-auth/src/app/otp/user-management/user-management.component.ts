@@ -9,7 +9,7 @@ import { IAppState } from '../store/app.state';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { otpActions } from '../store/actions';
 import { distinctUntilChanged, Observable, takeUntil } from 'rxjs';
-import { rolesData } from '../store/selectors';
+import { companyUsersData, permissionCreateData, permissionData, roleCreateData, rolesData } from '../store/selectors';
 import { isEqual } from 'lodash';
 import { UserData, Role } from '../model/otp';
 
@@ -20,6 +20,7 @@ import { UserData, Role } from '../model/otp';
 })
 export class UserManagementComponent extends BaseComponent implements OnInit, AfterViewInit {
     @Input() public userToken: string;
+    @Input() public pass: string;
     @ViewChild('addUserDialog') addUserDialog!: TemplateRef<any>;
     @ViewChild('editPermissionDialog') editPermissionDialog!: TemplateRef<any>;
     @ViewChild('addPermissionDialog') addPermissionDialog!: TemplateRef<any>;
@@ -29,232 +30,63 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     private editPermissionDialogRef: any;
     private addPermissionDialogRef: any;
     public getRoles$: Observable<any>;
+    public getPermissions$: Observable<any>;
+    public getCompanyUsers$: Observable<any>;
+    public getRoleCreate$: Observable<any>;
+    public getPermissionCreate$: Observable<any>;
     public roles: any[] = [];
+    public permissions: any[] = [];
     public displayedColumns: string[] = ['name', 'email', 'role'];
     public dataSource = new MatTableDataSource<UserData>([]);
     public searchTerm: string = '';
     public filteredData: UserData[] = [];
+
+    // Roles table properties
+    public rolesDisplayedColumns: string[] = ['role', 'permissions'];
+    public rolesDataSource = new MatTableDataSource<any>([]);
+    public roleSearchTerm: string = '';
+    public filteredRolesData: any[] = [];
+
+    // Permissions table properties
+    public permissionsDisplayedColumns: string[] = ['permission'];
+    public permissionsDataSource = new MatTableDataSource<any>([]);
+    public permissionSearchTerm: string = '';
+    public filteredPermissionsData: any[] = [];
     public emailVisibility: { [key: number]: boolean } = {};
     public addUserForm: FormGroup;
     public editPermissionForm: FormGroup;
     public addPermissionForm: FormGroup;
+    public addRoleForm: FormGroup;
+    public addPermissionTabForm: FormGroup;
     public isEditRole: boolean = false;
+    public isEditPermission: boolean = false;
     public currentEditingUser: UserData | null = null;
     public currentEditingPermission: UserData | null = null;
-    public userData: UserData[] = [
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports', 'Database Admin'],
-            additionalPermissions: ['API Access', 'Backup Management', 'Security Settings'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-            additionalPermissions: ['Export Data', 'Print Reports'],
-        },
-        {
-            userId: '003',
-            name: 'Mike Johnson',
-            email: 'mike.johnson@example.com',
-            role: 'Manager',
-            permissions: ['User Management', 'View Reports', 'Edit Content', 'Moderate Comments'],
-            additionalPermissions: ['Team Management', 'Budget Access'],
-        },
-        {
-            userId: '004',
-            name: 'Sarah Wilson',
-            email: 'sarah.wilson@example.com',
-            role: 'Editor',
-            permissions: ['Edit Content', 'View Reports', 'Publish Articles'],
-            additionalPermissions: ['Media Upload', 'SEO Settings'],
-        },
-        {
-            userId: '005',
-            name: 'David Brown',
-            email: 'david.brown@example.com',
-            role: 'Viewer',
-            permissions: ['Read Only'],
-            additionalPermissions: ['Bookmark Content'],
-        },
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-        },
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-        },
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-        },
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-        },
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-        },
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-        },
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-        },
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-        },
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-        },
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-        },
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-        },
-        {
-            userId: '001',
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            role: 'Admin',
-            permissions: ['Full Access', 'User Management', 'System Settings', 'Reports'],
-        },
-        {
-            userId: '002',
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            role: 'User',
-            permissions: ['Read Only', 'View Reports'],
-        },
-    ];
+    public userData: any[] = [];
 
     constructor(private fb: FormBuilder, private dialog: MatDialog, private store: Store<IAppState>) {
         super();
         this.getRoles$ = this.store.pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
+        this.getPermissions$ = this.store.pipe(
+            select(permissionData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.getCompanyUsers$ = this.store.pipe(
+            select(companyUsersData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.getRoleCreate$ = this.store.pipe(
+            select(roleCreateData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.getPermissionCreate$ = this.store.pipe(
+            select(permissionCreateData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
         this.addUserForm = this.fb.group({
             name: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
@@ -265,13 +97,26 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         this.editPermissionForm = this.fb.group({
             roleName: ['', Validators.required],
-            description: ['', Validators.required],
+            description: [''],
             permission: [[], Validators.required],
-            selectedPermission: ['', Validators.required],
-            permissionName: ['', Validators.required],
+            selectedPermission: [''],
+            permissionName: [''],
         });
         this.addPermissionForm = this.fb.group({
             permission: ['', Validators.required],
+            description: [''],
+        });
+
+        // New form groups for tabs
+        this.addRoleForm = this.fb.group({
+            roleName: ['', Validators.required],
+            description: ['', Validators.required],
+            permission: [[], Validators.required],
+        });
+
+        this.addPermissionTabForm = this.fb.group({
+            permission: ['', Validators.required],
+            description: [''],
         });
     }
 
@@ -279,9 +124,38 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.getRoles$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.roles = res.data?.data;
+                this.filteredRolesData = [...this.roles];
+                this.rolesDataSource.data = this.filteredRolesData;
             }
         });
-        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken }));
+        this.getPermissions$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.permissions = res.data;
+                this.filteredPermissionsData = [...this.permissions];
+                this.permissionsDataSource.data = this.filteredPermissionsData;
+            }
+        });
+        this.getCompanyUsers$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                console.log('res', res);
+                this.userData = res.data?.users;
+                this.dataSource.data = this.userData;
+            }
+        });
+        this.getRoleCreate$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.getRoles();
+            }
+        });
+        this.getPermissionCreate$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.getPermissions();
+            }
+        });
+        this.getCompanyUsers();
+        this.getRoles();
+        this.getPermissions();
+
         // Ensure form is initialized
         if (!this.addUserForm) {
             this.addUserForm = this.fb.group({
@@ -316,11 +190,16 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.isEditRole = true;
         this.currentEditingUser = user;
         const roleId = this.getRoleIdByName(user.role);
+
+        // Get permission IDs for the user's current permissions
+        const userPermissionIds = this.getPermissionIdsByName(user.permissions || []);
+
         this.addUserForm.patchValue({
             name: user.name,
             email: user.email,
             mobileNumber: user.mobileNumber || '',
             role: roleId || user.role,
+            permission: userPermissionIds,
         });
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
@@ -336,7 +215,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     getPermissionsTooltip(user: UserData): string {
-        console.log('User data for tooltip:', user); // Debug log
         let tooltipText = '';
 
         if (user && user.permissions && user.permissions.length > 0) {
@@ -351,7 +229,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             tooltipText += `\n\nAdditional Permissions:\n+ ${additionalPermissionsText}`;
         }
 
-        console.log('Tooltip text:', tooltipText); // Debug log
         return tooltipText;
     }
 
@@ -416,8 +293,27 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         return role?.id;
     }
 
+    getPermissionIdsByName(permissionNames: string[]): number[] {
+        return permissionNames
+            .map((permissionName) => {
+                const permission = this.permissions.find((p) => p.name === permissionName);
+                return permission?.id;
+            })
+            .filter((id) => id !== undefined) as number[];
+    }
+
+    getPermissionNamesByIds(permissionIds: number[]): string[] {
+        return permissionIds
+            .map((permissionId) => {
+                const permission = this.permissions.find((p) => p.id === permissionId);
+                return permission?.name;
+            })
+            .filter((name) => name !== undefined) as string[];
+    }
+
     addUser(): void {
         this.isEditRole = false;
+        this.isEditPermission = false;
         this.currentEditingUser = null;
         this.addUserForm.reset();
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
@@ -462,12 +358,16 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                     role: roleName,
                     permissions: this.getDefaultPermissions(roleName),
                 };
+                console.log('newUser', newUser);
+                const payload = {
+                    user: {
+                        name: newUser.name,
+                        email: newUser.email,
+                    },
+                    role_id: formValue.role,
+                };
 
-                this.userData.push(newUser);
-                this.store.dispatch(
-                    otpActions.addUser({ name: newUser.name, email: newUser.email, authToken: this.userToken })
-                );
-                console.log('New user added:', newUser);
+                this.store.dispatch(otpActions.addUser({ payload, authToken: this.userToken }));
             }
 
             // Update dataSource to reflect changes
@@ -493,7 +393,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
 
-    public editPermission(user: UserData): void {
+    public editUserPermission(user: UserData): void {
         this.currentEditingPermission = user;
         this.editPermissionForm.patchValue({
             roleName: user.role,
@@ -521,6 +421,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     savePermission(): void {
+        debugger;
         if (this.editPermissionForm.valid) {
             const formValue = this.editPermissionForm.value;
 
@@ -544,7 +445,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                 // Add new role (create a new user with the role)
                 const newUser: UserData = {
                     userId: (this.userData.length + 1).toString().padStart(3, '0'),
-                    name: `User with ${formValue.roleName} role`,
+                    name: ` ${formValue.roleName}`,
                     email: `user${this.userData.length + 1}@example.com`,
                     mobileNumber: '0000000000',
                     role: formValue.roleName,
@@ -552,7 +453,13 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                 };
 
                 this.userData.push(newUser);
-                console.log('New role added:', newUser);
+                this.store.dispatch(
+                    otpActions.createRole({
+                        name: formValue.roleName,
+                        permissions: formValue.permission,
+                        authToken: this.userToken,
+                    })
+                );
             }
 
             this.closePermissionDialog();
@@ -560,9 +467,11 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     addRole(): void {
-        this.currentEditingPermission = null;
-        this.editPermissionForm.reset();
-        this.editPermissionDialogRef = this.dialog.open(this.editPermissionDialog, {
+        this.isEditRole = true;
+        this.isEditPermission = false;
+        this.currentEditingUser = null;
+        this.addRoleForm.reset();
+        this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
             disableClose: true,
         });
@@ -581,5 +490,192 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
     saveAddPermission(): void {
         console.log('saveAddPermission');
+    }
+
+    // New methods for tab forms
+    saveAddRole(): void {
+        if (this.addRoleForm.valid) {
+            const formValue = this.addRoleForm.value;
+
+            // Convert permission IDs to permission names
+            const permissionNames = this.getPermissionNamesByIds(formValue.permission);
+
+            if (this.isEditRole && this.currentEditingUser) {
+                // Update existing role
+                console.log('Updating role:', this.currentEditingUser, 'with new data:', formValue);
+                // TODO: Implement role update logic
+            } else {
+                // Add new role
+                console.log('Adding new role:', formValue);
+                this.store.dispatch(
+                    otpActions.createRole({
+                        name: formValue.roleName,
+                        permissions: permissionNames,
+                        authToken: this.userToken,
+                    })
+                );
+            }
+
+            this.addRoleForm.reset();
+            this.closeDialog();
+        }
+    }
+
+    saveAddPermissionTab(): void {
+        if (this.addPermissionTabForm.valid) {
+            const formValue = this.addPermissionTabForm.value;
+
+            if (this.isEditPermission && this.currentEditingPermission) {
+                // Update existing permission
+                console.log('Updating permission:', this.currentEditingPermission, 'with new data:', formValue);
+                // TODO: Implement permission update logic
+            } else {
+                // Add new permission
+                console.log('Adding new permission:', formValue);
+                this.store.dispatch(
+                    otpActions.createPermission({
+                        name: formValue.permission,
+
+                        authToken: this.userToken,
+                    })
+                );
+            }
+
+            this.addPermissionTabForm.reset();
+            this.closeDialog();
+        }
+    }
+    getCompanyUsers(): void {
+        this.store.dispatch(otpActions.getCompanyUsers({ authToken: this.userToken }));
+    }
+    getRoles(): void {
+        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken }));
+    }
+    getPermissions(): void {
+        this.store.dispatch(otpActions.getPermissions({ authToken: this.userToken }));
+    }
+
+    // Role management methods
+    applyRoleFilter(): void {
+        if (!this.roleSearchTerm || this.roleSearchTerm.trim() === '') {
+            this.filteredRolesData = [...this.roles];
+        } else {
+            const searchLower = this.roleSearchTerm.toLowerCase().trim();
+            this.filteredRolesData = this.roles.filter(
+                (role) =>
+                    role.name.toLowerCase().includes(searchLower) ||
+                    (role.c_permissions &&
+                        role.c_permissions.some((permission: any) =>
+                            permission.name.toLowerCase().includes(searchLower)
+                        ))
+            );
+        }
+        this.rolesDataSource.data = this.filteredRolesData;
+    }
+
+    openAddRoleDialog(): void {
+        // Open the existing add role dialog
+        this.addRole();
+    }
+
+    editRole(role: any, index: number): void {
+        // Set the current editing role
+        this.currentEditingUser = role;
+        this.isEditRole = true;
+        this.isEditPermission = false;
+
+        // Populate the addRoleForm with the role data
+        this.addRoleForm.patchValue({
+            roleName: role.name,
+            description: `Description for ${role.name} role`,
+            permission: role.c_permissions ? role.c_permissions.map((p: any) => p.id) : [],
+        });
+
+        // Open the add user dialog (which contains the role form)
+        this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
+            width: '500px',
+            disableClose: true,
+        });
+    }
+
+    // Permission management methods
+    applyPermissionFilter(): void {
+        if (!this.permissionSearchTerm || this.permissionSearchTerm.trim() === '') {
+            this.filteredPermissionsData = [...this.permissions];
+        } else {
+            const searchLower = this.permissionSearchTerm.toLowerCase().trim();
+            this.filteredPermissionsData = this.permissions.filter((permission) =>
+                permission.name.toLowerCase().includes(searchLower)
+            );
+        }
+        this.permissionsDataSource.data = this.filteredPermissionsData;
+    }
+
+    openAddPermissionDialog(): void {
+        this.isEditPermission = true;
+        this.isEditRole = false;
+        this.currentEditingPermission = null;
+        this.addPermissionTabForm.reset();
+        this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
+            width: '500px',
+            disableClose: true,
+        });
+    }
+
+    editPermission(permission: any, index: number): void {
+        this.currentEditingPermission = permission;
+        this.isEditPermission = true;
+        this.isEditRole = false;
+
+        this.addPermissionTabForm.patchValue({
+            permission: permission.name,
+            description: `Description for ${permission.name} permission`,
+        });
+
+        this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
+            width: '500px',
+            disableClose: true,
+        });
+    }
+
+    // Dialog helper methods
+    getDialogTitle(): string {
+        if (this.isEditPermission) {
+            return this.currentEditingPermission ? 'Edit Permission' : 'Add New Permission';
+        } else if (this.isEditRole) {
+            return this.currentEditingUser ? 'Edit Role' : 'Add New Role';
+        } else {
+            return 'Add New User';
+        }
+    }
+
+    getSaveAction(): void {
+        if (this.isEditPermission) {
+            this.saveAddPermissionTab();
+        } else if (this.isEditRole) {
+            this.saveAddRole();
+        } else {
+            this.saveUser();
+        }
+    }
+
+    getFormInvalid(): boolean {
+        if (this.isEditPermission) {
+            return this.addPermissionTabForm.invalid;
+        } else if (this.isEditRole) {
+            return this.addRoleForm.invalid;
+        } else {
+            return this.addUserForm.invalid;
+        }
+    }
+
+    getSaveButtonText(): string {
+        if (this.isEditPermission) {
+            return this.currentEditingPermission ? 'Update Permission' : 'Add Permission';
+        } else if (this.isEditRole) {
+            return this.currentEditingUser ? 'Update Role' : 'Add Role';
+        } else {
+            return 'Add User';
+        }
     }
 }

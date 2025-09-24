@@ -5,6 +5,256 @@ body {
     background: #f9f9f9;
     padding: 20px;
 }
+.members-container {
+    width: 40%;
+}
+
+// Tabs styling
+.user-management-tabs {
+    width: 100%;
+
+    .mat-tab-group {
+        width: 100%;
+    }
+
+    .mat-tab-body-wrapper {
+        padding-top: 20px;
+    }
+}
+
+.tab-content {
+    padding: 0;
+    width: 100%;
+}
+
+// Nested tabs styling
+.nested-tabs {
+    width: 100%;
+
+    .mat-tab-group {
+        width: 100%;
+    }
+
+    .mat-tab-body-wrapper {
+        padding-top: 20px;
+    }
+}
+
+.nested-tab-content {
+    padding: 0;
+    width: 100%;
+}
+
+// Permissions table section styling
+.permissions-table-section {
+    width: 100%;
+
+    .table-header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        gap: 16px;
+
+        .search-section {
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .add-button-section {
+            flex-shrink: 0;
+        }
+    }
+}
+
+.permissions-table-container {
+    width: 100%;
+    margin-top: 20px;
+}
+
+// Role and Permission container styling
+.role-permission-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+
+    h3 {
+        color: #333;
+        font-size: 24px;
+        font-weight: 500;
+        margin-bottom: 24px;
+        text-align: center;
+    }
+}
+
+.role-form,
+.permission-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+
+    .full-width {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: center;
+
+        button {
+            min-width: 120px;
+        }
+    }
+}
+
+// Email tooltip styling
+.email-tooltip {
+    background-color: #333 !important;
+    color: white !important;
+    font-size: 12px !important;
+    padding: 8px 12px !important;
+    border-radius: 4px !important;
+    max-width: 300px !important;
+    word-break: break-all !important;
+}
+
+.email-container {
+    .email-text {
+        cursor: help;
+        color: #666;
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: #333;
+        }
+    }
+}
+
+// Roles table styling
+.roles-table-container {
+    margin-top: 20px;
+}
+
+// Column width styling for roles table
+.role-column {
+    width: 25% !important;
+}
+
+.permissions-column {
+    width: 70% !important;
+    overflow: visible; // Allow button to show outside cell if needed
+    position: relative;
+}
+
+.permission-column {
+    width: 100% !important;
+    overflow: visible; // Allow button to show outside cell if needed
+    position: relative;
+}
+
+.role-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .role-name {
+        font-weight: 600;
+        color: #333;
+        font-size: 14px;
+    }
+
+    .role-default {
+        font-size: 11px;
+        color: #666;
+        font-style: italic;
+    }
+}
+
+.permission-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .permission-name {
+        font-weight: 600;
+        color: #333;
+        font-size: 14px;
+    }
+
+    .permission-default {
+        font-size: 12px;
+        color: #666;
+        font-style: italic;
+    }
+}
+
+// Permission bullets styling
+.permission-bullets {
+    margin: 0;
+    padding-left: 16px;
+    list-style-type: disc;
+
+    .permission-bullet {
+        margin-bottom: 4px;
+        font-size: 12px;
+        color: #555;
+        line-height: 1.4;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+// Permissions cell content styling
+.permissions-cell-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 40px; // Ensure minimum height for consistent button positioning
+    padding-right: 60px; // Add padding to prevent button overlap with content
+}
+
+// Permission cell content styling (for permissions table)
+.permission-cell-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 40px; // Ensure minimum height for consistent button positioning
+    padding-right: 60px; // Add padding to prevent button overlap with content
+}
+
+// Hover actions styling
+.hover-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-row:hover .hover-actions {
+    opacity: 1;
+}
+
+.permissions-actions {
+    .button-add {
+        font-size: 12px;
+        padding: 4px 12px;
+        min-width: auto;
+        height: 28px;
+        line-height: 20px;
+    }
+}
+
 .container {
     background: #ffffff;
     padding: 15px 60px;
@@ -12,6 +262,7 @@ body {
     position: relative;
     min-height: 600px;
     height: 100%;
+    width: 100%;
     z-index: 10;
 }
 
@@ -370,7 +621,9 @@ td {
 .full-width {
     width: 100%;
 }
-
+.add-btn {
+    margin-bottom: 24px;
+}
 // Search and button container styling
 .search-and-button-container {
     display: flex;
@@ -404,7 +657,7 @@ td {
 
 // Add button container styling
 .add-button-container {
-    width: 50%;
+    width: 100%;
     display: flex;
     justify-content: end;
     gap: 20px;
@@ -443,9 +696,9 @@ td {
 
 // Enhanced table styling
 .default-table {
-    width: 50%;
+    width: 100%;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible; // Allow buttons to show outside table boundaries
 
     .mat-header-cell {
         font-weight: 600;

@@ -14,5 +14,6 @@ export const otpVerificationUrls = {
     updateUser: (baseUrl) => createUrl(baseUrl, 'c/updateUser'),
     addUser: (baseUrl) => createUrl(baseUrl, 'c/addUser'),
     createRole: (baseUrl) => createUrl(baseUrl, 'c/roles'),
-    getCompanyUsers: (baseUrl) => createUrl(baseUrl, 'c/getCCompanyUsers'),
+    getCompanyUsers: (baseUrl) => createUrl(baseUrl, 'c/getCompanyUsers'),
+    createPermission: (baseUrl) => createUrl(baseUrl, 'c/Permission'),
 };

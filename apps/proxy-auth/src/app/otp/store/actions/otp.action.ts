@@ -55,7 +55,7 @@ export const updateUserError = createAction(
     props<{ errors: string[]; errorResponse: any }>()
 );
 
-export const addUser = createAction('[OTP] Add User', props<{ name: string; email: string; authToken: string }>());
+export const addUser = createAction('[OTP] Add User', props<{ payload: any; authToken: string }>());
 export const addUserComplete = createAction('[OTP] Add User Complete', props<{ response: any }>());
 export const addUserError = createAction('[OTP] Add User Error', props<{ errors: string[]; errorResponse: any }>());
 
@@ -70,6 +70,18 @@ export const createRole = createAction(
 export const createRoleComplete = createAction('[OTP] Create Role Complete', props<{ response: any }>());
 export const createRoleError = createAction(
     '[OTP] Create Role Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+export const createPermission = createAction('[OTP] Create Permission', props<{ name: string; authToken: string }>());
+export const createPermissionComplete = createAction('[OTP] Create Permission Complete', props<{ response: any }>());
+export const createPermissionError = createAction(
+    '[OTP] Create Permission Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+export const getPermissions = createAction('[OTP] Get Permissions', props<{ authToken: string }>());
+export const getPermissionsComplete = createAction('[OTP] Get Permissions Complete', props<{ response: any }>());
+export const getPermissionsError = createAction(
+    '[OTP] Get Permissions Error',
     props<{ errors: string[]; errorResponse: any }>()
 );
 

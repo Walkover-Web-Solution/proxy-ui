@@ -51,7 +51,7 @@
     </div>
     <proxy-user-profile *ngIf="authToken" [authToken]="authToken"></proxy-user-profile>
 
-    <proxy-user-management *ngIf="userToken" [userToken]="userToken"></proxy-user-management>
+    <proxy-user-management *ngIf="userToken" [userToken]="userToken" [pass]="pass"></proxy-user-management>
     <div class="otp-verification-footer" *ngIf="!authToken && !userToken && referenceId">
         <span>Secured by</span>
         <svg
