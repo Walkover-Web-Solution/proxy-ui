@@ -58,7 +58,6 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
     }
 
     private formatSubscriptionPlans(plans: any[]): any[] {
-        debugger;
         return plans.map((plan, index) => ({
             id: plan.plan_name?.toLowerCase().replace(/\s+/g, '-') || `plan-${index}`,
             title: plan.plan_name || 'Unnamed Plan',
