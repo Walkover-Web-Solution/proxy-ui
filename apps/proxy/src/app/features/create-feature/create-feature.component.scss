@@ -1,3 +1,4 @@
+@import '../../../styles.scss';
 .features-layout {
     display: grid;
     grid-gap: 16px;
@@ -6,42 +7,7 @@
         height: 160px;
     }
 }
-
-// Utility classes to replace Bootstrap
-.d-flex {
-    display: flex;
-}
-
-.flex-column {
-    flex-direction: column;
-}
-
-.justify-content-between {
-    justify-content: space-between;
-}
-
-.justify-content-end {
-    justify-content: flex-end;
-}
-
-.align-items-center {
-    align-items: center;
-}
-
-.align-items-end {
-    align-items: flex-end;
-}
-
-.gap-3 {
-    gap: 1rem;
-}
-
-.h-100 {
-    height: 100%;
-}
-
 .code-snippet-view {
-    border-radius: var(--border-common-radius-4);
     transition: min-height 0.2s linear;
     max-width: 700px;
 }
@@ -55,9 +21,7 @@
     width: 250px;
 }
 .company-details {
-    width: 100%;
     border-top-width: 3px !important;
-    margin-bottom: 20px;
 }
 
 // Fix table borders
@@ -125,29 +89,9 @@
 
 // Single form layout with sections
 .single-form-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-
     .form-section {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #333;
-            margin: 0 0 8px 0;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-
         .form-grid {
-            display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-            align-items: start;
 
             @media (max-width: 768px) {
                 grid-template-columns: 1fr;
@@ -201,19 +145,16 @@
         border-radius: 12px 12px 0 0;
     }
 
-    mat-card-content {
-        padding: 24px;
-        background-color: #ffffff;
-        border-radius: 0 0 12px 12px;
-        width: 100%;
-        overflow-x: auto;
-    }
+    // mat-card-content {
+    //     padding: 24px;
+    //     background-color: #ffffff;
+    //     border-radius: 0 0 12px 12px;
+    //     width: 100%;
+    //     overflow-x: auto;
+    // }
 
     .form-grid {
-        display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-        align-items: start;
     }
 
     .button-group {
@@ -254,11 +195,11 @@
     // Add subtle animation on load
     animation: slideInUp 0.5s ease-out;
 
-    &:hover {
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        transform: translateY(-2px);
-        transition: all 0.3s ease;
-    }
+    // &:hover {
+    //     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    //     transform: translateY(-2px);
+    //     transition: all 0.3s ease;
+    // }
 
     // Charges table styling
     .charges-table-container {
@@ -484,16 +425,15 @@
 // Info icon styling
 .info-icon {
     color: var(--color-common-primary, #1976d2);
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
+    font-size: 17px;
+    // width: 18px;
+    // height: 18px;
     cursor: help;
     opacity: 0.7;
     transition: opacity 0.2s ease-in-out;
     position: absolute;
-    right: 8px;
-    top: 40%;
-    transform: translateY(-50%);
+    right: 4px;
+    top: 4px;
     z-index: 1;
 
     &:hover {
@@ -504,4 +444,8 @@
 // Ensure form field has relative positioning for absolute icon
 ::ng-deep .mat-form-field {
     position: relative;
+}
+
+.overflow-table {
+    height: calc(100vh - 350px);
 }

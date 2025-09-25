@@ -723,7 +723,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         const billableMetricsFormFields = this.billableMetricsFormFields;
 
         const dialogRef = this.dialog.open(SimpleDialogComponent, {
-            width: '600px',
             height: 'auto',
             maxHeight: '90vh',
             autoFocus: false,
