@@ -28,6 +28,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy {
     @Input() public referenceId: string;
+    @Input() public type: string;
     @Input() public target: string;
     @Input() public authToken: string;
     @Input()
