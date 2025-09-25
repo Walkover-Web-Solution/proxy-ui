@@ -9,7 +9,7 @@
     <div
         class="otp-verification-dialog"
         [ngClass]="{ 'animation-complete': animate, 'register-user': showRegistration | async }"
-        *ngIf="!authToken"
+        *ngIf="!authToken && type === 'authorization'"
     >
         <mat-progress-bar
             mode="indeterminate"
@@ -48,6 +48,9 @@
             (failureReturn)="returnFailureObj($event)"
         >
         </proxy-login>
+    </div>
+    <div *ngIf="type === 'subscription'">
+        <proxy-subscription-center [referenceId]="referenceId"></proxy-subscription-center>
     </div>
     <proxy-user-profile *ngIf="authToken" [authToken]="authToken"></proxy-user-profile>
     <div class="otp-verification-footer" *ngIf="!authToken && referenceId">
