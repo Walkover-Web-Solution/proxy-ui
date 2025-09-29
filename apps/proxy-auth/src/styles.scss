@@ -4,18 +4,22 @@
 
 /* Layout*/
 @import 'assets/scss/layout/positions.scss';
+@import 'assets/scss/layout/spacing.scss';
+@import 'assets/scss/layout/display.scss';
 
 /* Components*/
 @import 'assets/scss/component/form-field';
+@import 'assets/scss/component/tabs';
 
 :root {
     --color-common-dark: #212528;
     --color-common-slate: #3f4346;
     --color-common-rock: #5d6164;
-    --color-common-grey: #8f9396;
+    --color-common-grey: #333333;
     --color-common-cloud: #c1c5c8;
     --color-common-smoke: #d5d9dc;
     --color-common-white: #ffffff;
+    --color-common-black: #000000;
     --border-common-radius-4: 4px;
 }
 

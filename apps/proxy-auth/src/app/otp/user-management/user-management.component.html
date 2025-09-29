@@ -1,13 +1,13 @@
 <div class="container">
     <div class="members-container">
-        <mat-tab-group class="user-management-tabs">
+        <mat-tab-group class="user-management-tabs full-width">
             <!-- Members Tab -->
             <mat-tab label="Members" class="bold-tab-label">
                 <div class="tab-content">
                     <!-- Search Bar -->
-                    <div class="search-and-button-container">
+                    <div class="my-4 d-flex justify-content-between align-items-center gap-4">
                         <div class="search-container">
-                            <mat-form-field appearance="outline" class="search-field">
+                            <mat-form-field appearance="outline" class="search-field no-space full-width">
                                 <mat-label>Search User</mat-label>
                                 <input
                                     matInput
@@ -18,13 +18,18 @@
                                 />
                             </mat-form-field>
                         </div>
-                        <div class="add-button-container add-btn">
+                        <div class="add-btn d-flex justify-content-end gap-4 full-width">
                             <button mat-flat-button class="button-add" (click)="addUser()">Add User</button>
                         </div>
                     </div>
 
-                    <div class="">
-                        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 default-table">
+                    <div>
+                        <table
+                            mat-table
+                            [dataSource]="dataSource"
+                            matSort
+                            class="mat-elevation-z8 default-table full-width"
+                        >
                             <ng-container matColumnDef="name">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Name</th>
                                 <td mat-cell *matCellDef="let element" class="text-left width-md-200">
@@ -35,7 +40,7 @@
                             <ng-container matColumnDef="email">
                                 <th mat-header-cell *matHeaderCellDef class="width-md-150">Email</th>
                                 <td mat-cell *matCellDef="let element; let i = index" class="text-left width-md-150">
-                                    <div class="email-container">
+                                    <div class="d-flex align-items-center gap-2">
                                         <span
                                             class="email-text"
                                             [matTooltip]="element.email"
@@ -53,7 +58,9 @@
                                     Roles & Permissions
                                 </th>
                                 <td mat-cell *matCellDef="let element; let i = index" class="text-left width-md-150">
-                                    <div class="cell-content">
+                                    <div
+                                        class="cell-content d-flex align-items-center justify-content-between full-width"
+                                    >
                                         <span
                                             [matTooltip]="getPermissionsTooltip(element)"
                                             matTooltipPosition="right"
@@ -61,7 +68,7 @@
                                         >
                                             {{ element.role || 'User' }}
                                         </span>
-                                        <div class="actions">
+                                        <div class="actions d-flex align-items-center">
                                             <button
                                                 mat-flat-button
                                                 color="primary"
@@ -100,14 +107,14 @@
             <mat-tab *ngIf="pass" label="Roles and Permissions">
                 <div class="tab-content">
                     <!-- Nested tabs for Roles and Permissions -->
-                    <mat-tab-group class="nested-tabs">
+                    <mat-tab-group class="nested-tabs full-width">
                         <!-- Add Role Tab -->
                         <mat-tab label="Roles">
                             <div class="nested-tab-content">
                                 <!-- Search and Add Role Button -->
-                                <div class="search-and-button-container">
+                                <div class="my-4 d-flex justify-content-between align-items-center gap-4">
                                     <div class="search-container">
-                                        <mat-form-field appearance="outline" class="search-field">
+                                        <mat-form-field appearance="outline" class="search-field no-space full-width">
                                             <mat-label>Search Roles</mat-label>
                                             <input
                                                 matInput
@@ -118,7 +125,7 @@
                                             />
                                         </mat-form-field>
                                     </div>
-                                    <div class="add-button-container">
+                                    <div class="d-flex justify-content-end gap-4 full-width">
                                         <button mat-flat-button class="button-add" (click)="openAddRoleDialog()">
                                             Add Role
                                         </button>
@@ -131,14 +138,14 @@
                                         mat-table
                                         [dataSource]="rolesDataSource"
                                         matSort
-                                        class="mat-elevation-z8 default-table"
+                                        class="mat-elevation-z8 default-table full-width"
                                     >
                                         <ng-container matColumnDef="role">
                                             <th mat-header-cell *matHeaderCellDef mat-sort-header class="role-column">
                                                 Role
                                             </th>
                                             <td mat-cell *matCellDef="let element" class="text-left role-column">
-                                                <div class="role-info">
+                                                <div class="role-info d-flex flex-column gap-1">
                                                     <span class="role-name">{{ element.name }}</span>
                                                 </div>
                                             </td>
@@ -153,7 +160,9 @@
                                                 *matCellDef="let element; let i = index"
                                                 class="text-left permissions-column"
                                             >
-                                                <div class="permissions-cell-content">
+                                                <div
+                                                    class="permissions-cell-content d-flex flex-column gap-2 position-relative"
+                                                >
                                                     <div
                                                         class="permissions-list"
                                                         *ngIf="
@@ -218,10 +227,15 @@
                         <mat-tab label="Permissions">
                             <div class="nested-tab-content">
                                 <!-- Permissions Table Section -->
-                                <div class="permissions-table-section">
-                                    <div class="table-header-section">
+                                <div class="permissions-table-section full-width">
+                                    <div
+                                        class="table-header-section d-flex justify-content-between align-items-center my-4 gap-3"
+                                    >
                                         <div class="search-section">
-                                            <mat-form-field appearance="outline" class="search-field">
+                                            <mat-form-field
+                                                appearance="outline"
+                                                class="search-field no-space full-width"
+                                            >
                                                 <mat-label>Search Permissions</mat-label>
                                                 <input
                                                     matInput
@@ -244,29 +258,29 @@
                                     </div>
 
                                     <!-- Permissions Table -->
-                                    <div class="permissions-table-container">
+                                    <div class="full-width mt-4">
                                         <table
                                             mat-table
                                             [dataSource]="permissionsDataSource"
                                             matSort
-                                            class="mat-elevation-z8 default-table"
+                                            class="mat-elevation-z8 default-table full-width"
                                         >
                                             <ng-container matColumnDef="permission">
                                                 <th
                                                     mat-header-cell
                                                     *matHeaderCellDef
                                                     mat-sort-header
-                                                    class="permission-column"
+                                                    class="permission-column full-width position-relative"
                                                 >
                                                     Permission
                                                 </th>
                                                 <td
                                                     mat-cell
                                                     *matCellDef="let element; let i = index"
-                                                    class="text-left permission-column"
+                                                    class="text-left permission-column full-width position-relative"
                                                 >
-                                                    <div class="permission-cell-content">
-                                                        <div class="permission-info">
+                                                    <div class="d-flex gap-2">
+                                                        <div class="permission-info d-flex flex-column gap-1">
                                                             <span class="permission-name">{{ element.name }}</span>
                                                         </div>
                                                         <div class="permission-actions hover-actions">
@@ -318,7 +332,7 @@
         <h2 mat-dialog-title>{{ getDialogTitle() }}</h2>
         <mat-dialog-content>
             <!-- Role Form (shown when isEditRole is true) -->
-            <form [formGroup]="addRoleForm" class="role-form" *ngIf="isEditRole">
+            <form [formGroup]="addRoleForm" class="d-flex flex-column align-items-center" *ngIf="isEditRole">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Role Name</mat-label>
                     <input matInput formControlName="roleName" placeholder="Enter role name" required />
@@ -351,7 +365,11 @@
             </form>
 
             <!-- Permission Form (shown when isEditPermission is true) -->
-            <form [formGroup]="addPermissionTabForm" class="permission-form" *ngIf="isEditPermission">
+            <form
+                [formGroup]="addPermissionTabForm"
+                class="d-flex flex-column align-items-center"
+                *ngIf="isEditPermission"
+            >
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Permission Name</mat-label>
                     <input matInput formControlName="permission" placeholder="Enter permission name" required />
@@ -374,7 +392,7 @@
             <!-- User Form (shown when editing user or adding new user) -->
             <form
                 [formGroup]="addUserForm"
-                class="add-user-form"
+                class="d-flex flex-column align-items-center"
                 *ngIf="isEditUser || (!isEditRole && !isEditPermission)"
             >
                 <mat-form-field appearance="outline" class="full-width">
@@ -432,7 +450,13 @@
         </mat-dialog-content>
         <mat-dialog-actions align="end">
             <button mat-button (click)="closeDialog()">Cancel</button>
-            <button mat-flat-button color="primary" (click)="getSaveAction()" [disabled]="getFormInvalid()">
+            <button
+                mat-flat-button
+                color="primary"
+                (click)="getSaveAction()"
+                [disabled]="getFormInvalid()"
+                class="button-add"
+            >
                 {{ getSaveButtonText() }}
             </button>
         </mat-dialog-actions>
