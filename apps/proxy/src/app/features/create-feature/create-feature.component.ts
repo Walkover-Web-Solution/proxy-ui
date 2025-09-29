@@ -845,10 +845,15 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         this.chargesList = [...this.chargesList];
     }
     public previewFeature(): void {
+        const featureId =
+            this.getValueFromObservable(this.createUpdateObject$)?.feature_id ??
+            this.getValueFromObservable(this.featureDetails$)?.feature_id;
+
         const configuration = {
             referenceId:
                 this.getValueFromObservable(this.createUpdateObject$)?.reference_id ??
                 this.getValueFromObservable(this.featureDetails$)?.reference_id,
+            type: featureId === 1 ? 'authorization' : 'subscription',
             target: '_blank',
             success: (data) => {
                 // get verified token in response
