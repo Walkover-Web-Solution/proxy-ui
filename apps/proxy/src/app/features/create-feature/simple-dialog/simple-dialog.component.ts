@@ -7,8 +7,8 @@ import { HttpClient } from '@angular/common/http';
 @Component({
     selector: 'proxy-simple-dialog',
     template: `
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 mat-dialog-title>{{ dialogTitle }}</h2>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 mat-dialog-title class="m-0">{{ dialogTitle }}</h2>
             <button mat-icon-button mat-dialog-close (click)="onClose()">
                 <mat-icon>close</mat-icon>
             </button>
@@ -39,7 +39,7 @@ import { HttpClient } from '@angular/common/http';
         </mat-dialog-actions>
 
         <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
-            <div class="mb-3" *ngIf="fieldConfig?.type === 'checkbox'">
+            <div class="mb-1" *ngIf="fieldConfig?.type === 'checkbox'">
                 <mat-slide-toggle [formControl]="fieldControl" [required]="fieldConfig?.is_required">
                     {{ fieldConfig?.label }}
                 </mat-slide-toggle>
@@ -49,7 +49,7 @@ import { HttpClient } from '@angular/common/http';
                 }}</mat-error>
             </div>
 
-            <mat-form-field appearance="outline" class="w-100 mb-3" *ngIf="fieldConfig?.type !== 'checkbox'">
+            <mat-form-field appearance="outline" class="w-100 mb-1" *ngIf="fieldConfig?.type !== 'checkbox'">
                 <mat-label
                     >{{ fieldConfig?.label }}
                     <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span></mat-label
