@@ -144,4 +144,12 @@ export class OtpService {
         const url = otpVerificationUrls.createPermission(this.clientUrl);
         return this.http.get<any>(url, {}, this.options);
     }
+    public updateCompanyUser(
+        payload: any,
+        authToken: string
+    ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+        this.options.headers['proxy_auth_token'] = authToken;
+        const url = otpVerificationUrls.updateUser(this.clientUrl);
+        return this.http.put<any>(url, payload, this.options);
+    }
 }

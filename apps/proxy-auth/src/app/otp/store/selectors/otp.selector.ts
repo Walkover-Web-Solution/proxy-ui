@@ -59,4 +59,8 @@ export const companyUsersData = createSelector(selectRootState, (p) => p.company
 export const companyUsersDataInProcess = createSelector(selectRootState, (p) => p.companyUsersDataInProcess);
 export const companyUsersSuccess = createSelector(selectRootState, (p) => p.companyUsersSuccess);
 
+export const updateCompanyUserData = createSelector(selectRootState, (p) => p.updateCompanyUserData);
+export const updateCompanyUserDataInProcess = createSelector(selectRootState, (p) => p.updateCompanyUserDataInProcess);
+export const updateCompanyUserDataSuccess = createSelector(selectRootState, (p) => p.updateCompanyUserDataSuccess);
+
 export const error = createSelector(selectRootState, (p) => p.error);

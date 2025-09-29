@@ -58,6 +58,10 @@ export interface IOtpState {
     permissionDataInProcess: boolean;
     permissionSuccess: boolean;
 
+    updateCompanyUserData: any;
+    updateCompanyUserDataInProcess: boolean;
+    updateCompanyUserDataSuccess: boolean;
+
     error: any;
 }
 
@@ -115,6 +119,10 @@ export const initialState: IOtpState = {
     permissionData: null,
     permissionDataInProcess: false,
     permissionSuccess: false,
+
+    updateCompanyUserData: null,
+    updateCompanyUserDataInProcess: false,
+    updateCompanyUserDataSuccess: false,
 
     error: null,
 };
@@ -457,5 +465,26 @@ const _otpReducer = createReducer(
         error: errors,
         apiErrorResponse: errorResponse,
         permissionSuccess: false,
+    })),
+    on(otpActions.updateCompanyUser, (state) => ({
+        ...state,
+        updateCompanyUserDataInProcess: false,
+        error: null,
+        updateCompanyUserDataSuccess: false,
+    })),
+
+    on(otpActions.updateCompanyUserComplete, (state, { response }) => ({
+        ...state,
+        updateCompanyUserData: response,
+        updateCompanyUserDataInProcess: true,
+        error: null,
+        updateCompanyUserDataSuccess: true,
+    })),
+    on(otpActions.updateCompanyUserError, (state, { errors, errorResponse }) => ({
+        ...state,
+        updateCompanyUserDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        updateCompanyUserDataSuccess: false,
     }))
 );

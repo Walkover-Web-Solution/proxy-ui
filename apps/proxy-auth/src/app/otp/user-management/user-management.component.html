@@ -2,7 +2,7 @@
     <div class="members-container">
         <mat-tab-group class="user-management-tabs">
             <!-- Members Tab -->
-            <mat-tab label="Members">
+            <mat-tab label="Members" class="bold-tab-label">
                 <div class="tab-content">
                     <!-- Search Bar -->
                     <div class="search-and-button-container">
@@ -50,7 +50,7 @@
 
                             <ng-container matColumnDef="role">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-150">
-                                    Role & Permissions
+                                    Roles & Permissions
                                 </th>
                                 <td mat-cell *matCellDef="let element; let i = index" class="text-left width-md-150">
                                     <div class="cell-content">
@@ -371,17 +371,28 @@
                 </mat-form-field>
             </form>
 
-            <!-- User Form (shown when isEditRole is false and isEditPermission is false) -->
-            <form [formGroup]="addUserForm" class="add-user-form" *ngIf="!isEditRole && !isEditPermission">
+            <!-- User Form (shown when editing user or adding new user) -->
+            <form
+                [formGroup]="addUserForm"
+                class="add-user-form"
+                *ngIf="isEditUser || (!isEditRole && !isEditPermission)"
+            >
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Name</mat-label>
                     <input matInput formControlName="name" placeholder="Enter user name" required />
                     <mat-error *ngIf="addUserForm.get('name')?.hasError('required')"> Name is required </mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width" *ngIf="!isEditRole">
+                <mat-form-field appearance="outline" class="full-width" *ngIf="isEditUser || !isEditRole">
                     <mat-label>Email</mat-label>
-                    <input matInput formControlName="email" type="email" placeholder="Enter email address" required />
+                    <input
+                        matInput
+                        formControlName="email"
+                        type="email"
+                        placeholder="Enter email address"
+                        [readonly]="isEditUser"
+                        required
+                    />
                     <mat-error *ngIf="addUserForm.get('email')?.hasError('required')"> Email is required </mat-error>
                     <mat-error *ngIf="addUserForm.get('email')?.hasError('email')">
                         Please enter a valid email
@@ -406,14 +417,14 @@
                     </mat-select>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width" *ngIf="isEditRole">
+                <mat-form-field appearance="outline" class="full-width" *ngIf="isEditUser || isEditRole">
                     <mat-label>Permission</mat-label>
                     <mat-select formControlName="permission" multiple>
                         <mat-option *ngFor="let permission of permissions" [value]="permission.id">
                             {{ permission.name }}
                         </mat-option>
                     </mat-select>
-                    <mat-error *ngIf="editPermissionForm.get('permission')?.hasError('required')">
+                    <mat-error *ngIf="addUserForm.get('permission')?.hasError('required')">
                         At least one permission is required
                     </mat-error>
                 </mat-form-field>

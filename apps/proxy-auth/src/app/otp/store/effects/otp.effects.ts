@@ -226,7 +226,7 @@ export class OtpEffects {
             switchMap(({ payload, authToken }) => {
                 return this.otpService.addUser(payload, authToken).pipe(
                     map((res: any) => {
-                        if (res.type === 'success') {
+                        if (res.status === 'success') {
                             return otpActions.addUserComplete({
                                 response: res,
                             });
@@ -382,6 +382,35 @@ export class OtpEffects {
                     catchError((err) => {
                         return of(
                             otpActions.getPermissionsError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
+
+    updateCompanyUser$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.updateCompanyUser),
+            switchMap(({ payload, authToken }) => {
+                return this.otpService.updateCompanyUser(payload, authToken).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.updateCompanyUserComplete({
+                                response: res,
+                            });
+                        }
+                        return otpActions.updateCompanyUserError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.updateCompanyUserError({
                                 errors: errorResolver(err.errors),
                                 errorResponse: err,
                             })

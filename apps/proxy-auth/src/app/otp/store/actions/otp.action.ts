@@ -92,3 +92,13 @@ export const getCompanyUsersError = createAction(
 
     props<{ errors: string[]; errorResponse: any }>()
 );
+
+export const updateCompanyUser = createAction(
+    '[OTP] Update Company User',
+    props<{ payload: any; authToken: string }>()
+);
+export const updateCompanyUserComplete = createAction('[OTP] Update Company User Complete', props<{ response: any }>());
+export const updateCompanyUserError = createAction(
+    '[OTP] Update Company User Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
