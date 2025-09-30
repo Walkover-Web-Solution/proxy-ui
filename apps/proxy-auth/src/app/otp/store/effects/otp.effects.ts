@@ -249,4 +249,33 @@ export class OtpEffects {
             })
         )
     );
+
+    getSubscriptionPlans$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.getSubscriptionPlans),
+            switchMap(({ referenceId }) => {
+                return this.otpService.getSubscriptionPlans(referenceId).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.getSubscriptionPlansComplete({
+                                response: res,
+                            });
+                        }
+                        return otpActions.getSubscriptionPlansError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.getSubscriptionPlansError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
 }

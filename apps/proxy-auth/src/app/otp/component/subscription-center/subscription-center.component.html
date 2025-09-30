@@ -1,0 +1,69 @@
+<div class="container">
+    <button mat-icon-button mat-dialog-close class="close-dialog" (click)="close(true)">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
+                fill="#5D6164"
+            />
+        </svg>
+    </button>
+
+    <div class="subscription-plans-container">
+        <div class="plans-grid">
+            <div
+                *ngFor="let plan of subscriptionPlans; let i = index"
+                class="plan-card"
+                [ngClass]="{
+                    'popular': plan.isPopular,
+                    'selected': plan.isSelected
+                }"
+                (click)="selectPlan(plan)"
+                [title]="'Plan ' + (i + 1) + ': ' + plan.title"
+            >
+                <!-- Popular Badge -->
+                <div *ngIf="plan.isPopular" class="popular-badge">Popular</div>
+                <div>
+                    <!-- Plan Title -->
+                    <h1 class="plan-title">{{ plan.title }}</h1>
+
+                    <!-- Plan Price -->
+                    <div class="plan-price">
+                        <span class="price-amount">{{ plan.price }}</span>
+                        <span class="price-period">{{ plan.period }}</span>
+                    </div>
+
+                    <!-- Action Button -->
+                    <button
+                        *ngIf="!plan.subscribeButtonHidden"
+                        class="plan-button"
+                        [ngClass]="{
+                            'primary': plan.buttonStyle === 'primary',
+                            'secondary': plan.buttonStyle === 'secondary'
+                        }"
+                        (click)="selectPlan(plan); $event.stopPropagation()"
+                    >
+                        {{ plan.buttonText }}
+                    </button>
+
+                    <!-- Hidden Button State -->
+                    <div *ngIf="plan.subscribeButtonHidden" class="plan-button-hidden">
+                        {{ plan.buttonText }}
+                    </div>
+
+                    <div class="divider"></div>
+                </div>
+
+                <!-- Plan Features (if any) -->
+                <div *ngIf="plan.features && plan.features.length > 0" class="plan-features-section">
+                    <h4 class="section-title">Features:</h4>
+                    <ul class="plan-features">
+                        <li *ngFor="let feature of plan.features" class="feature-item included">
+                            <span class="feature-icon">✓</span>
+                            {{ feature }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

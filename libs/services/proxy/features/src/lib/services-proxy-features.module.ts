@@ -51,4 +51,56 @@ export class FeaturesService {
     public updateFeature(id: string | number, body): Observable<BaseResponse<IFeature, void>> {
         return this.http.put<BaseResponse<IFeature, void>>(`${FeaturesUrls.getFeature(this.baseURL)}/${id}`, body);
     }
+
+    // create lago feature
+    public createLagoFeature(body): Observable<BaseResponse<IFeature, void>> {
+        return this.http.post<BaseResponse<IFeature, void>>(FeaturesUrls.getLagoFeature(this.baseURL), body);
+    }
+
+    // get all billable metrics
+    public getAllBillableMetrics(refId: string | number): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getBillableMetrics(this.baseURL, refId));
+    }
+    // create billable metric
+    public createBillableMetric(body): Observable<BaseResponse<any, void>> {
+        const refId = body.reference_id;
+        return this.http.post<BaseResponse<any, void>>(FeaturesUrls.getBillableMetrics(this.baseURL, refId), body);
+    }
+    // update billable metric
+    public updateBillableMetric(refId: string | number, code: string, body): Observable<BaseResponse<any, void>> {
+        return this.http.put<BaseResponse<any, void>>(
+            FeaturesUrls.updateBillableMetric(this.baseURL, refId, code),
+            body
+        );
+    }
+    // delete billable metric
+    public deleteBillableMetric(refId: string | number, code: string): Observable<BaseResponse<any, void>> {
+        return this.http.delete<BaseResponse<any, void>>(FeaturesUrls.deleteBillableMetric(this.baseURL, refId, code));
+    }
+    public getBillableMetricForm(): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getBillableMetricForm(this.baseURL));
+    }
+    // get plans form
+    public getPlansForm(refId: string | number): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getPlansForm(this.baseURL, refId));
+    }
+    public getTaxes(refId: string | number): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getTaxes(this.baseURL, refId));
+    }
+    // create plan
+    public createPlan(refId: string | number, body): Observable<BaseResponse<any, void>> {
+        return this.http.post<BaseResponse<any, void>>(FeaturesUrls.createPlan(this.baseURL, refId), body);
+    }
+    //get all plans
+    public getAllPlans(refId: string | number): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.createPlan(this.baseURL, refId));
+    }
+    // update plan
+    public updatePlan(refId: string | number, code: string, body): Observable<BaseResponse<any, void>> {
+        return this.http.put<BaseResponse<any, void>>(FeaturesUrls.updatePlan(this.baseURL, refId, code), body);
+    }
+    // delete plan
+    public deletePlan(refId: string | number, code: string): Observable<BaseResponse<any, void>> {
+        return this.http.delete<BaseResponse<any, void>>(FeaturesUrls.deletePlan(this.baseURL, refId, code));
+    }
 }
