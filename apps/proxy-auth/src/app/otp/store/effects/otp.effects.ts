@@ -77,6 +77,35 @@ export class OtpEffects {
             })
         )
     );
+    verifyOtpV2$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.verifyOtpAction),
+            switchMap((p) => {
+                return this.otpService.verifyOtpV2(p.request).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.verifyOtpActionComplete({
+                                response: res,
+                            });
+                        }
+                        return otpActions.verifyOtpActionError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        console.log('err', err);
+                        return of(
+                            otpActions.verifyOtpActionError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
 
     resendOtp$ = createEffect(() =>
         this.actions$.pipe(

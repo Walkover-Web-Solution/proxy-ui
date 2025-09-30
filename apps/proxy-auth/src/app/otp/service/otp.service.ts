@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { OtpResModel, ISendOtpReq, IRetryOtpReq, IVerifyOtpReq, IWidgetResponse, IGetWidgetData } from '../model/otp';
 import { otpVerificationUrls } from './urls/otp-urls';
 import { HttpWrapperService } from '@proxy/services/http-wrapper-no-auth';
+import { environment } from 'apps/proxy-auth/src/environments/environment';
 
 @Injectable({
     providedIn: 'root',
@@ -35,8 +36,18 @@ export class OtpService {
 
     public sendOtp(request: ISendOtpReq): Observable<OtpResModel> {
         const referenceId = request.referenceId;
+        this.options.headers['authkey'] = request.authkey;
         return this.http.post<OtpResModel>(
             otpVerificationUrls.sendOtp(this.baseUrl).replace(':referenceId', referenceId),
+            omit(request, 'referenceId'),
+            this.options
+        );
+    }
+    public verifyOtpV2(request: any): Observable<any> {
+        const referenceId = request.referenceId;
+        this.options.headers['authkey'] = request.authkey;
+        return this.http.post<any>(
+            otpVerificationUrls.verifyOtpV2(this.baseUrl).replace(':referenceId', referenceId),
             omit(request, 'referenceId'),
             this.options
         );
