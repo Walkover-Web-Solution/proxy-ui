@@ -1,4 +1,5 @@
 @import url('https://unpkg.com/@angular/material@14.2.7/prebuilt-themes/indigo-pink.css');
+
 body {
     font-family: Arial, sans-serif;
     text-align: center;
@@ -9,53 +10,14 @@ body {
     width: 40%;
 }
 
-// Tabs styling
-.user-management-tabs {
-    width: 100%;
-
-    .mat-tab-group {
-        width: 100%;
-    }
-
-    .mat-tab-body-wrapper {
-        padding-top: 20px;
-    }
-}
-
 .tab-content {
-    padding: 0;
-    width: 100%;
-}
-
-// Nested tabs styling
-.nested-tabs {
-    width: 100%;
-
-    .mat-tab-group {
-        width: 100%;
-    }
-
-    .mat-tab-body-wrapper {
-        padding-top: 20px;
-    }
-}
-
-.nested-tab-content {
     padding: 0;
     width: 100%;
 }
 
 // Permissions table section styling
 .permissions-table-section {
-    width: 100%;
-
     .table-header-section {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        gap: 16px;
-
         .search-section {
             flex: 1;
             max-width: 400px;
@@ -67,67 +29,13 @@ body {
     }
 }
 
-.permissions-table-container {
-    width: 100%;
-    margin-top: 20px;
-}
-
-// Role and Permission container styling
-.role-permission-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-
-    h3 {
-        color: #333;
-        font-size: 24px;
-        font-weight: 500;
-        margin-bottom: 24px;
-        text-align: center;
-    }
-}
-
-.role-form,
-.permission-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-
-    .full-width {
-        width: 100%;
-        max-width: 400px;
-    }
-
-    .form-actions {
-        display: flex;
-        justify-content: center;
-
-        button {
-            min-width: 120px;
-        }
-    }
-}
-
-// Email tooltip styling
-.email-tooltip {
-    background-color: #333 !important;
-    color: white !important;
-    font-size: 12px !important;
-    padding: 8px 12px !important;
-    border-radius: 4px !important;
-    max-width: 300px !important;
-    word-break: break-all !important;
-}
-
 .email-container {
     .email-text {
-        cursor: help;
         color: #666;
         transition: color 0.2s ease;
 
         &:hover {
-            color: #333;
+            color: var(--color-common-grey);
         }
     }
 }
@@ -149,42 +57,32 @@ body {
 }
 
 .permission-column {
-    width: 100% !important;
     overflow: visible; // Allow button to show outside cell if needed
-    position: relative;
 }
 
 .role-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
     .role-name {
         font-weight: 600;
-        color: #333;
-        font-size: 14px;
+        color: var(--color-common-grey);
+        font-size: var(--font-size-14);
     }
 
     .role-default {
-        font-size: 11px;
+        font-size: var(--font-size-11);
         color: #666;
         font-style: italic;
     }
 }
 
 .permission-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
     .permission-name {
         font-weight: 600;
-        color: #333;
-        font-size: 14px;
+        color: var(--color-common-grey);
+        font-size: var(--font-size-14);
     }
 
     .permission-default {
-        font-size: 12px;
+        font-size: var(--font-size-12);
         color: #666;
         font-style: italic;
     }
@@ -198,7 +96,7 @@ body {
 
     .permission-bullet {
         margin-bottom: 4px;
-        font-size: 12px;
+        font-size: var(--font-size-12);
         color: #555;
         line-height: 1.4;
 
@@ -210,20 +108,6 @@ body {
 
 // Permissions cell content styling
 .permissions-cell-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-height: 40px; // Ensure minimum height for consistent button positioning
-    padding-right: 60px; // Add padding to prevent button overlap with content
-}
-
-// Permission cell content styling (for permissions table)
-.permission-cell-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
     min-height: 40px; // Ensure minimum height for consistent button positioning
     padding-right: 60px; // Add padding to prevent button overlap with content
 }
@@ -233,11 +117,11 @@ body {
     opacity: 0;
     transition: opacity 0.2s ease;
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 6px;
+    right: 12px;
     z-index: 10;
-    background: white;
-    border-radius: 4px;
+    background: var(--color-common-white);
+    border-radius: var(--border-common-radius-4);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -245,18 +129,8 @@ body {
     opacity: 1;
 }
 
-.permissions-actions {
-    .button-add {
-        font-size: 12px;
-        padding: 4px 12px;
-        min-width: auto;
-        height: 28px;
-        line-height: 20px;
-    }
-}
-
 .container {
-    background: #ffffff;
+    background: var(--color-common-white);
     padding: 15px 60px;
     text-align: left;
     position: relative;
@@ -266,105 +140,15 @@ body {
     z-index: 10;
 }
 
-.users-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 20px;
-}
-
 .user-item {
     margin-bottom: 16px;
-}
-
-.user-info-card {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 16px;
-    background: #fafafa;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.user-details {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.detail-row {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.label {
-    font-weight: 600;
-    color: #666;
-    font-size: 14px;
-}
-
-.value {
-    font-size: 16px;
-    color: #333;
-    font-weight: 500;
-}
-
-.user-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-}
-.full-width {
-    max-width: 300px;
 }
 .form {
     display: flex;
     flex-direction: column;
 }
 
-.dropdown-btn {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    background: #ffffff;
-    text-align: left;
-}
-.dropdown-content {
-    display: none;
-    position: absolute;
-    width: 100%;
-    max-height: 200px;
-    overflow-y: auto;
-    background: #ffffff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 100;
-}
-.dropdown-content .input-group {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
-}
-.dropdown-content .input-group:last-child {
-    border-bottom: none;
-}
-
-.details {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.table-container {
-    margin-top: 20px;
-    display: none;
-}
 table {
-    width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
     box-shadow: none !important;
@@ -380,155 +164,21 @@ td.mat-cell {
     padding: 10px;
 }
 th {
-    color: #000000;
+    color: var(--color-common-black);
     font-weight: 600;
     height: 22px;
     padding-left: 12px !important;
 }
 td {
-    font-size: small;
+    font-size: var(--font-size-12);
     height: 22px;
     color: #434242;
 }
-.toggle-btn {
-    display: block;
-    margin-top: 10px;
-    padding: 8px 12px;
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-.toggle-btn:hover {
-    background-color: #0056b3;
-}
-
-.status-active {
-    color: #008000;
-    font-weight: bold;
-    text-align: center;
-    padding: 5px 10px;
-    border-radius: 5px;
-    text-decoration: underline;
-    font-style: italic;
-}
-.status-rejected {
-    text-decoration: underline;
-    color: #ff0000;
-    font-weight: bold;
-    text-align: center;
-    cursor: pointer;
-}
-.no-company {
-    font-size: medium;
-    font-weight: 500;
-}
-
-.input-label {
-    margin-bottom: 2px;
-    margin-left: 10px;
-    color: #404040;
-    font-weight: 700;
-}
-
-.confirm {
-    text-align: left;
-    font-weight: 600;
-}
-.company {
-    text-align: left;
-    font-weight: 600;
-    font-size: medium;
-}
-.current {
-    text-align: center;
-}
-
-.company-modal {
-    text-align: left;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-}
-.modal-content {
-    background-color: #ffffff;
-    margin: 15% auto;
-    padding: 32px 26px;
-    border-radius: 10px;
-    width: 480px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-.modal-buttons {
-    margin-top: 10px;
-    text-align: end;
-}
-.modal-buttons button {
-    padding: 8px 20px;
-    margin: 5px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-}
-.btn-yes {
-    background-color: #ff0000;
-    color: #ffffff;
-    border-radius: 8px;
-}
-.btn-no {
-    color: #000000;
-    border-radius: 8px;
-}
-
 .no-data {
     text-align: center;
     font-size: medium;
     font-weight: 700;
     margin-top: 30px;
-}
-
-.no-company {
-    text-align: center;
-    font-size: medium;
-    font-weight: bold;
-}
-.error {
-    margin: 40% auto;
-    font-weight: bold;
-    font-size: large;
-}
-.input-field {
-    color: black;
-}
-
-.success-message {
-    color: #008000;
-    font-size: small;
-    font-weight: bold;
-}
-.error-message {
-    color: #ff0000;
-    font-size: small;
-    font-weight: bold;
-}
-
-#proxyContainer {
-    width: 100%;
-    max-width: 600px;
-    min-width: 180px;
-    height: auto;
-    min-height: 100px;
-    border: 1px dashed red;
-    padding: 10px;
 }
 
 @media (max-width: 1024px) {
@@ -542,7 +192,7 @@ td {
     }
 
     table {
-        font-size: 14px;
+        font-size: var(--font-size-14);
     }
 
     th,
@@ -562,7 +212,7 @@ td {
     }
 
     table {
-        font-size: 12px;
+        font-size: var(--font-size-12);
     }
 
     th,
@@ -572,7 +222,7 @@ td {
 
     .toggle-btn,
     .modal-buttons button {
-        font-size: 14px;
+        font-size: var(--font-size-14);
         padding: 8px;
     }
 }
@@ -588,8 +238,7 @@ td {
     }
 
     table {
-        width: 100%;
-        font-size: 12px;
+        font-size: var(--font-size-12);
     }
 
     .modal-content {
@@ -599,38 +248,16 @@ td {
 
     .toggle-btn,
     .modal-buttons button {
-        font-size: 12px;
+        font-size: var(--font-size-12);
         padding: 6px;
     }
 }
 .button-add {
-    background-color: #000000;
-    color: #ffffff;
-}
-.add-button {
-    display: flex;
-    justify-content: end;
-    gap: 20px;
-}
-.add-user-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
+    background-color: var(--color-common-black);
+    color: var(--color-common-white);
 }
 .full-width {
     width: 100%;
-}
-.add-btn {
-    margin-bottom: 24px;
-}
-// Search and button container styling
-.search-and-button-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 20px 0;
-    gap: 20px;
 }
 
 // Search bar styling
@@ -639,70 +266,28 @@ td {
     max-width: 400px;
 
     .search-field {
-        width: 100%;
-
         .mat-form-field-wrapper {
             padding-bottom: 0;
         }
 
         .mat-form-field-outline {
-            border-radius: 8px;
+            border-radius: var(--border-common-radius-8);
         }
 
         .mat-input-element {
-            font-size: 14px;
-        }
-    }
-}
-
-// Add button container styling
-.add-button-container {
-    width: 100%;
-    display: flex;
-    justify-content: end;
-    gap: 20px;
-}
-
-// Email container styling
-.email-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .email-text {
-        flex: 1;
-        font-size: 14px;
-    }
-
-    .email-toggle-btn {
-        width: 24px;
-        height: 24px;
-        line-height: 24px;
-        opacity: 0.7;
-        transition: opacity 0.2s ease-in-out;
-
-        &:hover {
-            opacity: 1;
-        }
-
-        svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-            stroke: currentColor;
+            font-size: var(--font-size-14);
         }
     }
 }
 
 // Enhanced table styling
 .default-table {
-    width: 100%;
-    border-radius: 8px;
+    border-radius: var(--border-common-radius-8);
     overflow: visible; // Allow buttons to show outside table boundaries
 
     .mat-header-cell {
         font-weight: 600;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         color: var(--color-table-head, #374151);
         background-color: var(--color-table-head-bg, #f9fafb);
         border-bottom: 2px solid var(--color-table-head-border, #e5e7eb);
@@ -715,7 +300,7 @@ td {
         padding: 8px 12px;
         border-bottom: 1px solid var(--color-table-cell-border, #e5e7eb);
         color: var(--color-table-cell, #374151);
-        font-size: 14px;
+        font-size: var(--font-size-14);
         vertical-align: middle;
         text-align: left;
     }
@@ -725,19 +310,12 @@ td {
         cursor: pointer;
 
         .cell-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-
             .actions {
                 opacity: 0;
                 transition: opacity 0.2s ease-in-out;
-                display: flex;
-                align-items: center;
 
                 .edit-btn {
-                    font-size: 12px;
+                    font-size: var(--font-size-12);
                     padding: 4px 12px;
                     min-width: auto;
                     height: 28px;
@@ -757,7 +335,7 @@ td {
         }
 
         &:nth-child(even) {
-            background-color: var(--color-table-even, #ffffff);
+            background-color: var(--color-table-even, var(--color-common-white));
         }
 
         &:nth-child(even):hover {
@@ -810,7 +388,7 @@ td {
 
 // Role text and tooltip styling
 .role-text {
-    cursor: help;
+    // cursor: help;
     text-decoration: underline;
     text-decoration-style: dotted;
     text-decoration-color: #666;
@@ -821,18 +399,25 @@ td {
 }
 
 // Custom tooltip styling
-::ng-deep .permissions-tooltip {
-    background-color: rgba(0, 0, 0, 0.9) !important;
-    color: white !important;
-    font-size: 12px !important;
-    max-width: 250px !important;
-    white-space: pre-line !important;
-    border-radius: 4px !important;
-    padding: 10px 12px !important;
-    line-height: 1.4 !important;
-    text-align: left !important;
-
-    .mat-tooltip {
+::ng-deep {
+    .permissions-tooltip,
+    .email-tooltip {
+        background-color: rgba(0, 0, 0, 0.9) !important;
+        color: var(--color-common-white) !important;
+        font-size: var(--font-size-12) !important;
+        // max-width: 250px !important;
         white-space: pre-line !important;
+        border-radius: var(--border-common-radius-4) !important;
+        padding: 10px !important;
+        line-height: 1.4 !important;
+        text-align: left !important;
+
+        .mat-tooltip {
+            white-space: pre-line !important;
+        }
     }
+}
+
+.position-relative {
+    position: relative;
 }

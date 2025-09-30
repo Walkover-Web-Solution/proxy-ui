@@ -73,6 +73,12 @@
             }
         }
     }
+
+    &.no-space {
+        .mat-form-field-wrapper {
+            padding-bottom: 0px !important;
+        }
+    }
 }
 
 .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label,
