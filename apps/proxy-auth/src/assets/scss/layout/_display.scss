@@ -1,9 +1,6 @@
 .d-none {
     display: none;
 }
-.d-inline {
-    display: inline !important;
-}
 .d-inline-block {
     display: inline-block !important;
 }
@@ -74,16 +71,8 @@
     margin-right: auto;
 }
 
-@media only screen and (max-width: 768px) {
-    .flex-md-column {
-        flex-direction: column;
-    }
-}
 .flex-grow-1 {
     flex-grow: 1;
-}
-.flex-grow-huge {
-    flex-grow: 9999;
 }
 
 // Space for flex and grid layout

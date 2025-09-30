@@ -9,7 +9,11 @@
 }
 
 .nested-tabs {
-    .mat-tab-label {
-        font-weight: 600 !important;
+    .mat-tab-header {
+        .mat-tab-labels {
+            .mat-tab-label {
+                font-weight: 600 !important;
+            }
+        }
     }
 }
