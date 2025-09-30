@@ -195,21 +195,29 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.getRoleCreate$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.getRoles();
+                // Force form refresh after role creation
+                this.refreshFormData();
             }
         });
         this.getPermissionCreate$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.getPermissions();
+                // Force form refresh after permission creation
+                this.refreshFormData();
             }
         });
         this.updatePermissionData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.getPermissions();
+                // Force form refresh after permission update
+                this.refreshFormData();
             }
         });
         this.updateRoleData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.getRoles();
+                // Force form refresh after role update
+                this.refreshFormData();
             }
         });
         this.getCompanyUsers();
@@ -450,6 +458,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                     );
                     const payload = {
                         user: {
+                            id: (this.currentEditingUser as any).user_id,
                             name: formValue.name,
                             mobile: formValue.mobileNumber || '',
                         },
@@ -535,7 +544,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     savePermission(): void {
-        debugger;
         if (this.editPermissionForm.valid) {
             const formValue = this.editPermissionForm.value;
 
@@ -553,7 +561,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                         ...this.userData[userIndex],
                         permissions: updatedPermissions,
                     };
-                    console.log('Permission name updated:', this.userData[userIndex]);
                 }
             } else {
                 // Add new role (create a new user with the role)
@@ -602,13 +609,10 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addPermissionDialogRef.close();
     }
 
-    saveAddPermission(): void {
-        console.log('saveAddPermission');
-    }
+    saveAddPermission(): void {}
 
     // New methods for tab forms
     saveAddRole(): void {
-        debugger;
         if (this.addRoleForm.valid) {
             const formValue = this.addRoleForm.value;
 
@@ -622,7 +626,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                         payload: {
                             id: (this.currentEditingUser as any).id,
                             name: formValue.roleName,
-                            cpermission: formValue.permission,
+                            cpermissions: formValue.permission,
                         },
                         authToken: this.userToken,
                     })
@@ -630,7 +634,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                 // TODO: Implement role update logic
             } else {
                 // Add new role
-                console.log('Adding new role:', formValue);
                 this.store.dispatch(
                     otpActions.createRole({
                         name: formValue.roleName,
@@ -651,7 +654,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
             if (this.isEditPermission && this.currentEditingPermission) {
                 // Update existing permission
-                console.log('Updating permission:', this.currentEditingPermission, 'with new data:', formValue);
                 this.store.dispatch(
                     otpActions.updatePermission({
                         payload: {
@@ -663,7 +665,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                 );
             } else {
                 // Add new permission
-                console.log('Adding new permission:', formValue);
                 this.store.dispatch(
                     otpActions.createPermission({
                         name: formValue.permission,
@@ -685,6 +686,23 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
     getPermissions(): void {
         this.store.dispatch(otpActions.getPermissions({ authToken: this.userToken }));
+    }
+
+    refreshFormData(): void {
+        // Force change detection to update multiselect options
+        setTimeout(() => {
+            // Trigger change detection by updating the arrays
+            this.permissions = [...this.permissions];
+            this.roles = [...this.roles];
+
+            // Update filtered data as well
+            this.filteredPermissionsData = [...this.permissions];
+            this.filteredRolesData = [...this.roles];
+
+            // Update data sources
+            this.permissionsDataSource.data = this.filteredPermissionsData;
+            this.rolesDataSource.data = this.filteredRolesData;
+        }, 100);
     }
 
     // Role management methods
@@ -711,7 +729,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     editRole(role: any, index: number): void {
-        debugger;
         // Set the current editing role
         this.currentEditingUser = role;
         this.isEditRole = true;
@@ -720,12 +737,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         // Get permission IDs from the role's permissions
         const permissionIds = role.c_permissions ? role.c_permissions.map((p: any) => p.id) : [];
-
-        console.log('Editing role:', role);
-        console.log('Role permissions:', role.c_permissions);
-        console.log('Permission IDs to set:', permissionIds);
-        console.log('Available permissions:', this.permissions);
-
         // Open the add user dialog (which contains the role form)
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
@@ -743,9 +754,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                 });
 
                 // Verify the form was updated correctly
-                console.log('Form permission value after patch:', this.addRoleForm.get('permission')?.value);
             } else {
-                console.log('Permissions not loaded yet, retrying...');
                 // Retry after a longer delay if permissions are not loaded
                 setTimeout(() => {
                     this.addRoleForm.patchValue({
@@ -753,7 +762,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                         description: `Description for ${role.name} role`,
                         permission: permissionIds,
                     });
-                    console.log('Form permission value after retry:', this.addRoleForm.get('permission')?.value);
                 }, 500);
             }
         }, 100);
