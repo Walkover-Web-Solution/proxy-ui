@@ -420,4 +420,60 @@ export class OtpEffects {
             })
         )
     );
+    updatePermission$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.updatePermission),
+            switchMap(({ payload, authToken }) => {
+                return this.otpService.updatePermission(payload, authToken).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.updatePermissionComplete({
+                                response: res,
+                            });
+                        }
+                        return otpActions.updatePermissionError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.updatePermissionError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
+    updateRole$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.updateRole),
+            switchMap(({ payload, authToken }) => {
+                return this.otpService.updateRole(payload, authToken).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.updateRoleComplete({
+                                response: res,
+                            });
+                        }
+                        return otpActions.updateRoleError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.updateRoleError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
 }

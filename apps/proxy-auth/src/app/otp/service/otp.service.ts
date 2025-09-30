@@ -152,4 +152,18 @@ export class OtpService {
         const url = otpVerificationUrls.updateUser(this.clientUrl);
         return this.http.put<any>(url, payload, this.options);
     }
+    public updatePermission(
+        payload: any,
+        authToken: string
+    ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+        this.options.headers['proxy_auth_token'] = authToken;
+        const name = payload.name;
+        const url = otpVerificationUrls.updatePermission(this.clientUrl).replace(':id', payload.id);
+        return this.http.put<any>(url, { name }, this.options);
+    }
+    public updateRole(payload: any, authToken: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+        this.options.headers['proxy_auth_token'] = authToken;
+        const url = otpVerificationUrls.updateRole(this.clientUrl).replace(':id', payload.id);
+        return this.http.put<any>(url, payload, this.options);
+    }
 }

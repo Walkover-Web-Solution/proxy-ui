@@ -102,3 +102,17 @@ export const updateCompanyUserError = createAction(
     '[OTP] Update Company User Error',
     props<{ errors: string[]; errorResponse: any }>()
 );
+
+export const updatePermission = createAction('[OTP] Update Permission', props<{ payload: any; authToken: string }>());
+export const updatePermissionComplete = createAction('[OTP] Update Permission Complete', props<{ response: any }>());
+export const updatePermissionError = createAction(
+    '[OTP] Update Permission Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+
+export const updateRole = createAction('[OTP] Update Role', props<{ payload: any; authToken: string }>());
+export const updateRoleComplete = createAction('[OTP] Update Role Complete', props<{ response: any }>());
+export const updateRoleError = createAction(
+    '[OTP] Update Role Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);

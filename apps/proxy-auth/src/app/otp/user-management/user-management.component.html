@@ -81,6 +81,9 @@
                                 class="hover-action table-row"
                             ></tr>
                         </table>
+                        <p class="no-data" *ngIf="dataSource.data.length === 0">
+                            Nothing Here, There are no users to show
+                        </p>
                         <mat-paginator
                             [pageSizeOptions]="[10, 20, 50, 100, 1000]"
                             [pageSize]="1000"
@@ -88,10 +91,6 @@
                             aria-label="Select page of users"
                         >
                         </mat-paginator>
-
-                        <p class="no-data" *ngIf="dataSource.data.length === 0">
-                            Nothing Here, There are no users to show
-                        </p>
                     </div>
                 </div>
             </mat-tab>
@@ -202,14 +201,15 @@
                                             class="hover-action table-row"
                                         ></tr>
                                     </table>
+                                    <p class="no-data" *ngIf="rolesDataSource.data.length === 0">No roles found</p>
                                     <mat-paginator
+                                        #rolesPaginator
                                         [pageSizeOptions]="[10, 20, 50, 100, 1000]"
                                         [pageSize]="1000"
                                         showFirstLastButtons
                                         aria-label="Select page of roles"
                                     >
                                     </mat-paginator>
-                                    <p class="no-data" *ngIf="rolesDataSource.data.length === 0">No roles found</p>
                                 </div>
                             </div>
                         </mat-tab>
@@ -294,16 +294,17 @@
                                                 class="hover-action table-row"
                                             ></tr>
                                         </table>
+                                        <p class="no-data" *ngIf="permissionsDataSource.data.length === 0">
+                                            No permissions found
+                                        </p>
                                         <mat-paginator
+                                            #permissionsPaginator
                                             [pageSizeOptions]="[10, 20, 50, 100, 1000]"
                                             [pageSize]="1000"
                                             showFirstLastButtons
                                             aria-label="Select page of permissions"
                                         >
                                         </mat-paginator>
-                                        <p class="no-data" *ngIf="permissionsDataSource.data.length === 0">
-                                            No permissions found
-                                        </p>
                                     </div>
                                 </div>
                             </div>

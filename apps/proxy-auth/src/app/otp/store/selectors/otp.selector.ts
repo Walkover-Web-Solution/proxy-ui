@@ -63,4 +63,12 @@ export const updateCompanyUserData = createSelector(selectRootState, (p) => p.up
 export const updateCompanyUserDataInProcess = createSelector(selectRootState, (p) => p.updateCompanyUserDataInProcess);
 export const updateCompanyUserDataSuccess = createSelector(selectRootState, (p) => p.updateCompanyUserDataSuccess);
 
+export const updatePermissionData = createSelector(selectRootState, (p) => p.updatePermissionData);
+export const updatePermissionDataInProcess = createSelector(selectRootState, (p) => p.updatePermissionDataInProcess);
+export const updatePermissionDataSuccess = createSelector(selectRootState, (p) => p.updatePermissionDataSuccess);
+
+export const updateRoleData = createSelector(selectRootState, (p) => p.updateRoleData);
+export const updateRoleDataInProcess = createSelector(selectRootState, (p) => p.updateRoleDataInProcess);
+export const updateRoleDataSuccess = createSelector(selectRootState, (p) => p.updateRoleDataSuccess);
+
 export const error = createSelector(selectRootState, (p) => p.error);
