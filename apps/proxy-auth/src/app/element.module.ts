@@ -35,6 +35,7 @@ window['initVerification'] = (config: any) => {
             }
             const sendOtpElement = document.createElement('proxy-auth') as NgElement & WithProperties<SendOtpComponent>;
             sendOtpElement.referenceId = config?.referenceId;
+            sendOtpElement.type = config?.type;
             sendOtpElement.authToken = config?.authToken;
 
             sendOtpElement.target = config?.target ?? '_self';

@@ -19,6 +19,7 @@ import { ServicesProxyFeaturesModule } from '@proxy/services/proxy/features';
 import { DirectivesSkeletonModule } from '@proxy/directives/skeleton';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { UiCopyButtonModule } from '@proxy/ui/copy-button';
+import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
 // Component
 const routes: Routes = [
     {
@@ -59,6 +60,7 @@ const routes: Routes = [
         MatTooltipModule,
         UiLoaderModule,
         UiCopyButtonModule,
+        UiConfirmDialogModule,
     ],
     exports: [RouterModule],
 })

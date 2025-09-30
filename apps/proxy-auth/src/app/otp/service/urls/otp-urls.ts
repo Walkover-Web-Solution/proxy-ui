@@ -13,4 +13,5 @@ export const otpVerificationUrls = {
     getUserDetails: (baseUrl) => createUrl(baseUrl, 'c/getDetails'),
     leaveCompany: (baseUrl) => createUrl(baseUrl, 'c/inviteAction/leave'),
     updateUser: (baseUrl) => createUrl(baseUrl, 'c/updateUser'),
+    getSubscriptionPlans: (baseUrl) => createUrl(baseUrl, 'subscription/:referenceId/getSnippetsData'),
 };

@@ -11,6 +11,18 @@ export interface ICreateFeatureInitialState {
     serviceMethods: IMethod[];
     createUpdateObject: IFeature;
     featureDetails: IFeatureDetails;
+    lagoFeature: any;
+    billableMetrics: any;
+    createBillableMetric: any;
+    updateBillableMetric: any;
+    deleteBillableMetric: any;
+    billableMetricForm: any;
+    createPlan: any;
+    plansForm: any;
+    taxes: any;
+    planData: any;
+    updatePlan: any;
+    deletePlan: any;
 }
 
 @Injectable()
@@ -22,6 +34,18 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             serviceMethods: null,
             createUpdateObject: null,
             featureDetails: null,
+            lagoFeature: null,
+            billableMetrics: null,
+            createBillableMetric: null,
+            updateBillableMetric: null,
+            deleteBillableMetric: null,
+            billableMetricForm: null,
+            plansForm: null,
+            createPlan: null,
+            taxes: null,
+            planData: null,
+            updatePlan: null,
+            deletePlan: null,
         });
     }
     /** Selector for API progress  */
@@ -34,6 +58,30 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly createUpdateObject$: Observable<IFeature> = this.select((state) => state.createUpdateObject);
     /** Selector for Feature Details*/
     readonly featureDetails$: Observable<IFeatureDetails> = this.select((state) => state.featureDetails);
+    /** Selector for lago feature data */
+    readonly lagoFeature$: Observable<any> = this.select((state) => state.lagoFeature);
+    /** Selector for billable metrics data */
+    readonly billableMetrics$: Observable<any> = this.select((state) => state.billableMetrics);
+    /** Selector for create billable metric data */
+    readonly createBillableMetric$: Observable<any> = this.select((state) => state.createBillableMetric);
+    /** Selector for update billable metric data */
+    readonly updateBillableMetric$: Observable<any> = this.select((state) => state.updateBillableMetric);
+    /** Selector for delete billable metric data */
+    readonly deleteBillableMetric$: Observable<any> = this.select((state) => state.deleteBillableMetric);
+    /** Selector for billable metric form data */
+    readonly billableMetricForm$: Observable<any> = this.select((state) => state.billableMetricForm);
+    /** Selector for plans form data */
+    readonly plansForm$: Observable<any> = this.select((state) => state.plansForm);
+    /** Selector for create plan data */
+    readonly createPlan$: Observable<any> = this.select((state) => state.createPlan);
+    /** Selector for taxes data */
+    readonly taxes$: Observable<any> = this.select((state) => state.taxes);
+    /** Selector for plan data */
+    readonly planData$: Observable<any> = this.select((state) => state.planData);
+    /** Selector for update plan data */
+    readonly updatePlan$: Observable<any> = this.select((state) => state.updatePlan);
+    /** Selector for delete plan data */
+    readonly deletePlan$: Observable<any> = this.select((state) => state.deletePlan);
 
     /** Get feature type data */
     readonly getFeatureType = this.effect((data) => {
@@ -69,7 +117,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                 this.patchState({ isLoading: true });
                 return this.service.getMethodService(req).pipe(
                     tapResponse(
-                        (res: BaseResponse<IMethod[], void>) => {
+                        (res: BaseResponse<any[], void>) => {
                             if (res?.hasError) {
                                 this.showError(res.errors);
                             }
@@ -167,6 +215,306 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                         (error: any) => {
                             this.showError(error.errors);
                             this.patchState({ isLoading: false, featureDetails: null });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly createLagoFeature = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.createLagoFeature(req).pipe(
+                    tapResponse(
+                        (res: BaseResponse<IFeature, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Lago feature created successfully');
+                            return this.patchState({
+                                isLoading: false,
+                                lagoFeature: res.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    )
+                );
+            })
+        );
+    });
+
+    readonly getAllBillableMetrics = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getAllBillableMetrics(req.referenceId).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({
+                                isLoading: false,
+                                billableMetrics: res.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    )
+                );
+            })
+        );
+    });
+
+    readonly createBillableMetric = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.createBillableMetric(req.body).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Billable metric created successfully');
+                            return this.patchState({
+                                isLoading: false,
+                                createBillableMetric: res.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly updateBillableMetric = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.updateBillableMetric(req.refId, req.code, req.body).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Billable metric updated successfully');
+                            return this.patchState({
+                                isLoading: false,
+                                createBillableMetric: res.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly deleteBillableMetric = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.deleteBillableMetric(req.refId, req.code).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Billable metric deleted successfully');
+                            return this.patchState({ isLoading: false, deleteBillableMetric: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly getBillableMetricForm = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getBillableMetricForm().pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, billableMetricForm: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly getPlansForm = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getPlansForm(req.refId).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, plansForm: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly getTaxes = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getTaxes(req.refId).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, taxes: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly createPlan = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.createPlan(req.refId, req).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, createPlan: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly getAllPlans = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getAllPlans(req.refId).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, planData: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly updatePlan = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.updatePlan(req.refId, req.code, req.body).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, updatePlan: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly deletePlan = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.deletePlan(req.refId, req.code).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Plan deleted successfully');
+                            return this.patchState({ isLoading: false, deletePlan: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
                         }
                     ),
                     catchError((err) => EMPTY)

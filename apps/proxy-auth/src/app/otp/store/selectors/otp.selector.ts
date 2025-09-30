@@ -35,6 +35,10 @@ export const leaveCompanyData = createSelector(selectRootState, (p) => p.leaveCo
 export const leaveCompanySuccess = createSelector(selectRootState, (p) => p.leaveCompanySuccess);
 export const leaveCompanyDataInProcess = createSelector(selectRootState, (p) => p.leaveCompanyDataInProcess);
 
+export const subscriptionPlansData = createSelector(selectRootState, (p) => p.subscriptionPlansData);
+export const subscriptionPlansDataInProcess = createSelector(selectRootState, (p) => p.subscriptionPlansDataInProcess);
+export const subscriptionPlansDataSuccess = createSelector(selectRootState, (p) => p.subscriptionPlansDataSuccess);
+
 export const updateUser = createSelector(selectRootState, (p) => p.updateUser);
 export const updateSuccess = createSelector(selectRootState, (p) => p.updateSuccess);
 export const loading = createSelector(selectRootState, (p) => p.loading);
