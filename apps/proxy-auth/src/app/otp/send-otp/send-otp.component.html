@@ -9,7 +9,7 @@
     <div
         class="otp-verification-dialog"
         [ngClass]="{ 'animation-complete': animate, 'register-user': showRegistration | async }"
-        *ngIf="!authToken && type === 'authorization'"
+        *ngIf="!authToken && type !== 'subscription'"
     >
         <mat-progress-bar
             mode="indeterminate"
