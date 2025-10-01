@@ -1,7 +1,7 @@
 @import url('https://unpkg.com/@angular/material@14.2.7/prebuilt-themes/indigo-pink.css');
 
 .container {
-    background: #ffffff !important;
+    background: var(--color-common-white) !important;
     padding: 20px;
     text-align: left;
     position: relative;
@@ -57,26 +57,6 @@
     overflow-y: auto;
 }
 
-.plans-header {
-    text-align: center;
-    margin-bottom: 40px;
-
-    .plans-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #2c3e50;
-        margin: 0 0 10px 0;
-        line-height: 1.2;
-    }
-
-    .plans-subtitle {
-        font-size: 1.1rem;
-        color: #7f8c8d;
-        margin: 0;
-        font-weight: 400;
-    }
-}
-
 .plans-grid {
     display: flex;
     flex-direction: row;
@@ -125,12 +105,10 @@
 }
 
 .plan-card {
-    background: #ffffff;
+    background: var(--color-common-white);
     border: 2px solid #e0e0e0;
-    border-radius: 4px;
+    border-radius: var(--border-common-radius-4);
     padding: 30px 25px;
-
-    position: relative;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -149,7 +127,7 @@
     }
 
     &.popular {
-        border-color: #000000;
+        border-color: var(--color-common-dark);
         border-width: 3px;
         transform: scale(1.02);
 
@@ -159,9 +137,7 @@
     }
 
     &.selected {
-        border-color: #000000;
-        border-width: 3px;
-        background: #f8f9fa;
+        border-color: var(--color-common-dark);
     }
 
     // Mobile responsive
@@ -185,113 +161,69 @@
     position: absolute;
     top: -12px;
     right: 20px;
-    background: #000000;
-    color: #ffffff;
+    background: var(--color-common-dark);
+    color: var(--color-common-white);
     padding: 6px 16px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: var(--font-size-12);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .plan-title {
-    font-size: 28px;
+    font-size: var(--font-size-28);
     font-weight: 700;
-    color: #333333;
-    margin: 0 0 10px 4px;
+    color: var(--color-common-slate);
     @media (max-width: 768px) {
-        font-size: 24px;
+        font-size: var(--font-size-24);
     }
 }
 
 .plan-price {
-    margin-bottom: 15px;
-
     .price-amount {
-        font-size: 30px;
+        font-size: var(--font-size-30);
         font-weight: 600;
         color: #22c55e;
-        display: block;
         line-height: 1;
 
         @media (max-width: 768px) {
-            font-size: 36px;
+            font-size: var(--font-size-36);
         }
     }
 
     .price-period {
-        font-size: 18px;
+        font-size: var(--font-size-18);
         color: #666666;
         font-weight: 500;
 
         @media (max-width: 768px) {
-            font-size: 16px;
+            font-size: var(--font-size-16);
         }
     }
 }
 
 .section-title {
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 600;
-    color: #333333;
+    color: var(--color-common-slate);
     margin: 0 0 12px 0;
-    text-align: left;
-}
-
-.plan-features-section {
-    margin-bottom: 20px;
-    text-align: left;
 }
 
 .plan-features {
     list-style: none;
-    padding: 0;
-    margin: 0;
-    text-align: left;
 
     .feature-item {
-        padding: 6px 0;
+        // padding: 6px 0;
         color: #555555;
-        font-size: 14px;
-        position: relative;
-        padding-left: 20px;
-        display: flex;
-        align-items: center;
+        font-size: var(--font-size-14);
+        // padding-left: 20px;
 
         .feature-icon {
-            position: absolute;
-            left: 0;
             font-weight: bold;
-            font-size: 14px;
+            font-size: var(--font-size-14);
             color: #22c55e;
         }
-    }
-}
-
-.plan-status {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 20px;
-
-    &.status-active {
-        background: #d4edda;
-        color: #155724;
-    }
-
-    &.status-inactive {
-        background: #f8d7da;
-        color: #721c24;
-    }
-
-    &.status-pending {
-        background: #fff3cd;
-        color: #856404;
     }
 }
 
@@ -307,20 +239,20 @@
     margin-top: auto;
 
     &.primary {
-        background: #000000;
-        color: #ffffff;
-        border-color: #000000;
+        background: var(--color-common-dark);
+        color: var(--color-common-white);
+        border-color: var(--color-common-dark);
 
         &:hover {
-            background: #333333;
-            border-color: #333333;
+            background: var(--color-common-slate);
+            border-color: var(--color-common-slate);
         }
     }
 
     &.secondary {
-        background: #ffffff;
-        color: #000000;
-        border-color: #000000;
+        background: var(--color-common-white);
+        color: var(--color-common-dark);
+        border-color: var(--color-common-dark);
 
         &:hover {
             background: #f8f9fa;
@@ -329,26 +261,24 @@
 
     @media (max-width: 768px) {
         padding: 14px 28px;
-        font-size: 16px;
+        font-size: var(--font-size-16);
     }
 }
 
 .plan-button-hidden {
-    width: 100%;
     padding: 16px 32px;
     border-radius: 12px;
-    font-size: 18px;
+    font-size: var(--font-size-18);
     font-weight: 600;
     background: #f8f9fa;
     color: #6c757d;
     border: 2px solid #e9ecef;
     margin-top: auto;
-    text-align: center;
     cursor: not-allowed;
 
     @media (max-width: 768px) {
         padding: 14px 28px;
-        font-size: 16px;
+        font-size: var(--font-size-16);
     }
 }
 
@@ -365,10 +295,8 @@
 }
 
 .divider {
-    width: 100%;
     height: 1px;
     background: #e0e0e0;
-    margin: 20px 0;
 }
 :host {
     min-height: 100px;
