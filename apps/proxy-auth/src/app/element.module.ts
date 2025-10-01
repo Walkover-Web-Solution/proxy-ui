@@ -28,7 +28,7 @@ function documentReady(fn: any) {
 
 window['initVerification'] = (config: any) => {
     documentReady(() => {
-        if (config?.referenceId || config?.authToken) {
+        if (config?.referenceId || config?.authToken || config?.showCompanyDetails) {
             const findOtpProvider = document.querySelector('proxy-auth');
             if (findOtpProvider) {
                 document.body.removeChild(findOtpProvider);
@@ -36,6 +36,7 @@ window['initVerification'] = (config: any) => {
             const sendOtpElement = document.createElement('proxy-auth') as NgElement & WithProperties<SendOtpComponent>;
             sendOtpElement.referenceId = config?.referenceId;
             sendOtpElement.authToken = config?.authToken;
+            sendOtpElement.showCompanyDetails = config?.showCompanyDetails;
 
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;

@@ -30,7 +30,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public referenceId: string;
     @Input() public target: string;
     @Input() public authToken: string;
-    @Input()
+    @Input() public showCompanyDetails: boolean;
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
     }
@@ -72,6 +72,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public authReference: HTMLElement = null;
     public showCard: boolean = false;
     public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
+    public showSkeleton: boolean = false;
     constructor(
         private ngZone: NgZone,
         private store: Store<IAppState>,
@@ -168,6 +169,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.animate = false;
 
             if (intial) {
+                this.showSkeleton = true;
+                this.appendSkeletonLoader(this.referenceElement, 1);
                 this.addButtonsToReferenceElement(this.referenceElement);
             }
         }
@@ -183,7 +186,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 let buttonsProcessed = 0;
                 const totalButtons = widgetDataArray.length;
 
-                // If no buttons, still add the create account text
+                if (totalButtons > 0 && this.showSkeleton) {
+                    this.removeSkeletonLoader(element);
+                    this.appendSkeletonLoader(element, totalButtons);
+                }
+
                 if (totalButtons === 0) {
                     this.appendCreateAccountText(element);
                     return;
@@ -213,6 +220,17 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
     private checkAndAppendCreateAccountText(element, buttonsProcessed, totalButtons): void {
         if (buttonsProcessed === totalButtons) {
+            if (this.showSkeleton) {
+                this.showSkeleton = false;
+                this.removeSkeletonLoader(element);
+
+                // Show all buttons that were hidden
+                const allButtons = element.querySelectorAll('button');
+                allButtons.forEach((button) => {
+                    button.style.visibility = 'visible';
+                });
+            }
+
             // Add a small delay to ensure all buttons are rendered
             setTimeout(() => {
                 this.appendCreateAccountText(element);
@@ -240,6 +258,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             margin: 8px 8px 16px 8px;
             cursor: pointer;
             width: 230px;
+            visibility: hidden; // Hide button until all are ready
         `;
         image.style.cssText = `
             height: 20px;
@@ -404,6 +423,54 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public returnFailureObj(obj) {
         if (typeof this.failureReturn === 'function') {
             this.failureReturn(obj);
+        }
+    }
+
+    private appendSkeletonLoader(element, buttonCount: number): void {
+        const skeletonContainer = this.renderer.createElement('div');
+        skeletonContainer.id = 'skeleton-loader';
+        skeletonContainer.style.cssText = `
+            display: block;
+            width: 100%;
+        `;
+
+        for (let i = 0; i < buttonCount; i++) {
+            const skeletonButton = this.renderer.createElement('div');
+            skeletonButton.style.cssText = `
+                width: 230px;
+                height: 40px;
+                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                background-size: 200% 100%;
+                animation: skeleton-loading 1.5s infinite;
+                border-radius: 4px;
+                margin: 8px 8px 16px 8px;
+                display: block;
+                box-sizing: border-box;
+            `;
+
+            if (!document.getElementById('skeleton-animation')) {
+                const style = this.renderer.createElement('style');
+                style.id = 'skeleton-animation';
+                style.textContent = `
+                    @keyframes skeleton-loading {
+                        0% { background-position: 200% 0; }
+                        100% { background-position: -200% 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            this.renderer.appendChild(skeletonContainer, skeletonButton);
+        }
+
+        this.renderer.appendChild(element, skeletonContainer);
+        console.log('Skeleton loader appended to DOM');
+    }
+
+    private removeSkeletonLoader(element): void {
+        const skeletonLoader = element.querySelector('#skeleton-loader');
+        if (skeletonLoader) {
+            this.renderer.removeChild(element, skeletonLoader);
         }
     }
 }
