@@ -220,6 +220,11 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                 this.refreshFormData();
             }
         });
+        this.updateCompanyUserData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.getCompanyUsers();
+            }
+        });
         this.getCompanyUsers();
         this.getRoles();
         this.getPermissions();
@@ -257,6 +262,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     editUser(user: UserData, index: number): void {
+        debugger;
         this.isEditUser = true;
         this.isEditRole = false;
         this.isEditPermission = false;
@@ -270,7 +276,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addUserForm.patchValue({
             name: user.name,
             email: user.email,
-            mobileNumber: user.mobileNumber || '',
+            mobileNumber: (user as any).mobile || '',
             role: roleId || user.role,
             permission: userPermissionIds,
         });
@@ -433,11 +439,10 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     saveUser(): void {
-        debugger;
         if (this.addUserForm.valid) {
             const formValue = this.addUserForm.value;
             const selectedRole = formValue.role ? this.getRoleById(formValue.role) : null;
-            const roleName = selectedRole?.name || formValue.role || 'User'; // Default to 'User' if no role selected
+            const roleName = selectedRole?.name || formValue.role || 'User';
 
             if ((this.isEditUser || this.isEditRole) && this.currentEditingUser) {
                 // Update existing user

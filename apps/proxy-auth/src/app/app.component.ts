@@ -27,7 +27,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         if (!environment.production) {
             const sendOTPConfig = {
                 authToken:
-                    'ZjlSMHczTTlBSWtSMmN3eWE5ZHBKNkQxM0dJQXlOaUJPcS9KMnhvOU9WZ25PUG5mcjQwaCtmMVY2czJNM3NnbXdhOVJKMXpyQkIxNzBXRGN6M2FkYXNVa2VHTG5XdUI3cXRUTWZ2enl1eVg4UnM2YTZSUHk3cHdOdjVveDVUbVBmSXJFOWQ1bjJxMnZaNXcySXRwZXBMVWxWTWp2QTh4Y2F3VEs1SnU0NXJ2K2c5OTNZalVjczlLL1BKT2k3Q2c5eFVtZm0vU01BRERyb2VOamdUVDVzZz09',
+                    'eFJTVGRTb3YvYzJjNUNVWWtYb1I4QllUbjZqYkVHWFhHWUp4cGVjdW5RV3BueXJldmpCNzhxYWg0dUFRdForY2VHTVFlLzcvcU1PMTZ1TDVnZEVFVUpYclAwdG5QYlJBcHNFbHZiTVN2RjFHaHArU0FldHp3U3gyZ2J5L3l6SUtUUjFrTnU2cUx3WGlDVWhOWVRncnhBNE9QNVBML1FWTmNhaWR3c3JhaTJxWGlxZk40M0lUZkNSWEFXQnJGY2FNNU5KdWFpa0ZXOGhNZlRpblpuU0NkUT09',
                 pass: '123456',
                 type: 'user-management',
                 target: '_self',
