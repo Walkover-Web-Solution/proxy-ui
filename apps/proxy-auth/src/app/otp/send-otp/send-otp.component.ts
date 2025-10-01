@@ -127,7 +127,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
             this.hitCallbackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token });
         });
-        if (this.isPreview) {
+        if (this.isPreview && this.type === 'subscription') {
             setTimeout(() => {
                 this.openSubscriptionCenterDialog();
             }, 1000);
