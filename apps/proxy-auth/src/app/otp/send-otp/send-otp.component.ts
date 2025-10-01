@@ -7,6 +7,7 @@ import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, skip, take, takeUntil } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
 
 import { getWidgetData } from '../store/actions/otp.action';
 import { IAppState } from '../store/app.state';
@@ -19,6 +20,7 @@ import {
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { OtpWidgetService } from '../service/otp-widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SubscriptionCenterComponent } from '../component/subscription-center/subscription-center.component';
 
 @Component({
     selector: 'proxy-send-otp',
@@ -31,7 +33,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public type: string;
     @Input() public target: string;
     @Input() public authToken: string;
-    @Input()
+    @Input() public isPreview: boolean;
+
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
     }
@@ -76,7 +79,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         private store: Store<IAppState>,
         private renderer: Renderer2,
         private otpWidgetService: OtpWidgetService,
-        private otpService: OtpService
+        private otpService: OtpService,
+        private dialog: MatDialog
     ) {
         super();
         this.selectGetOtpInProcess$ = this.store.pipe(
@@ -123,6 +127,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
             this.hitCallbackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token });
         });
+        if (this.isPreview) {
+            setTimeout(() => {
+                this.openSubscriptionCenterDialog();
+            }, 1000);
+        }
     }
 
     ngOnDestroy() {
@@ -302,6 +311,24 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public returnFailureObj(obj) {
         if (typeof this.failureReturn === 'function') {
             this.failureReturn(obj);
+        }
+    }
+
+    public openSubscriptionCenterDialog(): void {
+        if (this.isPreview) {
+            this.dialog.open(SubscriptionCenterComponent, {
+                width: '900px',
+                height: '700px',
+                maxWidth: '900px',
+                maxHeight: '700px',
+                minWidth: '700px',
+                minHeight: '700px',
+                data: { referenceId: this.referenceId, isPreview: this.isPreview },
+                disableClose: false,
+                panelClass: 'subscription-center-dialog',
+                hasBackdrop: true,
+                backdropClass: 'subscription-dialog-backdrop',
+            });
         }
     }
 }

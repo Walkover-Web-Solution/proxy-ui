@@ -853,6 +853,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.getValueFromObservable(this.createUpdateObject$)?.reference_id ??
                 this.getValueFromObservable(this.featureDetails$)?.reference_id,
             type: featureId === 1 ? 'authorization' : 'subscription',
+            isPreview: true,
             target: '_blank',
             success: (data) => {
                 // get verified token in response

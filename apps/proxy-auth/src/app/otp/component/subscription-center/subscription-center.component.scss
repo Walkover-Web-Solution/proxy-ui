@@ -3,19 +3,72 @@
 .container {
     background: var(--color-common-white) !important;
     padding: 20px;
+    text-align: left;
+    position: relative;
     height: 100vh;
-    z-index: 9999;
+    width: 100vw;
+
+    z-index: 1;
+    flex-direction: column;
     overflow-y: auto;
+    box-sizing: border-box;
+}
+
+/* When used in dialog, override the positioning */
+:host-context(.subscription-center-dialog) .container {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    height: 100% !important;
+    width: 100% !important;
+    max-height: 700px !important;
+    max-width: 900px !important;
+}
+
+/* Dialog-specific styling for better layout */
+:host-context(.subscription-center-dialog) {
+    .subscription-plans-container {
+        padding: 10px !important;
+        height: calc(100% - 40px) !important;
+    }
+
+    .plans-grid {
+        justify-content: space-around !important;
+        align-items: flex-start !important;
+    }
+
+    .plan-card {
+        flex: 0 0 280px !important;
+        margin: 10px !important;
+    }
 }
 
 // Subscription Plans Styles
 .subscription-plans-container {
-    padding: 40px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
 }
 
 .plans-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+
+    align-items: stretch;
+    padding: 0;
     overflow-x: auto;
-    overflow-y: hidden;
+    // overflow-y: hidden;
 
     // Custom scrollbar styling
     &::-webkit-scrollbar {
@@ -60,9 +113,13 @@
     transition: all 0.3s ease;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     min-width: 250px;
-    max-width: 300px;
-    width: 275px;
-    flex-shrink: 0;
+    max-width: 280px;
+    width: 280px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 348px;
 
     &:hover {
         transform: translateY(-8px);
@@ -240,4 +297,31 @@
 .divider {
     height: 1px;
     background: #e0e0e0;
+}
+:host {
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .close-dialog {
+        position: absolute;
+        right: 16px;
+        top: 16px;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        @media only screen and (max-width: 768px) {
+            position: fixed;
+        }
+    }
+    .input-filed-wrapper {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        position: relative;
+    }
+    .login-toggle {
+        margin-top: 24px;
+        font-size: 13px;
+    }
 }
