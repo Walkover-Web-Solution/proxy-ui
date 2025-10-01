@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, Inject, Optional } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { IAppState } from '../../store/app.state';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -6,6 +6,7 @@ import { distinctUntilChanged, Observable, takeUntil } from 'rxjs';
 import { isEqual } from 'lodash';
 import { subscriptionPlansData } from '../../store/selectors';
 import { getSubscriptionPlans } from '../../store/actions/otp.action';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 export interface SubscriptionPlan {
     id: string;
@@ -33,12 +34,16 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
     @Input() public referenceId: string;
     @Output() public closeEvent = new EventEmitter<boolean>();
     @Output() public planSelected = new EventEmitter<SubscriptionPlan>();
+    @Input() public isPreview: boolean;
 
     public subscriptionPlans$: Observable<any>;
-
     public subscriptionPlans: any[] = [];
 
-    constructor(private store: Store<IAppState>) {
+    constructor(
+        private store: Store<IAppState>,
+        @Optional() public dialogRef: MatDialogRef<SubscriptionCenterComponent>,
+        @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
+    ) {
         super();
 
         this.subscriptionPlans$ = this.store.pipe(
@@ -49,16 +54,22 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
     }
 
     ngOnInit(): void {
-        this.store.dispatch(getSubscriptionPlans({ referenceId: this.referenceId }));
-        this.subscriptionPlans$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
-            if (data) {
-                this.subscriptionPlans = this.formatSubscriptionPlans(data.data);
-            }
-        });
+        // Get referenceId from dialog data or input
+        const referenceId = this.dialogData?.referenceId || this.referenceId;
+
+        if (referenceId) {
+            this.store.dispatch(getSubscriptionPlans({ referenceId }));
+            this.subscriptionPlans$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+                if (data) {
+                    this.subscriptionPlans = this.formatSubscriptionPlans(data.data);
+                }
+            });
+        }
+        console.log('isPreview', this.isPreview);
+        console.log('dialogData', this.dialogData);
     }
 
     private formatSubscriptionPlans(plans: any[]): any[] {
-        debugger;
         return plans.map((plan, index) => ({
             id: plan.plan_name?.toLowerCase().replace(/\s+/g, '-') || `plan-${index}`,
             title: plan.plan_name || 'Unnamed Plan',
@@ -108,6 +119,11 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
 
     public close(value: boolean): void {
         this.closeEvent.emit(value);
+
+        // If opened in dialog, close the dialog
+        if (this.dialogRef) {
+            this.dialogRef.close(value);
+        }
     }
 
     public selectPlan(plan: SubscriptionPlan): void {
