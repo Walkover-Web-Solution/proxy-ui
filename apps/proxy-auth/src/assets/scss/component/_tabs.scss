@@ -2,8 +2,12 @@
     .mat-tab-header {
         .mat-tab-labels {
             .mat-tab-label {
-                font-weight: 800 !important;
+                font-weight: 600 !important;
                 color: var(--color-common-black) !important;
+                opacity: 1 !important;
+                &:focus {
+                    color: var(--color-common-black) !important;
+                }
             }
         }
     }
@@ -13,7 +17,7 @@
     .mat-tab-header {
         .mat-tab-labels {
             .mat-tab-label {
-                font-weight: 600 !important;
+                font-weight: 500 !important;
             }
         }
     }
