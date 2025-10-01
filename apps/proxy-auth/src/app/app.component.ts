@@ -27,7 +27,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         if (!environment.production) {
             const sendOTPConfig = {
                 userToken:
-                    'cGplTURaeXgxV0JqdkRKV0ZuenhhNnBIMUk5Slg4OWxiVUtnV1EwOWs2RG45K2hvZTJuQWp5MHBIV043SEk2a0syd1k4VFYyME1jNGdGYjZuLzdlOTFQRmZlRDB5L3NGRHRrV3RUdUdhbzRRenQ1dmxvQU55R0RmVUdhVHJjOHZlcVRiKzZ4Qk1kcHA5RktvYk1JSlh1UFNvd2t6UTJVcnYvZStCWnh5VzhxTkFiMkNFRXBIajg2ZVNIcEVHUFp2OEFjczdBcitvQzZPRUl4WXN2Snc4UT09',
+                    'eVFZZXBpRVlKOGQranNWYU5CV1NBRjFZcGdPSVJrUE9DSlZ1clhGNjlRa1lMNC9WT2tGSXdkZ3MzbFRYenk4aDdPRUdGem13a0dkVUU2ZitRQU04c2JZRC9pNDRuWHFnSHhuQm5wQUhXWVIxRFF2WExQa3I4Zk5SV2QrdTB3aDlZVHU2MWc2VFRjVUNWL1Qrb3NrSmhvZ205VmhTSDBGbzVCaDZhQTBYS3pQbUdScEkySkV6bVVMNFJHR3VqaExwWUt2aDRXRENtQXlRZ2xYYm5jU0VFdz09',
                 pass: '123456',
                 target: '_self',
                 success: (data) => {
