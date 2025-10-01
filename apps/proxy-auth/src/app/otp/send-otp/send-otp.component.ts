@@ -321,7 +321,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 height: '700px',
                 maxWidth: '900px',
                 maxHeight: '700px',
-                minWidth: '900px',
+                minWidth: '700px',
                 minHeight: '700px',
                 data: { referenceId: this.referenceId, isPreview: this.isPreview },
                 disableClose: false,

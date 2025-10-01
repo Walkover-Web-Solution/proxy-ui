@@ -65,8 +65,6 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
                 }
             });
         }
-        console.log('isPreview', this.isPreview);
-        console.log('dialogData', this.dialogData);
     }
 
     private formatSubscriptionPlans(plans: any[]): any[] {
