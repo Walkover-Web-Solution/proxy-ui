@@ -37,6 +37,7 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.referenceId = config?.referenceId;
             sendOtpElement.type = config?.type;
             sendOtpElement.authToken = config?.authToken;
+            sendOtpElement.isPreview = config?.isPreview;
 
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;

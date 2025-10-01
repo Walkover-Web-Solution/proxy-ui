@@ -1,5 +1,5 @@
 <div class="container">
-    <button mat-icon-button mat-dialog-close class="close-dialog" (click)="close(true)">
+    <button *ngIf="dialogData?.isPreview" mat-icon-button mat-dialog-close class="close-dialog" (click)="close(true)">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
@@ -8,27 +8,26 @@
         </svg>
     </button>
 
-    <div class="subscription-plans-container">
-        <div class="plans-grid">
+    <div class="subscription-plans-container d-flex flex-column align-items-center justify-content-center">
+        <div class="plans-grid d-flex flex-row gap-4 justify-content-start align-items-stretch w-100 py-3">
             <div
                 *ngFor="let plan of subscriptionPlans; let i = index"
-                class="plan-card"
+                class="plan-card d-flex flex-column justify-content-between position-relative"
                 [ngClass]="{
                     'popular': plan.isPopular,
                     'selected': plan.isSelected
                 }"
                 (click)="selectPlan(plan)"
-                [title]="'Plan ' + (i + 1) + ': ' + plan.title"
             >
                 <!-- Popular Badge -->
                 <div *ngIf="plan.isPopular" class="popular-badge">Popular</div>
                 <div>
                     <!-- Plan Title -->
-                    <h1 class="plan-title">{{ plan.title }}</h1>
+                    <h1 class="plan-title mt-0">{{ plan.title }}</h1>
 
                     <!-- Plan Price -->
-                    <div class="plan-price">
-                        <span class="price-amount">{{ plan.price }}</span>
+                    <div class="plan-price mb-3">
+                        <span class="price-amount d-block mb-3">{{ plan.price }}</span>
                         <span class="price-period">{{ plan.period }}</span>
                     </div>
 
@@ -46,18 +45,21 @@
                     </button>
 
                     <!-- Hidden Button State -->
-                    <div *ngIf="plan.subscribeButtonHidden" class="plan-button-hidden">
+                    <div *ngIf="plan.subscribeButtonHidden" class="plan-button-hidden w-100 text-center">
                         {{ plan.buttonText }}
                     </div>
 
-                    <div class="divider"></div>
+                    <div class="divider w-100 my-3"></div>
                 </div>
 
                 <!-- Plan Features (if any) -->
-                <div *ngIf="plan.features && plan.features.length > 0" class="plan-features-section">
-                    <h4 class="section-title">Features:</h4>
-                    <ul class="plan-features">
-                        <li *ngFor="let feature of plan.features" class="feature-item included">
+                <div *ngIf="plan.features && plan.features.length > 0" class="mb-4 text-left">
+                    <h4 class="section-title text-left">Features:</h4>
+                    <ul class="plan-features m-0 p-0 text-left">
+                        <li
+                            *ngFor="let feature of plan.features"
+                            class="feature-item included d-flex align-items-center position-relative p-0 gap-2"
+                        >
                             <span class="feature-icon">✓</span>
                             {{ feature }}
                         </li>
