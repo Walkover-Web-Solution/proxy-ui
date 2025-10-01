@@ -49,7 +49,7 @@
         >
         </proxy-login>
     </div>
-    <div *ngIf="type === 'subscription'">
+    <div *ngIf="type === 'subscription'" class="w-100">
         <proxy-subscription-center [referenceId]="referenceId"></proxy-subscription-center>
     </div>
     <proxy-user-profile *ngIf="authToken" [authToken]="authToken"></proxy-user-profile>
