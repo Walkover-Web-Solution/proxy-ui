@@ -33,6 +33,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public type: string;
     @Input() public target: string;
     @Input() public authToken: string;
+    @Input() public showCompanyDetails: boolean;
     @Input() public userToken: string;
     @Input() public pass: string;
     public isPreview: boolean;
@@ -72,10 +73,13 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public showRegistration = new BehaviorSubject<boolean>(false);
     public registrationViaLogin: boolean = true;
     public prefillDetails: string;
+    public cameFromLogin: boolean = false; // Track if user came from login
+    public cameFromSendOtpCenter: boolean = false; // Track if user came from send-otp-center component
     public referenceElement: HTMLElement = null;
     public authReference: HTMLElement = null;
     public showCard: boolean = false;
     public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
+    public showSkeleton: boolean = false;
     constructor(
         private ngZone: NgZone,
         private store: Store<IAppState>,
@@ -129,11 +133,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
             this.hitCallbackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token });
         });
-        if (this.isPreview && this.type === 'subscription') {
-            setTimeout(() => {
-                this.openSubscriptionCenterDialog();
-            }, 1000);
-        }
     }
 
     ngOnDestroy() {
@@ -178,6 +177,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.animate = false;
 
             if (intial) {
+                this.showSkeleton = true;
+                this.appendSkeletonLoader(this.referenceElement, 1);
                 this.addButtonsToReferenceElement(this.referenceElement);
             }
         }
@@ -190,6 +191,19 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 take(1)
             )
             .subscribe((widgetDataArray) => {
+                let buttonsProcessed = 0;
+                const totalButtons = widgetDataArray.length;
+
+                if (totalButtons > 0 && this.showSkeleton) {
+                    this.removeSkeletonLoader(element);
+                    this.appendSkeletonLoader(element, totalButtons);
+                }
+
+                if (totalButtons === 0) {
+                    this.appendCreateAccountText(element);
+                    return;
+                }
+
                 for (const buttonsData of widgetDataArray) {
                     if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
                         this.otpWidgetService.scriptLoading
@@ -198,12 +212,38 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                                 filter((e) => !e),
                                 take(1)
                             )
-                            .subscribe(() => this.appendButton(element, buttonsData));
+                            .subscribe(() => {
+                                this.appendButton(element, buttonsData);
+                                buttonsProcessed++;
+                                this.checkAndAppendCreateAccountText(element, buttonsProcessed, totalButtons);
+                            });
                     } else {
                         this.appendButton(element, buttonsData);
+                        buttonsProcessed++;
+                        this.checkAndAppendCreateAccountText(element, buttonsProcessed, totalButtons);
                     }
                 }
             });
+    }
+
+    private checkAndAppendCreateAccountText(element, buttonsProcessed, totalButtons): void {
+        if (buttonsProcessed === totalButtons) {
+            if (this.showSkeleton) {
+                this.showSkeleton = false;
+                this.removeSkeletonLoader(element);
+
+                // Show all buttons that were hidden
+                const allButtons = element.querySelectorAll('button');
+                allButtons.forEach((button) => {
+                    button.style.visibility = 'visible';
+                });
+            }
+
+            // Add a small delay to ensure all buttons are rendered
+            setTimeout(() => {
+                this.appendCreateAccountText(element);
+            }, 100);
+        }
     }
 
     private appendButton(element, buttonsData): void {
@@ -226,6 +266,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             margin: 8px 8px 16px 8px;
             cursor: pointer;
             width: 230px;
+            visibility: hidden; // Hide button until all are ready
         `;
         image.style.cssText = `
             height: 20px;
@@ -251,6 +292,56 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         this.renderer.appendChild(button, image);
         this.renderer.appendChild(button, span);
         this.renderer.appendChild(element, button);
+    }
+
+    private appendCreateAccountText(element): void {
+        const paragraph: HTMLParagraphElement = this.renderer.createElement('p');
+        const link: HTMLAnchorElement = this.renderer.createElement('a');
+
+        // Style the paragraph to ensure it's at the bottom
+        paragraph.style.cssText = `
+            margin: 20px 8px 8px 8px;
+            padding-top: 16px;
+            font-size: 14px;
+           
+            box-sizing: border-box;
+            outline: none;
+            padding: 0px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+           
+            color: #3f4346;
+         
+            cursor: pointer;
+            width: 230px;
+        `;
+
+        // Style the link
+        link.style.cssText = `
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+        `;
+
+        // Set the text content
+        paragraph.innerHTML = 'New User? ';
+        link.textContent = 'Create Account';
+
+        // Add click event to the link
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            this.cameFromLogin = false; // Set flag to indicate user came from dynamically appended buttons
+            this.cameFromSendOtpCenter = false; // Reset other flags
+            this.setShowRegistration(true);
+        });
+
+        // Append elements
+        this.renderer.appendChild(paragraph, link);
+        this.renderer.appendChild(element, paragraph);
     }
 
     public hitCallbackUrl(callbackUrl: string, payload: { [key: string]: any }) {
@@ -280,10 +371,25 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             if (this.registrationViaLogin) {
                 if (value) {
                     this.setShowLogin(false);
+                    this.show$ = of(true);
                 } else {
-                    this.setShowLogin(true);
+                    // When closing registration, go back to where user came from
+                    this.setShowLogin(false);
+                    if (this.cameFromLogin) {
+                        // If user came from login, go back to login
+                        this.setShowLogin(true);
+                        this.show$ = of(true);
+                    } else if (this.cameFromSendOtpCenter) {
+                        // If user came from send-otp-center, go back to send-otp-center
+                        this.show$ = of(true);
+                    } else {
+                        // If user came from dynamically appended buttons, just close without opening anything
+                        this.show$ = of(false);
+                    }
+                    // Reset the flags
+                    this.cameFromLogin = false;
+                    this.cameFromSendOtpCenter = false;
                 }
-                this.show$ = of(true);
             } else {
                 this.setShowLogin(false);
                 if (this.referenceElement) {
@@ -304,6 +410,18 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.otpWidgetService.openLogin(value);
         });
     }
+
+    public setShowRegistrationFromLogin(data?: string) {
+        this.cameFromLogin = true; // Set flag to track that user came from login
+        this.cameFromSendOtpCenter = false; // Reset other flags
+        this.setShowRegistration(true, data);
+    }
+
+    public setShowRegistrationFromSendOtpCenter(data?: string) {
+        this.cameFromSendOtpCenter = true; // Set flag to track that user came from send-otp-center
+        this.cameFromLogin = false; // Reset other flags
+        this.setShowRegistration(true, data);
+    }
     public returnSuccessObj(obj) {
         if (typeof this.successReturn === 'function') {
             this.successReturn(obj);
@@ -316,21 +434,51 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         }
     }
 
-    public openSubscriptionCenterDialog(): void {
-        if (this.isPreview) {
-            this.dialog.open(SubscriptionCenterComponent, {
-                width: '900px',
-                height: '700px',
-                maxWidth: '900px',
-                maxHeight: '700px',
-                minWidth: '700px',
-                minHeight: '700px',
-                data: { referenceId: this.referenceId, isPreview: this.isPreview },
-                disableClose: false,
-                panelClass: 'subscription-center-dialog',
-                hasBackdrop: true,
-                backdropClass: 'subscription-dialog-backdrop',
-            });
+    private appendSkeletonLoader(element, buttonCount: number): void {
+        const skeletonContainer = this.renderer.createElement('div');
+        skeletonContainer.id = 'skeleton-loader';
+        skeletonContainer.style.cssText = `
+            display: block;
+            width: 100%;
+        `;
+
+        for (let i = 0; i < buttonCount; i++) {
+            const skeletonButton = this.renderer.createElement('div');
+            skeletonButton.style.cssText = `
+                width: 230px;
+                height: 40px;
+                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                background-size: 200% 100%;
+                animation: skeleton-loading 1.5s infinite;
+                border-radius: 4px;
+                margin: 8px 8px 16px 8px;
+                display: block;
+                box-sizing: border-box;
+            `;
+
+            if (!document.getElementById('skeleton-animation')) {
+                const style = this.renderer.createElement('style');
+                style.id = 'skeleton-animation';
+                style.textContent = `
+                    @keyframes skeleton-loading {
+                        0% { background-position: 200% 0; }
+                        100% { background-position: -200% 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            this.renderer.appendChild(skeletonContainer, skeletonButton);
+        }
+
+        this.renderer.appendChild(element, skeletonContainer);
+        console.log('Skeleton loader appended to DOM');
+    }
+
+    private removeSkeletonLoader(element): void {
+        const skeletonLoader = element.querySelector('#skeleton-loader');
+        if (skeletonLoader) {
+            this.renderer.removeChild(element, skeletonLoader);
         }
     }
 }

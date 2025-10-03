@@ -25,6 +25,7 @@
             [serviceData]="otpWidgetData"
             [target]="target"
             (togglePopUp)="toggleSendOtp()"
+            (openPopUp)="setShowRegistrationFromSendOtpCenter($event)"
             (successReturn)="returnSuccessObj($event)"
             (failureReturn)="returnFailureObj($event)"
         ></proxy-send-otp-center>
@@ -34,6 +35,7 @@
             [serviceData]="otpWidgetData"
             [loginServiceData]="loginWidgetData"
             [registrationViaLogin]="registrationViaLogin"
+            [showCompanyDetails]="showCompanyDetails"
             (togglePopUp)="setShowRegistration(false)"
             (successReturn)="setShowRegistration(false)"
             (failureReturn)="returnFailureObj($event)"
@@ -44,14 +46,18 @@
             (togglePopUp)="toggleSendOtp()"
             (closePopUp)="setShowLogin(false)"
             [loginServiceData]="loginWidgetData"
-            (openPopUp)="setShowRegistration(true, $event)"
+            (openPopUp)="setShowRegistrationFromLogin($event)"
             (failureReturn)="returnFailureObj($event)"
         >
         </proxy-login>
     </div>
 
-    <div *ngIf="type === 'subscription' && !isPreview">
-        <proxy-subscription-center [referenceId]="referenceId"></proxy-subscription-center>
+    <div [ngClass]="{ 'subscription-dialog': type === 'subscription' && isPreview }" *ngIf="type === 'subscription'">
+        <proxy-subscription-center
+            [referenceId]="referenceId"
+            (togglePopUp)="toggleSendOtp()"
+            [isPreview]="isPreview"
+        ></proxy-subscription-center>
     </div>
     <proxy-user-profile
         *ngIf="authToken && type !== 'user-management' && type !== 'subscription'"

@@ -174,9 +174,10 @@
                 <span class="subheading">Note: </span>
                 Password should contain atleast one Capital Letter, one Small Letter, one Digit and one Symbol
             </div>
-            <mat-divider class="company-details"></mat-divider>
-            <div class="heading">Company Details (Optional)</div>
+            <mat-divider *ngIf="showCompanyDetails" class="company-details"></mat-divider>
+            <div *ngIf="showCompanyDetails" class="heading">Company Details (Optional)</div>
             <ng-container
+                *ngIf="showCompanyDetails"
                 [ngTemplateOutlet]="formField"
                 [ngTemplateOutletContext]="{
                     label: 'Company Name',
@@ -184,6 +185,7 @@
                 }"
             ></ng-container>
             <ng-container
+                *ngIf="showCompanyDetails"
                 [ngTemplateOutlet]="intlFormField"
                 [ngTemplateOutletContext]="{
                     key: 'company',
@@ -192,6 +194,7 @@
                 }"
             ></ng-container>
             <ng-container
+                *ngIf="showCompanyDetails"
                 [ngTemplateOutlet]="formField"
                 [ngTemplateOutletContext]="{
                     label: 'Email',
