@@ -433,11 +433,17 @@
                     </mat-select>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width" *ngIf="isEditUser || isEditRole">
-                    <mat-label>Permission</mat-label>
+                <mat-form-field appearance="outline" class="full-width" *ngIf="isEditUser">
+                    <mat-label>Additional Permissions</mat-label>
                     <mat-select formControlName="permission" multiple>
-                        <mat-option *ngFor="let permission of permissions" [value]="permission.id">
+                        <mat-option
+                            *ngFor="let permission of getAvailableAdditionalPermissions()"
+                            [value]="permission.id"
+                        >
                             {{ permission.name }}
+                        </mat-option>
+                        <mat-option *ngIf="getAvailableAdditionalPermissions().length === 0" disabled>
+                            No additional permissions available
                         </mat-option>
                     </mat-select>
                     <mat-error *ngIf="addUserForm.get('permission')?.hasError('required')">

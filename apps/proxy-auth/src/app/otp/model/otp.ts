@@ -58,7 +58,7 @@ export interface UserData {
     mobileNumber?: string;
     role: string;
     permissions: string[];
-    additionalPermissions?: string[];
+    additionalpermissions?: string[];
 }
 
 export interface Role {

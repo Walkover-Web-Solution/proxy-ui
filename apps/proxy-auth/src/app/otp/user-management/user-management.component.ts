@@ -261,7 +261,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.permissionsDataSource.paginator = this.permissionsPaginator;
     }
 
-    editUser(user: UserData, index: number): void {
+    public editUser(user: UserData, index: number): void {
         debugger;
         this.isEditUser = true;
         this.isEditRole = false;
@@ -269,8 +269,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.currentEditingUser = user;
         const roleId = this.getRoleIdByName(user.role);
 
-        // Get permission IDs for the user's current permissions
-        const userPermissionIds = this.getPermissionIdsByName(user.permissions || []);
+        // Get permission IDs for the user's additional permissions
+        const userPermissionIds = this.getPermissionIdsByName(user.additionalpermissions || []);
 
         // Set all form values at once to avoid triggering role change during initial setup
         this.addUserForm.patchValue({
@@ -287,14 +287,14 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         });
     }
 
-    deleteUser(user: UserData, index: number): void {
+    public deleteUser(user: UserData, index: number): void {
         if (confirm(`Are you sure you want to delete ${user.name}?`)) {
             this.userData.splice(index, 1);
             this.applyFilter(); // Reapply filter after deletion
         }
     }
 
-    getPermissionsTooltip(user: UserData): string {
+    public getPermissionsTooltip(user: UserData): string {
         let tooltipText = '';
 
         if (user && user.permissions && user.permissions.length > 0) {
@@ -304,15 +304,15 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             tooltipText = 'No permissions assigned';
         }
 
-        if (user && user.additionalPermissions && user.additionalPermissions.length > 0) {
-            const additionalPermissionsText = user.additionalPermissions.join('\n+ ');
+        if (user && user.additionalpermissions && user.additionalpermissions.length > 0) {
+            const additionalPermissionsText = user.additionalpermissions.join('\n+ ');
             tooltipText += `\n\nAdditional Permissions:\n+ ${additionalPermissionsText}`;
         }
 
         return tooltipText;
     }
 
-    applyFilter(): void {
+    public applyFilter(): void {
         if (!this.searchTerm || this.searchTerm.trim() === '') {
             this.filteredData = [...this.userData];
         } else {
@@ -329,12 +329,12 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.dataSource.data = this.filteredData;
     }
 
-    clearSearch(): void {
+    public clearSearch(): void {
         this.searchTerm = '';
         this.applyFilter();
     }
 
-    maskEmail(email: string): string {
+    public maskEmail(email: string): string {
         if (!email || !email.includes('@')) {
             return email;
         }
@@ -356,19 +356,19 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
 
-    getEmailDisplay(email: string, index: number): string {
+    public getEmailDisplay(email: string, index: number): string {
         return this.isEmailVisible(index) ? email : this.maskEmail(email);
     }
 
-    isEmailVisible(index: number): boolean {
+    public isEmailVisible(index: number): boolean {
         return this.emailVisibility[index] || false;
     }
 
-    toggleEmailVisibility(index: number): void {
+    public toggleEmailVisibility(index: number): void {
         this.emailVisibility[index] = !this.emailVisibility[index];
     }
 
-    getRoleIdByName(roleName: string): number | undefined {
+    public getRoleIdByName(roleName: string): number | undefined {
         if (!this.roles || !Array.isArray(this.roles)) {
             return undefined;
         }
@@ -377,7 +377,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         return role?.id;
     }
 
-    onRoleChange(roleId: number): void {
+    public onRoleChange(roleId: number): void {
         if (!roleId) {
             // If no role selected, clear permissions
             this.addUserForm.get('permission')?.setValue([]);
@@ -396,7 +396,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
 
-    getPermissionIdsByName(permissionNames: string[]): number[] {
+    public getPermissionIdsByName(permissionNames: string[]): number[] {
         return permissionNames
             .map((permissionName) => {
                 const permission = this.permissions.find((p) => p.name === permissionName);
@@ -405,7 +405,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             .filter((id) => id !== undefined) as number[];
     }
 
-    getPermissionNamesByIds(permissionIds: number[]): string[] {
+    public getPermissionNamesByIds(permissionIds: number[]): string[] {
         return permissionIds
             .map((permissionId) => {
                 const permission = this.permissions.find((p) => p.id === permissionId);
@@ -414,7 +414,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             .filter((name) => name !== undefined) as string[];
     }
 
-    addUser(): void {
+    public addUser(): void {
         this.isEditUser = false;
         this.isEditRole = false;
         this.isEditPermission = false;
@@ -426,7 +426,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         });
     }
 
-    closeDialog(): void {
+    public closeDialog(): void {
         if (this.addUserDialogRef) {
             this.addUserDialogRef.close();
         }
@@ -438,7 +438,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.currentEditingPermission = null;
     }
 
-    saveUser(): void {
+    public saveUser(): void {
         if (this.addUserForm.valid) {
             const formValue = this.addUserForm.value;
             const selectedRole = formValue.role ? this.getRoleById(formValue.role) : null;
@@ -448,25 +448,22 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                 // Update existing user
                 const userIndex = this.userData.findIndex((u) => u.userId === this.currentEditingUser!.userId);
                 if (userIndex !== -1) {
-                    // Create a new array with the updated user
-                    this.userData = this.userData.map((user, index) =>
-                        index === userIndex
-                            ? {
-                                  ...user,
-                                  name: formValue.name,
-                                  email: formValue.email,
-                                  mobileNumber: formValue.mobileNumber || '',
-                                  role: roleName,
-                                  permissions: this.getDefaultPermissions(roleName),
-                              }
-                            : user
-                    );
+                    const originalMobile = (this.currentEditingUser as any).mobile || '';
+                    const newMobile = formValue.mobileNumber || '';
+
+                    // Build user object with only changed fields
+                    const userPayload: any = {
+                        id: (this.currentEditingUser as any).user_id,
+                        name: formValue.name,
+                    };
+
+                    // Only include mobile if it has changed
+                    if (originalMobile !== newMobile) {
+                        userPayload.mobile = newMobile;
+                    }
+
                     const payload = {
-                        user: {
-                            id: (this.currentEditingUser as any).user_id,
-                            name: formValue.name,
-                            mobile: formValue.mobileNumber || '',
-                        },
+                        user: userPayload,
                         cpermissions: formValue.permission,
                         role_id: formValue.role,
                     };
@@ -504,11 +501,11 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
 
-    getRoleById(roleId: number): Role | undefined {
+    public getRoleById(roleId: number): Role | undefined {
         return this.roles.find((role) => role.id === roleId);
     }
 
-    private getDefaultPermissions(role: string): string[] {
+    public getDefaultPermissions(role: string): string[] {
         switch (role) {
             case 'Admin':
                 return ['Full Access', 'User Management', 'System Settings', 'Reports'];
@@ -536,19 +533,19 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         });
     }
 
-    onPermissionSelected(selectedPermission: string): void {
+    public onPermissionSelected(selectedPermission: string): void {
         this.editPermissionForm.patchValue({
             permissionName: selectedPermission,
         });
     }
 
-    closePermissionDialog(): void {
+    public closePermissionDialog(): void {
         if (this.editPermissionDialogRef) {
             this.editPermissionDialogRef.close();
         }
     }
 
-    savePermission(): void {
+    public savePermission(): void {
         if (this.editPermissionForm.valid) {
             const formValue = this.editPermissionForm.value;
 
@@ -592,7 +589,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
 
-    addRole(): void {
+    public addRole(): void {
         this.isEditRole = true;
         this.isEditPermission = false;
         this.currentEditingUser = null;
@@ -603,21 +600,21 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         });
     }
 
-    addPermission(): void {
+    public addPermission(): void {
         this.addPermissionDialogRef = this.dialog.open(this.addPermissionDialog, {
             width: '500px',
             disableClose: true,
         });
     }
 
-    closeAddPermissionDialog(): void {
+    public closeAddPermissionDialog(): void {
         this.addPermissionDialogRef.close();
     }
 
-    saveAddPermission(): void {}
+    public saveAddPermission(): void {}
 
     // New methods for tab forms
-    saveAddRole(): void {
+    public saveAddRole(): void {
         if (this.addRoleForm.valid) {
             const formValue = this.addRoleForm.value;
 
@@ -653,7 +650,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
 
-    saveAddPermissionTab(): void {
+    public saveAddPermissionTab(): void {
         if (this.addPermissionTabForm.valid) {
             const formValue = this.addPermissionTabForm.value;
 
@@ -683,17 +680,17 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             this.closeDialog();
         }
     }
-    getCompanyUsers(): void {
+    public getCompanyUsers(): void {
         this.store.dispatch(otpActions.getCompanyUsers({ authToken: this.userToken }));
     }
-    getRoles(): void {
+    public getRoles(): void {
         this.store.dispatch(otpActions.getRoles({ authToken: this.userToken }));
     }
-    getPermissions(): void {
+    public getPermissions(): void {
         this.store.dispatch(otpActions.getPermissions({ authToken: this.userToken }));
     }
 
-    refreshFormData(): void {
+    public refreshFormData(): void {
         // Force change detection to update multiselect options
         setTimeout(() => {
             // Trigger change detection by updating the arrays
@@ -711,7 +708,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     // Role management methods
-    applyRoleFilter(): void {
+    public applyRoleFilter(): void {
         if (!this.roleSearchTerm || this.roleSearchTerm.trim() === '') {
             this.filteredRolesData = [...this.roles];
         } else {
@@ -728,12 +725,12 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.rolesDataSource.data = this.filteredRolesData;
     }
 
-    openAddRoleDialog(): void {
+    public openAddRoleDialog(): void {
         // Open the existing add role dialog
         this.addRole();
     }
 
-    editRole(role: any, index: number): void {
+    public editRole(role: any, index: number): void {
         // Set the current editing role
         this.currentEditingUser = role;
         this.isEditRole = true;
@@ -773,7 +770,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     // Permission management methods
-    applyPermissionFilter(): void {
+    public applyPermissionFilter(): void {
         if (!this.permissionSearchTerm || this.permissionSearchTerm.trim() === '') {
             this.filteredPermissionsData = [...this.permissions];
         } else {
@@ -785,7 +782,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.permissionsDataSource.data = this.filteredPermissionsData;
     }
 
-    openAddPermissionDialog(): void {
+    public openAddPermissionDialog(): void {
         this.isEditPermission = true;
         this.isEditRole = false;
         this.currentEditingPermission = null;
@@ -796,7 +793,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         });
     }
 
-    editPermission(permission: any, index: number): void {
+    public editPermission(permission: any, index: number): void {
         this.currentEditingPermission = permission;
         this.isEditPermission = true;
         this.isEditRole = false;
@@ -813,7 +810,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     // Dialog helper methods
-    getDialogTitle(): string {
+    public getDialogTitle(): string {
         if (this.isEditPermission) {
             return this.currentEditingPermission ? 'Edit Permission' : 'Add New Permission';
         } else if (this.isEditRole) {
@@ -825,7 +822,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
 
-    getSaveAction(): void {
+    public getSaveAction(): void {
         if (this.isEditPermission) {
             this.saveAddPermissionTab();
         } else if (this.isEditRole) {
@@ -837,7 +834,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
 
-    getFormInvalid(): boolean {
+    public getFormInvalid(): boolean {
         if (this.isEditPermission) {
             return this.addPermissionTabForm.invalid;
         } else if (this.isEditRole) {
@@ -849,7 +846,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
 
-    getSaveButtonText(): string {
+    public getSaveButtonText(): string {
         if (this.isEditPermission) {
             return this.currentEditingPermission ? 'Update Permission' : 'Add Permission';
         } else if (this.isEditRole) {
@@ -859,5 +856,36 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         } else {
             return 'Add User';
         }
+    }
+
+    public getAvailableAdditionalPermissions(): any[] {
+        if (!this.currentEditingUser) {
+            return [];
+        }
+
+        // Get role permissions
+        const rolePermissions = this.getRolePermissions();
+        const rolePermissionNames = rolePermissions.map((p) => p.name);
+
+        // Get permissions that are NOT part of the role
+        const availablePermissions = this.permissions.filter(
+            (permission) => !rolePermissionNames.includes(permission.name)
+        );
+
+        return availablePermissions;
+    }
+
+    private getRolePermissions(): any[] {
+        if (!this.currentEditingUser) {
+            return [];
+        }
+
+        // Find the role by name
+        const userRole = this.roles.find((role) => role.name === this.currentEditingUser.role);
+        if (!userRole || !userRole.c_permissions) {
+            return [];
+        }
+
+        return userRole.c_permissions;
     }
 }
