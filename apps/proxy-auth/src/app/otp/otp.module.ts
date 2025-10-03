@@ -76,7 +76,6 @@ export const CHAT_COMPONENTS: any[] = [
         UserDialogModule,
         MatCardModule,
         MatDividerModule,
-        MatDialogModule,
         MatSelectModule,
         MatTooltipModule,
         MatTabsModule,
