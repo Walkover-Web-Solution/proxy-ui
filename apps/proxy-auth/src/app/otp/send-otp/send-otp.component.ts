@@ -127,11 +127,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
             this.hitCallbackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token });
         });
-        if (this.isPreview) {
-            setTimeout(() => {
-                this.openSubscriptionCenterDialog();
-            }, 1000);
-        }
     }
 
     ngOnDestroy() {
@@ -311,24 +306,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public returnFailureObj(obj) {
         if (typeof this.failureReturn === 'function') {
             this.failureReturn(obj);
-        }
-    }
-
-    public openSubscriptionCenterDialog(): void {
-        if (this.isPreview) {
-            this.dialog.open(SubscriptionCenterComponent, {
-                width: '900px',
-                height: '700px',
-                maxWidth: '900px',
-                maxHeight: '700px',
-                minWidth: '700px',
-                minHeight: '700px',
-                data: { referenceId: this.referenceId, isPreview: this.isPreview },
-                disableClose: false,
-                panelClass: 'subscription-center-dialog',
-                hasBackdrop: true,
-                backdropClass: 'subscription-dialog-backdrop',
-            });
         }
     }
 }
