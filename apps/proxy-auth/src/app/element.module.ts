@@ -6,6 +6,7 @@ import { OtpModule } from './otp/otp.module';
 import { SendOtpComponent } from './otp/send-otp/send-otp.component';
 import { omit } from 'lodash-es';
 import { UserProfileComponent } from './otp/user-profile/user-profile.component';
+import { ConfirmationDialogComponent } from './otp/user-profile/user-dialog/user-dialog.component';
 
 export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure'];
 
@@ -28,7 +29,7 @@ function documentReady(fn: any) {
 
 window['initVerification'] = (config: any) => {
     documentReady(() => {
-        if (config?.referenceId || config?.authToken) {
+        if (config?.referenceId || config?.authToken || config?.pass || config?.type) {
             const findOtpProvider = document.querySelector('proxy-auth');
             if (findOtpProvider) {
                 document.body.removeChild(findOtpProvider);
@@ -36,7 +37,9 @@ window['initVerification'] = (config: any) => {
             const sendOtpElement = document.createElement('proxy-auth') as NgElement & WithProperties<SendOtpComponent>;
             sendOtpElement.referenceId = config?.referenceId;
             sendOtpElement.authToken = config?.authToken;
-
+            sendOtpElement.userToken = config?.userToken;
+            sendOtpElement.pass = config?.pass;
+            sendOtpElement.type = config?.type;
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;
             if (!config.success || typeof config.success !== 'function') {

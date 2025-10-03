@@ -1,4 +1,6 @@
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -34,6 +36,11 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserDialogModule } from './user-profile/user-dialog/user-dialog.module';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { UserManagementComponent } from './user-management/user-management.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
@@ -41,6 +48,7 @@ export const CHAT_COMPONENTS: any[] = [
     RegisterComponent,
     LoginComponent,
     UserProfileComponent,
+    UserManagementComponent,
 ];
 
 @NgModule({
@@ -59,10 +67,15 @@ export const CHAT_COMPONENTS: any[] = [
         MatRadioModule,
         UiLoaderModule,
         MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
         UserDialogModule,
         MatCardModule,
         MatDividerModule,
-
+        MatDialogModule,
+        MatSelectModule,
+        MatTooltipModule,
+        MatTabsModule,
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),
         StoreModule.forRoot(reducers, {

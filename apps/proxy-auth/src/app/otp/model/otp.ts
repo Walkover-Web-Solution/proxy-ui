@@ -52,3 +52,22 @@ export interface IOtpData {
     password: string;
     otp: number;
 }
+export interface UserData {
+    userId: string;
+    name: string;
+    email: string;
+    mobileNumber?: string;
+    role: string;
+    permissions: string[];
+    additionalpermissions?: string[];
+}
+
+export interface Role {
+    id: number;
+    name: string;
+    is_default: boolean;
+    feature_configuration_id: number | null;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+}

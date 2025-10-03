@@ -1,0 +1,423 @@
+@import url('https://unpkg.com/@angular/material@14.2.7/prebuilt-themes/indigo-pink.css');
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f9f9f9;
+    padding: 20px;
+}
+.members-container {
+    width: 40%;
+}
+
+.tab-content {
+    padding: 0;
+    width: 100%;
+}
+
+// Permissions table section styling
+.permissions-table-section {
+    .table-header-section {
+        .search-section {
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .add-button-section {
+            flex-shrink: 0;
+        }
+    }
+}
+
+.email-container {
+    .email-text {
+        color: #666;
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: var(--color-common-grey);
+        }
+    }
+}
+
+// Roles table styling
+.roles-table-container {
+    margin-top: 20px;
+}
+
+// Column width styling for roles table
+.role-column {
+    width: 25% !important;
+}
+
+.permissions-column {
+    width: 70% !important;
+    overflow: visible; // Allow button to show outside cell if needed
+    position: relative;
+}
+
+.permission-column {
+    overflow: visible; // Allow button to show outside cell if needed
+}
+
+.role-info {
+    .role-name {
+        font-weight: 600;
+        color: var(--color-common-grey);
+        font-size: var(--font-size-14);
+    }
+
+    .role-default {
+        font-size: var(--font-size-11);
+        color: #666;
+        font-style: italic;
+    }
+}
+
+.permission-info {
+    .permission-name {
+        font-weight: 600;
+        color: var(--color-common-grey);
+        font-size: var(--font-size-14);
+    }
+
+    .permission-default {
+        font-size: var(--font-size-12);
+        color: #666;
+        font-style: italic;
+    }
+}
+
+// Permission bullets styling
+.permission-bullets {
+    margin: 0;
+    padding-left: 16px;
+    list-style-type: disc;
+
+    .permission-bullet {
+        margin-bottom: 4px;
+        font-size: var(--font-size-12);
+        color: #555;
+        line-height: 1.4;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+// Permissions cell content styling
+.permissions-cell-content {
+    min-height: 40px; // Ensure minimum height for consistent button positioning
+    padding-right: 60px; // Add padding to prevent button overlap with content
+}
+
+// Hover actions styling
+.hover-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    position: absolute;
+    top: 6px;
+    right: 12px;
+    z-index: 10;
+    background: var(--color-common-white);
+    border-radius: var(--border-common-radius-4);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-row:hover .hover-actions {
+    opacity: 1;
+}
+
+.container {
+    background: var(--color-common-white);
+    padding: 15px 60px;
+    text-align: left;
+    position: relative;
+    min-height: 600px;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+}
+
+.user-item {
+    margin-bottom: 16px;
+}
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+table {
+    border-collapse: collapse;
+    margin-top: 10px;
+    box-shadow: none !important;
+}
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    padding: 14px;
+}
+td.mat-cell {
+    padding: 10px;
+}
+th {
+    color: var(--color-common-black);
+    font-weight: 600;
+    height: 22px;
+    padding-left: 12px !important;
+}
+td {
+    font-size: var(--font-size-12);
+    height: 22px;
+    color: #434242;
+}
+.no-data {
+    text-align: center;
+    font-size: medium;
+    font-weight: 700;
+    margin-top: 30px;
+}
+
+@media (max-width: 1024px) {
+    .container {
+        padding: 15px;
+        width: 100%;
+    }
+
+    .full-width {
+        max-width: 100%;
+    }
+
+    table {
+        font-size: var(--font-size-14);
+    }
+
+    th,
+    td {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        width: 100%;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table {
+        font-size: var(--font-size-12);
+    }
+
+    th,
+    td {
+        padding: 6px;
+    }
+
+    .toggle-btn,
+    .modal-buttons button {
+        font-size: var(--font-size-14);
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 8px;
+    }
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        font-size: var(--font-size-12);
+    }
+
+    .modal-content {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .toggle-btn,
+    .modal-buttons button {
+        font-size: var(--font-size-12);
+        padding: 6px;
+    }
+}
+.button-add {
+    background-color: var(--color-common-black);
+    color: var(--color-common-white);
+}
+.full-width {
+    width: 100%;
+}
+
+// Search bar styling
+.search-container {
+    flex: 1;
+    max-width: 400px;
+
+    .search-field {
+        .mat-form-field-wrapper {
+            padding-bottom: 0;
+        }
+
+        .mat-form-field-outline {
+            border-radius: var(--border-common-radius-8);
+        }
+
+        .mat-input-element {
+            font-size: var(--font-size-14);
+        }
+    }
+}
+
+// Enhanced table styling
+.default-table {
+    border-radius: var(--border-common-radius-8);
+    overflow: visible; // Allow buttons to show outside table boundaries
+
+    .mat-header-cell {
+        font-weight: 600;
+        font-size: var(--font-size-14);
+        color: var(--color-table-head, #374151);
+        background-color: var(--color-table-head-bg, #f9fafb);
+        border-bottom: 2px solid var(--color-table-head-border, #e5e7eb);
+        padding: 16px 12px;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .mat-cell {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--color-table-cell-border, #e5e7eb);
+        color: var(--color-table-cell, #374151);
+        font-size: var(--font-size-14);
+        vertical-align: middle;
+        text-align: left;
+    }
+
+    .table-row {
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+
+        .cell-content {
+            .actions {
+                opacity: 0;
+                transition: opacity 0.2s ease-in-out;
+
+                .edit-btn {
+                    font-size: var(--font-size-12);
+                    padding: 4px 12px;
+                    min-width: auto;
+                    height: 28px;
+                    line-height: 20px;
+                }
+            }
+        }
+
+        &:hover {
+            background-color: var(--color-table-hover, #f3f4f6);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+            .cell-content .actions {
+                opacity: 1;
+            }
+        }
+
+        &:nth-child(even) {
+            background-color: var(--color-table-even, var(--color-common-white));
+        }
+
+        &:nth-child(even):hover {
+            background-color: var(--color-table-hover, #f3f4f6);
+        }
+    }
+
+    .table-header {
+        background-color: var(--color-table-head-bg, #f9fafb);
+    }
+}
+
+// Column width utilities
+.width-md-100 {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+}
+
+.width-md-150 {
+    width: 40px;
+    min-width: 40px;
+    max-width: 40px;
+}
+
+.width-md-200 {
+    width: 25px;
+    min-width: 25px;
+    max-width: 25px;
+}
+
+.width-md-300 {
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+}
+
+// Text alignment utilities
+.text-left {
+    text-align: left !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+// Role text and tooltip styling
+.role-text {
+    // cursor: help;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: #666;
+
+    &:hover {
+        color: var(--color-primary, #1976d2);
+    }
+}
+
+// Custom tooltip styling
+::ng-deep {
+    .permissions-tooltip,
+    .email-tooltip {
+        background-color: rgba(0, 0, 0, 0.9) !important;
+        color: var(--color-common-white) !important;
+        font-size: var(--font-size-12) !important;
+        // max-width: 250px !important;
+        white-space: pre-line !important;
+        border-radius: var(--border-common-radius-4) !important;
+        padding: 10px !important;
+        line-height: 1.4 !important;
+        text-align: left !important;
+
+        .mat-tooltip {
+            white-space: pre-line !important;
+        }
+    }
+}
+
+.position-relative {
+    position: relative;
+}
