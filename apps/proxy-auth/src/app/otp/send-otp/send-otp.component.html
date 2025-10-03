@@ -50,8 +50,12 @@
         </proxy-login>
     </div>
 
-    <div *ngIf="type === 'subscription' && !isPreview">
-        <proxy-subscription-center [referenceId]="referenceId"></proxy-subscription-center>
+    <div [ngClass]="{ 'subscription-dialog': type === 'subscription' && isPreview }" *ngIf="type === 'subscription'">
+        <proxy-subscription-center
+            [referenceId]="referenceId"
+            (togglePopUp)="toggleSendOtp()"
+            [isPreview]="isPreview"
+        ></proxy-subscription-center>
     </div>
     <proxy-user-profile *ngIf="authToken" [authToken]="authToken"></proxy-user-profile>
     <div class="otp-verification-footer" *ngIf="!authToken && referenceId">

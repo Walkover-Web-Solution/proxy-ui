@@ -34,7 +34,8 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
     @Input() public referenceId: string;
     @Output() public closeEvent = new EventEmitter<boolean>();
     @Output() public planSelected = new EventEmitter<SubscriptionPlan>();
-    @Input() public isPreview: boolean;
+    @Input() public isPreview: boolean = false;
+    @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
 
     public subscriptionPlans$: Observable<any>;
     public subscriptionPlans: any[] = [];
@@ -117,8 +118,8 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
 
     public close(value: boolean): void {
         this.closeEvent.emit(value);
+        this.togglePopUp.emit();
 
-        // If opened in dialog, close the dialog
         if (this.dialogRef) {
             this.dialogRef.close(value);
         }

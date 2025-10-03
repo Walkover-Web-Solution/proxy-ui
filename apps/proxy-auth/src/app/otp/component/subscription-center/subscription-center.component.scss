@@ -1,7 +1,7 @@
 @import url('https://unpkg.com/@angular/material@14.2.7/prebuilt-themes/indigo-pink.css');
 
 .container {
-    background: var(--color-common-white) !important;
+    background: #ffffff !important;
     padding: 20px;
     text-align: left;
     position: relative;
@@ -36,7 +36,7 @@
 
     .plans-grid {
         justify-content: space-around !important;
-        align-items: flex-start !important;
+        // align-items: flex-start !important;
     }
 
     .plan-card {
@@ -105,9 +105,9 @@
 }
 
 .plan-card {
-    background: var(--color-common-white);
+    background: #ffffff;
     border: 2px solid #e0e0e0;
-    border-radius: var(--border-common-radius-4);
+    border-radius: 4px;
     padding: 30px 25px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -127,7 +127,7 @@
     }
 
     &.popular {
-        border-color: var(--color-common-dark);
+        border-color: #000000;
         border-width: 3px;
         transform: scale(1.02);
 
@@ -137,7 +137,7 @@
     }
 
     &.selected {
-        border-color: var(--color-common-dark);
+        border-color: #000000;
     }
 
     // Mobile responsive
@@ -161,8 +161,8 @@
     position: absolute;
     top: -12px;
     right: 20px;
-    background: var(--color-common-dark);
-    color: var(--color-common-white);
+    background: #000000;
+    color: #ffffff;
     padding: 6px 16px;
     border-radius: 20px;
     font-size: var(--font-size-12);
@@ -176,37 +176,37 @@
     font-weight: 700;
     color: var(--color-common-slate);
     @media (max-width: 768px) {
-        font-size: var(--font-size-24);
+        font-size: 24px;
     }
 }
 
 .plan-price {
     .price-amount {
-        font-size: var(--font-size-30);
+        font-size: 30px;
         font-weight: 600;
         color: #22c55e;
         line-height: 1;
 
         @media (max-width: 768px) {
-            font-size: var(--font-size-36);
+            font-size: 36px;
         }
     }
 
     .price-period {
-        font-size: var(--font-size-18);
+        font-size: 18px;
         color: #666666;
         font-weight: 500;
 
         @media (max-width: 768px) {
-            font-size: var(--font-size-16);
+            font-size: 16px;
         }
     }
 }
 
 .section-title {
-    font-size: var(--font-size-16);
+    font-size: 16px;
     font-weight: 600;
-    color: var(--color-common-slate);
+    color: #333333;
     margin: 0 0 12px 0;
 }
 
@@ -216,12 +216,12 @@
     .feature-item {
         // padding: 6px 0;
         color: #555555;
-        font-size: var(--font-size-14);
+        font-size: 14px;
         // padding-left: 20px;
 
         .feature-icon {
             font-weight: bold;
-            font-size: var(--font-size-14);
+            font-size: 14px;
             color: #22c55e;
         }
     }
@@ -239,20 +239,20 @@
     margin-top: auto;
 
     &.primary {
-        background: var(--color-common-dark);
-        color: var(--color-common-white);
-        border-color: var(--color-common-dark);
+        background: #000000;
+        color: #ffffff;
+        border-color: #000000;
 
         &:hover {
-            background: var(--color-common-slate);
-            border-color: var(--color-common-slate);
+            background: #333333;
+            border-color: #333333;
         }
     }
 
     &.secondary {
-        background: var(--color-common-white);
-        color: var(--color-common-dark);
-        border-color: var(--color-common-dark);
+        background: #ffffff;
+        color: #000000;
+        border-color: #000000;
 
         &:hover {
             background: #f8f9fa;
@@ -261,14 +261,14 @@
 
     @media (max-width: 768px) {
         padding: 14px 28px;
-        font-size: var(--font-size-16);
+        font-size: 16px;
     }
 }
 
 .plan-button-hidden {
     padding: 16px 32px;
     border-radius: 12px;
-    font-size: var(--font-size-18);
+    font-size: 18px;
     font-weight: 600;
     background: #f8f9fa;
     color: #6c757d;
@@ -278,7 +278,7 @@
 
     @media (max-width: 768px) {
         padding: 14px 28px;
-        font-size: var(--font-size-16);
+        font-size: 16px;
     }
 }
 
