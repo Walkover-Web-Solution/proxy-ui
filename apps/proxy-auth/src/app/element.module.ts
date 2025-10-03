@@ -36,10 +36,13 @@ window['initVerification'] = (config: any) => {
             }
             const sendOtpElement = document.createElement('proxy-auth') as NgElement & WithProperties<SendOtpComponent>;
             sendOtpElement.referenceId = config?.referenceId;
+            sendOtpElement.type = config?.type;
             sendOtpElement.authToken = config?.authToken;
             sendOtpElement.userToken = config?.userToken;
             sendOtpElement.pass = config?.pass;
             sendOtpElement.type = config?.type;
+            sendOtpElement.isPreview = config?.isPreview;
+
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;
             if (!config.success || typeof config.success !== 'function') {

@@ -45,6 +45,19 @@
         >
     </mat-form-field>
 
+    <!-- hCaptcha Component -->
+    <div class="hcaptcha-container">
+        <ng-hcaptcha
+            #hCaptcha
+            (verify)="onHCaptchaVerify($event)"
+            (expired)="onHCaptchaExpired()"
+            (error)="onHCaptchaError($event)"
+            theme="light"
+            size="normal"
+        >
+        </ng-hcaptcha>
+    </div>
+
     <div class="error-message" *ngIf="apiError | async">
         {{ apiError | async }}
     </div>

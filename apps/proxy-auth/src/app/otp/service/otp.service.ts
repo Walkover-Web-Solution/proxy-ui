@@ -174,4 +174,8 @@ export class OtpService {
         const url = otpVerificationUrls.updateRole(this.clientUrl).replace(':id', payload.id);
         return this.http.put<any>(url, payload, this.options);
     }
+    public getSubscriptionPlans(referenceId: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+        const url = otpVerificationUrls.getSubscriptionPlans(this.clientUrl).replace(':referenceId', referenceId);
+        return this.http.get<any>(url);
+    }
 }

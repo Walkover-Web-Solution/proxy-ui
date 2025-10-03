@@ -4,4 +4,5 @@ export const envVariables = {
     apiEncodeKey: process.env.AUTH_API_ENCODE_KEY,
     apiIvKey: process.env.AUTH_API_IV_KEY,
     sendOtpAuthKey: process.env.SEND_OTP_AUTH_KEY,
+    hCaptchaSiteKey: process.env.HCAPTCHA_SITE_KEY,
 };

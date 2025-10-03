@@ -123,3 +123,13 @@ export const updateRoleError = createAction(
     '[OTP] Update Role Error',
     props<{ errors: string[]; errorResponse: any }>()
 );
+
+export const getSubscriptionPlans = createAction('[OTP] Get Subscription Plans', props<{ referenceId: string }>());
+export const getSubscriptionPlansComplete = createAction(
+    '[OTP] Get Subscription Plans Complete',
+    props<{ response: any }>()
+);
+export const getSubscriptionPlansError = createAction(
+    '[OTP] Get Subscription Plans Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
