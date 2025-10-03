@@ -6,8 +6,12 @@ body {
     background: #f9f9f9;
     padding: 20px;
 }
+.container {
+    background-color: #ffffff;
+}
 .members-container {
-    width: 40%;
+    max-width: 600px;
+    min-width: 550px;
 }
 
 .tab-content {
