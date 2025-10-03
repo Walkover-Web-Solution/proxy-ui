@@ -38,7 +38,6 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserDialogModule } from './user-profile/user-dialog/user-dialog.module';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -77,13 +76,13 @@ export const CHAT_COMPONENTS: any[] = [
         UserDialogModule,
         MatCardModule,
         MatDividerModule,
-        MatDialogModule,
         MatSelectModule,
         MatTooltipModule,
         MatTabsModule,
         NgHcaptchaModule.forRoot({
             siteKey: environment.hCaptchaSiteKey,
         }),
+        MatDividerModule,
 
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),
