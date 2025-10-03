@@ -9,16 +9,20 @@
 
 /* Components*/
 @import 'assets/scss/component/form-field';
+@import 'assets/scss/component/tabs';
 
 :root {
     --color-common-dark: #000000;
     --color-common-slate: #333333;
     --color-common-rock: #5d6164;
-    --color-common-grey: #8f9396;
+    --color-common-grey: #333333;
     --color-common-cloud: #c1c5c8;
     --color-common-smoke: #d5d9dc;
     --color-common-white: #ffffff;
+    --color-common-black: #000000;
     --border-common-radius-4: 4px;
+    --border-common-radius-8: 8px;
+    --font-size-11: 11px;
     --font-size-12: 12px;
     --font-size-14: 14px;
     --font-size-16: 16px;
@@ -123,5 +127,14 @@ proxy-auth,
     .mat-simple-snackbar-action .mat-button {
         color: #ffffff !important;
         background-color: var(--color-email-primary) !important;
+    }
+}
+
+.common-btn {
+    &.mat-button {
+        color: #000000 !important;
+        .mat-button-focus-overlay {
+            background-color: #000000 !important;
+        }
     }
 }
