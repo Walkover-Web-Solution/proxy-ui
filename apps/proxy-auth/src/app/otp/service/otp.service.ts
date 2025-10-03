@@ -143,9 +143,6 @@ export class OtpService {
         name: string,
         authToken: string
     ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
-        console.log('name', name);
-
-        console.log('authToken', authToken);
         this.options.headers['proxy_auth_token'] = authToken;
         const url = otpVerificationUrls.createPermission(this.clientUrl);
         return this.http.post<any>(url, { name }, this.options);
