@@ -8,6 +8,9 @@ export interface IOtpState {
     otpGenerateData: IGetOtpRes;
     getOtpInProcess: boolean;
     getOtpSuccess: boolean;
+    verifyOtpV2Data: any;
+    verifyOtpV2InProcess: boolean;
+    verifyOtpV2Success: boolean;
 
     resendOtpInProcess: boolean;
     resendOtpSuccess: boolean;
@@ -29,6 +32,10 @@ export interface IOtpState {
     leaveCompanyData: any;
     leaveCompanyDataInProcess: boolean;
     leaveCompanySuccess: boolean;
+
+    subscriptionPlansData: any;
+    subscriptionPlansDataInProcess: boolean;
+    subscriptionPlansDataSuccess: boolean;
 
     updateUser: string;
     loading: boolean;
@@ -79,6 +86,9 @@ export const initialState: IOtpState = {
     otpGenerateData: null,
     getOtpInProcess: false,
     getOtpSuccess: false,
+    verifyOtpV2Data: null,
+    verifyOtpV2InProcess: false,
+    verifyOtpV2Success: false,
 
     resendOtpInProcess: false,
     resendOtpSuccess: false,
@@ -99,6 +109,10 @@ export const initialState: IOtpState = {
     leaveCompanyData: null,
     leaveCompanyDataInProcess: false,
     leaveCompanySuccess: false,
+
+    subscriptionPlansData: null,
+    subscriptionPlansDataInProcess: false,
+    subscriptionPlansDataSuccess: false,
 
     updateUser: '',
     loading: false,
@@ -185,6 +199,33 @@ const _otpReducer = createReducer(
             ...state,
             getOtpInProcess: false,
             getOtpSuccess: false,
+            errors: errors,
+            apiErrorResponse: errorResponse,
+        };
+    }),
+
+    on(otpActions.verifyOtpAction, (state, { request }) => {
+        return {
+            ...state,
+            verifyOtpV2InProcess: true,
+            verifyOtpV2Success: false,
+            errors: null,
+        };
+    }),
+    on(otpActions.verifyOtpActionComplete, (state, { response }) => {
+        return {
+            ...state,
+            verifyOtpV2Data: response,
+            verifyOtpV2InProcess: false,
+            verifyOtpV2Success: true,
+        };
+    }),
+    on(otpActions.verifyOtpActionError, (state, { errors, errorResponse }) => {
+        return {
+            ...state,
+            verifyOtpV2Data: null,
+            verifyOtpV2InProcess: false,
+            verifyOtpV2Success: false,
             errors: errors,
             apiErrorResponse: errorResponse,
         };
@@ -542,5 +583,25 @@ const _otpReducer = createReducer(
         error: errors,
         apiErrorResponse: errorResponse,
         updateRoleDataSuccess: false,
+    })),
+
+    on(otpActions.getSubscriptionPlans, (state, { referenceId }) => ({
+        ...state,
+        subscriptionPlansDataInProcess: true,
+        subscriptionPlansDataSuccess: false,
+        errors: null,
+    })),
+    on(otpActions.getSubscriptionPlansComplete, (state, { response }) => ({
+        ...state,
+        subscriptionPlansDataInProcess: false,
+        subscriptionPlansDataSuccess: true,
+        subscriptionPlansData: response,
+    })),
+    on(otpActions.getSubscriptionPlansError, (state, { errors, errorResponse }) => ({
+        ...state,
+        subscriptionPlansDataInProcess: false,
+        subscriptionPlansDataSuccess: false,
+        errors: errors,
+        apiErrorResponse: errorResponse,
     }))
 );

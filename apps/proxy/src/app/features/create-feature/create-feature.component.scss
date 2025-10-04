@@ -1,3 +1,4 @@
+@import '../../../styles.scss';
 .features-layout {
     display: grid;
     grid-gap: 16px;
@@ -6,9 +7,7 @@
         height: 160px;
     }
 }
-
 .code-snippet-view {
-    border-radius: var(--border-common-radius-4);
     transition: min-height 0.2s linear;
     max-width: 700px;
 }
@@ -20,4 +19,414 @@
 
 .service-list {
     width: 250px;
+}
+
+// Fix table borders
+.default-table {
+    .mat-mdc-row {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+
+        &:last-child {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        }
+    }
+
+    .mat-mdc-header-row {
+        border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+    }
+
+    .mat-mdc-cell,
+    .mat-mdc-header-cell {
+        border-right: 1px solid rgba(0, 0, 0, 0.12);
+
+        &:last-child {
+            border-right: none;
+        }
+    }
+}
+.organization-details-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    align-items: start;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    // Make textarea fields span full width
+    .mat-form-field {
+        &.full-width {
+            grid-column: 1 / -1;
+        }
+    }
+
+    // Ensure proper spacing between form fields
+    .mat-form-field {
+        margin-bottom: 16px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .heading {
+        font-size: 16px;
+        line-height: 20px;
+        font-weight: 600;
+    }
+    // Style for textarea specifically
+    textarea {
+        width: 100%;
+        resize: vertical;
+        min-height: 50px;
+    }
+}
+
+// Single form layout with sections
+.single-form-layout {
+    .form-section {
+        .form-grid {
+            grid-template-columns: repeat(2, 1fr);
+
+            @media (max-width: 768px) {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            // Make textarea fields span full width
+            .mat-form-field {
+                &.full-width {
+                    grid-column: 1 / -1;
+                }
+            }
+
+            // Ensure proper spacing between form fields
+            .mat-form-field {
+                margin-bottom: 16px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            // Style for textarea specifically
+            textarea {
+                width: 100%;
+                resize: vertical;
+                min-height: 80px;
+            }
+        }
+    }
+}
+
+// Charges card styling
+.charges-card {
+    margin-top: 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: #fafafa;
+
+    .charges-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #1976d2;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    mat-card-header {
+        border-radius: 12px 12px 0 0;
+    }
+
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .button-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 16px;
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        // Make textarea fields span full width
+        .mat-form-field {
+            &.full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        // Ensure proper spacing between form fields
+        .mat-form-field {
+            margin-bottom: 16px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        // Style for textarea specifically
+        textarea {
+            width: 100%;
+            resize: vertical;
+            min-height: 80px;
+        }
+    }
+
+    // Add subtle animation on load
+    animation: slideInUp 0.5s ease-out;
+
+    // Charges table styling
+    .charges-table-container {
+        margin-top: 24px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+        width: 100% !important;
+        max-width: 100% !important;
+        display: block;
+
+        .charges-table {
+            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+            table-layout: fixed;
+
+            .mat-mdc-header-row {
+                background-color: #f5f5f5;
+
+                .mat-mdc-header-cell {
+                    font-weight: 600;
+                    color: #333;
+                    border-bottom: 2px solid #e0e0e0;
+                }
+            }
+
+            .mat-mdc-row {
+                &:nth-child(even) {
+                    background-color: #fafafa;
+                }
+
+                &:hover {
+                    background-color: #f0f0f0;
+                }
+
+                .mat-mdc-cell {
+                    border-bottom: 1px solid #e0e0e0;
+                    padding: 12px 16px;
+                }
+            }
+
+            .mat-column-metric {
+                width: 40%;
+                padding-left: 16px;
+                word-wrap: break-word;
+                white-space: normal;
+            }
+
+            .mat-column-model {
+                width: 30%;
+                word-wrap: break-word;
+                white-space: normal;
+            }
+
+            .mat-column-minAmount {
+                width: 20%;
+                text-align: right;
+                padding-right: 16px;
+            }
+
+            .mat-column-actions {
+                width: 10%;
+                text-align: center;
+
+                button {
+                    transition: all 0.2s ease;
+
+                    &:hover {
+                        transform: scale(1.1);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Animation keyframes
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Global Material table overrides for full width
+::ng-deep .charges-table {
+    width: 100% !important;
+
+    .mat-mdc-table {
+        width: 100% !important;
+        min-width: 100% !important;
+        table-layout: fixed !important;
+    }
+
+    .mat-mdc-header-row,
+    .mat-mdc-row {
+        width: 100% !important;
+        display: table-row !important;
+    }
+
+    .mat-mdc-header-cell,
+    .mat-mdc-cell {
+        display: table-cell !important;
+        vertical-align: middle !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+
+    // Ensure all cells take their allocated space
+    .mat-column-metric {
+        width: 40% !important;
+    }
+
+    .mat-column-model {
+        width: 30% !important;
+    }
+
+    .mat-column-minAmount {
+        width: 20% !important;
+    }
+
+    .mat-column-actions {
+        width: 10% !important;
+    }
+}
+
+// Charges table box styling - direct container styling
+.charges-table-container {
+    margin-top: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    overflow: hidden;
+
+    // Add a header section
+    &::before {
+        content: 'Charges List';
+        display: block;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 16px 20px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+
+    .charges-table {
+        width: 100% !important;
+        min-width: 100% !important;
+        table-layout: fixed;
+        margin: 0;
+
+        .mat-mdc-header-row {
+            background-color: #f5f5f5;
+
+            .mat-mdc-header-cell {
+                font-weight: 600;
+                color: #333;
+                border-bottom: 2px solid #e0e0e0;
+            }
+        }
+
+        .mat-mdc-row {
+            &:nth-child(even) {
+                background-color: #fafafa;
+            }
+
+            &:hover {
+                background-color: #f0f0f0;
+            }
+
+            .mat-mdc-cell {
+                border-bottom: 1px solid #e0e0e0;
+                padding: 12px 16px;
+            }
+        }
+
+        .mat-column-metric {
+            width: 40% !important;
+            padding-left: 16px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        .mat-column-model {
+            width: 30% !important;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        .mat-column-minAmount {
+            width: 20% !important;
+            text-align: right;
+            padding-right: 16px;
+        }
+
+        .mat-column-actions {
+            width: 10% !important;
+            text-align: center;
+
+            button {
+                transition: all 0.2s ease;
+
+                &:hover {
+                    transform: scale(1.1);
+                }
+            }
+        }
+    }
+    .add-plan-edit {
+        height: calc(100vh - 650px);
+        overflow: auto;
+    }
+}
+
+// Info icon styling
+.info-icon {
+    color: var(--color-common-primary, #1976d2);
+    font-size: 17px;
+    cursor: help;
+    opacity: 0.7;
+    transition: opacity 0.2s ease-in-out;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    z-index: 1;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+// Ensure form field has relative positioning for absolute icon
+::ng-deep .mat-form-field {
+    position: relative;
+}
+
+.overflow-table {
+    height: calc(100vh - 350px);
 }

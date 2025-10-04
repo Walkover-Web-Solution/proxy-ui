@@ -25,3 +25,34 @@
     display: block;
     position: static;
 }
+
+/* Subscription Center Dialog Styles */
+::ng-deep .subscription-center-dialog {
+    .mat-dialog-container {
+        padding: 0 !important;
+        border-radius: 8px;
+        overflow: hidden;
+        width: 900px !important;
+        height: 700px !important;
+        max-width: 900px !important;
+        max-height: 700px !important;
+        min-width: 900px !important;
+        min-height: 700px !important;
+        box-sizing: border-box;
+    }
+}
+
+::ng-deep .subscription-dialog-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.subscription-preview-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+    button {
+        min-width: 200px;
+    }
+}

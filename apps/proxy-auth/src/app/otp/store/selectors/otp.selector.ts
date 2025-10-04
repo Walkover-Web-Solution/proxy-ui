@@ -11,6 +11,10 @@ export const selectGetOtpRes = createSelector(selectRootState, (p) => p.otpGener
 export const selectGetOtpInProcess = createSelector(selectRootState, (p) => p.getOtpInProcess);
 export const selectGetOtpSuccess = createSelector(selectRootState, (p) => p.getOtpSuccess);
 
+export const selectVerifyOtpV2Data = createSelector(selectRootState, (p) => p.verifyOtpV2Data);
+export const selectVerifyOtpV2InProcess = createSelector(selectRootState, (p) => p.verifyOtpV2InProcess);
+export const selectVerifyOtpV2Success = createSelector(selectRootState, (p) => p.verifyOtpV2Success);
+
 export const selectResendOtpInProcess = createSelector(selectRootState, (p) => p.resendOtpInProcess);
 export const selectResendOtpSuccess = createSelector(selectRootState, (p) => p.resendOtpSuccess);
 
@@ -30,6 +34,10 @@ export const getUserProfileInProcess = createSelector(selectRootState, (p) => p.
 export const leaveCompanyData = createSelector(selectRootState, (p) => p.leaveCompanyData);
 export const leaveCompanySuccess = createSelector(selectRootState, (p) => p.leaveCompanySuccess);
 export const leaveCompanyDataInProcess = createSelector(selectRootState, (p) => p.leaveCompanyDataInProcess);
+
+export const subscriptionPlansData = createSelector(selectRootState, (p) => p.subscriptionPlansData);
+export const subscriptionPlansDataInProcess = createSelector(selectRootState, (p) => p.subscriptionPlansDataInProcess);
+export const subscriptionPlansDataSuccess = createSelector(selectRootState, (p) => p.subscriptionPlansDataSuccess);
 
 export const updateUser = createSelector(selectRootState, (p) => p.updateUser);
 export const updateSuccess = createSelector(selectRootState, (p) => p.updateSuccess);

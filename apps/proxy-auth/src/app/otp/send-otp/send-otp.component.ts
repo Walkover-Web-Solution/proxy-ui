@@ -7,6 +7,7 @@ import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, skip, take, takeUntil } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
 
 import { getWidgetData } from '../store/actions/otp.action';
 import { IAppState } from '../store/app.state';
@@ -19,6 +20,7 @@ import {
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { OtpWidgetService } from '../service/otp-widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SubscriptionCenterComponent } from '../component/subscription-center/subscription-center.component';
 
 @Component({
     selector: 'proxy-send-otp',
@@ -28,11 +30,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy {
     @Input() public referenceId: string;
+    @Input() public type: string;
     @Input() public target: string;
     @Input() public authToken: string;
-    @Input() public type: string;
     @Input() public userToken: string;
     @Input() public pass: string;
+    public isPreview: boolean;
+
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
     }
@@ -77,7 +81,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         private store: Store<IAppState>,
         private renderer: Renderer2,
         private otpWidgetService: OtpWidgetService,
-        private otpService: OtpService
+        private otpService: OtpService,
+        private dialog: MatDialog
     ) {
         super();
         this.selectGetOtpInProcess$ = this.store.pipe(

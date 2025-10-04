@@ -14,6 +14,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
+import { NgHcaptchaModule } from 'ng-hcaptcha';
 
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -40,6 +41,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
+import { SubscriptionCenterComponent } from './component/subscription-center/subscription-center.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
@@ -48,6 +51,7 @@ export const CHAT_COMPONENTS: any[] = [
     LoginComponent,
     UserProfileComponent,
     UserManagementComponent,
+    SubscriptionCenterComponent,
 ];
 
 @NgModule({
@@ -58,6 +62,7 @@ export const CHAT_COMPONENTS: any[] = [
         MatIconModule,
         MatButtonModule,
         MatRippleModule,
+        MatDialogModule,
         MatFormFieldModule,
         MatInputModule,
         ReactiveFormsModule,
@@ -70,10 +75,14 @@ export const CHAT_COMPONENTS: any[] = [
         MatSortModule,
         UserDialogModule,
         MatCardModule,
-        MatDialogModule,
         MatSelectModule,
         MatTooltipModule,
         MatTabsModule,
+        NgHcaptchaModule.forRoot({
+            siteKey: environment.hCaptchaSiteKey,
+        }),
+        MatDividerModule,
+
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),
         StoreModule.forRoot(reducers, {

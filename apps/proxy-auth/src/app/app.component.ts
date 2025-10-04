@@ -27,9 +27,10 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         if (!environment.production) {
             const sendOTPConfig = {
                 authToken:
-                    'SVBTeUZkcmJ6aDlJdTh1QjMxLzFuRXZoOGo1OXJ1QndhWXFOM3cyUnFSdDdIRDV3M3FTNER6QlVlMlE0ZnhVVzAzZDJmeUFRWUprc2lzNnhDN1JTdVRwdHRxTkttOUhWdDlNUzBNZUpYalBPOGxjazcyaEUwb1dhZ1ZTK0wrRGlNZG9iN0h6VXdOVDdhbkc2TUVwWWpTT1prai9SY0FYM0ZuWThrL3BkZjFsbGU1YWN3Y21kWFlweE9JV0laVEhmTWdGa0hJanNRcml0UGtIbVlOeE5qZz09',
-                pass: '123456',
+                    'bjJRWDFhQUpsSnFCa3VPalAwdzdraW9ZV1M2ajNLamFVRzVzY2hKTHZJSjhDWmpRL1UzR2UreE90Ri85cGVCZ3c5ZVU0RFBMVi9aZWlsMDQwT29DUGNFekY4bUVmVWxyb2g2enVIWEVSOHhodmhQVzBCMCttZVRZWTBIV3BLMXBiUll0VXd1emt2SlpHT2hoSU1OZEhqbit3QkUvQ29CcVJlQjRxcC9TbzhCK1E3VjhhQ1BCU2VOTWlDQnIwVHFwYyt3UmdqM0kvd1AxTWl2c2FDMitZQT09',
                 type: 'user-management',
+                pass: '123456',
+                isPreview: false,
                 target: '_self',
                 success: (data) => {
                     console.log('success response', data);

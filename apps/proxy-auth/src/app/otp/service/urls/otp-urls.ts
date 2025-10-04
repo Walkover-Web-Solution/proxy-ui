@@ -3,6 +3,7 @@ import { createUrl } from '@proxy/service';
 export const otpVerificationUrls = {
     getWidgetData: (baseUrl) => createUrl(baseUrl, ':referenceId/widget'),
     sendOtp: (baseUrl) => createUrl(baseUrl, ':referenceId/otp/send'),
+    verifyOtpV2: (baseUrl) => createUrl(baseUrl, ':referenceId/otp/verify'),
     verifyOtp: (baseUrl) => createUrl(baseUrl, 'widget/verifyOtp'),
     resend: (baseUrl) => createUrl(baseUrl, 'widget/retryOtp'),
     register: (baseUrl) => createUrl(baseUrl, 'c/register?action=redirect'),
@@ -18,4 +19,5 @@ export const otpVerificationUrls = {
     createPermission: (baseUrl) => createUrl(baseUrl, 'c/Permission'),
     updatePermission: (baseUrl) => createUrl(baseUrl, 'c/Permission/:id'),
     updateRole: (baseUrl) => createUrl(baseUrl, 'c/roles/:id'),
+    getSubscriptionPlans: (baseUrl) => createUrl(baseUrl, 'subscription/:referenceId/getSnippetsData'),
 };
