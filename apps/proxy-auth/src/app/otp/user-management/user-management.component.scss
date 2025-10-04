@@ -7,7 +7,8 @@ body {
     padding: 20px;
 }
 .members-container {
-    width: 40%;
+    max-width: 600px;
+    min-width: 550px;
 }
 
 .tab-content {
@@ -130,7 +131,7 @@ body {
 }
 
 .container {
-    background: var(--color-common-white);
+    background: #ffffff;
     padding: 15px 60px;
     text-align: left;
     position: relative;
