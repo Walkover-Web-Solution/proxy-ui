@@ -262,7 +262,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     public editUser(user: UserData, index: number): void {
-        debugger;
         this.isEditUser = true;
         this.isEditRole = false;
         this.isEditPermission = false;
