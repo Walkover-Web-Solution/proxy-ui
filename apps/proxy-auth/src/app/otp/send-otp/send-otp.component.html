@@ -49,7 +49,6 @@
         >
         </proxy-login>
     </div>
-    <proxy-user-profile *ngIf="authToken && type !== 'user-management'" [authToken]="authToken"></proxy-user-profile>
 
     <proxy-user-management
         *ngIf="authToken && type === 'user-management'"

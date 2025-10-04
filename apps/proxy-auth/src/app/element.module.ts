@@ -29,7 +29,7 @@ function documentReady(fn: any) {
 
 window['initVerification'] = (config: any) => {
     documentReady(() => {
-        if (config?.referenceId || config?.authToken || config?.userToken || config?.pass || config?.type) {
+        if (config?.referenceId || config?.authToken || config?.pass || config?.type) {
             const findOtpProvider = document.querySelector('proxy-auth');
             if (findOtpProvider) {
                 document.body.removeChild(findOtpProvider);
@@ -40,7 +40,6 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.authToken = config?.authToken;
             sendOtpElement.userToken = config?.userToken;
             sendOtpElement.pass = config?.pass;
-            sendOtpElement.type = config?.type;
             sendOtpElement.isPreview = config?.isPreview;
 
             sendOtpElement.target = config?.target ?? '_self';
