@@ -55,7 +55,7 @@
     <div [ngClass]="{ 'subscription-dialog': type === 'subscription' && isPreview }" *ngIf="type === 'subscription'">
         <proxy-subscription-center
             [referenceId]="referenceId"
-            (togglePopUp)="toggleSendOtp()"
+            (togglePopUp)="handleSubscriptionToggle($event)"
             [isPreview]="isPreview"
         ></proxy-subscription-center>
     </div>
