@@ -116,15 +116,17 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.store.pipe(select(subscriptionPlansData), takeUntil(this.destroy$)).subscribe((subscriptionPlans) => {
                 if (subscriptionPlans) {
                     this.subscriptionPlans = this.formatSubscriptionPlans(subscriptionPlans.data);
-                    this.toggleSendOtp(true);
+                }
+                if (this.isPreview) {
+                    this.show$ = of(true);
                 } else {
                     this.toggleSendOtp(true);
                 }
             });
-
-            // Fallback timeout in case subscription plans don't load
             setTimeout(() => {
-                if (!this.subscriptionPlans || this.subscriptionPlans.length === 0) {
+                if (this.isPreview) {
+                    this.show$ = of(true);
+                } else if (!this.subscriptionPlans || this.subscriptionPlans.length === 0) {
                     this.toggleSendOtp(true);
                 }
             }, 3000);
@@ -201,9 +203,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
             if (intial) {
                 if (this.type === 'subscription') {
-                    if (this.referenceElement) {
+                    if (!this.isPreview && this.referenceElement) {
                         this.appendSubscriptionButton(this.referenceElement);
-                    } else {
                     }
                 } else {
                     this.showSkeleton = true;
@@ -767,6 +768,14 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 selectedPlan: plan,
                 type: 'subscription_selected',
             });
+        }
+    }
+
+    public handleSubscriptionToggle(event?: any): void {
+        if (this.isPreview) {
+            this.toggleSendOtp();
+            this.isPreview = false;
+            return;
         }
     }
 
