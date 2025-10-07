@@ -26,7 +26,8 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     public initOtpProvider() {
         if (!environment.production) {
             const sendOTPConfig = {
-                referenceId: '1690999i174022063967b9a8dfbdc44',
+                referenceId: '4512365c175947134668df66f29b026',
+                type: 'subscription',
                 target: '_self',
                 success: (data) => {
                     console.log('success response', data);

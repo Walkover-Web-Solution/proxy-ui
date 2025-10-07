@@ -40,7 +40,6 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.authToken = config?.authToken;
             sendOtpElement.userToken = config?.userToken;
             sendOtpElement.pass = config?.pass;
-            sendOtpElement.type = config?.type;
             sendOtpElement.isPreview = config?.isPreview;
             sendOtpElement.showCompanyDetails = config?.showCompanyDetails;
 
