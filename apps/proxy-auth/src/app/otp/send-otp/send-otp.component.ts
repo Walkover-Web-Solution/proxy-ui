@@ -110,19 +110,14 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     ngOnInit() {
-        console.log('ngOnInit called - type:', this.type);
-
         if (this.type === 'subscription') {
             // Load subscription plans first
-            this.store.dispatch(getSubscriptionPlans({ referenceId: '4512365c175947134668df66f29b026' }));
+            this.store.dispatch(getSubscriptionPlans({ referenceId: this.referenceId }));
             this.store.pipe(select(subscriptionPlansData), takeUntil(this.destroy$)).subscribe((subscriptionPlans) => {
                 if (subscriptionPlans) {
                     this.subscriptionPlans = this.formatSubscriptionPlans(subscriptionPlans.data);
-                    console.log('subscriptionPlans loaded:', this.subscriptionPlans);
-                    // Now that plans are loaded, initialize the component
                     this.toggleSendOtp(true);
                 } else {
-                    console.log('No subscription plans received, initializing anyway');
                     this.toggleSendOtp(true);
                 }
             });
@@ -130,7 +125,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             // Fallback timeout in case subscription plans don't load
             setTimeout(() => {
                 if (!this.subscriptionPlans || this.subscriptionPlans.length === 0) {
-                    console.log('Fallback: Initializing without subscription plans');
                     this.toggleSendOtp(true);
                 }
             }, 3000);
@@ -206,16 +200,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.animate = false;
 
             if (intial) {
-                console.log('Initial setup - type:', this.type);
-                console.log('Reference element:', this.referenceElement);
-                console.log('Subscription plans:', this.subscriptionPlans);
-
                 if (this.type === 'subscription') {
-                    console.log('subscription type detected');
                     if (this.referenceElement) {
                         this.appendSubscriptionButton(this.referenceElement);
                     } else {
-                        console.error('Reference element not found for subscription type');
                     }
                 } else {
                     this.showSkeleton = true;
@@ -227,16 +215,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
     public appendSubscriptionButton(element): void {
         try {
-            console.log('appendSubscriptionButton called with element:', element);
-            console.log('subscriptionPlans length:', this.subscriptionPlans?.length);
-
             if (!element) {
-                console.error('Element is null or undefined');
                 return;
             }
 
             if (!this.subscriptionPlans || this.subscriptionPlans.length === 0) {
-                console.error('No subscription plans available');
                 // Create a fallback message
                 const fallbackDiv = this.renderer.createElement('div');
                 fallbackDiv.style.cssText = `
@@ -263,7 +246,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
             // Create plan cards for each subscription plan
             this.subscriptionPlans.forEach((plan, index) => {
-                console.log('Creating plan card for:', plan.title);
                 const planCard = this.createPlanCard(plan, index);
                 this.renderer.appendChild(plansGrid, planCard);
             });
@@ -273,11 +255,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
             // Append the container to the element
             this.renderer.appendChild(element, subscriptionContainer);
-
-            console.log('Subscription plans appended successfully');
-        } catch (error) {
-            console.error('Error in appendSubscriptionButton:', error);
-        }
+        } catch (error) {}
     }
 
     /**
@@ -285,7 +263,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
      */
     private createPlanCard(plan: any, index: number): HTMLElement {
         try {
-            console.log('Creating plan card for plan:', plan);
             const planCard = this.renderer.createElement('div');
             planCard.className = 'plan-card d-flex flex-column justify-content-between position-relative';
 
@@ -395,8 +372,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.renderer.appendChild(planCard, mainContent);
             return planCard;
         } catch (error) {
-            console.error('Error creating plan card:', error);
-            // Return a fallback element
             const fallbackCard = this.renderer.createElement('div');
             fallbackCard.style.cssText = `
                 padding: 20px;
@@ -759,8 +734,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
      * Handle plan selection
      */
     private selectPlan(plan: any): void {
-        console.log('Selected plan:', plan);
-
         // Remove selected class from all plans
         const allPlanCards = document.querySelectorAll('.plan-card');
         allPlanCards.forEach((card) => {
@@ -784,10 +757,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
      * Process the selected subscription plan
      */
     private processSelectedPlan(plan: any): void {
-        console.log('Processing selected plan:', plan);
-
-        // You can implement your logic here
-        // For example, redirect to payment or call an API
         if (plan.subscribeButtonLink) {
             window.open(plan.subscribeButtonLink, this.target || '_self');
         }
@@ -1089,7 +1058,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         }
 
         this.renderer.appendChild(element, skeletonContainer);
-        console.log('Skeleton loader appended to DOM');
     }
 
     private removeSkeletonLoader(element): void {
