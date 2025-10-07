@@ -161,6 +161,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     ngOnDestroy() {
+        if (this.referenceElement) {
+            this.clearSubscriptionPlans(this.referenceElement);
+        }
         super.ngOnDestroy();
     }
 
@@ -218,6 +221,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         try {
             if (!element) {
                 return;
+            }
+
+            const existingContainer = element.querySelector('.subscription-plans-container');
+            if (existingContainer) {
+                this.renderer.removeChild(element, existingContainer);
             }
 
             if (!this.subscriptionPlans || this.subscriptionPlans.length === 0) {
@@ -776,6 +784,15 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.toggleSendOtp();
             this.isPreview = false;
             return;
+        }
+    }
+
+    private clearSubscriptionPlans(element: HTMLElement): void {
+        if (element) {
+            const existingContainer = element.querySelector('.subscription-plans-container');
+            if (existingContainer) {
+                this.renderer.removeChild(element, existingContainer);
+            }
         }
     }
 
