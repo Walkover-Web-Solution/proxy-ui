@@ -465,7 +465,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     margin: 0;
 
     align-items: stretch;
-    padding: 0;
+    padding: 30px;
     overflow-x: auto;
     // overflow-y: hidden;
 
