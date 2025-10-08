@@ -235,7 +235,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             // Create the plans grid
             const plansGrid = this.renderer.createElement('div');
             plansGrid.className =
-                'plans-grid d-flex flex-row gap-4 justify-content-start align-items-stretch w-100 py-3';
+                'plans-grid d-flex flex-row gap-4 justify-content-start align-items-stretch w-100 py-3 m-0';
 
             // Add CSS styles for the subscription plans
             this.addSubscriptionStyles();
@@ -285,33 +285,39 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
             // Create main content div
             const mainContent = this.renderer.createElement('div');
+            mainContent.className = 'd-flex flex-column gap-3';
 
             // Create plan title
             const planTitle = this.renderer.createElement('h1');
-            planTitle.className = 'plan-title mt-0';
+            planTitle.className = 'plan-title my-0';
             planTitle.textContent = plan.title;
             this.renderer.appendChild(mainContent, planTitle);
 
             // Create plan price
             const planPrice = this.renderer.createElement('div');
-            planPrice.className = 'plan-price mb-3';
+            planPrice.className = 'plan-price d-flex gap-1 align-items-center';
 
             const priceAmount = this.renderer.createElement('span');
-            priceAmount.className = 'price-amount d-block mb-3';
-            priceAmount.textContent = plan.price;
+            priceAmount.className = 'price-amount d-block';
+            priceAmount.textContent = plan.priceNumber;
 
-            const pricePeriod = this.renderer.createElement('span');
-            pricePeriod.className = 'price-period';
-            pricePeriod.textContent = plan.period || '';
+            const priceText = this.renderer.createElement('span');
+            priceText.className = 'price-text d-block';
+            priceText.textContent = plan.priceText;
+
+            // const pricePeriod = this.renderer.createElement('span');
+            // pricePeriod.className = 'price-period';
+            // pricePeriod.textContent = plan.period || '';
 
             this.renderer.appendChild(planPrice, priceAmount);
-            this.renderer.appendChild(planPrice, pricePeriod);
+            this.renderer.appendChild(planPrice, priceText);
+            // this.renderer.appendChild(planPrice, pricePeriod);
             this.renderer.appendChild(mainContent, planPrice);
 
             // Create action button or hidden state
             if (!plan.subscribeButtonHidden) {
                 const actionButton = this.renderer.createElement('button');
-                actionButton.className = `plan-button ${plan.buttonStyle || 'secondary'}`;
+                actionButton.className = `plan-button w-100 ${plan.buttonStyle || 'secondary'}`;
                 actionButton.textContent = plan.buttonText;
 
                 actionButton.addEventListener('click', (event) => {
@@ -329,17 +335,17 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
             // Create divider
             const divider = this.renderer.createElement('div');
-            divider.className = 'divider w-100 my-3';
+            divider.className = 'divider w-100 my-2';
             this.renderer.appendChild(mainContent, divider);
 
             // Create features section if features exist
             if (plan.features && plan.features.length > 0) {
                 const featuresSection = this.renderer.createElement('div');
-                featuresSection.className = 'mb-4 text-left';
+                featuresSection.className = 'text-left';
 
                 const sectionTitle = this.renderer.createElement('h4');
                 sectionTitle.className = 'section-title text-left';
-                sectionTitle.textContent = 'Features:';
+                sectionTitle.textContent = 'Features';
                 this.renderer.appendChild(featuresSection, sectionTitle);
 
                 const featuresList = this.renderer.createElement('ul');
@@ -394,18 +400,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         style.id = 'subscription-styles';
         style.textContent = `
             @import url('https://unpkg.com/@angular/material@14.2.7/prebuilt-themes/indigo-pink.css');
-.container {
-    background: #ffffff !important;
-    padding: 20px;
-    text-align: left;
-    position: relative;
-    height: 100vh;
-    width: 100vw;
-    z-index: 1;
-    flex-direction: column;
-    overflow-y: auto;
-    box-sizing: border-box;
-}
 /* When used in dialog, override the positioning */
 :host-context(.subscription-center-dialog) .container {
     position: relative !important;
@@ -445,13 +439,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     overflow-y: auto;
 }
 .plans-grid {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    width: 100%;
     max-width: 100%;
-    margin: 0;
-    align-items: stretch;
     padding: 30px;
     overflow-x: auto;
     // overflow-y: hidden;
@@ -495,9 +483,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     max-width: 280px;
     width: 280px;
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     min-height: 348px;
     &:hover {
         transform: translateY(-8px);
@@ -553,11 +538,15 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     .price-amount {
         font-size: 30px;
         font-weight: 600;
-        color: #22c55e;
+        color: #000000;
         line-height: 1;
         @media (max-width: 768px) {
             font-size: 36px;
         }
+    }
+    .price-text {
+        font-size: 12px;
+        color: #666666;
     }
     .price-period {
         font-size: 18px;
@@ -589,10 +578,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 }
 .plan-button {
-    width: 65%;
     padding: 6px 6px;
     border-radius: 4px;
-    font-size: 15px;
     font-weight: 400;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -648,33 +635,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 .divider {
     height: 1px;
     background: #e0e0e0;
-}
-:host {
-    min-height: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    .close-dialog {
-        position: absolute;
-        right: 16px;
-        top: 16px;
-        width: 20px;
-        height: 20px;
-        line-height: 20px;
-        @media only screen and (max-width: 768px) {
-            position: fixed;
-        }
-    }
-    .input-filed-wrapper {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        position: relative;
-    }
-    .login-toggle {
-        margin-top: 24px;
-        font-size: 13px;
-    }
 }
         `;
 
@@ -857,7 +817,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         return plans.map((plan, index) => ({
             id: plan.plan_name?.toLowerCase().replace(/\s+/g, '-') || `plan-${index}`,
             title: plan.plan_name || 'Unnamed Plan',
-            price: plan.plan_price || 'Free',
+            priceNumber: this.extractPriceValue(plan.plan_price) || 0,
+            priceText:
+                this.extractCurrency(plan.plan_price) ||
+                (plan.plan_price ? plan.plan_price.replace(/[\d.]/g, '').trim() : 'Free'),
             priceValue: this.extractPriceValue(plan.plan_price),
             currency: this.extractCurrency(plan.plan_price),
             buttonText: plan.subscribe_button_hidden ? 'Hidden' : 'Get Started',
