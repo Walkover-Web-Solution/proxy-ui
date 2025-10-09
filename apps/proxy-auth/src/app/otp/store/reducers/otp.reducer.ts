@@ -33,9 +33,50 @@ export interface IOtpState {
     leaveCompanyDataInProcess: boolean;
     leaveCompanySuccess: boolean;
 
+    subscriptionPlansData: any;
+    subscriptionPlansDataInProcess: boolean;
+    subscriptionPlansDataSuccess: boolean;
+
     updateUser: string;
     loading: boolean;
     updateSuccess: boolean;
+
+    addUserData: any;
+    addUserInProcess: boolean;
+    addUserSuccess: boolean;
+
+    rolesData: any;
+    rolesDataInProcess: boolean;
+    rolesSuccess: boolean;
+
+    roleCreateData: any;
+    roleCreateDataInProcess: boolean;
+    roleCreateSuccess: boolean;
+
+    companyUsersData: any;
+    companyUsersDataInProcess: boolean;
+    companyUsersSuccess: boolean;
+
+    permissionCreateData: any;
+    permissionCreateDataInProcess: boolean;
+    permissionCreateSuccess: boolean;
+
+    permissionData: any;
+    permissionDataInProcess: boolean;
+    permissionSuccess: boolean;
+
+    updateCompanyUserData: any;
+    updateCompanyUserDataInProcess: boolean;
+    updateCompanyUserDataSuccess: boolean;
+
+    updatePermissionData: any;
+    updatePermissionDataInProcess: boolean;
+    updatePermissionDataSuccess: boolean;
+
+    updateRoleData: any;
+    updateRoleDataInProcess: boolean;
+    updateRoleDataSuccess: boolean;
+
     error: any;
 }
 
@@ -69,9 +110,50 @@ export const initialState: IOtpState = {
     leaveCompanyDataInProcess: false,
     leaveCompanySuccess: false,
 
+    subscriptionPlansData: null,
+    subscriptionPlansDataInProcess: false,
+    subscriptionPlansDataSuccess: false,
+
     updateUser: '',
     loading: false,
     updateSuccess: false,
+
+    addUserData: null,
+    addUserInProcess: false,
+    addUserSuccess: false,
+
+    rolesData: null,
+    rolesDataInProcess: false,
+    rolesSuccess: false,
+
+    roleCreateData: null,
+    roleCreateDataInProcess: false,
+    roleCreateSuccess: false,
+
+    companyUsersData: null,
+    companyUsersDataInProcess: false,
+    companyUsersSuccess: false,
+
+    permissionCreateData: null,
+    permissionCreateDataInProcess: false,
+    permissionCreateSuccess: false,
+
+    permissionData: null,
+    permissionDataInProcess: false,
+    permissionSuccess: false,
+
+    updateCompanyUserData: null,
+    updateCompanyUserDataInProcess: false,
+    updateCompanyUserDataSuccess: false,
+
+    updatePermissionData: null,
+    updatePermissionDataInProcess: false,
+    updatePermissionDataSuccess: false,
+
+    updateRoleData: null,
+    updateRoleDataInProcess: false,
+    updateRoleDataSuccess: false,
+
     error: null,
 };
 
@@ -306,5 +388,220 @@ const _otpReducer = createReducer(
         error: errors,
         apiErrorResponse: errorResponse,
         updateSuccess: false,
+    })),
+
+    on(otpActions.addUser, (state) => ({
+        ...state,
+        addUserInProcess: false,
+        error: null,
+        addUserSuccess: false,
+    })),
+
+    on(otpActions.addUserComplete, (state, { response }) => ({
+        ...state,
+        addUserData: response,
+        addUserInProcess: true,
+        error: null,
+        addUserSuccess: true,
+    })),
+
+    on(otpActions.addUserError, (state, { errors, errorResponse }) => ({
+        ...state,
+        addUserInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        addUserSuccess: false,
+    })),
+
+    on(otpActions.getRoles, (state) => ({
+        ...state,
+        rolesDataInProcess: false,
+        error: null,
+        rolesSuccess: false,
+    })),
+    on(otpActions.getRolesComplete, (state, { response }) => ({
+        ...state,
+        rolesData: response,
+        rolesDataInProcess: true,
+        error: null,
+        rolesSuccess: true,
+    })),
+    on(otpActions.getRolesError, (state, { errors, errorResponse }) => ({
+        ...state,
+        rolesDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        rolesSuccess: false,
+    })),
+
+    on(otpActions.getCompanyUsers, (state) => ({
+        ...state,
+        companyUsersDataInProcess: false,
+        error: null,
+        companyUsersSuccess: false,
+    })),
+
+    on(otpActions.getCompanyUsersComplete, (state, { response }) => ({
+        ...state,
+        companyUsersData: response,
+        companyUsersDataInProcess: true,
+        error: null,
+        companyUsersSuccess: true,
+    })),
+
+    on(otpActions.getCompanyUsersError, (state, { errors, errorResponse }) => ({
+        ...state,
+        companyUsersDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        companyUsersSuccess: false,
+    })),
+
+    on(otpActions.createRole, (state) => ({
+        ...state,
+        roleCreateDataInProcess: false,
+        error: null,
+        roleCreateSuccess: false,
+    })),
+
+    on(otpActions.createRoleComplete, (state, { response }) => ({
+        ...state,
+        roleCreateData: response,
+        roleCreateDataInProcess: true,
+        error: null,
+        roleCreateSuccess: true,
+    })),
+    on(otpActions.createRoleError, (state, { errors, errorResponse }) => ({
+        ...state,
+        roleCreateDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        roleCreateSuccess: false,
+    })),
+
+    on(otpActions.createPermission, (state) => ({
+        ...state,
+        permissionCreateDataInProcess: false,
+        error: null,
+        permissionCreateSuccess: false,
+    })),
+
+    on(otpActions.createPermissionComplete, (state, { response }) => ({
+        ...state,
+        permissionCreateData: response,
+        permissionCreateDataInProcess: true,
+        error: null,
+        permissionCreateSuccess: true,
+    })),
+
+    on(otpActions.createPermissionError, (state, { errors, errorResponse }) => ({
+        ...state,
+        permissionCreateDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        permissionCreateSuccess: false,
+    })),
+    on(otpActions.getPermissions, (state) => ({
+        ...state,
+        permissionDataInProcess: false,
+        error: null,
+        permissionSuccess: false,
+    })),
+
+    on(otpActions.getPermissionsComplete, (state, { response }) => ({
+        ...state,
+        permissionData: response,
+        permissionDataInProcess: true,
+        error: null,
+        permissionSuccess: true,
+    })),
+
+    on(otpActions.getPermissionsError, (state, { errors, errorResponse }) => ({
+        ...state,
+        permissionDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        permissionSuccess: false,
+    })),
+    on(otpActions.updateCompanyUser, (state) => ({
+        ...state,
+        updateCompanyUserDataInProcess: false,
+        error: null,
+        updateCompanyUserDataSuccess: false,
+    })),
+
+    on(otpActions.updateCompanyUserComplete, (state, { response }) => ({
+        ...state,
+        updateCompanyUserData: response,
+        updateCompanyUserDataInProcess: true,
+        error: null,
+        updateCompanyUserDataSuccess: true,
+    })),
+    on(otpActions.updateCompanyUserError, (state, { errors, errorResponse }) => ({
+        ...state,
+        updateCompanyUserDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        updateCompanyUserDataSuccess: false,
+    })),
+    on(otpActions.updatePermission, (state) => ({
+        ...state,
+        updatePermissionDataInProcess: false,
+        error: null,
+        updatePermissionDataSuccess: false,
+    })),
+    on(otpActions.updatePermissionComplete, (state, { response }) => ({
+        ...state,
+        updatePermissionData: response,
+        updatePermissionDataInProcess: true,
+        error: null,
+        updatePermissionDataSuccess: true,
+    })),
+    on(otpActions.updatePermissionError, (state, { errors, errorResponse }) => ({
+        ...state,
+        updatePermissionDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        updatePermissionDataSuccess: false,
+    })),
+    on(otpActions.updateRole, (state) => ({
+        ...state,
+        updateRoleDataInProcess: false,
+        error: null,
+        updateRoleDataSuccess: false,
+    })),
+    on(otpActions.updateRoleComplete, (state, { response }) => ({
+        ...state,
+        updateRoleData: response,
+        updateRoleDataInProcess: true,
+        error: null,
+        updateRoleDataSuccess: true,
+    })),
+    on(otpActions.updateRoleError, (state, { errors, errorResponse }) => ({
+        ...state,
+        updateRoleDataInProcess: false,
+        error: errors,
+        apiErrorResponse: errorResponse,
+        updateRoleDataSuccess: false,
+    })),
+
+    on(otpActions.getSubscriptionPlans, (state, { referenceId }) => ({
+        ...state,
+        subscriptionPlansDataInProcess: true,
+        subscriptionPlansDataSuccess: false,
+        errors: null,
+    })),
+    on(otpActions.getSubscriptionPlansComplete, (state, { response }) => ({
+        ...state,
+        subscriptionPlansDataInProcess: false,
+        subscriptionPlansDataSuccess: true,
+        subscriptionPlansData: response,
+    })),
+    on(otpActions.getSubscriptionPlansError, (state, { errors, errorResponse }) => ({
+        ...state,
+        subscriptionPlansDataInProcess: false,
+        subscriptionPlansDataSuccess: false,
+        errors: errors,
+        apiErrorResponse: errorResponse,
     }))
 );

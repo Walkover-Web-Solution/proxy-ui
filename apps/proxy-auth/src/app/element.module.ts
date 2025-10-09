@@ -6,6 +6,7 @@ import { OtpModule } from './otp/otp.module';
 import { SendOtpComponent } from './otp/send-otp/send-otp.component';
 import { omit } from 'lodash-es';
 import { UserProfileComponent } from './otp/user-profile/user-profile.component';
+import { ConfirmationDialogComponent } from './otp/user-profile/user-dialog/user-dialog.component';
 
 export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure'];
 
@@ -35,8 +36,12 @@ window['initVerification'] = (config: any) => {
             }
             const sendOtpElement = document.createElement('proxy-auth') as NgElement & WithProperties<SendOtpComponent>;
             sendOtpElement.referenceId = config?.referenceId;
+            sendOtpElement.type = config?.type;
             sendOtpElement.authToken = config?.authToken;
             sendOtpElement.showCompanyDetails = config?.showCompanyDetails;
+            sendOtpElement.userToken = config?.userToken;
+            sendOtpElement.pass = config?.pass;
+            sendOtpElement.isPreview = config?.isPreview;
 
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;

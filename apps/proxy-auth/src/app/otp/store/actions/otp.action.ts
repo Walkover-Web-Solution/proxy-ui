@@ -61,3 +61,75 @@ export const updateUserError = createAction(
     '[OTP] Update User Failure',
     props<{ errors: string[]; errorResponse: any }>()
 );
+
+export const addUser = createAction('[OTP] Add User', props<{ payload: any; authToken: string }>());
+export const addUserComplete = createAction('[OTP] Add User Complete', props<{ response: any }>());
+export const addUserError = createAction('[OTP] Add User Error', props<{ errors: string[]; errorResponse: any }>());
+
+export const getRoles = createAction('[OTP] Get Roles', props<{ authToken: string }>());
+export const getRolesComplete = createAction('[OTP] Get Roles Complete', props<{ response: any }>());
+export const getRolesError = createAction('[OTP] Get Roles Error', props<{ errors: string[]; errorResponse: any }>());
+
+export const createRole = createAction(
+    '[OTP] Create Role',
+    props<{ name: string; permissions: string[]; authToken: string }>()
+);
+export const createRoleComplete = createAction('[OTP] Create Role Complete', props<{ response: any }>());
+export const createRoleError = createAction(
+    '[OTP] Create Role Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+export const createPermission = createAction('[OTP] Create Permission', props<{ name: string; authToken: string }>());
+export const createPermissionComplete = createAction('[OTP] Create Permission Complete', props<{ response: any }>());
+export const createPermissionError = createAction(
+    '[OTP] Create Permission Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+export const getPermissions = createAction('[OTP] Get Permissions', props<{ authToken: string }>());
+export const getPermissionsComplete = createAction('[OTP] Get Permissions Complete', props<{ response: any }>());
+export const getPermissionsError = createAction(
+    '[OTP] Get Permissions Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+
+export const getCompanyUsers = createAction('[OTP] Get Company Users', props<{ authToken: string }>());
+export const getCompanyUsersComplete = createAction('[OTP] Get Company Users Complete', props<{ response: any }>());
+export const getCompanyUsersError = createAction(
+    '[OTP] Get Company Users Error',
+
+    props<{ errors: string[]; errorResponse: any }>()
+);
+
+export const updateCompanyUser = createAction(
+    '[OTP] Update Company User',
+    props<{ payload: any; authToken: string }>()
+);
+export const updateCompanyUserComplete = createAction('[OTP] Update Company User Complete', props<{ response: any }>());
+export const updateCompanyUserError = createAction(
+    '[OTP] Update Company User Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+
+export const updatePermission = createAction('[OTP] Update Permission', props<{ payload: any; authToken: string }>());
+export const updatePermissionComplete = createAction('[OTP] Update Permission Complete', props<{ response: any }>());
+export const updatePermissionError = createAction(
+    '[OTP] Update Permission Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+
+export const updateRole = createAction('[OTP] Update Role', props<{ payload: any; authToken: string }>());
+export const updateRoleComplete = createAction('[OTP] Update Role Complete', props<{ response: any }>());
+export const updateRoleError = createAction(
+    '[OTP] Update Role Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+
+export const getSubscriptionPlans = createAction('[OTP] Get Subscription Plans', props<{ referenceId: string }>());
+export const getSubscriptionPlansComplete = createAction(
+    '[OTP] Get Subscription Plans Complete',
+    props<{ response: any }>()
+);
+export const getSubscriptionPlansError = createAction(
+    '[OTP] Get Subscription Plans Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);

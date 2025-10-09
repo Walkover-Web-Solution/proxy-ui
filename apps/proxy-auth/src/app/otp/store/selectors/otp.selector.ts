@@ -35,7 +35,48 @@ export const leaveCompanyData = createSelector(selectRootState, (p) => p.leaveCo
 export const leaveCompanySuccess = createSelector(selectRootState, (p) => p.leaveCompanySuccess);
 export const leaveCompanyDataInProcess = createSelector(selectRootState, (p) => p.leaveCompanyDataInProcess);
 
+export const subscriptionPlansData = createSelector(selectRootState, (p) => p.subscriptionPlansData);
+export const subscriptionPlansDataInProcess = createSelector(selectRootState, (p) => p.subscriptionPlansDataInProcess);
+export const subscriptionPlansDataSuccess = createSelector(selectRootState, (p) => p.subscriptionPlansDataSuccess);
+
 export const updateUser = createSelector(selectRootState, (p) => p.updateUser);
 export const updateSuccess = createSelector(selectRootState, (p) => p.updateSuccess);
 export const loading = createSelector(selectRootState, (p) => p.loading);
+
+export const addUserData = createSelector(selectRootState, (p) => p.addUserData);
+export const addUserInProcess = createSelector(selectRootState, (p) => p.addUserInProcess);
+export const addUserSuccess = createSelector(selectRootState, (p) => p.addUserSuccess);
+
+export const rolesData = createSelector(selectRootState, (p) => p.rolesData);
+export const rolesDataInProcess = createSelector(selectRootState, (p) => p.rolesDataInProcess);
+export const rolesSuccess = createSelector(selectRootState, (p) => p.rolesSuccess);
+
+export const roleCreateData = createSelector(selectRootState, (p) => p.roleCreateData);
+export const roleCreateDataInProcess = createSelector(selectRootState, (p) => p.roleCreateDataInProcess);
+export const roleCreateSuccess = createSelector(selectRootState, (p) => p.roleCreateSuccess);
+
+export const permissionCreateData = createSelector(selectRootState, (p) => p.permissionCreateData);
+export const permissionCreateDataInProcess = createSelector(selectRootState, (p) => p.permissionCreateDataInProcess);
+export const permissionCreateSuccess = createSelector(selectRootState, (p) => p.permissionCreateSuccess);
+
+export const permissionData = createSelector(selectRootState, (p) => p.permissionData);
+export const permissionDataInProcess = createSelector(selectRootState, (p) => p.permissionDataInProcess);
+export const permissionSuccess = createSelector(selectRootState, (p) => p.permissionSuccess);
+
+export const companyUsersData = createSelector(selectRootState, (p) => p.companyUsersData);
+export const companyUsersDataInProcess = createSelector(selectRootState, (p) => p.companyUsersDataInProcess);
+export const companyUsersSuccess = createSelector(selectRootState, (p) => p.companyUsersSuccess);
+
+export const updateCompanyUserData = createSelector(selectRootState, (p) => p.updateCompanyUserData);
+export const updateCompanyUserDataInProcess = createSelector(selectRootState, (p) => p.updateCompanyUserDataInProcess);
+export const updateCompanyUserDataSuccess = createSelector(selectRootState, (p) => p.updateCompanyUserDataSuccess);
+
+export const updatePermissionData = createSelector(selectRootState, (p) => p.updatePermissionData);
+export const updatePermissionDataInProcess = createSelector(selectRootState, (p) => p.updatePermissionDataInProcess);
+export const updatePermissionDataSuccess = createSelector(selectRootState, (p) => p.updatePermissionDataSuccess);
+
+export const updateRoleData = createSelector(selectRootState, (p) => p.updateRoleData);
+export const updateRoleDataInProcess = createSelector(selectRootState, (p) => p.updateRoleDataInProcess);
+export const updateRoleDataSuccess = createSelector(selectRootState, (p) => p.updateRoleDataSuccess);
+
 export const error = createSelector(selectRootState, (p) => p.error);

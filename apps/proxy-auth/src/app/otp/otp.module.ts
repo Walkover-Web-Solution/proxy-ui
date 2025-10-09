@@ -1,4 +1,6 @@
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -34,6 +36,12 @@ import { UiLoaderModule } from '@proxy/ui/loader';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserDialogModule } from './user-profile/user-dialog/user-dialog.module';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { UserManagementComponent } from './user-management/user-management.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
+import { SubscriptionCenterComponent } from './component/subscription-center/subscription-center.component';
 import { MatDividerModule } from '@angular/material/divider';
 
 export const CHAT_COMPONENTS: any[] = [
@@ -42,6 +50,8 @@ export const CHAT_COMPONENTS: any[] = [
     RegisterComponent,
     LoginComponent,
     UserProfileComponent,
+    UserManagementComponent,
+    SubscriptionCenterComponent,
 ];
 
 @NgModule({
@@ -52,6 +62,7 @@ export const CHAT_COMPONENTS: any[] = [
         MatIconModule,
         MatButtonModule,
         MatRippleModule,
+        MatDialogModule,
         MatFormFieldModule,
         MatInputModule,
         ReactiveFormsModule,
@@ -60,8 +71,13 @@ export const CHAT_COMPONENTS: any[] = [
         MatRadioModule,
         UiLoaderModule,
         MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
         UserDialogModule,
         MatCardModule,
+        MatSelectModule,
+        MatTooltipModule,
+        MatTabsModule,
         NgHcaptchaModule.forRoot({
             siteKey: environment.hCaptchaSiteKey,
         }),
