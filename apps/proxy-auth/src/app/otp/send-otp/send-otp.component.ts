@@ -406,6 +406,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         style.id = 'subscription-styles';
         style.textContent = `
             @import url('https://unpkg.com/@angular/material@14.2.7/prebuilt-themes/indigo-pink.css');
+            @import url('../../../styles.scss');
 /* When used in dialog, override the positioning */
 :host-context(.subscription-center-dialog) .container {
     position: relative !important;
@@ -579,7 +580,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         .feature-icon {
             font-weight: bold;
             font-size: 14px;
-            color: #22c55e;
+            color: #333333;
         }
     }
 }
