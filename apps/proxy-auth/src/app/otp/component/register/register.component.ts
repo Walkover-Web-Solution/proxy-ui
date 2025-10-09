@@ -55,6 +55,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     @Output() public successReturn: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
 
+    get showCompanyDetail(): boolean {
+        // Show company details by default, only hide when explicitly set to false
+        return this.showCompanyDetails !== false;
+    }
+
     public registrationForm = new FormGroup({
         user: new FormGroup({
             firstName: new FormControl<string>(null, [
@@ -232,7 +237,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             ?.shadowRoot?.querySelector('#init-contact-wrapper-user');
         const interval = setInterval(() => {
             if (count > 6 || userIntlWrapper?.querySelector('.iti__selected-flag')?.getAttribute('title')) {
-                this.initIntl('company');
+                if (this.showCompanyDetail) {
+                    this.initIntl('company');
+                }
                 clearInterval(interval);
             }
             count += 1;
@@ -350,8 +357,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             delete formData?.user?.firstName;
             delete formData?.user?.lastName;
         }
-        if (formData?.company) {
+        if (formData?.company && this.showCompanyDetail) {
             formData.company['meta'] = {};
+        } else if (!this.showCompanyDetail) {
+            // Remove company data if company details are not shown
+            delete formData?.company;
         }
         const payload = {
             reference_id: this.referenceId,
