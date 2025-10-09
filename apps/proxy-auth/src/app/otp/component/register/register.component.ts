@@ -237,9 +237,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             ?.shadowRoot?.querySelector('#init-contact-wrapper-user');
         const interval = setInterval(() => {
             if (count > 6 || userIntlWrapper?.querySelector('.iti__selected-flag')?.getAttribute('title')) {
-                if (this.showCompanyDetail) {
-                    this.initIntl('company');
-                }
+                this.initIntl('company');
                 clearInterval(interval);
             }
             count += 1;
@@ -357,11 +355,8 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             delete formData?.user?.firstName;
             delete formData?.user?.lastName;
         }
-        if (formData?.company && this.showCompanyDetail) {
+        if (formData?.company) {
             formData.company['meta'] = {};
-        } else if (!this.showCompanyDetail) {
-            // Remove company data if company details are not shown
-            delete formData?.company;
         }
         const payload = {
             reference_id: this.referenceId,
