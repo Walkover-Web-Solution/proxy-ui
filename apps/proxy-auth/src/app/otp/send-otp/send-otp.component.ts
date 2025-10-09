@@ -192,9 +192,38 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 }
 
                 if (totalButtons === 0) {
+                    if (this.showSkeleton) {
+                        this.showSkeleton = false;
+                        this.removeSkeletonLoader(element);
+                    }
                     this.appendCreateAccountText(element);
                     return;
                 }
+
+                // Add a fallback timeout to ensure skeleton is removed
+                const fallbackTimeout = setTimeout(() => {
+                    if (this.showSkeleton) {
+                        this.showSkeleton = false;
+                        this.removeSkeletonLoader(element);
+                        const allButtons = element.querySelectorAll('button');
+                        allButtons.forEach((button) => {
+                            button.style.visibility = 'visible';
+                        });
+                        this.appendCreateAccountText(element);
+                    }
+                }, 3000);
+
+                const immediateFallback = setTimeout(() => {
+                    if (this.showSkeleton) {
+                        this.showSkeleton = false;
+                        this.forceRemoveAllSkeletonLoaders();
+                        const allButtons = element.querySelectorAll('button');
+                        allButtons.forEach((button) => {
+                            button.style.visibility = 'visible';
+                        });
+                        this.appendCreateAccountText(element);
+                    }
+                }, 1000);
 
                 for (const buttonsData of widgetDataArray) {
                     if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
@@ -207,19 +236,45 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                             .subscribe(() => {
                                 this.appendButton(element, buttonsData);
                                 buttonsProcessed++;
-                                this.checkAndAppendCreateAccountText(element, buttonsProcessed, totalButtons);
+                                this.checkAndAppendCreateAccountText(
+                                    element,
+                                    buttonsProcessed,
+                                    totalButtons,
+                                    fallbackTimeout,
+                                    immediateFallback
+                                );
                             });
                     } else {
                         this.appendButton(element, buttonsData);
                         buttonsProcessed++;
-                        this.checkAndAppendCreateAccountText(element, buttonsProcessed, totalButtons);
+                        this.checkAndAppendCreateAccountText(
+                            element,
+                            buttonsProcessed,
+                            totalButtons,
+                            fallbackTimeout,
+                            immediateFallback
+                        );
                     }
                 }
             });
     }
 
-    private checkAndAppendCreateAccountText(element, buttonsProcessed, totalButtons): void {
+    private checkAndAppendCreateAccountText(
+        element,
+        buttonsProcessed,
+        totalButtons,
+        fallbackTimeout?,
+        immediateFallback?
+    ): void {
         if (buttonsProcessed === totalButtons) {
+            // Clear both timeouts since we've successfully processed all buttons
+            if (fallbackTimeout) {
+                clearTimeout(fallbackTimeout);
+            }
+            if (immediateFallback) {
+                clearTimeout(immediateFallback);
+            }
+
             if (this.showSkeleton) {
                 this.showSkeleton = false;
                 this.removeSkeletonLoader(element);
@@ -464,13 +519,34 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         }
 
         this.renderer.appendChild(element, skeletonContainer);
-        console.log('Skeleton loader appended to DOM');
     }
 
     private removeSkeletonLoader(element): void {
         const skeletonLoader = element.querySelector('#skeleton-loader');
         if (skeletonLoader) {
             this.renderer.removeChild(element, skeletonLoader);
+        }
+
+        this.forceRemoveAllSkeletonLoaders();
+    }
+
+    private forceRemoveAllSkeletonLoaders(): void {
+        // Remove skeleton loaders from the reference element
+        if (this.referenceElement) {
+            const skeletonLoaders = this.referenceElement.querySelectorAll('#skeleton-loader');
+            skeletonLoaders.forEach((loader, index) => {
+                this.renderer.removeChild(this.referenceElement, loader);
+            });
+        }
+
+        // Also try to remove from document body (fallback)
+        const globalSkeletonLoaders = document.querySelectorAll('#skeleton-loader');
+        if (globalSkeletonLoaders.length > 0) {
+            globalSkeletonLoaders.forEach((loader, index) => {
+                if (loader.parentNode) {
+                    loader.parentNode.removeChild(loader);
+                }
+            });
         }
     }
 }
