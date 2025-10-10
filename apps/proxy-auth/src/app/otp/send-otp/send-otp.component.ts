@@ -38,6 +38,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public userToken: string;
     @Input() public pass: string;
     @Input() public isPreview: boolean;
+    @Input() public isLogin: boolean;
 
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
@@ -413,6 +414,86 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         style.textContent = `
             @import url('https://unpkg.com/@angular/material@14.2.7/prebuilt-themes/indigo-pink.css');
 /* When used in dialog, override the positioning */
+.position-relative {
+    position: relative !important;
+}
+.d-flex {
+    display: flex !important;
+}
+.d-block {
+    display: block !important;
+}
+.flex-row {
+    flex-direction: row !important;
+}
+.flex-column {
+    flex-direction: column !important;
+}
+.align-items-center {
+    align-items: center !important;
+}
+.align-items-stretch {
+    align-items: stretch !important;
+}
+.justify-content-start {
+    justify-content: start !important;
+}
+justify-content-between {
+    justify-content: between !important;
+}
+.w-100 {
+    width: 100% !important;
+}
+.p-0 {
+    padding: 0 !important;
+}
+.p-3 {
+    padding: 1rem !important;
+}
+.pt-3,
+.py-3 {
+    padding-top: 1rem !important;
+}
+.pb-3,
+.py-3 {
+    padding-bottom: 1rem !important;
+}
+.m-0 {
+    margin: 0 !important;
+}
+.mt-0,
+.my-0 {
+    margin-top: 0 !important;
+}
+.mb-0,
+.my-0 {
+    margin-bottom: 0 !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.gap-1 {
+    gap: 4px;
+}
+.gap-2 {
+    gap: 8px;
+}
+.gap-3 {
+    gap: 16px;
+}
+.gap-4 {
+    gap: 24px;
+}
+.gap-5 {
+    gap: 32px;
+}
+
 :host-context(.subscription-center-dialog) .container {
     position: relative !important;
     top: auto !important;
@@ -1006,7 +1087,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             width: 100%;
         `;
 
-        for (let i = 0; i < buttonCount; i++) {
+        for (let i = 0; i < 3; i++) {
             const skeletonButton = this.renderer.createElement('div');
             skeletonButton.style.cssText = `
                 width: 230px;

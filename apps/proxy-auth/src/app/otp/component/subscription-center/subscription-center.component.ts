@@ -20,6 +20,9 @@ export interface SubscriptionPlan {
     isPopular?: boolean;
     isSelected?: boolean;
     features?: string[];
+    notIncludedFeatures?: string[];
+    metrics?: string[];
+    extraFeatures?: string[];
     status?: string;
     subscribeButtonLink?: string;
     subscribeButtonHidden?: boolean;
@@ -36,6 +39,7 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
     @Output() public planSelected = new EventEmitter<SubscriptionPlan>();
     @Input() public isPreview: boolean = false;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
+    @Input() public isLogin: boolean;
 
     public subscriptionPlans$: Observable<any>;
     public subscriptionPlans: any[] = [];
@@ -55,34 +59,83 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
     }
 
     ngOnInit(): void {
-        // Get referenceId from dialog data or input
-        const referenceId = this.dialogData?.referenceId || this.referenceId;
+        // Use hardcoded JSON data
+        this.subscriptionPlans = this.getHardcodedJsonData();
+    }
 
-        if (referenceId) {
-            this.store.dispatch(getSubscriptionPlans({ referenceId }));
-            this.subscriptionPlans$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
-                if (data) {
-                    this.subscriptionPlans = this.formatSubscriptionPlans(data.data);
-                }
-            });
-        }
+    private getHardcodedJsonData(): SubscriptionPlan[] {
+        const jsonData = {
+            'Data': [
+                {
+                    'PlanName': 'Premium Plan',
+                    'PlanPrice': '1000 USD',
+                    'PlanMeta': {
+                        'Tag': '',
+                        'Extra': ['Some mast feature'],
+                        'Metrics': ['15000 Tasks', '5000 Credits', '300 MB Storage'],
+                        'Features': {
+                            'Included': [
+                                'Priority Support',
+                                'Expert Autmoation Builders',
+                                'Unlimited Flows',
+                                'Advanced Analytics',
+                            ],
+                            'NotIncluded': ['Dedicated Account Manager'],
+                        },
+                        'HighlightPlan': false,
+                    },
+                    'SubscribeButtonLink': 'http://localhost:8000/api/subscription/{ref_id}/subscribe',
+                },
+                {
+                    'PlanName': 'Premium Plan',
+                    'PlanPrice': '1000 USD',
+                    'PlanMeta': {
+                        'Tag': 'Popular',
+                        'Extra': ['Some mast feature'],
+                        'Metrics': ['15000 Tasks', '5000 Credits', '300 MB Storage'],
+                        'Features': {
+                            'Included': [
+                                'Priority Support',
+                                'Expert Autmoation Builders',
+                                'Unlimited Flows',
+                                'Advanced Analytics',
+                            ],
+                            'NotIncluded': ['Dedicated Account Manager'],
+                        },
+                        'HighlightPlan': true,
+                    },
+                    'SubscribeButtonLink': 'http://localhost:8000/api/subscription/{ref_id}/subscribe',
+                },
+            ],
+            'Status': 'success',
+            'HasError': false,
+            'Errors': [],
+            'ProxyDuration': 9,
+        };
+
+        return this.formatSubscriptionPlans(jsonData.Data);
     }
 
     private formatSubscriptionPlans(plans: any[]): any[] {
         return plans.map((plan, index) => ({
-            id: plan.plan_name?.toLowerCase().replace(/\s+/g, '-') || `plan-${index}`,
-            title: plan.plan_name || 'Unnamed Plan',
-            price: plan.plan_price || 'Free',
-            priceValue: this.extractPriceValue(plan.plan_price),
-            currency: this.extractCurrency(plan.plan_price),
-            buttonText: plan.subscribe_button_hidden ? 'Hidden' : 'Get Started',
-            buttonStyle: 'secondary', // All plans use secondary style
-            isPopular: false, // No plan is popular by default
-            isSelected: false, // No plan is selected by default
-            features: this.getIncludedFeatures(plan.charges),
-            status: plan.plan_status,
-            subscribeButtonLink: plan.subscribe_button_link,
-            subscribeButtonHidden: plan.subscribe_button_hidden,
+            id: plan.PlanName?.toLowerCase().replace(/\s+/g, '-') || `plan-${index}`,
+            title: plan.PlanName || 'Unnamed Plan',
+            price: plan.PlanPrice || 'Free',
+            priceValue: this.extractPriceValue(plan.PlanPrice),
+            currency: this.extractCurrency(plan.PlanPrice),
+            period: 'per month',
+            buttonText: this.isLogin ? 'Upgrade' : 'Get Started',
+            buttonStyle: 'primary',
+            isPopular: plan.PlanMeta?.HighlightPlan || false,
+            tag: plan.PlanMeta?.Tag || '',
+            isSelected: false,
+            features: plan.PlanMeta?.Features?.Included || [],
+            notIncludedFeatures: plan.PlanMeta?.Features?.NotIncluded || [],
+            metrics: plan.PlanMeta?.Metrics || [],
+            extraFeatures: plan.PlanMeta?.Extra || [],
+            status: 'active',
+            subscribeButtonLink: plan.SubscribeButtonLink,
+            subscribeButtonHidden: false,
         }));
     }
 
@@ -132,5 +185,10 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
 
         // Emit selected plan
         this.planSelected.emit(plan);
+
+        // Navigate to subscribe button link if available
+        if (plan.subscribeButtonLink) {
+            window.open(plan.subscribeButtonLink, '_blank');
+        }
     }
 }
