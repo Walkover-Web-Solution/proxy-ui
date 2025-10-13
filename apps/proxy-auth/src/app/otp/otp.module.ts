@@ -51,7 +51,6 @@ export const CHAT_COMPONENTS: any[] = [
     LoginComponent,
     UserProfileComponent,
     UserManagementComponent,
-    UserManagementComponent,
     SubscriptionCenterComponent,
 ];
 
