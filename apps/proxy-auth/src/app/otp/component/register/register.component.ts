@@ -55,6 +55,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     @Output() public successReturn: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
 
+    get showCompanyDetail(): boolean {
+        // Show company details by default, only hide when explicitly set to false
+        return this.showCompanyDetails !== false;
+    }
+
     public registrationForm = new FormGroup({
         user: new FormGroup({
             firstName: new FormControl<string>(null, [

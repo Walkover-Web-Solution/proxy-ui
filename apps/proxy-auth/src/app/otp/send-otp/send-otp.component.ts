@@ -967,31 +967,31 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
         // Style the paragraph to ensure it's at the bottom
         paragraph.style.cssText = `
-            margin: 20px 8px 8px 8px;
-            padding-top: 16px;
-            font-size: 14px;
+            margin: 20px 8px 8px 8px !important;
+            padding-top: 16px !important;
+            font-size: 14px !important;
            
-            box-sizing: border-box;
+            box-sizing: border-box !important;
             outline: none;
-            padding: 0px 16px;
+            padding: 0px 16px !important;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: center !important;
+            justify-content: center !important;
             gap: 8px;
-            font-size: 14px;
+            font-size: 14px !important;
            
-            color: #3f4346;
+            color: #3f4346 !important;
          
-            cursor: pointer;
+            cursor: pointer !important;
             width: 230px;
         `;
 
         // Style the link
         link.style.cssText = `
-            color: #007bff;
+            color: #007bff !important;
             text-decoration: none;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 500 !important;
         `;
 
         // Set the text content
@@ -1109,7 +1109,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             width: 100%;
         `;
 
-        for (let i = 0; i < buttonCount; i++) {
+        for (let i = 0; i < 3; i++) {
             const skeletonButton = this.renderer.createElement('div');
             skeletonButton.style.cssText = `
                 width: 230px;
