@@ -66,6 +66,8 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public successReturn: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
+    @Output() public openPopUp: EventEmitter<any> = new EventEmitter();
+    @Output() public closePopUp: EventEmitter<any> = new EventEmitter();
 
     public steps = 1;
     public phoneForm = new UntypedFormGroup({
@@ -388,5 +390,8 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         } else if (widgetData?.service_id === FeatureServiceIds.PasswordAuthentication) {
             this.otpWidgetService.openLogin(true);
         }
+    }
+    public showRegistration(prefillDetails: string) {
+        this.openPopUp.emit(prefillDetails);
     }
 }
