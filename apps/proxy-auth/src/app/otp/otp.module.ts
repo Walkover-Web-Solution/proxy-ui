@@ -7,7 +7,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -43,6 +42,7 @@ import { UserManagementComponent } from './user-management/user-management.compo
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SubscriptionCenterComponent } from './component/subscription-center/subscription-center.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
@@ -50,6 +50,7 @@ export const CHAT_COMPONENTS: any[] = [
     RegisterComponent,
     LoginComponent,
     UserProfileComponent,
+    UserManagementComponent,
     UserManagementComponent,
     SubscriptionCenterComponent,
 ];
