@@ -357,7 +357,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 ? `
             <div class="included-resources mb-2">
                 <h4 class="section-title text-left">Included</h4>
-                <div class="resource-boxes">
+                <div class="resource-boxes d-flex flex-column gap-2">
                     ${plan.plan_meta.metrics.map((metric) => `<div class="resource-box">${metric}</div>`).join('')}
                 </div>
             </div>
@@ -528,15 +528,12 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 }
 
 .plans-grid {
-                display: flex;
-                flex-direction: row;
                 gap: 20px;
-                width: 100%;
-    max-width: 100%;
+                max-width: 100%;
                 margin: 0;
                 align-items: flex-start;
                 padding: 20px 0 0 20px;
-    overflow-x: auto;
+              overflow-x: auto;
                 overflow-y: visible;
             }
 
@@ -587,8 +584,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 max-width: 350px;
                 width: 350px;
     flex: 1;
-                display: flex;
-                flex-direction: column;
                 justify-content: flex-start;
                 min-height: auto;
                 max-height: none;
@@ -676,8 +671,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
             /* Plan Price */
             .plan-price .price-container {
-                display: flex;
-                align-items: flex-start;
                 gap: 6px;
             }
 
@@ -723,9 +716,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
             /* Included Resources */
             .included-resources .resource-boxes {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
                 margin-top: 6px;
             }
 
