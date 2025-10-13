@@ -1109,7 +1109,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             width: 100%;
         `;
 
-        for (let i = 0; i < buttonCount; i++) {
+        for (let i = 0; i < 3; i++) {
             const skeletonButton = this.renderer.createElement('div');
             skeletonButton.style.cssText = `
                 width: 230px;
