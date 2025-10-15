@@ -28,6 +28,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
             const sendOTPConfig = {
                 referenceId: '4512365c175947134668df66f29b026',
                 type: 'subscription',
+                // isPreview: true,
                 target: '_self',
                 success: (data) => {
                     console.log('success response', data);

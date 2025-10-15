@@ -159,7 +159,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         const encodedPassword = this.encryptPassword(this.loginForm.get('password').value);
         const loginData: IlogInData = {
             'state': this.state,
-            'user': this.loginForm.get('username').value,
+            'user': this.loginForm.get('username').value?.replace(/^\+/, ''),
             'password': encodedPassword,
             'hCaptchaToken': this.hCaptchaToken, // Include hCaptcha token in login data
         };
