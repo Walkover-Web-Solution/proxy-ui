@@ -9,7 +9,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, skip, take, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 
-import { getSubscriptionPlans, getWidgetData } from '../store/actions/otp.action';
+import { getSubscriptionPlans, getWidgetData, upgradeSubscription } from '../store/actions/otp.action';
 import { IAppState } from '../store/app.state';
 import {
     selectGetOtpInProcess,
@@ -17,6 +17,7 @@ import {
     selectVerifyOtpInProcess,
     selectWidgetData,
     subscriptionPlansData,
+    upgradeSubscriptionData,
 } from '../store/selectors';
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { OtpWidgetService } from '../service/otp-widget.service';
@@ -39,6 +40,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public pass: string;
     @Input() public isPreview: boolean;
     @Input() public isLogin: boolean;
+    @Input() public loginRedirectUrl: string;
 
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
@@ -83,34 +85,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public subscriptionPlans: any[] = [];
     public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
     public showSkeleton: boolean = false;
-    public hardcodedData = {
-        'data': [
-            {
-                'plan_name': 'Premium Plan',
-                'plan_price': '1000 USD',
-                'plan_meta': {
-                    'tag': 'Popular',
-                    'extra': ['Some mast feature'],
-                    'metrics': ['15000 Tasks', '5000 Credits', '300 MB Storage'],
-                    'features': {
-                        'included': [
-                            'Priority Support',
-                            'Expert Autmoation Builders',
-                            'Unlimited Flows',
-                            'Advanced Analytics',
-                        ],
-                        'notIncluded': ['Dedicated Account Manager'],
-                    },
-                    'highlight_plan': true,
-                },
-                'subscribe_button_link': 'http://localhost:8000/api/subscription/{ref_id}/subscribe',
-            },
-        ],
-        'status': 'success',
-        'hasError': false,
-        'errors': [],
-        'proxy_duration': 9,
-    };
+    public upgradeSubscriptionData: any;
+
     constructor(
         private ngZone: NgZone,
         private store: Store<IAppState>,
@@ -143,10 +119,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             // Load subscription plans first
             this.store.dispatch(getSubscriptionPlans({ referenceId: this.referenceId }));
             this.store.pipe(select(subscriptionPlansData), takeUntil(this.destroy$)).subscribe((subscriptionPlans) => {
-                // console.log('subscriptionPlans', subscriptionPlans);
-                // this.subscriptionPlans = this.hardcodedData.data;
                 if (subscriptionPlans) {
-                    this.subscriptionPlans = this.hardcodedData.data;
+                    this.subscriptionPlans = subscriptionPlans.data;
                 }
                 if (this.isPreview) {
                     this.show$ = of(true);
@@ -295,9 +269,26 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         buttons.forEach((button) => {
             button.addEventListener('click', (event) => {
                 event.preventDefault();
-                const link = button.getAttribute('data-link');
-                if (link) {
-                    window.open(link, '_blank');
+
+                // Check if it's an upgrade button
+                if (button.classList.contains('upgrade-btn')) {
+                    const planId = button.getAttribute('data-plan-id');
+                    const planDataStr = button.getAttribute('data-plan-data');
+
+                    if (planId && planDataStr) {
+                        try {
+                            const planData = JSON.parse(planDataStr);
+                            this.upgradeSubscription(planData);
+                        } catch (error) {
+                            console.error('Error parsing plan data:', error);
+                        }
+                    }
+                } else {
+                    // Handle regular subscription buttons
+                    const link = button.getAttribute('data-link');
+                    if (link) {
+                        window.open(link, '_blank');
+                    }
                 }
             });
         });
@@ -438,13 +429,15 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 : '';
 
         const buttonHTML = `
-            <button class="plan-button primary" data-link="${plan.subscribe_button_link || ''}">
+            <button class="plan-button primary upgrade-btn" data-plan-id="${plan.id}" data-plan-data='${JSON.stringify(
+            plan
+        )}'>
                 ${this.isLogin ? 'Upgrade' : 'Get Started'}
             </button>
         `;
 
         return `
-            <div class="plan-card d-flex flex-column justify-content-between position-relative ${popularClass} ${selectedClass} ${highlightedClass}">
+            <div class="plan-card d-flex flex-column gap-3 position-relative ${popularClass} ${selectedClass} ${highlightedClass}">
                 ${popularBadge}
                 <div>
                     <h1 class="plan-title mt-0">${plan.plan_name}</h1>
@@ -533,7 +526,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 margin: 0;
                 align-items: flex-start;
                 padding: 20px 0 0 20px;
-              overflow-x: auto;
+            
                 overflow-y: visible;
             }
 
@@ -591,6 +584,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     min-height: 348px;
                 font-family: 'Outfit', sans-serif;
                 position: relative;
+                margin-top :30px
             }
 
             .plan-card.highlighted {
@@ -1213,7 +1207,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             isSelected: false, // No plan is selected by default
             features: this.getIncludedFeatures(plan.charges),
             status: plan.plan_status,
-            subscribeButtonLink: plan.subscribe_button_link,
+            subscribeButtonLink: this.isLogin
+                ? plan.subscribe_button_link?.replace('{ref_id}', this.referenceId)
+                : this.loginRedirectUrl,
             subscribeButtonHidden: plan.subscribe_button_hidden,
         }));
     }
@@ -1250,5 +1246,30 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 this.renderer.removeChild(element, existingContainer);
             }
         }
+    }
+    public upgradeSubscription(plan: any): void {
+        // Dispatch the action
+        this.store.dispatch(
+            upgradeSubscription({
+                referenceId: this.referenceId,
+                payload: { plan_code: plan.plan_code },
+                authToken: this.authToken,
+            })
+        );
+
+        // Wait for the API response by subscribing to the upgrade subscription data
+        this.store
+            .pipe(
+                select(upgradeSubscriptionData),
+                filter((data) => data && data.data && data.data.redirect_url), // Wait until we have the redirect URL
+                take(1), // Take only the first valid response
+                takeUntil(this.destroy$)
+            )
+            .subscribe((response) => {
+                const redirectUrl = this.isLogin ? response?.data?.redirect_url : this.loginRedirectUrl;
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                }
+            });
     }
 }

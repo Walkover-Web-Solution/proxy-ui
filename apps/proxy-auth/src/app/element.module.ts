@@ -43,6 +43,7 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.pass = config?.pass;
             sendOtpElement.isPreview = config?.isPreview;
             sendOtpElement.isLogin = config?.isLogin;
+            sendOtpElement.loginRedirectUrl = config?.loginRedirectUrl;
 
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;
