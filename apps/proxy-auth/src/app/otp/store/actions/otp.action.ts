@@ -133,3 +133,16 @@ export const getSubscriptionPlansError = createAction(
     '[OTP] Get Subscription Plans Error',
     props<{ errors: string[]; errorResponse: any }>()
 );
+
+export const upgradeSubscription = createAction(
+    '[OTP] Upgrade Subscription',
+    props<{ referenceId: string; payload: any; authToken?: string }>()
+);
+export const upgradeSubscriptionComplete = createAction(
+    '[OTP] Upgrade Subscription Complete',
+    props<{ response: any }>()
+);
+export const upgradeSubscriptionError = createAction(
+    '[OTP] Upgrade Subscription Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
