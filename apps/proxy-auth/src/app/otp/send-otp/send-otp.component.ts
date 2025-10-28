@@ -526,7 +526,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 margin: 0;
                 align-items: flex-start;
                 padding: 20px 0 0 20px;
-            
+                overflow-x: auto;
                 overflow-y: visible;
             }
 
@@ -573,7 +573,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 padding: 26px 24px;
     transition: all 0.3s ease;
                 box-shadow: none;
-    min-width: 250px;
+                 min-width: 280px;
                 max-width: 350px;
                 width: 350px;
     flex: 1;
@@ -606,7 +606,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
     @media (max-width: 768px) {
                 .plan-card {
-        min-width: 100%;
+        min-width: 50%;
         max-width: 400px;
         width: 100%;
         padding: 30px 20px;
@@ -959,7 +959,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             color: #3f4346;
             margin: 8px 8px 16px 8px;
             cursor: pointer;
-            width: 230px;
+            width: 260px;
             visibility: hidden; // Hide button until all are ready
         `;
         image.style.cssText = `
@@ -995,18 +995,15 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         // Style the paragraph to ensure it's at the bottom
         paragraph.style.cssText = `
     margin: 20px 8px 8px 8px !important;
-    padding-top: 16px !important;
     font-size: 14px !important;
-    box-sizing: border-box !important;
     outline: none !important;
-    padding: 0px 16px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 8px !important;
     color: #3f4346 !important;
     cursor: pointer !important;
-    width: 230px !important;
+    width: 260px !important;
 `;
 
         link.style.cssText = `
@@ -1017,8 +1014,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 `;
 
         // Set the text content
-        paragraph.innerHTML = 'New User? ';
-        link.textContent = 'Create Account';
+        paragraph.innerHTML = 'Are you a new User? ';
+        link.textContent = 'Create an account';
 
         // Add click event to the link
         link.addEventListener('click', (event) => {
