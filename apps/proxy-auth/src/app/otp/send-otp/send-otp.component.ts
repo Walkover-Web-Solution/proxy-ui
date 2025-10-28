@@ -9,7 +9,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, skip, take, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 
-import { getSubscriptionPlans, getWidgetData } from '../store/actions/otp.action';
+import { getSubscriptionPlans, getWidgetData, upgradeSubscription } from '../store/actions/otp.action';
 import { IAppState } from '../store/app.state';
 import {
     selectGetOtpInProcess,
@@ -17,6 +17,7 @@ import {
     selectVerifyOtpInProcess,
     selectWidgetData,
     subscriptionPlansData,
+    upgradeSubscriptionData,
 } from '../store/selectors';
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { OtpWidgetService } from '../service/otp-widget.service';
@@ -34,9 +35,12 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public type: string;
     @Input() public target: string;
     @Input() public authToken: string;
+    @Input() public showCompanyDetails: boolean;
     @Input() public userToken: string;
     @Input() public pass: string;
     @Input() public isPreview: boolean;
+    @Input() public isLogin: boolean;
+    @Input() public loginRedirectUrl: string;
 
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
@@ -73,11 +77,16 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public showRegistration = new BehaviorSubject<boolean>(false);
     public registrationViaLogin: boolean = true;
     public prefillDetails: string;
+    public cameFromLogin: boolean = false; // Track if user came from login
+    public cameFromSendOtpCenter: boolean = false; // Track if user came from send-otp-center component
     public referenceElement: HTMLElement = null;
     public authReference: HTMLElement = null;
     public showCard: boolean = false;
     public subscriptionPlans: any[] = [];
     public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
+    public showSkeleton: boolean = false;
+    public upgradeSubscriptionData: any;
+
     constructor(
         private ngZone: NgZone,
         private store: Store<IAppState>,
@@ -111,7 +120,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.store.dispatch(getSubscriptionPlans({ referenceId: this.referenceId }));
             this.store.pipe(select(subscriptionPlansData), takeUntil(this.destroy$)).subscribe((subscriptionPlans) => {
                 if (subscriptionPlans) {
-                    this.subscriptionPlans = this.formatSubscriptionPlans(subscriptionPlans.data);
+                    this.subscriptionPlans = subscriptionPlans.data;
                 }
                 if (this.isPreview) {
                     this.show$ = of(true);
@@ -207,6 +216,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                         this.appendSubscriptionButton(this.referenceElement);
                     }
                 } else {
+                    this.showSkeleton = true;
+                    this.appendSkeletonLoader(this.referenceElement, 1);
                     this.addButtonsToReferenceElement(this.referenceElement);
                 }
             }
@@ -217,181 +228,238 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             if (!element) {
                 return;
             }
-            const existingContainer = element.querySelector('.subscription-plans-container');
-            if (existingContainer) {
-                this.renderer.removeChild(element, existingContainer);
-            }
-            if (!this.subscriptionPlans || this.subscriptionPlans.length === 0) {
-                // Create a fallback message
-                const fallbackDiv = this.renderer.createElement('div');
-                fallbackDiv.style.cssText = `
-                    padding: 20px;
-                    text-align: center;
-                    color: #666;
-                    font-size: 16px;
-                `;
-                this.renderer.appendChild(element, fallbackDiv);
-                return;
-            }
 
-            // Create the subscription plans container
-            const subscriptionContainer = this.renderer.createElement('div');
-            subscriptionContainer.className = 'subscription-plans-container d-flex flex-column align-items-center';
-
-            // Create the plans grid
-            const plansGrid = this.renderer.createElement('div');
-            plansGrid.className =
-                'plans-grid d-flex flex-row gap-4 justify-content-start align-items-stretch w-100 py-3 m-0';
-
-            // Add CSS styles for the subscription plans
-            this.addSubscriptionStyles();
-
-            // Create plan cards for each subscription plan
-            this.subscriptionPlans.forEach((plan, index) => {
-                const planCard = this.createPlanCard(plan, index);
-                this.renderer.appendChild(plansGrid, planCard);
+            // Clear any existing subscription content (both Angular and JS generated)
+            const existingContainers = element.querySelectorAll('.subscription-plans-container');
+            existingContainers.forEach((container) => {
+                this.renderer.removeChild(element, container);
             });
 
-            // Append the grid to the container
-            this.renderer.appendChild(subscriptionContainer, plansGrid);
+            // Also clear any Angular component containers
+            const angularContainers = element.querySelectorAll('proxy-subscription-center');
+            angularContainers.forEach((container) => {
+                this.renderer.removeChild(element, container);
+            });
+
+            // Add CSS styles first
+            this.addSubscriptionStyles();
+
+            // Create the subscription center HTML structure
+            const subscriptionHTML = this.createSubscriptionCenterHTML();
+
+            // Create a container and set the HTML content
+            const subscriptionContainer = this.renderer.createElement('div');
+            subscriptionContainer.innerHTML = subscriptionHTML;
+
+            // Add event listeners to the buttons
+            this.addButtonEventListeners(subscriptionContainer);
 
             // Append the container to the element
             this.renderer.appendChild(element, subscriptionContainer);
-        } catch (error) {}
+
+            // IMPORTANT: Don't set this.type = 'subscription' to avoid triggering ngOnInit logic
+            // The subscription plan is now rendered directly without going through the component lifecycle
+        } catch (error) {
+            console.error('Error appending subscription button:', error);
+        }
+    }
+
+    private addButtonEventListeners(container: HTMLElement): void {
+        const buttons = container.querySelectorAll('.plan-button');
+        buttons.forEach((button) => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                // Check if it's an upgrade button
+                if (button.classList.contains('upgrade-btn')) {
+                    const planId = button.getAttribute('data-plan-id');
+                    const planDataStr = button.getAttribute('data-plan-data');
+
+                    if (planId && planDataStr) {
+                        try {
+                            const planData = JSON.parse(planDataStr);
+                            this.upgradeSubscription(planData);
+                        } catch (error) {
+                            console.error('Error parsing plan data:', error);
+                        }
+                    }
+                } else {
+                    // Handle regular subscription buttons
+                    const link = button.getAttribute('data-link');
+                    if (link) {
+                        window.open(link, '_blank');
+                    }
+                }
+            });
+        });
+    }
+
+    // Method to disable Angular subscription component
+    public disableAngularSubscription(): void {
+        this.type = 'custom-subscription';
+    }
+
+    private createSubscriptionCenterHTML(): string {
+        const plans = this.subscriptionPlans || [];
+
+        if (plans.length === 0) {
+            return `
+                <div class="container">
+                    <div class="subscription-plans-container d-flex flex-column align-items-center justify-content-center">
+                        <div style="padding: 20px; text-align: center; color: #666; font-size: 16px;">
+                            No subscription plans available
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        const plansHTML = plans.map((plan) => this.createPlanCardHTML(plan)).join('');
+
+        const finalHTML = `
+            <div class="container">
+                <div class="subscription-plans-container d-flex flex-column align-items-center justify-content-center">
+                    <div class="plans-grid d-flex flex-row gap-4 justify-content-start align-items-stretch w-100 py-3">
+                        ${plansHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return finalHTML;
+    }
+
+    private createPlanCardHTML(plan: any): string {
+        // Map the hardcoded JSON structure to the expected format
+        const isPopular = plan.plan_meta?.highlight_plan || false;
+        const popularClass = isPopular ? 'popular' : '';
+        const selectedClass = plan.isSelected ? 'selected' : '';
+        const highlightedClass = isPopular ? 'highlighted' : '';
+
+        const popularBadge = plan.plan_meta?.tag ? `<div class="popular-badge">${plan.plan_meta.tag}</div>` : '';
+
+        // Extract price value and currency from "1000 USD"
+        const priceMatch = plan.plan_price?.match(/(\d+)\s+(.+)/);
+        const priceValue = priceMatch ? priceMatch[1] : '0';
+        const currency = priceMatch ? priceMatch[2] : 'USD';
+
+        const metricsHTML =
+            plan.plan_meta?.metrics && plan.plan_meta.metrics.length > 0
+                ? `
+            <div class="included-resources mb-2">
+                <h4 class="section-title text-left">Included</h4>
+                <div class="resource-boxes d-flex flex-column gap-2">
+                    ${plan.plan_meta.metrics.map((metric) => `<div class="resource-box">${metric}</div>`).join('')}
+                </div>
+            </div>
+        `
+                : '';
+
+        const featuresHTML =
+            (plan.plan_meta?.features?.included && plan.plan_meta.features.included.length > 0) ||
+            (plan.plan_meta?.features?.notIncluded && plan.plan_meta.features.notIncluded.length > 0)
+                ? `
+            <div class="mb-2 text-left">
+                <h4 class="section-title text-left">Features</h4>
+                <ul class="plan-features gap-4 m-0 p-0 text-left">
+                    ${
+                        plan.plan_meta.features.included
+                            ? plan.plan_meta.features.included
+                                  .map(
+                                      (feature) => `
+                        <li class="feature-item included d-flex align-items-center position-relative p-0 gap-2 m-0">
+                            <span class="feature-icon included">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#4d4d4d">
+                                    <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
+                                </svg>
+                            </span>
+                            ${feature}
+                        </li>
+                    `
+                                  )
+                                  .join('')
+                            : ''
+                    }
+                    ${
+                        plan.plan_meta.features.notIncluded
+                            ? plan.plan_meta.features.notIncluded
+                                  .map(
+                                      (feature) => `
+                        <li class="feature-item not-included d-flex align-items-center position-relative p-0 gap-2">
+                            <span class="feature-icon not-included">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#999999">
+                                    <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+                                </svg>
+                            </span>
+                            ${feature}
+                        </li>
+                    `
+                                  )
+                                  .join('')
+                            : ''
+                    }
+                </ul>
+            </div>
+        `
+                : '';
+
+        const extraFeaturesHTML =
+            plan.plan_meta?.extra && plan.plan_meta.extra.length > 0
+                ? `
+            <div class="mb-4 text-left">
+                <h4 class="section-title text-left">Extra</h4>
+                <ul class="plan-features gap-4 m-0 p-0 text-left">
+                    ${plan.plan_meta.extra
+                        .map(
+                            (extraFeature) => `
+                        <li class="feature-item extra d-flex align-items-center position-relative p-0 gap-2 m-0">
+                            <span class="feature-icon extra">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#4d4d4d">
+                                    <path d="m354-287 126-76 126 77-33-144 111-96-146-13-58-136-58 135-146 13 111 97-33 143ZM233-120l65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-350Z" />
+                                </svg>
+                            </span>
+                            ${extraFeature}
+                        </li>
+                    `
+                        )
+                        .join('')}
+                </ul>
+            </div>
+        `
+                : '';
+
+        const buttonHTML = `
+            <button class="plan-button primary upgrade-btn" data-plan-id="${plan.id}" data-plan-data='${JSON.stringify(
+            plan
+        )}'>
+                ${this.isLogin ? 'Upgrade' : 'Get Started'}
+            </button>
+        `;
+
+        return `
+            <div class="plan-card d-flex flex-column gap-3 position-relative ${popularClass} ${selectedClass} ${highlightedClass}">
+                ${popularBadge}
+                <div>
+                    <h1 class="plan-title mt-0">${plan.plan_name}</h1>
+                    <div class="plan-price mb-3">
+                        <div class="price-container d-block mb-3">
+                            <span class="price-number">${priceValue}</span>
+                            <span class="price-currency">${currency}</span>
+                        </div>
+                    </div>
+                    ${buttonHTML}
+                    <div class="divider w-100 my-3"></div>
+                </div>
+                ${metricsHTML}
+                ${featuresHTML}
+                ${extraFeaturesHTML}
+            </div>
+        `;
     }
 
     /**
      * Create a plan card element
      */
-    private createPlanCard(plan: any, index: number): HTMLElement {
-        try {
-            const planCard = this.renderer.createElement('div');
-            planCard.className = 'plan-card d-flex flex-column justify-content-between position-relative';
-
-            // Add classes based on plan properties
-            if (plan.isPopular) {
-                planCard.classList.add('popular');
-            }
-            if (plan.isSelected) {
-                planCard.classList.add('selected');
-            }
-
-            // Add click event
-            planCard.addEventListener('click', () => {
-                this.selectPlan(plan);
-            });
-
-            // Create popular badge if needed
-            if (plan.isPopular) {
-                const popularBadge = this.renderer.createElement('div');
-                popularBadge.className = 'popular-badge';
-                popularBadge.textContent = 'Popular';
-                this.renderer.appendChild(planCard, popularBadge);
-            }
-
-            // Create main content div
-            const mainContent = this.renderer.createElement('div');
-            mainContent.className = 'd-flex flex-column gap-3';
-
-            // Create plan title
-            const planTitle = this.renderer.createElement('h1');
-            planTitle.className = 'plan-title my-0';
-            planTitle.textContent = plan.title;
-            this.renderer.appendChild(mainContent, planTitle);
-
-            // Create plan price
-            const planPrice = this.renderer.createElement('div');
-            planPrice.className = 'plan-price d-flex gap-1 align-items-center';
-
-            const priceAmount = this.renderer.createElement('span');
-            priceAmount.className = 'price-amount d-block';
-            priceAmount.textContent = plan.priceNumber;
-
-            const priceText = this.renderer.createElement('span');
-            priceText.className = 'price-text d-block';
-            priceText.textContent = plan.priceText;
-
-            // const pricePeriod = this.renderer.createElement('span');
-            // pricePeriod.className = 'price-period';
-            // pricePeriod.textContent = plan.period || '';
-
-            this.renderer.appendChild(planPrice, priceAmount);
-            this.renderer.appendChild(planPrice, priceText);
-            // this.renderer.appendChild(planPrice, pricePeriod);
-            this.renderer.appendChild(mainContent, planPrice);
-
-            // Create action button or hidden state
-            if (!plan.subscribeButtonHidden) {
-                const actionButton = this.renderer.createElement('button');
-                actionButton.className = `plan-button w-100 ${plan.buttonStyle || 'secondary'}`;
-                actionButton.textContent = plan.buttonText;
-
-                actionButton.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    this.selectPlan(plan);
-                });
-
-                this.renderer.appendChild(mainContent, actionButton);
-            } else {
-                const hiddenButton = this.renderer.createElement('div');
-                hiddenButton.className = 'plan-button-hidden w-100 text-center';
-                hiddenButton.textContent = plan.buttonText;
-                this.renderer.appendChild(mainContent, hiddenButton);
-            }
-
-            // Create divider
-            const divider = this.renderer.createElement('div');
-            divider.className = 'divider w-100 my-2';
-            this.renderer.appendChild(mainContent, divider);
-
-            // Create features section if features exist
-            if (plan.features && plan.features.length > 0) {
-                const featuresSection = this.renderer.createElement('div');
-                featuresSection.className = 'text-left';
-
-                const sectionTitle = this.renderer.createElement('h4');
-                sectionTitle.className = 'section-title text-left';
-                sectionTitle.textContent = 'Features';
-                this.renderer.appendChild(featuresSection, sectionTitle);
-
-                const featuresList = this.renderer.createElement('ul');
-                featuresList.className = 'plan-features m-0 p-0 text-left';
-
-                plan.features.forEach((feature) => {
-                    const featureItem = this.renderer.createElement('li');
-                    featureItem.className =
-                        'feature-item included d-flex align-items-center position-relative p-0 gap-2';
-
-                    const featureIcon = this.renderer.createElement('span');
-                    featureIcon.className = 'feature-icon';
-                    featureIcon.textContent = '✓';
-
-                    const featureText = this.renderer.createText(feature);
-
-                    this.renderer.appendChild(featureItem, featureIcon);
-                    this.renderer.appendChild(featureItem, featureText);
-                    this.renderer.appendChild(featuresList, featureItem);
-                });
-
-                this.renderer.appendChild(featuresSection, featuresList);
-                this.renderer.appendChild(mainContent, featuresSection);
-            }
-
-            this.renderer.appendChild(planCard, mainContent);
-            return planCard;
-        } catch (error) {
-            const fallbackCard = this.renderer.createElement('div');
-            fallbackCard.style.cssText = `
-                padding: 20px;
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                text-align: center;
-                color: #666;
-            `;
-            fallbackCard.textContent = 'Error loading plan';
-            return fallbackCard;
-        }
-    }
 
     /**
      * Add CSS styles for subscription plans
@@ -405,117 +473,41 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         const style = this.renderer.createElement('style');
         style.id = 'subscription-styles';
         style.textContent = `
-            @import url('https://unpkg.com/@angular/material@14.2.7/prebuilt-themes/indigo-pink.css');
-            @import url('../../../styles.scss');
-/* When used in dialog, override the positioning */
+            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+            
+            /* Bootstrap-like utility classes */
+            .position-relative { position: relative !important; }
+            .d-flex { display: flex !important; }
+            .d-block { display: block !important; }
+            .flex-row { flex-direction: row !important; }
+            .flex-column { flex-direction: column !important; }
+            .align-items-center { align-items: center !important; }
+            .align-items-stretch { align-items: stretch !important; }
+            .justify-content-start { justify-content: flex-start !important; }
+            .justify-content-between { justify-content: space-between !important; }
+            .w-100 { width: 100% !important; }
+            .p-0 { padding: 0 !important; }
+            .p-3 { padding: 1rem !important; }
+            .pt-3, .py-3 { padding-top: 1rem !important; }
+            .pb-3, .py-3 { padding-bottom: 1rem !important; }
+            .m-0 { margin: 0 !important; }
+            .mt-0, .my-0 { margin-top: 0 !important; }
+            .mb-0, .my-0 { margin-bottom: 0 !important; }
+            .mb-2 { margin-bottom: 0.5rem !important; }
+            .mb-3 { margin-bottom: 1rem !important; }
+            .mb-4 { margin-bottom: 1.5rem !important; }
+            .my-3 { margin-top: 1rem !important; margin-bottom: 1rem !important; }
+            .text-center { text-align: center !important; }
+            .text-left { text-align: left !important; }
+            .gap-1 { gap: 0.25rem !important; }
+            .gap-2 { gap: 0.5rem !important; }
+            .gap-3 { gap: 1rem !important; }
+            .gap-4 { gap: 1.5rem !important; }
+            .gap-5 { gap: 2rem !important; }
 
-.position-relative {
-    position: relative !important;
-}
-.d-flex {
-    display: flex !important;
-}
-.d-block {
-    display: block !important;
-}
-.flex-row {
-    flex-direction: row !important;
-}
-.flex-column {
-    flex-direction: column !important;
-}
-.align-items-center {
-    align-items: center !important;
-}
-.align-items-stretch {
-    align-items: stretch !important;
-}
-.justify-content-start {
-    justify-content: start !important;
-}
-justify-content-between {
-    justify-content: between !important;
-}
-.w-100 {
-    width: 100% !important;
-}
-.p-0 {
-    padding: 0 !important;
-}
-.p-3 {
-    padding: 1rem !important;
-}
-.pt-3,
-.py-3 {
-    padding-top: 1rem !important;
-}
-.pb-3,
-.py-3 {
-    padding-bottom: 1rem !important;
-}
-.m-0 {
-    margin: 0 !important;
-}
-.mt-0,
-.my-0 {
-    margin-top: 0 !important;
-}
-.mb-0,
-.my-0 {
-    margin-bottom: 0 !important;
-}
 
-.text-center {
-    text-align: center !important;
-}
 
-.text-left {
-    text-align: left !important;
-}
-
-.gap-1 {
-    gap: 4px;
-}
-.gap-2 {
-    gap: 8px;
-}
-.gap-3 {
-    gap: 16px;
-}
-.gap-4 {
-    gap: 24px;
-}
-.gap-5 {
-    gap: 32px;
-}
-
-:host-context(.subscription-center-dialog) .container {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    height: 100% !important;
-    width: 100% !important;
-    max-height: 700px !important;
-    max-width: 900px !important;
-}
-/* Dialog-specific styling for better layout */
-:host-context(.subscription-center-dialog) {
-    .subscription-plans-container {
-        padding: 10px !important;
-        height: calc(100% - 40px) !important;
-    }
-    .plans-grid {
-        justify-content: space-around !important;
-        // align-items: flex-start !important;
-    }
-    .plan-card {
-        flex: 0 0 280px !important;
-        margin: 10px !important;
-    }
-}
-// Subscription Plans Styles
+            /* Subscription Plans Styles */
 .subscription-plans-container {
     flex: 1;
     display: flex;
@@ -523,35 +515,48 @@ justify-content-between {
     align-items: stretch;
     justify-content: flex-start;
     padding: 20px;
-    height: 100%;
-    overflow-y: auto;
+                min-height: auto;
+                overflow-y: visible;
+                font-family: 'Outfit', sans-serif;
 }
+
 .plans-grid {
-    max-width: 100%;
-    padding: 30px;
-    overflow-x: auto;
-    // overflow-y: hidden;
-    // Custom scrollbar styling
-    &::-webkit-scrollbar {
+                gap: 20px;
+                max-width: 100%;
+                margin: 0;
+                align-items: flex-start;
+                padding: 20px 0 0 20px;
+                overflow-x: auto;
+                overflow-y: visible;
+            }
+
+            .plans-grid::-webkit-scrollbar {
         height: 8px;
     }
-    &::-webkit-scrollbar-track {
+
+            .plans-grid::-webkit-scrollbar-track {
         background: #f1f1f1;
         border-radius: 4px;
     }
-    &::-webkit-scrollbar-thumb {
+
+            .plans-grid::-webkit-scrollbar-thumb {
         background: #c1c1c1;
         border-radius: 4px;
-        &:hover {
+            }
+
+            .plans-grid::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
-    }
-    // Responsive behavior for smaller screens
+
     @media (max-width: 1200px) {
+                .plans-grid {
         gap: 15px;
         padding: 15px;
     }
+            }
+
     @media (max-width: 768px) {
+                .plans-grid {
         flex-direction: column;
         align-items: center;
         gap: 20px;
@@ -559,167 +564,256 @@ justify-content-between {
         overflow-y: auto;
     }
 }
+
+            /* Plan Card Styles */
 .plan-card {
     background: #ffffff;
-    border: 2px solid #e0e0e0;
+                border: 2px solid #e6e6e6;
     border-radius: 4px;
-    padding: 30px 25px;
-    cursor: pointer;
+                padding: 26px 24px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    min-width: 250px;
-    max-width: 280px;
-    width: 280px;
+                box-shadow: none;
+                 min-width: 280px;
+                max-width: 350px;
+                width: 350px;
     flex: 1;
+                justify-content: flex-start;
+                min-height: auto;
+                max-height: none;
+                overflow: visible;
     min-height: 348px;
-    &:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-    }
-    &.popular {
-        border-color: #000000;
-        border-width: 3px;
-        transform: scale(1.02);
-        &:hover {
-            transform: scale(1.02) translateY(-8px);
-        }
-    }
-    &.selected {
-        border-color: #000000;
-    }
-    // Mobile responsive
+                font-family: 'Outfit', sans-serif;
+                position: relative;
+                margin-top :30px
+            }
+
+            .plan-card.highlighted {
+                border: 2px solid #000000 !important;
+                box-shadow: 0 0 0 0px #000000 !important;
+            }
+
+            .plan-card:hover {
+                box-shadow: none;
+            }
+
+            .plan-card.popular {
+                transform: scale(1.02);
+            }
+
+            .plan-card.popular:hover {
+                transform: scale(1.02);
+            }
+
     @media (max-width: 768px) {
-        min-width: 100%;
+                .plan-card {
+        min-width: 50%;
         max-width: 400px;
         width: 100%;
         padding: 30px 20px;
-        &.popular {
+                }
+                
+                .plan-card.popular {
             transform: none;
-            &:hover {
-                transform: translateY(-8px);
             }
+                
+                .plan-card.popular:hover {
+                    transform: none;
         }
     }
-}
+
+            /* Popular Badge */
 .popular-badge {
     position: absolute;
     top: -12px;
     right: 20px;
-    background: #000000;
+                background: #4d4d4d;
     color: #ffffff;
     padding: 6px 16px;
     border-radius: 20px;
-    font-size: var(--font-size-12);
+                font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-}
+                z-index: 100;
+                transition: all 0.3s ease;
+                pointer-events: none;
+            }
+
+            /* Popular badge stays in place on hover */
+            .plan-card:hover .popular-badge {
+                z-index: 101;
+            }
+
+            /* For popular cards, badge scales with the card */
+            .plan-card.popular:hover .popular-badge {
+                transform: scale(1.02);
+                z-index: 101;
+            }
+
+            /* Plan Title */
 .plan-title {
-    font-size: var(--font-size-28);
+                font-size: 28px;
     font-weight: 700;
-    color: var(--color-common-slate);
+                color: #333333;
+            }
+
     @media (max-width: 768px) {
+                .plan-title {
         font-size: 24px;
     }
 }
-.plan-price {
-    .price-amount {
-        font-size: 30px;
-        font-weight: 600;
-        color: #000000;
+
+            /* Plan Price */
+            .plan-price .price-container {
+                gap: 6px;
+            }
+
+            .plan-price .price-number {
+                font-size: 39px;
+                font-weight: 700;
+                color: #4d4d4d;
         line-height: 1;
+            }
+
         @media (max-width: 768px) {
-            font-size: 36px;
-        }
-    }
-    .price-text {
-        font-size: 12px;
+                .plan-price .price-number {
+                    font-size: 42px;
+                }
+            }
+
+            .plan-price .price-currency {
+                font-size: 16px;
+                font-weight: 400;
         color: #666666;
-    }
-    .price-period {
+                line-height: 1;
+                margin-top: 4px;
+                margin-left: 4px;
+            }
+
+            @media (max-width: 768px) {
+                .plan-price .price-currency {
+                    font-size: 14px;
+                }
+            }
+
+            .plan-price .price-period {
         font-size: 18px;
         color: #666666;
         font-weight: 500;
+            }
+
         @media (max-width: 768px) {
+                .plan-price .price-period {
             font-size: 16px;
         }
     }
-}
+
+            /* Included Resources */
+            .included-resources .resource-boxes {
+                margin-top: 6px;
+            }
+
+            .included-resources .resource-box {
+                border-radius: 4px;
+                padding: 4px 2px;
+                font-size: 14px;
+                font-weight: 600;
+                color: #4d4d4d;
+                text-align: left;
+            }
+
+            /* Section Title */
 .section-title {
-    font-size: 16px;
+                font-size: 18px;
     font-weight: 600;
     color: #333333;
-    margin: 0 0 12px 0;
+                margin: 0 0 8px 0;
 }
+
+            /* Plan Features */
 .plan-features {
     list-style: none;
-    .feature-item {
-        // padding: 6px 0;
-        color: #555555;
+            }
+
+            .plan-features .feature-item {
+                padding: 4px 0 !important;
+                margin-bottom: 0px !important;
+                color: #4d4d4d;
         font-size: 14px;
-        // padding-left: 20px;
-        .feature-icon {
+                font-weight: 600;
+            }
+
+            .plan-features .feature-icon {
             font-weight: bold;
             font-size: 14px;
-            color: #333333;
+                color: #22c55e;
         }
-    }
-}
+
+            /* Plan Button */
 .plan-button {
+                width: 65%;
     padding: 6px 6px;
     border-radius: 4px;
+                font-size: 15px;
     font-weight: 400;
+                font-family: 'Outfit', sans-serif;
     cursor: pointer;
     transition: all 0.3s ease;
     border: 1px solid;
     margin-top: auto;
-    &.primary {
-        background: #000000;
+            }
+
+            .plan-button.primary {
+                background: #4d4d4d;
         color: #ffffff;
-        border-color: #000000;
-        &:hover {
+                border-color: #4d4d4d;
+                font-weight: 700;
+            }
+
+            .plan-button.primary:hover {
             background: #333333;
             border-color: #333333;
         }
-    }
-    &.secondary {
+
+            .plan-button.secondary {
         background: #ffffff;
-        color: #000000;
-        border-color: #000000;
-        &:hover {
+                color: #4d4d4d;
+                border-color: #4d4d4d;
+            }
+
+            .plan-button.secondary:hover {
             background: #f8f9fa;
         }
-    }
+
     @media (max-width: 768px) {
+                .plan-button {
         padding: 14px 28px;
         font-size: 16px;
     }
 }
+
+            /* Plan Button Hidden */
 .plan-button-hidden {
     padding: 16px 32px;
     border-radius: 12px;
     font-size: 18px;
     font-weight: 600;
+                font-family: 'Outfit', sans-serif;
     background: #f8f9fa;
     color: #6c757d;
     border: 2px solid #e9ecef;
     margin-top: auto;
     cursor: not-allowed;
+            }
+
     @media (max-width: 768px) {
+                .plan-button-hidden {
         padding: 14px 28px;
         font-size: 16px;
     }
 }
-.close-dialog {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    z-index: 1000;
-    svg {
-        width: 12px;
-        height: 12px;
-    }
-}
+
+            /* Divider */
 .divider {
     height: 1px;
     background: #e0e0e0;
@@ -729,46 +823,6 @@ justify-content-between {
         document.head.appendChild(style);
     }
 
-    /**
-     * Handle plan selection
-     */
-    private selectPlan(plan: any): void {
-        // Remove selected class from all plans
-        const allPlanCards = document.querySelectorAll('.plan-card');
-        allPlanCards.forEach((card) => {
-            card.classList.remove('selected');
-        });
-
-        // Add selected class to the clicked plan
-        const selectedCard = event?.target as HTMLElement;
-        if (selectedCard) {
-            const planCard = selectedCard.closest('.plan-card');
-            if (planCard) {
-                planCard.classList.add('selected');
-            }
-        }
-
-        // Handle the selected plan
-        this.processSelectedPlan(plan);
-    }
-
-    /**
-     * Process the selected subscription plan
-     */
-    private processSelectedPlan(plan: any): void {
-        if (plan.subscribeButtonLink) {
-            window.open(plan.subscribeButtonLink, this.target || '_self');
-        }
-
-        // Call success callback if available
-        if (this.successReturn && typeof this.successReturn === 'function') {
-            this.successReturn({
-                selectedPlan: plan,
-                type: 'subscription_selected',
-            });
-        }
-    }
-
     private addButtonsToReferenceElement(element): void {
         this.selectWidgetData$
             .pipe(
@@ -776,6 +830,48 @@ justify-content-between {
                 take(1)
             )
             .subscribe((widgetDataArray) => {
+                let buttonsProcessed = 0;
+                const totalButtons = widgetDataArray.length;
+
+                if (totalButtons > 0 && this.showSkeleton) {
+                    this.removeSkeletonLoader(element);
+                    this.appendSkeletonLoader(element, totalButtons);
+                }
+
+                if (totalButtons === 0) {
+                    if (this.showSkeleton) {
+                        this.showSkeleton = false;
+                        this.removeSkeletonLoader(element);
+                    }
+                    this.appendCreateAccountText(element);
+                    return;
+                }
+
+                // Add a fallback timeout to ensure skeleton is removed
+                const fallbackTimeout = setTimeout(() => {
+                    if (this.showSkeleton) {
+                        this.showSkeleton = false;
+                        this.removeSkeletonLoader(element);
+                        const allButtons = element.querySelectorAll('button');
+                        allButtons.forEach((button) => {
+                            button.style.visibility = 'visible';
+                        });
+                        this.appendCreateAccountText(element);
+                    }
+                }, 3000);
+
+                const immediateFallback = setTimeout(() => {
+                    if (this.showSkeleton) {
+                        this.showSkeleton = false;
+                        this.forceRemoveAllSkeletonLoaders();
+                        const allButtons = element.querySelectorAll('button');
+                        allButtons.forEach((button) => {
+                            button.style.visibility = 'visible';
+                        });
+                        this.appendCreateAccountText(element);
+                    }
+                }, 1000);
+
                 for (const buttonsData of widgetDataArray) {
                     if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
                         this.otpWidgetService.scriptLoading
@@ -784,12 +880,64 @@ justify-content-between {
                                 filter((e) => !e),
                                 take(1)
                             )
-                            .subscribe(() => this.appendButton(element, buttonsData));
+                            .subscribe(() => {
+                                this.appendButton(element, buttonsData);
+                                buttonsProcessed++;
+                                this.checkAndAppendCreateAccountText(
+                                    element,
+                                    buttonsProcessed,
+                                    totalButtons,
+                                    fallbackTimeout,
+                                    immediateFallback
+                                );
+                            });
                     } else {
                         this.appendButton(element, buttonsData);
+                        buttonsProcessed++;
+                        this.checkAndAppendCreateAccountText(
+                            element,
+                            buttonsProcessed,
+                            totalButtons,
+                            fallbackTimeout,
+                            immediateFallback
+                        );
                     }
                 }
             });
+    }
+
+    private checkAndAppendCreateAccountText(
+        element,
+        buttonsProcessed,
+        totalButtons,
+        fallbackTimeout?,
+        immediateFallback?
+    ): void {
+        if (buttonsProcessed === totalButtons) {
+            // Clear both timeouts since we've successfully processed all buttons
+            if (fallbackTimeout) {
+                clearTimeout(fallbackTimeout);
+            }
+            if (immediateFallback) {
+                clearTimeout(immediateFallback);
+            }
+
+            if (this.showSkeleton) {
+                this.showSkeleton = false;
+                this.removeSkeletonLoader(element);
+
+                // Show all buttons that were hidden
+                const allButtons = element.querySelectorAll('button');
+                allButtons.forEach((button) => {
+                    button.style.visibility = 'visible';
+                });
+            }
+
+            // Add a small delay to ensure all buttons are rendered
+            setTimeout(() => {
+                this.appendCreateAccountText(element);
+            }, 100);
+        }
     }
 
     private appendButton(element, buttonsData): void {
@@ -811,7 +959,8 @@ justify-content-between {
             color: #3f4346;
             margin: 8px 8px 16px 8px;
             cursor: pointer;
-            width: 230px;
+            width: 260px;
+            visibility: hidden; // Hide button until all are ready
         `;
         image.style.cssText = `
             height: 20px;
@@ -837,6 +986,48 @@ justify-content-between {
         this.renderer.appendChild(button, image);
         this.renderer.appendChild(button, span);
         this.renderer.appendChild(element, button);
+    }
+
+    private appendCreateAccountText(element): void {
+        const paragraph: HTMLParagraphElement = this.renderer.createElement('p');
+        const link: HTMLAnchorElement = this.renderer.createElement('a');
+
+        // Style the paragraph to ensure it's at the bottom
+        paragraph.style.cssText = `
+    margin: 20px 8px 8px 8px !important;
+    font-size: 14px !important;
+    outline: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    color: #3f4346 !important;
+    cursor: pointer !important;
+    width: 260px !important;
+`;
+
+        link.style.cssText = `
+    color: #007bff !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    font-weight: 500 !important;
+`;
+
+        // Set the text content
+        paragraph.innerHTML = 'Are you a new User? ';
+        link.textContent = 'Create an account';
+
+        // Add click event to the link
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            this.cameFromLogin = false; // Set flag to indicate user came from dynamically appended buttons
+            this.cameFromSendOtpCenter = false; // Reset other flags
+            this.setShowRegistration(true);
+        });
+
+        // Append elements
+        this.renderer.appendChild(paragraph, link);
+        this.renderer.appendChild(element, paragraph);
     }
 
     public hitCallbackUrl(callbackUrl: string, payload: { [key: string]: any }) {
@@ -866,10 +1057,25 @@ justify-content-between {
             if (this.registrationViaLogin) {
                 if (value) {
                     this.setShowLogin(false);
+                    this.show$ = of(true);
                 } else {
-                    this.setShowLogin(true);
+                    // When closing registration, go back to where user came from
+                    this.setShowLogin(false);
+                    if (this.cameFromLogin) {
+                        // If user came from login, go back to login
+                        this.setShowLogin(true);
+                        this.show$ = of(true);
+                    } else if (this.cameFromSendOtpCenter) {
+                        // If user came from send-otp-center, go back to send-otp-center
+                        this.show$ = of(true);
+                    } else {
+                        // If user came from dynamically appended buttons, just close without opening anything
+                        this.show$ = of(false);
+                    }
+                    // Reset the flags
+                    this.cameFromLogin = false;
+                    this.cameFromSendOtpCenter = false;
                 }
-                this.show$ = of(true);
             } else {
                 this.setShowLogin(false);
                 if (this.referenceElement) {
@@ -890,6 +1096,18 @@ justify-content-between {
             this.otpWidgetService.openLogin(value);
         });
     }
+
+    public setShowRegistrationFromLogin(data?: string) {
+        this.cameFromLogin = true; // Set flag to track that user came from login
+        this.cameFromSendOtpCenter = false; // Reset other flags
+        this.setShowRegistration(true, data);
+    }
+
+    public setShowRegistrationFromSendOtpCenter(data?: string) {
+        this.cameFromSendOtpCenter = true; // Set flag to track that user came from send-otp-center
+        this.cameFromLogin = false; // Reset other flags
+        this.setShowRegistration(true, data);
+    }
     public returnSuccessObj(obj) {
         if (typeof this.successReturn === 'function') {
             this.successReturn(obj);
@@ -899,6 +1117,75 @@ justify-content-between {
     public returnFailureObj(obj) {
         if (typeof this.failureReturn === 'function') {
             this.failureReturn(obj);
+        }
+    }
+
+    private appendSkeletonLoader(element, buttonCount: number): void {
+        const skeletonContainer = this.renderer.createElement('div');
+        skeletonContainer.id = 'skeleton-loader';
+        skeletonContainer.style.cssText = `
+            display: block;
+            width: 100%;
+        `;
+
+        for (let i = 0; i < 3; i++) {
+            const skeletonButton = this.renderer.createElement('div');
+            skeletonButton.style.cssText = `
+                width: 230px;
+                height: 40px;
+                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                background-size: 200% 100%;
+                animation: skeleton-loading 1.5s infinite;
+                border-radius: 4px;
+                margin: 8px 8px 16px 8px;
+                display: block;
+                box-sizing: border-box;
+            `;
+
+            if (!document.getElementById('skeleton-animation')) {
+                const style = this.renderer.createElement('style');
+                style.id = 'skeleton-animation';
+                style.textContent = `
+                    @keyframes skeleton-loading {
+                        0% { background-position: 200% 0; }
+                        100% { background-position: -200% 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            this.renderer.appendChild(skeletonContainer, skeletonButton);
+        }
+
+        this.renderer.appendChild(element, skeletonContainer);
+    }
+
+    private removeSkeletonLoader(element): void {
+        const skeletonLoader = element.querySelector('#skeleton-loader');
+        if (skeletonLoader) {
+            this.renderer.removeChild(element, skeletonLoader);
+        }
+
+        this.forceRemoveAllSkeletonLoaders();
+    }
+
+    private forceRemoveAllSkeletonLoaders(): void {
+        // Remove skeleton loaders from the reference element
+        if (this.referenceElement) {
+            const skeletonLoaders = this.referenceElement.querySelectorAll('#skeleton-loader');
+            skeletonLoaders.forEach((loader, index) => {
+                this.renderer.removeChild(this.referenceElement, loader);
+            });
+        }
+
+        // Also try to remove from document body (fallback)
+        const globalSkeletonLoaders = document.querySelectorAll('#skeleton-loader');
+        if (globalSkeletonLoaders.length > 0) {
+            globalSkeletonLoaders.forEach((loader, index) => {
+                if (loader.parentNode) {
+                    loader.parentNode.removeChild(loader);
+                }
+            });
         }
     }
     private formatSubscriptionPlans(plans: any[]): any[] {
@@ -917,7 +1204,9 @@ justify-content-between {
             isSelected: false, // No plan is selected by default
             features: this.getIncludedFeatures(plan.charges),
             status: plan.plan_status,
-            subscribeButtonLink: plan.subscribe_button_link,
+            subscribeButtonLink: this.isLogin
+                ? plan.subscribe_button_link?.replace('{ref_id}', this.referenceId)
+                : this.loginRedirectUrl,
             subscribeButtonHidden: plan.subscribe_button_hidden,
         }));
     }
@@ -954,5 +1243,30 @@ justify-content-between {
                 this.renderer.removeChild(element, existingContainer);
             }
         }
+    }
+    public upgradeSubscription(plan: any): void {
+        // Dispatch the action
+        this.store.dispatch(
+            upgradeSubscription({
+                referenceId: this.referenceId,
+                payload: { plan_code: plan.plan_code },
+                authToken: this.authToken,
+            })
+        );
+
+        // Wait for the API response by subscribing to the upgrade subscription data
+        this.store
+            .pipe(
+                select(upgradeSubscriptionData),
+                filter((data) => data && data.data && data.data.redirect_url), // Wait until we have the redirect URL
+                take(1), // Take only the first valid response
+                takeUntil(this.destroy$)
+            )
+            .subscribe((response) => {
+                const redirectUrl = this.isLogin ? response?.data?.redirect_url : this.loginRedirectUrl;
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                }
+            });
     }
 }

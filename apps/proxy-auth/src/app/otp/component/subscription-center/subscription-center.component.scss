@@ -1,4 +1,5 @@
 @import url('https://unpkg.com/@angular/material@14.2.7/prebuilt-themes/indigo-pink.css');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
 .container {
     background: #ffffff !important;
@@ -7,7 +8,7 @@
     position: relative;
     height: 100vh;
     width: 100vw;
-
+    font-family: 'Outfit', sans-serif;
     z-index: 1;
     flex-direction: column;
     overflow-y: auto;
@@ -53,8 +54,9 @@
     align-items: stretch;
     justify-content: flex-start;
     padding: 20px;
-    height: 100%;
-    overflow-y: auto;
+    min-height: auto;
+    overflow-y: visible;
+    font-family: 'Outfit', sans-serif;
 }
 
 .plans-grid {
@@ -64,9 +66,8 @@
     width: 100%;
     max-width: 100%;
     margin: 0;
-
-    align-items: stretch;
-    padding: 0;
+    align-items: flex-start;
+    padding: 0 0 0 20px;
     overflow-x: auto;
     // overflow-y: hidden;
 
@@ -104,31 +105,45 @@
     }
 }
 
+// Ensure highlighted border is always visible
+.plan-card.highlighted {
+    border: 2px solid #000000 !important;
+    box-shadow: 0 0 0 0px #000000 !important;
+}
+
 .plan-card {
     background: #ffffff;
-    border: 2px solid #e0e0e0;
+    border: 2px solid #e6e6e6;
     border-radius: 4px;
     padding: 26px 24px;
-    cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
     min-width: 250px;
-    max-width: 280px;
-    width: 280px;
+    max-width: 350px;
+    width: 350px;
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
+    min-height: auto;
+    max-height: none;
+    overflow: visible;
     min-height: 348px;
+    font-family: 'Outfit', sans-serif;
+}
+
+// Dark mode support for plan cards
+:host-context(.dark-theme) .plan-card {
+    background: var(--color-common-slate);
+    border: 1px solid var(--color-common-border);
+    color: var(--color-common-text);
 
     &:hover {
         transform: translateY(-8px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        box-shadow: none;
     }
 
     &.popular {
-        border-color: #000000;
-        border-width: 3px;
         transform: scale(1.02);
 
         &:hover {
@@ -136,9 +151,16 @@
         }
     }
 
-    &.selected {
-        border-color: #000000;
+    &.highlighted {
+        border: 2px solid #000000 !important;
+        box-shadow: 0 0 0 0px #000000 !important;
     }
+}
+
+// Dark mode support for highlighted cards
+:host-context(.dark-theme) .plan-card.highlighted {
+    border: 2px solid var(--color-common-text) !important;
+    box-shadow: 0 0 0 2px var(--color-common-text) !important;
 
     // Mobile responsive
     @media (max-width: 768px) {
@@ -161,7 +183,7 @@
     position: absolute;
     top: -12px;
     right: 20px;
-    background: #000000;
+    background: #4d4d4d;
     color: #ffffff;
     padding: 6px 16px;
     border-radius: 20px;
@@ -181,14 +203,33 @@
 }
 
 .plan-price {
-    .price-amount {
-        font-size: 30px;
-        font-weight: 600;
-        color: #22c55e;
+    .price-container {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .price-number {
+        font-size: 39px;
+        font-weight: 700;
+        color: #4d4d4d;
         line-height: 1;
 
         @media (max-width: 768px) {
-            font-size: 36px;
+            font-size: 42px;
+        }
+    }
+
+    .price-currency {
+        font-size: 16px;
+        font-weight: 400;
+        color: #666666;
+        line-height: 1;
+        margin-top: 4px;
+        margin-left: 4px;
+
+        @media (max-width: 768px) {
+            font-size: 14px;
         }
     }
 
@@ -203,20 +244,48 @@
     }
 }
 
+.plan-description {
+    .description-text {
+        font-size: 14px;
+        color: #666666;
+        font-style: italic;
+    }
+}
+
+.included-resources {
+    .resource-boxes {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    .resource-box {
+        border-radius: 4px;
+        padding: 4px 2px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #4d4d4d;
+        text-align: left;
+    }
+}
+
 .section-title {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     color: #333333;
-    margin: 0 0 12px 0;
+    margin: 0 0 8px 0;
 }
 
 .plan-features {
     list-style: none;
 
     .feature-item {
-        // padding: 6px 0;
-        color: #555555;
+        padding: 4px 0 !important;
+        margin-bottom: 0px !important;
+        color: #4d4d4d;
         font-size: 14px;
+        font-weight: 600;
         // padding-left: 20px;
 
         .feature-icon {
@@ -233,15 +302,17 @@
     border-radius: 4px;
     font-size: 15px;
     font-weight: 400;
+    font-family: 'Outfit', sans-serif;
     cursor: pointer;
     transition: all 0.3s ease;
     border: 1px solid;
     margin-top: auto;
 
     &.primary {
-        background: #000000;
+        background: #4d4d4d;
         color: #ffffff;
-        border-color: #000000;
+        border-color: #4d4d4d;
+        font-weight: 700;
 
         &:hover {
             background: #333333;
@@ -251,8 +322,8 @@
 
     &.secondary {
         background: #ffffff;
-        color: #000000;
-        border-color: #000000;
+        color: #4d4d4d;
+        border-color: #4d4d4d;
 
         &:hover {
             background: #f8f9fa;
@@ -270,6 +341,7 @@
     border-radius: 12px;
     font-size: 18px;
     font-weight: 600;
+    font-family: 'Outfit', sans-serif;
     background: #f8f9fa;
     color: #6c757d;
     border: 2px solid #e9ecef;

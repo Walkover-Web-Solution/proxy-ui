@@ -25,6 +25,7 @@
             [serviceData]="otpWidgetData"
             [target]="target"
             (togglePopUp)="toggleSendOtp()"
+            (openPopUp)="setShowRegistrationFromSendOtpCenter($event)"
             (successReturn)="returnSuccessObj($event)"
             (failureReturn)="returnFailureObj($event)"
         ></proxy-send-otp-center>
@@ -34,6 +35,7 @@
             [serviceData]="otpWidgetData"
             [loginServiceData]="loginWidgetData"
             [registrationViaLogin]="registrationViaLogin"
+            [showCompanyDetails]="showCompanyDetails"
             (togglePopUp)="setShowRegistration(false)"
             (successReturn)="setShowRegistration(false)"
             (failureReturn)="returnFailureObj($event)"
@@ -44,7 +46,7 @@
             (togglePopUp)="toggleSendOtp()"
             (closePopUp)="setShowLogin(false)"
             [loginServiceData]="loginWidgetData"
-            (openPopUp)="setShowRegistration(true, $event)"
+            (openPopUp)="setShowRegistrationFromLogin($event)"
             (failureReturn)="returnFailureObj($event)"
         >
         </proxy-login>
@@ -60,6 +62,8 @@
             [referenceId]="referenceId"
             (togglePopUp)="handleSubscriptionToggle($event)"
             [isPreview]="isPreview"
+            [isLogin]="isLogin"
+            [loginRedirectUrl]="loginRedirectUrl"
         ></proxy-subscription-center>
     </div>
     <proxy-user-profile
