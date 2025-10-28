@@ -534,4 +534,32 @@ export class OtpEffects {
             })
         )
     );
+    upgradeSubscription$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.upgradeSubscription),
+            switchMap(({ referenceId, payload, authToken }) => {
+                return this.otpService.upgradeSubscription(referenceId, payload, authToken).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.upgradeSubscriptionComplete({
+                                response: res,
+                            });
+                        }
+                        return otpActions.upgradeSubscriptionError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.upgradeSubscriptionError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
 }

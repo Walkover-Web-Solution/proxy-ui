@@ -40,6 +40,7 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
     @Input() public isPreview: boolean = false;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Input() public isLogin: boolean;
+    @Input() public loginRedirectUrl: string;
 
     public subscriptionPlans$: Observable<any>;
     public subscriptionPlans: any[] = [];
@@ -59,82 +60,36 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
     }
 
     ngOnInit(): void {
-        // Use hardcoded JSON data
-        this.subscriptionPlans = this.getHardcodedJsonData();
-    }
-
-    private getHardcodedJsonData(): SubscriptionPlan[] {
-        const jsonData = {
-            'Data': [
-                {
-                    'PlanName': 'Premium Plan',
-                    'PlanPrice': '1000 USD',
-                    'PlanMeta': {
-                        'Tag': '',
-                        'Extra': ['Some mast feature'],
-                        'Metrics': ['15000 Tasks', '5000 Credits', '300 MB Storage'],
-                        'Features': {
-                            'Included': [
-                                'Priority Support',
-                                'Expert Autmoation Builders',
-                                'Unlimited Flows',
-                                'Advanced Analytics',
-                            ],
-                            'NotIncluded': ['Dedicated Account Manager'],
-                        },
-                        'HighlightPlan': false,
-                    },
-                    'SubscribeButtonLink': 'http://localhost:8000/api/subscription/{ref_id}/subscribe',
-                },
-                {
-                    'PlanName': 'Premium Plan',
-                    'PlanPrice': '1000 USD',
-                    'PlanMeta': {
-                        'Tag': 'Popular',
-                        'Extra': ['Some mast feature'],
-                        'Metrics': ['15000 Tasks', '5000 Credits', '300 MB Storage'],
-                        'Features': {
-                            'Included': [
-                                'Priority Support',
-                                'Expert Autmoation Builders',
-                                'Unlimited Flows',
-                                'Advanced Analytics',
-                            ],
-                            'NotIncluded': ['Dedicated Account Manager'],
-                        },
-                        'HighlightPlan': true,
-                    },
-                    'SubscribeButtonLink': 'http://localhost:8000/api/subscription/{ref_id}/subscribe',
-                },
-            ],
-            'Status': 'success',
-            'HasError': false,
-            'Errors': [],
-            'ProxyDuration': 9,
-        };
-
-        return this.formatSubscriptionPlans(jsonData.Data);
+        this.subscriptionPlans$.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+            if (res && res.data && Array.isArray(res.data)) {
+                this.subscriptionPlans = this.formatSubscriptionPlans(res.data);
+            } else {
+                this.subscriptionPlans = [];
+            }
+        });
     }
 
     private formatSubscriptionPlans(plans: any[]): any[] {
         return plans.map((plan, index) => ({
-            id: plan.PlanName?.toLowerCase().replace(/\s+/g, '-') || `plan-${index}`,
-            title: plan.PlanName || 'Unnamed Plan',
-            price: plan.PlanPrice || 'Free',
-            priceValue: this.extractPriceValue(plan.PlanPrice),
-            currency: this.extractCurrency(plan.PlanPrice),
+            id: plan.planName?.toLowerCase().replace(/\s+/g, '-') || `plan-${index}`,
+            title: plan.plan_name || 'Unnamed Plan',
+            price: plan.plan_price || 'Free',
+            priceValue: this.extractPriceValue(plan.plan_price),
+            currency: this.extractCurrency(plan.plan_price),
             period: 'per month',
             buttonText: this.isLogin ? 'Upgrade' : 'Get Started',
             buttonStyle: 'primary',
-            isPopular: plan.PlanMeta?.HighlightPlan || false,
-            tag: plan.PlanMeta?.Tag || '',
+            isPopular: plan.PlanMeta?.highlight_plan || false,
+            tag: plan.plan_meta?.tag || '',
             isSelected: false,
-            features: plan.PlanMeta?.Features?.Included || [],
-            notIncludedFeatures: plan.PlanMeta?.Features?.NotIncluded || [],
-            metrics: plan.PlanMeta?.Metrics || [],
-            extraFeatures: plan.PlanMeta?.Extra || [],
+            features: plan.plan_meta?.features?.included || [],
+            notIncludedFeatures: plan.plan_meta?.features?.notIncluded || [],
+            metrics: plan.plan_meta?.metrics || [],
+            extraFeatures: plan.plan_meta?.extra || [],
             status: 'active',
-            subscribeButtonLink: plan.SubscribeButtonLink,
+            subscribeButtonLink: this.isLogin
+                ? plan.subscribe_button_link?.replace('{ref_id}', this.referenceId)
+                : this.loginRedirectUrl,
             subscribeButtonHidden: false,
         }));
     }
