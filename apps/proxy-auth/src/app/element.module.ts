@@ -38,10 +38,12 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.referenceId = config?.referenceId;
             sendOtpElement.type = config?.type;
             sendOtpElement.authToken = config?.authToken;
+            sendOtpElement.showCompanyDetails = config?.showCompanyDetails;
             sendOtpElement.userToken = config?.userToken;
             sendOtpElement.pass = config?.pass;
             sendOtpElement.isPreview = config?.isPreview;
-            sendOtpElement.showCompanyDetails = config?.showCompanyDetails;
+            sendOtpElement.isLogin = config?.isLogin;
+            sendOtpElement.loginRedirectUrl = config?.loginRedirectUrl;
 
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;

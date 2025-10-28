@@ -77,6 +77,10 @@ export interface IOtpState {
     updateRoleDataInProcess: boolean;
     updateRoleDataSuccess: boolean;
 
+    upgradeSubscriptionData: any;
+    upgradeSubscriptionDataInProcess: boolean;
+    upgradeSubscriptionDataSuccess: boolean;
+
     error: any;
 }
 
@@ -153,6 +157,10 @@ export const initialState: IOtpState = {
     updateRoleData: null,
     updateRoleDataInProcess: false,
     updateRoleDataSuccess: false,
+
+    upgradeSubscriptionData: null,
+    upgradeSubscriptionDataInProcess: false,
+    upgradeSubscriptionDataSuccess: false,
 
     error: null,
 };
@@ -596,6 +604,26 @@ const _otpReducer = createReducer(
         subscriptionPlansDataInProcess: false,
         subscriptionPlansDataSuccess: true,
         subscriptionPlansData: response,
+    })),
+
+    on(otpActions.upgradeSubscription, (state, { referenceId, payload, authToken }) => ({
+        ...state,
+        upgradeSubscriptionDataInProcess: true,
+        upgradeSubscriptionDataSuccess: false,
+        errors: null,
+    })),
+    on(otpActions.upgradeSubscriptionComplete, (state, { response }) => ({
+        ...state,
+        upgradeSubscriptionData: response,
+        upgradeSubscriptionDataInProcess: false,
+        upgradeSubscriptionDataSuccess: true,
+    })),
+    on(otpActions.upgradeSubscriptionError, (state, { errors, errorResponse }) => ({
+        ...state,
+        upgradeSubscriptionDataInProcess: false,
+        upgradeSubscriptionDataSuccess: false,
+        errors: errors,
+        apiErrorResponse: errorResponse,
     })),
     on(otpActions.getSubscriptionPlansError, (state, { errors, errorResponse }) => ({
         ...state,

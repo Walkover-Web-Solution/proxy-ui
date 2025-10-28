@@ -20,6 +20,9 @@ export interface SubscriptionPlan {
     isPopular?: boolean;
     isSelected?: boolean;
     features?: string[];
+    notIncludedFeatures?: string[];
+    metrics?: string[];
+    extraFeatures?: string[];
     status?: string;
     subscribeButtonLink?: string;
     subscribeButtonHidden?: boolean;
@@ -36,6 +39,8 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
     @Output() public planSelected = new EventEmitter<SubscriptionPlan>();
     @Input() public isPreview: boolean = false;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
+    @Input() public isLogin: boolean;
+    @Input() public loginRedirectUrl: string;
 
     public subscriptionPlans$: Observable<any>;
     public subscriptionPlans: any[] = [];
@@ -55,34 +60,37 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
     }
 
     ngOnInit(): void {
-        // Get referenceId from dialog data or input
-        const referenceId = this.dialogData?.referenceId || this.referenceId;
-
-        if (referenceId) {
-            this.store.dispatch(getSubscriptionPlans({ referenceId }));
-            this.subscriptionPlans$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
-                if (data) {
-                    this.subscriptionPlans = this.formatSubscriptionPlans(data.data);
-                }
-            });
-        }
+        this.subscriptionPlans$.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+            if (res && res.data && Array.isArray(res.data)) {
+                this.subscriptionPlans = this.formatSubscriptionPlans(res.data);
+            } else {
+                this.subscriptionPlans = [];
+            }
+        });
     }
 
     private formatSubscriptionPlans(plans: any[]): any[] {
         return plans.map((plan, index) => ({
-            id: plan.plan_name?.toLowerCase().replace(/\s+/g, '-') || `plan-${index}`,
+            id: plan.planName?.toLowerCase().replace(/\s+/g, '-') || `plan-${index}`,
             title: plan.plan_name || 'Unnamed Plan',
             price: plan.plan_price || 'Free',
             priceValue: this.extractPriceValue(plan.plan_price),
             currency: this.extractCurrency(plan.plan_price),
-            buttonText: plan.subscribe_button_hidden ? 'Hidden' : 'Get Started',
-            buttonStyle: 'secondary', // All plans use secondary style
-            isPopular: false, // No plan is popular by default
-            isSelected: false, // No plan is selected by default
-            features: this.getIncludedFeatures(plan.charges),
-            status: plan.plan_status,
-            subscribeButtonLink: plan.subscribe_button_link,
-            subscribeButtonHidden: plan.subscribe_button_hidden,
+            period: 'per month',
+            buttonText: this.isLogin ? 'Upgrade' : 'Get Started',
+            buttonStyle: 'primary',
+            isPopular: plan.PlanMeta?.highlight_plan || false,
+            tag: plan.plan_meta?.tag || '',
+            isSelected: false,
+            features: plan.plan_meta?.features?.included || [],
+            notIncludedFeatures: plan.plan_meta?.features?.notIncluded || [],
+            metrics: plan.plan_meta?.metrics || [],
+            extraFeatures: plan.plan_meta?.extra || [],
+            status: 'active',
+            subscribeButtonLink: this.isLogin
+                ? plan.subscribe_button_link?.replace('{ref_id}', this.referenceId)
+                : this.loginRedirectUrl,
+            subscribeButtonHidden: false,
         }));
     }
 
@@ -133,5 +141,10 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
 
         // Emit selected plan
         this.planSelected.emit(plan);
+
+        // Navigate to subscribe button link if available
+        if (plan.subscribeButtonLink) {
+            window.open(plan.subscribeButtonLink, '_blank');
+        }
     }
 }
