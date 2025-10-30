@@ -86,6 +86,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
     public showSkeleton: boolean = false;
     public upgradeSubscriptionData: any;
+    private createAccountTextAppended: boolean = false; // Flag to track if create account text has been appended
 
     constructor(
         private ngZone: NgZone,
@@ -212,6 +213,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
             this.show$ = of(false);
             this.animate = false;
+            this.createAccountTextAppended = false;
 
             if (intial) {
                 if (this.type === 'subscription') {
@@ -507,7 +509,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             .gap-3 { gap: 1rem !important; }
             .gap-4 { gap: 1.5rem !important; }
             .gap-5 { gap: 2rem !important; }
-
+           
 
 
             /* Subscription Plans Styles */
@@ -802,6 +804,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         font-size: 16px;
     }
 }
+                *{
+                box-sizing: border-box;
+                font-family: 'Inter', sans-serif;
+                 -webkit-font-smoothing: antialiased;
+              }
 
             /* Divider */
 .divider {
@@ -826,6 +833,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 if (totalButtons > 0 && this.showSkeleton) {
                     this.removeSkeletonLoader(element);
                     this.appendSkeletonLoader(element, totalButtons);
+                } else if (totalButtons > 0 && !this.showSkeleton) {
+                    this.removeSkeletonLoader(element);
                 }
 
                 if (totalButtons === 0) {
@@ -833,37 +842,81 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                         this.showSkeleton = false;
                         this.removeSkeletonLoader(element);
                     }
-                    this.appendCreateAccountText(element);
+                    if (!this.createAccountTextAppended) {
+                        this.appendCreateAccountText(element);
+                    }
                     return;
                 }
 
-                // Add a fallback timeout to ensure skeleton is removed
+                let otpButtonProcessed = false;
+                let otpTimeout: any = null;
+
                 const fallbackTimeout = setTimeout(() => {
-                    if (this.showSkeleton) {
+                    if (this.showSkeleton && !this.createAccountTextAppended) {
                         this.showSkeleton = false;
                         this.removeSkeletonLoader(element);
                         const allButtons = element.querySelectorAll('button');
                         allButtons.forEach((button) => {
                             button.style.visibility = 'visible';
                         });
-                        this.appendCreateAccountText(element);
+                        if (otpButtonProcessed || !this.hasOtpButton(widgetDataArray)) {
+                            this.appendCreateAccountText(element);
+                        }
                     }
-                }, 3000);
+                }, 8000);
 
                 const immediateFallback = setTimeout(() => {
-                    if (this.showSkeleton) {
+                    if (this.showSkeleton && !this.createAccountTextAppended) {
                         this.showSkeleton = false;
+                        this.removeSkeletonLoader(element);
                         this.forceRemoveAllSkeletonLoaders();
                         const allButtons = element.querySelectorAll('button');
                         allButtons.forEach((button) => {
                             button.style.visibility = 'visible';
                         });
-                        this.appendCreateAccountText(element);
+                        if (otpButtonProcessed || !this.hasOtpButton(widgetDataArray)) {
+                            this.appendCreateAccountText(element);
+                        }
                     }
-                }, 1000);
+                }, 3000);
 
                 for (const buttonsData of widgetDataArray) {
                     if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
+                        otpTimeout = setTimeout(() => {
+                            if (!otpButtonProcessed) {
+                                this.appendButton(element, buttonsData);
+
+                                const otpButtons = element.querySelectorAll(
+                                    'button[data-service-id="' + FeatureServiceIds.Msg91OtpService + '"]'
+                                );
+                                otpButtons.forEach((btn: HTMLElement) => {
+                                    btn.style.visibility = 'visible';
+                                });
+
+                                buttonsProcessed++;
+                                otpButtonProcessed = true;
+                                this.checkAndAppendCreateAccountText(
+                                    element,
+                                    buttonsProcessed,
+                                    totalButtons,
+                                    fallbackTimeout,
+                                    immediateFallback,
+                                    otpTimeout
+                                );
+                            }
+                        }, 4000);
+
+                        setTimeout(() => {
+                            const otpButtons = element.querySelectorAll(
+                                'button[data-service-id="' + FeatureServiceIds.Msg91OtpService + '"]'
+                            );
+                            otpButtons.forEach((btn: HTMLElement) => {
+                                if (btn.style.visibility === 'hidden') {
+                                    btn.style.visibility = 'visible';
+                                }
+                            });
+                        }, 3000);
+
                         this.otpWidgetService.scriptLoading
                             .pipe(
                                 skip(1),
@@ -871,15 +924,30 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                                 take(1)
                             )
                             .subscribe(() => {
-                                this.appendButton(element, buttonsData);
-                                buttonsProcessed++;
-                                this.checkAndAppendCreateAccountText(
-                                    element,
-                                    buttonsProcessed,
-                                    totalButtons,
-                                    fallbackTimeout,
-                                    immediateFallback
-                                );
+                                if (!otpButtonProcessed) {
+                                    if (otpTimeout) {
+                                        clearTimeout(otpTimeout);
+                                    }
+                                    this.appendButton(element, buttonsData);
+
+                                    const otpButtons = element.querySelectorAll(
+                                        'button[data-service-id="' + FeatureServiceIds.Msg91OtpService + '"]'
+                                    );
+                                    otpButtons.forEach((btn: HTMLElement) => {
+                                        btn.style.visibility = 'visible';
+                                    });
+
+                                    buttonsProcessed++;
+                                    otpButtonProcessed = true;
+                                    this.checkAndAppendCreateAccountText(
+                                        element,
+                                        buttonsProcessed,
+                                        totalButtons,
+                                        fallbackTimeout,
+                                        immediateFallback,
+                                        otpTimeout
+                                    );
+                                }
                             });
                     } else {
                         this.appendButton(element, buttonsData);
@@ -889,7 +957,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                             buttonsProcessed,
                             totalButtons,
                             fallbackTimeout,
-                            immediateFallback
+                            immediateFallback,
+                            otpTimeout
                         );
                     }
                 }
@@ -901,29 +970,31 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         buttonsProcessed,
         totalButtons,
         fallbackTimeout?,
-        immediateFallback?
+        immediateFallback?,
+        otpTimeout?
     ): void {
         if (buttonsProcessed === totalButtons) {
-            // Clear both timeouts since we've successfully processed all buttons
             if (fallbackTimeout) {
                 clearTimeout(fallbackTimeout);
             }
             if (immediateFallback) {
                 clearTimeout(immediateFallback);
             }
+            if (otpTimeout) {
+                clearTimeout(otpTimeout);
+            }
 
             if (this.showSkeleton) {
                 this.showSkeleton = false;
                 this.removeSkeletonLoader(element);
+                this.forceRemoveAllSkeletonLoaders();
 
-                // Show all buttons that were hidden
                 const allButtons = element.querySelectorAll('button');
                 allButtons.forEach((button) => {
                     button.style.visibility = 'visible';
                 });
             }
 
-            // Add a small delay to ensure all buttons are rendered
             setTimeout(() => {
                 this.appendCreateAccountText(element);
             }, 100);
@@ -931,9 +1002,17 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     private appendButton(element, buttonsData): void {
+        if (this.showSkeleton) {
+            this.showSkeleton = false;
+            this.removeSkeletonLoader(element);
+        }
+
         const button: HTMLButtonElement = this.renderer.createElement('button');
         const image: HTMLImageElement = this.renderer.createElement('img');
         const span: HTMLSpanElement = this.renderer.createElement('span');
+
+        const isOtpButton = buttonsData?.service_id === FeatureServiceIds.Msg91OtpService;
+
         button.style.cssText = `
             outline: none;
             padding: 0px 16px;
@@ -950,7 +1029,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             margin: 8px 8px 16px 8px;
             cursor: pointer;
             width: 260px;
-            visibility: hidden; // Hide button until all are ready
+            visibility: ${isOtpButton ? 'hidden' : 'visible'}; // Hide only OTP buttons until ready
         `;
         image.style.cssText = `
             height: 20px;
@@ -964,6 +1043,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         image.alt = buttonsData.text;
         image.loading = 'lazy';
         span.innerText = buttonsData.text;
+
+        if (isOtpButton) {
+            button.setAttribute('data-service-id', buttonsData.service_id);
+        }
         button.addEventListener('click', () => {
             if (buttonsData?.urlLink) {
                 window.open(buttonsData.urlLink, this.target);
@@ -978,11 +1061,22 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         this.renderer.appendChild(element, button);
     }
 
+    private hasOtpButton(widgetDataArray: any[]): boolean {
+        return widgetDataArray.some((widget) => widget?.service_id === FeatureServiceIds.Msg91OtpService);
+    }
+
     private appendCreateAccountText(element): void {
+        const existingCreateAccountText = element.querySelector('p[data-create-account="true"]');
+        if (existingCreateAccountText || this.createAccountTextAppended) {
+            return;
+        }
+        this.createAccountTextAppended = true;
+
         const paragraph: HTMLParagraphElement = this.renderer.createElement('p');
         const link: HTMLAnchorElement = this.renderer.createElement('a');
 
-        // Style the paragraph to ensure it's at the bottom
+        paragraph.setAttribute('data-create-account', 'true');
+
         paragraph.style.cssText = `
     margin: 20px 8px 8px 8px !important;
     font-size: 14px !important;
@@ -1155,6 +1249,14 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         if (skeletonLoader) {
             this.renderer.removeChild(element, skeletonLoader);
         }
+
+        // Also remove any skeleton loaders that might be in the element
+        const allSkeletonLoaders = element.querySelectorAll('#skeleton-loader');
+        allSkeletonLoaders.forEach((loader) => {
+            if (loader.parentNode) {
+                this.renderer.removeChild(element, loader);
+            }
+        });
 
         this.forceRemoveAllSkeletonLoaders();
     }
