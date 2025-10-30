@@ -274,6 +274,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         buttons.forEach((button) => {
             button.addEventListener('click', (event) => {
                 event.preventDefault();
+                if ((button as HTMLButtonElement).disabled || button.classList.contains('plan-button-disabled')) {
+                    return;
+                }
 
                 // Check if it's an upgrade button
                 if (button.classList.contains('upgrade-btn')) {
@@ -433,10 +436,17 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         `
                 : '';
 
+        const isDisabled = !!plan.isSubscribed;
         const buttonHTML = `
-            <button class="plan-button primary upgrade-btn" data-plan-id="${plan.id}" data-plan-data='${JSON.stringify(
-            plan
-        )}' style="opacity: ${this.isLogin && plan.isSubscribed ? 0.7 : 1};">
+            <button 
+                class="plan-button primary upgrade-btn ${isDisabled ? 'plan-button-disabled' : ''}"
+                data-plan-id="${plan.id}"
+                data-plan-data='${JSON.stringify(plan)}'
+                ${isDisabled ? 'disabled aria-disabled="true"' : ''}
+                style="opacity: ${isDisabled ? 0.7 : 1}; ${
+            isDisabled ? 'cursor: not-allowed; pointer-events: none;' : ''
+        }"
+            >
                 ${this.isLogin ? (plan.isSubscribed ? 'Your current plan' : 'Get ' + plan.plan_name) : 'Get Started'}
             </button>
         `;
@@ -764,6 +774,14 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             background: #333333;
             border-color: #333333;
         }
+
+            /* Disabled state */
+            .plan-button.plan-button-disabled,
+            .plan-button:disabled {
+                opacity: 0.7 !important;
+                cursor: not-allowed !important;
+                pointer-events: none !important;
+            }
 
             .plan-button.secondary {
         background: #ffffff;
