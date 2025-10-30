@@ -509,8 +509,8 @@ export class OtpEffects {
     getSubscriptionPlans$ = createEffect(() =>
         this.actions$.pipe(
             ofType(otpActions.getSubscriptionPlans),
-            switchMap(({ referenceId }) => {
-                return this.otpService.getSubscriptionPlans(referenceId).pipe(
+            switchMap(({ referenceId, authToken }) => {
+                return this.otpService.getSubscriptionPlans(referenceId, authToken).pipe(
                     map((res: any) => {
                         if (res.status === 'success') {
                             return otpActions.getSubscriptionPlansComplete({

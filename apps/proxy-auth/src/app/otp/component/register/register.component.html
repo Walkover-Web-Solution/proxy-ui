@@ -315,7 +315,7 @@
             [attr.id]="'init-contact-' + key"
             [placeholder]="'Enter ' + label + (required ? ' *' : '')"
             [ngClass]="{ 'invalid-input': formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber'] }"
-            (input)="onMobileInput($event)"
+            (input)="onMobileInput($event, key)"
             (blur)="formControl?.markAsTouched(); formControl?.setValue(intlClass?.[key]?.phoneNumber?.replace('+', ''))"
             [disabled]="isFieldFocused"
         />
