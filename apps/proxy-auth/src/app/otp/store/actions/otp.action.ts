@@ -124,7 +124,10 @@ export const updateRoleError = createAction(
     props<{ errors: string[]; errorResponse: any }>()
 );
 
-export const getSubscriptionPlans = createAction('[OTP] Get Subscription Plans', props<{ referenceId: string }>());
+export const getSubscriptionPlans = createAction(
+    '[OTP] Get Subscription Plans',
+    props<{ referenceId: string; authToken?: string }>()
+);
 export const getSubscriptionPlansComplete = createAction(
     '[OTP] Get Subscription Plans Complete',
     props<{ response: any }>()
