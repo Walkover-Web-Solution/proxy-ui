@@ -178,7 +178,9 @@ export class OtpService {
         referenceId: string,
         authToken?: string
     ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
-        this.options.headers['proxy_auth_token'] = authToken;
+        if (authToken) {
+            this.options.headers['proxy_auth_token'] = authToken;
+        }
         const url = otpVerificationUrls.getSubscriptionPlans(this.clientUrl).replace(':referenceId', referenceId);
         return this.http.get<any>(url, {}, this.options);
     }
@@ -187,7 +189,9 @@ export class OtpService {
         payload: any,
         authToken?: string
     ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
-        this.options.headers['proxy_auth_token'] = authToken;
+        if (authToken) {
+            this.options.headers['proxy_auth_token'] = authToken;
+        }
         const url = otpVerificationUrls.upgradeSubscription(this.clientUrl).replace(':referenceId', referenceId);
         return this.http.post<any>(url, payload, this.options);
     }
