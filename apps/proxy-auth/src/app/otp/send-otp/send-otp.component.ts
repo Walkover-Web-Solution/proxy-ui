@@ -117,7 +117,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     ngOnInit() {
         if (this.type === 'subscription') {
             // Load subscription plans first
-            this.store.dispatch(getSubscriptionPlans({ referenceId: this.referenceId }));
+            this.store.dispatch(getSubscriptionPlans({ referenceId: this.referenceId, authToken: this.authToken }));
             this.store.pipe(select(subscriptionPlansData), takeUntil(this.destroy$)).subscribe((subscriptionPlans) => {
                 if (subscriptionPlans) {
                     this.subscriptionPlans = subscriptionPlans.data;
@@ -160,6 +160,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.loginWidgetData = widgetData?.find(
                 (widget) => widget?.service_id === FeatureServiceIds.PasswordAuthentication
             );
+            if (!this.loginWidgetData) {
+                this.loginWidgetData = widgetData[0];
+            }
         });
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
             this.hitCallbackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token });
@@ -307,7 +310,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
         if (plans.length === 0) {
             return `
-                <div class="container">
+                <div class="proxy-container">
                     <div class="subscription-plans-container d-flex flex-column align-items-center justify-content-center">
                         <div style="padding: 20px; text-align: center; color: #666; font-size: 16px;">
                             No subscription plans available
@@ -320,7 +323,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         const plansHTML = plans.map((plan) => this.createPlanCardHTML(plan)).join('');
 
         const finalHTML = `
-            <div class="container">
+            <div class="proxy-container">
                 <div class="subscription-plans-container d-flex flex-column align-items-center justify-content-center">
                     <div class="plans-grid d-flex flex-row gap-4 justify-content-start align-items-stretch w-100 py-3">
                         ${plansHTML}
@@ -434,8 +437,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         const buttonHTML = `
             <button class="plan-button primary upgrade-btn" data-plan-id="${plan.id}" data-plan-data='${JSON.stringify(
             plan
-        )}'>
-                ${this.isLogin ? 'Upgrade' : 'Get Started'}
+        )}' style="opacity: ${this.isLogin && plan.isSubscribed ? 0.7 : 1};">
+                ${this.isLogin ? (plan.isSubscribed ? 'Your current plan' : 'Get ' + plan.plan_name) : 'Get Started'}
             </button>
         `;
 
@@ -572,22 +575,22 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 .plan-card {
     background: #ffffff;
                 border: 2px solid #e6e6e6;
-    border-radius: 4px;
+                border-radius: 4px;
                 padding: 26px 24px;
-    transition: all 0.3s ease;
                 box-shadow: none;
-                 min-width: 280px;
+                min-width: 290px;
                 max-width: 350px;
                 width: 350px;
-    flex: 1;
+                flex: 1;
                 justify-content: flex-start;
                 min-height: auto;
                 max-height: none;
                 overflow: visible;
-    min-height: 348px;
+                min-height: 348px;
                 font-family: 'Outfit', sans-serif;
                 position: relative;
                 margin-top :30px
+                
             }
 
             .plan-card.highlighted {
@@ -599,13 +602,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 box-shadow: none;
             }
 
-            .plan-card.popular {
-                transform: scale(1.02);
-            }
-
-            .plan-card.popular:hover {
-                transform: scale(1.02);
-            }
 
     @media (max-width: 768px) {
                 .plan-card {
@@ -614,14 +610,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         width: 100%;
         padding: 30px 20px;
                 }
-                
-                .plan-card.popular {
-            transform: none;
-            }
-                
-                .plan-card.popular:hover {
-                    transform: none;
-        }
     }
 
             /* Popular Badge */
@@ -768,7 +756,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
             .plan-button.primary {
                 background: #4d4d4d;
-        color: #ffffff;
+                color: #ffffff;
                 border-color: #4d4d4d;
                 font-weight: 700;
             }
@@ -790,8 +778,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
     @media (max-width: 768px) {
                 .plan-button {
-        padding: 14px 28px;
-        font-size: 16px;
+                width: auto;
+             padding: 8px 28px;
+           font-size: 16px;
+        
     }
 }
 
@@ -1018,7 +1008,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         `;
 
         // Set the text content
-        paragraph.innerHTML = 'Are you a new User? ';
+        paragraph.innerHTML = 'Are you a new user? ';
         link.textContent = 'Create an account';
 
         // Add click event to the link

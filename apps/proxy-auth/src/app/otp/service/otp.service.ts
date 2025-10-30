@@ -174,9 +174,13 @@ export class OtpService {
         const url = otpVerificationUrls.updateRole(this.clientUrl).replace(':id', payload.id);
         return this.http.put<any>(url, payload, this.options);
     }
-    public getSubscriptionPlans(referenceId: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+    public getSubscriptionPlans(
+        referenceId: string,
+        authToken?: string
+    ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+        this.options.headers['proxy_auth_token'] = authToken;
         const url = otpVerificationUrls.getSubscriptionPlans(this.clientUrl).replace(':referenceId', referenceId);
-        return this.http.get<any>(url);
+        return this.http.get<any>(url, {}, this.options);
     }
     public upgradeSubscription(
         referenceId: string,

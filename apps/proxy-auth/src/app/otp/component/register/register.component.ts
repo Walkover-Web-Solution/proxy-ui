@@ -509,20 +509,22 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             prevInput.select();
         }
     }
-    public onMobileInput(event: any) {
-        this.isOtpSent = false;
-        const input = event.target;
-        const value = input.value;
-        this.registrationForm.get('user.mobile').setValue(value);
-        this.otpForm.reset();
+    public onMobileInput(event: any, key?: string) {
+        if (key === 'user') {
+            this.isOtpSent = false;
+            const input = event.target;
+            const value = input.value;
+            this.registrationForm.get('user.mobile').setValue(value);
+            this.otpForm.reset();
 
-        // Check if mobile number has changed
-        if (value !== this.lastSentMobileNumber) {
-            this.stopResendTimer();
-            this.canResendOtp = true;
+            // Check if mobile number has changed
+            if (value !== this.lastSentMobileNumber) {
+                this.stopResendTimer();
+                this.canResendOtp = true;
+            }
+
+            this.cdr.detectChanges();
         }
-
-        this.cdr.detectChanges();
     }
     public numberChanged() {
         this.isOtpSent = false;
