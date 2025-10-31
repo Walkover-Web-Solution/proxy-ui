@@ -1106,7 +1106,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     align-items: center !important;
     justify-content: center !important;
     gap: 8px !important;
-    color: #3f4346 !important;
+    color: #3f4346;
     cursor: pointer !important;
     width: 260px !important;
 `;
