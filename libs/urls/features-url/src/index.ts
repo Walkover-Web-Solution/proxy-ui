@@ -14,4 +14,7 @@ export const FeaturesUrls = {
     createPlan: (baseUrl, refId) => createUrl(baseUrl, `subscription/${refId}/plans`),
     updatePlan: (baseUrl, refId, code) => createUrl(baseUrl, `subscription/${refId}/plans/${code}`),
     deletePlan: (baseUrl, refId, code) => createUrl(baseUrl, `subscription/${refId}/plans/${code}`),
+    getPaymentDetailsForm: (baseUrl) => createUrl(baseUrl, `paymentCredentialsForm`),
+    getPaymentDetailsFormById: (baseUrl, refid) => createUrl(baseUrl, `${refid}/paymentForm`),
+    updatePaymentDetails: (baseUrl, refid) => createUrl(baseUrl, `subscription/${refid}/updateCredentials`),
 };

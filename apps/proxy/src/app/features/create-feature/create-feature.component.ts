@@ -112,6 +112,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public planData$: Observable<any> = this.componentStore.planData$;
     public deletePlan$: Observable<any> = this.componentStore.deletePlan$;
     public updatePlan$: Observable<any> = this.componentStore.updatePlan$;
+    public paymentDetailsForm$: Observable<any> = this.componentStore.paymentDetailsForm$;
+    public paymentDetailsById$: Observable<any> = this.componentStore.paymentDetailsById$;
+    public updatePaymentDetails$: Observable<any> = this.componentStore.updatePaymentDetails$;
 
     public isEditMode = false;
     public selectedServiceIndex = 0;
@@ -125,7 +128,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public showApiConfigurationErrors = false;
     public canCreatePlansFormControls = false;
     public billableMetricsFormFields: any;
-
+    public paymentDetailsFormFields: any;
+    public paymentDetailsData: any;
     public featureFieldType = FeatureFieldType;
     public proxyAuthScript = ProxyAuthScript(environment.proxyServer);
 
@@ -154,6 +158,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }),
         serviceDetails: new FormArray<ServiceFormGroup>([]),
         planDetails: new FormArray<any>([]),
+        paymentDetailsForm: new FormArray<any>([]),
         plansOverview: new FormGroup({
             planSelected: new FormControl<string>(null, [Validators.required]),
         }),
@@ -371,6 +376,24 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         this.updatePlan$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((plan) => {
             if (plan) {
                 this.getAllPlans();
+            }
+        });
+        this.paymentDetailsForm$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((paymentDetails) => {
+            if (paymentDetails) {
+                this.paymentDetailsFormFields = paymentDetails.stripe;
+                this.createPaymentDetailsFormControls();
+            }
+        });
+        this.paymentDetailsById$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((paymentDetails) => {
+            if (paymentDetails) {
+                this.paymentDetailsData = paymentDetails;
+                this.updatePaymentDetailsForm();
+            }
+        });
+        this.updatePaymentDetails$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((paymentDetails) => {
+            if (paymentDetails) {
+                const refId = this.getReferenceId();
+                this.componentStore.getPaymentDetailsFormById({ refId: refId });
             }
         });
     }
@@ -1374,5 +1397,39 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public getBillableMetricName(billableMetricId: string): string {
         const billableMetric = this.billableMetricstabledata.find((metric: any) => metric.lago_id === billableMetricId);
         return billableMetric ? billableMetric.name : '';
+    }
+    public getPaymentDetailsFormData(): void {
+        this.componentStore.getPaymentDetailsForm(of(null));
+    }
+    public createPaymentDetailsFormControls(): void {
+        const paymentDetailsForm = new FormGroup({
+            stripe: new FormGroup({}),
+        });
+        Object.entries(this.paymentDetailsFormFields).forEach(([key, field]: [string, any]) => {
+            const formControl = this.createFormControl(field as IFieldConfig, 0, null);
+            if (formControl) {
+                paymentDetailsForm.controls.stripe.addControl(key, formControl);
+            }
+        });
+        this.featureForm.controls.paymentDetailsForm.push(paymentDetailsForm);
+    }
+    public savePaymentDetails(): void {
+        const paymentDetailsForm = this.featureForm.controls.paymentDetailsForm.at(0);
+        if (paymentDetailsForm) {
+            const refId = this.getReferenceId();
+            this.componentStore.updatePaymentDetails({ refId: refId, body: paymentDetailsForm.value.stripe });
+        }
+    }
+    public updatePaymentDetails(): void {
+        this.selectedSubscriptionServiceIndex = -3;
+        this.getPaymentDetailsFormData();
+        const refId = this.getReferenceId();
+        this.componentStore.getPaymentDetailsFormById({ refId: refId });
+    }
+    public updatePaymentDetailsForm(): void {
+        const paymentDetailsForm = this.featureForm.controls.paymentDetailsForm.at(0);
+        if (paymentDetailsForm) {
+            paymentDetailsForm.patchValue({ stripe: this.paymentDetailsData });
+        }
     }
 }

@@ -30,7 +30,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                 loginRedirectUrl: 'https://www.google.com',
                 showCompanyDetails: false,
                 authToken:
-                    'L3YzZzZtN2hCdVUvUzg4cHVMUzlYdHlGZ2lVUlVSZ3FzK0x1RldqMk1sd2x3ZUZpWk1BTGhnemZZNDdmamZldUQzNkMzaHFTNXUzYXBXa2xsWVZQbmlSSnJmR0lJSUlMbE1kQ0daalZJaGRNNVc1YzI1d2F4YUMrVTE0bHBrN2gycUNuU2w0U1hSb1ZFNmpFRXBNTUpNZVlXbllwYzQ4MzQ0MmxHcU84UnJPRHpWd3RQSXhhaldyZUYvOVg5UU5lcDNkdHV2b3JHTmVMZkkyUjF4MStFZz09',
+                    'SWs4ZUplMzJyL1duSkpzM25zMHpzSHlTOG9KRWs4RndIOC9uMHJhWUcxZEZrMDhwSGpYZnF5WjR0Y1Z5ZWN1cnFLVFIvVis2TmJVQVVMdUNQVWM2VlRpSktqTHZwRHEzRUdOTGJTWkhYaGxERVVYbWYvMHFPZEwyMlVKa0FSM1RXOWlJWWNwWE9xblRuM09kaXJrL2pVVnkrVjZDM0tCNzZuYnRBNldFcUZXOUpxYXN4cjEzSlFKSlZNUzVmbk5PSzFkeWxKY2l4d1gwbEZWbzR4UGxUQT09',
                 type: 'subscription',
                 // isPreview: true,
                 isLogin: true,
