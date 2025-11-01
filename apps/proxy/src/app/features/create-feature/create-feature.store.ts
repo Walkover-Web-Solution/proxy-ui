@@ -23,6 +23,9 @@ export interface ICreateFeatureInitialState {
     planData: any;
     updatePlan: any;
     deletePlan: any;
+    paymentDetailsForm: any;
+    paymentDetailsById: any;
+    updatePaymentDetails: any;
 }
 
 @Injectable()
@@ -46,6 +49,9 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             planData: null,
             updatePlan: null,
             deletePlan: null,
+            paymentDetailsForm: null,
+            paymentDetailsById: null,
+            updatePaymentDetails: null,
         });
     }
     /** Selector for API progress  */
@@ -82,7 +88,12 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly updatePlan$: Observable<any> = this.select((state) => state.updatePlan);
     /** Selector for delete plan data */
     readonly deletePlan$: Observable<any> = this.select((state) => state.deletePlan);
-
+    /** Selector for payment details form data */
+    readonly paymentDetailsForm$: Observable<any> = this.select((state) => state.paymentDetailsForm);
+    /** Selector for payment details form by id data */
+    readonly paymentDetailsById$: Observable<any> = this.select((state) => state.paymentDetailsById);
+    /** Selector for update payment details data */
+    readonly updatePaymentDetails$: Observable<any> = this.select((state) => state.updatePaymentDetails);
     /** Get feature type data */
     readonly getFeatureType = this.effect((data) => {
         return data.pipe(
@@ -511,6 +522,76 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                             }
                             this.toast.success('Plan deleted successfully');
                             return this.patchState({ isLoading: false, deletePlan: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly getPaymentDetailsForm = this.effect((data: Observable<null>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getPaymentDetailsForm().pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, paymentDetailsForm: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly getPaymentDetailsFormById = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getPaymentDetailsFormById(req.refId).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, paymentDetailsById: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly updatePaymentDetails = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.updatePaymentDetails(req.refId, req.body).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, updatePaymentDetails: res.data });
                         },
                         (error: any) => {
                             this.showError(error.errors);

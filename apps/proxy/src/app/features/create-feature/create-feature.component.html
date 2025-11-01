@@ -185,10 +185,30 @@
                             type="button"
                             mat-flat-button
                             color="primary"
-                            (click)="getCreatePlansFormData()"
+                            (click)="getPaymentDetailsFormData()"
                             matStepperNext
                         >
                             Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
+                                >navigate_next</mat-icon
+                            >
+                        </button>
+                    </div>
+                </div>
+            </mat-step>
+            <mat-step [editable]="!(createUpdateObject$ | async)">
+                <ng-template matStepLabel>Payment Details</ng-template>
+                <div class="d-flex flex-column justify-content-between gap-3 h-100">
+                    <ng-container *ngTemplateOutlet="paymentDetails"></ng-container>
+
+                    <div class="d-flex align-items-end justify-content-end">
+                        <button
+                            type="button"
+                            mat-flat-button
+                            color="primary"
+                            (click)="getCreatePlansFormData()"
+                            matStepperNext
+                        >
+                            skip<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                                 >navigate_next</mat-icon
                             >
                         </button>
@@ -921,6 +941,45 @@
     </div>
 </ng-template>
 
+<ng-template #paymentDetails>
+    <div class="d-flex flex-column h-100">
+        <h5 class="mat-h5 mb-3">Payment Details</h5>
+        <div class="d-flex flex-column h-100">
+            <p class="mat-body-2 text-secondary"><strong>Note:</strong> These details will be shown on the invoice..</p>
+            <div class="auth-credentials px-3">
+                <div class="d-flex flex-column">
+                    <ng-container *ngIf="featureForm.get('paymentDetailsForm')?.at(0) as paymentDetailsForm">
+                        <form [formGroup]="paymentDetailsForm">
+                            <ng-container
+                                *ngFor="let controlKeyValue of paymentDetailsForm.controls.stripe.controls | keyvalue"
+                            >
+                                <div class="row">
+                                    <div class="col-md-12 w-100">
+                                        <ng-container
+                                            *ngTemplateOutlet="
+                                                inputField;
+                                                context: {
+                                                    fieldControl: controlKeyValue.value,
+                                                    fieldConfig: paymentDetailsFormFields[controlKeyValue.key]
+                                                }
+                                            "
+                                        ></ng-container>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </form>
+                        <div class="d-flex justify-content-start align-items-center">
+                            <button type="button" mat-flat-button color="primary" (click)="savePaymentDetails()">
+                                {{ isEditMode ? 'Update' : 'Save' }}
+                            </button>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
 <ng-template #createPlan>
     <div class="d-flex flex-column h-100">
         <h5 class="mat-h5 mb-3">Create Plan</h5>
@@ -1177,6 +1236,16 @@
                     <div class="d-flex align-items-center flex-grow-1">Plans</div>
                     <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
                 </mat-list-item>
+
+                <mat-list-item
+                    role="listitem"
+                    class="rounded-4"
+                    [ngClass]="{ 'active': selectedSubscriptionServiceIndex === -3 }"
+                    (click)="updatePaymentDetails()"
+                >
+                    <div class="d-flex align-items-center flex-grow-1">Payment Details</div>
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
+                </mat-list-item>
             </mat-list>
         </div>
 
@@ -1193,6 +1262,10 @@
                 <div *ngIf="selectedSubscriptionServiceIndex === -2">
                     <h3>Billable Metric</h3>
                     <ng-container *ngTemplateOutlet="billableMetrics"></ng-container>
+                </div>
+                <div *ngIf="selectedSubscriptionServiceIndex === -3">
+                    <h3>Payment Details</h3>
+                    <ng-container *ngTemplateOutlet="paymentDetails"></ng-container>
                 </div>
             </div>
         </div>
