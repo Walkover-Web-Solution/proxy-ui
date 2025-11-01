@@ -757,7 +757,21 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
     }
 
     public onClose(): void {
+        this.resetForm();
         this.dialogRef.close();
+    }
+
+    private resetForm(): void {
+        if (this.planForm) {
+            this.planForm.reset();
+        }
+        // Reset chip list values, but preserve read-only values
+        Object.keys(this.chipListValues).forEach((key) => {
+            const readOnlyValues = this.chipListReadOnlyValues[key] || new Set<string>();
+            this.chipListValues[key] = new Set(readOnlyValues);
+        });
+        // Reset charges list
+        this.chargesList = [];
     }
 
     // Separate function for API calls
@@ -898,6 +912,8 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
     ngOnDestroy(): void {
         // Clear the options cache to prevent memory leaks
         this.optionsCache = {};
+        // Reset form when dialog is destroyed
+        this.resetForm();
         super.ngOnDestroy();
     }
 }

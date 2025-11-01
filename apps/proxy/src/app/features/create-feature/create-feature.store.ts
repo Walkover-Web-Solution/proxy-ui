@@ -591,6 +591,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                                 this.showError(res.errors);
                                 return this.patchState({ isLoading: false });
                             }
+                            this.toast.success('Payment details updated successfully');
                             return this.patchState({ isLoading: false, updatePaymentDetails: res.data });
                         },
                         (error: any) => {
