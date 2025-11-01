@@ -103,4 +103,13 @@ export class FeaturesService {
     public deletePlan(refId: string | number, code: string): Observable<BaseResponse<any, void>> {
         return this.http.delete<BaseResponse<any, void>>(FeaturesUrls.deletePlan(this.baseURL, refId, code));
     }
+    public getPaymentDetailsForm(): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getPaymentDetailsForm(this.baseURL));
+    }
+    public getPaymentDetailsFormById(refId: string | number): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getPaymentDetailsFormById(this.baseURL, refId));
+    }
+    public updatePaymentDetails(refId: string | number, body): Observable<BaseResponse<any, void>> {
+        return this.http.post<BaseResponse<any, void>>(FeaturesUrls.updatePaymentDetails(this.baseURL, refId), body);
+    }
 }
