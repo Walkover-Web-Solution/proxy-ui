@@ -549,7 +549,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             let formValue = value ?? config.value;
             const key = `${config.label}_${index}`;
             if (config.type === FeatureFieldType.ChipList) {
-                this.chipListValues[key] = new Set(formValue?.split(config.delimiter ?? ' ') ?? []);
+                const delimiter = config.delimiter ?? ' ';
+                const chipValues = formValue
+                    ? formValue
+                          .split(delimiter)
+                          .map((v: string) => v.trim())
+                          .filter((v: string) => v.length > 0)
+                    : [];
+                this.chipListValues[key] = new Set(chipValues);
                 this.chipListReadOnlyValues[key] = new Set(config?.read_only_value ?? []);
                 formValue = null;
             }
@@ -597,6 +604,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         ).billable_metrics?.fields;
         const planForm = (selectedMethod.method_services[0].configurations as any).plans?.fields;
         this.createPlanForm = planForm;
+
         const planFormGroup: PlanFormGroup = new FormGroup({
             createPlanForm: new FormGroup({}),
             chargesForm: new FormGroup({}),
@@ -653,8 +661,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         value: string
     ): void {
         if (operation === 'add') {
-            if (fieldControl.valid && value) {
-                this.chipListValues[chipListKey].add(value);
+            const trimmedValue = value?.trim();
+            if (fieldControl.valid && trimmedValue && trimmedValue.length > 0) {
+                this.chipListValues[chipListKey].add(trimmedValue);
                 fieldControl.reset();
             }
         } else if (operation === 'delete') {
@@ -1142,6 +1151,57 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             this.componentStore.getAllBillableMetrics({ referenceId: refId });
         }
     }
+
+    private transformPayloadToPlanMeta(formData: any, formConfig: { [key: string]: IFieldConfig }, index: number): any {
+        const getChipArray = (key: string): string[] => {
+            const config = formConfig?.[key];
+            if (config?.type === FeatureFieldType.ChipList) {
+                const chipKey = `${config.label}_${index}`;
+                return this.chipListValues[chipKey] ? Array.from(this.chipListValues[chipKey]) : [];
+            }
+            return [];
+        };
+
+        const metrics = getChipArray('metrics');
+        const featureIncluded = getChipArray('feature_included');
+        const featureNotIncluded = getChipArray('feature_not_included');
+        const extras = getChipArray('extras');
+
+        const planMeta: any = {};
+        if (metrics.length) planMeta.metrics = metrics;
+
+        if (featureIncluded.length || featureNotIncluded.length) {
+            planMeta.features = {};
+            if (featureIncluded.length) planMeta.features.included = featureIncluded;
+            if (featureNotIncluded.length) planMeta.features.notIncluded = featureNotIncluded;
+        }
+
+        if (extras.length) planMeta.extra = extras;
+        if (formData.highlight !== undefined) planMeta.highlight_plan = formData.highlight;
+
+        const {
+            metrics: _,
+            feature_included: __,
+            feature_not_included: ___,
+            extras: ____,
+            highlight: _____,
+            highlight_text,
+            ...rest
+        } = formData;
+
+        return {
+            ...rest,
+            amount_cents:
+                typeof formData.amount_cents === 'string' ? parseFloat(formData.amount_cents) : formData.amount_cents,
+            tax_codes: formData.tax_codes
+                ? Array.isArray(formData.tax_codes)
+                    ? formData.tax_codes
+                    : [formData.tax_codes]
+                : [],
+            ...(Object.keys(planMeta).length > 0 && { plan_meta: planMeta }),
+        };
+    }
+
     public createPlanAndGenerateSnippet(): void {
         this.markDirtyCreatePlansFormControlsTouched();
 
@@ -1161,17 +1221,16 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 properties: charge.properties,
             }));
 
+            // Transform payload to nested plan_meta structure
+            const transformedPayload = this.transformPayloadToPlanMeta(
+                createPlanFormData,
+                this.createPlanForm,
+                this.selectedServiceIndex
+            );
+
+            // Add charges and refId to the payload
             const payload = {
-                ...createPlanFormData, // flatten instead of nesting
-                amount_cents:
-                    typeof createPlanFormData.amount_cents === 'string'
-                        ? parseFloat(createPlanFormData.amount_cents)
-                        : createPlanFormData.amount_cents,
-                tax_codes: createPlanFormData.tax_codes
-                    ? Array.isArray(createPlanFormData.tax_codes)
-                        ? createPlanFormData.tax_codes
-                        : [createPlanFormData.tax_codes]
-                    : [],
+                ...transformedPayload,
                 charges: processedCharges,
                 refId: this.getReferenceId(),
             };
@@ -1248,6 +1307,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     dialogTitle: isAddPlan ? 'Add Plan' : 'Edit Plan',
                     submitButtonText: isAddPlan ? 'Add Plan' : 'Update Plan',
                     editData: editData,
+                    metaData: plan && plan.plan_meta ? plan.plan_meta || {} : {},
+                    chipListValues: this.chipListValues,
                     chargesList: isAddPlan ? [] : Array.isArray(plan.charges) ? plan.charges : [],
                     optionsData: optionsData,
                 },

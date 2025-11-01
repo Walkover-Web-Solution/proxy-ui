@@ -1,8 +1,11 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatChipsModule } from '@angular/material/chips';
+
 import { CustomValidators } from '@proxy/custom-validator';
 import { BaseComponent } from '@proxy/ui/base-component';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
     selector: 'proxy-create-plan-dialog',
@@ -153,6 +156,48 @@ import { BaseComponent } from '@proxy/ui/base-component';
                     [required]="fieldConfig?.is_required"
                 />
 
+                <!-- Chip List -->
+                <ng-container *ngIf="fieldConfig?.type === 'chipList'">
+                    <mat-chip-list
+                        #chipList
+                        [disabled]="fieldControl.disabled"
+                        aria-label="{{ fieldConfig?.label }}"
+                        *ngIf="fieldConfig?.label"
+                    >
+                        <mat-chip
+                            *ngFor="let item of getChipListArray(fieldConfig?.label + '_0')"
+                            (removed)="updateChipListValues('delete', fieldConfig?.label + '_0', fieldControl, item)"
+                            [removable]="!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)"
+                            disableRipple
+                        >
+                            {{ item }}
+                            <button
+                                type="button"
+                                matChipRemove
+                                *ngIf="!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)"
+                            >
+                                <mat-icon>cancel</mat-icon>
+                            </button>
+                        </mat-chip>
+                        <input
+                            matChipInput
+                            type="text"
+                            [placeholder]="
+                                (getChipListArray(fieldConfig?.label + '_0')?.length || 0) > 0
+                                    ? ''
+                                    : 'Enter ' + fieldConfig?.label
+                            "
+                            autocomplete="off"
+                            [formControl]="fieldControl"
+                            [matChipInputFor]="chipList"
+                            [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
+                            (matChipInputTokenEnd)="
+                                updateChipListValues('add', fieldConfig?.label + '_0', fieldControl, $event.value)
+                            "
+                        />
+                    </mat-chip-list>
+                </ng-container>
+
                 <!-- Textarea -->
                 <textarea
                     *ngIf="fieldConfig?.type === 'textarea'"
@@ -173,6 +218,8 @@ import { BaseComponent } from '@proxy/ui/base-component';
                         {{ option.label }}
                     </mat-option>
                 </mat-select>
+
+                <!-- Chip List -->
 
                 <mat-hint *ngIf="fieldConfig?.hint">{{ fieldConfig?.hint }}</mat-hint>
                 <mat-error *ngIf="getFieldError(fieldControl, fieldConfig)">{{
@@ -278,6 +325,10 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
     public submitButtonText: string;
     public chargesList: any[] = [];
     public chargesDisplayedColumns: string[] = ['metric', 'model', 'minAmount', 'actions'];
+    public chipListValues: { [key: string]: Set<string> } = {};
+    public chipListReadOnlyValues: { [key: string]: Set<string> } = {};
+    public chipListSeparatorKeysCodes: number[] = [ENTER, COMMA];
+    public metaData: any;
 
     // Cache for select options to prevent infinite calls
     private optionsCache: { [key: string]: any[] } = {};
@@ -291,6 +342,8 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
             dialogTitle?: string;
             submitButtonText?: string;
             editData?: any;
+            metaData?: any;
+            chipListValues?: { [key: string]: Set<string> };
             chargesList?: any[];
             optionsData?: {
                 taxes: any[];
@@ -303,6 +356,8 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
         this.dialogTitle = data.dialogTitle || 'Create Plan';
         this.submitButtonText = data.submitButtonText || 'Create Plan';
         this.chargesList = data.chargesList || [];
+        this.chipListValues = data.chipListValues || {};
+        this.metaData = data.metaData || {};
     }
 
     ngOnInit(): void {
@@ -369,11 +424,87 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
     }
 
     private getInitialValue(key: string, config: any): any {
+        // Initialize chip list values if this is a chip list field
+        if (config.type === 'chipList') {
+            const chipListKey = `${config.label}_0`;
+
+            // Initialize Sets if they don't exist
+            if (!this.chipListValues[chipListKey]) {
+                this.chipListValues[chipListKey] = new Set<string>();
+            }
+            if (!this.chipListReadOnlyValues[chipListKey]) {
+                this.chipListReadOnlyValues[chipListKey] = new Set<string>(config?.read_only_value || []);
+            }
+
+            // Populate chip list values from metaData if available and Set is empty
+            if (this.chipListValues[chipListKey].size === 0 && this.metaData) {
+                // Add chips from metaData based on field type
+                if (key === 'metrics' && Array.isArray(this.metaData.metrics) && this.metaData.metrics.length > 0) {
+                    this.chipListValues[chipListKey] = new Set(this.metaData.metrics);
+                } else if (
+                    key === 'feature_included' &&
+                    this.metaData.features?.included &&
+                    Array.isArray(this.metaData.features.included) &&
+                    this.metaData.features.included.length > 0
+                ) {
+                    this.chipListValues[chipListKey] = new Set(this.metaData.features.included);
+                } else if (
+                    key === 'feature_not_included' &&
+                    this.metaData.features?.notIncluded &&
+                    Array.isArray(this.metaData.features.notIncluded) &&
+                    this.metaData.features.notIncluded.length > 0
+                ) {
+                    this.chipListValues[chipListKey] = new Set(this.metaData.features.notIncluded);
+                } else if (key === 'extras' && Array.isArray(this.metaData.extra) && this.metaData.extra.length > 0) {
+                    this.chipListValues[chipListKey] = new Set(this.metaData.extra);
+                }
+            }
+
+            // If edit data exists and has chip list values, populate them (this takes precedence over metaData)
+            if (this.data.editData?.createPlanForm) {
+                const editValue = this.data.editData.createPlanForm[key];
+                if (editValue) {
+                    let chipValues: string[] = [];
+                    if (Array.isArray(editValue)) {
+                        // If it's an array (from plan_meta), use directly
+                        chipValues = editValue
+                            .filter((v: string) => v && v.trim().length > 0)
+                            .map((v: string) => v.trim());
+                    } else if (typeof editValue === 'string') {
+                        // If it's a string, split by delimiter
+                        const delimiter = config?.delimiter ?? ' ';
+                        chipValues = editValue
+                            .split(delimiter)
+                            .map((v: string) => v.trim())
+                            .filter((v: string) => v.length > 0);
+                    }
+                    if (chipValues.length > 0) {
+                        this.chipListValues[chipListKey] = new Set(chipValues);
+                    }
+                }
+            }
+            return null; // Chip list form control value is always null
+        }
+
         if (this.data.editData) {
             const value = this.data.editData[key] || config.default_value || '';
             return value;
         }
         return config.default_value || '';
+    }
+
+    public getChipListArray(chipListKey: string): string[] {
+        if (!this.chipListValues[chipListKey]) {
+            this.chipListValues[chipListKey] = new Set<string>();
+        }
+        return Array.from(this.chipListValues[chipListKey]);
+    }
+
+    public getChipListReadOnlySet(chipListKey: string): Set<string> {
+        if (!this.chipListReadOnlyValues[chipListKey]) {
+            this.chipListReadOnlyValues[chipListKey] = new Set<string>();
+        }
+        return this.chipListReadOnlyValues[chipListKey];
     }
 
     private populateFormWithEditData(): void {
@@ -413,7 +544,8 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
     }
 
     public getFieldConfig(fieldKey: string): any {
-        return this.formConfig?.createPlanForm?.[fieldKey] || this.formConfig?.chargesForm?.[fieldKey];
+        const fieldConfig = this.formConfig?.createPlanForm?.[fieldKey] || this.formConfig?.chargesForm?.[fieldKey];
+        return fieldConfig;
     }
 
     public getSelectOptions(fieldConfig: any): any[] {
@@ -551,8 +683,14 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
                 },
             }));
 
+            // Transform payload to nested plan_meta structure
+            const transformedPayload = this.transformPayloadToPlanMeta(
+                formData.createPlanForm,
+                this.formConfig?.createPlanForm || {}
+            );
+
             const payload = {
-                ...formData.createPlanForm,
+                ...transformedPayload,
                 amount_cents:
                     typeof formData.createPlanForm.amount_cents === 'string'
                         ? parseFloat(formData.createPlanForm.amount_cents)
@@ -564,13 +702,76 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
                     : [],
                 charges: processedCharges,
             };
-
             this.dialogRef.close(payload);
         }
     }
 
+    /**
+     * Transform flat payload structure to nested plan_meta structure
+     * Extracts chip list values and nests them under plan_meta
+     */
+    private transformPayloadToPlanMeta(formData: any, formConfig: { [key: string]: any }): any {
+        // Get chip list values as arrays
+        const getChipArray = (key: string): string[] => {
+            const config = formConfig?.[key];
+            if (config?.type === 'chipList') {
+                const chipListKey = `${config.label}_0`;
+                return this.chipListValues[chipListKey] ? Array.from(this.chipListValues[chipListKey]) : [];
+            }
+            return [];
+        };
+
+        const metrics = getChipArray('metrics');
+        const featureIncluded = getChipArray('feature_included');
+        const featureNotIncluded = getChipArray('feature_not_included');
+        const extras = getChipArray('extras');
+
+        // Build plan_meta object
+        const planMeta: any = {};
+        if (metrics.length) planMeta.metrics = metrics;
+
+        if (featureIncluded.length || featureNotIncluded.length) {
+            planMeta.features = {};
+            if (featureIncluded.length) planMeta.features.included = featureIncluded;
+            if (featureNotIncluded.length) planMeta.features.notIncluded = featureNotIncluded;
+        }
+
+        if (extras.length) planMeta.extra = extras;
+        if (formData.highlight !== undefined) planMeta.highlight_plan = formData.highlight;
+
+        // Exclude plan_meta fields from main payload
+        const {
+            metrics: _,
+            feature_included: __,
+            feature_not_included: ___,
+            extras: ____,
+            highlight: _____,
+            highlight_text,
+            ...rest
+        } = formData;
+
+        return {
+            ...rest,
+            ...(Object.keys(planMeta).length > 0 && { plan_meta: planMeta }),
+        };
+    }
+
     public onClose(): void {
+        this.resetForm();
         this.dialogRef.close();
+    }
+
+    private resetForm(): void {
+        if (this.planForm) {
+            this.planForm.reset();
+        }
+        // Reset chip list values, but preserve read-only values
+        Object.keys(this.chipListValues).forEach((key) => {
+            const readOnlyValues = this.chipListReadOnlyValues[key] || new Set<string>();
+            this.chipListValues[key] = new Set(readOnlyValues);
+        });
+        // Reset charges list
+        this.chargesList = [];
     }
 
     // Separate function for API calls
@@ -683,9 +884,36 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
         );
         return billableMetric ? billableMetric.name : '';
     }
+
+    public updateChipListValues(
+        operation: 'add' | 'delete',
+        chipListKey: string,
+        fieldControl: FormControl,
+        value: string
+    ): void {
+        // Ensure the Set exists
+        if (!this.chipListValues[chipListKey]) {
+            this.chipListValues[chipListKey] = new Set<string>();
+        }
+
+        if (operation === 'add') {
+            const trimmedValue = value?.trim();
+            if (fieldControl.valid && trimmedValue && trimmedValue.length > 0) {
+                this.chipListValues[chipListKey].add(trimmedValue);
+                fieldControl.reset();
+            }
+        } else if (operation === 'delete') {
+            if (this.chipListValues[chipListKey]) {
+                this.chipListValues[chipListKey].delete(value);
+                fieldControl.updateValueAndValidity();
+            }
+        }
+    }
     ngOnDestroy(): void {
         // Clear the options cache to prevent memory leaks
         this.optionsCache = {};
+        // Reset form when dialog is destroyed
+        this.resetForm();
         super.ngOnDestroy();
     }
 }
