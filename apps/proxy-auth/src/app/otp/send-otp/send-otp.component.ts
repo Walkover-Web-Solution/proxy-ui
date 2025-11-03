@@ -270,7 +270,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     private addButtonEventListeners(container: HTMLElement): void {
-        debugger;
         const buttons = container.querySelectorAll('.plan-button');
         buttons.forEach((button) => {
             button.addEventListener('click', (event) => {
