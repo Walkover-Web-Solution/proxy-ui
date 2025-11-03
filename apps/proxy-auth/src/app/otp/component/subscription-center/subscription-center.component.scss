@@ -57,16 +57,22 @@
     min-height: auto;
     overflow-y: visible;
     font-family: 'Outfit', sans-serif;
+
+    > .plans-grid {
+        flex: 1;
+        display: flex !important;
+        align-items: stretch !important;
+    }
 }
 
 .plans-grid {
-    display: flex;
-    flex-direction: row;
+    display: flex !important;
+    flex-direction: row !important;
     gap: 20px;
     width: 100%;
     max-width: 100%;
     margin: 0;
-    align-items: flex-start;
+    align-items: stretch !important;
     padding: 0 0 0 20px;
     overflow-x: auto;
     // overflow-y: hidden;
@@ -121,14 +127,16 @@
     min-width: 250px;
     max-width: 350px;
     width: 350px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    flex: 1 1 0;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
     min-height: auto;
     max-height: none;
     overflow: visible;
     min-height: 348px;
+    align-self: stretch !important;
     font-family: 'Outfit', sans-serif;
 }
 
