@@ -270,6 +270,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     private addButtonEventListeners(container: HTMLElement): void {
+        debugger;
         const buttons = container.querySelectorAll('.plan-button');
         buttons.forEach((button) => {
             button.addEventListener('click', (event) => {
@@ -1355,14 +1356,16 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         }
     }
     public upgradeSubscription(plan: any): void {
-        // Dispatch the action
-        this.store.dispatch(
-            upgradeSubscription({
-                referenceId: this.referenceId,
-                payload: { plan_code: plan.plan_code },
-                authToken: this.authToken,
-            })
-        );
+        if (this.isLogin) {
+            // Dispatch the action
+            this.store.dispatch(
+                upgradeSubscription({
+                    referenceId: this.referenceId,
+                    payload: { plan_code: plan.plan_code },
+                    authToken: this.authToken,
+                })
+            );
+        }
 
         // Wait for the API response by subscribing to the upgrade subscription data
         this.store
@@ -1378,5 +1381,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                     window.location.href = redirectUrl;
                 }
             });
+        if (!this.isLogin) {
+            window.location.href = this.loginRedirectUrl;
+        }
     }
 }
