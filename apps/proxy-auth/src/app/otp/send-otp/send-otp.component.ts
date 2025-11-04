@@ -119,12 +119,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
         prefersDark.addEventListener('change', (event) => {
             if (!this.theme) {
-                console.log(event.matches);
                 this.theme = event.matches ? 'dark' : 'light';
             }
         });
         if (!this.theme) {
-            debugger;
             this.theme = prefersDark.matches ? 'dark' : 'light';
         }
         if (this.type === 'subscription') {
