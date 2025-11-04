@@ -41,7 +41,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public isPreview: boolean;
     @Input() public isLogin: boolean;
     @Input() public loginRedirectUrl: string;
-
+    @Input() public theme: string;
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
     }
@@ -116,6 +116,15 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     ngOnInit() {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        prefersDark.addEventListener('change', (event) => {
+            if (!this.theme) {
+                this.theme = event.matches ? 'dark' : 'light';
+            }
+        });
+        if (!this.theme) {
+            this.theme = prefersDark.matches ? 'dark' : 'light';
+        }
         if (this.type === 'subscription') {
             // Load subscription plans first
             this.store.dispatch(getSubscriptionPlans({ referenceId: this.referenceId, authToken: this.authToken }));
@@ -377,7 +386,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                                       (feature) => `
                         <li class="feature-item included d-flex align-items-center position-relative p-0 gap-2 m-0">
                             <span class="feature-icon included">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#4d4d4d">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="${
+                                    this.theme === 'dark' ? '#ffffff' : '#4d4d4d'
+                                }">
                                     <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
                                 </svg>
                             </span>
@@ -422,7 +433,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                             (extraFeature) => `
                         <li class="feature-item extra d-flex align-items-center position-relative p-0 gap-2 m-0">
                             <span class="feature-icon extra">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#4d4d4d">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="${
+                                    this.theme === 'dark' ? '#ffffff' : '#4d4d4d'
+                                }">
                                     <path d="m354-287 126-76 126 77-33-144 111-96-146-13-58-136-58 135-146 13 111 97-33 143ZM233-120l65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-350Z" />
                                 </svg>
                             </span>
@@ -453,7 +466,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
         return `
             <div class="plan-card d-flex flex-column gap-3 position-relative ${popularClass} ${selectedClass} ${highlightedClass}">
-                ${popularBadge}
+                ${popularBadge} 
                 <div>
                     <h1 class="plan-title mt-0">${plan.plan_name}</h1>
                     <div class="plan-price mb-3">
@@ -582,8 +595,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
             /* Plan Card Styles */
 .plan-card {
-    background: #ffffff;
-                border: 2px solid #e6e6e6;
+                background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
+                border: ${this.theme === 'dark' ? '1px solid #e6e6e6' : '2px solid #e6e6e6'};
                 border-radius: 4px;
                 padding: 26px 24px;
                 box-shadow: none;
@@ -603,7 +616,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             }
 
             .plan-card.highlighted {
-                border: 2px solid #000000 !important;
+                border: ${this.theme === 'dark' ? '2px solid #ffffff' : '2px solid #000000'};
                 box-shadow: 0 0 0 0px #000000 !important;
             }
 
@@ -826,6 +839,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 box-sizing: border-box;
                 font-family: 'Inter', sans-serif;
                  -webkit-font-smoothing: antialiased;
+                 color: ${this.theme === 'dark' ? '#ffffff' : ''}!important;
               }
 
             /* Divider */
@@ -833,6 +847,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     height: 1px;
     background: #e0e0e0;
 }
+   
+
         `;
 
         document.head.appendChild(style);
@@ -1040,10 +1056,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             gap: 8px;
             font-size: 14px;
             background-color: transparent;
-            border: 1px solid #3f4346;
+            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #3f4346'};
             border-radius: 4px;
             line-height: 40px;
-            color: #3f4346;
+            color: ${this.theme === 'dark' ? '#ffffff' : '#3f4346'};
             margin: 8px 8px 16px 8px;
             cursor: pointer;
             width: 260px;
@@ -1054,7 +1070,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             // width: 20px;
         `;
         span.style.cssText = `
-            color: #3f4346;
+            color: ${this.theme === 'dark' ? '#ffffff' : '#3f4346'};
             font-weight: 600;
         `;
         image.src = buttonsData.icon;
@@ -1103,7 +1119,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     align-items: center !important;
     justify-content: center !important;
     gap: 8px !important;
-    color: #3f4346;
+    color: ${this.theme === 'dark' ? '#ffffff' : '#3f4346'};
     cursor: pointer !important;
     width: 260px !important;
 `;
@@ -1355,14 +1371,16 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         }
     }
     public upgradeSubscription(plan: any): void {
-        // Dispatch the action
-        this.store.dispatch(
-            upgradeSubscription({
-                referenceId: this.referenceId,
-                payload: { plan_code: plan.plan_code },
-                authToken: this.authToken,
-            })
-        );
+        if (this.isLogin) {
+            // Dispatch the action
+            this.store.dispatch(
+                upgradeSubscription({
+                    referenceId: this.referenceId,
+                    payload: { plan_code: plan.plan_code },
+                    authToken: this.authToken,
+                })
+            );
+        }
 
         // Wait for the API response by subscribing to the upgrade subscription data
         this.store
@@ -1378,5 +1396,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                     window.location.href = redirectUrl;
                 }
             });
+        if (!this.isLogin) {
+            window.location.href = this.loginRedirectUrl;
+        }
     }
 }
