@@ -44,6 +44,7 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.isPreview = config?.isPreview;
             sendOtpElement.isLogin = config?.isLogin;
             sendOtpElement.loginRedirectUrl = config?.loginRedirectUrl;
+            sendOtpElement.theme = config?.theme;
 
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;
@@ -106,6 +107,7 @@ export class ElementModule implements DoBootstrap {
             });
             customElements.define('proxy-auth', sendOtpComponent);
         }
+
         // if (!customElements.get('user-profile')) {
         //     const userProfileComponent = createCustomElement(UserProfileComponent, {
         //         injector: this.injector,
