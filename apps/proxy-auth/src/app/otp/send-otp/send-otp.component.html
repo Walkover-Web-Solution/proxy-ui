@@ -4,7 +4,7 @@
     [ngClass]="{
         'with-reference-id': referenceId,
         'without-reference-id': authToken,
-        'dark-theme': theme === 'dark'
+        'dark-theme': theme === 'dark' && type !== 'user-management'
     }"
 >
     <div
