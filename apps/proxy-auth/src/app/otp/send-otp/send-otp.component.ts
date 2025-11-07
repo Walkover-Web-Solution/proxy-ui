@@ -37,7 +37,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public authToken: string;
     @Input() public showCompanyDetails: boolean;
     @Input() public userToken: string;
-    @Input() public pass: string;
+    @Input() public isRolePermission: string;
     @Input() public isPreview: boolean;
     @Input() public isLogin: boolean;
     @Input() public loginRedirectUrl: string;

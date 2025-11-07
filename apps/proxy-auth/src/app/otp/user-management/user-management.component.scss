@@ -131,7 +131,6 @@ body {
 }
 
 .container {
-    background: #ffffff;
     padding: 15px 60px;
     text-align: left;
     position: relative;
@@ -139,6 +138,315 @@ body {
     height: 100%;
     width: 100%;
     z-index: 10;
+}
+
+.dark-theme {
+    background: transparent;
+    color: #ffffff !important;
+
+    ::ng-deep {
+        body {
+            background: transparent !important;
+        }
+    }
+
+    .button-add {
+        background-color: transparent !important;
+        border: 1px solid #ffffff !important;
+        color: #ffffff !important;
+    }
+
+    table {
+        border: 1px solid #ffffff;
+
+        th,
+        td {
+            border: 1px solid #ffffff !important;
+            color: #ffffff !important;
+        }
+
+        th {
+            color: #ffffff !important;
+            background-color: transparent !important;
+        }
+
+        td {
+            background-color: transparent !important;
+        }
+    }
+
+    .default-table {
+        border: 1px solid #ffffff !important;
+        background-color: transparent !important;
+
+        .mat-table {
+            background-color: transparent !important;
+        }
+
+        .mat-header-row {
+            background-color: transparent !important;
+        }
+
+        .mat-row {
+            background-color: transparent !important;
+        }
+
+        .mat-header-cell {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            border-right: 1px solid #ffffff !important;
+            border-bottom: 1px solid #ffffff !important;
+            border-left: 1px solid #ffffff !important;
+            border-top: 1px solid #ffffff !important;
+        }
+
+        .mat-cell {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            border-right: 1px solid #ffffff !important;
+            border-bottom: 1px solid #ffffff !important;
+            border-left: 1px solid #ffffff !important;
+        }
+
+        .table-header {
+            background-color: transparent !important;
+        }
+
+        .table-row {
+            background-color: transparent !important;
+
+            &:nth-child(even) {
+                background-color: transparent !important;
+            }
+
+            &:hover {
+                background-color: transparent !important;
+                transform: none !important;
+                box-shadow: none !important;
+            }
+        }
+
+        .table-row:hover .mat-cell {
+            background-color: transparent !important;
+            border-right: 1px solid #ffffff !important;
+            border-bottom: 1px solid #ffffff !important;
+            border-left: 1px solid #ffffff !important;
+            border-top: 1px solid #ffffff !important;
+        }
+
+        .table-row:hover td {
+            border-right: 1px solid #ffffff !important;
+            border-bottom: 1px solid #ffffff !important;
+            border-left: 1px solid #ffffff !important;
+            border-top: 1px solid #ffffff !important;
+        }
+    }
+
+    ::ng-deep {
+        .mat-elevation-z8 {
+            background-color: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .mat-table {
+            background-color: transparent !important;
+        }
+
+        .mat-header-row {
+            background-color: transparent !important;
+        }
+
+        .mat-row {
+            background-color: transparent !important;
+
+            &:nth-child(even) {
+                background-color: transparent !important;
+            }
+        }
+    }
+
+    .hover-actions {
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .no-data {
+        color: #ffffff !important;
+    }
+
+    .role-info {
+        .role-name {
+            color: #ffffff !important;
+        }
+
+        .role-default {
+            color: #ffffff !important;
+        }
+    }
+
+    .permission-info {
+        .permission-name {
+            color: #ffffff !important;
+        }
+
+        .permission-default {
+            color: #ffffff !important;
+        }
+    }
+
+    .permission-bullets {
+        .permission-bullet {
+            color: #ffffff !important;
+        }
+    }
+
+    .email-text {
+        color: #ffffff !important;
+    }
+
+    .no-permissions-text {
+        color: #ffffff !important;
+    }
+
+    .cell-content {
+        color: #ffffff !important;
+    }
+
+    ::ng-deep {
+        .mat-tab-label {
+            color: #ffffff !important;
+
+            &.mat-tab-label-active {
+                color: #ffffff !important;
+            }
+        }
+
+        .mat-tab-label-content {
+            color: #ffffff !important;
+        }
+
+        .mat-tab-group {
+            .mat-ink-bar {
+                background-color: #ffffff !important;
+            }
+        }
+
+        .mat-ink-bar {
+            background-color: #ffffff !important;
+        }
+
+        .mat-form-field {
+            .mat-form-field-outline {
+                color: #ffffff !important;
+            }
+
+            .mat-form-field-outline-thick {
+                color: #ffffff !important;
+            }
+
+            .mat-form-field-label {
+                color: #ffffff !important;
+            }
+
+            .mat-input-element {
+                color: #ffffff !important;
+
+                &::placeholder {
+                    color: rgba(255, 255, 255, 0.6) !important;
+                }
+            }
+
+            input.mat-input-element,
+            textarea.mat-input-element {
+                color: #ffffff !important;
+            }
+        }
+
+        .mat-flat-button {
+            background-color: #1e1e1e !important;
+            border: 1px solid #ffffff !important;
+            color: #ffffff !important;
+        }
+
+        .mat-select-value {
+            color: #ffffff !important;
+        }
+
+        .mat-select-arrow {
+            color: #ffffff !important;
+        }
+
+        .mat-option {
+            color: #ffffff !important;
+        }
+
+        .mat-paginator {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            border: 1px solid #ffffff !important;
+
+            .mat-paginator-container {
+                background-color: transparent !important;
+            }
+
+            .mat-paginator-page-size-label,
+            .mat-paginator-range-label {
+                color: #ffffff !important;
+            }
+
+            .mat-paginator-navigation-previous,
+            .mat-paginator-navigation-next,
+            .mat-paginator-navigation-first,
+            .mat-paginator-navigation-last {
+                color: #ffffff !important;
+
+                &:disabled {
+                    color: rgba(255, 255, 255, 0.3) !important;
+                }
+            }
+
+            .mat-icon-button {
+                color: #ffffff !important;
+
+                &:disabled {
+                    color: rgba(255, 255, 255, 0.3) !important;
+                }
+            }
+
+            .mat-select-value {
+                color: #ffffff !important;
+            }
+
+            .mat-select-arrow {
+                color: #ffffff !important;
+            }
+
+            .mat-form-field-appearance-legacy .mat-form-field-label {
+                color: #ffffff !important;
+            }
+        }
+
+        .mat-paginator .mat-select-panel {
+            background-color: #1e1e1e !important;
+            border: 1px solid #ffffff !important;
+
+            .mat-option {
+                background-color: transparent !important;
+                color: #ffffff !important;
+
+                &:hover {
+                    background-color: transparent !important;
+                }
+
+                &.mat-selected {
+                    background-color: transparent !important;
+                }
+            }
+        }
+    }
+}
+.light-theme {
+    background: #ffffff !important;
 }
 
 .user-item {
@@ -398,6 +706,9 @@ td {
         color: var(--color-primary, #1976d2);
     }
 }
+.color-white {
+    color: #ffffff !important;
+}
 
 // Custom tooltip styling
 ::ng-deep {
@@ -421,4 +732,179 @@ td {
 
 .position-relative {
     position: relative;
+}
+
+// Role option styling in dropdown
+::ng-deep {
+    .role-select-panel {
+        min-width: 350px !important;
+        max-width: 500px !important;
+        width: auto !important;
+    }
+
+    .mat-select-panel.role-select-panel {
+        min-width: 350px !important;
+        max-width: 500px !important;
+        width: auto !important;
+    }
+
+    .role-select-panel .mat-option {
+        min-height: auto !important;
+        height: auto !important;
+        padding: 12px 16px !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        line-height: 1.5 !important;
+    }
+
+    .role-select-panel .mat-option-text {
+        overflow: visible !important;
+        text-overflow: clip !important;
+        white-space: normal !important;
+    }
+
+    // Fallback for all mat-select panels
+    .mat-select-panel {
+        min-width: 300px !important;
+    }
+
+    .mat-option {
+        min-height: auto !important;
+        height: auto !important;
+        padding: 12px 16px !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        line-height: 1.5 !important;
+    }
+
+    .mat-option-text {
+        overflow: visible !important;
+        text-overflow: clip !important;
+        white-space: normal !important;
+    }
+}
+
+.role-option-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+
+    .role-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #333;
+        word-break: break-word;
+    }
+
+    .role-permissions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: flex-start;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow: visible;
+
+        .permission-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            background-color: #f0f0f0;
+            border-radius: 12px;
+            font-size: 11px;
+            color: #666;
+            white-space: nowrap;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+            flex-shrink: 1;
+            min-width: 0;
+        }
+
+        .expand-permissions-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            background-color: #e3f2fd;
+            border-radius: 12px;
+            font-size: 11px;
+            color: #1976d2;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color 0.2s ease;
+            flex-shrink: 0;
+            box-sizing: border-box;
+
+            &:hover {
+                background-color: #bbdefb;
+            }
+
+            &.view-less-btn {
+                background-color: #fff3e0;
+                color: #f57c00;
+
+                &:hover {
+                    background-color: #ffe0b2;
+                }
+            }
+        }
+    }
+}
+
+// Dark theme styles for role options
+.dark-theme {
+    .role-option-content {
+        .role-name {
+            color: #ffffff !important;
+        }
+
+        .role-permissions {
+            .permission-tag {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+                color: #ffffff !important;
+                border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            }
+
+            .expand-permissions-btn {
+                background-color: rgba(255, 255, 255, 0.15) !important;
+                color: #ffffff !important;
+                border: 1px solid rgba(255, 255, 255, 0.3) !important;
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.25) !important;
+                }
+
+                &.view-less-btn {
+                    background-color: rgba(255, 152, 0, 0.2) !important;
+                    color: #ff9800 !important;
+                    border: 1px solid rgba(255, 152, 0, 0.4) !important;
+
+                    &:hover {
+                        background-color: rgba(255, 152, 0, 0.3) !important;
+                    }
+                }
+            }
+        }
+    }
+
+    ::ng-deep {
+        .mat-option {
+            color: #ffffff !important;
+
+            &.mat-active {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+            }
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+            }
+        }
+    }
 }

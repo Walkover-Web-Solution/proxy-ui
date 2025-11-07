@@ -40,7 +40,7 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.authToken = config?.authToken;
             sendOtpElement.showCompanyDetails = config?.showCompanyDetails;
             sendOtpElement.userToken = config?.userToken;
-            sendOtpElement.pass = config?.pass;
+            sendOtpElement.isRolePermission = config?.isRolePermission;
             sendOtpElement.isPreview = config?.isPreview;
             sendOtpElement.isLogin = config?.isLogin;
             sendOtpElement.loginRedirectUrl = config?.loginRedirectUrl;
@@ -58,6 +58,8 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.otherData = omit(config, RESERVED_KEYS);
             if (document.getElementById('proxyContainer')) {
                 document.getElementById('proxyContainer').append(sendOtpElement);
+            } else if (document.getElementById('userProxyContainer')) {
+                document.getElementById('userProxyContainer').append(sendOtpElement);
             } else {
                 document.getElementsByTagName('body')[0].append(sendOtpElement);
             }

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
     <div class="members-container">
         <mat-tab-group class="user-management-tabs full-width">
             <!-- Members Tab -->
@@ -103,7 +103,7 @@
             </mat-tab>
 
             <!-- Roles and Permission Tab -->
-            <mat-tab *ngIf="pass" label="Roles and Permissions">
+            <mat-tab label="Roles and Permissions">
                 <div class="tab-content">
                     <!-- Nested tabs for Roles and Permissions -->
                     <mat-tab-group class="nested-tabs full-width">
@@ -224,7 +224,7 @@
                         </mat-tab>
 
                         <!-- Permissions Tab -->
-                        <mat-tab label="Permissions">
+                        <mat-tab *ngIf="pass" label="Permissions">
                             <div class="nested-tab-content">
                                 <!-- Permissions Table Section -->
                                 <div class="permissions-table-section full-width">
@@ -426,9 +426,33 @@
 
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Role</mat-label>
-                    <mat-select formControlName="role">
+                    <mat-select formControlName="role" panelClass="role-select-panel">
                         <mat-option *ngFor="let role of roles" [value]="role.id">
-                            {{ role.name }}
+                            <div class="role-option-content">
+                                <div class="role-name">{{ role.name }}</div>
+                                <div
+                                    class="role-permissions"
+                                    *ngIf="role.c_permissions && role.c_permissions.length > 0"
+                                >
+                                    <span *ngFor="let permission of getVisiblePermissions(role)" class="permission-tag">
+                                        {{ permission.name }}
+                                    </span>
+                                    <span
+                                        *ngIf="getRemainingPermissionsCount(role) > 0 && !isRoleExpanded(role.id)"
+                                        class="expand-permissions-btn"
+                                        (click)="toggleRoleExpansion(role.id, $event)"
+                                    >
+                                        +{{ getRemainingPermissionsCount(role) }}
+                                    </span>
+                                    <span
+                                        *ngIf="isRoleExpanded(role.id)"
+                                        class="expand-permissions-btn view-less-btn"
+                                        (click)="toggleRoleExpansion(role.id, $event)"
+                                    >
+                                        View Less
+                                    </span>
+                                </div>
+                            </div>
                         </mat-option>
                     </mat-select>
                 </mat-form-field>

@@ -20,6 +20,12 @@
     display: flex;
     position: fixed;
 }
+.dark-theme {
+    background: transparent !important;
+}
+.light-theme {
+    background: rgb(33 37 40 / 95%);
+}
 
 .without-reference-id {
     display: block;
