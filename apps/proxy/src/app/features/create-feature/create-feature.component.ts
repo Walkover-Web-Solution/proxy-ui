@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { cloneDeep, isEqual } from 'lodash-es';
-import { Component, OnDestroy, OnInit, NgZone, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnDestroy, OnInit, NgZone, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { BehaviorSubject, Observable, distinctUntilChanged, filter, of, take, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
@@ -27,6 +27,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { getAcceptedTypeRegex } from '@proxy/utils';
 import { SimpleDialogComponent } from './simple-dialog/simple-dialog.component';
 import { CreatePlanDialogComponent } from './create-plan-dialog/create-plan-dialog.component';
+import { CreateTaxDialogComponent } from './create-tax-dialog/create-tax-dialog.component';
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 type ServiceFormGroup = FormGroup<{
     requirements: FormGroup<{
@@ -51,6 +52,11 @@ type PlanFormGroup = FormGroup<{
         [key: string]: FormControl<any>;
     }>;
 }>;
+type TaxesFormGroup = FormGroup<{
+    taxesForm: FormGroup<{
+        [key: string]: FormControl<any>;
+    }>;
+}>;
 
 export interface PeriodicElement {
     name: string;
@@ -69,8 +75,11 @@ export interface PeriodicElement {
 })
 export class CreateFeatureComponent extends BaseComponent implements OnDestroy, OnInit {
     @ViewChildren('stepper') stepper: QueryList<MatStepper>;
-    public taxes: any;
+    public taxes: any[] = [];
     public createPlanForm: any;
+    public taxConfigData: any;
+    public taxesForm: any;
+    private openPlanDialogRef: any = null;
     public billableMetricstabledata: any[];
     public createdPlanData: any[];
     public displayedColumns: string[] = ['name', 'code', 'type', 'aggregation', 'action'];
@@ -96,7 +105,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     // Charges table properties
     public chargesList: any[] = [];
-    public chargesDisplayedColumns: string[] = ['metric', 'model', 'minAmount', 'actions'];
+    public chargesDisplayedColumns: string[] = ['metric', 'maxLimit', 'actions'];
+    public taxesDisplayedColumns: string[] = ['name', 'code', 'rate', 'action'];
+    public taxesData: any[] = [];
 
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public featureType$: Observable<IFeatureType[]> = this.componentStore.featureType$;
@@ -108,6 +119,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public deleteBillableMetric$: Observable<any> = this.componentStore.deleteBillableMetric$;
     public updateBillableMetric$: Observable<any> = this.componentStore.updateBillableMetric$;
     public taxes$: Observable<any> = this.componentStore.taxes$;
+    public createTax$: Observable<any> = this.componentStore.createTax$;
+    public deleteTax$: Observable<any> = this.componentStore.deleteTax$;
     public createPlan$: Observable<any> = this.componentStore.createPlan$;
     public planData$: Observable<any> = this.componentStore.planData$;
     public deletePlan$: Observable<any> = this.componentStore.deletePlan$;
@@ -158,6 +171,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }),
         serviceDetails: new FormArray<ServiceFormGroup>([]),
         planDetails: new FormArray<any>([]),
+        taxesForm: new FormArray<any>([]),
         paymentDetailsForm: new FormArray<any>([]),
         plansOverview: new FormGroup({
             planSelected: new FormControl<string>(null, [Validators.required]),
@@ -180,6 +194,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public keepOrder = () => 0;
     constructor(
         private componentStore: CreateFeatureComponentStore,
+        private cdr: ChangeDetectorRef,
         private activatedRoute: ActivatedRoute,
         private toast: PrimeNgToastService,
         private ngZone: NgZone,
@@ -353,8 +368,48 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         this.taxes$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((taxes) => {
             if (taxes) {
                 this.taxes = taxes.taxes;
+                this.taxesData = taxes.taxes;
+                if (this.taxConfigData) {
+                    const cacheKey = this.getCacheKey(this.taxConfigData);
+                    delete this.optionsCache[cacheKey];
+                }
+                // Update taxes in any open plan dialogs
+                if (this.openPlanDialogRef && this.openPlanDialogRef.componentInstance) {
+                    const planDialog = this.openPlanDialogRef.componentInstance;
+                    if (planDialog.data && planDialog.data.optionsData) {
+                        planDialog.data.optionsData.taxes = taxes.taxes;
+                        // Clear cache in plan dialog
+                        if (planDialog.taxConfigData) {
+                            const cacheKey = planDialog.getCacheKey(planDialog.taxConfigData);
+                            delete planDialog.optionsCache[cacheKey];
+                        }
+                    }
+                }
+                this.cdr.markForCheck();
+                this.cdr.detectChanges();
             }
         });
+        this.createTax$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((tax) => {
+            if (tax) {
+                setTimeout(() => {
+                    const referenceId = this.getReferenceId();
+                    if (referenceId) {
+                        this.getTaxes(referenceId);
+                    }
+                }, 500);
+            }
+        });
+        this.deleteTax$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((tax) => {
+            if (tax) {
+                setTimeout(() => {
+                    const referenceId = this.getReferenceId();
+                    if (referenceId) {
+                        this.getTaxes(referenceId);
+                    }
+                }, 500);
+            }
+        });
+
         this.createPlan$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((plan) => {
             if (plan) {
                 this.getAllPlans();
@@ -620,7 +675,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
             if ((service.configurations as any)?.plans?.fields) {
                 const allKeys = Object.keys((service.configurations as any)?.plans?.fields);
-                const keysToInclude = allKeys.slice(0, -3);
+                const keysToInclude = allKeys.slice(0, -2);
 
                 keysToInclude.forEach((key) => {
                     const config = planForm[key];
@@ -630,7 +685,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     }
                 });
 
-                const lastKeys = allKeys.slice(-3);
+                const lastKeys = allKeys.slice(-2);
                 lastKeys.forEach((key) => {
                     const config = planForm[key];
                     const formControl = this.createFormControl(config as IFieldConfig, index, null);
@@ -854,14 +909,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             const metricValue = chargesForm?.get('billable_metric_id')?.value;
             const modelValue = chargesForm?.get('charge_model')?.value;
             const amountValue = chargesForm?.get('amount')?.value;
+            const maxLimitValue = chargesForm?.get('max_limit')?.value;
 
             if (metricValue || modelValue || amountValue) {
                 const chargeData = {
                     billable_metric_id: metricValue || 'N/A',
-                    charge_model: modelValue || 'N/A',
-                    properties: {
-                        amount: String(amountValue * 100 || 0),
-                    },
+                    max_limit: maxLimitValue || 'N/A',
                 };
                 this.chargesList.push(chargeData);
                 // Force change detection by creating a new array reference
@@ -998,6 +1051,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     // Separate function for API calls
     public getApiOptions(fieldConfig: any): any[] {
         if (fieldConfig.label === 'Tax Codes') {
+            this.taxConfigData = fieldConfig;
             return this.getTaxOptionsFromData();
         } else if (fieldConfig.label === 'Billable Metric' && this.billableMetricstabledata) {
             return this.billableMetricstabledata.map((metric) => ({
@@ -1178,6 +1232,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
         if (extras.length) planMeta.extra = extras;
         if (formData.highlight !== undefined) planMeta.highlight_plan = formData.highlight;
+        if (formData.highlight_text !== undefined) planMeta.tag = formData.highlight_text;
 
         const {
             metrics: _,
@@ -1185,7 +1240,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             feature_not_included: ___,
             extras: ____,
             highlight: _____,
-            highlight_text,
+            highlight_text: ______,
             ...rest
         } = formData;
 
@@ -1217,8 +1272,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             // Process the payload - preserve original amount type
             const processedCharges = this.chargesList.map((charge) => ({
                 billable_metric_id: charge.billable_metric_id,
-                charge_model: charge.charge_model,
-                properties: charge.properties,
+                max_limit: charge.max_limit,
             }));
 
             // Transform payload to nested plan_meta structure
@@ -1285,6 +1339,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         try {
             if (!this.createPlanForm) {
                 this.createPlansFormControls();
+                this.getTaxFormConfig();
             }
             const formConfig = {
                 createPlanForm: this.createPlanForm || {},
@@ -1295,7 +1350,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 taxes: Array.isArray(this.taxes) ? this.taxes : [],
                 billableMetrics: Array.isArray(this.billableMetricstabledata) ? this.billableMetricstabledata : [],
             };
-            const dialogRef = this.dialog.open(CreatePlanDialogComponent, {
+
+            this.openPlanDialogRef = this.dialog.open(CreatePlanDialogComponent, {
                 width: '800px',
                 height: 'auto',
                 maxHeight: '90vh',
@@ -1311,11 +1367,15 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     chipListValues: this.chipListValues,
                     chargesList: isAddPlan ? [] : Array.isArray(plan.charges) ? plan.charges : [],
                     optionsData: optionsData,
+                    referenceId: this.getReferenceId(),
+                    onCreateTax: (payload: any) => {
+                        this.componentStore.createTax(of(payload));
+                    },
                 },
                 panelClass: 'mat-dialog-md',
             });
 
-            dialogRef.afterClosed().subscribe((result) => {
+            this.openPlanDialogRef.afterClosed().subscribe((result) => {
                 if (result) {
                     if (isAddPlan) {
                         // For Add Plan, include reference ID
@@ -1334,6 +1394,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                         this.componentStore.updatePlan(of(updatePayload));
                     }
                 }
+                this.openPlanDialogRef = null; // Clear reference when dialog closes
             });
         } catch (error) {
             this.toast.error('Failed to open edit dialog: ' + error.message);
@@ -1359,7 +1420,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         if (!planForm) return {};
 
         const allKeys = Object.keys(planForm);
-        const lastKeys = allKeys.slice(-3); // Get the last 3 keys for charges form
+        const lastKeys = allKeys.slice(-2); // Get the last 2 keys for charges form
 
         const chargesConfig = {};
         lastKeys.forEach((key) => {
@@ -1492,5 +1553,68 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         if (paymentDetailsForm) {
             paymentDetailsForm.patchValue({ stripe: this.paymentDetailsData });
         }
+    }
+    public updateTaxes(): void {
+        this.selectedSubscriptionServiceIndex = -4;
+        this.getTaxes();
+    }
+    public deleteTax(tax: any): void {
+        const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
+        const componentInstance = dialogRef.componentInstance;
+        componentInstance.confirmationMessage = `Are you sure to delete this tax?`;
+        componentInstance.confirmButtonText = 'Delete';
+        dialogRef.afterClosed().subscribe((action) => {
+            if (action === 'yes') {
+                this.componentStore.deleteTax({ refId: this.getReferenceId(), code: tax.code });
+            }
+        });
+    }
+    public getTaxFormConfig(): any {
+        const selectedMethod = this.selectedMethod.getValue();
+        if (!selectedMethod) return {};
+        const taxForm = (selectedMethod.method_services[0].configurations as any).forms?.taxes?.fields;
+        this.taxesForm = taxForm;
+        return taxForm;
+    }
+    public addNewOption(fieldConfig?: any): void {
+        const selectedMethod = this.selectedMethod.getValue();
+        if (!selectedMethod) return;
+        const taxForm = (selectedMethod.method_services[0].configurations as any).forms?.taxes?.fields;
+        this.taxesForm = taxForm;
+
+        const formConfig = {
+            taxesForm: taxForm || {},
+        };
+
+        const optionsData = {
+            taxes: Array.isArray(this.taxes) ? this.taxes : [],
+        };
+
+        const dialogRef = this.dialog.open(CreateTaxDialogComponent, {
+            width: '800px',
+            height: 'auto',
+            maxHeight: '90vh',
+            autoFocus: false,
+            restoreFocus: false,
+            hasBackdrop: true,
+            data: {
+                formConfig: formConfig,
+                dialogTitle: 'Taxes',
+                submitButtonText: 'Save',
+                editData: null,
+                optionsData: optionsData,
+            },
+            panelClass: 'mat-dialog-md',
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                const createPayload = {
+                    refId: this.getReferenceId(),
+                    body: result,
+                };
+                this.componentStore.createTax(of(createPayload));
+            }
+        });
     }
 }
