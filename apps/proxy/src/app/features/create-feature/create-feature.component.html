@@ -642,6 +642,10 @@
                 [formControl]="fieldControl"
                 [placeholder]="fieldConfig?.placeholder || 'Select ' + fieldConfig?.label"
             >
+                <mat-option class="text-primary" (click)="addNewOption(fieldConfig)" *ngIf="fieldConfig?.create_new">
+                    <mat-icon class="material-icons-outlined mat-icon-16 m-0">add</mat-icon> Add New
+                    {{ fieldConfig?.label }}
+                </mat-option>
                 <mat-option *ngFor="let option of getSelectOptions(fieldConfig)" [value]="option.value">
                     {{ option.label }}
                 </mat-option>
@@ -994,7 +998,6 @@
     <div class="d-flex flex-column h-100">
         <h5 class="mat-h5 mb-3">Create Plan</h5>
         <div class="d-flex flex-column h-100">
-            <p class="mat-body-2 text-secondary"><strong>Note:</strong> These details will be shown on the invoice..</p>
             <div class="auth-credentials px-3" class="width-md-800 w-md-100">
                 <div class="d-flex flex-column">
                     <ng-container *ngIf="(selectedMethod | async)?.method_services as methodServices">
@@ -1074,19 +1077,11 @@
                                                 </td>
                                             </ng-container>
 
-                                            <!-- Model Column -->
-                                            <ng-container matColumnDef="model">
-                                                <th mat-header-cell *matHeaderCellDef>Model</th>
-                                                <td mat-cell *matCellDef="let charge">
-                                                    {{ charge.charge_model || 'N/A' }}
-                                                </td>
-                                            </ng-container>
-
                                             <!-- Min Amount Column -->
-                                            <ng-container matColumnDef="minAmount">
-                                                <th mat-header-cell *matHeaderCellDef>Min Amount</th>
+                                            <ng-container matColumnDef="maxLimit">
+                                                <th mat-header-cell *matHeaderCellDef>Max Limit</th>
                                                 <td mat-cell *matCellDef="let charge">
-                                                    {{ charge.properties.amount / 100 || '0.00' }}
+                                                    {{ charge.max_limit || 'N/A' }}
                                                 </td>
                                             </ng-container>
 
@@ -1211,9 +1206,11 @@
                         class="hover-action"
                     ></tr>
 
-                    <tr *matNoDataRow>
-                        <td class="mat-cell border-none" [attr.colspan]="plansOverviewColumns.length">
-                            <proxy-no-record-found [title]="'features'" [showBtn]="false"></proxy-no-record-found>
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
+                            <div class="d-flex justify-content-center items-center w-100 mat-subtitle-2 text-dark">
+                                No plans Found
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -1223,6 +1220,55 @@
         </mat-card>
     </div>
 </ng-template>
+
+<ng-template #taxes>
+    <div class="d-flex flex-column">
+        <div>
+            <button mat-flat-button color="primary" (click)="addNewOption()">
+                <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Tax
+            </button>
+        </div>
+
+        <table mat-table [dataSource]="taxesData" class="default-table responsive-table">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let tax">
+                    {{ tax.name }}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="code">
+                <th mat-header-cell *matHeaderCellDef>Code</th>
+                <td mat-cell *matCellDef="let tax">
+                    {{ tax.code }}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="rate">
+                <th mat-header-cell *matHeaderCellDef>Rate</th>
+                <td mat-cell *matCellDef="let tax">
+                    {{ tax.rate }}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let tax">
+                    <button type="button" mat-icon-button color="warn" (click)="deleteTax(tax)">
+                        <mat-icon class="material-icons-outlined mat-icon-18"> delete </mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="taxesDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: taxesDisplayedColumns"></tr>
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell border-none" [attr.colspan]="taxesDisplayedColumns.length">
+                    <div class="d-flex justify-content-center items-center w-100 mat-subtitle-2 text-dark">
+                        No taxes Found
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</ng-template>
+
 <ng-template #manageSubscription>
     <div class="d-flex gap-3 my-3 flex-grow-1" style="min-height: 400px">
         <div class="d-flex flex-column gap-1 border-right pr-3 service-list">
@@ -1259,6 +1305,15 @@
                     <div class="d-flex align-items-center flex-grow-1">Payment Details</div>
                     <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
                 </mat-list-item>
+                <mat-list-item
+                    role="listitem"
+                    class="rounded-4"
+                    [ngClass]="{ 'active': selectedSubscriptionServiceIndex === -4 }"
+                    (click)="updateTaxes()"
+                >
+                    <div class="d-flex align-items-center flex-grow-1">Taxes</div>
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
+                </mat-list-item>
             </mat-list>
         </div>
 
@@ -1279,6 +1334,10 @@
                 <div *ngIf="selectedSubscriptionServiceIndex === -3">
                     <h3>Payment Details</h3>
                     <ng-container *ngTemplateOutlet="paymentDetails"></ng-container>
+                </div>
+                <div *ngIf="selectedSubscriptionServiceIndex === -4">
+                    <h3>Taxes</h3>
+                    <ng-container *ngTemplateOutlet="taxes"></ng-container>
                 </div>
             </div>
         </div>

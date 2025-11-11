@@ -20,6 +20,8 @@ export interface ICreateFeatureInitialState {
     createPlan: any;
     plansForm: any;
     taxes: any;
+    createTax: any;
+    deleteTax: any;
     planData: any;
     updatePlan: any;
     deletePlan: any;
@@ -46,6 +48,8 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             plansForm: null,
             createPlan: null,
             taxes: null,
+            createTax: null,
+            deleteTax: null,
             planData: null,
             updatePlan: null,
             deletePlan: null,
@@ -82,6 +86,10 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly createPlan$: Observable<any> = this.select((state) => state.createPlan);
     /** Selector for taxes data */
     readonly taxes$: Observable<any> = this.select((state) => state.taxes);
+    /** Selector for create tax data */
+    readonly createTax$: Observable<any> = this.select((state) => state.createTax);
+    /** Selector for delete tax data */
+    readonly deleteTax$: Observable<any> = this.select((state) => state.deleteTax);
     /** Selector for plan data */
     readonly planData$: Observable<any> = this.select((state) => state.planData);
     /** Selector for update plan data */
@@ -427,6 +435,56 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                                 return this.patchState({ isLoading: false });
                             }
                             return this.patchState({ isLoading: false, taxes: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly createTax = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.createTax(req.refId, req.body).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Tax created successfully');
+                            return this.patchState({ isLoading: false, createTax: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly deleteTax = this.effect((data: Observable<{ [key: string]: any }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.deleteTax(req.refId, req.code).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Tax deleted successfully');
+                            return this.patchState({ isLoading: false, deleteTax: res.data });
                         },
                         (error: any) => {
                             this.showError(error.errors);
