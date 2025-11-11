@@ -87,6 +87,13 @@ export class FeaturesService {
     public getTaxes(refId: string | number): Observable<BaseResponse<any, void>> {
         return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getTaxes(this.baseURL, refId));
     }
+    public createTax(refId: string | number, body): Observable<BaseResponse<any, void>> {
+        return this.http.post<BaseResponse<any, void>>(FeaturesUrls.createTax(this.baseURL, refId), body);
+    }
+    // delete tax
+    public deleteTax(refId: string | number, code: string): Observable<BaseResponse<any, void>> {
+        return this.http.delete<BaseResponse<any, void>>(FeaturesUrls.deleteTax(this.baseURL, refId, code));
+    }
     // create plan
     public createPlan(refId: string | number, body): Observable<BaseResponse<any, void>> {
         return this.http.post<BaseResponse<any, void>>(FeaturesUrls.createPlan(this.baseURL, refId), body);

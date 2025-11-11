@@ -1,8 +1,6 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatChipsModule } from '@angular/material/chips';
-
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { CustomValidators } from '@proxy/custom-validator';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -82,17 +80,11 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
                                         </td>
                                     </ng-container>
 
-                                    <!-- Model Column -->
-                                    <ng-container matColumnDef="model">
-                                        <th mat-header-cell *matHeaderCellDef>Model</th>
-                                        <td mat-cell *matCellDef="let charge">{{ charge.charge_model || 'N/A' }}</td>
-                                    </ng-container>
-
                                     <!-- Min Amount Column -->
-                                    <ng-container matColumnDef="minAmount">
-                                        <th mat-header-cell *matHeaderCellDef>Min Amount</th>
+                                    <ng-container matColumnDef="maxLimit">
+                                        <th mat-header-cell *matHeaderCellDef>Max Limit</th>
                                         <td mat-cell *matCellDef="let charge">
-                                            {{ charge.properties.amount / 100 || 'N/A' }}
+                                            {{ charge.max_limit || 'N/A' }}
                                         </td>
                                     </ng-container>
 
@@ -324,17 +316,19 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
     public dialogTitle: string;
     public submitButtonText: string;
     public chargesList: any[] = [];
-    public chargesDisplayedColumns: string[] = ['metric', 'model', 'minAmount', 'actions'];
+    public chargesDisplayedColumns: string[] = ['metric', 'maxLimit', 'actions'];
     public chipListValues: { [key: string]: Set<string> } = {};
     public chipListReadOnlyValues: { [key: string]: Set<string> } = {};
     public chipListSeparatorKeysCodes: number[] = [ENTER, COMMA];
     public metaData: any;
+    public taxConfigData: any;
 
     // Cache for select options to prevent infinite calls
     private optionsCache: { [key: string]: any[] } = {};
 
     constructor(
         private fb: FormBuilder,
+        private dialog: MatDialog,
         public dialogRef: MatDialogRef<CreatePlanDialogComponent>,
         @Inject(MAT_DIALOG_DATA)
         public data: {
@@ -487,9 +481,25 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
         }
 
         if (this.data.editData) {
-            const value = this.data.editData[key] || config.default_value || '';
-            return value;
+            const editValue = this.data.editData.createPlanForm?.[key] ?? this.data.editData.chargesForm?.[key];
+            if (editValue !== undefined && editValue !== null) {
+                return editValue;
+            }
         }
+
+        if (key === 'highlight_text') {
+            const tagValue = this.metaData?.plan_meta?.tag ?? this.metaData?.tag;
+            if (tagValue !== undefined && tagValue !== null) {
+                return tagValue;
+            }
+        }
+        if (key === 'highlight') {
+            const highlightValue = this.metaData?.plan_meta?.highlight_plan ?? this.metaData?.highlight_plan;
+            if (highlightValue !== undefined && highlightValue !== null) {
+                return highlightValue;
+            }
+        }
+
         return config.default_value || '';
     }
 
@@ -534,7 +544,7 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
     public getPlanFormFields(): string[] {
         const allFields = this.formConfig?.createPlanForm ? Object.keys(this.formConfig.createPlanForm) : [];
         // Remove the last three fields
-        const fields = allFields.slice(0, -3);
+        const fields = allFields.slice(0, -2);
 
         return fields;
     }
@@ -629,6 +639,7 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
             const metricValue = chargeData.billable_metric_id;
             const modelValue = chargeData.charge_model;
             const amountValue = chargeData.amount;
+            const maxLimitValue = chargeData.max_limit;
 
             if (metricValue || modelValue || amountValue) {
                 // Convert amount to cents if it's a string or number
@@ -643,10 +654,7 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
 
                 const newCharge = {
                     billable_metric_id: metricValue || 'N/A',
-                    charge_model: modelValue || 'N/A',
-                    properties: {
-                        amount: String(amountValue * 100 || 0), // Convert to string
-                    },
+                    max_limit: maxLimitValue || null,
                 };
 
                 this.chargesList.push(newCharge);
@@ -677,10 +685,7 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
             // Process the payload - only include required fields
             const processedCharges = this.chargesList.map((charge) => ({
                 billable_metric_id: charge.billable_metric_id || charge.lago_billable_metric_id,
-                charge_model: charge.charge_model,
-                properties: charge.properties || {
-                    amount: charge.amount || 0,
-                },
+                max_limit: parseInt(charge.max_limit),
             }));
 
             // Transform payload to nested plan_meta structure
@@ -738,6 +743,7 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
 
         if (extras.length) planMeta.extra = extras;
         if (formData.highlight !== undefined) planMeta.highlight_plan = formData.highlight;
+        if (formData.highlight_text !== undefined) planMeta.tag = formData.highlight_text;
 
         // Exclude plan_meta fields from main payload
         const {
@@ -746,7 +752,7 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
             feature_not_included: ___,
             extras: ____,
             highlight: _____,
-            highlight_text,
+            highlight_text: ______,
             ...rest
         } = formData;
 
@@ -857,7 +863,7 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
             .join(' ');
     }
 
-    private getCacheKey(fieldConfig: any): string {
+    public getCacheKey(fieldConfig: any): string {
         let cacheKey = fieldConfig.label;
 
         // If field has filter conditions, include the current form values that affect it
