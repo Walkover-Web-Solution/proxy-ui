@@ -31,6 +31,7 @@ import { UserData, Role } from '../model/otp';
 export class UserManagementComponent extends BaseComponent implements OnInit, AfterViewInit {
     @Input() public userToken: string;
     @Input() public pass: string;
+    @Input() public theme: string;
     @ViewChild('addUserDialog') addUserDialog!: TemplateRef<any>;
     @ViewChild('editPermissionDialog') editPermissionDialog!: TemplateRef<any>;
     @ViewChild('addPermissionDialog') addPermissionDialog!: TemplateRef<any>;
@@ -69,6 +70,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public permissionSearchTerm: string = '';
     public filteredPermissionsData: any[] = [];
     public emailVisibility: { [key: number]: boolean } = {};
+    public expandedRoles: { [key: number]: boolean } = {};
     public addUserForm: FormGroup;
     public editPermissionForm: FormGroup;
     public addPermissionForm: FormGroup;
@@ -502,6 +504,31 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
     public getRoleById(roleId: number): Role | undefined {
         return this.roles.find((role) => role.id === roleId);
+    }
+
+    public getVisiblePermissions(role: any): any[] {
+        if (!role || !role.c_permissions || role.c_permissions.length === 0) {
+            return [];
+        }
+        const isExpanded = this.expandedRoles[role.id] || false;
+        return isExpanded ? role.c_permissions : role.c_permissions.slice(0, 3);
+    }
+
+    public getRemainingPermissionsCount(role: any): number {
+        if (!role || !role.c_permissions || role.c_permissions.length <= 3) {
+            return 0;
+        }
+        return role.c_permissions.length - 3;
+    }
+
+    public isRoleExpanded(roleId: number): boolean {
+        return this.expandedRoles[roleId] || false;
+    }
+
+    public toggleRoleExpansion(roleId: number, event: Event): void {
+        event.stopPropagation();
+        event.preventDefault();
+        this.expandedRoles[roleId] = !this.expandedRoles[roleId];
     }
 
     public getDefaultPermissions(role: string): string[] {
