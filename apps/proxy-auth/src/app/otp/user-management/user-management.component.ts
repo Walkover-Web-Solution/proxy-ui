@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, TemplateRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
