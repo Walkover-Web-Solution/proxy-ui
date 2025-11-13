@@ -138,23 +138,3 @@ proxy-auth,
         }
     }
 }
-
-// Global styles for mat-select overlays in dialogs
-// These styles ensure dropdowns work correctly in production builds
-// where component-scoped styles with ::ng-deep may not apply to CDK overlays
-.cdk-overlay-pane {
-    z-index: 10000 !important;
-    pointer-events: auto !important;
-
-    .permission-select-panel {
-        z-index: 10000 !important;
-    }
-}
-
-.cdk-overlay-backdrop {
-    z-index: 9999 !important;
-}
-
-.mat-select-panel {
-    z-index: 10000 !important;
-}
