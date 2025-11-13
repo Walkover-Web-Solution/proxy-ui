@@ -16,6 +16,15 @@
                         (inputChanges)="searchCompanyId($event)"
                         class="w-xs-100"
                     ></proxy-lib-search>
+
+                    <mat-form-field appearance="outline" class="w-xs-100 mt-4">
+                        <mat-label>Feature</mat-label>
+                        <mat-select [formControl]="featureForm.get('feature_id')">
+                            <mat-option *ngFor="let feature of features" [value]="feature.reference_id">
+                                {{ feature.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
                 </div>
                 <div class="d-flex align-items-center justify-content-between gap-3 ml-auto">
                     <date-range-picker
@@ -90,6 +99,14 @@
                                     </ng-container>
                                 </td>
                             </ng-container>
+
+                            <!-- <ng-container matColumnDef="role">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Role</th>
+                                <td mat-cell *matCellDef="let element" data-label="Role">
+                                    <ng-container *ngIf="!loading.dataLoading; else loadingRef">asdfh
+                                    </ng-container>
+                                </td>
+                            </ng-container> -->
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                             <tr
