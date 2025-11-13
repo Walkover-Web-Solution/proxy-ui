@@ -16,8 +16,14 @@ import { DirectivesRemoveCharacterDirectiveModule } from '@proxy/directives/Remo
 import { UiMatPaginatorGotoModule } from '@proxy/ui/mat-paginator-goto';
 import { UserComponent } from './user/user.component';
 import { ServicesProxyUsersModule } from '@proxy/services/proxy/users';
+import { ServicesProxyFeaturesModule } from '@proxy/services/proxy/features';
 import { DirectivesSkeletonModule } from '@proxy/directives/skeleton';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
+import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
+import { ManagementComponent } from './management/management.component';
 
 // Components
 const routes: Routes = [
@@ -30,7 +36,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [UserComponent],
+    declarations: [UserComponent, ManagementComponent],
     imports: [
         FormsModule,
         CommonModule,
@@ -41,6 +47,10 @@ const routes: Routes = [
         ReactiveFormsModule,
         MatFormFieldModule,
         MatTooltipModule,
+        MatTabsModule,
+        MatSelectModule,
+        MatDialogModule,
+        UiConfirmDialogModule,
         MatIconModule,
         MatTableModule,
         UiDateRangePickerModule,
@@ -50,6 +60,7 @@ const routes: Routes = [
         UiComponentsSearchModule,
         DirectivesRemoveCharacterDirectiveModule,
         ServicesProxyUsersModule,
+        ServicesProxyFeaturesModule,
         DirectivesSkeletonModule,
     ],
     exports: [RouterModule],
