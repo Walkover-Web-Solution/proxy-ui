@@ -555,8 +555,10 @@
                         <mat-error *ngIf="editPermissionForm.get('permission')?.hasError('required')">
                             At least one permission is required
                         </mat-error>
-                        <div style="max-height: 100px; height: 100px"></div>
                     </mat-form-field>
+
+                    <!-- Spacer to prevent bottom positioning issue - ensures select is not at bottom edge -->
+                    <div style="min-height: 100%; height: 100%"></div>
                 </div>
 
                 <!-- Show only permission selection and name when editing -->
