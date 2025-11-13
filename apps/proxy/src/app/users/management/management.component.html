@@ -20,10 +20,14 @@
                 <mat-tab label="Roles">
                     <div class="mt-4">
                         <div class="d-flex justify-content-between roles-table">
-                            <mat-form-field appearance="outline">
-                                <mat-label>Search Roles</mat-label>
-                                <input matInput placeholder="Search by role name" />
-                            </mat-form-field>
+                            <div class="d-flex flex-wrap align-items-center flex-grow-1 gap-3 mb-3">
+                                <proxy-lib-search
+                                    [matFormFieldClass]="'no-padding w-xs-100'"
+                                    [placeholder]="'Search Roles'"
+                                    (inputChanges)="search($event)"
+                                    class="w-xs-100"
+                                ></proxy-lib-search>
+                            </div>
                             <button class="mb-4" mat-flat-button color="primary" (click)="addRole()">Add Role</button>
                         </div>
                         <table
@@ -99,10 +103,14 @@
                 <mat-tab label="Permissions">
                     <div class="mt-4">
                         <div class="d-flex justify-content-between roles-table">
-                            <mat-form-field appearance="outline">
-                                <mat-label>Search Permissions</mat-label>
-                                <input matInput placeholder="Search by permission name" />
-                            </mat-form-field>
+                            <div class="d-flex flex-wrap align-items-center flex-grow-1 gap-3 mb-3">
+                                <proxy-lib-search
+                                    [matFormFieldClass]="'no-padding w-xs-100'"
+                                    [placeholder]="'Search Permissions'"
+                                    (inputChanges)="searchPermission($event)"
+                                    class="w-xs-100"
+                                ></proxy-lib-search>
+                            </div>
                             <button class="mb-4" mat-flat-button color="primary" (click)="addPermission()">
                                 Add Permission
                             </button>

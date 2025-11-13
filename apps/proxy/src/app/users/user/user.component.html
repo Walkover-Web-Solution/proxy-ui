@@ -2,12 +2,18 @@
     <mat-tab-group class="h-100">
         <!-- User Tab -->
         <mat-tab label="User">
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3 mt-4">
                 <div class="d-flex flex-wrap align-items-center flex-grow-1 gap-3">
                     <proxy-lib-search
                         [matFormFieldClass]="'no-padding w-xs-100'"
                         [placeholder]="'Search'"
                         (inputChanges)="search($event)"
+                        class="w-xs-100"
+                    ></proxy-lib-search>
+                    <proxy-lib-search
+                        [matFormFieldClass]="'no-padding w-xs-100'"
+                        [placeholder]="'Search Company ID'"
+                        (inputChanges)="searchCompanyId($event)"
                         class="w-xs-100"
                     ></proxy-lib-search>
                 </div>

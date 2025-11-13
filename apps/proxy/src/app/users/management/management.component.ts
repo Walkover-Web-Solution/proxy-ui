@@ -31,6 +31,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
         itemsPerPage: 1000,
         pageNo: 1,
     };
+    public roleSearchTerm: string = '';
+    public permissionSearchTerm: string = '';
     public features$: Observable<IPaginatedResponse<IFeature[]>> = this.featureComponentStore.feature$;
     public roles$: Observable<IPaginatedResponse<any[]>> = this.userComponentStore.roles$;
     public createRole$: Observable<any> = this.userComponentStore.createRole$;
@@ -109,7 +111,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
             if (createPermission) {
                 const referenceId = this.roleForm.get('feature_id')?.value;
                 if (referenceId) {
-                    this.loadPermissions(referenceId);
+                    this.loadPermissions(referenceId, this.permissionSearchTerm);
                 }
             }
         });
@@ -117,17 +119,22 @@ export class ManagementComponent implements OnInit, OnDestroy {
             if (deletePermission) {
                 const referenceId = this.roleForm.get('feature_id')?.value;
                 if (referenceId) {
-                    this.loadPermissions(referenceId);
+                    this.loadPermissions(referenceId, this.permissionSearchTerm);
                 }
             }
         });
         // Subscribe to feature selection changes
         this.roleForm.get('feature_id')?.valueChanges.subscribe((referenceId: string | null) => {
             if (referenceId) {
-                this.loadRoles(referenceId);
-                this.loadPermissions(referenceId);
+                // Reset search terms when feature changes
+                this.roleSearchTerm = '';
+                this.permissionSearchTerm = '';
+                this.loadRoles(referenceId, this.roleSearchTerm);
+                this.loadPermissions(referenceId, this.permissionSearchTerm);
             } else {
                 this.rolesDataSource.data = [];
+                this.roleSearchTerm = '';
+                this.permissionSearchTerm = '';
             }
         });
         this.createRole$
@@ -138,7 +145,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
             .subscribe((createRole) => {
                 const referenceId = this.roleForm.get('feature_id')?.value;
                 if (referenceId) {
-                    this.loadRoles(referenceId);
+                    this.loadRoles(referenceId, this.roleSearchTerm);
                 }
             });
         this.updateRole$
@@ -149,7 +156,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
             .subscribe((updateRole) => {
                 const referenceId = this.roleForm.get('feature_id')?.value;
                 if (referenceId) {
-                    this.loadRoles(referenceId);
+                    this.loadRoles(referenceId, this.roleSearchTerm);
                 }
             });
         this.deleteRole$
@@ -160,7 +167,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
             .subscribe((deleteRole) => {
                 const referenceId = this.roleForm.get('feature_id')?.value;
                 if (referenceId) {
-                    this.loadRoles(referenceId);
+                    this.loadRoles(referenceId, this.roleSearchTerm);
                 }
             });
         this.updatePermission$
@@ -171,16 +178,24 @@ export class ManagementComponent implements OnInit, OnDestroy {
             .subscribe((updatePermission) => {
                 const referenceId = this.roleForm.get('feature_id')?.value;
                 if (referenceId) {
-                    this.loadPermissions(referenceId);
+                    this.loadPermissions(referenceId, this.permissionSearchTerm);
                 }
             });
     }
 
-    private loadRoles(referenceId: string): void {
-        this.userComponentStore.getRoles({ referenceId });
+    private loadRoles(referenceId: string, searchTerm?: string): void {
+        const params: any = { referenceId };
+        if (searchTerm && searchTerm.trim()) {
+            params.search = searchTerm.trim();
+        }
+        this.userComponentStore.getRoles(params);
     }
-    private loadPermissions(referenceId: string): void {
-        this.userComponentStore.getPermissions({ referenceId });
+    private loadPermissions(referenceId: string, searchTerm?: string): void {
+        const params: any = { referenceId };
+        if (searchTerm && searchTerm.trim()) {
+            params.search = searchTerm.trim();
+        }
+        this.userComponentStore.getPermissions(params);
     }
 
     public filterFeatures(features: IFeature[]): void {
@@ -381,6 +396,20 @@ export class ManagementComponent implements OnInit, OnDestroy {
         });
     }
 
+    public search(event: any): void {
+        this.roleSearchTerm = event || '';
+        const referenceId = this.roleForm.get('feature_id')?.value;
+        if (referenceId) {
+            this.loadRoles(referenceId, this.roleSearchTerm);
+        }
+    }
+    public searchPermission(event: any): void {
+        this.permissionSearchTerm = event || '';
+        const referenceId = this.roleForm.get('feature_id')?.value;
+        if (referenceId) {
+            this.loadPermissions(referenceId, this.permissionSearchTerm);
+        }
+    }
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
