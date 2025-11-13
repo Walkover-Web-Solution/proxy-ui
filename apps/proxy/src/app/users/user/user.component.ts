@@ -14,11 +14,16 @@ import { omit } from 'lodash';
 import { PageEvent } from '@angular/material/paginator';
 import { UserComponentStore } from './user.store';
 import { IUser } from '@proxy/models/users-model';
+import { FormControl, FormGroup } from '@angular/forms';
+import { FeatureComponentStore } from '../../features/feature/feature.store';
+import { IFeature } from '@proxy/models/features-model';
+import { takeUntil } from 'rxjs/operators';
+
 @Component({
     selector: 'proxy-users',
     templateUrl: './user.component.html',
     styleUrls: ['./user.component.scss'],
-    providers: [UserComponentStore],
+    providers: [UserComponentStore, FeatureComponentStore],
 })
 export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     /** Store current API inprogress state */
@@ -35,12 +40,25 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     public selectedDefaultDateRange = SelectDateRange;
     /** Store page size options */
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
+    /** Feature form */
+    public featureForm = new FormGroup({
+        feature_id: new FormControl<string>(null),
+    });
+    /** Features observable */
+    public features$: Observable<IPaginatedResponse<IFeature[]>> = this.featureComponentStore.feature$;
+    /** Features array */
+    public features: IFeature[] = [];
+    /** Feature params */
+    public featureParams: any = {
+        itemsPerPage: 1000,
+        pageNo: 1,
+    };
     // public selectedDateRange = {
     //     startDate: DEFAULT_START_DATE,
     //     endDate: DEFAULT_END_DATE,
     // };
 
-    constructor(private componentStore: UserComponentStore) {
+    constructor(private componentStore: UserComponentStore, private featureComponentStore: FeatureComponentStore) {
         super();
     }
     ngOnInit(): void {
@@ -48,7 +66,40 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
             ...this.params,
             ...this.formatDateRange(),
         };
+
+        // Load features
+        this.featureComponentStore.getFeature({ ...this.featureParams });
+        this.features$.pipe(takeUntil(this.destroy$)).subscribe((features) => {
+            if (features) {
+                this.filterFeatures(features.data);
+            }
+        });
+
+        // Subscribe to feature_id changes
+        this.featureForm
+            .get('feature_id')
+            ?.valueChanges.pipe(takeUntil(this.destroy$))
+            .subscribe((featureId: string | null) => {
+                if (featureId) {
+                    this.params = {
+                        ...this.params,
+                        feature_id: featureId,
+                    };
+                } else {
+                    this.params = { ...omit(this.params, ['feature_id']) };
+                }
+                this.params.pageNo = 1;
+                this.getUsers();
+            });
+
         this.getUsers();
+    }
+
+    /**
+     * Filter features (same logic as management component)
+     */
+    private filterFeatures(features: IFeature[]): void {
+        this.features = features.filter((feature) => feature.feature_id === 1);
     }
 
     public ngOnDestroy(): void {
@@ -67,6 +118,23 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
             };
         } else {
             this.params = { ...omit(this.params, ['search']) };
+        }
+        this.params.pageNo = 1;
+        this.getUsers();
+    }
+
+    /**
+     * Search by company ID
+     * @param companyId
+     */
+    public searchCompanyId(companyId: string) {
+        if (companyId?.length) {
+            this.params = {
+                ...this.params,
+                company_id: companyId.trim(),
+            };
+        } else {
+            this.params = { ...omit(this.params, ['company_id']) };
         }
         this.params.pageNo = 1;
         this.getUsers();
