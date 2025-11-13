@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, TemplateRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -913,5 +913,35 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
 
         return userRole.c_permissions;
+    }
+
+    /**
+     * Handle permission select opened change event
+     * Adds the permission-select-panel class to the CDK overlay pane when the select opens
+     */
+    public onPermissionSelectOpenedChange(isOpen: boolean): void {
+        if (isOpen) {
+            // Use setTimeout to ensure the CDK overlay is created
+            setTimeout(() => {
+                // Find all CDK overlay panes
+                const overlayPanes = document.querySelectorAll('.cdk-overlay-pane');
+                overlayPanes.forEach((pane: Element) => {
+                    // Check if this pane contains the permission-select-panel
+                    const hasPermissionPanel = pane.querySelector('.mat-select-panel.permission-select-panel');
+                    if (hasPermissionPanel && !pane.classList.contains('permission-select-panel')) {
+                        pane.classList.add('permission-select-panel');
+                    }
+                });
+            }, 0);
+        } else {
+            // Optionally remove the class when closed
+            const overlayPanes = document.querySelectorAll('.cdk-overlay-pane.permission-select-panel');
+            overlayPanes.forEach((pane: Element) => {
+                const hasPermissionPanel = pane.querySelector('.mat-select-panel.permission-select-panel');
+                if (!hasPermissionPanel) {
+                    pane.classList.remove('permission-select-panel');
+                }
+            });
+        }
     }
 }
