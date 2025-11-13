@@ -73,6 +73,23 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     }
 
     /**
+     * Search by company ID
+     * @param companyId
+     */
+    public searchCompanyId(companyId: string) {
+        if (companyId?.length) {
+            this.params = {
+                ...this.params,
+                company_id: companyId.trim(),
+            };
+        } else {
+            this.params = { ...omit(this.params, ['company_id']) };
+        }
+        this.params.pageNo = 1;
+        this.getUsers();
+    }
+
+    /**
      * Formate Date Range and convert into format
      * @returns
      */
