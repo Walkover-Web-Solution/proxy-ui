@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import {
     DEFAULT_END_DATE,
@@ -18,6 +18,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { FeatureComponentStore } from '../../features/feature/feature.store';
 import { IFeature } from '@proxy/models/features-model';
 import { takeUntil } from 'rxjs/operators';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
     selector: 'proxy-users',
@@ -26,6 +27,8 @@ import { takeUntil } from 'rxjs/operators';
     providers: [UserComponentStore, FeatureComponentStore],
 })
 export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
+    @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+
     /** Store current API inprogress state */
     public loading$: Observable<{ [key: string]: boolean }> = this.componentStore.loading$;
     /** Store User data */
@@ -40,8 +43,9 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     public selectedDefaultDateRange = SelectDateRange;
     /** Store page size options */
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
-    /** Feature form */
-    public featureForm = new FormGroup({
+    /** User filter form */
+    public userFilterForm = new FormGroup({
+        company_id: new FormControl<string>(''),
         feature_id: new FormControl<string>(null),
     });
     /** Features observable */
@@ -75,23 +79,6 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
             }
         });
 
-        // Subscribe to feature_id changes
-        this.featureForm
-            .get('feature_id')
-            ?.valueChanges.pipe(takeUntil(this.destroy$))
-            .subscribe((featureId: string | null) => {
-                if (featureId) {
-                    this.params = {
-                        ...this.params,
-                        feature_id: featureId,
-                    };
-                } else {
-                    this.params = { ...omit(this.params, ['feature_id']) };
-                }
-                this.params.pageNo = 1;
-                this.getUsers();
-            });
-
         this.getUsers();
     }
 
@@ -124,20 +111,50 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     }
 
     /**
-     * Search by company ID
-     * @param companyId
+     * Apply Filter
      */
-    public searchCompanyId(companyId: string) {
-        if (companyId?.length) {
+    public applyFilter() {
+        const formValue = this.userFilterForm.getRawValue();
+        if (formValue) {
+            // Build params object
+            const filterParams: any = {};
+
+            if (formValue.company_id?.trim()) {
+                filterParams.company_id = formValue.company_id.trim();
+            }
+
+            if (formValue.feature_id) {
+                filterParams.feature_id = formValue.feature_id;
+            }
+
+            // Remove old filter params and add new ones (excluding search which is handled separately)
             this.params = {
-                ...this.params,
-                company_id: companyId.trim(),
+                ...omit(this.params, ['company_id', 'feature_id']),
+                ...filterParams,
             };
-        } else {
-            this.params = { ...omit(this.params, ['company_id']) };
         }
         this.params.pageNo = 1;
         this.getUsers();
+        this.closeMyMenu();
+    }
+
+    /**
+     * Reset Filter Form
+     */
+    public resetParam(): void {
+        this.userFilterForm.reset({
+            company_id: '',
+            feature_id: null,
+        });
+        this.closeMyMenu();
+        this.applyFilter();
+    }
+
+    /**
+     * Close the menu
+     */
+    public closeMyMenu(): void {
+        this.trigger?.closeMenu();
     }
 
     /**

@@ -93,6 +93,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
                         role: role.name || role.role || '',
                         permissions: permissionsText,
                         permissionsList: permissionsList,
+                        feature_configuration_id: role.feature_configuration_id,
                     };
                 });
             } else {
