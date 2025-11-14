@@ -190,6 +190,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         this.selectVerifyOtpV2Success$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             this.isOtpVerified = res;
             if (res) {
+                this.registrationForm.get('user.mobile').setErrors(null);
                 this.otpError = ''; // Clear error on successful verification
             }
         });
