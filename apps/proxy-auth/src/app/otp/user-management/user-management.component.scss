@@ -763,6 +763,9 @@ td {
         white-space: normal !important;
     }
 
+    .cdk-overlay-connected-position-bounding-box {
+        height: auto !important;
+    }
     // Fallback for all mat-select panels
     .mat-select-panel {
         min-width: 300px !important;
