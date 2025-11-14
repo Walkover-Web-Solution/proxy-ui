@@ -1,15 +1,15 @@
 <div class="h-100">
     <div class="d-flex flex-column h-100">
-        <h5 class="mat-body-2 text-secondary fw-bold mb-3">Select Feature</h5>
+        <h5 class="mat-body-2 text-secondary fw-bold mb-3">Select Block</h5>
         <div>
             <mat-form-field appearance="outline" class="w-50">
-                <mat-label>Feature</mat-label>
+                <mat-label>Select Block</mat-label>
                 <mat-select [formControl]="roleForm.get('feature_id')">
                     <mat-option *ngFor="let feature of features" [value]="feature.reference_id">
                         {{ feature.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error *ngIf="roleForm.get('feature_id')?.hasError('required')"> Feature is required </mat-error>
+                <mat-error *ngIf="roleForm.get('feature_id')?.hasError('required')"> Block is required </mat-error>
             </mat-form-field>
         </div>
 
@@ -62,28 +62,44 @@
                                 <th mat-header-cell *matHeaderCellDef></th>
                                 <td mat-cell *matCellDef="let element" data-label="Actions">
                                     <div class="actions">
-                                        <button
-                                            mat-stroked-button
-                                            color="primary"
-                                            (click)="editRole(element)"
-                                            class="mat-btn-md"
+                                        <span
+                                            [matTooltip]="
+                                                !element.feature_configuration_id ? 'Default Role is not editable' : ''
+                                            "
+                                            matTooltipPosition="above"
                                         >
-                                            <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
-                                                >edit</mat-icon
+                                            <button
+                                                mat-stroked-button
+                                                color="primary"
+                                                (click)="editRole(element)"
+                                                class="mat-btn-md"
+                                                [disabled]="!element.feature_configuration_id"
                                             >
-                                            Edit
-                                        </button>
-                                        <button
-                                            mat-stroked-button
-                                            color="primary"
-                                            (click)="deleteRole(element)"
-                                            class="mat-btn-md"
+                                                <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
+                                                    >edit</mat-icon
+                                                >
+                                                Edit
+                                            </button>
+                                        </span>
+                                        <span
+                                            [matTooltip]="
+                                                !element.feature_configuration_id ? 'Default plan are not editable' : ''
+                                            "
+                                            matTooltipPosition="above"
                                         >
-                                            <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
-                                                >delete</mat-icon
+                                            <button
+                                                mat-stroked-button
+                                                color="primary"
+                                                (click)="deleteRole(element)"
+                                                class="mat-btn-md"
+                                                [disabled]="!element.feature_configuration_id"
                                             >
-                                            Delete
-                                        </button>
+                                                <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
+                                                    >delete</mat-icon
+                                                >
+                                                Delete
+                                            </button>
+                                        </span>
                                     </div>
                                 </td>
                             </ng-container>
