@@ -351,7 +351,13 @@
 
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Permissions</mat-label>
-                    <mat-select formControlName="permission" multiple required>
+                    <mat-select
+                        formControlName="permission"
+                        multiple
+                        required
+                        panelClass="permission-select-panel"
+                        (openedChange)="onPermissionSelectOpenedChange($event)"
+                    >
                         <mat-option *ngFor="let permission of permissions" [value]="permission.id">
                             {{ permission.name }}
                         </mat-option>
@@ -459,7 +465,12 @@
 
                 <mat-form-field appearance="outline" class="full-width" *ngIf="isEditUser">
                     <mat-label>Additional Permissions</mat-label>
-                    <mat-select formControlName="permission" multiple>
+                    <mat-select
+                        formControlName="permission"
+                        multiple
+                        panelClass="permission-select-panel"
+                        (openedChange)="onPermissionSelectOpenedChange($event)"
+                    >
                         <mat-option
                             *ngFor="let permission of getAvailableAdditionalPermissions()"
                             [value]="permission.id"
@@ -547,7 +558,13 @@
 
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Permission</mat-label>
-                        <mat-select formControlName="permission" multiple required>
+                        <mat-select
+                            formControlName="permission"
+                            multiple
+                            required
+                            panelClass="permission-select-panel"
+                            (openedChange)="onPermissionSelectOpenedChange($event)"
+                        >
                             <mat-option *ngFor="let permission of permissions" [value]="permission.id">
                                 {{ permission.name }}
                             </mat-option>

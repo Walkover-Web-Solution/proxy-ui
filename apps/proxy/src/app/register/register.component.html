@@ -2,6 +2,7 @@
     <mat-card class="outline-card reg-form">
         <h2 class="d-flex justify-content-center">Register</h2>
         <div>
+            <h3>User Details</h3>
             <div [formGroup]="registrationForm" proxyMarkAllAsTouched (valid)="submit()">
                 <ng-container
                     [ngTemplateOutlet]="formField"
@@ -74,10 +75,44 @@
                     Password should contain atleast one Capital Letter, one Small Letter, one Digit and one Symbol
                 </div>
 
+                <h3>Company Details</h3>
+                <div>
+                    <ng-container
+                        [ngTemplateOutlet]="formField"
+                        [ngTemplateOutletContext]="{
+                            label: 'Name',
+                            required: true,
+                            formControl: registrationForm.get('client.name')
+                        }"
+                    >
+                    </ng-container>
+
+                    <ng-container
+                        [ngTemplateOutlet]="formField"
+                        [ngTemplateOutletContext]="{
+                            label: 'Email',
+                            formControl: registrationForm.get('client.email')
+                        }"
+                    >
+                    </ng-container>
+
+                    <ng-container
+                        [ngTemplateOutlet]="formField"
+                        [ngTemplateOutletContext]="{
+                            label: 'mobile',
+                            formControl: registrationForm.get('client.mobile')
+                        }"
+                    >
+                    </ng-container>
+                </div>
                 <div class="mt-4 d-flex justify-content-center align-items-center">
                     <button mat-flat-button color="primary" (click)="submit()">Submit</button>
                 </div>
             </div>
+        </div>
+        <div class="heading d-flex justify-content-center mt-1 gap-1 font-14 fw-bold">
+            Have an account
+            <a class="text-primary text-underline cursor-pointer" [routerLink]="['/login']">Login Here</a>
         </div>
     </mat-card>
 </div>
