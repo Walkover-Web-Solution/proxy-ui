@@ -10,21 +10,6 @@
                         (inputChanges)="search($event)"
                         class="w-xs-100"
                     ></proxy-lib-search>
-                    <proxy-lib-search
-                        [matFormFieldClass]="'no-padding w-xs-100'"
-                        [placeholder]="'Search Company ID'"
-                        (inputChanges)="searchCompanyId($event)"
-                        class="w-xs-100"
-                    ></proxy-lib-search>
-
-                    <mat-form-field appearance="outline" class="w-xs-100 mt-4">
-                        <mat-label>Feature</mat-label>
-                        <mat-select [formControl]="featureForm.get('feature_id')">
-                            <mat-option *ngFor="let feature of features" [value]="feature.reference_id">
-                                {{ feature.name }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
                 </div>
                 <div class="d-flex align-items-center justify-content-between gap-3 ml-auto">
                     <date-range-picker
@@ -32,6 +17,58 @@
                         [(selectedRangeValue)]="selectedRangeValue"
                         [selectedDefaultDateRange]="selectedDefaultDateRange.CurrentMonth"
                     ></date-range-picker>
+                    <button mat-flat-button class="flat-default mat-btn-xs" [matMenuTriggerFor]="userFilterMenu">
+                        <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">filter_alt</mat-icon>
+                        <span class="hide-xs">Filter</span>
+                    </button>
+                    <mat-menu #userFilterMenu="matMenu" class="filter-menu" xPosition="before">
+                        <div (click)="$event.stopPropagation(); (false)">
+                            <div class="pb-0 pt-3 px-3">
+                                <div class="row" [formGroup]="userFilterForm">
+                                    <div class="col-lg-12">
+                                        <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                                            <mat-label>Search By Company Name</mat-label>
+                                            <input
+                                                matInput
+                                                placeholder="Search By Company Name"
+                                                autocomplete="off"
+                                                formControlName="company_id"
+                                            />
+                                        </mat-form-field>
+                                        <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                                            <mat-label>Block</mat-label>
+                                            <mat-select
+                                                placeholder="Select Block"
+                                                [disableOptionCentering]="true"
+                                                formControlName="feature_id"
+                                            >
+                                                <mat-option [value]="null">None</mat-option>
+                                                <mat-option
+                                                    *ngFor="let feature of features"
+                                                    [value]="feature.reference_id"
+                                                >
+                                                    {{ feature.name }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                            <mat-divider></mat-divider>
+                            <div class="d-flex align-items-center col-gap-3 action-button p-3">
+                                <button
+                                    mat-flat-button
+                                    color="primary"
+                                    (click)="applyFilter()"
+                                    [disabled]="userFilterForm.invalid"
+                                >
+                                    Apply
+                                </button>
+                                <button mat-flat-button class="flat-default" (click)="resetParam()">Reset</button>
+                                <button mat-button (click)="closeMyMenu()">Cancel</button>
+                            </div>
+                        </div>
+                    </mat-menu>
                     <button
                         mat-flat-button
                         class="flat-icon-btn flat-default"

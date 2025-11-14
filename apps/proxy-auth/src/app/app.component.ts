@@ -30,7 +30,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                 // loginRedirectUrl: 'https://www.google.com',
                 // showCompanyDetails: false,
                 authToken:
-                    'U2lGTC96c2FVSGVESzRxUUxCY3FjMlZRZkM5UDFpY1hmVHh2amo3ak5HVHlaOW1MOHJuclE4dGdST1pCMVAzMjZud0NtcVFxbGFxUTNvRjdWQW1iZ21RdjhidXhwcHZINlJJNTMyRWNZUGJXaHVLTEQ3WU9SVWtQeHdycTJOZkh4OTRzWlpReUZTS1FjZHIxK3pLRjhONEtaYkpwRVZ1aW4zKzNKTmlmUHdGdk80eXp6Y3hxd0s2TXQzSVdTbitGOTFsTnZXNnRCZWVtaDJ0Skd2SVpIdz09',
+                    'enJqckorNWNuWDFiK1BXRGgzemRUUjRCNlhGRkwzVkFiSTRqYklmWmtlS1VnZXoxWXpldDF5UlRyVmRKekd2VnRnSlg2TjBWOWU1TEdIR3pjUFJzRnhHWExMRi8vL1dZQTJTSG53U0JaZmxVVzIyRXM3RUZBRHlzbi9VclA1dFNOdUEzajQvc25DSU9rSjU2LzdweVdLQUVuUmpyVElMVmpiYjhRSnc5VHFGa1ZNdjFCbUJHcFhoTllQQ2dmTUUxSzh4ZDVJUW5XMGVYVmVLQVE5bGxxUT09',
                 type: 'user-management',
                 // isPreview: true,
                 isLogin: true,

@@ -22,6 +22,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
 import { ManagementComponent } from './management/management.component';
 
@@ -50,6 +52,8 @@ const routes: Routes = [
         MatTabsModule,
         MatSelectModule,
         MatDialogModule,
+        MatMenuModule,
+        MatDividerModule,
         UiConfirmDialogModule,
         MatIconModule,
         MatTableModule,
