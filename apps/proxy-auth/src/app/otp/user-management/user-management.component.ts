@@ -284,6 +284,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
     }
@@ -423,6 +424,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addUserForm.reset();
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
     }
@@ -622,6 +624,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addRoleForm.reset();
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
     }
@@ -768,6 +771,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         // Open the add user dialog (which contains the role form)
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
 
@@ -815,6 +819,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addPermissionTabForm.reset();
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
     }
@@ -831,6 +836,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
     }
