@@ -762,14 +762,9 @@ td {
         text-overflow: clip !important;
         white-space: normal !important;
     }
-
-    .cdk-overlay-pane.permission-select-panel {
-        height: auto !important; // Ensure proper z-index stacking
-    }
     .cdk-overlay-connected-position-bounding-box {
         height: auto !important;
     }
-
     // Fallback for all mat-select panels
     .mat-select-panel {
         min-width: 300px !important;
