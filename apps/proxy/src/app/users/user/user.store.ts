@@ -144,9 +144,6 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
                                 this.showError(res?.errors);
                             } else {
                                 this.toast.success('Role updated successfully');
-                                // Reload roles after successful update
-                                const referenceId = payload.referenceId;
-                                this.getRoles({ referenceId });
                             }
                             return this.patchState({
                                 updateRole: res?.data,

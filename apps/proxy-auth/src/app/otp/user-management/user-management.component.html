@@ -191,6 +191,7 @@
                                                             color="primary"
                                                             (click)="editRole(element, i)"
                                                             class="button-add"
+                                                            [disabled]="element.is_default"
                                                         >
                                                             Edit
                                                         </button>

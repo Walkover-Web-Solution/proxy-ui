@@ -68,6 +68,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         this.dialogRoleForm = new FormGroup({
             roleName: new FormControl('', [Validators.required]),
             permissions: new FormControl([], []),
+            is_default: new FormControl(false),
         });
         this.dialogPermissionForm = new FormGroup({
             permissionName: new FormControl('', [Validators.required]),
@@ -94,6 +95,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
                         permissions: permissionsText,
                         permissionsList: permissionsList,
                         feature_configuration_id: role.feature_configuration_id,
+                        is_default: role.is_default || false,
                     };
                 });
             } else {
@@ -214,6 +216,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         this.dialogRoleForm.patchValue({
             roleName: role.role,
             permissions: [],
+            is_default: (role as any).is_default || false,
         });
 
         this.dialogRef = this.dialog.open(this.addRoleDialogTemplate, {
@@ -251,6 +254,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         this.dialogRoleForm.reset({
             roleName: '',
             permissions: [],
+            is_default: false,
         });
 
         this.dialogRef = this.dialog.open(this.addRoleDialogTemplate, {
@@ -275,6 +279,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
                 name: formData.roleName,
                 permissions: formData.permissions,
                 referenceId: referenceId,
+                is_default: formData.is_default || false,
             };
 
             // Add id for update mode

@@ -45,7 +45,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
     /** User filter form */
     public userFilterForm = new FormGroup({
-        company_id: new FormControl<string>(''),
+        company_name: new FormControl<string>(''),
         feature_id: new FormControl<string>(null),
     });
     /** Features observable */
@@ -119,8 +119,8 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
             // Build params object
             const filterParams: any = {};
 
-            if (formValue.company_id?.trim()) {
-                filterParams.company_id = formValue.company_id.trim();
+            if (formValue.company_name?.trim()) {
+                filterParams.company_name = formValue.company_name.trim();
             }
 
             if (formValue.feature_id) {
@@ -129,7 +129,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
 
             // Remove old filter params and add new ones (excluding search which is handled separately)
             this.params = {
-                ...omit(this.params, ['company_id', 'feature_id']),
+                ...omit(this.params, ['company_name', 'feature_id']),
                 ...filterParams,
             };
         }
@@ -143,7 +143,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
      */
     public resetParam(): void {
         this.userFilterForm.reset({
-            company_id: '',
+            company_name: '',
             feature_id: null,
         });
         this.closeMyMenu();
