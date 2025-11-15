@@ -24,6 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
 import { ManagementComponent } from './management/management.component';
 
@@ -54,6 +55,7 @@ const routes: Routes = [
         MatDialogModule,
         MatMenuModule,
         MatDividerModule,
+        MatSlideToggleModule,
         UiConfirmDialogModule,
         MatIconModule,
         MatTableModule,

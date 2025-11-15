@@ -131,7 +131,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             name: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
             mobileNumber: ['', [Validators.pattern(/^(\+?[1-9]\d{1,14}|[0-9]{10})$/)]],
-            role: [''],
+            role: ['', Validators.required],
             permission: [[]],
         });
 
