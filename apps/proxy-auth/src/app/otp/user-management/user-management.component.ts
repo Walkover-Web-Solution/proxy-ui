@@ -131,7 +131,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             name: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
             mobileNumber: ['', [Validators.pattern(/^(\+?[1-9]\d{1,14}|[0-9]{10})$/)]],
-            role: [''],
+            role: ['', Validators.required],
             permission: [[]],
         });
 
@@ -921,10 +921,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         return userRole.c_permissions;
     }
 
-    /**
-     * Handle permission select opened change event
-     * Adds the permission-select-panel class to the CDK overlay pane when the select opens
-     */
     public onPermissionSelectOpenedChange(isOpen: boolean): void {
         if (isOpen) {
             // Use setTimeout to ensure the CDK overlay is created

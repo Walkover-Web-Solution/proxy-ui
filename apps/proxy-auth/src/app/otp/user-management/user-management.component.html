@@ -191,6 +191,7 @@
                                                             color="primary"
                                                             (click)="editRole(element, i)"
                                                             class="button-add"
+                                                            [disabled]="element.is_default"
                                                         >
                                                             Edit
                                                         </button>
@@ -338,17 +339,6 @@
                         Role name is required
                     </mat-error>
                 </mat-form-field>
-
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Description</mat-label>
-                    <textarea
-                        matInput
-                        formControlName="description"
-                        placeholder="Enter role description"
-                        rows="3"
-                    ></textarea>
-                </mat-form-field>
-
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Permissions</mat-label>
                     <mat-select
@@ -365,6 +355,15 @@
                     <mat-error *ngIf="addRoleForm.get('permission')?.hasError('required')">
                         At least one permission is required
                     </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Description</mat-label>
+                    <textarea
+                        matInput
+                        formControlName="description"
+                        placeholder="Enter role description"
+                        rows="3"
+                    ></textarea>
                 </mat-form-field>
             </form>
 
@@ -469,6 +468,7 @@
                         formControlName="permission"
                         multiple
                         panelClass="permission-select-panel"
+                        [disableOptionCentering]="true"
                         (openedChange)="onPermissionSelectOpenedChange($event)"
                     >
                         <mat-option

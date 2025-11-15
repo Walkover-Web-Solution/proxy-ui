@@ -213,7 +213,7 @@
                 </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-100">
+            <mat-form-field appearance="outline" class="w-100 mb-3">
                 <mat-label>Permissions</mat-label>
                 <mat-select formControlName="permissions" multiple>
                     <mat-option *ngFor="let permission of availablePermissions" [value]="permission.name">
@@ -222,6 +222,11 @@
                 </mat-select>
                 <mat-hint>Select one or more permissions</mat-hint>
             </mat-form-field>
+
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="me-2">Set this role to default role :</span>
+                <mat-slide-toggle formControlName="is_default" color="primary"></mat-slide-toggle>
+            </div>
         </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end" class="mt-3">
