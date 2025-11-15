@@ -138,11 +138,116 @@ proxy-auth,
         }
     }
 }
+.dark-dialog {
+    .mat-dialog-container {
+        background-color: #12121f !important;
+        color: #ffffff !important;
+        // border: 1px solid #ffffff !important;
+    }
+    .input-field {
+        border: 1px solid #ffffff !important;
+    }
+    .mat-form-field {
+        .mat-form-field-outline {
+            color: #ffffff !important;
+        }
 
-.cdk-overlay-connected-position-bounding-box {
-    height: auto !important;
+        .mat-form-field-outline-thick {
+            color: #ffffff !important;
+        }
+
+        .mat-form-field-label {
+            color: #ffffff !important;
+        }
+
+        .mat-input-element {
+            color: #ffffff !important;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.6) !important;
+            }
+        }
+
+        input.mat-input-element,
+        textarea.mat-input-element {
+            color: #ffffff !important;
+        }
+
+        .mat-hint {
+            color: #ffffff !important;
+        }
+    }
+
+    .mat-flat-button {
+        background-color: #1e1e1e !important;
+        border: 1px solid #ffffff !important;
+        color: #ffffff !important;
+    }
+
+    .mat-select-value {
+        color: #ffffff !important;
+    }
+
+    .mat-select-arrow {
+        color: #ffffff !important;
+    }
 }
 
-.cdk-overlay-pane.permission-select-panel {
-    height: auto !important;
+// Select panel styles for dark dialog - only when dark-dialog class exists
+body:has(.dark-dialog),
+.dark-dialog {
+    .cdk-overlay-pane .permission-select-panel,
+    .cdk-overlay-pane .role-select-panel,
+    .permission-select-panel,
+    .role-select-panel,
+    .mat-select-panel.permission-select-panel,
+    .mat-select-panel.role-select-panel {
+        background-color: #1e1e1e !important;
+
+        .mat-option {
+            background-color: #1e1e1e !important;
+            color: #ffffff !important;
+
+            .mat-option-text,
+            span {
+                color: #ffffff !important;
+            }
+
+            * {
+                color: #ffffff !important;
+            }
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+            }
+
+            &.mat-selected {
+                background-color: rgba(255, 255, 255, 0.15) !important;
+            }
+        }
+    }
+
+    // Global select panel option text styles - more specific (all white)
+    .mat-select-panel.permission-select-panel .mat-option,
+    .mat-select-panel.role-select-panel .mat-option,
+    .mat-select-panel.permission-select-panel .mat-option .mat-option-text,
+    .mat-select-panel.role-select-panel .mat-option .mat-option-text,
+    .mat-select-panel.permission-select-panel .mat-option span,
+    .mat-select-panel.role-select-panel .mat-option span,
+    .mat-select-panel.permission-select-panel .mat-option *,
+    .mat-select-panel.role-select-panel .mat-option *,
+    .cdk-overlay-pane .permission-select-panel .mat-option,
+    .cdk-overlay-pane .role-select-panel .mat-option,
+    .cdk-overlay-pane .permission-select-panel .mat-option *,
+    .cdk-overlay-pane .role-select-panel .mat-option *,
+    .cdk-overlay-pane .permission-select-panel .mat-option .mat-option-text,
+    .cdk-overlay-pane .role-select-panel .mat-option .mat-option-text {
+        color: #ffffff !important;
+    }
+
+    // Role name should be white
+    .mat-select-panel.role-select-panel .mat-option .role-name,
+    .cdk-overlay-pane .role-select-panel .mat-option .role-name {
+        color: #ffffff !important;
+    }
 }

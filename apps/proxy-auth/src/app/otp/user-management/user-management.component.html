@@ -103,7 +103,7 @@
             </mat-tab>
 
             <!-- Roles and Permission Tab -->
-            <mat-tab label="Roles and Permissions">
+            <mat-tab label="Roles">
                 <div class="tab-content">
                     <!-- Nested tabs for Roles and Permissions -->
                     <mat-tab-group class="nested-tabs full-width">
@@ -326,7 +326,7 @@
         </mat-tab-group>
     </div>
     <!-- Add User Dialog -->
-    <ng-template #addUserDialog>
+    <ng-template #addUserDialog [panelClass]="'dark-dialog'">
         <h2 mat-dialog-title>{{ getDialogTitle() }}</h2>
         <mat-dialog-content>
             <!-- Role Form (shown when isEditRole is true) -->
