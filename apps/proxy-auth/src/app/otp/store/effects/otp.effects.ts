@@ -280,8 +280,8 @@ export class OtpEffects {
     getRoles$ = createEffect(() =>
         this.actions$.pipe(
             ofType(otpActions.getRoles),
-            switchMap(({ authToken }) => {
-                return this.otpService.getRoles(authToken).pipe(
+            switchMap(({ authToken, itemsPerPage }) => {
+                return this.otpService.getRoles(authToken, itemsPerPage).pipe(
                     map((res: any) => {
                         if (res.status === 'success') {
                             return otpActions.getRolesComplete({
@@ -338,8 +338,8 @@ export class OtpEffects {
     getCompanyUsers$ = createEffect(() =>
         this.actions$.pipe(
             ofType(otpActions.getCompanyUsers),
-            switchMap(({ authToken }) => {
-                return this.otpService.getCompanyUsers(authToken).pipe(
+            switchMap(({ authToken, itemsPerPage }) => {
+                return this.otpService.getCompanyUsers(authToken, itemsPerPage).pipe(
                     map((res: any) => {
                         if (res.status === 'success') {
                             return otpActions.getCompanyUsersComplete({

@@ -96,6 +96,7 @@
                             [pageSize]="1000"
                             showFirstLastButtons
                             aria-label="Select page of users"
+                            (page)="onUsersPageChange($event)"
                         >
                         </mat-paginator>
                     </div>
@@ -218,6 +219,7 @@
                                         [pageSize]="1000"
                                         showFirstLastButtons
                                         aria-label="Select page of roles"
+                                        (page)="onRolesPageChange($event)"
                                     >
                                     </mat-paginator>
                                 </div>
