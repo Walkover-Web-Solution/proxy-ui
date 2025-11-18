@@ -23,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import { SimpleDialogComponent } from './simple-dialog/simple-dialog.component';
 import { CreatePlanDialogComponent } from './create-plan-dialog/create-plan-dialog.component';
+import { CreateTaxDialogComponent } from './create-tax-dialog/create-tax-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 const routes: Routes = [
     {
@@ -33,7 +34,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [CreateFeatureComponent, SimpleDialogComponent, CreatePlanDialogComponent],
+    declarations: [CreateFeatureComponent, SimpleDialogComponent, CreatePlanDialogComponent, CreateTaxDialogComponent],
     imports: [
         CommonModule,
         RouterModule.forChild(routes),

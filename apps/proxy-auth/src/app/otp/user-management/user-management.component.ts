@@ -1,8 +1,8 @@
-import { Component, Input, OnInit, ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, TemplateRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { select, Store } from '@ngrx/store';
 import { IAppState } from '../store/app.state';
@@ -131,7 +131,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             name: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
             mobileNumber: ['', [Validators.pattern(/^(\+?[1-9]\d{1,14}|[0-9]{10})$/)]],
-            role: [''],
+            role: ['', Validators.required],
             permission: [[]],
         });
 
@@ -284,6 +284,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
     }
@@ -423,6 +424,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addUserForm.reset();
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
     }
@@ -622,6 +624,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addRoleForm.reset();
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
     }
@@ -707,10 +710,20 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
     public getCompanyUsers(): void {
-        this.store.dispatch(otpActions.getCompanyUsers({ authToken: this.userToken }));
+        const pageSize = this.paginator?.pageSize || 1000;
+        this.store.dispatch(otpActions.getCompanyUsers({ authToken: this.userToken, itemsPerPage: pageSize }));
+    }
+
+    public onUsersPageChange(event: PageEvent): void {
+        this.store.dispatch(otpActions.getCompanyUsers({ authToken: this.userToken, itemsPerPage: event.pageSize }));
     }
     public getRoles(): void {
-        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken }));
+        const pageSize = this.rolesPaginator?.pageSize || 1000;
+        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken, itemsPerPage: pageSize }));
+    }
+
+    public onRolesPageChange(event: PageEvent): void {
+        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken, itemsPerPage: event.pageSize }));
     }
     public getPermissions(): void {
         this.store.dispatch(otpActions.getPermissions({ authToken: this.userToken }));
@@ -768,6 +781,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         // Open the add user dialog (which contains the role form)
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
 
@@ -815,6 +829,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addPermissionTabForm.reset();
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
     }
@@ -831,6 +846,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
     }

@@ -8,6 +8,14 @@ import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 
 export interface IUserInitialState {
     users: IPaginatedResponse<IUser[]>;
+    roles: IPaginatedResponse<any[]>;
+    createRole: any;
+    updateRole: any;
+    deleteRole: any;
+    permissions: IPaginatedResponse<any[]>;
+    createPermission: any;
+    deletePermission: any;
+    updatePermission: any;
     isLoading: boolean;
 }
 @Injectable()
@@ -15,6 +23,14 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
     constructor(private service: UsersService, private toast: PrimeNgToastService) {
         super({
             users: null,
+            roles: null,
+            createRole: null,
+            updateRole: null,
+            deleteRole: null,
+            permissions: null,
+            createPermission: null,
+            deletePermission: null,
+            updatePermission: null,
             isLoading: false,
         });
     }
@@ -25,6 +41,14 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
     }));
     /** Selector for user data */
     readonly users$: Observable<IPaginatedResponse<IUser[]>> = this.select((state) => state.users);
+    readonly roles$: Observable<IPaginatedResponse<any[]>> = this.select((state) => state.roles);
+    readonly createRole$: Observable<any> = this.select((state) => state.createRole);
+    readonly updateRole$: Observable<any> = this.select((state) => state.updateRole);
+    readonly deleteRole$: Observable<any> = this.select((state) => state.deleteRole);
+    readonly permissions$: Observable<IPaginatedResponse<any[]>> = this.select((state) => state.permissions);
+    readonly createPermission$: Observable<any> = this.select((state) => state.createPermission);
+    readonly deletePermission$: Observable<any> = this.select((state) => state.deletePermission);
+    readonly updatePermission$: Observable<any> = this.select((state) => state.updatePermission);
     /** Get users data */
     readonly getUsers = this.effect((data: Observable<IUserReq>) => {
         return data.pipe(
@@ -46,6 +70,264 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
                             return this.patchState({
                                 isLoading: false,
                                 users: null,
+                            });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+
+    readonly getRoles = this.effect((data: Observable<any>) => {
+        return data.pipe(
+            switchMap((params) => {
+                return this.service.getRoles(params).pipe(
+                    tapResponse(
+                        (res: BaseResponse<IPaginatedResponse<any[]>, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res?.errors);
+                            }
+                            return this.patchState({
+                                roles: res?.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error?.errors);
+                            return this.patchState({
+                                roles: null,
+                            });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly createRole = this.effect((data: Observable<any>) => {
+        return data.pipe(
+            switchMap((payload) => {
+                this.patchState({ isLoading: true });
+                return this.service.createRole(payload).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res?.errors);
+                            } else {
+                                this.toast.success('Role created successfully');
+                            }
+                            return this.patchState({
+                                createRole: res?.data,
+                                isLoading: false,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error?.errors);
+                            return this.patchState({
+                                isLoading: false,
+                            });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly updateRole = this.effect((data: Observable<any>) => {
+        return data.pipe(
+            switchMap((payload) => {
+                this.patchState({ isLoading: true });
+                return this.service.updateRole(payload).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res?.errors);
+                            } else {
+                                this.toast.success('Role updated successfully');
+                            }
+                            return this.patchState({
+                                updateRole: res?.data,
+                                isLoading: false,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error?.errors);
+                            return this.patchState({
+                                isLoading: false,
+                            });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly deleteRole = this.effect((data: Observable<any>) => {
+        return data.pipe(
+            switchMap((payload) => {
+                this.patchState({ isLoading: true });
+                return this.service.deleteRole(payload).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res?.errors);
+                            } else {
+                                this.toast.success('Role deleted successfully');
+                            }
+                            return this.patchState({
+                                deleteRole: res?.data,
+                                isLoading: false,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error?.errors);
+                            return this.patchState({
+                                isLoading: false,
+                            });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly getPermissions = this.effect((data: Observable<any>) => {
+        return data.pipe(
+            switchMap((params) => {
+                return this.service.getPermissions(params).pipe(
+                    tapResponse(
+                        (res: BaseResponse<IPaginatedResponse<any[]>, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res?.errors);
+                            }
+                            return this.patchState({
+                                permissions: res?.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error?.errors);
+                            return this.patchState({
+                                permissions: null,
+                            });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly createPermission = this.effect((data: Observable<any>) => {
+        return data.pipe(
+            switchMap((payload) => {
+                this.patchState({ isLoading: true });
+                return this.service.createPermission(payload).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res?.errors);
+                            } else {
+                                this.toast.success('Permission created successfully');
+                            }
+                            return this.patchState({
+                                createPermission: res?.data,
+                                isLoading: false,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error?.errors);
+                            return this.patchState({
+                                isLoading: false,
+                            });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    // readonly updatePermission = this.effect((data: Observable<any>) => {
+    //     return data.pipe(
+    //         switchMap((payload) => {
+    //             this.patchState({ isLoading: true });
+    //             return this.service.updatePermission(payload).pipe(
+    //                 tapResponse(
+    //                     (res: BaseResponse<any, void>) => {
+    //                         if (res?.hasError) {
+    //                             this.showError(res?.errors);
+    //                         }
+    //                         else {
+    //                             this.toast.success('Permission updated successfully');
+    //                             // Reload permissions after successful update
+    //                             const referenceId = payload.referenceId;
+    //                             this.getPermissions({ referenceId });
+    //                         }
+    //                         return this.patchState({
+    //                             updatePermission: res?.data,
+    //                             isLoading: false,
+    //                         });
+    //                     },
+    //                     (error: any) => {
+    //                         this.showError(error?.errors);
+    //                         return this.patchState({
+    //                             isLoading: false,
+    //                         });
+    //                     }
+    //                 ),
+    //                 catchError((err) => EMPTY)
+    //             );
+    //         })
+    //     );
+    // });
+    readonly deletePermission = this.effect((data: Observable<any>) => {
+        return data.pipe(
+            switchMap((payload) => {
+                this.patchState({ isLoading: true });
+                return this.service.deletePermission(payload).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res?.errors);
+                            } else {
+                                this.toast.success('Permission deleted successfully');
+                            }
+                            return this.patchState({
+                                deletePermission: res?.data,
+                                isLoading: false,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error?.errors);
+                            return this.patchState({
+                                isLoading: false,
+                            });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly updatePermission = this.effect((data: Observable<any>) => {
+        return data.pipe(
+            switchMap((payload) => {
+                this.patchState({ isLoading: true });
+                return this.service.updatePermission(payload).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res?.errors);
+                            } else {
+                                this.toast.success('Permission updated successfully');
+                            }
+                            return this.patchState({
+                                updatePermission: res?.data,
+                                isLoading: false,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error?.errors);
+                            return this.patchState({
+                                isLoading: false,
                             });
                         }
                     ),
