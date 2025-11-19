@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { FeatureComponentStore } from '../../features/feature/feature.store';
 import { Observable, of, Subject, takeUntil } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -33,6 +34,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
     };
     public roleSearchTerm: string = '';
     public permissionSearchTerm: string = '';
+    public rolesPageSize: number = 25;
+    public permissionsPageSize: number = 25;
+    public pageSizeOptions: number[] = [25, 50, 100, 1000];
     public features$: Observable<IPaginatedResponse<IFeature[]>> = this.featureComponentStore.feature$;
     public roles$: Observable<IPaginatedResponse<any[]>> = this.userComponentStore.roles$;
     public createRole$: Observable<any> = this.userComponentStore.createRole$;
@@ -59,6 +63,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
     @ViewChild('addRoleDialogTemplate', { static: false }) addRoleDialogTemplate: TemplateRef<any>;
     @ViewChild('addPermissionDialogTemplate', { static: false }) addPermissionDialogTemplate: TemplateRef<any>;
+    @ViewChild('rolesPaginator') rolesPaginator!: MatPaginator;
+    @ViewChild('permissionsPaginator') permissionsPaginator!: MatPaginator;
 
     constructor(
         private featureComponentStore: FeatureComponentStore,
@@ -187,18 +193,34 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     private loadRoles(referenceId: string, searchTerm?: string): void {
-        const params: any = { referenceId };
+        const params: any = { referenceId, itemsPerPage: this.rolesPageSize };
         if (searchTerm && searchTerm.trim()) {
             params.search = searchTerm.trim();
         }
-        this.userComponentStore.getRoles(params);
+        this.userComponentStore.getRoles(of(params));
     }
     private loadPermissions(referenceId: string, searchTerm?: string): void {
-        const params: any = { referenceId };
+        const params: any = { referenceId, itemsPerPage: this.permissionsPageSize };
         if (searchTerm && searchTerm.trim()) {
             params.search = searchTerm.trim();
         }
-        this.userComponentStore.getPermissions(params);
+        this.userComponentStore.getPermissions(of(params));
+    }
+
+    public onRolesPageChange(event: PageEvent): void {
+        this.rolesPageSize = event.pageSize;
+        const referenceId = this.roleForm.get('feature_id')?.value;
+        if (referenceId) {
+            this.loadRoles(referenceId, this.roleSearchTerm);
+        }
+    }
+
+    public onPermissionsPageChange(event: PageEvent): void {
+        this.permissionsPageSize = event.pageSize;
+        const referenceId = this.roleForm.get('feature_id')?.value;
+        if (referenceId) {
+            this.loadPermissions(referenceId, this.permissionSearchTerm);
+        }
     }
 
     public filterFeatures(features: IFeature[]): void {

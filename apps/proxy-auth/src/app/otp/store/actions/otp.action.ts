@@ -66,7 +66,7 @@ export const addUser = createAction('[OTP] Add User', props<{ payload: any; auth
 export const addUserComplete = createAction('[OTP] Add User Complete', props<{ response: any }>());
 export const addUserError = createAction('[OTP] Add User Error', props<{ errors: string[]; errorResponse: any }>());
 
-export const getRoles = createAction('[OTP] Get Roles', props<{ authToken: string }>());
+export const getRoles = createAction('[OTP] Get Roles', props<{ authToken: string; itemsPerPage?: number }>());
 export const getRolesComplete = createAction('[OTP] Get Roles Complete', props<{ response: any }>());
 export const getRolesError = createAction('[OTP] Get Roles Error', props<{ errors: string[]; errorResponse: any }>());
 
@@ -92,7 +92,10 @@ export const getPermissionsError = createAction(
     props<{ errors: string[]; errorResponse: any }>()
 );
 
-export const getCompanyUsers = createAction('[OTP] Get Company Users', props<{ authToken: string }>());
+export const getCompanyUsers = createAction(
+    '[OTP] Get Company Users',
+    props<{ authToken: string; itemsPerPage?: number }>()
+);
 export const getCompanyUsersComplete = createAction('[OTP] Get Company Users Complete', props<{ response: any }>());
 export const getCompanyUsersError = createAction(
     '[OTP] Get Company Users Error',

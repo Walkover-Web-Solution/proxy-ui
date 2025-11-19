@@ -120,10 +120,14 @@ export class OtpService {
         return this.http.post<any>(url, payload, this.options);
     }
 
-    public getRoles(authToken: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+    public getRoles(
+        authToken: string,
+        itemsPerPage?: number
+    ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;
         const url = otpVerificationUrls.createRole(this.clientUrl);
-        return this.http.get<any>(url, {}, this.options);
+        const queryParams = itemsPerPage ? { itemsPerPage } : {};
+        return this.http.get<any>(url, queryParams, this.options);
     }
     public createRole(
         name: string,
@@ -134,10 +138,14 @@ export class OtpService {
         const url = otpVerificationUrls.createRole(this.clientUrl);
         return this.http.post<any>(url, { name, cPermissions }, this.options);
     }
-    public getCompanyUsers(authToken: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+    public getCompanyUsers(
+        authToken: string,
+        itemsPerPage?: number
+    ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;
         const url = otpVerificationUrls.getCompanyUsers(this.clientUrl);
-        return this.http.get<any>(url, {}, this.options);
+        const queryParams = itemsPerPage ? { itemsPerPage } : {};
+        return this.http.get<any>(url, queryParams, this.options);
     }
     public createPermission(
         name: string,

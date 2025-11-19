@@ -10,6 +10,7 @@ import { UiComponentsSearchModule } from '@proxy/ui/search';
 import { UiDateRangePickerModule } from '@proxy/date-range-picker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { ServicesProxyLogsModule } from '@proxy/services/proxy/logs';
 import { UiNoRecordFoundModule } from '@proxy/ui/no-record-found';
 import { DirectivesRemoveCharacterDirectiveModule } from '@proxy/directives/RemoveCharacterDirective';
@@ -59,6 +60,7 @@ const routes: Routes = [
         UiConfirmDialogModule,
         MatIconModule,
         MatTableModule,
+        MatPaginatorModule,
         UiDateRangePickerModule,
         ServicesProxyLogsModule,
         UiNoRecordFoundModule,
