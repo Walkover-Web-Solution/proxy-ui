@@ -527,7 +527,33 @@
                     }
                 "
             ></ng-container>
+            <ng-container *ngIf="isEditMode">
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: featureForm.get('authorizationDetails.theme'),
+                            fieldConfig: {
+                                label: 'Theme',
+                                type: featureFieldType.Select,
+                                source: ['system', 'light', 'dark']
+                            }
+                        }
+                    "
+                ></ng-container>
+            </ng-container>
+            <ng-container *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="mat-body-2">Are you a new user? Create account : </span>
+                    <mat-slide-toggle
+                        [formControl]="featureForm.get('authorizationDetails.allowNewUserRegistration')"
+                        color="primary"
+                    >
+                    </mat-slide-toggle>
+                </div>
+            </ng-container>
         </div>
+
         <div class="d-flex flex-column w-50">
             <div
                 class="overflow-auto code-snippet-view position-relative rounded-4"

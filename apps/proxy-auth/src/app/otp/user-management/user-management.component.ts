@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild, TemplateRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -22,6 +22,7 @@ import {
 } from '../store/selectors';
 import { isEqual } from 'lodash';
 import { UserData, Role } from '../model/otp';
+import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 
 @Component({
     selector: 'proxy-user-management',
@@ -131,7 +132,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             name: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
             mobileNumber: ['', [Validators.pattern(/^(\+?[1-9]\d{1,14}|[0-9]{10})$/)]],
-            role: ['', Validators.required],
+            role: [''],
             permission: [[]],
         });
 
@@ -290,10 +291,28 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     public deleteUser(user: UserData, index: number): void {
-        if (confirm(`Are you sure you want to delete ${user.name}?`)) {
-            this.userData.splice(index, 1);
-            this.applyFilter(); // Reapply filter after deletion
-        }
+        const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+            width: '400px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
+        });
+
+        const componentInstance = dialogRef.componentInstance;
+        componentInstance.title = 'Delete User';
+        componentInstance.confirmationMessage = `Are you sure you want to delete ${user.name}?`;
+        componentInstance.confirmButtonText = 'Delete';
+        componentInstance.cancelButtonText = 'Cancel';
+        componentInstance.confirmButtonColor = '';
+        componentInstance.confirmButtonClass = 'mat-flat-button btn-danger';
+
+        dialogRef.afterClosed().subscribe((action) => {
+            if (action === 'yes') {
+                // Remove user from local array
+                this.userData.splice(index, 1);
+                this.applyFilter(); // Reapply filter after deletion
+                // TODO: Add API call to delete user from backend
+                // this.store.dispatch(otpActions.deleteUser({ userId: user.userId, authToken: this.userToken }));
+            }
+        });
     }
 
     public getPermissionsTooltip(user: UserData): string {

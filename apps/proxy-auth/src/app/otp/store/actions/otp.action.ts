@@ -9,7 +9,10 @@ export const getWidgetData = createAction(
     '[Auth] Get Widget Data',
     props<{ referenceId: string; payload?: { [key: string]: any } }>()
 );
-export const getWidgetDataComplete = createAction('[OTP] Get Widget Data Complete', props<{ response: any }>());
+export const getWidgetDataComplete = createAction(
+    '[OTP] Get Widget Data Complete',
+    props<{ response: any; theme: any }>()
+);
 export const getWidgetDataError = createAction(
     '[OTP] Get Widget Data Error',
     props<{ errors: string[]; errorResponse: any }>()

@@ -27,6 +27,7 @@ export const selectApiErrorResponse = createSelector(selectRootState, (p) => p.a
 export const closeWidgetApiFailed = createSelector(selectRootState, (p) => p.closeWidgetApiFailed);
 
 export const selectWidgetData = createSelector(selectRootState, (p) => p.widgetData);
+export const selectWidgetTheme = createSelector(selectRootState, (p) => p.theme);
 export const getUserProfileData = createSelector(selectRootState, (p) => p.userProfileData);
 export const getUserProfileSuccess = createSelector(selectRootState, (p) => p.userDetailsSuccess);
 export const getUserProfileInProcess = createSelector(selectRootState, (p) => p.userProfileDataInProcess);

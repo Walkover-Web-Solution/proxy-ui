@@ -33,6 +33,7 @@ export class OtpEffects {
                                         true
                                     )
                                 ),
+                                theme: res?.data,
                             });
                         }
                     }),

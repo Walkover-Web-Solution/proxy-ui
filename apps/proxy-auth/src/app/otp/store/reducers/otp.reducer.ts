@@ -24,6 +24,7 @@ export interface IOtpState {
     closeWidgetApiFailed: boolean;
 
     widgetData: any;
+    theme: any;
 
     userProfileData: any;
     userProfileDataInProcess: boolean;
@@ -106,6 +107,7 @@ export const initialState: IOtpState = {
     closeWidgetApiFailed: false,
 
     widgetData: null,
+    theme: null,
     userProfileData: null,
     userProfileDataInProcess: false,
     userDetailsSuccess: false,
@@ -304,10 +306,11 @@ const _otpReducer = createReducer(
             closeWidgetApiFailed: false,
         };
     }),
-    on(otpActions.getWidgetDataComplete, (state, { response }) => {
+    on(otpActions.getWidgetDataComplete, (state, { response, theme }) => {
         return {
             ...state,
             widgetData: response,
+            theme: theme,
             widgetDataInProcess: false,
             widgetDataSuccess: true,
             closeWidgetApiFailed: false,
