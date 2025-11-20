@@ -39,16 +39,6 @@ export class ManagementComponent implements OnInit, OnDestroy {
     public rolesPageSize: number = 25;
     public permissionsPageSize: number = 25;
     public pageSizeOptions: number[] = [25, 50, 100, 1000];
-    public features$: Observable<IPaginatedResponse<IFeature[]>> = this.featureComponentStore.feature$;
-    public roles$: Observable<IPaginatedResponse<any[]>> = this.userComponentStore.roles$;
-    public createRole$: Observable<any> = this.userComponentStore.createRole$;
-    public updateRole$: Observable<any> = this.userComponentStore.updateRole$;
-    public deleteRole$: Observable<any> = this.userComponentStore.deleteRole$;
-    public permissions$: Observable<IPaginatedResponse<any[]>> = this.userComponentStore.permissions$;
-    public createPermission$: Observable<any> = this.userComponentStore.createPermission$;
-    public deletePermission$: Observable<any> = this.userComponentStore.deletePermission$;
-    public updatePermission$: Observable<any> = this.userComponentStore.updatePermission$;
-    public featureDetails$: Observable<any> = this.userComponentStore.featureDetails$;
     public features: IFeature[] = [];
     public featureDetails: any;
     public rolesDisplayedColumns: string[] = ['role', 'permissions', 'actions'];
@@ -65,6 +55,16 @@ export class ManagementComponent implements OnInit, OnDestroy {
     public editingRole: IRole | null = null;
     public isEditPermissionMode: boolean = false;
     public editingPermission: any | null = null;
+    public features$: Observable<IPaginatedResponse<IFeature[]>> = this.featureComponentStore.feature$;
+    public roles$: Observable<IPaginatedResponse<any[]>> = this.userComponentStore.roles$;
+    public createRole$: Observable<any> = this.userComponentStore.createRole$;
+    public updateRole$: Observable<any> = this.userComponentStore.updateRole$;
+    public deleteRole$: Observable<any> = this.userComponentStore.deleteRole$;
+    public permissions$: Observable<IPaginatedResponse<any[]>> = this.userComponentStore.permissions$;
+    public createPermission$: Observable<any> = this.userComponentStore.createPermission$;
+    public deletePermission$: Observable<any> = this.userComponentStore.deletePermission$;
+    public updatePermission$: Observable<any> = this.userComponentStore.updatePermission$;
+    public featureDetails$: Observable<any> = this.userComponentStore.featureDetails$;
 
     @ViewChild('addRoleDialogTemplate', { static: false }) addRoleDialogTemplate: TemplateRef<any>;
     @ViewChild('addPermissionDialogTemplate', { static: false }) addPermissionDialogTemplate: TemplateRef<any>;
@@ -274,9 +274,6 @@ export class ManagementComponent implements OnInit, OnDestroy {
             autoFocus: false,
             restoreFocus: false,
         });
-
-        // Set permissions after dialog opens to ensure availablePermissions is loaded
-        // Only select permissions that match the role's permissionsList
         setTimeout(() => {
             const selectedPermissions = this.availablePermissions
                 .filter((perm: any) => permissionNames.includes(perm.name))
