@@ -137,19 +137,27 @@
                                 </td>
                             </ng-container>
 
-                            <!-- <ng-container matColumnDef="role">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Role</th>
-                                <td mat-cell *matCellDef="let element" data-label="Role">
-                                    <ng-container *ngIf="!loading.dataLoading; else loadingRef">asdfh
+                            <ng-container matColumnDef="details">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                                <td mat-cell *matCellDef="let element" data-label="Details">
+                                    <ng-container *ngIf="!loading.dataLoading; else loadingRef">
+                                        <div class="details-action">
+                                            <button mat-stroked-button color="primary" (click)="viewDetails(element)">
+                                                Details
+                                            </button>
+                                        </div>
                                     </ng-container>
                                 </td>
-                            </ng-container> -->
+                            </ng-container>
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                             <tr
                                 mat-row
                                 *matRowDef="let row; columns: displayedColumns; let i = index"
-                                [ngClass]="{ 'last-child': i + 1 === ((users$ | async)?.itemsPerPage || 25) }"
+                                [ngClass]="{
+                                    'last-child': i + 1 === ((users$ | async)?.itemsPerPage || 25),
+                                    'hover-action': true
+                                }"
                             ></tr>
 
                             <tr *matNoDataRow>

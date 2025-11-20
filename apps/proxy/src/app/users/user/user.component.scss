@@ -1,0 +1,12 @@
+.hover-action {
+    .details-action {
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    &:hover {
+        .details-action {
+            opacity: 1;
+        }
+    }
+}

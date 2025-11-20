@@ -28,6 +28,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
 import { ManagementComponent } from './management/management.component';
+import { UserDetailsDialogComponent } from './user/user-details-dialog/user-details-dialog.component';
 
 // Components
 const routes: Routes = [
@@ -40,7 +41,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [UserComponent, ManagementComponent],
+    declarations: [UserComponent, ManagementComponent, UserDetailsDialogComponent],
     imports: [
         FormsModule,
         CommonModule,

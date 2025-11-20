@@ -19,6 +19,8 @@ import { FeatureComponentStore } from '../../features/feature/feature.store';
 import { IFeature } from '@proxy/models/features-model';
 import { takeUntil } from 'rxjs/operators';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { UserDetailsDialogComponent } from './user-details-dialog/user-details-dialog.component';
 
 @Component({
     selector: 'proxy-users',
@@ -34,7 +36,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     /** Store User data */
     public users$: Observable<IPaginatedResponse<IUser[]>> = this.componentStore.users$;
     /** Store display column */
-    public displayedColumns: string[] = ['name', 'email', 'phone_number', 'created_at'];
+    public displayedColumns: string[] = ['name', 'email', 'phone_number', 'created_at', 'details'];
     /** Store params for fetching feature data */
     public params: any = {};
     /** Store default selected date range */
@@ -62,7 +64,13 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     //     endDate: DEFAULT_END_DATE,
     // };
 
-    constructor(private componentStore: UserComponentStore, private featureComponentStore: FeatureComponentStore) {
+    private userDetailsDialogRef: MatDialogRef<UserDetailsDialogComponent>;
+
+    constructor(
+        private componentStore: UserComponentStore,
+        private featureComponentStore: FeatureComponentStore,
+        private dialog: MatDialog
+    ) {
         super();
     }
     ngOnInit(): void {
@@ -90,6 +98,11 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     }
 
     public ngOnDestroy(): void {
+        // Close dialog if open when component is destroyed
+        if (this.userDetailsDialogRef) {
+            this.userDetailsDialogRef.close();
+            this.userDetailsDialogRef = null;
+        }
         super.ngOnDestroy();
     }
 
@@ -199,5 +212,27 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
      */
     public getUsers(): void {
         this.componentStore.getUsers({ ...this.params });
+    }
+
+    /**
+     * View User Details
+     * @param user
+     */
+    public viewDetails(user: IUser): void {
+        if (!this.userDetailsDialogRef) {
+            this.userDetailsDialogRef = this.dialog.open(UserDetailsDialogComponent, {
+                panelClass: ['mat-right-dialog', 'mat-dialog-lg'],
+                data: {
+                    user: user,
+                },
+                autoFocus: false,
+                hasBackdrop: false,
+                enterAnimationDuration: '0ms',
+                exitAnimationDuration: '0ms',
+            });
+            this.userDetailsDialogRef.afterClosed().subscribe(() => {
+                this.userDetailsDialogRef = null;
+            });
+        }
     }
 }
