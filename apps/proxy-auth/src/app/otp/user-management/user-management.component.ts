@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild, TemplateRef, AfterViewInit, ViewEn
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { select, Store } from '@ngrx/store';
 import { IAppState } from '../store/app.state';
@@ -710,10 +710,20 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
     public getCompanyUsers(): void {
-        this.store.dispatch(otpActions.getCompanyUsers({ authToken: this.userToken }));
+        const pageSize = this.paginator?.pageSize || 1000;
+        this.store.dispatch(otpActions.getCompanyUsers({ authToken: this.userToken, itemsPerPage: pageSize }));
+    }
+
+    public onUsersPageChange(event: PageEvent): void {
+        this.store.dispatch(otpActions.getCompanyUsers({ authToken: this.userToken, itemsPerPage: event.pageSize }));
     }
     public getRoles(): void {
-        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken }));
+        const pageSize = this.rolesPaginator?.pageSize || 1000;
+        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken, itemsPerPage: pageSize }));
+    }
+
+    public onRolesPageChange(event: PageEvent): void {
+        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken, itemsPerPage: event.pageSize }));
     }
     public getPermissions(): void {
         this.store.dispatch(otpActions.getPermissions({ authToken: this.userToken }));
