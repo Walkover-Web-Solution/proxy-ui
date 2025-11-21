@@ -1,6 +1,15 @@
-import { Component, Input, OnInit, ViewChild, TemplateRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    Input,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+    TemplateRef,
+    AfterViewInit,
+    ViewEncapsulation,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -12,6 +21,7 @@ import { distinctUntilChanged, Observable, takeUntil } from 'rxjs';
 import {
     addUserData,
     companyUsersData,
+    deleteUserData,
     permissionCreateData,
     permissionData,
     roleCreateData,
@@ -22,13 +32,14 @@ import {
 } from '../store/selectors';
 import { isEqual } from 'lodash';
 import { UserData, Role } from '../model/otp';
+import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 
 @Component({
     selector: 'proxy-user-management',
     templateUrl: './user-management.component.html',
     styleUrls: ['./user-management.component.scss'],
 })
-export class UserManagementComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class UserManagementComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() public userToken: string;
     @Input() public pass: string;
     @Input() public theme: string;
@@ -51,6 +62,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public updateCompanyUserData$: Observable<any>;
     public updatePermissionData$: Observable<any>;
     public updateRoleData$: Observable<any>;
+    public deleteUserData$: Observable<any>;
     public roles: any[] = [];
     public permissions: any[] = [];
     public displayedColumns: string[] = ['name', 'email', 'role'];
@@ -82,7 +94,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public currentEditingUser: UserData | null = null;
     public currentEditingPermission: UserData | null = null;
     public userData: any[] = [];
-
+    public userId: any;
+    public canRemoveUser: boolean = false;
     constructor(private fb: FormBuilder, private dialog: MatDialog, private store: Store<IAppState>) {
         super();
         this.getRoles$ = this.store.pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
@@ -131,7 +144,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             name: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
             mobileNumber: ['', [Validators.pattern(/^(\+?[1-9]\d{1,14}|[0-9]{10})$/)]],
-            role: ['', Validators.required],
+            role: [''],
             permission: [[]],
         });
 
@@ -166,6 +179,11 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             permission: ['', Validators.required],
             description: [''],
         });
+        this.deleteUserData$ = this.store.pipe(
+            select(deleteUserData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
     }
 
     ngOnInit(): void {
@@ -185,6 +203,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         });
         this.getCompanyUsers$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
+                this.canRemoveUser = res.data?.permissionToRemoveUser;
                 this.userData = res.data?.users;
                 this.dataSource.data = this.userData;
             }
@@ -261,6 +280,18 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.dataSource.sort = this.sort;
         this.rolesDataSource.paginator = this.rolesPaginator;
         this.permissionsDataSource.paginator = this.permissionsPaginator;
+
+        // Set up observer to detect paginator select opens
+        this.setupPaginatorSelectObserver();
+    }
+
+    ngOnDestroy(): void {
+        // Clean up the paginator select observer
+        if ((this as any)._paginatorSelectObserver) {
+            (this as any)._paginatorSelectObserver.disconnect();
+            (this as any)._paginatorSelectObserver = null;
+        }
+        super.ngOnDestroy();
     }
 
     public editUser(user: UserData, index: number): void {
@@ -289,11 +320,26 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         });
     }
 
-    public deleteUser(user: UserData, index: number): void {
-        if (confirm(`Are you sure you want to delete ${user.name}?`)) {
-            this.userData.splice(index, 1);
-            this.applyFilter(); // Reapply filter after deletion
-        }
+    public deleteUser(user: any, index: number): void {
+        const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+            width: '400px',
+            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
+        });
+
+        const componentInstance = dialogRef.componentInstance;
+        componentInstance.title = 'Delete User';
+        componentInstance.confirmationMessage = `Are you sure you want to delete ${user.name}?`;
+        componentInstance.confirmButtonText = 'Delete';
+        componentInstance.cancelButtonText = 'Cancel';
+        componentInstance.confirmButtonColor = '';
+        componentInstance.confirmButtonClass = 'mat-flat-button btn-danger';
+
+        dialogRef.afterClosed().subscribe((action) => {
+            if (action === 'yes') {
+                this.store.dispatch(otpActions.deleteUser({ companyId: user.user_id, authToken: this.userToken }));
+                this.getCompanyUsers();
+            }
+        });
     }
 
     public getPermissionsTooltip(user: UserData): string {
@@ -514,23 +560,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
         const isExpanded = this.expandedRoles[role.id] || false;
         return isExpanded ? role.c_permissions : role.c_permissions.slice(0, 3);
-    }
-
-    public getRemainingPermissionsCount(role: any): number {
-        if (!role || !role.c_permissions || role.c_permissions.length <= 3) {
-            return 0;
-        }
-        return role.c_permissions.length - 3;
-    }
-
-    public isRoleExpanded(roleId: number): boolean {
-        return this.expandedRoles[roleId] || false;
-    }
-
-    public toggleRoleExpansion(roleId: number, event: Event): void {
-        event.stopPropagation();
-        event.preventDefault();
-        this.expandedRoles[roleId] = !this.expandedRoles[roleId];
     }
 
     public getDefaultPermissions(role: string): string[] {
@@ -954,6 +983,99 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                     pane.classList.remove('permission-select-panel');
                 }
             });
+        }
+    }
+
+    private setupPaginatorSelectObserver(): void {
+        const overlayContainer = document.querySelector('.cdk-overlay-container');
+        if (overlayContainer) {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1) {
+                            const element = node as Element;
+                            // Check if this is a bounding-box that was just added
+                            if (element.classList.contains('cdk-overlay-connected-position-bounding-box')) {
+                                this.checkAndMarkPaginatorSelect(element);
+                            } else {
+                                // Check if bounding-box was added inside this element
+                                const boundingBox = element.querySelector(
+                                    '.cdk-overlay-connected-position-bounding-box'
+                                );
+                                if (boundingBox) {
+                                    this.checkAndMarkPaginatorSelect(boundingBox);
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+
+            observer.observe(overlayContainer, {
+                childList: true,
+                subtree: true,
+            });
+
+            // Store observer for cleanup
+            (this as any)._paginatorSelectObserver = observer;
+        }
+    }
+
+    private checkAndMarkPaginatorSelect(box: Element): void {
+        const selectPanel = box.querySelector('.mat-select-panel');
+
+        if (selectPanel) {
+            // Check if it's a permission-select-panel (has panelClass="permission-select-panel")
+            const hasPermissionPanel = selectPanel.classList.contains('permission-select-panel');
+
+            if (hasPermissionPanel) {
+                // Mark as permission select for height: auto
+                if (!box.classList.contains('permission-select-bounding-box')) {
+                    box.classList.add('permission-select-bounding-box');
+                }
+            } else {
+                // If not a permission panel, check if it's from a paginator
+                const paginators = document.querySelectorAll('mat-paginator');
+                let isFromPaginator = false;
+
+                paginators.forEach((paginator) => {
+                    // Check all possible ways to identify paginator selects
+                    const selectTrigger = paginator.querySelector('.mat-select-trigger');
+                    const pageSizeSelect = paginator.querySelector('.mat-paginator-page-size mat-select');
+
+                    if (selectTrigger || pageSizeSelect) {
+                        const trigger = selectTrigger || pageSizeSelect;
+                        if (trigger) {
+                            const ariaOwns = trigger.getAttribute('aria-owns');
+
+                            // Check if this panel matches the paginator's select
+                            if (ariaOwns && selectPanel.id) {
+                                if (
+                                    selectPanel.id === ariaOwns ||
+                                    selectPanel.id.includes(ariaOwns) ||
+                                    ariaOwns.includes(selectPanel.id)
+                                ) {
+                                    isFromPaginator = true;
+                                }
+                            }
+
+                            // Also check by looking at the parent structure
+                            if (!isFromPaginator) {
+                                const pageSizeElement = paginator.querySelector('.mat-paginator-page-size');
+                                if (pageSizeElement && pageSizeElement.contains(trigger as Node)) {
+                                    // This is likely a paginator select
+                                    isFromPaginator = true;
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Add class immediately if it's from paginator
+                if (isFromPaginator && !box.classList.contains('paginator-select-bounding-box')) {
+                    box.classList.add('paginator-select-bounding-box');
+                }
+            }
         }
     }
 }

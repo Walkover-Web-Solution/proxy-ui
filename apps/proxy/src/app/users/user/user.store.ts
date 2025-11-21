@@ -5,6 +5,8 @@ import { IUser, IUserReq } from '@proxy/models/users-model';
 import { UsersService } from '@proxy/services/proxy/users';
 import { BaseResponse, IPaginatedResponse, errorResolver } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
+import { FeaturesService } from '@proxy/services/proxy/features';
+import { IFeature } from '@proxy/models/features-model';
 
 export interface IUserInitialState {
     users: IPaginatedResponse<IUser[]>;
@@ -16,11 +18,17 @@ export interface IUserInitialState {
     createPermission: any;
     deletePermission: any;
     updatePermission: any;
+    featureDetails: any;
+    createUpdateObject: IFeature;
     isLoading: boolean;
 }
 @Injectable()
 export class UserComponentStore extends ComponentStore<IUserInitialState> {
-    constructor(private service: UsersService, private toast: PrimeNgToastService) {
+    constructor(
+        private service: UsersService,
+        private featureService: FeaturesService,
+        private toast: PrimeNgToastService
+    ) {
         super({
             users: null,
             roles: null,
@@ -31,6 +39,8 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
             createPermission: null,
             deletePermission: null,
             updatePermission: null,
+            featureDetails: null,
+            createUpdateObject: null,
             isLoading: false,
         });
     }
@@ -49,6 +59,8 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
     readonly createPermission$: Observable<any> = this.select((state) => state.createPermission);
     readonly deletePermission$: Observable<any> = this.select((state) => state.deletePermission);
     readonly updatePermission$: Observable<any> = this.select((state) => state.updatePermission);
+    readonly featureDetails$: Observable<any> = this.select((state) => state.featureDetails);
+    readonly createUpdateObject$: Observable<IFeature> = this.select((state) => state.createUpdateObject);
     /** Get users data */
     readonly getUsers = this.effect((data: Observable<IUserReq>) => {
         return data.pipe(
@@ -329,6 +341,55 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
                             return this.patchState({
                                 isLoading: false,
                             });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly getFeatureDetails = this.effect((data: Observable<any>) => {
+        return data.pipe(
+            switchMap((payload) => {
+                return this.featureService.getFeatureDetails(payload).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            return this.patchState({
+                                featureDetails: res?.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error?.errors);
+                            return this.patchState({
+                                featureDetails: null,
+                            });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly updateFeature = this.effect((data: Observable<{ id: string | number; body: { [key: string]: any } }>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.featureService.updateFeature(req.id, req.body).pipe(
+                    tapResponse(
+                        (res: BaseResponse<IFeature, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            this.toast.success('Feature updated successfully');
+                            return this.patchState({
+                                isLoading: false,
+                                createUpdateObject: res.data,
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
                         }
                     ),
                     catchError((err) => EMPTY)

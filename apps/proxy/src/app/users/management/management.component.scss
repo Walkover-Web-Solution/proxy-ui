@@ -4,6 +4,8 @@
         transition: opacity 0.2s ease-in-out;
         display: flex;
         gap: 12px;
+        justify-content: flex-end;
+        margin-left: auto;
     }
 
     &:hover {
@@ -11,6 +13,19 @@
             opacity: 1;
         }
     }
+}
+
+// Align actions to right for permissions table as well
+.actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+// Add small right padding to action cells
+td[data-label='Actions'] {
+    padding-right: 16px !important;
 }
 
 .permissions-list {
