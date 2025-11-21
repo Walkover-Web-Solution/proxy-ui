@@ -458,7 +458,7 @@
 
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Role</mat-label>
-                    <mat-select formControlName="role" panelClass="role-select-panel">
+                    <mat-select formControlName="role" panelClass="permission-select-panel">
                         <mat-option *ngFor="let role of roles" [value]="role.id">
                             <div class="role-option-content">
                                 <div class="role-name">{{ role.name }}</div>
