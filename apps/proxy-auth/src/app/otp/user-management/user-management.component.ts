@@ -318,6 +318,22 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
+
+        // Add body class for dark theme select panel styling
+        if (this.theme === 'dark') {
+            document.body.classList.add('dark-dialog-open');
+            this.addUserDialogRef.afterClosed().subscribe(() => {
+                document.body.classList.remove('dark-dialog-open');
+            });
+        }
+
+        // Add body class for dark theme select panel styling
+        if (this.theme === 'dark') {
+            document.body.classList.add('dark-dialog-open');
+            this.addUserDialogRef.afterClosed().subscribe(() => {
+                document.body.classList.remove('dark-dialog-open');
+            });
+        }
     }
 
     public deleteUser(user: any, index: number): void {
@@ -473,12 +489,38 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
             disableClose: true,
         });
+
+        // Add body class for dark theme select panel styling
+        if (this.theme === 'dark') {
+            document.body.classList.add('dark-dialog-open');
+            this.addUserDialogRef.afterClosed().subscribe(() => {
+                document.body.classList.remove('dark-dialog-open');
+            });
+        }
+
+        // Add body class for dark theme select panel styling
+        if (this.theme === 'dark') {
+            document.body.classList.add('dark-dialog-open');
+            this.addUserDialogRef.afterClosed().subscribe(() => {
+                document.body.classList.remove('dark-dialog-open');
+            });
+        }
+
+        // Add body class for dark theme select panel styling
+        if (this.theme === 'dark') {
+            document.body.classList.add('dark-dialog-open');
+            this.addUserDialogRef.afterClosed().subscribe(() => {
+                document.body.classList.remove('dark-dialog-open');
+            });
+        }
     }
 
     public closeDialog(): void {
         if (this.addUserDialogRef) {
             this.addUserDialogRef.close();
         }
+        // Remove body class when dialog closes
+        document.body.classList.remove('dark-dialog-open');
         // Reset all edit flags
         this.isEditUser = false;
         this.isEditRole = false;
