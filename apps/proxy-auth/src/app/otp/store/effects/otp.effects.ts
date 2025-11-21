@@ -563,4 +563,31 @@ export class OtpEffects {
             })
         )
     );
+
+    deleteUser$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.deleteUser),
+            switchMap(({ companyId, authToken }) => {
+                return this.otpService.deleteUser(companyId, authToken).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.deleteUserComplete({ response: res });
+                        }
+                        return otpActions.deleteUserError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.deleteUserError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
 }

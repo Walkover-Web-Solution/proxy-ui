@@ -87,4 +87,8 @@ export const upgradeSubscriptionDataInProcess = createSelector(
 );
 export const upgradeSubscriptionDataSuccess = createSelector(selectRootState, (p) => p.upgradeSubscriptionDataSuccess);
 
+export const deleteUserData = createSelector(selectRootState, (p) => p.deleteUserData);
+export const deleteUserDataInProcess = createSelector(selectRootState, (p) => p.deleteUserDataInProcess);
+export const deleteUserDataSuccess = createSelector(selectRootState, (p) => p.deleteUserDataSuccess);
+
 export const error = createSelector(selectRootState, (p) => p.error);

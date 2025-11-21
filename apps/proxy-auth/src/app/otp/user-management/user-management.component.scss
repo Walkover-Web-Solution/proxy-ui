@@ -1064,8 +1064,17 @@ td {
         height: auto !important; // Ensure proper z-index stacking
     }
 
-    .cdk-overlay-connected-position-bounding-box {
+    // Apply height: auto only to permission selects (for dialogs)
+    .cdk-overlay-connected-position-bounding-box.permission-select-bounding-box,
+    .cdk-overlay-connected-position-bounding-box:has(.mat-select-panel.permission-select-panel) {
         height: auto !important;
+    }
+
+    // Explicitly ensure paginator selects never get height: auto
+    .cdk-overlay-connected-position-bounding-box.paginator-select-bounding-box {
+        height: unset !important;
+        min-height: unset !important;
+        max-height: unset !important;
     }
     // Fallback for all mat-select panels
     .mat-select-panel {

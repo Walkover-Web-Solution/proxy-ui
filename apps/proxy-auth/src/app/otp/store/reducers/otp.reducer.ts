@@ -82,6 +82,10 @@ export interface IOtpState {
     upgradeSubscriptionDataInProcess: boolean;
     upgradeSubscriptionDataSuccess: boolean;
 
+    deleteUserData: any;
+    deleteUserDataInProcess: boolean;
+    deleteUserDataSuccess: boolean;
+
     error: any;
 }
 
@@ -163,6 +167,10 @@ export const initialState: IOtpState = {
     upgradeSubscriptionData: null,
     upgradeSubscriptionDataInProcess: false,
     upgradeSubscriptionDataSuccess: false,
+
+    deleteUserData: null,
+    deleteUserDataInProcess: false,
+    deleteUserDataSuccess: false,
 
     error: null,
 };
@@ -632,6 +640,25 @@ const _otpReducer = createReducer(
         ...state,
         subscriptionPlansDataInProcess: false,
         subscriptionPlansDataSuccess: false,
+        errors: errors,
+        apiErrorResponse: errorResponse,
+    })),
+    on(otpActions.deleteUser, (state, { companyId }) => ({
+        ...state,
+        deleteUserDataInProcess: true,
+        deleteUserDataSuccess: false,
+        errors: null,
+    })),
+    on(otpActions.deleteUserComplete, (state, { response }) => ({
+        ...state,
+        deleteUserData: response,
+        deleteUserDataInProcess: false,
+        deleteUserDataSuccess: true,
+    })),
+    on(otpActions.deleteUserError, (state, { errors, errorResponse }) => ({
+        ...state,
+        deleteUserDataInProcess: false,
+        deleteUserDataSuccess: false,
         errors: errors,
         apiErrorResponse: errorResponse,
     }))

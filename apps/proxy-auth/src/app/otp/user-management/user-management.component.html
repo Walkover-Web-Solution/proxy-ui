@@ -57,7 +57,7 @@
                             </div>
                             <div class="user-info">
                                 <div class="user-name">{{ user.name }}</div>
-                                <div class="user-email" [matTooltip]="user.email" matTooltipPosition="above">
+                                <div class="user-email" matTooltipPosition="above">
                                     {{ user.email }}
                                 </div>
                             </div>
@@ -93,7 +93,12 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <button mat-icon-button (click)="deleteUser(user, i)" matTooltip="Delete">
+                                <button
+                                    *ngIf="canRemoveUser"
+                                    mat-icon-button
+                                    (click)="deleteUser(user, i)"
+                                    matTooltip="Delete"
+                                >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         height="24px"
@@ -457,28 +462,9 @@
                         <mat-option *ngFor="let role of roles" [value]="role.id">
                             <div class="role-option-content">
                                 <div class="role-name">{{ role.name }}</div>
-                                <div
-                                    class="role-permissions"
-                                    *ngIf="role.c_permissions && role.c_permissions.length > 0"
-                                >
-                                    <span *ngFor="let permission of getVisiblePermissions(role)" class="permission-tag">
-                                        {{ permission.name }}
-                                    </span>
-                                    <span
-                                        *ngIf="getRemainingPermissionsCount(role) > 0 && !isRoleExpanded(role.id)"
-                                        class="expand-permissions-btn"
-                                        (click)="toggleRoleExpansion(role.id, $event)"
-                                    >
-                                        +{{ getRemainingPermissionsCount(role) }}
-                                    </span>
-                                    <span
-                                        *ngIf="isRoleExpanded(role.id)"
-                                        class="expand-permissions-btn view-less-btn"
-                                        (click)="toggleRoleExpansion(role.id, $event)"
-                                    >
-                                        View Less
-                                    </span>
-                                </div>
+                                <span>
+                                    {{ role.description }}
+                                </span>
                             </div>
                         </mat-option>
                     </mat-select>

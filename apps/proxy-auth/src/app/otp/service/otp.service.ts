@@ -203,4 +203,9 @@ export class OtpService {
         const url = otpVerificationUrls.upgradeSubscription(this.clientUrl).replace(':referenceId', referenceId);
         return this.http.post<any>(url, payload, this.options);
     }
+    public deleteUser(companyId: any, authToken: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+        this.options.headers['proxy_auth_token'] = authToken;
+        const url = otpVerificationUrls.deleteUser(this.clientUrl).replace(':id', companyId);
+        return this.http.delete<any>(url, {}, this.options);
+    }
 }

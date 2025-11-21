@@ -155,3 +155,10 @@ export const upgradeSubscriptionError = createAction(
     '[OTP] Upgrade Subscription Error',
     props<{ errors: string[]; errorResponse: any }>()
 );
+
+export const deleteUser = createAction('[OTP] Delete User', props<{ companyId: any; authToken: string }>());
+export const deleteUserComplete = createAction('[OTP] Delete User Complete', props<{ response: any }>());
+export const deleteUserError = createAction(
+    '[OTP] Delete User Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
