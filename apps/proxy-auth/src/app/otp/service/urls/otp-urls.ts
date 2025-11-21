@@ -21,4 +21,5 @@ export const otpVerificationUrls = {
     updateRole: (baseUrl) => createUrl(baseUrl, 'c/roles/:id'),
     getSubscriptionPlans: (baseUrl) => createUrl(baseUrl, 'subscription/:referenceId/getSnippetsData'),
     upgradeSubscription: (baseUrl) => createUrl(baseUrl, 'subscription/:referenceId/subscribe'),
+    deleteUser: (baseUrl) => createUrl(baseUrl, 'c/removeUser/:id'),
 };

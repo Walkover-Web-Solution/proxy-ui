@@ -16,6 +16,7 @@ interface IRole {
     role: string;
     permissions: string;
     permissionsList: any[];
+    description?: string;
 }
 
 @Component({
@@ -27,6 +28,7 @@ interface IRole {
 export class ManagementComponent implements OnInit, OnDestroy {
     public roleForm = new FormGroup({
         feature_id: new FormControl<string>(null, [Validators.required]),
+        id: new FormControl<number>(null),
     });
     public params: any = {
         itemsPerPage: 1000,
@@ -37,6 +39,22 @@ export class ManagementComponent implements OnInit, OnDestroy {
     public rolesPageSize: number = 25;
     public permissionsPageSize: number = 25;
     public pageSizeOptions: number[] = [25, 50, 100, 1000];
+    public features: IFeature[] = [];
+    public featureDetails: any;
+    public rolesDisplayedColumns: string[] = ['role', 'permissions', 'actions'];
+    public rolesDataSource = new MatTableDataSource<IRole>([]);
+    public permissionsDisplayedColumns: string[] = ['permission', 'actions'];
+    public permissionsDataSource = new MatTableDataSource<any>([]);
+    public availablePermissions: any[] = [];
+    public dialogRoleForm: FormGroup;
+    public dialogPermissionForm: FormGroup;
+    public defaultRolesForm: FormGroup;
+    private dialogRef: MatDialogRef<any>;
+    private destroy$ = new Subject<void>();
+    public isEditMode: boolean = false;
+    public editingRole: IRole | null = null;
+    public isEditPermissionMode: boolean = false;
+    public editingPermission: any | null = null;
     public features$: Observable<IPaginatedResponse<IFeature[]>> = this.featureComponentStore.feature$;
     public roles$: Observable<IPaginatedResponse<any[]>> = this.userComponentStore.roles$;
     public createRole$: Observable<any> = this.userComponentStore.createRole$;
@@ -46,20 +64,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     public createPermission$: Observable<any> = this.userComponentStore.createPermission$;
     public deletePermission$: Observable<any> = this.userComponentStore.deletePermission$;
     public updatePermission$: Observable<any> = this.userComponentStore.updatePermission$;
-    public features: IFeature[] = [];
-    public rolesDisplayedColumns: string[] = ['role', 'permissions', 'actions'];
-    public rolesDataSource = new MatTableDataSource<IRole>([]);
-    public permissionsDisplayedColumns: string[] = ['permission', 'actions'];
-    public permissionsDataSource = new MatTableDataSource<any>([]);
-    public availablePermissions: any[] = [];
-    public dialogRoleForm: FormGroup;
-    public dialogPermissionForm: FormGroup;
-    private dialogRef: MatDialogRef<any>;
-    private destroy$ = new Subject<void>();
-    public isEditMode: boolean = false;
-    public editingRole: IRole | null = null;
-    public isEditPermissionMode: boolean = false;
-    public editingPermission: any | null = null;
+    public featureDetails$: Observable<any> = this.userComponentStore.featureDetails$;
 
     @ViewChild('addRoleDialogTemplate', { static: false }) addRoleDialogTemplate: TemplateRef<any>;
     @ViewChild('addPermissionDialogTemplate', { static: false }) addPermissionDialogTemplate: TemplateRef<any>;
@@ -74,10 +79,15 @@ export class ManagementComponent implements OnInit, OnDestroy {
         this.dialogRoleForm = new FormGroup({
             roleName: new FormControl('', [Validators.required]),
             permissions: new FormControl([], []),
+            description: new FormControl('', []),
             is_default: new FormControl(false),
         });
         this.dialogPermissionForm = new FormGroup({
             permissionName: new FormControl('', [Validators.required]),
+        });
+        this.defaultRolesForm = new FormGroup({
+            defaultRoleForCreator: new FormControl('', []),
+            defaultRoleForMember: new FormControl('', []),
         });
     }
 
@@ -102,6 +112,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
                         permissionsList: permissionsList,
                         feature_configuration_id: role.feature_configuration_id,
                         is_default: role.is_default || false,
+                        description: role.description || '',
                     };
                 });
             } else {
@@ -132,15 +143,31 @@ export class ManagementComponent implements OnInit, OnDestroy {
                 }
             }
         });
+        this.userComponentStore.featureDetails$.subscribe((featureDetails) => {
+            this.featureDetails = featureDetails;
+            if (this.featureDetails) {
+                this.defaultRolesForm.patchValue({
+                    defaultRoleForCreator: this.featureDetails.extra_configurations.c_roles.default_creator_role,
+                    defaultRoleForMember: this.featureDetails.extra_configurations.c_roles.default_member_role,
+                });
+            }
+        });
         // Subscribe to feature selection changes
         this.roleForm.get('feature_id')?.valueChanges.subscribe((referenceId: string | null) => {
             if (referenceId) {
+                // Find the selected feature and set its id
+                const selectedFeature = this.features.find((f) => f.reference_id === referenceId);
+                if (selectedFeature) {
+                    this.roleForm.get('id')?.setValue(selectedFeature.id, { emitEvent: false });
+                    this.userComponentStore.getFeatureDetails(of(selectedFeature.id));
+                }
                 // Reset search terms when feature changes
                 this.roleSearchTerm = '';
                 this.permissionSearchTerm = '';
                 this.loadRoles(referenceId, this.roleSearchTerm);
                 this.loadPermissions(referenceId, this.permissionSearchTerm);
             } else {
+                this.roleForm.get('id')?.setValue(null, { emitEvent: false });
                 this.rolesDataSource.data = [];
                 this.roleSearchTerm = '';
                 this.permissionSearchTerm = '';
@@ -238,6 +265,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         this.dialogRoleForm.patchValue({
             roleName: role.role,
             permissions: [],
+            description: role.description || '',
             is_default: (role as any).is_default || false,
         });
 
@@ -246,9 +274,6 @@ export class ManagementComponent implements OnInit, OnDestroy {
             autoFocus: false,
             restoreFocus: false,
         });
-
-        // Set permissions after dialog opens to ensure availablePermissions is loaded
-        // Only select permissions that match the role's permissionsList
         setTimeout(() => {
             const selectedPermissions = this.availablePermissions
                 .filter((perm: any) => permissionNames.includes(perm.name))
@@ -276,6 +301,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         this.dialogRoleForm.reset({
             roleName: '',
             permissions: [],
+            description: '',
             is_default: false,
         });
 
@@ -300,6 +326,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
             const payload: any = {
                 name: formData.roleName,
                 permissions: formData.permissions,
+                description: formData.description || '',
                 referenceId: referenceId,
                 is_default: formData.is_default || false,
             };
@@ -438,6 +465,36 @@ export class ManagementComponent implements OnInit, OnDestroy {
             this.loadPermissions(referenceId, this.permissionSearchTerm);
         }
     }
+    public saveDefaultRoles(): void {
+        if (this.defaultRolesForm.valid) {
+            const formData = this.defaultRolesForm.value;
+
+            const payload: any = {
+                id: this.featureDetails.id,
+                body: {
+                    extra_configurations: {
+                        c_roles: {
+                            default_creator_role: formData.defaultRoleForCreator,
+                            default_member_role: formData.defaultRoleForMember,
+                        },
+                        default_role: {
+                            name: 'Owner',
+                            value: 1,
+                        },
+                    },
+                },
+            };
+            this.userComponentStore.updateFeature(of(payload));
+        }
+    }
+
+    public cancelDefaultRoles(): void {
+        this.defaultRolesForm.reset({
+            defaultRoleForCreator: '',
+            defaultRoleForMember: '',
+        });
+    }
+
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();

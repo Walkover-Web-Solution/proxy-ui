@@ -43,6 +43,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SubscriptionCenterComponent } from './component/subscription-center/subscription-center.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
@@ -82,7 +83,7 @@ export const CHAT_COMPONENTS: any[] = [
         NgHcaptchaModule.forRoot({
             siteKey: environment.hCaptchaSiteKey,
         }),
-        MatDividerModule,
+        UiConfirmDialogModule,
 
         DirectivesRemoveCharacterDirectiveModule,
         EffectsModule.forRoot([OtpEffects]),
