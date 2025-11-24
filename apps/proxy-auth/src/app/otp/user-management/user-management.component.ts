@@ -348,7 +348,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         componentInstance.confirmButtonText = 'Delete';
         componentInstance.cancelButtonText = 'Cancel';
         componentInstance.confirmButtonColor = '';
-        componentInstance.confirmButtonClass = 'mat-flat-button btn-danger';
+        componentInstance.confirmButtonClass = 'mat-flat-button btn-danger confirm-dialog';
 
         dialogRef.afterClosed().subscribe((action) => {
             if (action === 'yes') {

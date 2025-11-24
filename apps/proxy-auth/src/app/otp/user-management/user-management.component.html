@@ -1,4 +1,4 @@
-<div class="container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
+<div #container class="container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
     <div class="members-container">
         <mat-tab-group class="user-management-tabs full-width">
             <!-- Members Tab -->
@@ -65,7 +65,7 @@
                                 <div class="user-role">{{ user.role || 'User' }}</div>
                             </div>
                             <div class="user-actions">
-                                <div (click)="editUser(user, i)">
+                                <div *ngIf="canRemoveUser" (click)="editUser(user, i)">
                                     <div *ngIf="theme !== 'dark'" mat-icon-button>
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -453,7 +453,7 @@
                     <mat-error *ngIf="addUserForm.get('mobileNumber')?.hasError('pattern')">
                         Please enter a valid mobile number with country code
                     </mat-error>
-                    <mat-hint>Note: Please enter mobile number with country code (e.g., 917000221227)</mat-hint>
+                    <mat-hint>Note: Please enter mobile number with country code (e.g., 917***221227)</mat-hint>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
