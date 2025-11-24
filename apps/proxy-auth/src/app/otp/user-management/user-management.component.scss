@@ -23,10 +23,11 @@ body {
         background-color: #c82333 !important;
     }
 }
-// .members-container {
-//     max-width: 600px;
-//     min-width: 550px;
-// }
+
+.confirm-dialog {
+    display: flex;
+    justify-content: end;
+}
 
 .tab-content {
     padding: 0;
