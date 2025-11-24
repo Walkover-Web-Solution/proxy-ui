@@ -1,5 +1,4 @@
 @import url('https://unpkg.com/@angular/material@14.2.7/prebuilt-themes/indigo-pink.css');
-@import '../../../assets/scss/layout/display.scss';
 
 body {
     font-family: Arial, sans-serif;
@@ -25,17 +24,24 @@ body {
     }
 }
 
-.confirm-dialog {
-    display: flex;
-    justify-content: end;
+::ng-deep {
+    proxy-confirm-dialog {
+        .mat-dialog-actions,
+        div[mat-dialog-actions],
+        div.d-flex {
+            display: flex !important;
+            justify-content: flex-end !important;
+        }
+
+        .justify-content-end {
+            justify-content: flex-end !important;
+        }
+    }
 }
 
 .tab-content {
     padding: 0;
     width: 100%;
-}
-.justify-content-end {
-    justify-content: flex-end;
 }
 
 // Permissions table section styling
