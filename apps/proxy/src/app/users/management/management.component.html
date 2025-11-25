@@ -83,7 +83,9 @@
                                         </span>
                                         <span
                                             [matTooltip]="
-                                                !element.feature_configuration_id ? 'Default plan are not editable' : ''
+                                                !element.feature_configuration_id
+                                                    ? 'Default role are not deletable'
+                                                    : ''
                                             "
                                             matTooltipPosition="above"
                                         >
@@ -164,6 +166,7 @@
                                             color="primary"
                                             (click)="editPermission(element)"
                                             class="mat-btn-md"
+                                            [disabled]="element.is_default"
                                         >
                                             <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                                                 >edit</mat-icon
@@ -175,6 +178,7 @@
                                             color="primary"
                                             (click)="deletePermission(element)"
                                             class="mat-btn-md"
+                                            [disabled]="element.is_default"
                                         >
                                             <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                                                 >delete</mat-icon
