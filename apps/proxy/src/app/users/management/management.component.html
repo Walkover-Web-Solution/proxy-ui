@@ -166,6 +166,7 @@
                                             color="primary"
                                             (click)="editPermission(element)"
                                             class="mat-btn-md"
+                                            [disabled]="element.is_default"
                                         >
                                             <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                                                 >edit</mat-icon
@@ -177,6 +178,7 @@
                                             color="primary"
                                             (click)="deletePermission(element)"
                                             class="mat-btn-md"
+                                            [disabled]="element.is_default"
                                         >
                                             <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                                                 >delete</mat-icon
