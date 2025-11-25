@@ -30,9 +30,9 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                 // loginRedirectUrl: 'https://www.google.com',
                 // showCompanyDetails: false,
                 authToken:
-                    'enJqckorNWNuWDFiK1BXRGgzemRUUjRCNlhGRkwzVkFiSTRqYklmWmtlS1VnZXoxWXpldDF5UlRyVmRKekd2VnRnSlg2TjBWOWU1TEdIR3pjUFJzRnhHWExMRi8vL1dZQTJTSG53U0JaZmxVVzIyRXM3RUZBRHlzbi9VclA1dFNOdUEzajQvc25DSU9rSjU2LzdweVdLQUVuUmpyVElMVmpiYjhRSnc5VHFGa1ZNdjFCbUJHcFhoTllQQ2dmTUUxSzh4ZDVJUW5XMGVYVmVLQVE5bGxxUT09',
+                    'NE5VTmNRbFlwWlhqQ2hJNnNlY3p5QXlsRDByc09ibVFLTUhrTSs5Qm5iS0l0Mjh1cDRQVTM3OFBSWUE4ZTdCQ3NmZm01RW44WEdtbWltU2ZEZUs4Q2FvYndSSmRlU1FacVVsNUFQd1NOYzJUTXV0NURvT1lGSTg2R2tLbmJOdXZLT3RyOTFjaUpWRE12Q3h1dm9CdUpoRURMZ3YzMzFDWHk5aXpwRmhvRTQ4Q0o4ejI5YlpkMnpEMlo2Z3RCS2NSOVFyZ2hkMzVRWlZEeUVMbnR2elFUdz09',
                 type: 'user-management',
-                theme: 'dark',
+                theme: 'fark',
                 // isPreview: true,
                 isLogin: true,
                 target: '_self',

@@ -570,10 +570,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                     role: roleName,
                     permissions: this.getDefaultPermissions(roleName),
                 };
-
-                // Add to local array for immediate UI update
-                this.userData = [...this.userData, newUser];
-
                 const payload = {
                     user: {
                         name: newUser.name,

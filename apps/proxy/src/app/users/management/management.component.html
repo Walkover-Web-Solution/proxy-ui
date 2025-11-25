@@ -83,7 +83,9 @@
                                         </span>
                                         <span
                                             [matTooltip]="
-                                                !element.feature_configuration_id ? 'Default plan are not editable' : ''
+                                                !element.feature_configuration_id
+                                                    ? 'Default role are not deletable'
+                                                    : ''
                                             "
                                             matTooltipPosition="above"
                                         >
