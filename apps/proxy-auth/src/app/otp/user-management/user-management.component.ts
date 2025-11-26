@@ -246,6 +246,11 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                 this.getCompanyUsers();
             }
         });
+        this.deleteUserData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.getCompanyUsers();
+            }
+        });
         this.getCompanyUsers();
         this.getRoles();
         this.getPermissions();
@@ -353,7 +358,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         dialogRef.afterClosed().subscribe((action) => {
             if (action === 'yes') {
                 this.store.dispatch(otpActions.deleteUser({ companyId: user.user_id, authToken: this.userToken }));
-                this.getCompanyUsers();
             }
         });
     }
