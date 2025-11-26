@@ -187,6 +187,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 Validators.required,
                 CustomValidators.minLengthThreeWithoutSpace,
             ]),
+            theme: new FormControl<string>('system', []),
+            allowNewUserRegistration: new FormControl<boolean>(false, []),
         }),
         // New form controls for conditional steps
     });
@@ -265,6 +267,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             authorizationDetails: {
                                 session_time: feature.session_time,
                                 authorizationKey: feature.authorization_format.key,
+                                theme: feature.extra_configurations?.theme || 'system',
+                                allowNewUserRegistration: feature.extra_configurations?.create_account_link || false,
                             },
                         });
                     });
@@ -466,6 +470,10 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     key: featureFormData.authorizationDetails.authorizationKey,
                 },
                 session_time: featureFormData.authorizationDetails.session_time,
+                extra_configurations: {
+                    theme: featureFormData.authorizationDetails.theme || 'system',
+                    allowNewUserRegistration: featureFormData.authorizationDetails.allowNewUserRegistration || false,
+                },
                 services: this.getServicePayload(selectedMethod),
             };
             // Added setTimeout because payload creation might contain promises
@@ -495,6 +503,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 const authorizationDetailsForm = this.featureForm.controls.authorizationDetails;
                 if (authorizationDetailsForm.valid) {
                     payload = {
+                        extra_configurations: {
+                            theme: authorizationDetailsForm.value.theme,
+                            create_account_link: authorizationDetailsForm.value.allowNewUserRegistration || false,
+                            default_role: {
+                                name: 'Owner',
+                                value: 1,
+                            },
+                        },
                         authorization_format: {
                             ...featureDetails.authorization_format,
                             key: authorizationDetailsForm.value.authorizationKey,

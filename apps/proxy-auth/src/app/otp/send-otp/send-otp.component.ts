@@ -16,6 +16,7 @@ import {
     selectResendOtpInProcess,
     selectVerifyOtpInProcess,
     selectWidgetData,
+    selectWidgetTheme,
     subscriptionPlansData,
     upgradeSubscriptionData,
 } from '../store/selectors';
@@ -23,6 +24,12 @@ import { FeatureServiceIds } from '@proxy/models/features-model';
 import { OtpWidgetService } from '../service/otp-widget.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionCenterComponent } from '../component/subscription-center/subscription-center.component';
+
+export enum Theme {
+    LIGHT = 'light',
+    DARK = 'dark',
+    SYSTEM = 'system',
+}
 
 @Component({
     selector: 'proxy-send-otp',
@@ -70,8 +77,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public selectWidgetData$: Observable<any>;
     public selectResendOtpInProcess$: Observable<boolean>;
     public selectVerifyOtpInProcess$: Observable<boolean>;
+    public selectWidgetTheme$: Observable<any>;
     public animate: boolean = false;
-
+    public isCreateAccountTextAppended: boolean = false;
     public otpWidgetData;
     public loginWidgetData;
     public showRegistration = new BehaviorSubject<boolean>(false);
@@ -113,18 +121,25 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             takeUntil(this.destroy$)
         );
         this.selectWidgetData$ = this.store.pipe(select(selectWidgetData), takeUntil(this.destroy$));
+        this.selectWidgetTheme$ = this.store.pipe(select(selectWidgetTheme), takeUntil(this.destroy$));
     }
 
     ngOnInit() {
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
         prefersDark.addEventListener('change', (event) => {
             if (!this.theme) {
-                this.theme = event.matches ? 'dark' : 'light';
+                this.theme = event.matches ? Theme.DARK : Theme.LIGHT;
             }
         });
         if (!this.theme) {
-            this.theme = prefersDark.matches ? 'dark' : 'light';
+            this.theme = prefersDark.matches ? Theme.DARK : Theme.LIGHT;
         }
+        this.selectWidgetTheme$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((theme) => {
+            if (theme?.theme !== Theme.SYSTEM) {
+                this.theme = theme?.theme || theme;
+            }
+            this.isCreateAccountTextAppended = theme?.create_account_link || false;
+        });
         if (this.type === 'subscription') {
             // Load subscription plans first
             this.store.dispatch(getSubscriptionPlans({ referenceId: this.referenceId, authToken: this.authToken }));
@@ -595,8 +610,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
             /* Plan Card Styles */
 .plan-card {
-                background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
-                border: ${this.theme === 'dark' ? '1px solid #e6e6e6' : '2px solid #e6e6e6'};
+                background: ${this.theme === Theme.DARK ? 'transparent' : '#ffffff'};
+                border: ${this.theme === Theme.DARK ? '1px solid #e6e6e6' : '2px solid #e6e6e6'};
                 border-radius: 4px;
                 padding: 26px 24px;
                 box-shadow: none;
@@ -616,7 +631,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             }
 
             .plan-card.highlighted {
-                border: ${this.theme === 'dark' ? '2px solid #ffffff' : '2px solid #000000'};
+                border: ${this.theme === Theme.DARK ? '2px solid #ffffff' : '2px solid #000000'};
                 box-shadow: 0 0 0 0px #000000 !important;
             }
 
@@ -1100,6 +1115,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }
 
     private appendCreateAccountText(element): void {
+        if (!this.isCreateAccountTextAppended) {
+            return;
+        }
         const existingCreateAccountText = element.querySelector('p[data-create-account="true"]');
         if (existingCreateAccountText || this.createAccountTextAppended) {
             return;
