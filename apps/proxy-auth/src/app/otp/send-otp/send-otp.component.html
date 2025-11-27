@@ -3,7 +3,8 @@
     *ngIf="show$ | async"
     [ngClass]="{
         'with-reference-id': referenceId,
-        'without-reference-id': authToken
+        'without-reference-id': authToken,
+        'dark-theme': theme === 'dark' && type === 'user-management'
     }"
 >
     <div
@@ -55,7 +56,8 @@
     <proxy-user-management
         *ngIf="authToken && type === 'user-management'"
         [userToken]="authToken"
-        [pass]="pass"
+        [pass]="isRolePermission"
+        [theme]="theme"
     ></proxy-user-management>
     <div [ngClass]="{ 'subscription-dialog': type === 'subscription' && isPreview }" *ngIf="type === 'subscription'">
         <proxy-subscription-center

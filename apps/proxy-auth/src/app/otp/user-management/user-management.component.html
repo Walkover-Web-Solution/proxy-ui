@@ -1,4 +1,4 @@
-<div class="container">
+<div #container class="container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
     <div class="members-container">
         <mat-tab-group class="user-management-tabs full-width">
             <!-- Members Tab -->
@@ -23,71 +23,96 @@
                         </div>
                     </div>
 
-                    <div>
-                        <table
-                            mat-table
-                            [dataSource]="dataSource"
-                            matSort
-                            class="mat-elevation-z8 default-table full-width"
+                    <div class="users-list-container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
+                        <div
+                            *ngFor="let user of dataSource.data; let i = index"
+                            class="user-item"
+                            [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'"
                         >
-                            <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Name</th>
-                                <td mat-cell *matCellDef="let element" class="text-left width-md-200">
-                                    {{ element.name }}
-                                </td>
-                            </ng-container>
-
-                            <ng-container matColumnDef="email">
-                                <th mat-header-cell *matHeaderCellDef class="width-md-150">Email</th>
-                                <td mat-cell *matCellDef="let element; let i = index" class="text-left width-md-150">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span
-                                            class="email-text"
-                                            [matTooltip]="element.email"
-                                            matTooltipPosition="above"
-                                            matTooltipClass="email-tooltip"
+                            <div class="user-avatar" *ngIf="theme !== 'dark'">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    height="18px"
+                                    viewBox="0 -960 960 960"
+                                    width="24px"
+                                    fill="#000000"
+                                >
+                                    <path
+                                        d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"
+                                    />
+                                </svg>
+                            </div>
+                            <div class="user-avatar" *ngIf="theme === 'dark'">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    height="18px"
+                                    viewBox="0 -960 960 960"
+                                    width="24px"
+                                    fill="#c1c5c8"
+                                >
+                                    <path
+                                        d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"
+                                    />
+                                </svg>
+                            </div>
+                            <div class="user-info">
+                                <div class="user-name">{{ user.name }}</div>
+                                <div class="user-email" matTooltipPosition="above">
+                                    {{ user.email }}
+                                </div>
+                            </div>
+                            <div class="user-role-row">
+                                <div class="user-role">{{ user.role || 'User' }}</div>
+                            </div>
+                            <div class="user-actions">
+                                <div *ngIf="canRemoveUser" (click)="editUser(user, i)">
+                                    <div *ngIf="theme !== 'dark'" mat-icon-button>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            height="24px"
+                                            viewBox="0 -960 960 960"
+                                            width="24px"
+                                            fill="#0000000"
                                         >
-                                            {{ maskEmail(element.email) }}
-                                        </span>
+                                            <path
+                                                d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
+                                            />
+                                        </svg>
                                     </div>
-                                </td>
-                            </ng-container>
-
-                            <ng-container matColumnDef="role">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-150">
-                                    Roles & Permissions
-                                </th>
-                                <td mat-cell *matCellDef="let element; let i = index" class="text-left width-md-150">
-                                    <div
-                                        class="cell-content d-flex align-items-center justify-content-between full-width"
+                                    <div *ngIf="theme === 'dark'" mat-icon-button>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            height="24px"
+                                            viewBox="0 -960 960 960"
+                                            width="24px"
+                                            fill="#c1c5c8"
+                                        >
+                                            <path
+                                                d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <button
+                                    *ngIf="canRemoveUser"
+                                    mat-icon-button
+                                    (click)="deleteUser(user, i)"
+                                    matTooltip="Delete"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        height="24px"
+                                        viewBox="0 -960 960 960"
+                                        width="24px"
+                                        fill="#992B15"
                                     >
-                                        <span
-                                            [matTooltip]="getPermissionsTooltip(element)"
-                                            matTooltipPosition="right"
-                                            matTooltipClass="permissions-tooltip"
-                                        >
-                                            {{ element.role || 'User' }}
-                                        </span>
-                                        <div class="actions d-flex align-items-center">
-                                            <button
-                                                mat-flat-button
-                                                color="primary"
-                                                (click)="editUser(element, i)"
-                                                class="button-add"
-                                            >
-                                                Edit
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </ng-container>
-                            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="table-header"></tr>
-                            <tr
-                                mat-row
-                                *matRowDef="let row; columns: displayedColumns"
-                                class="hover-action table-row"
-                            ></tr>
-                        </table>
+                                        <path
+                                            d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                         <p class="no-data" *ngIf="dataSource.data.length === 0">
                             Nothing Here, There are no users to show
                         </p>
@@ -96,6 +121,7 @@
                             [pageSize]="1000"
                             showFirstLastButtons
                             aria-label="Select page of users"
+                            (page)="onUsersPageChange($event)"
                         >
                         </mat-paginator>
                     </div>
@@ -103,7 +129,7 @@
             </mat-tab>
 
             <!-- Roles and Permission Tab -->
-            <mat-tab *ngIf="pass" label="Roles and Permissions">
+            <mat-tab *ngIf="pass" label="Roles">
                 <div class="tab-content">
                     <!-- Nested tabs for Roles and Permissions -->
                     <mat-tab-group class="nested-tabs full-width">
@@ -191,6 +217,7 @@
                                                             color="primary"
                                                             (click)="editRole(element, i)"
                                                             class="button-add"
+                                                            [disabled]="element.is_default"
                                                         >
                                                             Edit
                                                         </button>
@@ -217,6 +244,7 @@
                                         [pageSize]="1000"
                                         showFirstLastButtons
                                         aria-label="Select page of roles"
+                                        (page)="onRolesPageChange($event)"
                                     >
                                     </mat-paginator>
                                 </div>
@@ -224,7 +252,7 @@
                         </mat-tab>
 
                         <!-- Permissions Tab -->
-                        <mat-tab label="Permissions">
+                        <mat-tab *ngIf="pass" label="Permissions">
                             <div class="nested-tab-content">
                                 <!-- Permissions Table Section -->
                                 <div class="permissions-table-section full-width">
@@ -338,7 +366,23 @@
                         Role name is required
                     </mat-error>
                 </mat-form-field>
-
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Permissions</mat-label>
+                    <mat-select
+                        formControlName="permission"
+                        multiple
+                        required
+                        panelClass="permission-select-panel"
+                        (openedChange)="onPermissionSelectOpenedChange($event)"
+                    >
+                        <mat-option *ngFor="let permission of permissions" [value]="permission.id">
+                            {{ permission.name }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="addRoleForm.get('permission')?.hasError('required')">
+                        At least one permission is required
+                    </mat-error>
+                </mat-form-field>
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Description</mat-label>
                     <textarea
@@ -347,18 +391,6 @@
                         placeholder="Enter role description"
                         rows="3"
                     ></textarea>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Permissions</mat-label>
-                    <mat-select formControlName="permission" multiple required>
-                        <mat-option *ngFor="let permission of permissions" [value]="permission.id">
-                            {{ permission.name }}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="addRoleForm.get('permission')?.hasError('required')">
-                        At least one permission is required
-                    </mat-error>
                 </mat-form-field>
             </form>
 
@@ -421,21 +453,32 @@
                     <mat-error *ngIf="addUserForm.get('mobileNumber')?.hasError('pattern')">
                         Please enter a valid mobile number with country code
                     </mat-error>
-                    <mat-hint>Note: Please enter mobile number with country code (e.g., 917000221227)</mat-hint>
+                    <mat-hint>Note: Please enter mobile number with country code (e.g., 917***221227)</mat-hint>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Role</mat-label>
-                    <mat-select formControlName="role">
+                    <mat-select formControlName="role" panelClass="permission-select-panel">
                         <mat-option *ngFor="let role of roles" [value]="role.id">
-                            {{ role.name }}
+                            <div class="role-option-content">
+                                <div class="role-name">{{ role.name }}</div>
+                                <span>
+                                    {{ role.description }}
+                                </span>
+                            </div>
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width" *ngIf="isEditUser">
                     <mat-label>Additional Permissions</mat-label>
-                    <mat-select formControlName="permission" multiple>
+                    <mat-select
+                        formControlName="permission"
+                        multiple
+                        panelClass="permission-select-panel"
+                        [disableOptionCentering]="true"
+                        (openedChange)="onPermissionSelectOpenedChange($event)"
+                    >
                         <mat-option
                             *ngFor="let permission of getAvailableAdditionalPermissions()"
                             [value]="permission.id"
@@ -523,7 +566,13 @@
 
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Permission</mat-label>
-                        <mat-select formControlName="permission" multiple required>
+                        <mat-select
+                            formControlName="permission"
+                            multiple
+                            required
+                            panelClass="permission-select-panel"
+                            (openedChange)="onPermissionSelectOpenedChange($event)"
+                        >
                             <mat-option *ngFor="let permission of permissions" [value]="permission.id">
                                 {{ permission.name }}
                             </mat-option>

@@ -4,7 +4,7 @@
 
 .container {
     width: 100%;
-    height: 100%;
+    height: 100vh;
     flex-direction: column;
     z-index: 1000;
     justify-content: center;
@@ -19,6 +19,12 @@
 .with-reference-id {
     display: flex;
     position: fixed;
+}
+.dark-theme {
+    background: transparent !important;
+}
+.light-theme {
+    background: rgb(33 37 40 / 95%);
 }
 
 .without-reference-id {
