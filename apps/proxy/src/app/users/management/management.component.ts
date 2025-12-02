@@ -382,8 +382,6 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
         this.dialogRef.afterClosed().subscribe((payload) => {
             if (payload) {
-                debugger;
-                console.log(payload);
                 this.userComponentStore.createPermission(of(payload));
             }
         });
