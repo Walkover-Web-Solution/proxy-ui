@@ -96,6 +96,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public userData: any[] = [];
     public userId: any;
     public canRemoveUser: boolean = false;
+    public canEditUser: boolean = false;
+    public canAddUser: boolean = false;
     constructor(private fb: FormBuilder, private dialog: MatDialog, private store: Store<IAppState>) {
         super();
         this.getRoles$ = this.store.pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
@@ -204,6 +206,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.getCompanyUsers$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.canRemoveUser = res.data?.permissionToRemoveUser;
+                this.canAddUser = res.data?.permissionToAddUser;
+                this.canEditUser = res.data?.permissionToEditUser;
                 this.userData = res.data?.users;
                 this.dataSource.data = this.userData;
             }
@@ -443,6 +447,15 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         const role = this.roles.find((role) => role.name === roleName);
         return role?.id;
+    }
+
+    public getRoleNameById(roleId: number): string {
+        if (!this.roles || !Array.isArray(this.roles) || !roleId) {
+            return '';
+        }
+
+        const role = this.roles.find((role) => role.id === roleId);
+        return role?.name || '';
     }
 
     public onRoleChange(roleId: number): void {
@@ -992,8 +1005,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         if (!this.currentEditingUser) {
             return [];
         }
-
-        // Find the role by name
         const userRole = this.roles.find((role) => role.name === this.currentEditingUser.role);
         if (!userRole || !userRole.c_permissions) {
             return [];
