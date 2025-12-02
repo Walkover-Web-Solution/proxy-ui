@@ -84,6 +84,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         });
         this.dialogPermissionForm = new FormGroup({
             permissionName: new FormControl('', [Validators.required]),
+            description: new FormControl('', []),
         });
         this.defaultRolesForm = new FormGroup({
             defaultRoleForCreator: new FormControl('', []),
@@ -370,6 +371,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         // Reset form
         this.dialogPermissionForm.reset({
             permissionName: '',
+            description: '',
         });
 
         this.dialogRef = this.dialog.open(this.addPermissionDialogTemplate, {
@@ -392,6 +394,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         // Pre-fill form with permission data
         this.dialogPermissionForm.patchValue({
             permissionName: permission.name,
+            description: permission.description || '',
         });
 
         this.dialogRef = this.dialog.open(this.addPermissionDialogTemplate, {
@@ -416,6 +419,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
             const payload: any = {
                 name: formData.permissionName,
+                description: formData.description || '',
                 referenceId: referenceId,
             };
 
