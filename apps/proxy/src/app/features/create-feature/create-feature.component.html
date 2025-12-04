@@ -498,13 +498,23 @@
 </ng-template>
 
 <ng-template #previewAuthorization let-authorizationDetails="authorizationDetails">
-    <div class="auth-credentials px-3 width-md-400 w-md-50 border rounded-8 ml-3" style="max-height: 600px">
+    <div
+        class="auth-credentials px-3 width-md-400 w-md-50 border rounded-8 ml-3"
+        [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+        style="max-height: 650px"
+    >
         <div class="d-flex flex-column gap-3 py-4">
             <div class="d-flex flex-column align-items-center gap-2">
                 <h2 class="mat-h2 fw-bolder mb-0">Sign in to your account</h2>
             </div>
 
-            <div class="d-flex flex-column align-items-center gap-1 w-100">
+            <div
+                class="d-flex flex-column align-items-center gap-1 w-100"
+                [ngClass]="{
+                    'dark-theme-login preview-input-field':
+                        featureForm.get('authorizationDetails.theme')?.value === 'dark'
+                }"
+            >
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Email or Phone</mat-label>
                     <input matInput type="text" placeholder="Enter Email or Phone" />
@@ -515,14 +525,24 @@
                     <input matInput type="password" placeholder="password" />
                 </mat-form-field>
 
-                <button type="button" mat-flat-button class="w-100" style="background-color: #000; color: #fff">
+                <button
+                    type="button"
+                    mat-flat-button
+                    class="w-100 custom-btn"
+                    style="background-color: #8f9396; color: #fff"
+                >
                     Sign in
                 </button>
             </div>
+
             <div class="d-flex align-items-center justify-content-center gap-2 w-100">
                 <hr class="flex-grow-1" style="border-color: var(--color-common-border); margin: 0" />
                 <p class="mat-body-2 text-center">
-                    <span class="text-secondary">Or continue with</span>
+                    <span
+                        class="text-secondary"
+                        [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                        >Or continue with</span
+                    >
                 </p>
                 <hr class="flex-grow-1" style="border-color: var(--color-common-border); margin: 0" />
             </div>
@@ -533,10 +553,19 @@
                     mat-stroked-button
                     class="w-75 d-flex align-items-center justify-content-center p-1"
                 >
-                    <mat-icon class="material-icons-outlined" style="color: #3f51b5; margin-right: 12px"
+                    <mat-icon
+                        class="material-icons-outlined"
+                        [style.color]="
+                            featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#3f51b5'
+                        "
+                        style="margin-right: 12px"
                         >phone_android</mat-icon
                     >
-                    <span class="text-secondary">Continue with OTP</span>
+                    <span
+                        class="text-secondary"
+                        [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                        >Continue with OTP</span
+                    >
                 </button>
                 <button
                     *ngIf="featureForm.get('serviceDetails')?.at(1).controls.is_enable.value"
@@ -549,7 +578,11 @@
                         alt="Google"
                         style="width: 20px; height: 20px; margin-right: 12px"
                     />
-                    <span class="text-secondary">Continue with Google</span>
+                    <span
+                        class="text-secondary"
+                        [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                        >Continue with Google</span
+                    >
                 </button>
                 <button
                     *ngIf="featureForm.get('serviceDetails')?.at(2).controls.is_enable.value"
@@ -557,10 +590,19 @@
                     mat-stroked-button
                     class="w-75 d-flex align-items-center justify-content-center p-1"
                 >
-                    <mat-icon class="material-icons-outlined" style="color: #000000; margin-right: 12px"
+                    <mat-icon
+                        class="material-icons-outlined"
+                        [style.color]="
+                            featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#000000'
+                        "
+                        style="margin-right: 12px"
                         >apple</mat-icon
                     >
-                    <span class="text-secondary">Continue with Apple</span>
+                    <span
+                        class="text-secondary"
+                        [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                        >Continue with Apple</span
+                    >
                 </button>
                 <button
                     *ngIf="featureForm.get('serviceDetails')?.at(3).controls.is_enable.value"
@@ -568,16 +610,25 @@
                     mat-stroked-button
                     class="w-75 d-flex align-items-center justify-content-center p-1"
                 >
-                    <mat-icon class="material-icons-outlined" style="color: #757575; margin-right: 12px"
+                    <mat-icon
+                        class="material-icons-outlined"
+                        [style.color]="
+                            featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#757575'
+                        "
+                        style="margin-right: 12px"
                         >vpn_key</mat-icon
                     >
-                    <span class="text-secondary">Continue with Password</span>
+                    <span
+                        class="text-secondary"
+                        [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                        >Continue with Password</span
+                    >
                 </button>
                 <p
                     *ngIf="featureForm.get('authorizationDetails.allowNewUserRegistration').value"
                     class="mat-body-2 text-center"
                 >
-                    Are you a new user? <a href="#">Create an account</a>
+                    Are you a new user? <a class="text-link" href="#">Create an account</a>
                 </p>
             </div>
 
