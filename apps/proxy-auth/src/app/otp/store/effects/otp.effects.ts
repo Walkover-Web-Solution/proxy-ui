@@ -590,4 +590,56 @@ export class OtpEffects {
             })
         )
     );
+    updateUserRole$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.updateUserRole),
+            switchMap(({ payload, authToken }) => {
+                return this.otpService.updateUserRole(payload, authToken).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.updateUserRoleComplete({ response: res });
+                        }
+                        return otpActions.updateUserRoleError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.updateUserRoleError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
+    updateUserPermission$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.updateUserPermission),
+            switchMap(({ payload, authToken }) => {
+                return this.otpService.updateUserPermission(payload, authToken).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.updateUserPermissionComplete({ response: res });
+                        }
+                        return otpActions.updateUserPermissionError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.updateUserPermissionError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
 }

@@ -29,6 +29,8 @@ import {
     updateCompanyUserData,
     updatePermissionData,
     updateRoleData,
+    updateUserPermissionData,
+    updateUserRoleData,
 } from '../store/selectors';
 import { isEqual } from 'lodash';
 import { UserData, Role } from '../model/otp';
@@ -63,6 +65,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public updatePermissionData$: Observable<any>;
     public updateRoleData$: Observable<any>;
     public deleteUserData$: Observable<any>;
+    public updateUserRoleData$: Observable<any>;
+    public updateUserPermissionData$: Observable<any>;
     public roles: any[] = [];
     public permissions: any[] = [];
     public displayedColumns: string[] = ['name', 'email', 'role'];
@@ -142,6 +146,17 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
+        this.updateUserRoleData$ = this.store.pipe(
+            select(updateUserRoleData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.updateUserPermissionData$ = this.store.pipe(
+            select(updateUserPermissionData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+
         this.addUserForm = this.fb.group({
             name: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
@@ -251,6 +266,16 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             }
         });
         this.deleteUserData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.getCompanyUsers();
+            }
+        });
+        this.updateUserRoleData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.getCompanyUsers();
+            }
+        });
+        this.updateUserPermissionData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.getCompanyUsers();
             }
@@ -570,12 +595,18 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                         userPayload.mobile = newMobile;
                     }
 
-                    const payload = {
-                        user: userPayload,
-                        cpermissions: formValue.permission,
+                    const rolePayload = {
+                        id: userPayload.id,
                         role_id: formValue.role,
                     };
-                    this.store.dispatch(otpActions.updateCompanyUser({ payload, authToken: this.userToken }));
+                    const permissionPayload = {
+                        id: userPayload.id,
+                        cpermissions: formValue.permission,
+                    };
+                    this.store.dispatch(otpActions.updateUserRole({ payload: rolePayload, authToken: this.userToken }));
+                    this.store.dispatch(
+                        otpActions.updateUserPermission({ payload: permissionPayload, authToken: this.userToken })
+                    );
                 }
             } else {
                 // Add new user
