@@ -491,7 +491,7 @@
                 </ng-container>
             </div>
         </div>
-        <div *ngIf="isEditMode">
+        <ng-container *ngIf="isEditMode">
             <div
                 *ngIf="!featureForm.get('serviceDetails')?.at(3).controls.is_enable.value"
                 class="d-flex align-items-center justify-content-center w-100 mb-3"
@@ -516,7 +516,7 @@
                 </div>
             </div>
             <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
-        </div>
+        </ng-container>
     </div>
 </ng-template>
 
