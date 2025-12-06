@@ -130,7 +130,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public updatePaymentDetails$: Observable<any> = this.componentStore.updatePaymentDetails$;
 
     public isEditMode = false;
-    public previewInputPosition: 'top' | 'bottom' = 'top';
     public selectedServiceIndex = 0;
     public selectedSubscriptionServiceIndex = -2;
 
