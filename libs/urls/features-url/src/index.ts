@@ -19,4 +19,5 @@ export const FeaturesUrls = {
     getPaymentDetailsForm: (baseUrl) => createUrl(baseUrl, `paymentCredentialsForm`),
     getPaymentDetailsFormById: (baseUrl, refid) => createUrl(baseUrl, `${refid}/paymentForm`),
     updatePaymentDetails: (baseUrl, refid) => createUrl(baseUrl, `subscription/${refid}/updateCredentials`),
+    getWebhookEvents: (baseUrl) => createUrl(baseUrl, `getWebhookTriggerEvents`),
 };
