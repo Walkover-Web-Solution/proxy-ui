@@ -493,7 +493,7 @@
         </div>
         <div *ngIf="isEditMode">
             <div
-                *ngIf="!featureForm.get('serviceDetails')?.at(3).controls.is_enable.value"
+                *ngIf="featureForm.get('serviceDetails')?.at(3).controls.is_enable.value"
                 class="d-flex align-items-center justify-content-center w-100 mb-3"
             >
                 <div class="custom-toggle-group">
@@ -558,7 +558,7 @@
     <!-- Input Fields Template -->
     <ng-template #inputFieldsSection>
         <div
-            *ngIf="!featureForm.get('serviceDetails')?.at(3).controls.is_enable.value"
+            *ngIf="featureForm.get('serviceDetails')?.at(3).controls.is_enable.value"
             class="d-flex flex-column align-items-center gap-1 w-100"
             [ngClass]="{
                 'dark-theme-login preview-input-field': featureForm.get('authorizationDetails.theme')?.value === 'dark'
@@ -589,7 +589,7 @@
     <ng-template #orContinueWithSection>
         <div
             *ngIf="
-                !featureForm.get('serviceDetails')?.at(3).controls.is_enable.value &&
+                featureForm.get('serviceDetails')?.at(3).controls.is_enable.value &&
                 (featureForm.get('serviceDetails')?.at(0).controls.is_enable.value ||
                     featureForm.get('serviceDetails')?.at(1).controls.is_enable.value ||
                     featureForm.get('serviceDetails')?.at(2).controls.is_enable.value)
@@ -666,26 +666,6 @@
                     class="text-secondary"
                     [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
                     >Continue with Apple</span
-                >
-            </button>
-            <button
-                *ngIf="featureForm.get('serviceDetails')?.at(3).controls.is_enable.value"
-                type="button"
-                mat-stroked-button
-                class="w-85 d-flex align-items-center justify-content-center"
-            >
-                <mat-icon
-                    class="material-icons-outlined"
-                    [style.color]="
-                        featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#757575'
-                    "
-                    style="margin-right: 12px"
-                    >vpn_key</mat-icon
-                >
-                <span
-                    class="text-secondary"
-                    [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
-                    >Continue with Password</span
                 >
             </button>
         </div>
