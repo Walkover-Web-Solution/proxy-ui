@@ -162,3 +162,23 @@ export const deleteUserError = createAction(
     '[OTP] Delete User Error',
     props<{ errors: string[]; errorResponse: any }>()
 );
+
+export const updateUserRole = createAction('[OTP] Update User Role', props<{ payload: any; authToken: string }>());
+export const updateUserRoleComplete = createAction('[OTP] Update User Role Complete', props<{ response: any }>());
+export const updateUserRoleError = createAction(
+    '[OTP] Update User Role Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+
+export const updateUserPermission = createAction(
+    '[OTP] Update User Permission',
+    props<{ payload: any; authToken: string }>()
+);
+export const updateUserPermissionComplete = createAction(
+    '[OTP] Update User Permission Complete',
+    props<{ response: any }>()
+);
+export const updateUserPermissionError = createAction(
+    '[OTP] Update User Permission Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);

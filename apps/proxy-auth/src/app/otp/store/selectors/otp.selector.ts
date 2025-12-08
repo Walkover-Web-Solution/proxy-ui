@@ -91,4 +91,18 @@ export const deleteUserData = createSelector(selectRootState, (p) => p.deleteUse
 export const deleteUserDataInProcess = createSelector(selectRootState, (p) => p.deleteUserDataInProcess);
 export const deleteUserDataSuccess = createSelector(selectRootState, (p) => p.deleteUserDataSuccess);
 
+export const updateUserRoleData = createSelector(selectRootState, (p) => p.updateUserRoleData);
+export const updateUserRoleDataInProcess = createSelector(selectRootState, (p) => p.updateUserRoleDataInProcess);
+export const updateUserRoleDataSuccess = createSelector(selectRootState, (p) => p.updateUserRoleDataSuccess);
+
+export const updateUserPermissionData = createSelector(selectRootState, (p) => p.updateUserPermissionData);
+export const updateUserPermissionDataInProcess = createSelector(
+    selectRootState,
+    (p) => p.updateUserPermissionDataInProcess
+);
+export const updateUserPermissionDataSuccess = createSelector(
+    selectRootState,
+    (p) => p.updateUserPermissionDataSuccess
+);
+
 export const error = createSelector(selectRootState, (p) => p.error);

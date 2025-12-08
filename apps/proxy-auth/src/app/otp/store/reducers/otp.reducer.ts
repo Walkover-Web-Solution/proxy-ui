@@ -86,6 +86,14 @@ export interface IOtpState {
     deleteUserDataInProcess: boolean;
     deleteUserDataSuccess: boolean;
 
+    updateUserRoleData: any;
+    updateUserRoleDataInProcess: boolean;
+    updateUserRoleDataSuccess: boolean;
+
+    updateUserPermissionData: any;
+    updateUserPermissionDataInProcess: boolean;
+    updateUserPermissionDataSuccess: boolean;
+
     error: any;
 }
 
@@ -171,6 +179,14 @@ export const initialState: IOtpState = {
     deleteUserData: null,
     deleteUserDataInProcess: false,
     deleteUserDataSuccess: false,
+
+    updateUserRoleData: null,
+    updateUserRoleDataInProcess: false,
+    updateUserRoleDataSuccess: false,
+
+    updateUserPermissionData: null,
+    updateUserPermissionDataInProcess: false,
+    updateUserPermissionDataSuccess: false,
 
     error: null,
 };
@@ -659,6 +675,44 @@ const _otpReducer = createReducer(
         ...state,
         deleteUserDataInProcess: false,
         deleteUserDataSuccess: false,
+        errors: errors,
+        apiErrorResponse: errorResponse,
+    })),
+    on(otpActions.updateUserRole, (state) => ({
+        ...state,
+        updateUserRoleDataInProcess: false,
+        updateUserRoleDataSuccess: false,
+        errors: null,
+    })),
+    on(otpActions.updateUserRoleComplete, (state, { response }) => ({
+        ...state,
+        updateUserRoleData: response,
+        updateUserRoleDataInProcess: true,
+        updateUserRoleDataSuccess: true,
+    })),
+    on(otpActions.updateUserRoleError, (state, { errors, errorResponse }) => ({
+        ...state,
+        updateUserRoleDataInProcess: false,
+        updateUserRoleDataSuccess: false,
+        errors: errors,
+        apiErrorResponse: errorResponse,
+    })),
+    on(otpActions.updateUserPermission, (state) => ({
+        ...state,
+        updateUserPermissionDataInProcess: false,
+        updateUserPermissionDataSuccess: false,
+        errors: null,
+    })),
+    on(otpActions.updateUserPermissionComplete, (state, { response }) => ({
+        ...state,
+        updateUserPermissionData: response,
+        updateUserPermissionDataInProcess: true,
+        updateUserPermissionDataSuccess: true,
+    })),
+    on(otpActions.updateUserPermissionError, (state, { errors, errorResponse }) => ({
+        ...state,
+        updateUserPermissionDataInProcess: false,
+        updateUserPermissionDataSuccess: false,
         errors: errors,
         apiErrorResponse: errorResponse,
     }))
