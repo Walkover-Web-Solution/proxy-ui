@@ -190,6 +190,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             ]),
             theme: new FormControl<string>('system', []),
             allowNewUserRegistration: new FormControl<boolean>(false, []),
+            showSocialLoginIcons: new FormControl<boolean>(false, []),
         }),
         // New form controls for conditional steps
     });
