@@ -29,6 +29,8 @@ import {
     updateCompanyUserData,
     updatePermissionData,
     updateRoleData,
+    updateUserPermissionData,
+    updateUserRoleData,
 } from '../store/selectors';
 import { isEqual } from 'lodash';
 import { UserData, Role } from '../model/otp';
@@ -63,6 +65,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public updatePermissionData$: Observable<any>;
     public updateRoleData$: Observable<any>;
     public deleteUserData$: Observable<any>;
+    public updateUserRoleData$: Observable<any>;
+    public updateUserPermissionData$: Observable<any>;
     public roles: any[] = [];
     public permissions: any[] = [];
     public displayedColumns: string[] = ['name', 'email', 'role'];
@@ -96,6 +100,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public userData: any[] = [];
     public userId: any;
     public canRemoveUser: boolean = false;
+    public canEditUser: boolean = false;
+    public canAddUser: boolean = false;
     constructor(private fb: FormBuilder, private dialog: MatDialog, private store: Store<IAppState>) {
         super();
         this.getRoles$ = this.store.pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
@@ -140,6 +146,17 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
+        this.updateUserRoleData$ = this.store.pipe(
+            select(updateUserRoleData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.updateUserPermissionData$ = this.store.pipe(
+            select(updateUserPermissionData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+
         this.addUserForm = this.fb.group({
             name: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
@@ -204,6 +221,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.getCompanyUsers$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.canRemoveUser = res.data?.permissionToRemoveUser;
+                this.canAddUser = res.data?.permissionToAddUser;
+                this.canEditUser = res.data?.permissionToEditUser;
                 this.userData = res.data?.users;
                 this.dataSource.data = this.userData;
             }
@@ -242,6 +261,21 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             }
         });
         this.updateCompanyUserData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.getCompanyUsers();
+            }
+        });
+        this.deleteUserData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.getCompanyUsers();
+            }
+        });
+        this.updateUserRoleData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.getCompanyUsers();
+            }
+        });
+        this.updateUserPermissionData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.getCompanyUsers();
             }
@@ -353,7 +387,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         dialogRef.afterClosed().subscribe((action) => {
             if (action === 'yes') {
                 this.store.dispatch(otpActions.deleteUser({ companyId: user.user_id, authToken: this.userToken }));
-                this.getCompanyUsers();
             }
         });
     }
@@ -439,6 +472,15 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         const role = this.roles.find((role) => role.name === roleName);
         return role?.id;
+    }
+
+    public getRoleNameById(roleId: number): string {
+        if (!this.roles || !Array.isArray(this.roles) || !roleId) {
+            return '';
+        }
+
+        const role = this.roles.find((role) => role.id === roleId);
+        return role?.name || '';
     }
 
     public onRoleChange(roleId: number): void {
@@ -553,12 +595,18 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                         userPayload.mobile = newMobile;
                     }
 
-                    const payload = {
-                        user: userPayload,
-                        cpermissions: formValue.permission,
+                    const rolePayload = {
+                        id: userPayload.id,
                         role_id: formValue.role,
                     };
-                    this.store.dispatch(otpActions.updateCompanyUser({ payload, authToken: this.userToken }));
+                    const permissionPayload = {
+                        id: userPayload.id,
+                        cpermissions: formValue.permission,
+                    };
+                    this.store.dispatch(otpActions.updateUserRole({ payload: rolePayload, authToken: this.userToken }));
+                    this.store.dispatch(
+                        otpActions.updateUserPermission({ payload: permissionPayload, authToken: this.userToken })
+                    );
                 }
             } else {
                 // Add new user
@@ -570,10 +618,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                     role: roleName,
                     permissions: this.getDefaultPermissions(roleName),
                 };
-
-                // Add to local array for immediate UI update
-                this.userData = [...this.userData, newUser];
-
                 const payload = {
                     user: {
                         name: newUser.name,
@@ -992,8 +1036,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         if (!this.currentEditingUser) {
             return [];
         }
-
-        // Find the role by name
         const userRole = this.roles.find((role) => role.name === this.currentEditingUser.role);
         if (!userRole || !userRole.c_permissions) {
             return [];

@@ -7,7 +7,7 @@
                     <!-- Search Bar -->
                     <div class="my-4 d-flex justify-content-between align-items-center gap-4">
                         <div class="search-container">
-                            <mat-form-field appearance="outline" class="search-field no-space full-width">
+                            <mat-form-field appearance="outline" class="search-field no-space w-25">
                                 <mat-label>Search User</mat-label>
                                 <input
                                     matInput
@@ -18,7 +18,7 @@
                                 />
                             </mat-form-field>
                         </div>
-                        <div class="add-btn d-flex justify-content-end gap-4 full-width">
+                        <div class="add-btn d-flex justify-content-end gap-4 full-width" *ngIf="canAddUser">
                             <button mat-flat-button class="button-add" (click)="addUser()">Add User</button>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                                 <div class="user-role">{{ user.role || 'User' }}</div>
                             </div>
                             <div class="user-actions">
-                                <div *ngIf="canRemoveUser" (click)="editUser(user, i)">
+                                <div *ngIf="canEditUser" (click)="editUser(user, i)">
                                     <div *ngIf="theme !== 'dark'" mat-icon-button>
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -339,7 +339,7 @@
                                         <mat-paginator
                                             #permissionsPaginator
                                             [pageSizeOptions]="[10, 20, 50, 100, 1000]"
-                                            [pageSize]="1000"
+                                            [pageSize]="50"
                                             showFirstLastButtons
                                             aria-label="Select page of permissions"
                                         >
@@ -427,7 +427,13 @@
             >
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Name</mat-label>
-                    <input matInput formControlName="name" placeholder="Enter user name" required />
+                    <input
+                        matInput
+                        formControlName="name"
+                        placeholder="Enter user name"
+                        [readonly]="isEditUser"
+                        required
+                    />
                     <mat-error *ngIf="addUserForm.get('name')?.hasError('required')"> Name is required </mat-error>
                 </mat-form-field>
 
@@ -449,7 +455,13 @@
 
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Mobile Number</mat-label>
-                    <input matInput formControlName="mobileNumber" type="tel" placeholder="Enter mobile number" />
+                    <input
+                        matInput
+                        formControlName="mobileNumber"
+                        type="tel"
+                        placeholder="Enter mobile number"
+                        [readonly]="isEditUser"
+                    />
                     <mat-error *ngIf="addUserForm.get('mobileNumber')?.hasError('pattern')">
                         Please enter a valid mobile number with country code
                     </mat-error>
@@ -459,6 +471,9 @@
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Role</mat-label>
                     <mat-select formControlName="role" panelClass="permission-select-panel">
+                        <mat-select-trigger>
+                            {{ getRoleNameById(addUserForm.get('role')?.value) }}
+                        </mat-select-trigger>
                         <mat-option *ngFor="let role of roles" [value]="role.id">
                             <div class="role-option-content">
                                 <div class="role-name">{{ role.name }}</div>
@@ -483,7 +498,11 @@
                             *ngFor="let permission of getAvailableAdditionalPermissions()"
                             [value]="permission.id"
                         >
-                            {{ permission.name }}
+                            <span class="role-name">{{ permission.name }}</span> &nbsp;<span
+                                class="permission-description"
+                                *ngIf="permission.description"
+                                >({{ permission.description }})</span
+                            >
                         </mat-option>
                         <mat-option *ngIf="getAvailableAdditionalPermissions().length === 0" disabled>
                             No additional permissions available
