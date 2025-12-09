@@ -102,6 +102,9 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public canRemoveUser: boolean = false;
     public canEditUser: boolean = false;
     public canAddUser: boolean = false;
+    public totalUsers: number = 0;
+    public currentPageIndex: number = 0;
+    public currentPageSize: number = 50;
     constructor(private fb: FormBuilder, private dialog: MatDialog, private store: Store<IAppState>) {
         super();
         this.getRoles$ = this.store.pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
@@ -220,11 +223,22 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         });
         this.getCompanyUsers$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
+                this.totalUsers = res.data?.totalEntityCount || 0;
                 this.canRemoveUser = res.data?.permissionToRemoveUser;
                 this.canAddUser = res.data?.permissionToAddUser;
                 this.canEditUser = res.data?.permissionToEditUser;
-                this.userData = res.data?.users;
+                this.userData = res.data?.users || [];
                 this.dataSource.data = this.userData;
+
+                // Update pagination state from API response
+                const pageNo = res.data?.pageNo;
+                const itemsPerPage = res.data?.itemsPerPage;
+                if (pageNo !== undefined) {
+                    this.currentPageIndex = pageNo - 1; // API is 1-based, paginator is 0-based
+                }
+                if (itemsPerPage !== undefined) {
+                    this.currentPageSize = parseInt(itemsPerPage, 10) || 10;
+                }
             }
         });
         this.addUserData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
@@ -310,7 +324,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     ngAfterViewInit(): void {
-        this.dataSource.paginator = this.paginator;
+        // Note: Do NOT assign paginator to dataSource for server-side pagination
+        // this.dataSource.paginator = this.paginator; // Removed - using server-side pagination
         this.dataSource.sort = this.sort;
         this.rolesDataSource.paginator = this.rolesPaginator;
         this.permissionsDataSource.paginator = this.permissionsPaginator;
@@ -825,12 +840,24 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
     public getCompanyUsers(): void {
-        const pageSize = this.paginator?.pageSize || 1000;
-        this.store.dispatch(otpActions.getCompanyUsers({ authToken: this.userToken, itemsPerPage: pageSize }));
+        const pageSize = this.paginator?.pageSize || this.currentPageSize;
+        const pageIndex = this.paginator?.pageIndex || this.currentPageIndex;
+        this.store.dispatch(
+            otpActions.getCompanyUsers({ authToken: this.userToken, itemsPerPage: pageSize, pageNo: pageIndex })
+        );
     }
 
     public onUsersPageChange(event: PageEvent): void {
-        this.store.dispatch(otpActions.getCompanyUsers({ authToken: this.userToken, itemsPerPage: event.pageSize }));
+        this.currentPageIndex = event.pageIndex;
+        this.currentPageSize = event.pageSize;
+        // API expects 1-based page number
+        this.store.dispatch(
+            otpActions.getCompanyUsers({
+                authToken: this.userToken,
+                itemsPerPage: event.pageSize,
+                pageNo: event.pageIndex,
+            })
+        );
     }
     public getRoles(): void {
         const pageSize = this.rolesPaginator?.pageSize || 1000;
