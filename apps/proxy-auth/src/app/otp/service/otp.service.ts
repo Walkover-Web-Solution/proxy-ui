@@ -140,11 +140,14 @@ export class OtpService {
     }
     public getCompanyUsers(
         authToken: string,
-        itemsPerPage?: number
+        itemsPerPage?: number,
+        pageNo?: number
     ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;
         const url = otpVerificationUrls.getCompanyUsers(this.clientUrl);
-        const queryParams = itemsPerPage ? { itemsPerPage } : {};
+        const queryParams: any = {};
+        if (itemsPerPage) queryParams.itemsPerPage = itemsPerPage;
+        if (pageNo !== undefined) queryParams.pageNo = pageNo + 1; // Convert 0-based to 1-based index
         return this.http.get<any>(url, queryParams, this.options);
     }
     public createPermission(

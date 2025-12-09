@@ -339,8 +339,8 @@ export class OtpEffects {
     getCompanyUsers$ = createEffect(() =>
         this.actions$.pipe(
             ofType(otpActions.getCompanyUsers),
-            switchMap(({ authToken, itemsPerPage }) => {
-                return this.otpService.getCompanyUsers(authToken, itemsPerPage).pipe(
+            switchMap(({ authToken, itemsPerPage, pageNo }) => {
+                return this.otpService.getCompanyUsers(authToken, itemsPerPage, pageNo).pipe(
                     map((res: any) => {
                         if (res.status === 'success') {
                             return otpActions.getCompanyUsersComplete({
