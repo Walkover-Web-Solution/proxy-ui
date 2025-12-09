@@ -469,7 +469,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         });
         this.webhookEvents$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((webhookEvents) => {
             if (webhookEvents) {
-                console.log(webhookEvents);
                 // Transform object to array for *ngFor
                 if (typeof webhookEvents === 'object' && !Array.isArray(webhookEvents)) {
                     this.webhookEventsData = Object.entries(webhookEvents).map(([key, value]: [string, any]) => {
@@ -477,6 +476,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                         return {
                             label: description ? `${key} - (${description})` : key,
                             value: key,
+                            sampleResponse: value?.sample_response,
+                            description: value?.description,
                         };
                     });
                 } else {

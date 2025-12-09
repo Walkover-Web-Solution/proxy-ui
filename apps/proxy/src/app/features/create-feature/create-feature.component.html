@@ -334,14 +334,55 @@
             </mat-tab>
 
             <mat-tab label="Webhook">
-                <div class="d-flex flex-column h-100 p-4">
-                    <ng-container *ngTemplateOutlet="webhook"></ng-container>
-                    <div class="d-flex align-items-center justify-content-start mt-3">
-                        <button type="button" mat-flat-button color="primary" (click)="updateFeature('webhook')">
-                            Update
-                        </button>
-                    </div>
-                </div>
+                <mat-tab-group class="nested-tabs">
+                    <mat-tab label="Configurations">
+                        <div class="d-flex flex-column h-100 p-4">
+                            <ng-container *ngTemplateOutlet="webhook"></ng-container>
+                            <div class="d-flex align-items-center justify-content-start mt-3">
+                                <button
+                                    type="button"
+                                    mat-flat-button
+                                    color="primary"
+                                    (click)="updateFeature('webhook')"
+                                >
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Event Catalog">
+                        <div class="event-catalog-container">
+                            <ng-container *ngIf="webhookEventsData?.length; else noEvents">
+                                <mat-accordion class="webhook-events-accordion">
+                                    <mat-expansion-panel *ngFor="let event of webhookEventsData">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                <div class="event-header-content">
+                                                    <span class="event-name">{{ event.value }}</span>
+                                                    <span class="event-description">{{ event.description }}</span>
+                                                </div>
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="sample-response-container">
+                                            <p class="response-label">Sample Response:</p>
+                                            <pre class="code-block"><code>{{ event.sampleResponse | json }}</code></pre>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                            <ng-template #noEvents>
+                                <div class="d-flex flex-column align-items-center justify-content-center h-100 py-5">
+                                    <mat-icon
+                                        class="text-secondary mb-2"
+                                        style="font-size: 48px; width: 48px; height: 48px"
+                                        >event_note</mat-icon
+                                    >
+                                    <p class="mat-headline-6 text-secondary">No events available</p>
+                                </div>
+                            </ng-template>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
             </mat-tab>
         </mat-tab-group>
     </mat-card>
