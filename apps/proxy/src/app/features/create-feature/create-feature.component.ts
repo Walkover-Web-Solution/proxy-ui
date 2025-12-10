@@ -191,6 +191,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             theme: new FormControl<string>('system', []),
             allowNewUserRegistration: new FormControl<boolean>(false, []),
             showSocialLoginIcons: new FormControl<boolean>(false, []),
+            blockNewUserSignUps: new FormControl<boolean>(false, []),
         }),
         // New form controls for conditional steps
     });
@@ -271,6 +272,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 authorizationKey: feature.authorization_format.key,
                                 theme: feature.extra_configurations?.theme || 'system',
                                 allowNewUserRegistration: feature.extra_configurations?.create_account_link || false,
+                                blockNewUserSignUps: feature.block_registration || false,
                             },
                         });
                     });
@@ -513,6 +515,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 value: 1,
                             },
                         },
+                        block_registration: authorizationDetailsForm.value.blockNewUserSignUps || false,
                         authorization_format: {
                             ...featureDetails.authorization_format,
                             key: authorizationDetailsForm.value.authorizationKey,

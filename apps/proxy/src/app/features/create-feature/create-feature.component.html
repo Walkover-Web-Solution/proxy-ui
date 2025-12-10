@@ -756,6 +756,17 @@
                         </mat-slide-toggle>
                     </div>
                 </ng-container>
+
+                <ng-container *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="mat-body-2">Block new user sign-ups: </span>
+                        <mat-slide-toggle
+                            [formControl]="featureForm.get('authorizationDetails.blockNewUserSignUps')"
+                            color="primary"
+                        >
+                        </mat-slide-toggle>
+                    </div>
+                </ng-container>
             </div>
 
             <div class="d-flex flex-column w-75">
