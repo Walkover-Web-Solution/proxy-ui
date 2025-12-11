@@ -619,9 +619,24 @@
     </ng-template>
     <ng-template #socialLoginIconsSection>
         <div class="d-flex align-items-center justify-content-center gap-4">
-            <mat-icon class="material-icons-outlined">phone_android</mat-icon>
-            <img src="assets/images/logos/google-logo.svg" alt="Google" style="width: 20px; height: 20px" />
-            <mat-icon class="material-icons-outlined">apple</mat-icon>
+            <div
+                *ngIf="featureForm.get('serviceDetails')?.at(0).controls.is_enable.value"
+                class="social-login-icon-box"
+            >
+                <mat-icon class="material-icons-outlined">phone_android</mat-icon>
+            </div>
+            <div
+                *ngIf="featureForm.get('serviceDetails')?.at(1).controls.is_enable.value"
+                class="social-login-icon-box"
+            >
+                <img src="assets/images/logos/google-logo.svg" alt="Google" />
+            </div>
+            <div
+                *ngIf="featureForm.get('serviceDetails')?.at(2).controls.is_enable.value"
+                class="social-login-icon-box"
+            >
+                <mat-icon class="material-icons-outlined">apple</mat-icon>
+            </div>
         </div>
     </ng-template>
 
