@@ -587,12 +587,22 @@
             <ng-container *ngIf="previewInputPosition === 'top'">
                 <ng-container *ngTemplateOutlet="inputFieldsSection"></ng-container>
                 <ng-container *ngTemplateOutlet="orContinueWithSection"></ng-container>
-                <ng-container *ngTemplateOutlet="buttonsSection"></ng-container>
+                <ng-container *ngIf="featureForm.get('authorizationDetails.showSocialLoginIcons').value">
+                    <ng-container *ngTemplateOutlet="socialLoginIconsSection"></ng-container>
+                </ng-container>
+                <ng-container *ngIf="!featureForm.get('authorizationDetails.showSocialLoginIcons').value">
+                    <ng-container *ngTemplateOutlet="buttonsSection"></ng-container>
+                </ng-container>
             </ng-container>
 
             <!-- Buttons on TOP when previewInputPosition === 'bottom' -->
             <ng-container *ngIf="previewInputPosition === 'bottom'">
-                <ng-container *ngTemplateOutlet="buttonsSection"></ng-container>
+                <ng-container *ngIf="featureForm.get('authorizationDetails.showSocialLoginIcons').value">
+                    <ng-container *ngTemplateOutlet="socialLoginIconsSection"></ng-container>
+                </ng-container>
+                <ng-container *ngIf="!featureForm.get('authorizationDetails.showSocialLoginIcons').value">
+                    <ng-container *ngTemplateOutlet="buttonsSection"></ng-container>
+                </ng-container>
                 <ng-container *ngTemplateOutlet="orContinueWithSection"></ng-container>
                 <ng-container *ngTemplateOutlet="inputFieldsSection"></ng-container>
             </ng-container>
@@ -659,6 +669,28 @@
             <hr style="flex: 1; border: none; border-top: 1px solid var(--color-common-border); margin: 0" />
         </div>
     </ng-template>
+    <ng-template #socialLoginIconsSection>
+        <div class="d-flex align-items-center justify-content-center gap-4">
+            <div
+                *ngIf="featureForm.get('serviceDetails')?.at(0).controls.is_enable.value"
+                class="social-login-icon-box"
+            >
+                <mat-icon class="material-icons-outlined">phone_android</mat-icon>
+            </div>
+            <div
+                *ngIf="featureForm.get('serviceDetails')?.at(1).controls.is_enable.value"
+                class="social-login-icon-box"
+            >
+                <img src="assets/images/logos/google-logo.svg" alt="Google" />
+            </div>
+            <div
+                *ngIf="featureForm.get('serviceDetails')?.at(2).controls.is_enable.value"
+                class="social-login-icon-box"
+            >
+                <mat-icon class="material-icons-outlined">apple</mat-icon>
+            </div>
+        </div>
+    </ng-template>
 
     <!-- Buttons Template -->
     <ng-template #buttonsSection>
@@ -672,7 +704,7 @@
                 <mat-icon
                     class="material-icons-outlined"
                     [style.color]="
-                        featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#3f51b5'
+                        featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#000000'
                     "
                     style="margin-right: 12px"
                     >phone_android</mat-icon
@@ -775,6 +807,28 @@
                         <span class="mat-body-2">Show Create Account For New User: </span>
                         <mat-slide-toggle
                             [formControl]="featureForm.get('authorizationDetails.allowNewUserRegistration')"
+                            color="primary"
+                        >
+                        </mat-slide-toggle>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="mat-body-2">Show the social login as a icon: </span>
+                        <mat-slide-toggle
+                            [formControl]="featureForm.get('authorizationDetails.showSocialLoginIcons')"
+                            color="primary"
+                        >
+                        </mat-slide-toggle>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="mat-body-2">Block new user sign-ups: </span>
+                        <mat-slide-toggle
+                            [formControl]="featureForm.get('authorizationDetails.blockNewUserSignUps')"
                             color="primary"
                         >
                         </mat-slide-toggle>
