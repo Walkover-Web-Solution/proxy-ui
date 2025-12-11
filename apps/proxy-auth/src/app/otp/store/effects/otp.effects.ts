@@ -339,8 +339,8 @@ export class OtpEffects {
     getCompanyUsers$ = createEffect(() =>
         this.actions$.pipe(
             ofType(otpActions.getCompanyUsers),
-            switchMap(({ authToken, itemsPerPage }) => {
-                return this.otpService.getCompanyUsers(authToken, itemsPerPage).pipe(
+            switchMap(({ authToken, itemsPerPage, pageNo }) => {
+                return this.otpService.getCompanyUsers(authToken, itemsPerPage, pageNo).pipe(
                     map((res: any) => {
                         if (res.status === 'success') {
                             return otpActions.getCompanyUsersComplete({
@@ -581,6 +581,58 @@ export class OtpEffects {
                     catchError((err) => {
                         return of(
                             otpActions.deleteUserError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
+    updateUserRole$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.updateUserRole),
+            switchMap(({ payload, authToken }) => {
+                return this.otpService.updateUserRole(payload, authToken).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.updateUserRoleComplete({ response: res });
+                        }
+                        return otpActions.updateUserRoleError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.updateUserRoleError({
+                                errors: errorResolver(err.errors),
+                                errorResponse: err,
+                            })
+                        );
+                    })
+                );
+            })
+        )
+    );
+    updateUserPermission$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(otpActions.updateUserPermission),
+            switchMap(({ payload, authToken }) => {
+                return this.otpService.updateUserPermission(payload, authToken).pipe(
+                    map((res: any) => {
+                        if (res.status === 'success') {
+                            return otpActions.updateUserPermissionComplete({ response: res });
+                        }
+                        return otpActions.updateUserPermissionError({
+                            errors: errorResolver(res.message),
+                            errorResponse: res,
+                        });
+                    }),
+                    catchError((err) => {
+                        return of(
+                            otpActions.updateUserPermissionError({
                                 errors: errorResolver(err.errors),
                                 errorResponse: err,
                             })

@@ -29,6 +29,8 @@ import {
     updateCompanyUserData,
     updatePermissionData,
     updateRoleData,
+    updateUserPermissionData,
+    updateUserRoleData,
 } from '../store/selectors';
 import { isEqual } from 'lodash';
 import { UserData, Role } from '../model/otp';
@@ -63,6 +65,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public updatePermissionData$: Observable<any>;
     public updateRoleData$: Observable<any>;
     public deleteUserData$: Observable<any>;
+    public updateUserRoleData$: Observable<any>;
+    public updateUserPermissionData$: Observable<any>;
     public roles: any[] = [];
     public permissions: any[] = [];
     public displayedColumns: string[] = ['name', 'email', 'role'];
@@ -96,6 +100,11 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public userData: any[] = [];
     public userId: any;
     public canRemoveUser: boolean = false;
+    public canEditUser: boolean = false;
+    public canAddUser: boolean = false;
+    public totalUsers: number = 0;
+    public currentPageIndex: number = 0;
+    public currentPageSize: number = 50;
     constructor(private fb: FormBuilder, private dialog: MatDialog, private store: Store<IAppState>) {
         super();
         this.getRoles$ = this.store.pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
@@ -140,6 +149,17 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
+        this.updateUserRoleData$ = this.store.pipe(
+            select(updateUserRoleData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.updateUserPermissionData$ = this.store.pipe(
+            select(updateUserPermissionData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+
         this.addUserForm = this.fb.group({
             name: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
@@ -203,9 +223,22 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         });
         this.getCompanyUsers$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
+                this.totalUsers = res.data?.totalEntityCount || 0;
                 this.canRemoveUser = res.data?.permissionToRemoveUser;
-                this.userData = res.data?.users;
+                this.canAddUser = res.data?.permissionToAddUser;
+                this.canEditUser = res.data?.permissionToEditUser;
+                this.userData = res.data?.users || [];
                 this.dataSource.data = this.userData;
+
+                // Update pagination state from API response
+                const pageNo = res.data?.pageNo;
+                const itemsPerPage = res.data?.itemsPerPage;
+                if (pageNo !== undefined) {
+                    this.currentPageIndex = pageNo - 1; // API is 1-based, paginator is 0-based
+                }
+                if (itemsPerPage !== undefined) {
+                    this.currentPageSize = parseInt(itemsPerPage, 10) || 10;
+                }
             }
         });
         this.addUserData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
@@ -251,6 +284,16 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                 this.getCompanyUsers();
             }
         });
+        this.updateUserRoleData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.getCompanyUsers();
+            }
+        });
+        this.updateUserPermissionData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.getCompanyUsers();
+            }
+        });
         this.getCompanyUsers();
         this.getRoles();
         this.getPermissions();
@@ -281,7 +324,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     ngAfterViewInit(): void {
-        this.dataSource.paginator = this.paginator;
+        // Note: Do NOT assign paginator to dataSource for server-side pagination
+        // this.dataSource.paginator = this.paginator; // Removed - using server-side pagination
         this.dataSource.sort = this.sort;
         this.rolesDataSource.paginator = this.rolesPaginator;
         this.permissionsDataSource.paginator = this.permissionsPaginator;
@@ -445,6 +489,15 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         return role?.id;
     }
 
+    public getRoleNameById(roleId: number): string {
+        if (!this.roles || !Array.isArray(this.roles) || !roleId) {
+            return '';
+        }
+
+        const role = this.roles.find((role) => role.id === roleId);
+        return role?.name || '';
+    }
+
     public onRoleChange(roleId: number): void {
         if (!roleId) {
             // If no role selected, clear permissions
@@ -557,12 +610,18 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                         userPayload.mobile = newMobile;
                     }
 
-                    const payload = {
-                        user: userPayload,
-                        cpermissions: formValue.permission,
+                    const rolePayload = {
+                        id: userPayload.id,
                         role_id: formValue.role,
                     };
-                    this.store.dispatch(otpActions.updateCompanyUser({ payload, authToken: this.userToken }));
+                    const permissionPayload = {
+                        id: userPayload.id,
+                        cpermissions: formValue.permission,
+                    };
+                    this.store.dispatch(otpActions.updateUserRole({ payload: rolePayload, authToken: this.userToken }));
+                    this.store.dispatch(
+                        otpActions.updateUserPermission({ payload: permissionPayload, authToken: this.userToken })
+                    );
                 }
             } else {
                 // Add new user
@@ -781,12 +840,24 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
     }
     public getCompanyUsers(): void {
-        const pageSize = this.paginator?.pageSize || 1000;
-        this.store.dispatch(otpActions.getCompanyUsers({ authToken: this.userToken, itemsPerPage: pageSize }));
+        const pageSize = this.paginator?.pageSize || this.currentPageSize;
+        const pageIndex = this.paginator?.pageIndex || this.currentPageIndex;
+        this.store.dispatch(
+            otpActions.getCompanyUsers({ authToken: this.userToken, itemsPerPage: pageSize, pageNo: pageIndex })
+        );
     }
 
     public onUsersPageChange(event: PageEvent): void {
-        this.store.dispatch(otpActions.getCompanyUsers({ authToken: this.userToken, itemsPerPage: event.pageSize }));
+        this.currentPageIndex = event.pageIndex;
+        this.currentPageSize = event.pageSize;
+        // API expects 1-based page number
+        this.store.dispatch(
+            otpActions.getCompanyUsers({
+                authToken: this.userToken,
+                itemsPerPage: event.pageSize,
+                pageNo: event.pageIndex,
+            })
+        );
     }
     public getRoles(): void {
         const pageSize = this.rolesPaginator?.pageSize || 1000;
@@ -992,8 +1063,6 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         if (!this.currentEditingUser) {
             return [];
         }
-
-        // Find the role by name
         const userRole = this.roles.find((role) => role.name === this.currentEditingUser.role);
         if (!userRole || !userRole.c_permissions) {
             return [];

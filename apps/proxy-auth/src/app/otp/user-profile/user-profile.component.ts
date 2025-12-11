@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, of, takeUntil } from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
-import { getUserDetails, leaveCompany, updateUserError } from '../store/actions/otp.action';
+import { getUserDetails, leaveCompany } from '../store/actions/otp.action';
 import {
     error,
     getUserProfileData,
@@ -30,7 +30,6 @@ import { UPDATE_REGEX } from '@proxy/regex';
 export class UserProfileComponent extends BaseComponent implements OnInit {
     @Input() public authToken: string;
     @Input() public target: string;
-    @Input() public showCard: boolean;
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
@@ -164,6 +163,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
                 }, 3000);
             }
         });
+
         window.parent.postMessage({ type: 'proxy', data: { event: 'userNameUpdated', enteredName: enteredName } }, '*');
         this.previousName = enteredName;
     }
