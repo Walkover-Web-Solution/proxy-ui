@@ -433,3 +433,110 @@
 .full-width-chip {
     grid-column: 1 / -1;
 }
+.code-snippet-view {
+    min-width: 500px;
+    max-width: 800px;
+}
+.bg-dark {
+    background-color: #616161 !important;
+    color: #ffffff !important;
+}
+.text-link {
+    color: #007bff !important;
+}
+
+// Preview input field styling
+.preview-input-field {
+    input {
+        border: none;
+        outline: none;
+        background: transparent;
+        width: 100%;
+
+        &::placeholder {
+            color: #000;
+            opacity: 1;
+        }
+    }
+}
+.rounded-16 {
+    border-radius: 16px !important;
+}
+
+// Custom toggle group styling
+.custom-toggle-group {
+    display: inline-flex;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+    background-color: #f5f5f5;
+
+    .custom-toggle-btn {
+        padding: 8px 20px;
+        font-size: 13px;
+        font-weight: 500;
+        border: none;
+        background-color: transparent;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        outline: none;
+
+        &:not(:last-child) {
+            border-right: 1px solid #e0e0e0;
+        }
+
+        &:hover:not(.active) {
+            background-color: #ebebeb;
+        }
+
+        &.active {
+            background-color: #fff;
+            color: var(--color-common-primary, #1976d2);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+    }
+}
+
+.dark-theme-login {
+    ::ng-deep .mat-form-field {
+        .mat-form-field-outline {
+            background-color: #616161 !important;
+            color: #ffffff !important;
+        }
+        .mat-form-field-outline-thick {
+            background-color: #fffcfc !important;
+            color: #ffffff !important;
+        }
+        .mat-form-field-outline-start,
+        .mat-form-field-outline-gap,
+        .mat-form-field-outline-end {
+            border-color: #ffffff !important;
+        }
+        .mat-form-field-flex {
+            background-color: #616161 !important;
+        }
+
+        .mat-input-element {
+            background-color: #616161 !important;
+            color: #ffffff !important;
+        }
+    }
+}
+.width-md-400 {
+    width: 350px !important;
+}
+
+.social-login-icon-box {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        width: 20px;
+        height: 20px;
+    }
+}
