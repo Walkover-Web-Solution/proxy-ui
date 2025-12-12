@@ -20,6 +20,7 @@ import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { MatStepper } from '@angular/material/stepper';
 import { MatDialog } from '@angular/material/dialog';
@@ -209,7 +210,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         private activatedRoute: ActivatedRoute,
         private toast: PrimeNgToastService,
         private ngZone: NgZone,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private http: HttpClient
     ) {
         super();
     }
@@ -1697,5 +1699,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         });
         console.log(this.webhookEventsData);
         return this.webhookEventsData;
+    }
+    public copySampleResponse(sampleResponse: any): void {
+        const url = this.featureForm.get('webhookDetails.webhookUrl').value;
+        if (!url) {
+            this.toast.error('Please enter a webhook URL first');
+            return;
+        }
+        this.http.post(url, sampleResponse).pipe(takeUntil(this.destroy$)).subscribe();
+        this.toast.success('Sample response sent successfully');
     }
 }
