@@ -364,7 +364,17 @@
                                             </mat-panel-title>
                                         </mat-expansion-panel-header>
                                         <div class="sample-response-container">
-                                            <p class="response-label">Sample Response:</p>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <p class="response-label">Sample Response:</p>
+                                                <button
+                                                    mat-flat-button
+                                                    color="primary"
+                                                    (click)="copySampleResponse(event.sampleResponse)"
+                                                >
+                                                    Try it out
+                                                </button>
+                                            </div>
+
                                             <pre class="code-block"><code>{{ event.sampleResponse | json }}</code></pre>
                                         </div>
                                     </mat-expansion-panel>
