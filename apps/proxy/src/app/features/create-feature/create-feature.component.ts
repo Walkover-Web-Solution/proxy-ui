@@ -1,6 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { cloneDeep, isEqual } from 'lodash-es';
 import { Component, OnDestroy, OnInit, NgZone, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { BehaviorSubject, Observable, distinctUntilChanged, filter, of, take, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
@@ -209,7 +210,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         private activatedRoute: ActivatedRoute,
         private toast: PrimeNgToastService,
         private ngZone: NgZone,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private http: HttpClient
     ) {
         super();
     }
@@ -1684,18 +1686,13 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             }
         });
     }
-    public getWebhookEventOptions(): any[] {
-        if (!this.webhookEventsData || typeof this.webhookEventsData !== 'object') {
-            return [];
+    public copySampleResponse(sampleResponse: any): void {
+        const url = this.featureForm.get('webhookDetails.webhookUrl').value;
+        if (!url) {
+            this.toast.error('Please enter a webhook URL first');
+            return;
         }
-        this.webhookEventsData = Object.entries(this.webhookEventsData).map(([key, value]: [string, any]) => {
-            const description = value?.description || '';
-            return {
-                label: description ? `${key} - (${description})` : key,
-                value: key,
-            };
-        });
-        console.log(this.webhookEventsData);
-        return this.webhookEventsData;
+        this.http.post(url, sampleResponse).pipe(takeUntil(this.destroy$)).subscribe();
+        this.toast.success('Sample response sent successfully');
     }
 }
