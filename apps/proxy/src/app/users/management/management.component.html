@@ -250,6 +250,17 @@
                                 </mat-form-field>
                             </div>
 
+                            <div>
+                                <p class="mat-body-2 fw-bold">Hidden roles</p>
+                                <p class="text-grey">Select the default roles you want to hide from users.</p>
+                                <mat-form-field appearance="outline" class="w-50">
+                                    <mat-label>Select roles to hide</mat-label>
+                                    <mat-select formControlName="hiddenDefaultRoles" multiple>
+                                        <mat-option value="owner">Owner</mat-option>
+                                        <mat-option value="user">User</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
                             <!-- Action Buttons -->
                             <div class="d-flex gap-2 mt-3">
                                 <button
