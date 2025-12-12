@@ -25,6 +25,8 @@ import { SimpleDialogComponent } from './simple-dialog/simple-dialog.component';
 import { CreatePlanDialogComponent } from './create-plan-dialog/create-plan-dialog.component';
 import { CreateTaxDialogComponent } from './create-tax-dialog/create-tax-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatExpansionModule } from '@angular/material/expansion';
+
 const routes: Routes = [
     {
         path: '',
@@ -58,6 +60,7 @@ const routes: Routes = [
         MatSelectModule,
         HttpClientModule,
         MatTooltipModule,
+        MatExpansionModule,
     ],
     exports: [RouterModule],
 })
