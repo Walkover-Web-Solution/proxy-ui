@@ -89,6 +89,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         this.defaultRolesForm = new FormGroup({
             defaultRoleForCreator: new FormControl('', []),
             defaultRoleForMember: new FormControl('', []),
+            hiddenDefaultRoles: new FormControl([], []),
         });
     }
 
@@ -147,9 +148,18 @@ export class ManagementComponent implements OnInit, OnDestroy {
         this.userComponentStore.featureDetails$.subscribe((featureDetails) => {
             this.featureDetails = featureDetails;
             if (this.featureDetails) {
+                const cRoles = this.featureDetails.extra_configurations?.c_roles || {};
+                const hiddenRoles: string[] = [];
+                if (cRoles.hide_default_creator_role) {
+                    hiddenRoles.push('owner');
+                }
+                if (cRoles.hide_default_member_role) {
+                    hiddenRoles.push('user');
+                }
                 this.defaultRolesForm.patchValue({
-                    defaultRoleForCreator: this.featureDetails.extra_configurations.c_roles.default_creator_role,
-                    defaultRoleForMember: this.featureDetails.extra_configurations.c_roles.default_member_role,
+                    defaultRoleForCreator: cRoles.default_creator_role,
+                    defaultRoleForMember: cRoles.default_member_role,
+                    hiddenDefaultRoles: hiddenRoles,
                 });
             }
         });
@@ -472,6 +482,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     public saveDefaultRoles(): void {
         if (this.defaultRolesForm.valid) {
             const formData = this.defaultRolesForm.value;
+            const hiddenRoles: string[] = formData.hiddenDefaultRoles || [];
 
             const payload: any = {
                 id: this.featureDetails.id,
@@ -480,6 +491,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
                         c_roles: {
                             default_creator_role: formData.defaultRoleForCreator,
                             default_member_role: formData.defaultRoleForMember,
+                            hide_default_creator_role: hiddenRoles.includes('owner'),
+                            hide_default_member_role: hiddenRoles.includes('user'),
                         },
                         default_role: {
                             name: 'Owner',
@@ -496,6 +509,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         this.defaultRolesForm.reset({
             defaultRoleForCreator: '',
             defaultRoleForMember: '',
+            hiddenDefaultRoles: [],
         });
     }
 
