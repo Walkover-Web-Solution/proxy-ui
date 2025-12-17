@@ -119,4 +119,7 @@ export class FeaturesService {
     public updatePaymentDetails(refId: string | number, body): Observable<BaseResponse<any, void>> {
         return this.http.post<BaseResponse<any, void>>(FeaturesUrls.updatePaymentDetails(this.baseURL, refId), body);
     }
+    public getWebhookEvents(): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getWebhookEvents(this.baseURL));
+    }
 }
