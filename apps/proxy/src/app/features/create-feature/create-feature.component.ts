@@ -20,6 +20,7 @@ import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { MatStepper } from '@angular/material/stepper';
 import { MatDialog } from '@angular/material/dialog';
@@ -108,6 +109,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public chargesDisplayedColumns: string[] = ['metric', 'maxLimit', 'actions'];
     public taxesDisplayedColumns: string[] = ['name', 'code', 'rate', 'action'];
     public taxesData: any[] = [];
+    public webhookEventsData: any;
 
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public featureType$: Observable<IFeatureType[]> = this.componentStore.featureType$;
@@ -128,7 +130,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public paymentDetailsForm$: Observable<any> = this.componentStore.paymentDetailsForm$;
     public paymentDetailsById$: Observable<any> = this.componentStore.paymentDetailsById$;
     public updatePaymentDetails$: Observable<any> = this.componentStore.updatePaymentDetails$;
-
+    public webhookEvents$: Observable<any> = this.componentStore.webhookEvents$;
     public isEditMode = false;
     public selectedServiceIndex = 0;
     public selectedSubscriptionServiceIndex = -2;
@@ -190,6 +192,11 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             theme: new FormControl<string>('system', []),
             allowNewUserRegistration: new FormControl<boolean>(false, []),
         }),
+        webhookDetails: new FormGroup({
+            webhookUrl: new FormControl<string>(null, [Validators.required]),
+            method: new FormControl<string>('POST', [Validators.required]),
+            triggerEvents: new FormControl<string[]>([], []),
+        }),
         // New form controls for conditional steps
     });
     public demoDiv$: Observable<string> = of(null);
@@ -200,12 +207,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         private activatedRoute: ActivatedRoute,
         private toast: PrimeNgToastService,
         private ngZone: NgZone,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private http: HttpClient
     ) {
         super();
     }
 
     ngOnInit(): void {
+        this.componentStore.getWebhookEvents();
         this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
             if (params?.id) {
                 this.featureId = params.id;
@@ -269,6 +278,11 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 authorizationKey: feature.authorization_format.key,
                                 theme: feature.extra_configurations?.theme || 'system',
                                 allowNewUserRegistration: feature.extra_configurations?.create_account_link || false,
+                            },
+                            webhookDetails: {
+                                webhookUrl: feature.webhook?.url,
+                                method: feature.webhook?.method,
+                                triggerEvents: feature.trigger_events || feature.webhook_events || [],
                             },
                         });
                     });
@@ -455,6 +469,24 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.componentStore.getPaymentDetailsFormById({ refId: refId });
             }
         });
+        this.webhookEvents$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((webhookEvents) => {
+            if (webhookEvents) {
+                // Transform object to array for *ngFor
+                if (typeof webhookEvents === 'object' && !Array.isArray(webhookEvents)) {
+                    this.webhookEventsData = Object.entries(webhookEvents).map(([key, value]: [string, any]) => {
+                        const description = value?.description || '';
+                        return {
+                            label: description ? `${key} - (${description})` : key,
+                            value: key,
+                            sampleResponse: value?.sample_response,
+                            description: value?.description,
+                        };
+                    });
+                } else {
+                    this.webhookEventsData = webhookEvents;
+                }
+            }
+        });
     }
 
     public createFeature() {
@@ -483,7 +515,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }
     }
 
-    public updateFeature(type: 'name' | 'service' | 'authorization') {
+    public updateFeature(type: 'name' | 'service' | 'authorization' | 'webhook') {
         let payload;
         const selectedMethod = cloneDeep(this.selectedMethod.getValue());
         const featureDetails: IFeatureDetails = this.getValueFromObservable(this.featureDetails$);
@@ -529,6 +561,22 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     };
                 } else {
                     this.markDirtyServiceFormTouched();
+                    return;
+                }
+                break;
+            case 'webhook':
+                const webhookDetailsForm = this.featureForm.controls.webhookDetails;
+                console.log(webhookDetailsForm.value);
+                if (webhookDetailsForm.valid) {
+                    payload = {
+                        webhook: {
+                            url: webhookDetailsForm.value.webhookUrl,
+                            method: webhookDetailsForm.value.method,
+                        },
+                        trigger_events: webhookDetailsForm.value.triggerEvents || [],
+                    };
+                } else {
+                    webhookDetailsForm.markAllAsTouched();
                     return;
                 }
                 break;
@@ -1632,5 +1680,28 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.componentStore.createTax(of(createPayload));
             }
         });
+    }
+    public getWebhookEventOptions(): any[] {
+        if (!this.webhookEventsData || typeof this.webhookEventsData !== 'object') {
+            return [];
+        }
+        this.webhookEventsData = Object.entries(this.webhookEventsData).map(([key, value]: [string, any]) => {
+            const description = value?.description || '';
+            return {
+                label: description ? `${key} - (${description})` : key,
+                value: key,
+            };
+        });
+        console.log(this.webhookEventsData);
+        return this.webhookEventsData;
+    }
+    public copySampleResponse(sampleResponse: any): void {
+        const url = this.featureForm.get('webhookDetails.webhookUrl').value;
+        if (!url) {
+            this.toast.error('Please enter a webhook URL first');
+            return;
+        }
+        this.http.post(url, sampleResponse).pipe(takeUntil(this.destroy$)).subscribe();
+        this.toast.success('Sample response sent successfully');
     }
 }
