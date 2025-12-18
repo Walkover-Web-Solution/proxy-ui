@@ -315,6 +315,10 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     public close(closeByUser: boolean = false): void {
+        // Reset all form and OTP states
+        this.resetFormState();
+        this.resetStore();
+
         this.togglePopUp.emit();
         if (closeByUser) {
             this.failureReturn.emit({
@@ -323,6 +327,25 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 message: 'User cancelled the registration process.',
             });
         }
+    }
+
+    private resetFormState(): void {
+        // Reset OTP verification states
+        this.isOtpVerified = false;
+        this.isOtpSent = false;
+        this.isNumberChanged = false;
+        this.otpError = '';
+        this.lastSentMobileNumber = '';
+
+        // Reset forms
+        this.registrationForm.reset();
+        this.otpForm.reset();
+
+        // Reset timer
+        this.stopResendTimer();
+
+        // Reset API errors
+        this.apiError.next(null);
     }
 
     public resetStore(): void {
