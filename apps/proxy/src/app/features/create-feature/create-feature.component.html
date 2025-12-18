@@ -472,7 +472,7 @@
                 </mat-list-item>
             </mat-list>
         </div>
-        <div class="auth-credentials px-3" class="width-md-700 w-md-100">
+        <div class="auth-credentials px-3 width-md-700 w-md-100">
             <div class="d-flex flex-column">
                 <ng-container *ngIf="(selectedMethod | async)?.method_services as methodServices">
                     <form
@@ -553,83 +553,322 @@
                 </ng-container>
             </div>
         </div>
+        <div *ngIf="isEditMode">
+            <div
+                *ngIf="featureForm.get('serviceDetails')?.at(3).controls.is_enable.value"
+                class="d-flex align-items-center justify-content-center w-100 mb-3"
+            >
+                <div class="custom-toggle-group">
+                    <button
+                        type="button"
+                        class="custom-toggle-btn"
+                        [class.active]="previewInputPosition !== 'bottom'"
+                        (click)="previewInputPosition = 'top'"
+                    >
+                        Input on Top
+                    </button>
+                    <button
+                        type="button"
+                        class="custom-toggle-btn"
+                        [class.active]="previewInputPosition === 'bottom'"
+                        (click)="previewInputPosition = 'bottom'"
+                    >
+                        Input on Bottom
+                    </button>
+                </div>
+            </div>
+            <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
+        </div>
     </div>
 </ng-template>
 
+<ng-template #previewAuthorization let-authorizationDetails="authorizationDetails">
+    <div
+        class="auth-credentials px-3 width-md-350 w-md-50 border rounded-8 ml-3"
+        [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+        style="max-height: 650px"
+    >
+        <div class="d-flex flex-column gap-3 py-4">
+            <div class="d-flex flex-column align-items-center gap-2">
+                <h2 class="mat-h2 fw-bolder text-light-gray mb-0">Sign in to your account</h2>
+            </div>
+
+            <!-- Input fields on TOP when previewInputPosition === 'top' -->
+            <ng-container *ngIf="previewInputPosition === 'top'">
+                <ng-container *ngTemplateOutlet="inputFieldsSection"></ng-container>
+                <ng-container *ngTemplateOutlet="orContinueWithSection"></ng-container>
+                <ng-container *ngIf="featureForm.get('authorizationDetails.showSocialLoginIcons').value">
+                    <ng-container *ngTemplateOutlet="socialLoginIconsSection"></ng-container>
+                </ng-container>
+                <ng-container *ngIf="!featureForm.get('authorizationDetails.showSocialLoginIcons').value">
+                    <ng-container *ngTemplateOutlet="buttonsSection"></ng-container>
+                </ng-container>
+            </ng-container>
+
+            <!-- Buttons on TOP when previewInputPosition === 'bottom' -->
+            <ng-container *ngIf="previewInputPosition === 'bottom'">
+                <ng-container *ngIf="featureForm.get('authorizationDetails.showSocialLoginIcons').value">
+                    <ng-container *ngTemplateOutlet="socialLoginIconsSection"></ng-container>
+                </ng-container>
+                <ng-container *ngIf="!featureForm.get('authorizationDetails.showSocialLoginIcons').value">
+                    <ng-container *ngTemplateOutlet="buttonsSection"></ng-container>
+                </ng-container>
+                <ng-container *ngTemplateOutlet="orContinueWithSection"></ng-container>
+                <ng-container *ngTemplateOutlet="inputFieldsSection"></ng-container>
+            </ng-container>
+
+            <!-- Are you a new user - always at bottom -->
+            <p
+                *ngIf="featureForm.get('authorizationDetails.allowNewUserRegistration').value"
+                class="mat-body-2 text-center"
+            >
+                Are you a new user? <a class="text-link" href="#">Create an account</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Input Fields Template -->
+    <ng-template #inputFieldsSection>
+        <div
+            *ngIf="featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value"
+            class="d-flex flex-column align-items-center gap-1 w-100"
+            [ngClass]="{
+                'dark-theme-login preview-input-field': featureForm.get('authorizationDetails.theme')?.value === 'dark'
+            }"
+        >
+            <mat-form-field appearance="outline" class="w-85">
+                <mat-label>Email or Phone</mat-label>
+                <input matInput type="text" placeholder="Enter Email or Phone" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-85">
+                <mat-label>Password</mat-label>
+                <input matInput type="password" placeholder="password" />
+            </mat-form-field>
+
+            <button
+                type="button"
+                mat-flat-button
+                class="w-85 custom-btn"
+                style="background-color: #3b47ce; color: #ffffff"
+            >
+                Sign in
+            </button>
+        </div>
+    </ng-template>
+
+    <!-- Or Continue With Divider Template -->
+    <ng-template #orContinueWithSection>
+        <div
+            *ngIf="
+                featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
+                (featureForm.get('serviceDetails')?.at(0)?.controls?.is_enable?.value ||
+                    featureForm.get('serviceDetails')?.at(1)?.controls?.is_enable?.value ||
+                    featureForm.get('serviceDetails')?.at(2)?.controls?.is_enable?.value)
+            "
+            class="d-flex align-items-center gap-2"
+            style="width: 100%"
+        >
+            <hr style="flex: 1; border: none; border-top: 1px solid var(--color-common-border); margin: 0" />
+            <span
+                class="text-secondary mat-body-2"
+                style="white-space: nowrap"
+                [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                >Or continue with</span
+            >
+            <hr style="flex: 1; border: none; border-top: 1px solid var(--color-common-border); margin: 0" />
+        </div>
+    </ng-template>
+    <ng-template #socialLoginIconsSection>
+        <div class="d-flex align-items-center justify-content-center gap-4">
+            <div
+                *ngIf="featureForm.get('serviceDetails')?.at(0)?.controls?.is_enable?.value"
+                class="social-login-icon-box"
+            >
+                <mat-icon class="material-icons-outlined">phone_android</mat-icon>
+            </div>
+            <div
+                *ngIf="featureForm.get('serviceDetails')?.at(1)?.controls?.is_enable?.value"
+                class="social-login-icon-box"
+            >
+                <img src="assets/images/logos/google-logo.svg" alt="Google" />
+            </div>
+            <div
+                *ngIf="featureForm.get('serviceDetails')?.at(2)?.controls?.is_enable?.value"
+                class="social-login-icon-box"
+            >
+                <mat-icon class="material-icons-outlined">apple</mat-icon>
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- Buttons Template -->
+    <ng-template #buttonsSection>
+        <div class="d-flex flex-column align-items-center gap-4 w-100">
+            <button
+                *ngIf="featureForm.get('serviceDetails')?.at(0)?.controls?.is_enable?.value"
+                type="button"
+                mat-stroked-button
+                class="w-85 d-flex align-items-center justify-content-center"
+            >
+                <mat-icon
+                    class="material-icons-outlined"
+                    [style.color]="
+                        featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#000000'
+                    "
+                    style="margin-right: 12px"
+                    >phone_android</mat-icon
+                >
+                <span
+                    class="text-secondary"
+                    [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                    >Continue with OTP</span
+                >
+            </button>
+            <button
+                *ngIf="featureForm.get('serviceDetails')?.at(1)?.controls?.is_enable?.value"
+                type="button"
+                mat-stroked-button
+                class="w-85 d-flex align-items-center justify-content-center"
+            >
+                <img
+                    src="https://www.google.com/favicon.ico"
+                    alt="Google"
+                    style="width: 20px; height: 20px; margin-right: 12px"
+                />
+                <span
+                    class="text-secondary"
+                    [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                    >Continue with Google</span
+                >
+            </button>
+            <button
+                *ngIf="featureForm.get('serviceDetails')?.at(2)?.controls?.is_enable?.value"
+                type="button"
+                mat-stroked-button
+                class="w-85 d-flex align-items-center justify-content-center"
+            >
+                <mat-icon
+                    class="material-icons-outlined"
+                    [style.color]="
+                        featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#000000'
+                    "
+                    style="margin-right: 12px"
+                    >apple</mat-icon
+                >
+                <span
+                    class="text-secondary"
+                    [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                    >Continue with Apple</span
+                >
+            </button>
+        </div>
+    </ng-template>
+</ng-template>
+
 <ng-template #authorizationSetup>
-    <div class="d-flex flex-column gap-3 my-3 flex-grow-1">
-        <div class="d-flex flex-column w-50">
-            <ng-container
-                *ngTemplateOutlet="
-                    inputField;
-                    context: {
-                        fieldControl: featureForm.get('authorizationDetails.session_time'),
-                        fieldConfig: {
-                            label: 'Session Time',
-                            is_required: true,
-                            hint: 'Enter session time in seconds',
-                            patternErrorText: 'Only integer value allowed'
-                        }
-                    }
-                "
-            ></ng-container>
-            <ng-container
-                *ngTemplateOutlet="
-                    inputField;
-                    context: {
-                        fieldControl: featureForm.get('authorizationDetails.authorizationKey'),
-                        fieldConfig: {
-                            label: 'Key Name',
-                            is_required: true,
-                            hint: 'Key name to pass the JWT as e.g &#8221;authorization&#8221;, &#8221;access_token&#8221; etc'
-                        }
-                    }
-                "
-            ></ng-container>
-            <ng-container *ngIf="isEditMode">
+    <div class="d-flex gap-3">
+        <div class="d-flex flex-column gap-3 w-75 code-snippet-view">
+            <div class="d-flex flex-column w-50">
                 <ng-container
                     *ngTemplateOutlet="
                         inputField;
                         context: {
-                            fieldControl: featureForm.get('authorizationDetails.theme'),
+                            fieldControl: featureForm.get('authorizationDetails.session_time'),
                             fieldConfig: {
-                                label: 'Theme',
-                                type: featureFieldType.Select,
-                                source: ['system', 'light', 'dark']
+                                label: 'Session Time',
+                                is_required: true,
+                                hint: 'Enter session time in seconds',
+                                patternErrorText: 'Only integer value allowed'
                             }
                         }
                     "
                 ></ng-container>
-            </ng-container>
-            <ng-container *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1">
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <span class="mat-body-2">Show Create Account For New User: </span>
-                    <mat-slide-toggle
-                        [formControl]="featureForm.get('authorizationDetails.allowNewUserRegistration')"
-                        color="primary"
-                    >
-                    </mat-slide-toggle>
-                </div>
-            </ng-container>
-        </div>
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: featureForm.get('authorizationDetails.authorizationKey'),
+                            fieldConfig: {
+                                label: 'Key Name',
+                                is_required: true,
+                                hint: 'Key name to pass the JWT as e.g &#8221;authorization&#8221;, &#8221;access_token&#8221; etc'
+                            }
+                        }
+                    "
+                ></ng-container>
+                <ng-container *ngIf="isEditMode">
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('authorizationDetails.theme'),
+                                fieldConfig: {
+                                    label: 'Theme',
+                                    type: featureFieldType.Select,
+                                    source: ['system', 'light', 'dark']
+                                }
+                            }
+                        "
+                    ></ng-container>
+                </ng-container>
+                <ng-container *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="mat-body-2">Show Create Account For New User: </span>
+                        <mat-slide-toggle
+                            [formControl]="featureForm.get('authorizationDetails.allowNewUserRegistration')"
+                            color="primary"
+                        >
+                        </mat-slide-toggle>
+                    </div>
+                </ng-container>
 
-        <div class="d-flex flex-column w-50">
-            <div
-                class="overflow-auto code-snippet-view position-relative rounded-4"
-                *ngIf="((isEditMode ? featureDetails$ : selectedMethod) | async)?.authorization_format?.format as code"
-            >
-                <markdown [data]="code | json | language: 'javascript'"> </markdown>
-                <proxy-copy-button
-                    class="position-absolute"
-                    style="top: 16px; right: 8px"
-                    [copyData]="code | json"
-                    tooltip="Copy JSON"
-                    iconClass="text-white"
-                ></proxy-copy-button>
+                <ng-container *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="mat-body-2">Show the social login as a icon: </span>
+                        <mat-slide-toggle
+                            [formControl]="featureForm.get('authorizationDetails.showSocialLoginIcons')"
+                            color="primary"
+                        >
+                        </mat-slide-toggle>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="mat-body-2">Block new user sign-ups: </span>
+                        <mat-slide-toggle
+                            [formControl]="featureForm.get('authorizationDetails.blockNewUserSignUps')"
+                            color="primary"
+                        >
+                        </mat-slide-toggle>
+                    </div>
+                </ng-container>
             </div>
-            <p class="mat-body-2 text-secondary my-2">
-                <strong>Note:</strong> JSON format you will receive after login as JWT in Authorization key
-            </p>
+
+            <div class="d-flex flex-column w-75">
+                <div
+                    class="overflow-auto code-snippet-view position-relative rounded-4"
+                    *ngIf="
+                        ((isEditMode ? featureDetails$ : selectedMethod) | async)?.authorization_format?.format as code
+                    "
+                >
+                    <markdown [data]="code | json | language: 'javascript'"> </markdown>
+                    <proxy-copy-button
+                        class="position-absolute"
+                        style="top: 16px; right: 8px"
+                        [copyData]="code | json"
+                        tooltip="Copy JSON"
+                        iconClass="text-white"
+                    ></proxy-copy-button>
+                </div>
+                <p class="mat-body-2 text-secondary my-2">
+                    <strong>Note:</strong> JSON format you will receive after login as JWT in Authorization key
+                </p>
+            </div>
+        </div>
+        <div *ngIf="isEditMode">
+            <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
         </div>
     </div>
 </ng-template>
