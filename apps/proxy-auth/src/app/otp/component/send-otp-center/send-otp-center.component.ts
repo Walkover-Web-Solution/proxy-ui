@@ -11,8 +11,10 @@ import {
     Output,
     ViewChild,
 } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { NgHcaptchaComponent } from 'ng-hcaptcha';
+import { FormControl, FormGroup, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
+import { CustomValidators } from '@proxy/custom-validator';
 import { BaseComponent } from '@proxy/ui/base-component';
 import {
     sendOtpAction,
@@ -22,7 +24,7 @@ import {
     resetAnyState,
 } from '../../store/actions/otp.action';
 import { IAppState } from '../../store/app.state';
-import { BehaviorSubject, Observable, of, Subscription, timer } from 'rxjs';
+import { BehaviorSubject, filter, Observable, of, Subscription, timer } from 'rxjs';
 import {
     closeWidgetApiFailed,
     errors,
@@ -41,11 +43,13 @@ import {
 import { isEqual } from 'lodash-es';
 import { debounceTime, distinctUntilChanged, skip, take, takeUntil } from 'rxjs/operators';
 import { EMAIL_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
-import { IGetOtpRes, IWidgetResponse } from '../../model/otp';
+import { IGetOtpRes, IlogInData, IWidgetResponse } from '../../model/otp';
 import { IntlPhoneLib } from '@proxy/utils';
 import { META_TAG_ID } from '@proxy/constant';
 import { environment } from 'apps/proxy-auth/src/environments/environment';
 import { FeatureServiceIds } from '@proxy/models/features-model';
+import { LoginComponentStore } from '../login/login.store';
+import { OtpUtilityService } from '../../service/otp-utility.service';
 
 export enum OtpErrorCodes {
     VerifyLimitReached = 704,
@@ -56,9 +60,11 @@ export enum OtpErrorCodes {
     selector: 'proxy-send-otp-center',
     templateUrl: './send-otp-center.component.html',
     styleUrls: ['./send-otp-center.component.scss'],
+    providers: [LoginComponentStore],
 })
 export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('initContact') initContact: ElementRef;
+    @ViewChild(NgHcaptchaComponent) hCaptchaComponent: NgHcaptchaComponent;
     @Input() public referenceId: string;
     @Input() public serviceData: any;
     @Input() public tokenAuth: string;
@@ -117,11 +123,28 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public otpErrorCodes = OtpErrorCodes;
     public featureServiceIds = FeatureServiceIds;
 
+    // Login form properties
+    public showPassword: boolean = false;
+    public loginForm = new FormGroup({
+        username: new FormControl<string>(null, [Validators.required]),
+        password: new FormControl<string>(null, [Validators.required, CustomValidators.cannotContainSpace]),
+    });
+    public loginError: string = null;
+    public isLoginLoading$: Observable<boolean>;
+    public state: string;
+    private apiError = new BehaviorSubject<any>(null);
+
+    // hCaptcha properties
+    public hCaptchaToken: string = '';
+    public hCaptchaVerified: boolean = false;
+
     constructor(
         private store: Store<IAppState>,
         private cdr: ChangeDetectorRef,
         private _elemRef: ElementRef,
-        private otpWidgetService: OtpWidgetService
+        private otpWidgetService: OtpWidgetService,
+        private loginComponentStore: LoginComponentStore,
+        private otpUtilityService: OtpUtilityService
     ) {
         super();
         this.errors$ = this.store.pipe(select(errors), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
@@ -181,6 +204,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
             takeUntil(this.destroy$)
         );
         this.selectWidgetData$ = this.store.pipe(select(selectWidgetData), takeUntil(this.destroy$));
+        this.isLoginLoading$ = this.loginComponentStore.isLoading$;
     }
 
     ngOnInit() {
@@ -227,6 +251,34 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
 
         this.selectGetOtpRes$.subscribe((res) => {
             this.otpRes = res;
+        });
+
+        // Login store subscriptions
+        this.selectWidgetData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res && res.length > 0) {
+                const passwordService = res.find(
+                    (service) => service.service_id === FeatureServiceIds.PasswordAuthentication
+                );
+                if (passwordService) {
+                    this.state = passwordService.state;
+                }
+            }
+        });
+
+        this.loginComponentStore.apiError$.pipe(takeUntil(this.destroy$)).subscribe((error) => {
+            this.apiError.next(error);
+            this.loginError = error;
+            // Reset hCaptcha on error
+            if (error) {
+                this.resetHCaptcha();
+            }
+        });
+
+        this.loginComponentStore.showRegistration$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                const prefillDetails = this.loginForm.get('username').value;
+                this.showRegistration(prefillDetails);
+            }
         });
     }
 
@@ -388,10 +440,69 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         } else if (widgetData?.service_id === FeatureServiceIds.Msg91OtpService) {
             this.otpWidgetService.openWidget();
         } else if (widgetData?.service_id === FeatureServiceIds.PasswordAuthentication) {
-            this.otpWidgetService.openLogin(true);
+            this.login();
         }
     }
-    public showRegistration(prefillDetails: string) {
-        this.openPopUp.emit(prefillDetails);
+
+    public encryptPassword(password: string): string {
+        return this.otpUtilityService.aesEncrypt(
+            JSON.stringify(password),
+            environment.uiEncodeKey,
+            environment.uiIvKey,
+            true
+        );
+    }
+
+    public login(): void {
+        if (this.loginForm.invalid) {
+            this.loginForm.markAllAsTouched();
+            return;
+        }
+
+        if (!this.hCaptchaVerified) {
+            this.loginError = 'Please complete the hCaptcha verification';
+            return;
+        }
+
+        this.loginError = null;
+
+        const encodedPassword = this.encryptPassword(this.loginForm.get('password').value);
+        const loginData: IlogInData = {
+            'state': this.state,
+            'user': this.loginForm.get('username').value?.replace(/^\+/, ''),
+            'password': encodedPassword,
+            'hCaptchaToken': this.hCaptchaToken,
+        };
+
+        this.loginComponentStore.loginData(loginData);
+    }
+
+    // hCaptcha event handlers
+    public onHCaptchaVerify(token: string): void {
+        this.hCaptchaToken = token;
+        this.hCaptchaVerified = true;
+    }
+
+    public onHCaptchaExpired(): void {
+        this.hCaptchaToken = '';
+        this.hCaptchaVerified = false;
+    }
+
+    public onHCaptchaError(error: any): void {
+        this.hCaptchaToken = '';
+        this.hCaptchaVerified = false;
+        console.error('hCaptcha error:', error);
+    }
+
+    public resetHCaptcha(): void {
+        this.hCaptchaToken = '';
+        this.hCaptchaVerified = false;
+        if (this.hCaptchaComponent) {
+            this.hCaptchaComponent.reset();
+        }
+    }
+
+    public showRegistration(prefillDetails?: string) {
+        this.openPopUp.emit(prefillDetails || this.loginForm.get('username')?.value);
     }
 }

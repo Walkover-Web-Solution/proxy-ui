@@ -68,3 +68,103 @@ input[matinput]::-webkit-inner-spin-button {
     font-weight: 400;
     margin: 0px;
 }
+
+// Login section styles
+.login-section {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.heading {
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.input-width {
+    width: 100%;
+}
+
+.login-field {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.login-btn {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-size: medium;
+    font-weight: 600;
+    margin-top: 16px;
+}
+
+.error-message {
+    font-size: 14px;
+    color: #f44336;
+    margin-bottom: 16px;
+}
+
+.resize-icon {
+    position: relative;
+    top: 2px;
+}
+
+.loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.subheading {
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+}
+
+.note {
+    font-size: 12px;
+    line-height: 18px;
+}
+
+.divider-container {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.divider-line {
+    flex: 1;
+    height: 1px;
+    background-color: #e0e0e0;
+}
+
+.divider-text {
+    padding: 0 16px;
+    font-size: 12px;
+    color: #5d6164;
+    font-weight: 500;
+}
+
+a {
+    font-size: small;
+    font-weight: 400;
+    margin: 0px;
+}
+
+p {
+    font-size: small;
+    font-weight: 400;
+    margin: 0px;
+}
+
+.hcaptcha-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+    margin-top: 16px;
+}
