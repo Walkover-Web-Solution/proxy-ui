@@ -66,13 +66,12 @@ input[matinput]::-webkit-inner-spin-button {
 .create-account {
     font-size: small;
     font-weight: 400;
-    margin: 0px;
+    margin-top: 16px;
 }
 
 // Login section styles
 .login-section {
     width: 100%;
-    margin-bottom: 16px;
 }
 
 .heading {
@@ -89,6 +88,12 @@ input[matinput]::-webkit-inner-spin-button {
 .login-field {
     width: 100%;
     margin-top: 16px;
+
+    .mat-icon-button {
+        height: 40px;
+        width: 40px;
+        line-height: 40px;
+    }
 }
 
 .login-btn {
@@ -107,8 +112,16 @@ input[matinput]::-webkit-inner-spin-button {
 }
 
 .resize-icon {
-    position: relative;
-    top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    margin-right: -8px;
+
+    svg {
+        display: block;
+    }
 }
 
 .loader {
@@ -132,7 +145,7 @@ input[matinput]::-webkit-inner-spin-button {
 .divider-container {
     display: flex;
     align-items: center;
-    margin: 20px 0;
+    margin: 10px 0;
     width: 100%;
 }
 
@@ -165,6 +178,34 @@ p {
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 8px 0;
-    margin-top: 16px;
+}
+.forgot-password {
+    text-align: right;
+}
+
+.back-button {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    @media only screen and (max-width: 768px) {
+        position: fixed;
+    }
+}
+
+.user-info {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+
+    a {
+        margin-left: 8px;
+        color: #1976d2;
+        cursor: pointer;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 }
