@@ -315,18 +315,19 @@
                                 widgetData?.service_id !== featureServiceIds.Msg91OtpService ||
                                 !(otpScriptLoading | async)
                             "
-                            mat-raised-button
+                            mat-stroked-button
                             (click)="onVerificationBtnClick(widgetData)"
-                            style="padding: 10px 50px !important"
-                            class="mat-elevation-z2"
+                            class="auth-option-btn"
                         >
-                            <img
-                                [src]="widgetData.icon"
-                                [alt]="widgetData.text"
-                                style="margin-right: 20px"
-                                loading="lazy"
-                            />
-                            <span class="mat-subheading-2">{{ widgetData.text }}</span>
+                            <div class="auth-option-content">
+                                <img
+                                    [src]="widgetData.icon"
+                                    [alt]="widgetData.text"
+                                    class="auth-option-icon"
+                                    loading="lazy"
+                                />
+                                <span class="auth-option-text">{{ widgetData.text }}</span>
+                            </div>
                         </button>
                     </ng-container>
                 </ng-container>
