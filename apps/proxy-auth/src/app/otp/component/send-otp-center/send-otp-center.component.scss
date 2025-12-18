@@ -209,3 +209,35 @@ p {
         }
     }
 }
+
+// Auth option buttons (Continue with Google, etc.)
+.auth-option-btn {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #7d7c7c !important;
+    border-radius: 8px !important;
+    font-size: 14px;
+    font-weight: 600;
+    background-color: #fff !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-option-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 180px;
+}
+
+.auth-option-icon {
+    height: 20px;
+    width: 20px;
+    min-width: 20px;
+    margin-right: 12px;
+}
+
+.auth-option-text {
+    white-space: nowrap;
+}
