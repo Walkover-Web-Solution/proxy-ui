@@ -119,6 +119,8 @@
                             #rolesPaginator
                             [pageSizeOptions]="pageSizeOptions"
                             [pageSize]="rolesPageSize"
+                            [pageIndex]="rolesPageIndex"
+                            [length]="rolesTotalCount"
                             showFirstLastButtons
                             aria-label="Select page of roles"
                             (page)="onRolesPageChange($event)"
@@ -207,6 +209,8 @@
                             #permissionsPaginator
                             [pageSizeOptions]="pageSizeOptions"
                             [pageSize]="permissionsPageSize"
+                            [pageIndex]="permissionsPageIndex"
+                            [length]="permissionsTotalCount"
                             showFirstLastButtons
                             aria-label="Select page of permissions"
                             (page)="onPermissionsPageChange($event)"

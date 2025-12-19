@@ -38,6 +38,10 @@ export class ManagementComponent implements OnInit, OnDestroy {
     public permissionSearchTerm: string = '';
     public rolesPageSize: number = 25;
     public permissionsPageSize: number = 25;
+    public rolesPageIndex: number = 0;
+    public permissionsPageIndex: number = 0;
+    public rolesTotalCount: number = 0;
+    public permissionsTotalCount: number = 0;
     public pageSizeOptions: number[] = [25, 50, 100, 1000];
     public features: IFeature[] = [];
     public featureDetails: any;
@@ -102,7 +106,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         });
 
         // Subscribe to roles data
-        this.roles$.subscribe((roles) => {
+        this.roles$.subscribe((roles: any) => {
             if (roles?.data) {
                 this.rolesDataSource.data = roles.data.map((role: any) => {
                     const permissionsList = role.c_permissions || [];
@@ -117,16 +121,22 @@ export class ManagementComponent implements OnInit, OnDestroy {
                         description: role.description || '',
                     };
                 });
+                // Update pagination info from response
+                this.rolesTotalCount = roles.totalEntityCount || roles.data.length;
             } else {
                 this.rolesDataSource.data = [];
+                this.rolesTotalCount = 0;
             }
         });
-        this.permissions$.pipe(takeUntil(this.destroy$)).subscribe((permissions) => {
+        this.permissions$.pipe(takeUntil(this.destroy$)).subscribe((permissions: any) => {
             if (permissions?.data) {
                 this.availablePermissions = permissions.data;
                 this.permissionsDataSource.data = permissions.data;
+                // Update pagination info from response
+                this.permissionsTotalCount = permissions.totalEntityCount || permissions.data.length;
             } else {
                 this.permissionsDataSource.data = [];
+                this.permissionsTotalCount = 0;
             }
         });
         this.createPermission$.pipe(takeUntil(this.destroy$)).subscribe((createPermission) => {
@@ -172,9 +182,11 @@ export class ManagementComponent implements OnInit, OnDestroy {
                     this.roleForm.get('id')?.setValue(selectedFeature.id, { emitEvent: false });
                     this.userComponentStore.getFeatureDetails(of(selectedFeature.id));
                 }
-                // Reset search terms when feature changes
+                // Reset search terms and page indices when feature changes
                 this.roleSearchTerm = '';
                 this.permissionSearchTerm = '';
+                this.rolesPageIndex = 0;
+                this.permissionsPageIndex = 0;
                 this.loadRoles(referenceId, this.roleSearchTerm);
                 this.loadPermissions(referenceId, this.permissionSearchTerm);
             } else {
@@ -182,6 +194,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
                 this.rolesDataSource.data = [];
                 this.roleSearchTerm = '';
                 this.permissionSearchTerm = '';
+                this.rolesPageIndex = 0;
+                this.permissionsPageIndex = 0;
             }
         });
         this.createRole$
@@ -231,14 +245,22 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     private loadRoles(referenceId: string, searchTerm?: string): void {
-        const params: any = { referenceId, itemsPerPage: this.rolesPageSize };
+        const params: any = {
+            referenceId,
+            itemsPerPage: this.rolesPageSize,
+            pageNo: this.rolesPageIndex + 1, // API uses 1-based page number
+        };
         if (searchTerm && searchTerm.trim()) {
             params.search = searchTerm.trim();
         }
         this.userComponentStore.getRoles(of(params));
     }
     private loadPermissions(referenceId: string, searchTerm?: string): void {
-        const params: any = { referenceId, itemsPerPage: this.permissionsPageSize };
+        const params: any = {
+            referenceId,
+            itemsPerPage: this.permissionsPageSize,
+            pageNo: this.permissionsPageIndex + 1, // API uses 1-based page number
+        };
         if (searchTerm && searchTerm.trim()) {
             params.search = searchTerm.trim();
         }
@@ -247,6 +269,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
     public onRolesPageChange(event: PageEvent): void {
         this.rolesPageSize = event.pageSize;
+        this.rolesPageIndex = event.pageIndex;
         const referenceId = this.roleForm.get('feature_id')?.value;
         if (referenceId) {
             this.loadRoles(referenceId, this.roleSearchTerm);
@@ -255,6 +278,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
     public onPermissionsPageChange(event: PageEvent): void {
         this.permissionsPageSize = event.pageSize;
+        this.permissionsPageIndex = event.pageIndex;
         const referenceId = this.roleForm.get('feature_id')?.value;
         if (referenceId) {
             this.loadPermissions(referenceId, this.permissionSearchTerm);
@@ -467,6 +491,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
     public search(event: any): void {
         this.roleSearchTerm = event || '';
+        this.rolesPageIndex = 0; // Reset to first page on search
         const referenceId = this.roleForm.get('feature_id')?.value;
         if (referenceId) {
             this.loadRoles(referenceId, this.roleSearchTerm);
@@ -474,6 +499,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
     public searchPermission(event: any): void {
         this.permissionSearchTerm = event || '';
+        this.permissionsPageIndex = 0; // Reset to first page on search
         const referenceId = this.roleForm.get('feature_id')?.value;
         if (referenceId) {
             this.loadPermissions(referenceId, this.permissionSearchTerm);
