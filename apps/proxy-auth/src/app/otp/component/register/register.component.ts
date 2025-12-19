@@ -14,7 +14,7 @@ import {
     ViewChild,
     ElementRef,
 } from '@angular/core';
-import { resetAll, sendOtpAction, verifyOtpAction } from '../../store/actions/otp.action';
+import { resetAnyState, sendOtpAction, verifyOtpAction } from '../../store/actions/otp.action';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
 import { IAppState } from '../../store/app.state';
@@ -317,7 +317,8 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public close(closeByUser: boolean = false): void {
         // Reset all form and OTP states
         this.resetFormState();
-        this.resetStore();
+        // Reset only OTP-specific store states, preserving widgetData
+        this.resetOtpStoreState();
 
         this.togglePopUp.emit();
         if (closeByUser) {
@@ -348,8 +349,30 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         this.apiError.next(null);
     }
 
-    public resetStore(): void {
-        this.store.dispatch(resetAll());
+    /**
+     * Reset only OTP-specific store states, preserving widgetData and other non-OTP states
+     */
+    private resetOtpStoreState(): void {
+        this.store.dispatch(
+            resetAnyState({
+                request: {
+                    otpGenerateData: null,
+                    getOtpInProcess: false,
+                    getOtpSuccess: false,
+                    verifyOtpV2Data: null,
+                    verifyOtpV2InProcess: false,
+                    verifyOtpV2Success: false,
+                    resendOtpInProcess: false,
+                    resendOtpSuccess: false,
+                    verifyOtpData: null,
+                    verifyOtpInProcess: false,
+                    verifyOtpSuccess: false,
+                    resendCount: 0,
+                    apiErrorResponse: null,
+                    errors: null,
+                },
+            })
+        );
     }
 
     public returnSuccess(successResponse: any) {
