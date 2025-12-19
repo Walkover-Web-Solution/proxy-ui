@@ -1200,16 +1200,18 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                     this.show$ = of(true);
                 } else {
                     // When closing registration, go back to where user came from
-                    this.setShowLogin(false);
                     if (this.cameFromLogin) {
                         // If user came from login, go back to login
                         this.setShowLogin(true);
                         this.show$ = of(true);
                     } else if (this.cameFromSendOtpCenter) {
                         // If user came from send-otp-center, go back to send-otp-center
+                        // Only close login without affecting show$ - avoid race condition
+                        this.otpWidgetService.openLogin(false);
                         this.show$ = of(true);
                     } else {
                         // If user came from dynamically appended buttons, just close without opening anything
+                        this.setShowLogin(false);
                         this.show$ = of(false);
                     }
                     // Reset the flags
