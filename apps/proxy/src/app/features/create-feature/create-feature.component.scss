@@ -433,6 +433,76 @@
 .full-width-chip {
     grid-column: 1 / -1;
 }
+
+// Event Catalog Container
+.event-catalog-container {
+    padding: 16px;
+
+    overflow-y: auto;
+}
+
+// Webhook Events Accordion Styling
+.webhook-events-accordion {
+    .mat-expansion-panel {
+        margin-bottom: 8px;
+    }
+
+    ::ng-deep .mat-expansion-panel-header {
+        height: auto !important;
+        padding: 12px 16px !important;
+    }
+
+    ::ng-deep .mat-expansion-panel-header-title {
+        flex-grow: 1;
+    }
+
+    .event-header-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .event-name {
+            font-weight: 700;
+            font-size: 15px;
+            color: #111827;
+        }
+
+        .event-description {
+            font-size: 13px;
+            color: #6b7280;
+            font-weight: 400;
+        }
+    }
+}
+
+// Sample Response Code Block
+.sample-response-container {
+    .response-label {
+        color: #333;
+        font-size: 13px;
+        margin-bottom: 12px;
+        font-weight: 500;
+    }
+
+    .code-block {
+        background-color: #000000;
+        color: #ffffff;
+        padding: 16px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-size: 12px;
+        line-height: 1.6;
+        max-height: 350px;
+        overflow-y: auto;
+        margin: 0;
+
+        code {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+    }
+}
 .code-snippet-view {
     min-width: 500px;
     max-width: 800px;
@@ -538,75 +608,5 @@
     img {
         width: 20px;
         height: 20px;
-    }
-}
-
-// Event Catalog Container
-.event-catalog-container {
-    padding: 16px;
-
-    overflow-y: auto;
-}
-
-// Webhook Events Accordion Styling
-.webhook-events-accordion {
-    .mat-expansion-panel {
-        margin-bottom: 8px;
-    }
-
-    ::ng-deep .mat-expansion-panel-header {
-        height: auto !important;
-        padding: 12px 16px !important;
-    }
-
-    ::ng-deep .mat-expansion-panel-header-title {
-        flex-grow: 1;
-    }
-
-    .event-header-content {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-
-        .event-name {
-            font-weight: 700;
-            font-size: 15px;
-            color: #111827;
-        }
-
-        .event-description {
-            font-size: 13px;
-            color: #6b7280;
-            font-weight: 400;
-        }
-    }
-}
-
-// Sample Response Code Block
-.sample-response-container {
-    .response-label {
-        color: #333;
-        font-size: 13px;
-        margin-bottom: 12px;
-        font-weight: 500;
-    }
-
-    .code-block {
-        background-color: #000000;
-        color: #ffffff;
-        padding: 16px;
-        border-radius: 8px;
-        overflow-x: auto;
-        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-        font-size: 12px;
-        line-height: 1.6;
-        max-height: 350px;
-        overflow-y: auto;
-        margin: 0;
-
-        code {
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
     }
 }

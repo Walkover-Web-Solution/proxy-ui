@@ -22,13 +22,23 @@ import {
 } from '../store/selectors';
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { OtpWidgetService } from '../service/otp-widget.service';
+import { OtpUtilityService } from '../service/otp-utility.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionCenterComponent } from '../component/subscription-center/subscription-center.component';
+import { environment } from 'apps/proxy-auth/src/environments/environment';
 
 export enum Theme {
     LIGHT = 'light',
     DARK = 'dark',
     SYSTEM = 'system',
+}
+export enum SendOtpCenterVersion {
+    V1 = 'v1',
+    V2 = 'v2',
+}
+export enum InputFields {
+    TOP = 'top',
+    BOTTOM = 'bottom',
 }
 
 @Component({
@@ -49,6 +59,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public isLogin: boolean;
     @Input() public loginRedirectUrl: string;
     @Input() public theme: string;
+    @Input() public version: string = SendOtpCenterVersion.V1;
+    @Input() public input_fields: string = InputFields.TOP;
+    @Input() public show_social_login_icons: boolean = false;
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
     }
@@ -95,12 +108,15 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public showSkeleton: boolean = false;
     public upgradeSubscriptionData: any;
     private createAccountTextAppended: boolean = false; // Flag to track if create account text has been appended
+    private hcaptchaLoading: boolean = false;
+    private hcaptchaRenderQueue: Array<() => void> = [];
 
     constructor(
         private ngZone: NgZone,
         private store: Store<IAppState>,
         private renderer: Renderer2,
         private otpWidgetService: OtpWidgetService,
+        private otpUtilityService: OtpUtilityService,
         private otpService: OtpService,
         private dialog: MatDialog
     ) {
@@ -138,6 +154,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             if (theme?.theme !== Theme.SYSTEM) {
                 this.theme = theme?.theme || theme;
             }
+            this.version = theme?.version || 'v1';
+            this.input_fields = theme?.input_fields || 'top';
+            this.show_social_login_icons = theme?.icons || false;
             this.isCreateAccountTextAppended = theme?.create_account_link || false;
         });
         if (this.type === 'subscription') {
@@ -1002,19 +1021,1188 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                                 }
                             });
                     } else {
-                        this.appendButton(element, buttonsData);
-                        buttonsProcessed++;
-                        this.checkAndAppendCreateAccountText(
-                            element,
-                            buttonsProcessed,
-                            totalButtons,
-                            fallbackTimeout,
-                            immediateFallback,
-                            otpTimeout
-                        );
+                        if (
+                            buttonsData?.service_id !== FeatureServiceIds.PasswordAuthentication ||
+                            (buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication &&
+                                this.version === 'v1')
+                        ) {
+                            this.appendButton(element, buttonsData);
+                            buttonsProcessed++;
+                            this.checkAndAppendCreateAccountText(
+                                element,
+                                buttonsProcessed,
+                                totalButtons,
+                                fallbackTimeout,
+                                immediateFallback,
+                                otpTimeout
+                            );
+                        } else {
+                            this.appendPasswordAuthenticationButtonV2(element, buttonsData, totalButtons);
+                            buttonsProcessed++;
+                            this.checkAndAppendCreateAccountText(
+                                element,
+                                buttonsProcessed,
+                                totalButtons,
+                                fallbackTimeout,
+                                immediateFallback,
+                                otpTimeout
+                            );
+                        }
                     }
                 }
             });
+    }
+
+    public appendPasswordAuthenticationButtonV2(element, buttonsData, totalButtons: number): void {
+        if (this.showSkeleton) {
+            this.showSkeleton = false;
+            this.removeSkeletonLoader(element);
+        }
+
+        const loginContainer: HTMLElement = this.renderer.createElement('div');
+        loginContainer.style.cssText = `
+            width: 316px;
+            padding: 0;
+            margin: 0 8px 16px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        `;
+
+        const title: HTMLElement = this.renderer.createElement('div');
+        title.textContent = 'Login';
+        title.style.cssText = `
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: 600;
+            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            margin: 0 8px 20px 8px;
+            text-align: center;
+            width: 316px;
+        `;
+
+        const usernameField = this.renderer.createElement('div');
+        usernameField.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        `;
+
+        const usernameLabel: HTMLElement = this.renderer.createElement('label');
+        usernameLabel.textContent = 'Email or Mobile';
+        usernameLabel.style.cssText = `
+            font-size: 14px;
+            font-weight: 500;
+            color: ${this.theme === 'dark' ? '#e5e7eb' : '#5d6164'};
+        `;
+
+        const usernameInput: HTMLInputElement = this.renderer.createElement('input');
+        usernameInput.type = 'text';
+        usernameInput.placeholder = 'Email or Mobile';
+        usernameInput.autocomplete = 'off';
+        usernameInput.style.cssText = `
+            width: 100%;
+            height: 44px;
+            padding: 0 16px;
+            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border-radius: 4px;
+            background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
+            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        `;
+
+        const usernameNote: HTMLElement = this.renderer.createElement('p');
+        usernameNote.textContent = 'Note: Please enter your Mobile number with the country code (e.g. 91)';
+        usernameNote.style.cssText = `
+            font-size: 12px;
+            line-height: 18px;
+            color: ${this.theme === 'dark' ? '#e5e7eb' : '#5d6164'};
+            margin: 0;
+        `;
+
+        const passwordField = this.renderer.createElement('div');
+        passwordField.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+        `;
+
+        const passwordLabel: HTMLElement = this.renderer.createElement('label');
+        passwordLabel.textContent = 'Password';
+        passwordLabel.style.cssText = usernameLabel.style.cssText;
+
+        const passwordInputWrapper = this.renderer.createElement('div');
+        passwordInputWrapper.style.cssText = `
+            position: relative;
+            display: flex;
+            align-items: center;
+        `;
+
+        const passwordInput: HTMLInputElement = this.renderer.createElement('input');
+        passwordInput.type = 'password';
+        passwordInput.placeholder = 'Password';
+        passwordInput.autocomplete = 'off';
+        passwordInput.style.cssText = `
+            width: 100%;
+            height: 44px;
+            padding: 0 44px 0 16px;
+            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border-radius: 4px;
+            background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
+            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        `;
+        this.addPasswordVisibilityToggle(passwordInput, passwordInputWrapper);
+        this.renderer.appendChild(passwordInputWrapper, passwordInput);
+
+        const hcaptchaWrapper: HTMLElement = this.renderer.createElement('div');
+        hcaptchaWrapper.style.cssText = `
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 8px 0;
+            box-sizing: border-box;
+            background: ${this.theme === 'dark' ? 'transparent' : 'transparent'};
+        `;
+        const hcaptchaPlaceholder: HTMLElement = this.renderer.createElement('div');
+        hcaptchaPlaceholder.style.cssText = `
+            display: inline-block;
+            background: ${this.theme === 'dark' ? 'transparent' : 'transparent'};
+        `;
+        this.renderer.appendChild(hcaptchaWrapper, hcaptchaPlaceholder);
+
+        let hCaptchaToken: string = '';
+        let hCaptchaWidgetId: any = null;
+
+        const errorText: HTMLElement = this.renderer.createElement('div');
+        errorText.style.cssText = `
+            color: #d14343;
+            font-size: 14px;
+            min-height: 16px;
+            display: none;
+            margin-top: -4px;
+        `;
+
+        const loginButton: HTMLButtonElement = this.renderer.createElement('button');
+        loginButton.textContent = 'Login';
+        loginButton.style.cssText = `
+            height: 36px;
+            padding: 0 12px;
+            background-color: #3f51b5;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+            margin-top: 4px;
+        `;
+
+        const forgotPasswordWrapper: HTMLElement = this.renderer.createElement('div');
+        forgotPasswordWrapper.style.cssText = `
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 4px;
+        `;
+        const forgotPasswordLink: HTMLAnchorElement = this.renderer.createElement('a');
+        forgotPasswordLink.href = 'javascript:void(0)';
+        forgotPasswordLink.textContent = 'Forgot Password?';
+        forgotPasswordLink.style.cssText = `
+            font-size: 13px;
+            font-weight: 400;
+            color: #007BFF;
+            text-decoration: none;
+        `;
+
+        // Forgot password click handler - opens the dialog with forgot password flow
+        forgotPasswordLink.addEventListener('click', () => {
+            const userValue = usernameInput.value?.trim() || '';
+            this.openForgotPasswordDialog(userValue);
+        });
+        this.renderer.appendChild(forgotPasswordWrapper, forgotPasswordLink);
+
+        const resetHCaptcha = () => {
+            const instance = this.getHCaptchaInstance();
+            if (instance && hCaptchaWidgetId !== null && hCaptchaWidgetId !== undefined) {
+                instance.reset(hCaptchaWidgetId);
+            }
+            hCaptchaToken = '';
+        };
+
+        const renderHCaptcha = () => {
+            const instance = this.getHCaptchaInstance();
+            if (!instance || !environment.hCaptchaSiteKey) {
+                this.setInlineLoginError(errorText, 'Unable to load hCaptcha. Please refresh and try again.');
+                return;
+            }
+            hcaptchaPlaceholder.innerHTML = '';
+            hCaptchaWidgetId = instance.render(hcaptchaPlaceholder, {
+                sitekey: environment.hCaptchaSiteKey,
+                theme: this.theme === 'dark' ? 'dark' : 'light',
+                callback: (token: string) => {
+                    hCaptchaToken = token;
+                    this.setInlineLoginError(errorText, '');
+                },
+                'expired-callback': () => {
+                    hCaptchaToken = '';
+                },
+                'error-callback': () => {
+                    hCaptchaToken = '';
+                    this.setInlineLoginError(errorText, 'hCaptcha verification failed. Please retry.');
+                },
+            });
+        };
+
+        this.ensureHCaptchaScriptLoaded(renderHCaptcha);
+
+        const submit = () =>
+            this.handlePasswordAuthenticationLogin(
+                buttonsData,
+                usernameInput,
+                passwordInput,
+                errorText,
+                loginButton,
+                () => hCaptchaToken,
+                resetHCaptcha
+            );
+
+        loginButton.addEventListener('click', submit);
+        [usernameInput, passwordInput].forEach((input) =>
+            input.addEventListener('keydown', (event: KeyboardEvent) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    submit();
+                }
+            })
+        );
+
+        // this.renderer.appendChild(usernameField, usernameLabel);
+        this.renderer.appendChild(usernameField, usernameInput);
+        this.renderer.appendChild(usernameField, usernameNote);
+        // this.renderer.appendChild(passwordField, passwordLabel);
+        this.renderer.appendChild(passwordField, passwordInputWrapper);
+        this.renderer.appendChild(loginContainer, usernameField);
+        this.renderer.appendChild(loginContainer, passwordField);
+        this.renderer.appendChild(loginContainer, forgotPasswordWrapper);
+        this.renderer.appendChild(loginContainer, hcaptchaWrapper);
+        this.renderer.appendChild(loginContainer, errorText);
+        this.renderer.appendChild(loginContainer, loginButton);
+
+        // Position login form based on input_fields setting
+        const isInputFieldsTop = this.input_fields === 'top';
+
+        // Always insert the "Login" title at the very top
+        if (element.firstChild) {
+            this.renderer.insertBefore(element, title, element.firstChild);
+        } else {
+            this.renderer.appendChild(element, title);
+        }
+
+        if (isInputFieldsTop) {
+            // input_fields = 'top': Login form (input fields) at top (after title), social buttons below
+            const titleNextSibling = title.nextSibling;
+            if (titleNextSibling) {
+                this.renderer.insertBefore(element, loginContainer, titleNextSibling);
+            } else {
+                this.renderer.appendChild(element, loginContainer);
+            }
+        } else {
+            // input_fields = 'bottom': Social buttons at top (after title), login form at bottom
+            this.renderer.appendChild(element, loginContainer);
+        }
+
+        if (totalButtons > 1) {
+            const dividerContainer: HTMLElement = this.renderer.createElement('div');
+            dividerContainer.setAttribute('data-or-divider', 'true');
+            dividerContainer.style.cssText = `
+                display: flex;
+                align-items: center;
+                margin: 8px 8px 12px 8px;
+                width: 316px;
+            `;
+            const dividerLineLeft: HTMLElement = this.renderer.createElement('div');
+            dividerLineLeft.style.cssText = `
+                flex: 1;
+                height: 1px;
+                background-color: #e0e0e0;
+            `;
+            const dividerText: HTMLElement = this.renderer.createElement('span');
+            dividerText.textContent = 'OR';
+            dividerText.style.cssText = `
+                padding: 0 12px;
+                font-size: 12px;
+                color: ${this.theme === 'dark' ? '#e5e7eb' : '#5d6164'};
+                font-weight: 500;
+                letter-spacing: 0.5px;
+            `;
+            const dividerLineRight: HTMLElement = this.renderer.createElement('div');
+            dividerLineRight.style.cssText = dividerLineLeft.style.cssText;
+
+            this.renderer.appendChild(dividerContainer, dividerLineLeft);
+            this.renderer.appendChild(dividerContainer, dividerText);
+            this.renderer.appendChild(dividerContainer, dividerLineRight);
+
+            if (isInputFieldsTop) {
+                // input_fields = 'top': OR divider goes after login container
+                const nextSibling = loginContainer.nextSibling;
+                if (nextSibling) {
+                    this.renderer.insertBefore(element, dividerContainer, nextSibling);
+                } else {
+                    this.renderer.appendChild(element, dividerContainer);
+                }
+            } else {
+                // input_fields = 'bottom': OR divider goes before login container
+                this.renderer.insertBefore(element, dividerContainer, loginContainer);
+            }
+        }
+    }
+
+    private handlePasswordAuthenticationLogin(
+        buttonsData: any,
+        usernameInput: HTMLInputElement,
+        passwordInput: HTMLInputElement,
+        errorText: HTMLElement,
+        loginButton: HTMLButtonElement,
+        getHCaptchaToken: () => string,
+        resetHCaptcha: () => void
+    ): void {
+        const username = usernameInput.value?.trim();
+        const password = passwordInput.value;
+        const hCaptchaToken = getHCaptchaToken();
+
+        if (!username || !password) {
+            this.setInlineLoginError(errorText, 'Email/Mobile and password are required.');
+            return;
+        }
+
+        if (!hCaptchaToken) {
+            this.setInlineLoginError(errorText, 'Please complete the hCaptcha verification.');
+            return;
+        }
+
+        this.setInlineLoginError(errorText, '');
+        const originalText = loginButton.textContent || 'Login';
+        loginButton.disabled = true;
+        loginButton.textContent = 'Please wait...';
+
+        const payload = {
+            state: buttonsData?.state || this.loginWidgetData?.state,
+            user: username.replace(/^\+/, ''),
+            password: this.encryptPassword(password),
+            hCaptchaToken,
+        };
+
+        this.otpService.login(payload).subscribe(
+            (res) => {
+                loginButton.disabled = false;
+                loginButton.textContent = originalText;
+
+                if (res?.hasError) {
+                    this.setInlineLoginError(errorText, res?.errors?.[0] || 'Unable to login. Please try again.');
+                    resetHCaptcha();
+                    return;
+                }
+
+                if (res?.data?.redirect_url) {
+                    window.location.href = res.data.redirect_url;
+                    return;
+                }
+
+                this.returnSuccessObj(res);
+            },
+            (error: HttpErrorResponse) => {
+                loginButton.disabled = false;
+                loginButton.textContent = originalText;
+
+                if (error?.status === 403) {
+                    this.setShowRegistration(true, username);
+                    resetHCaptcha();
+                    return;
+                }
+
+                this.setInlineLoginError(
+                    errorText,
+                    error?.error?.errors?.[0] || 'Login failed. Please check your details and try again.'
+                );
+                resetHCaptcha();
+                this.returnFailureObj(error);
+            }
+        );
+    }
+
+    private setInlineLoginError(errorText: HTMLElement, message: string): void {
+        errorText.textContent = message;
+        errorText.style.display = message ? 'block' : 'none';
+    }
+
+    private addPasswordVisibilityToggle(input: HTMLInputElement, container: HTMLElement): void {
+        let visible = false;
+        const toggleBtn: HTMLButtonElement = this.renderer.createElement('button');
+        toggleBtn.type = 'button';
+        toggleBtn.style.cssText = `
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        `;
+
+        const hiddenIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="${
+            this.theme === 'dark' ? '#e5e7eb' : '#5d6164'
+        }" xmlns="http://www.w3.org/2000/svg" style="display: block;"><path d="M12.01 20c-5.065 0-9.586-4.211-12.01-8.424 2.418-4.103 6.943-7.576 12.01-7.576 5.135 0 9.635 3.453 11.999 7.564-2.241 4.43-6.726 8.436-11.999 8.436zm-10.842-8.416c.843 1.331 5.018 7.416 10.842 7.416 6.305 0 10.112-6.103 10.851-7.405-.772-1.198-4.606-6.595-10.851-6.595-6.116 0-10.025 5.355-10.842 6.584zm10.832-4.584c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5zm0 1c-2.208 0-4 1.792-4 4s1.792 4 4 4 4-1.792 4-4-1.792-4-4-4z"/></svg>`;
+        const visibleIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="${
+            this.theme === 'dark' ? '#e5e7eb' : '#5d6164'
+        }" xmlns="http://www.w3.org/2000/svg" style="display: block;"><path d="M8.137 15.147c-.71-.857-1.146-1.947-1.146-3.147 0-2.76 2.241-5 5-5 1.201 0 2.291.435 3.148 1.145l1.897-1.897c-1.441-.738-3.122-1.248-5.035-1.248-6.115 0-10.025 5.355-10.842 6.584.529.834 2.379 3.527 5.113 5.428l1.865-1.865zm6.294-6.294c-.673-.53-1.515-.853-2.44-.853-2.207 0-4 1.792-4 4 0 .923.324 1.765.854 2.439l5.586-5.586zm7.56-6.146l-19.292 19.293-.708-.707 3.548-3.548c-2.298-1.612-4.234-3.885-5.548-6.169 2.418-4.103 6.943-7.576 12.01-7.576 2.065 0 4.021.566 5.782 1.501l3.501-3.501.707.707zm-2.465 3.879l-.734.734c2.236 1.619 3.628 3.604 4.061 4.274-.739 1.303-4.546 7.406-10.852 7.406-1.425 0-2.749-.368-3.951-.938l-.748.748c1.475.742 3.057 1.19 4.699 1.19 5.274 0 9.758-4.006 11.999-8.436-1.087-1.891-2.63-3.637-4.474-4.978zm-3.535 5.414c0-.554-.113-1.082-.317-1.562l.734-.734c.361.69.583 1.464.583 2.296 0 2.759-2.24 5-5 5-.832 0-1.604-.223-2.295-.583l.734-.735c.48.204 1.007.318 1.561.318 2.208 0 4-1.792 4-4z"/></svg>`;
+
+        const renderIcon = () => {
+            toggleBtn.innerHTML = visible ? visibleIcon : hiddenIcon;
+        };
+        renderIcon();
+
+        toggleBtn.addEventListener('click', () => {
+            visible = !visible;
+            input.type = visible ? 'text' : 'password';
+            renderIcon();
+        });
+
+        this.renderer.appendChild(container, toggleBtn);
+    }
+
+    /**
+     * Opens the forgot password dialog
+     */
+    private openForgotPasswordDialog(prefillEmail: string = ''): void {
+        // Open the dialog
+        this.ngZone.run(() => {
+            this.show$ = of(true);
+            // Signal to send-otp-center to open in forgot password mode
+            this.otpWidgetService.openForgotPassword(prefillEmail);
+        });
+    }
+
+    /**
+     * Shows the forgot password form (Step 2: Send OTP)
+     */
+    private showForgotPasswordForm(loginContainer: HTMLElement, buttonsData: any, prefillEmail: string = ''): void {
+        // Clear the login container
+        loginContainer.innerHTML = '';
+
+        // Create back button
+        const backButton: HTMLButtonElement = this.renderer.createElement('button');
+        backButton.type = 'button';
+        backButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#5f6368">
+                <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/>
+            </svg>
+        `;
+        backButton.style.cssText = `
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        `;
+        backButton.addEventListener('click', () => {
+            this.restoreLoginForm(loginContainer, buttonsData);
+        });
+
+        // Create title
+        const title: HTMLElement = this.renderer.createElement('div');
+        title.textContent = 'Reset Password';
+        title.style.cssText = `
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: 600;
+            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            margin-bottom: 16px;
+        `;
+
+        // Create email/mobile input
+        const inputField = this.renderer.createElement('div');
+        inputField.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        `;
+
+        const emailInput: HTMLInputElement = this.renderer.createElement('input');
+        emailInput.type = 'text';
+        emailInput.placeholder = 'Email or Mobile';
+        emailInput.value = prefillEmail;
+        emailInput.autocomplete = 'off';
+        emailInput.style.cssText = `
+            width: 100%;
+            height: 44px;
+            padding: 0 16px;
+            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border-radius: 4px;
+            background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
+            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        `;
+
+        // Create error text
+        const errorText: HTMLElement = this.renderer.createElement('div');
+        errorText.style.cssText = `
+            color: #d14343;
+            font-size: 14px;
+            min-height: 16px;
+            display: none;
+            margin-top: 4px;
+        `;
+
+        // Create send OTP button
+        const sendOtpButton: HTMLButtonElement = this.renderer.createElement('button');
+        sendOtpButton.textContent = 'Send OTP';
+        sendOtpButton.style.cssText = `
+            height: 44px;
+            padding: 0 12px;
+            background-color: #3f51b5;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+            margin-top: 8px;
+        `;
+
+        const handleSendOtp = () => {
+            const userDetails = emailInput.value?.trim();
+            if (!userDetails) {
+                this.setInlineLoginError(errorText, 'Email or Mobile is required.');
+                return;
+            }
+
+            this.setInlineLoginError(errorText, '');
+            const originalText = sendOtpButton.textContent || 'Send OTP';
+            sendOtpButton.disabled = true;
+            sendOtpButton.textContent = 'Please wait...';
+
+            const payload = {
+                state: buttonsData?.state || this.loginWidgetData?.state,
+                user: userDetails,
+            };
+
+            this.otpService.resetPassword(payload).subscribe(
+                (res) => {
+                    sendOtpButton.disabled = false;
+                    sendOtpButton.textContent = originalText;
+
+                    if (res?.hasError) {
+                        this.setInlineLoginError(
+                            errorText,
+                            res?.errors?.[0] || 'Unable to send OTP. Please try again.'
+                        );
+                        return;
+                    }
+
+                    // Move to step 3: Change Password
+                    this.showChangePasswordForm(loginContainer, buttonsData, userDetails);
+                },
+                (error) => {
+                    sendOtpButton.disabled = false;
+                    sendOtpButton.textContent = originalText;
+                    this.setInlineLoginError(
+                        errorText,
+                        error?.error?.errors?.[0] || 'Failed to send OTP. Please try again.'
+                    );
+                }
+            );
+        };
+
+        sendOtpButton.addEventListener('click', handleSendOtp);
+        emailInput.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSendOtp();
+            }
+        });
+
+        // Append elements
+        this.renderer.appendChild(inputField, emailInput);
+        this.renderer.appendChild(loginContainer, backButton);
+        this.renderer.appendChild(loginContainer, title);
+        this.renderer.appendChild(loginContainer, inputField);
+        this.renderer.appendChild(loginContainer, errorText);
+        this.renderer.appendChild(loginContainer, sendOtpButton);
+    }
+
+    /**
+     * Shows the change password form (Step 3: Enter OTP and new password)
+     */
+    private showChangePasswordForm(loginContainer: HTMLElement, buttonsData: any, userDetails: string): void {
+        // Clear the login container
+        loginContainer.innerHTML = '';
+
+        let remainingSeconds = 15;
+        let timerInterval: any = null;
+
+        // Create back button
+        const backButton: HTMLButtonElement = this.renderer.createElement('button');
+        backButton.type = 'button';
+        backButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#5f6368">
+                <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/>
+            </svg>
+        `;
+        backButton.style.cssText = `
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        `;
+        backButton.addEventListener('click', () => {
+            if (timerInterval) clearInterval(timerInterval);
+            this.showForgotPasswordForm(loginContainer, buttonsData, userDetails);
+        });
+
+        // Create title
+        const title: HTMLElement = this.renderer.createElement('div');
+        title.textContent = 'Change Password';
+        title.style.cssText = `
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: 600;
+            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            margin-bottom: 8px;
+        `;
+
+        // User info with change link
+        const userInfo: HTMLElement = this.renderer.createElement('p');
+        userInfo.style.cssText = `
+            font-size: 14px;
+            color: ${this.theme === 'dark' ? '#e5e7eb' : '#5d6164'};
+            margin: 0 0 8px 0;
+        `;
+        userInfo.innerHTML = `${userDetails} <a href="javascript:void(0)" style="color: #1976d2; text-decoration: none;">Change</a>`;
+        userInfo.querySelector('a')?.addEventListener('click', () => {
+            if (timerInterval) clearInterval(timerInterval);
+            this.showForgotPasswordForm(loginContainer, buttonsData, userDetails);
+        });
+
+        // Resend OTP button
+        const resendButton: HTMLButtonElement = this.renderer.createElement('button');
+        resendButton.type = 'button';
+        resendButton.style.cssText = `
+            background: transparent;
+            border: none;
+            color: #1976d2;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 4px 0;
+            margin-bottom: 12px;
+        `;
+
+        const updateResendButton = () => {
+            if (remainingSeconds > 0) {
+                resendButton.textContent = `Resend OTP ${remainingSeconds}`;
+                resendButton.disabled = true;
+                resendButton.style.opacity = '0.6';
+            } else {
+                resendButton.textContent = 'Resend OTP';
+                resendButton.disabled = false;
+                resendButton.style.opacity = '1';
+            }
+        };
+        updateResendButton();
+
+        // Start timer
+        timerInterval = setInterval(() => {
+            if (remainingSeconds > 0) {
+                remainingSeconds--;
+                updateResendButton();
+            } else {
+                clearInterval(timerInterval);
+            }
+        }, 1000);
+
+        resendButton.addEventListener('click', () => {
+            if (remainingSeconds > 0) return;
+
+            resendButton.disabled = true;
+            const payload = {
+                state: buttonsData?.state || this.loginWidgetData?.state,
+                user: userDetails,
+            };
+
+            this.otpService.resetPassword(payload).subscribe(
+                (res) => {
+                    if (!res?.hasError) {
+                        remainingSeconds = 15;
+                        updateResendButton();
+                        timerInterval = setInterval(() => {
+                            if (remainingSeconds > 0) {
+                                remainingSeconds--;
+                                updateResendButton();
+                            } else {
+                                clearInterval(timerInterval);
+                            }
+                        }, 1000);
+                    }
+                    resendButton.disabled = remainingSeconds > 0;
+                },
+                () => {
+                    resendButton.disabled = false;
+                }
+            );
+        });
+
+        // Create OTP input
+        const otpInput: HTMLInputElement = this.renderer.createElement('input');
+        otpInput.type = 'number';
+        otpInput.placeholder = 'Enter OTP';
+        otpInput.autocomplete = 'off';
+        otpInput.style.cssText = `
+            width: 100%;
+            height: 44px;
+            padding: 0 16px;
+            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border-radius: 4px;
+            background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
+            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+        `;
+
+        // Create password input
+        const passwordInput: HTMLInputElement = this.renderer.createElement('input');
+        passwordInput.type = 'password';
+        passwordInput.placeholder = 'New Password';
+        passwordInput.autocomplete = 'off';
+        passwordInput.style.cssText = otpInput.style.cssText;
+
+        // Create confirm password input
+        const confirmPasswordInput: HTMLInputElement = this.renderer.createElement('input');
+        confirmPasswordInput.type = 'password';
+        confirmPasswordInput.placeholder = 'Confirm Password';
+        confirmPasswordInput.autocomplete = 'off';
+        confirmPasswordInput.style.cssText = otpInput.style.cssText;
+
+        // Password hint
+        const passwordHint: HTMLElement = this.renderer.createElement('p');
+        passwordHint.textContent =
+            'Password should contain at least one Capital Letter, one Small Letter, one Digit and one Symbol (min 8 characters)';
+        passwordHint.style.cssText = `
+            font-size: 12px;
+            color: ${this.theme === 'dark' ? '#9ca3af' : '#6b7280'};
+            margin: -8px 0 12px 0;
+        `;
+
+        // Create error text
+        const errorText: HTMLElement = this.renderer.createElement('div');
+        errorText.style.cssText = `
+            color: #d14343;
+            font-size: 14px;
+            min-height: 16px;
+            display: none;
+            margin-bottom: 8px;
+        `;
+
+        // Create submit button
+        const submitButton: HTMLButtonElement = this.renderer.createElement('button');
+        submitButton.textContent = 'Submit';
+        submitButton.style.cssText = `
+            height: 44px;
+            padding: 0 12px;
+            background-color: #3f51b5;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+        `;
+
+        const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+
+        const handleSubmit = () => {
+            const otp = otpInput.value?.trim();
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (!otp) {
+                this.setInlineLoginError(errorText, 'OTP is required.');
+                return;
+            }
+            if (!password) {
+                this.setInlineLoginError(errorText, 'Password is required.');
+                return;
+            }
+            if (password.length < 8) {
+                this.setInlineLoginError(errorText, 'Password must be at least 8 characters.');
+                return;
+            }
+            if (!PASSWORD_REGEX.test(password)) {
+                this.setInlineLoginError(
+                    errorText,
+                    'Password should contain at least one Capital Letter, one Small Letter, one Digit and one Symbol.'
+                );
+                return;
+            }
+            if (password !== confirmPassword) {
+                this.setInlineLoginError(errorText, 'Passwords do not match.');
+                return;
+            }
+
+            this.setInlineLoginError(errorText, '');
+            const originalText = submitButton.textContent || 'Submit';
+            submitButton.disabled = true;
+            submitButton.textContent = 'Please wait...';
+
+            const encodedPassword = this.encryptPassword(password);
+            const payload = {
+                state: buttonsData?.state || this.loginWidgetData?.state,
+                user: userDetails,
+                password: encodedPassword,
+                otp: parseInt(otp, 10),
+            };
+
+            this.otpService.verfyResetPasswordOtp(payload).subscribe(
+                (res) => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+
+                    if (res?.hasError) {
+                        this.setInlineLoginError(
+                            errorText,
+                            res?.errors?.[0] || 'Unable to reset password. Please try again.'
+                        );
+                        return;
+                    }
+
+                    // Clear timer and go back to login form
+                    if (timerInterval) clearInterval(timerInterval);
+                    this.restoreLoginForm(loginContainer, buttonsData);
+                },
+                (error) => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                    this.setInlineLoginError(
+                        errorText,
+                        error?.error?.errors?.[0] || 'Failed to reset password. Please try again.'
+                    );
+                }
+            );
+        };
+
+        submitButton.addEventListener('click', handleSubmit);
+
+        // Append elements
+        this.renderer.appendChild(loginContainer, backButton);
+        this.renderer.appendChild(loginContainer, title);
+        this.renderer.appendChild(loginContainer, userInfo);
+        this.renderer.appendChild(loginContainer, resendButton);
+        this.renderer.appendChild(loginContainer, otpInput);
+        this.renderer.appendChild(loginContainer, passwordInput);
+        this.renderer.appendChild(loginContainer, confirmPasswordInput);
+        this.renderer.appendChild(loginContainer, passwordHint);
+        this.renderer.appendChild(loginContainer, errorText);
+        this.renderer.appendChild(loginContainer, submitButton);
+    }
+
+    /**
+     * Restores the login form after forgot password flow
+     */
+    private restoreLoginForm(loginContainer: HTMLElement, buttonsData: any): void {
+        // Clear the container and rebuild the login form content
+        loginContainer.innerHTML = '';
+
+        // Rebuild the login form content within the same container
+        this.buildLoginFormContent(loginContainer, buttonsData);
+    }
+
+    /**
+     * Builds the login form content within the given container
+     */
+    private buildLoginFormContent(loginContainer: HTMLElement, buttonsData: any): void {
+        const title: HTMLElement = this.renderer.createElement('div');
+        title.textContent = 'Login';
+        title.style.cssText = `
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: 600;
+            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            margin-bottom: 0px;
+            text-align: center;
+        `;
+
+        const usernameField = this.renderer.createElement('div');
+        usernameField.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        `;
+
+        const usernameInput: HTMLInputElement = this.renderer.createElement('input');
+        usernameInput.type = 'text';
+        usernameInput.placeholder = 'Email or Mobile';
+        usernameInput.autocomplete = 'off';
+        usernameInput.style.cssText = `
+            width: 100%;
+            height: 44px;
+            padding: 0 16px;
+            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border-radius: 4px;
+            background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
+            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        `;
+
+        const usernameNote: HTMLElement = this.renderer.createElement('p');
+        usernameNote.textContent = 'Note: Please enter your Mobile number with the country code (e.g. 91)';
+        usernameNote.style.cssText = `
+            font-size: 12px;
+            line-height: 18px;
+            color: ${this.theme === 'dark' ? '#e5e7eb' : '#5d6164'};
+            margin: 0;
+        `;
+
+        const passwordField = this.renderer.createElement('div');
+        passwordField.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+        `;
+
+        const passwordInputWrapper = this.renderer.createElement('div');
+        passwordInputWrapper.style.cssText = `
+            position: relative;
+            display: flex;
+            align-items: center;
+        `;
+
+        const passwordInput: HTMLInputElement = this.renderer.createElement('input');
+        passwordInput.type = 'password';
+        passwordInput.placeholder = 'Password';
+        passwordInput.autocomplete = 'off';
+        passwordInput.style.cssText = `
+            width: 100%;
+            height: 44px;
+            padding: 0 44px 0 16px;
+            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border-radius: 4px;
+            background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
+            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        `;
+        this.addPasswordVisibilityToggle(passwordInput, passwordInputWrapper);
+        this.renderer.appendChild(passwordInputWrapper, passwordInput);
+
+        const hcaptchaWrapper: HTMLElement = this.renderer.createElement('div');
+        hcaptchaWrapper.style.cssText = `
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 8px 0;
+            box-sizing: border-box;
+            background: ${this.theme === 'dark' ? 'transparent' : 'transparent'};
+        `;
+        const hcaptchaPlaceholder: HTMLElement = this.renderer.createElement('div');
+        hcaptchaPlaceholder.style.cssText = `
+            display: inline-block;
+            background: ${this.theme === 'dark' ? 'transparent' : 'transparent'};
+        `;
+        this.renderer.appendChild(hcaptchaWrapper, hcaptchaPlaceholder);
+
+        let hCaptchaToken: string = '';
+        let hCaptchaWidgetId: any = null;
+
+        const errorText: HTMLElement = this.renderer.createElement('div');
+        errorText.style.cssText = `
+            color: #d14343;
+            font-size: 14px;
+            min-height: 16px;
+            display: none;
+            margin-top: -4px;
+        `;
+
+        const loginButton: HTMLButtonElement = this.renderer.createElement('button');
+        loginButton.textContent = 'Login';
+        loginButton.style.cssText = `
+            height: 44px;
+            padding: 0 12px;
+            background-color: #3f51b5;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+            margin-top: 4px;
+        `;
+
+        const forgotPasswordWrapper: HTMLElement = this.renderer.createElement('div');
+        forgotPasswordWrapper.style.cssText = `
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 4px;
+        `;
+        const forgotPasswordLink: HTMLAnchorElement = this.renderer.createElement('a');
+        forgotPasswordLink.href = 'javascript:void(0)';
+        forgotPasswordLink.textContent = 'Forgot Password?';
+        forgotPasswordLink.style.cssText = `
+            font-size: 13px;
+            font-weight: 400;
+            color: #1976d2;
+            text-decoration: none;
+        `;
+        forgotPasswordLink.addEventListener('click', () => {
+            const userValue = usernameInput.value?.trim() || '';
+            this.showForgotPasswordForm(loginContainer, buttonsData, userValue);
+        });
+        this.renderer.appendChild(forgotPasswordWrapper, forgotPasswordLink);
+
+        const resetHCaptcha = () => {
+            const instance = this.getHCaptchaInstance();
+            if (instance && hCaptchaWidgetId !== null && hCaptchaWidgetId !== undefined) {
+                instance.reset(hCaptchaWidgetId);
+            }
+            hCaptchaToken = '';
+        };
+
+        const renderHCaptcha = () => {
+            const instance = this.getHCaptchaInstance();
+            if (!instance || !environment.hCaptchaSiteKey) {
+                this.setInlineLoginError(errorText, 'Unable to load hCaptcha. Please refresh and try again.');
+                return;
+            }
+            hcaptchaPlaceholder.innerHTML = '';
+            hCaptchaWidgetId = instance.render(hcaptchaPlaceholder, {
+                sitekey: environment.hCaptchaSiteKey,
+                theme: this.theme === 'dark' ? 'dark' : 'light',
+                callback: (token: string) => {
+                    hCaptchaToken = token;
+                    this.setInlineLoginError(errorText, '');
+                },
+                'expired-callback': () => {
+                    hCaptchaToken = '';
+                },
+                'error-callback': () => {
+                    hCaptchaToken = '';
+                    this.setInlineLoginError(errorText, 'hCaptcha verification failed. Please retry.');
+                },
+            });
+        };
+
+        this.ensureHCaptchaScriptLoaded(renderHCaptcha);
+
+        const submit = () =>
+            this.handlePasswordAuthenticationLogin(
+                buttonsData,
+                usernameInput,
+                passwordInput,
+                errorText,
+                loginButton,
+                () => hCaptchaToken,
+                resetHCaptcha
+            );
+
+        loginButton.addEventListener('click', submit);
+        [usernameInput, passwordInput].forEach((input) =>
+            input.addEventListener('keydown', (event: KeyboardEvent) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    submit();
+                }
+            })
+        );
+
+        this.renderer.appendChild(loginContainer, title);
+        this.renderer.appendChild(usernameField, usernameInput);
+        this.renderer.appendChild(usernameField, usernameNote);
+        this.renderer.appendChild(passwordField, passwordInputWrapper);
+        this.renderer.appendChild(loginContainer, usernameField);
+        this.renderer.appendChild(loginContainer, passwordField);
+        this.renderer.appendChild(loginContainer, forgotPasswordWrapper);
+        this.renderer.appendChild(loginContainer, hcaptchaWrapper);
+        this.renderer.appendChild(loginContainer, errorText);
+        this.renderer.appendChild(loginContainer, loginButton);
+    }
+
+    private ensureHCaptchaScriptLoaded(onReady: () => void): void {
+        if (this.getHCaptchaInstance()) {
+            onReady();
+            return;
+        }
+
+        this.hcaptchaRenderQueue.push(onReady);
+
+        if (this.hcaptchaLoading) {
+            return;
+        }
+
+        this.hcaptchaLoading = true;
+        const script = this.renderer.createElement('script');
+        script.src = 'https://js.hcaptcha.com/1/api.js?render=explicit';
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+            this.hcaptchaLoading = false;
+            const queued = [...this.hcaptchaRenderQueue];
+            this.hcaptchaRenderQueue = [];
+            queued.forEach((cb) => cb());
+        };
+        script.onerror = () => {
+            this.hcaptchaLoading = false;
+            this.hcaptchaRenderQueue = [];
+        };
+        this.renderer.appendChild(document.head, script);
+    }
+
+    private getHCaptchaInstance(): any {
+        return (window as any)?.hcaptcha;
+    }
+
+    private encryptPassword(password: string): string {
+        return this.otpUtilityService.aesEncrypt(
+            JSON.stringify(password),
+            environment.uiEncodeKey,
+            environment.uiIvKey,
+            true
+        );
     }
 
     private checkAndAppendCreateAccountText(
@@ -1061,56 +2249,160 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
         const button: HTMLButtonElement = this.renderer.createElement('button');
         const image: HTMLImageElement = this.renderer.createElement('img');
-        const span: HTMLSpanElement = this.renderer.createElement('span');
 
         const isOtpButton = buttonsData?.service_id === FeatureServiceIds.Msg91OtpService;
+        const useDiv = this.version !== 'v1';
+        const showIconsOnly = this.show_social_login_icons;
+        const isInputFieldsTop = this.input_fields === 'top';
 
-        button.style.cssText = `
-            outline: none;
-            padding: 0px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 14px;
-            background-color: transparent;
-            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #3f4346'};
-            border-radius: 4px;
-            line-height: 40px;
-            color: ${this.theme === 'dark' ? '#ffffff' : '#3f4346'};
-            margin: 8px 8px 16px 8px;
-            cursor: pointer;
-            width: 260px;
-            visibility: ${isOtpButton ? 'hidden' : 'visible'}; // Hide only OTP buttons until ready
-        `;
-        image.style.cssText = `
-            height: 20px;
-            // width: 20px;
-        `;
-        span.style.cssText = `
-            color: ${this.theme === 'dark' ? '#ffffff' : '#3f4346'};
-            font-weight: 600;
-        `;
-        image.src = buttonsData.icon;
-        image.alt = buttonsData.text;
-        image.loading = 'lazy';
-        span.innerText = buttonsData.text;
-
-        if (isOtpButton) {
-            button.setAttribute('data-service-id', buttonsData.service_id);
-        }
-        button.addEventListener('click', () => {
-            if (buttonsData?.urlLink) {
-                window.open(buttonsData.urlLink, this.target);
-            } else if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
-                this.otpWidgetService.openWidget();
-            } else if (buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication) {
-                this.setShowLogin(true);
+        // If showing icons only, set up a row container if not already present
+        if (showIconsOnly) {
+            let iconsContainer = element.querySelector('[data-icons-container]');
+            if (!iconsContainer) {
+                iconsContainer = this.renderer.createElement('div');
+                iconsContainer.setAttribute('data-icons-container', 'true');
+                iconsContainer.style.cssText = `
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 35px;
+                    margin: 8px 8px 16px 8px;
+                    width: 316px;
+                `;
+                // Position icons container based on input_fields
+                if (isInputFieldsTop) {
+                    // input_fields = 'top': Login form at top, social icons at bottom
+                    this.renderer.appendChild(element, iconsContainer);
+                } else {
+                    // input_fields = 'bottom': Social icons at top, login form at bottom
+                    const orDivider = element.querySelector('[data-or-divider]');
+                    if (orDivider) {
+                        this.renderer.insertBefore(element, iconsContainer, orDivider);
+                    } else if (element.firstChild) {
+                        this.renderer.insertBefore(element, iconsContainer, element.firstChild);
+                    } else {
+                        this.renderer.appendChild(element, iconsContainer);
+                    }
+                }
             }
-        });
-        this.renderer.appendChild(button, image);
-        this.renderer.appendChild(button, span);
-        this.renderer.appendChild(element, button);
+
+            button.style.cssText = `
+                outline: none;
+                padding: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                background-color: transparent;
+                border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #d1d5db'};
+                border-radius: 8px;
+                cursor: pointer;
+                visibility: ${isOtpButton ? 'hidden' : 'visible'};
+            `;
+            image.style.cssText = `
+                height: 24px;
+                width: 24px;
+            `;
+            image.src = buttonsData.icon;
+            image.alt = buttonsData.text;
+            image.loading = 'lazy';
+
+            if (isOtpButton) {
+                button.setAttribute('data-service-id', buttonsData.service_id);
+            }
+            button.addEventListener('click', () => {
+                if (buttonsData?.urlLink) {
+                    window.open(buttonsData.urlLink, this.target);
+                } else if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
+                    this.otpWidgetService.openWidget();
+                } else if (buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication) {
+                    this.setShowLogin(true);
+                }
+            });
+
+            this.renderer.appendChild(button, image);
+            this.renderer.appendChild(iconsContainer, button);
+        } else {
+            const span: HTMLSpanElement = this.renderer.createElement('span');
+
+            button.style.cssText = `
+                outline: none;
+                padding: 0 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                ${useDiv ? '' : 'gap: 12px;'}
+                font-size: 14px;
+                background-color: transparent;
+                border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #d1d5db'};
+                border-radius: 8px;
+                height: 44px;
+                color: ${this.theme === 'dark' ? '#ffffff' : '#111827'};
+                margin: 8px 8px 16px 8px;
+                cursor: pointer;
+                width: ${useDiv ? '316px' : '260px'};
+                visibility: ${isOtpButton ? 'hidden' : 'visible'}; // Hide only OTP buttons until ready
+            `;
+            image.style.cssText = `
+                height: 20px;
+                width: 20px;
+            `;
+            span.style.cssText = `
+                color: ${this.theme === 'dark' ? '#ffffff' : '#111827'};
+                font-weight: 600;
+            `;
+            image.src = buttonsData.icon;
+            image.alt = buttonsData.text;
+            image.loading = 'lazy';
+            span.innerText = buttonsData.text;
+
+            if (isOtpButton) {
+                button.setAttribute('data-service-id', buttonsData.service_id);
+            }
+            button.addEventListener('click', () => {
+                if (buttonsData?.urlLink) {
+                    window.open(buttonsData.urlLink, this.target);
+                } else if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
+                    this.otpWidgetService.openWidget();
+                } else if (buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication) {
+                    this.setShowLogin(true);
+                }
+            });
+
+            if (useDiv) {
+                const contentDiv: HTMLDivElement = this.renderer.createElement('div');
+                contentDiv.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    gap: 12px;
+                    width: 180px;
+                `;
+                this.renderer.appendChild(contentDiv, image);
+                this.renderer.appendChild(contentDiv, span);
+                this.renderer.appendChild(button, contentDiv);
+            } else {
+                this.renderer.appendChild(button, image);
+                this.renderer.appendChild(button, span);
+            }
+
+            // Position button based on input_fields
+            if (isInputFieldsTop) {
+                // input_fields = 'top': Login form at top, social buttons at bottom
+                this.renderer.appendChild(element, button);
+            } else {
+                // input_fields = 'bottom': Social buttons at top, login form at bottom
+                const orDivider = element.querySelector('[data-or-divider]');
+                if (orDivider) {
+                    this.renderer.insertBefore(element, button, orDivider);
+                } else if (element.firstChild) {
+                    this.renderer.insertBefore(element, button, element.firstChild);
+                } else {
+                    this.renderer.appendChild(element, button);
+                }
+            }
+        }
     }
 
     private hasOtpButton(widgetDataArray: any[]): boolean {
@@ -1142,7 +2434,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     gap: 8px !important;
     color: ${this.theme === 'dark' ? '#ffffff' : '#3f4346'};
     cursor: pointer !important;
-    width: 260px !important;
+    width: ${this.version === 'v1' ? '260px' : '316px'} !important;
 `;
 
         // Style the link

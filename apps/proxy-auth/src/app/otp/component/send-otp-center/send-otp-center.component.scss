@@ -241,3 +241,40 @@ p {
 .auth-option-text {
     white-space: nowrap;
 }
+
+// Social icons row (icon-only mode)
+.social-icons-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    margin: 8px 0 16px 0;
+}
+
+.auth-icon-btn {
+    padding: 16px !important;
+    min-width: 56px !important;
+    width: 56px !important;
+    height: 56px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    background-color: #fff !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        border-color: #9ca3af !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+}
+
+.auth-icon-only {
+    height: 24px;
+    width: 24px;
+    object-fit: contain;
+}
