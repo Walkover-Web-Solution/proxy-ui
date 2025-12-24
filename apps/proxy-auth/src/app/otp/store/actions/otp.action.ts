@@ -97,7 +97,7 @@ export const getPermissionsError = createAction(
 
 export const getCompanyUsers = createAction(
     '[OTP] Get Company Users',
-    props<{ authToken: string; itemsPerPage?: number }>()
+    props<{ authToken: string; itemsPerPage?: number; pageNo?: number }>()
 );
 export const getCompanyUsersComplete = createAction('[OTP] Get Company Users Complete', props<{ response: any }>());
 export const getCompanyUsersError = createAction(
@@ -160,5 +160,25 @@ export const deleteUser = createAction('[OTP] Delete User', props<{ companyId: a
 export const deleteUserComplete = createAction('[OTP] Delete User Complete', props<{ response: any }>());
 export const deleteUserError = createAction(
     '[OTP] Delete User Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+
+export const updateUserRole = createAction('[OTP] Update User Role', props<{ payload: any; authToken: string }>());
+export const updateUserRoleComplete = createAction('[OTP] Update User Role Complete', props<{ response: any }>());
+export const updateUserRoleError = createAction(
+    '[OTP] Update User Role Error',
+    props<{ errors: string[]; errorResponse: any }>()
+);
+
+export const updateUserPermission = createAction(
+    '[OTP] Update User Permission',
+    props<{ payload: any; authToken: string }>()
+);
+export const updateUserPermissionComplete = createAction(
+    '[OTP] Update User Permission Complete',
+    props<{ response: any }>()
+);
+export const updateUserPermissionError = createAction(
+    '[OTP] Update User Permission Error',
     props<{ errors: string[]; errorResponse: any }>()
 );

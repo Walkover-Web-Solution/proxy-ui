@@ -11,8 +11,10 @@ import {
     Output,
     ViewChild,
 } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { NgHcaptchaComponent } from 'ng-hcaptcha';
+import { FormControl, FormGroup, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
+import { CustomValidators } from '@proxy/custom-validator';
 import { BaseComponent } from '@proxy/ui/base-component';
 import {
     sendOtpAction,
@@ -22,7 +24,7 @@ import {
     resetAnyState,
 } from '../../store/actions/otp.action';
 import { IAppState } from '../../store/app.state';
-import { BehaviorSubject, Observable, of, Subscription, timer } from 'rxjs';
+import { BehaviorSubject, filter, interval, Observable, of, Subscription, timer } from 'rxjs';
 import {
     closeWidgetApiFailed,
     errors,
@@ -40,29 +42,41 @@ import {
 } from '../../store/selectors';
 import { isEqual } from 'lodash-es';
 import { debounceTime, distinctUntilChanged, skip, take, takeUntil } from 'rxjs/operators';
-import { EMAIL_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
-import { IGetOtpRes, IWidgetResponse } from '../../model/otp';
+import { EMAIL_REGEX, EMAIL_OR_MOBILE_REGEX, ONLY_INTEGER_REGEX, PASSWORD_REGEX } from '@proxy/regex';
+import { IGetOtpRes, IlogInData, IOtpData, IResetPassword, IWidgetResponse } from '../../model/otp';
 import { IntlPhoneLib } from '@proxy/utils';
 import { META_TAG_ID } from '@proxy/constant';
 import { environment } from 'apps/proxy-auth/src/environments/environment';
 import { FeatureServiceIds } from '@proxy/models/features-model';
+import { LoginComponentStore } from '../login/login.store';
+import { OtpUtilityService } from '../../service/otp-utility.service';
 
 export enum OtpErrorCodes {
     VerifyLimitReached = 704,
     InvalidOtp = 703,
 }
 
+export enum SendOtpCenterVersion {
+    V1 = 'v1',
+    V2 = 'v2',
+}
+
 @Component({
     selector: 'proxy-send-otp-center',
     templateUrl: './send-otp-center.component.html',
     styleUrls: ['./send-otp-center.component.scss'],
+    providers: [LoginComponentStore],
 })
 export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('initContact') initContact: ElementRef;
+    @ViewChild(NgHcaptchaComponent) hCaptchaComponent: NgHcaptchaComponent;
     @Input() public referenceId: string;
     @Input() public serviceData: any;
     @Input() public tokenAuth: string;
     @Input() public target: string;
+    @Input() public version: SendOtpCenterVersion = SendOtpCenterVersion.V1;
+    @Input() public isCreateAccountLink: boolean;
+    @Input() public theme: string;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public successReturn: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
@@ -117,11 +131,52 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public otpErrorCodes = OtpErrorCodes;
     public featureServiceIds = FeatureServiceIds;
 
+    // Login form properties
+    public showPassword: boolean = false;
+    public loginStep: number = 1; // 1: Login, 2: Reset Password (send OTP), 3: Change Password
+    public loginForm = new FormGroup({
+        username: new FormControl<string>(null, [Validators.required]),
+        password: new FormControl<string>(null, [Validators.required, CustomValidators.cannotContainSpace]),
+    });
+    public sendOtpLoginForm = new FormGroup({
+        userDetails: new FormControl<string>(null, [Validators.required, Validators.pattern(EMAIL_OR_MOBILE_REGEX)]),
+    });
+    public resetPasswordForm = new FormGroup({
+        otp: new FormControl<number>(null, Validators.required),
+        password: new FormControl<string>(null, [
+            Validators.required,
+            Validators.pattern(PASSWORD_REGEX),
+            Validators.minLength(8),
+        ]),
+        confirmPassword: new FormControl<string>(null, [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.pattern(PASSWORD_REGEX),
+            CustomValidators.valueSameAsControl('password'),
+        ]),
+    });
+    public loginError: string = null;
+    public isLoginLoading$: Observable<boolean>;
+    public state: string;
+    private apiError = new BehaviorSubject<any>(null);
+    public remainingSeconds: number;
+    public resetPasswordTimerSubscription: Subscription;
+
+    // hCaptcha properties
+    public hCaptchaToken: string = '';
+    public hCaptchaVerified: boolean = false;
+
+    // Login store observables
+    public otpData$: Observable<any>;
+    public resetPasswordResult$: Observable<any>;
+
     constructor(
         private store: Store<IAppState>,
         private cdr: ChangeDetectorRef,
         private _elemRef: ElementRef,
-        private otpWidgetService: OtpWidgetService
+        private otpWidgetService: OtpWidgetService,
+        private loginComponentStore: LoginComponentStore,
+        private otpUtilityService: OtpUtilityService
     ) {
         super();
         this.errors$ = this.store.pipe(select(errors), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
@@ -181,6 +236,9 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
             takeUntil(this.destroy$)
         );
         this.selectWidgetData$ = this.store.pipe(select(selectWidgetData), takeUntil(this.destroy$));
+        this.isLoginLoading$ = this.loginComponentStore.isLoading$;
+        this.otpData$ = this.loginComponentStore.otpdata$;
+        this.resetPasswordResult$ = this.loginComponentStore.resetPassword$;
     }
 
     ngOnInit() {
@@ -228,6 +286,69 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         this.selectGetOtpRes$.subscribe((res) => {
             this.otpRes = res;
         });
+
+        // Login store subscriptions
+        this.selectWidgetData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res && res.length > 0) {
+                const passwordService = res.find(
+                    (service) => service.service_id === FeatureServiceIds.PasswordAuthentication
+                );
+                if (passwordService) {
+                    this.state = passwordService.state;
+                }
+            }
+        });
+
+        this.loginComponentStore.apiError$.pipe(takeUntil(this.destroy$)).subscribe((error) => {
+            this.apiError.next(error);
+            this.loginError = error;
+            // Reset hCaptcha on error
+            if (error) {
+                this.resetHCaptcha();
+            }
+        });
+
+        this.loginComponentStore.showRegistration$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                const prefillDetails = this.loginForm.get('username').value;
+                this.showRegistration(prefillDetails);
+            }
+        });
+
+        // Forgot password flow subscriptions
+        this.otpData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.changeLoginStep(3);
+                this.startResetPasswordTimer();
+            }
+        });
+
+        this.resetPasswordResult$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.changeLoginStep(1);
+            }
+        });
+
+        this.resetPasswordForm
+            .get('password')
+            .valueChanges.pipe(takeUntil(this.destroy$))
+            .subscribe((res) => {
+                if (res) {
+                    this.resetPasswordForm.get('confirmPassword').updateValueAndValidity();
+                }
+            });
+
+        // Subscribe to forgot password mode from service
+        this.otpWidgetService.forgotPasswordMode.pipe(takeUntil(this.destroy$)).subscribe((mode) => {
+            if (mode.active) {
+                this.changeLoginStep(2);
+                if (mode.prefillEmail) {
+                    this.sendOtpLoginForm.get('userDetails').setValue(mode.prefillEmail);
+                }
+                // Reset the mode after handling
+                this.otpWidgetService.closeForgotPassword();
+            }
+        });
     }
 
     ngAfterViewInit(): void {
@@ -258,10 +379,6 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         this.displayMobileNumber = this.intlClass.phoneNumber.includes('+')
             ? this.intlClass.phoneNumber
             : `+${this.intlClass.selectedCountryData?.dialCode}${this.intlClass.phoneNumber}`;
-    }
-
-    ngOnDestroy() {
-        super.ngOnDestroy();
     }
 
     public sendOtp() {
@@ -388,10 +505,135 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         } else if (widgetData?.service_id === FeatureServiceIds.Msg91OtpService) {
             this.otpWidgetService.openWidget();
         } else if (widgetData?.service_id === FeatureServiceIds.PasswordAuthentication) {
-            this.otpWidgetService.openLogin(true);
+            if (this.version === SendOtpCenterVersion.V2) {
+                this.login();
+            } else {
+                this.otpWidgetService.openLogin(true);
+            }
         }
     }
-    public showRegistration(prefillDetails: string) {
-        this.openPopUp.emit(prefillDetails);
+
+    public encryptPassword(password: string): string {
+        return this.otpUtilityService.aesEncrypt(
+            JSON.stringify(password),
+            environment.uiEncodeKey,
+            environment.uiIvKey,
+            true
+        );
+    }
+
+    public login(): void {
+        if (this.loginForm.invalid) {
+            this.loginForm.markAllAsTouched();
+            return;
+        }
+
+        if (!this.hCaptchaVerified) {
+            this.loginError = 'Please complete the hCaptcha verification';
+            return;
+        }
+
+        this.loginError = null;
+
+        const encodedPassword = this.encryptPassword(this.loginForm.get('password').value);
+        const loginData: IlogInData = {
+            'state': this.state,
+            'user': this.loginForm.get('username').value?.replace(/^\+/, ''),
+            'password': encodedPassword,
+            'hCaptchaToken': this.hCaptchaToken,
+        };
+
+        this.loginComponentStore.loginData(loginData);
+    }
+
+    // hCaptcha event handlers
+    public onHCaptchaVerify(token: string): void {
+        this.hCaptchaToken = token;
+        this.hCaptchaVerified = true;
+    }
+
+    public onHCaptchaExpired(): void {
+        this.hCaptchaToken = '';
+        this.hCaptchaVerified = false;
+    }
+
+    public onHCaptchaError(error: any): void {
+        this.hCaptchaToken = '';
+        this.hCaptchaVerified = false;
+        console.error('hCaptcha error:', error);
+    }
+
+    public resetHCaptcha(): void {
+        this.hCaptchaToken = '';
+        this.hCaptchaVerified = false;
+        if (this.hCaptchaComponent) {
+            this.hCaptchaComponent.reset();
+        }
+    }
+
+    public showRegistration(prefillDetails?: string) {
+        this.openPopUp.emit(prefillDetails || this.loginForm.get('username')?.value);
+    }
+
+    public hasOtherAuthOptions(widgetDataArray: any[]): boolean {
+        if (!widgetDataArray) return false;
+        return widgetDataArray.some((widget) => widget?.service_id !== this.featureServiceIds.PasswordAuthentication);
+    }
+
+    public forgotPassword(): void {
+        this.changeLoginStep(2);
+    }
+
+    public changeLoginStep(nextStep: number): void {
+        this.apiError.next(null);
+        this.loginError = null;
+        this.loginStep = nextStep;
+        // Reset hCaptcha when changing steps
+        this.resetHCaptcha();
+    }
+
+    public sendResetPasswordOtp(): void {
+        if (this.sendOtpLoginForm.invalid) {
+            this.sendOtpLoginForm.markAllAsTouched();
+            return;
+        }
+        const emailData: IResetPassword = {
+            'state': this.state,
+            'user': this.sendOtpLoginForm.get('userDetails').value,
+        };
+        this.loginComponentStore.resetPassword(emailData);
+    }
+
+    public verifyResetPasswordOtp(): void {
+        if (this.resetPasswordForm.invalid) {
+            this.resetPasswordForm.markAllAsTouched();
+            return;
+        }
+        const encodedPassword = this.encryptPassword(this.resetPasswordForm.get('password').value);
+        const verifyOtpData: IOtpData = {
+            'state': this.state,
+            'user': this.sendOtpLoginForm.get('userDetails').value,
+            'password': encodedPassword,
+            'otp': this.resetPasswordForm.get('otp').value,
+        };
+        this.loginComponentStore.verfyPasswordOtp(verifyOtpData);
+    }
+
+    private startResetPasswordTimer(): void {
+        this.remainingSeconds = 15;
+        this.resetPasswordTimerSubscription = interval(1000).subscribe(() => {
+            if (this.remainingSeconds > 0) {
+                this.remainingSeconds--;
+            } else {
+                this.resetPasswordTimerSubscription.unsubscribe();
+            }
+        });
+    }
+
+    ngOnDestroy() {
+        super.ngOnDestroy();
+        if (this.resetPasswordTimerSubscription) {
+            this.resetPasswordTimerSubscription.unsubscribe();
+        }
     }
 }

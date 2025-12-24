@@ -28,6 +28,7 @@ export interface ICreateFeatureInitialState {
     paymentDetailsForm: any;
     paymentDetailsById: any;
     updatePaymentDetails: any;
+    webhookEvents: any;
 }
 
 @Injectable()
@@ -56,6 +57,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             paymentDetailsForm: null,
             paymentDetailsById: null,
             updatePaymentDetails: null,
+            webhookEvents: null,
         });
     }
     /** Selector for API progress  */
@@ -102,6 +104,8 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly paymentDetailsById$: Observable<any> = this.select((state) => state.paymentDetailsById);
     /** Selector for update payment details data */
     readonly updatePaymentDetails$: Observable<any> = this.select((state) => state.updatePaymentDetails);
+    /** Selector for webhook events data */
+    readonly webhookEvents$: Observable<any> = this.select((state) => state.webhookEvents);
     /** Get feature type data */
     readonly getFeatureType = this.effect((data) => {
         return data.pipe(
@@ -651,6 +655,29 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                             }
                             this.toast.success('Payment details updated successfully');
                             return this.patchState({ isLoading: false, updatePaymentDetails: res.data });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ isLoading: false });
+                        }
+                    ),
+                    catchError((err) => EMPTY)
+                );
+            })
+        );
+    });
+    readonly getWebhookEvents = this.effect((data: Observable<null>) => {
+        return data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true });
+                return this.service.getWebhookEvents().pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ isLoading: false });
+                            }
+                            return this.patchState({ isLoading: false, webhookEvents: res.data });
                         },
                         (error: any) => {
                             this.showError(error.errors);

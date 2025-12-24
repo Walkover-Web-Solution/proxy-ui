@@ -14,7 +14,7 @@ import {
     ViewChild,
     ElementRef,
 } from '@angular/core';
-import { resetAll, sendOtpAction, verifyOtpAction } from '../../store/actions/otp.action';
+import { resetAnyState, sendOtpAction, verifyOtpAction } from '../../store/actions/otp.action';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
 import { IAppState } from '../../store/app.state';
@@ -315,6 +315,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     public close(closeByUser: boolean = false): void {
+        // Reset all form and OTP states
+        this.resetFormState();
+        // Reset only OTP-specific store states, preserving widgetData
+        this.resetOtpStoreState();
+
         this.togglePopUp.emit();
         if (closeByUser) {
             this.failureReturn.emit({
@@ -325,8 +330,49 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         }
     }
 
-    public resetStore(): void {
-        this.store.dispatch(resetAll());
+    private resetFormState(): void {
+        // Reset OTP verification states
+        this.isOtpVerified = false;
+        this.isOtpSent = false;
+        this.isNumberChanged = false;
+        this.otpError = '';
+        this.lastSentMobileNumber = '';
+
+        // Reset forms
+        this.registrationForm.reset();
+        this.otpForm.reset();
+
+        // Reset timer
+        this.stopResendTimer();
+
+        // Reset API errors
+        this.apiError.next(null);
+    }
+
+    /**
+     * Reset only OTP-specific store states, preserving widgetData and other non-OTP states
+     */
+    private resetOtpStoreState(): void {
+        this.store.dispatch(
+            resetAnyState({
+                request: {
+                    otpGenerateData: null,
+                    getOtpInProcess: false,
+                    getOtpSuccess: false,
+                    verifyOtpV2Data: null,
+                    verifyOtpV2InProcess: false,
+                    verifyOtpV2Success: false,
+                    resendOtpInProcess: false,
+                    resendOtpSuccess: false,
+                    verifyOtpData: null,
+                    verifyOtpInProcess: false,
+                    verifyOtpSuccess: false,
+                    resendCount: 0,
+                    apiErrorResponse: null,
+                    errors: null,
+                },
+            })
+        );
     }
 
     public returnSuccess(successResponse: any) {
