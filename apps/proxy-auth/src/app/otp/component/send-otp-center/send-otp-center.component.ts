@@ -61,6 +61,10 @@ export enum SendOtpCenterVersion {
     V2 = 'v2',
 }
 
+export enum InputFields {
+    TOP = 'top',
+    BOTTOM = 'bottom',
+}
 @Component({
     selector: 'proxy-send-otp-center',
     templateUrl: './send-otp-center.component.html',
@@ -75,6 +79,8 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     @Input() public tokenAuth: string;
     @Input() public target: string;
     @Input() public version: SendOtpCenterVersion = SendOtpCenterVersion.V1;
+    @Input() public input_fields: string = InputFields.TOP;
+    @Input() public show_social_login_icons: boolean = false;
     @Input() public isCreateAccountLink: boolean;
     @Input() public theme: string;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();

@@ -36,6 +36,10 @@ export enum SendOtpCenterVersion {
     V1 = 'v1',
     V2 = 'v2',
 }
+export enum InputFields {
+    TOP = 'top',
+    BOTTOM = 'bottom',
+}
 
 @Component({
     selector: 'proxy-send-otp',
@@ -56,6 +60,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public loginRedirectUrl: string;
     @Input() public theme: string;
     @Input() public version: string = SendOtpCenterVersion.V1;
+    @Input() public input_fields: string = InputFields.TOP;
+    @Input() public show_social_login_icons: boolean = false;
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
     }
@@ -148,6 +154,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             if (theme?.theme !== Theme.SYSTEM) {
                 this.theme = theme?.theme || theme;
             }
+            this.version = theme?.version || 'v1';
+            this.input_fields = theme?.input_fields || 'top';
+            this.show_social_login_icons = theme?.icons || false;
             this.isCreateAccountTextAppended = theme?.create_account_link || false;
         });
         if (this.type === 'subscription') {
@@ -1066,8 +1075,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             line-height: 20px;
             font-weight: 600;
             color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
-            margin-bottom: 0px;
+            margin: 0 8px 20px 8px;
             text-align: center;
+            width: 316px;
         `;
 
         const usernameField = this.renderer.createElement('div');
@@ -1273,7 +1283,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             })
         );
 
-        this.renderer.appendChild(loginContainer, title);
         // this.renderer.appendChild(usernameField, usernameLabel);
         this.renderer.appendChild(usernameField, usernameInput);
         this.renderer.appendChild(usernameField, usernameNote);
@@ -1286,15 +1295,32 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         this.renderer.appendChild(loginContainer, errorText);
         this.renderer.appendChild(loginContainer, loginButton);
 
-        // Always keep login form at the top of the element
+        // Position login form based on input_fields setting
+        const isInputFieldsTop = this.input_fields === 'top';
+
+        // Always insert the "Login" title at the very top
         if (element.firstChild) {
-            this.renderer.insertBefore(element, loginContainer, element.firstChild);
+            this.renderer.insertBefore(element, title, element.firstChild);
         } else {
+            this.renderer.appendChild(element, title);
+        }
+
+        if (isInputFieldsTop) {
+            // input_fields = 'top': Login form (input fields) at top (after title), social buttons below
+            const titleNextSibling = title.nextSibling;
+            if (titleNextSibling) {
+                this.renderer.insertBefore(element, loginContainer, titleNextSibling);
+            } else {
+                this.renderer.appendChild(element, loginContainer);
+            }
+        } else {
+            // input_fields = 'bottom': Social buttons at top (after title), login form at bottom
             this.renderer.appendChild(element, loginContainer);
         }
 
         if (totalButtons > 1) {
             const dividerContainer: HTMLElement = this.renderer.createElement('div');
+            dividerContainer.setAttribute('data-or-divider', 'true');
             dividerContainer.style.cssText = `
                 display: flex;
                 align-items: center;
@@ -1323,11 +1349,17 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.renderer.appendChild(dividerContainer, dividerText);
             this.renderer.appendChild(dividerContainer, dividerLineRight);
 
-            const nextSibling = loginContainer.nextSibling;
-            if (nextSibling) {
-                this.renderer.insertBefore(element, dividerContainer, nextSibling);
+            if (isInputFieldsTop) {
+                // input_fields = 'top': OR divider goes after login container
+                const nextSibling = loginContainer.nextSibling;
+                if (nextSibling) {
+                    this.renderer.insertBefore(element, dividerContainer, nextSibling);
+                } else {
+                    this.renderer.appendChild(element, dividerContainer);
+                }
             } else {
-                this.renderer.appendChild(element, dividerContainer);
+                // input_fields = 'bottom': OR divider goes before login container
+                this.renderer.insertBefore(element, dividerContainer, loginContainer);
             }
         }
     }
@@ -2214,72 +2246,160 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
         const button: HTMLButtonElement = this.renderer.createElement('button');
         const image: HTMLImageElement = this.renderer.createElement('img');
-        const span: HTMLSpanElement = this.renderer.createElement('span');
 
         const isOtpButton = buttonsData?.service_id === FeatureServiceIds.Msg91OtpService;
         const useDiv = this.version !== 'v1';
+        const showIconsOnly = this.show_social_login_icons;
+        const isInputFieldsTop = this.input_fields === 'top';
 
-        button.style.cssText = `
-            outline: none;
-            padding: 0 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            ${useDiv ? '' : 'gap: 12px;'}
-            font-size: 14px;
-            background-color: transparent;
-            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #d1d5db'};
-            border-radius: 8px;
-            height: 44px;
-            color: ${this.theme === 'dark' ? '#ffffff' : '#111827'};
-            margin: 8px 8px 16px 8px;
-            cursor: pointer;
-            width: ${useDiv ? '316px' : '260px'};
-            visibility: ${isOtpButton ? 'hidden' : 'visible'}; // Hide only OTP buttons until ready
-        `;
-        image.style.cssText = `
-            height: 20px;
-            width: 20px;
-        `;
-        span.style.cssText = `
-            color: ${this.theme === 'dark' ? '#ffffff' : '#111827'};
-            font-weight: 600;
-        `;
-        image.src = buttonsData.icon;
-        image.alt = buttonsData.text;
-        image.loading = 'lazy';
-        span.innerText = buttonsData.text;
-
-        if (isOtpButton) {
-            button.setAttribute('data-service-id', buttonsData.service_id);
-        }
-        button.addEventListener('click', () => {
-            if (buttonsData?.urlLink) {
-                window.open(buttonsData.urlLink, this.target);
-            } else if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
-                this.otpWidgetService.openWidget();
-            } else if (buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication) {
-                this.setShowLogin(true);
+        // If showing icons only, set up a row container if not already present
+        if (showIconsOnly) {
+            let iconsContainer = element.querySelector('[data-icons-container]');
+            if (!iconsContainer) {
+                iconsContainer = this.renderer.createElement('div');
+                iconsContainer.setAttribute('data-icons-container', 'true');
+                iconsContainer.style.cssText = `
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 35px;
+                    margin: 8px 8px 16px 8px;
+                    width: 316px;
+                `;
+                // Position icons container based on input_fields
+                if (isInputFieldsTop) {
+                    // input_fields = 'top': Login form at top, social icons at bottom
+                    this.renderer.appendChild(element, iconsContainer);
+                } else {
+                    // input_fields = 'bottom': Social icons at top, login form at bottom
+                    const orDivider = element.querySelector('[data-or-divider]');
+                    if (orDivider) {
+                        this.renderer.insertBefore(element, iconsContainer, orDivider);
+                    } else if (element.firstChild) {
+                        this.renderer.insertBefore(element, iconsContainer, element.firstChild);
+                    } else {
+                        this.renderer.appendChild(element, iconsContainer);
+                    }
+                }
             }
-        });
 
-        if (useDiv) {
-            const contentDiv: HTMLDivElement = this.renderer.createElement('div');
-            contentDiv.style.cssText = `
+            button.style.cssText = `
+                outline: none;
+                padding: 12px;
                 display: flex;
                 align-items: center;
-                justify-content: flex-start;
-                gap: 12px;
-                width: 180px;
+                justify-content: center;
+                font-size: 14px;
+                background-color: transparent;
+                border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #d1d5db'};
+                border-radius: 8px;
+                cursor: pointer;
+                visibility: ${isOtpButton ? 'hidden' : 'visible'};
             `;
-            this.renderer.appendChild(contentDiv, image);
-            this.renderer.appendChild(contentDiv, span);
-            this.renderer.appendChild(button, contentDiv);
-        } else {
+            image.style.cssText = `
+                height: 24px;
+                width: 24px;
+            `;
+            image.src = buttonsData.icon;
+            image.alt = buttonsData.text;
+            image.loading = 'lazy';
+
+            if (isOtpButton) {
+                button.setAttribute('data-service-id', buttonsData.service_id);
+            }
+            button.addEventListener('click', () => {
+                if (buttonsData?.urlLink) {
+                    window.open(buttonsData.urlLink, this.target);
+                } else if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
+                    this.otpWidgetService.openWidget();
+                } else if (buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication) {
+                    this.setShowLogin(true);
+                }
+            });
+
             this.renderer.appendChild(button, image);
-            this.renderer.appendChild(button, span);
+            this.renderer.appendChild(iconsContainer, button);
+        } else {
+            const span: HTMLSpanElement = this.renderer.createElement('span');
+
+            button.style.cssText = `
+                outline: none;
+                padding: 0 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                ${useDiv ? '' : 'gap: 12px;'}
+                font-size: 14px;
+                background-color: transparent;
+                border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #d1d5db'};
+                border-radius: 8px;
+                height: 44px;
+                color: ${this.theme === 'dark' ? '#ffffff' : '#111827'};
+                margin: 8px 8px 16px 8px;
+                cursor: pointer;
+                width: ${useDiv ? '316px' : '260px'};
+                visibility: ${isOtpButton ? 'hidden' : 'visible'}; // Hide only OTP buttons until ready
+            `;
+            image.style.cssText = `
+                height: 20px;
+                width: 20px;
+            `;
+            span.style.cssText = `
+                color: ${this.theme === 'dark' ? '#ffffff' : '#111827'};
+                font-weight: 600;
+            `;
+            image.src = buttonsData.icon;
+            image.alt = buttonsData.text;
+            image.loading = 'lazy';
+            span.innerText = buttonsData.text;
+
+            if (isOtpButton) {
+                button.setAttribute('data-service-id', buttonsData.service_id);
+            }
+            button.addEventListener('click', () => {
+                if (buttonsData?.urlLink) {
+                    window.open(buttonsData.urlLink, this.target);
+                } else if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
+                    this.otpWidgetService.openWidget();
+                } else if (buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication) {
+                    this.setShowLogin(true);
+                }
+            });
+
+            if (useDiv) {
+                const contentDiv: HTMLDivElement = this.renderer.createElement('div');
+                contentDiv.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    gap: 12px;
+                    width: 180px;
+                `;
+                this.renderer.appendChild(contentDiv, image);
+                this.renderer.appendChild(contentDiv, span);
+                this.renderer.appendChild(button, contentDiv);
+            } else {
+                this.renderer.appendChild(button, image);
+                this.renderer.appendChild(button, span);
+            }
+
+            // Position button based on input_fields
+            if (isInputFieldsTop) {
+                // input_fields = 'top': Login form at top, social buttons at bottom
+                this.renderer.appendChild(element, button);
+            } else {
+                // input_fields = 'bottom': Social buttons at top, login form at bottom
+                const orDivider = element.querySelector('[data-or-divider]');
+                if (orDivider) {
+                    this.renderer.insertBefore(element, button, orDivider);
+                } else if (element.firstChild) {
+                    this.renderer.insertBefore(element, button, element.firstChild);
+                } else {
+                    this.renderer.appendChild(element, button);
+                }
+            }
         }
-        this.renderer.appendChild(element, button);
     }
 
     private hasOtpButton(widgetDataArray: any[]): boolean {

@@ -191,6 +191,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 CustomValidators.minLengthThreeWithoutSpace,
             ]),
             theme: new FormControl<string>('system', []),
+            version: new FormControl<string>('v1', []),
             allowNewUserRegistration: new FormControl<boolean>(false, []),
             showSocialLoginIcons: new FormControl<boolean>(false, []),
             blockNewUserSignUps: new FormControl<boolean>(false, []),
@@ -279,8 +280,10 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             authorizationDetails: {
                                 session_time: feature.session_time,
                                 authorizationKey: feature.authorization_format.key,
-                                theme: feature.extra_configurations?.theme || 'system',
-                                allowNewUserRegistration: feature.extra_configurations?.create_account_link || false,
+                                theme: feature.ui_preferences?.theme || 'system',
+                                version: feature.ui_preferences?.version || 'v1',
+                                showSocialLoginIcons: feature.ui_preferences?.icons || false,
+                                allowNewUserRegistration: feature.ui_preferences?.create_account_link || false,
                                 blockNewUserSignUps: feature.block_registration || false,
                             },
                             webhookDetails: {
@@ -289,6 +292,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 triggerEvents: feature.trigger_events || feature.webhook_events || [],
                             },
                         });
+                        this.previewInputPosition = feature.ui_preferences?.input_fields || 'top';
                     });
                 });
         }
@@ -551,6 +555,13 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                         authorization_format: {
                             ...featureDetails.authorization_format,
                             key: authorizationDetailsForm.value.authorizationKey,
+                        },
+                        ui_preferences: {
+                            theme: authorizationDetailsForm.value.theme,
+                            create_account_link: authorizationDetailsForm.value.allowNewUserRegistration || false,
+                            icons: authorizationDetailsForm.value.showSocialLoginIcons || false,
+                            version: authorizationDetailsForm.value.version,
+                            input_fields: this.previewInputPosition,
                         },
                         session_time: authorizationDetailsForm.value.session_time,
                     };
@@ -1008,6 +1019,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.getValueFromObservable(this.featureDetails$)?.reference_id,
             type: featureId === 1 ? 'authorization' : 'subscription',
             isPreview: true,
+            version: this.featureForm.get('authorizationDetails.version')?.value || 'v1',
+            input_fields: this.previewInputPosition,
+            show_social_login_icons: this.featureForm.get('authorizationDetails.showSocialLoginIcons')?.value || false,
             target: '_blank',
             success: (data) => {
                 // get verified token in response

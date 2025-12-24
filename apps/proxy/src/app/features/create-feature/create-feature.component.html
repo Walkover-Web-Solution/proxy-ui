@@ -555,7 +555,10 @@
         </div>
         <div *ngIf="isEditMode">
             <div
-                *ngIf="featureForm.get('serviceDetails')?.at(3).controls.is_enable.value"
+                *ngIf="
+                    featureForm.get('serviceDetails')?.at(3).controls.is_enable.value &&
+                    featureForm.get('authorizationDetails.version')?.value === 'v2'
+                "
                 class="d-flex align-items-center justify-content-center w-100 mb-3"
             >
                 <div class="custom-toggle-group">
@@ -630,7 +633,10 @@
     <!-- Input Fields Template -->
     <ng-template #inputFieldsSection>
         <div
-            *ngIf="featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value"
+            *ngIf="
+                featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
+                featureForm.get('authorizationDetails.version')?.value === 'v2'
+            "
             class="d-flex flex-column align-items-center gap-1 w-100"
             [ngClass]="{
                 'dark-theme-login preview-input-field': featureForm.get('authorizationDetails.theme')?.value === 'dark'
@@ -662,6 +668,7 @@
         <div
             *ngIf="
                 featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
+                featureForm.get('authorizationDetails.version')?.value === 'v2' &&
                 (featureForm.get('serviceDetails')?.at(0)?.controls?.is_enable?.value ||
                     featureForm.get('serviceDetails')?.at(1)?.controls?.is_enable?.value ||
                     featureForm.get('serviceDetails')?.at(2)?.controls?.is_enable?.value)
@@ -698,6 +705,16 @@
                 class="social-login-icon-box"
             >
                 <mat-icon class="material-icons-outlined">apple</mat-icon>
+            </div>
+
+            <div
+                *ngIf="
+                    featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
+                    featureForm.get('authorizationDetails.version')?.value === 'v1'
+                "
+                class="social-login-icon-box"
+            >
+                <mat-icon class="material-icons-outlined">password</mat-icon>
             </div>
         </div>
     </ng-template>
@@ -762,6 +779,29 @@
                     >Continue with Apple</span
                 >
             </button>
+            <button
+                *ngIf="
+                    featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
+                    featureForm.get('authorizationDetails.version')?.value === 'v1'
+                "
+                type="button"
+                mat-stroked-button
+                class="w-85 d-flex align-items-center justify-content-center"
+            >
+                <mat-icon
+                    class="material-icons-outlined"
+                    [style.color]="
+                        featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#000000'
+                    "
+                    style="margin-right: 12px"
+                    >password</mat-icon
+                >
+                <span
+                    class="text-secondary"
+                    [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                    >Continue with Password</span
+                >
+            </button>
         </div>
     </ng-template>
 </ng-template>
@@ -812,6 +852,22 @@
                         "
                     ></ng-container>
                 </ng-container>
+                <ng-container *ngIf="isEditMode">
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('authorizationDetails.version'),
+                                fieldConfig: {
+                                    label: 'Version',
+                                    type: featureFieldType.Select,
+                                    source: ['v1', 'v2']
+                                }
+                            }
+                        "
+                    ></ng-container>
+                </ng-container>
+
                 <ng-container *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1">
                     <div class="d-flex align-items-center gap-2 mb-3">
                         <span class="mat-body-2">Show Create Account For New User: </span>
