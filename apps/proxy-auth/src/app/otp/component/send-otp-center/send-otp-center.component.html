@@ -11,7 +11,9 @@
         <ng-container *ngIf="selectWidgetData$ | async as widgetDataArray">
             <!-- Password Authentication Login Form at Top -->
             <ng-container *ngFor="let widgetData of widgetDataArray">
-                <ng-container *ngIf="widgetData?.service_id === featureServiceIds.PasswordAuthentication">
+                <ng-container
+                    *ngIf="widgetData?.service_id === featureServiceIds.PasswordAuthentication && version === 'v2'"
+                >
                     <div class="login-section" *ngIf="loginStep === 1" [formGroup]="loginForm">
                         <div class="heading">Login</div>
 
@@ -309,7 +311,12 @@
             <!-- Other Authentication Options (hidden during reset password flow) -->
             <ng-container *ngIf="loginStep === 1">
                 <ng-container *ngFor="let widgetData of widgetDataArray">
-                    <ng-container *ngIf="widgetData?.service_id !== featureServiceIds.PasswordAuthentication">
+                    <ng-container
+                        *ngIf="
+                            widgetData?.service_id !== featureServiceIds.PasswordAuthentication ||
+                            (widgetData?.service_id === featureServiceIds.PasswordAuthentication && version === 'v1')
+                        "
+                    >
                         <button
                             *ngIf="
                                 widgetData?.service_id !== featureServiceIds.Msg91OtpService ||
@@ -331,7 +338,7 @@
                         </button>
                     </ng-container>
                 </ng-container>
-                <ng-container *ngIf="widgetDataArray?.length">
+                <ng-container *ngIf="widgetDataArray?.length && isCreateAccountLink">
                     <p class="create-account">
                         Are you a new User?
                         <a href="javascript:void(0)" (click)="showRegistration()"> Create an account</a>

@@ -56,6 +56,11 @@ export enum OtpErrorCodes {
     InvalidOtp = 703,
 }
 
+export enum SendOtpCenterVersion {
+    V1 = 'v1',
+    V2 = 'v2',
+}
+
 @Component({
     selector: 'proxy-send-otp-center',
     templateUrl: './send-otp-center.component.html',
@@ -69,6 +74,9 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     @Input() public serviceData: any;
     @Input() public tokenAuth: string;
     @Input() public target: string;
+    @Input() public version: SendOtpCenterVersion = SendOtpCenterVersion.V1;
+    @Input() public isCreateAccountLink: boolean;
+    @Input() public theme: string;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public successReturn: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
@@ -329,6 +337,18 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
                     this.resetPasswordForm.get('confirmPassword').updateValueAndValidity();
                 }
             });
+
+        // Subscribe to forgot password mode from service
+        this.otpWidgetService.forgotPasswordMode.pipe(takeUntil(this.destroy$)).subscribe((mode) => {
+            if (mode.active) {
+                this.changeLoginStep(2);
+                if (mode.prefillEmail) {
+                    this.sendOtpLoginForm.get('userDetails').setValue(mode.prefillEmail);
+                }
+                // Reset the mode after handling
+                this.otpWidgetService.closeForgotPassword();
+            }
+        });
     }
 
     ngAfterViewInit(): void {
@@ -485,7 +505,11 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         } else if (widgetData?.service_id === FeatureServiceIds.Msg91OtpService) {
             this.otpWidgetService.openWidget();
         } else if (widgetData?.service_id === FeatureServiceIds.PasswordAuthentication) {
-            this.login();
+            if (this.version === SendOtpCenterVersion.V2) {
+                this.login();
+            } else {
+                this.otpWidgetService.openLogin(true);
+            }
         }
     }
 
