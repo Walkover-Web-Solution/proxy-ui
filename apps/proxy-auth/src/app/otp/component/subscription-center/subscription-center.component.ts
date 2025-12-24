@@ -128,7 +128,8 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
         this.closeEvent.emit(value);
         this.togglePopUp.emit();
 
-        if (this.dialogRef) {
+        // Only close dialog if it exists and is still open
+        if (this.dialogRef && !this.dialogRef.disableClose) {
             this.dialogRef.close(value);
         }
     }

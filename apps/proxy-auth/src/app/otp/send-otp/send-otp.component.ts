@@ -217,6 +217,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         if (this.referenceElement) {
             this.clearSubscriptionPlans(this.referenceElement);
         }
+        if (this.referenceElement) {
+            this.clearSubscriptionPlans(this.referenceElement);
+        }
         super.ngOnDestroy();
     }
 
@@ -2434,12 +2437,13 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     width: ${this.version === 'v1' ? '260px' : '316px'} !important;
 `;
 
+        // Style the link
         link.style.cssText = `
-    color: #007bff !important;
-    text-decoration: none !important;
-    cursor: pointer !important;
-    font-weight: 500 !important;
-`;
+            color: #007bff !important;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500 !important;
+        `;
 
         // Set the text content
         paragraph.innerHTML = 'Are you a new user? ';
