@@ -1,5 +1,5 @@
 <ng-container>
-    <button mat-icon-button mat-dialog-close class="close-dialog" (click)="close(true)">
+    <button mat-icon-button class="close-dialog" (click)="close(true)" type="button">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
@@ -9,26 +9,439 @@
     </button>
     <div class="otp-verification-content button-gap">
         <ng-container *ngIf="selectWidgetData$ | async as widgetDataArray">
+            <!-- Login Title - Always at top -->
             <ng-container *ngFor="let widgetData of widgetDataArray">
-                <button
-                    *ngIf="widgetData?.service_id !== featureServiceIds.Msg91OtpService || !(otpScriptLoading | async)"
-                    mat-raised-button
-                    (click)="onVerificationBtnClick(widgetData)"
-                    style="padding: 10px 50px !important"
-                    class="mat-elevation-z2"
+                <ng-container
+                    *ngIf="
+                        widgetData?.service_id === featureServiceIds.PasswordAuthentication &&
+                        version === 'v2' &&
+                        loginStep === 1
+                    "
                 >
-                    <img [src]="widgetData.icon" [alt]="widgetData.text" style="margin-right: 20px" loading="lazy" />
-                    <span class="mat-subheading-2">{{ widgetData.text }}</span>
-                </button>
+                    <div class="heading">Login</div>
+                </ng-container>
             </ng-container>
-            <ng-container *ngIf="widgetDataArray?.length">
+
+            <!-- input_fields = 'top': Login form first, OR divider, then social buttons -->
+            <ng-container *ngIf="input_fields === 'top'">
+                <!-- Password Authentication Login Form (without OR divider) -->
+                <ng-container
+                    *ngTemplateOutlet="loginFormTemplate; context: { widgetDataArray: widgetDataArray }"
+                ></ng-container>
+
+                <!-- OR Divider between input fields and social buttons -->
+                <ng-container
+                    *ngTemplateOutlet="orDividerTemplate; context: { widgetDataArray: widgetDataArray }"
+                ></ng-container>
+
+                <!-- Social buttons (without create account) -->
+                <ng-container
+                    *ngTemplateOutlet="socialButtonsOnlyTemplate; context: { widgetDataArray: widgetDataArray }"
+                ></ng-container>
+            </ng-container>
+
+            <!-- input_fields = 'bottom': Social buttons first, OR divider, then login form -->
+            <ng-container *ngIf="input_fields === 'bottom'">
+                <!-- Social buttons (without create account) -->
+                <ng-container
+                    *ngTemplateOutlet="socialButtonsOnlyTemplate; context: { widgetDataArray: widgetDataArray }"
+                ></ng-container>
+
+                <!-- OR Divider between social buttons and input fields -->
+                <ng-container
+                    *ngTemplateOutlet="orDividerTemplate; context: { widgetDataArray: widgetDataArray }"
+                ></ng-container>
+
+                <!-- Password Authentication Login Form (without OR divider) -->
+                <ng-container
+                    *ngTemplateOutlet="loginFormTemplate; context: { widgetDataArray: widgetDataArray }"
+                ></ng-container>
+            </ng-container>
+
+            <!-- Create Account - Always at bottom -->
+            <ng-container *ngIf="loginStep === 1 && widgetDataArray?.length && isCreateAccountLink">
                 <p class="create-account">
-                    Are you a new User? <a href="javascript:void(0)" (click)="showRegistration()"> Create an account</a>
+                    Are you a new User?
+                    <a href="javascript:void(0)" (click)="showRegistration()"> Create an account</a>
                 </p>
             </ng-container>
+
+            <!-- Visibility Icon Template -->
+            <ng-template #visibilityIcon>
+                <ng-container *ngIf="!showPassword; else showIcon">
+                    <svg
+                        width="24"
+                        height="20"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                    >
+                        <path
+                            d="M12.01 20c-5.065 0-9.586-4.211-12.01-8.424 2.418-4.103 6.943-7.576 12.01-7.576 5.135 0 9.635 3.453 11.999 7.564-2.241 4.43-6.726 8.436-11.999 8.436zm-10.842-8.416c.843 1.331 5.018 7.416 10.842 7.416 6.305 0 10.112-6.103 10.851-7.405-.772-1.198-4.606-6.595-10.851-6.595-6.116 0-10.025 5.355-10.842 6.584zm10.832-4.584c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5zm0 1c2.208 0 4 1.792 4 4s-1.792 4-4 4-4-1.792-4-4 1.792-4 4-4z"
+                        />
+                    </svg>
+                </ng-container>
+                <ng-template #showIcon>
+                    <svg
+                        width="24"
+                        height="20"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                    >
+                        <path
+                            d="M8.137 15.147c-.71-.857-1.146-1.947-1.146-3.147 0-2.76 2.241-5 5-5 1.201 0 2.291.435 3.148 1.145l1.897-1.897c-1.441-.738-3.122-1.248-5.035-1.248-6.115 0-10.025 5.355-10.842 6.584.529.834 2.379 3.527 5.113 5.428l1.865-1.865zm6.294-6.294c-.673-.53-1.515-.853-2.44-.853-2.207 0-4 1.792-4 4 0 .923.324 1.765.854 2.439l5.586-5.586zm7.56-6.146l-19.292 19.293-.708-.707 3.548-3.548c-2.298-1.612-4.234-3.885-5.548-6.169 2.418-4.103 6.943-7.576 12.01-7.576 2.065 0 4.021.566 5.782 1.501l3.501-3.501.707.707zm-2.465 3.879l-.734.734c2.236 1.619 3.628 3.604 4.061 4.274-.739 1.303-4.546 7.406-10.852 7.406-1.425 0-2.749-.368-3.951-.938l-.748.748c1.475.742 3.057 1.19 4.699 1.19 5.274 0 9.758-4.006 11.999-8.436-1.087-1.891-2.63-3.637-4.474-4.978zm-3.535 5.414c0-.554-.113-1.082-.317-1.562l.734-.734c.361.69.583 1.464.583 2.296 0 2.759-2.24 5-5 5-.832 0-1.604-.223-2.295-.583l.734-.735c.48.204 1.007.318 1.561.318 2.208 0 4-1.792 4-4z"
+                        />
+                    </svg>
+                </ng-template>
+            </ng-template>
+
             <ng-container *ngIf="!widgetDataArray?.length">
-                <span class="mat-body-2"> No Service Enabled </span>
+                <span class="mat-body-2">No Service Enabled</span>
             </ng-container>
         </ng-container>
     </div>
+
+    <!-- OR Divider Template -->
+    <ng-template #orDividerTemplate let-widgetDataArray="widgetDataArray">
+        <ng-container *ngFor="let widgetData of widgetDataArray">
+            <ng-container
+                *ngIf="
+                    widgetData?.service_id === featureServiceIds.PasswordAuthentication &&
+                    version === 'v2' &&
+                    loginStep === 1
+                "
+            >
+                <div class="divider-container" *ngIf="hasOtherAuthOptions(widgetDataArray)">
+                    <div class="divider-line"></div>
+                    <span class="divider-text">OR</span>
+                    <div class="divider-line"></div>
+                </div>
+            </ng-container>
+        </ng-container>
+    </ng-template>
+
+    <!-- Login Form Template (without OR divider) -->
+    <ng-template #loginFormTemplate let-widgetDataArray="widgetDataArray">
+        <ng-container *ngFor="let widgetData of widgetDataArray">
+            <ng-container
+                *ngIf="widgetData?.service_id === featureServiceIds.PasswordAuthentication && version === 'v2'"
+            >
+                <div class="login-section" *ngIf="loginStep === 1" [formGroup]="loginForm">
+                    <mat-form-field
+                        appearance="outline"
+                        class="input-width"
+                        *ngIf="loginForm.get('username') as userNameControl"
+                    >
+                        <mat-label>Email or Mobile</mat-label>
+                        <input
+                            matInput
+                            placeholder="Email or Mobile"
+                            autocomplete="off"
+                            [formControl]="userNameControl"
+                        />
+                        <mat-error *ngIf="userNameControl.errors?.required"
+                            >Email or Mobile number is required.</mat-error
+                        >
+                        <mat-hint class="note">
+                            <span class="subheading">Note:</span> Please enter your Mobile number with the country code
+                            (e.g. 91)
+                        </mat-hint>
+                    </mat-form-field>
+
+                    <mat-form-field
+                        appearance="outline"
+                        class="login-field"
+                        *ngIf="loginForm.get('password') as passwordControl"
+                    >
+                        <mat-label>Password</mat-label>
+                        <input
+                            matInput
+                            [type]="showPassword ? 'text' : 'password'"
+                            placeholder="Password"
+                            autocomplete="off"
+                            [formControl]="passwordControl"
+                        />
+                        <button
+                            matSuffix
+                            mat-icon-button
+                            (click)="showPassword = !showPassword"
+                            class="resize-icon"
+                            type="button"
+                        >
+                            <ng-container [ngTemplateOutlet]="visibilityIcon"></ng-container>
+                        </button>
+                        <mat-error *ngIf="passwordControl.errors?.required">Password is required.</mat-error>
+                        <mat-error *ngIf="passwordControl.errors?.cannotContainSpace">Whitespace not allowed</mat-error>
+                    </mat-form-field>
+
+                    <!-- hCaptcha Component -->
+                    <div class="hcaptcha-container">
+                        <ng-hcaptcha
+                            #hCaptcha
+                            (verify)="onHCaptchaVerify($event)"
+                            (expired)="onHCaptchaExpired()"
+                            (error)="onHCaptchaError($event)"
+                            theme="light"
+                            size="normal"
+                        >
+                        </ng-hcaptcha>
+                    </div>
+
+                    <div class="error-message" *ngIf="loginError">{{ loginError }}</div>
+
+                    <div class="login-btn">
+                        <p class="forgot-password">
+                            <a href="javascript:void(0)" (click)="forgotPassword()">Forgot Password?</a>
+                        </p>
+                        <button
+                            mat-flat-button
+                            color="primary"
+                            (click)="login()"
+                            [disabled]="isLoginLoading$ | async"
+                            class="w-100"
+                        >
+                            <div class="loader">
+                                <mat-spinner matPrefix diameter="20" *ngIf="isLoginLoading$ | async"></mat-spinner>
+                                Login
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Reset Password (Send OTP) -->
+                <div class="login-section" *ngIf="loginStep === 2" [formGroup]="sendOtpLoginForm">
+                    <button mat-icon-button class="back-button" (click)="changeLoginStep(1)" type="button">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="16px"
+                            viewBox="0 -960 960 960"
+                            width="16px"
+                            fill="#5f6368"
+                        >
+                            <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+                        </svg>
+                    </button>
+                    <div class="heading">Reset Password</div>
+
+                    <mat-form-field appearance="outline" class="input-width">
+                        <mat-label>Email or Mobile</mat-label>
+                        <input
+                            matInput
+                            placeholder="Enter Email or Mobile"
+                            autocomplete="off"
+                            formControlName="userDetails"
+                        />
+                        <mat-error *ngIf="sendOtpLoginForm.get('userDetails').errors?.required"
+                            >Email or Mobile is required.</mat-error
+                        >
+                        <mat-error *ngIf="sendOtpLoginForm.get('userDetails').errors?.pattern"
+                            >Enter a valid Email or Mobile</mat-error
+                        >
+                    </mat-form-field>
+
+                    <div class="error-message" *ngIf="loginError">{{ loginError }}</div>
+
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        (click)="sendResetPasswordOtp()"
+                        [disabled]="isLoginLoading$ | async"
+                        class="w-100"
+                    >
+                        <div class="loader">
+                            <mat-spinner matPrefix diameter="20" *ngIf="isLoginLoading$ | async"></mat-spinner>
+                            Send OTP
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Step 3: Change Password (Verify OTP) -->
+                <div class="login-section" *ngIf="loginStep === 3" [formGroup]="resetPasswordForm">
+                    <button mat-icon-button class="back-button" (click)="changeLoginStep(2)" type="button">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="16px"
+                            viewBox="0 -960 960 960"
+                            width="16px"
+                            fill="#5f6368"
+                        >
+                            <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+                        </svg>
+                    </button>
+                    <div class="heading">Change Password</div>
+
+                    <p class="user-info">
+                        {{ sendOtpLoginForm.get('userDetails').value }}
+                        <a href="javascript:void(0)" (click)="changeLoginStep(2)">Change</a>
+                    </p>
+
+                    <button
+                        mat-button
+                        color="primary"
+                        (click)="sendResetPasswordOtp()"
+                        [disabled]="remainingSeconds > 0"
+                        type="button"
+                    >
+                        Resend OTP <span *ngIf="remainingSeconds > 0">{{ remainingSeconds }}</span>
+                    </button>
+
+                    <mat-form-field appearance="outline" class="input-width">
+                        <mat-label>OTP</mat-label>
+                        <input
+                            matInput
+                            type="number"
+                            placeholder="Enter OTP"
+                            autocomplete="off"
+                            formControlName="otp"
+                        />
+                        <mat-error *ngIf="resetPasswordForm.get('otp').errors?.required">OTP is required.</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field
+                        appearance="outline"
+                        class="login-field"
+                        *ngIf="resetPasswordForm.get('password') as passwordControl"
+                    >
+                        <mat-label>Password</mat-label>
+                        <input
+                            matInput
+                            [type]="showPassword ? 'text' : 'password'"
+                            placeholder="Password"
+                            autocomplete="off"
+                            [formControl]="passwordControl"
+                        />
+                        <button
+                            matSuffix
+                            mat-icon-button
+                            (click)="showPassword = !showPassword"
+                            class="resize-icon"
+                            type="button"
+                        >
+                            <ng-container [ngTemplateOutlet]="visibilityIcon"></ng-container>
+                        </button>
+                        <mat-error *ngIf="passwordControl.errors?.required">Password is required.</mat-error>
+                        <mat-error *ngIf="passwordControl.errors?.minlength as minLengthError">
+                            Min required length is {{ minLengthError?.requiredLength }}
+                        </mat-error>
+                        <mat-error *ngIf="passwordControl.errors?.pattern"
+                            >Password should contain at least one Capital Letter, one Small Letter, one Digit and one
+                            Symbol</mat-error
+                        >
+                    </mat-form-field>
+
+                    <mat-form-field
+                        appearance="outline"
+                        class="login-field"
+                        *ngIf="resetPasswordForm.get('confirmPassword') as confirmPasswordControl"
+                    >
+                        <mat-label>Confirm Password</mat-label>
+                        <input
+                            matInput
+                            type="password"
+                            placeholder="Confirm Password"
+                            autocomplete="off"
+                            [formControl]="confirmPasswordControl"
+                        />
+                        <mat-error *ngIf="confirmPasswordControl.errors?.required"
+                            >Confirm Password is required.</mat-error
+                        >
+                        <mat-error *ngIf="confirmPasswordControl.errors?.minlength as minLengthError">
+                            Min required length is {{ minLengthError?.requiredLength }}
+                        </mat-error>
+                        <mat-error *ngIf="confirmPasswordControl.errors?.pattern"
+                            >Password should contain at least one Capital Letter, one Small Letter, one Digit and one
+                            Symbol</mat-error
+                        >
+                        <mat-error *ngIf="confirmPasswordControl.errors?.valueSameAsControl"
+                            >Passwords do not match</mat-error
+                        >
+                    </mat-form-field>
+
+                    <div class="error-message" *ngIf="loginError">{{ loginError }}</div>
+
+                    <button
+                        mat-flat-button
+                        color="primary"
+                        (click)="verifyResetPasswordOtp()"
+                        [disabled]="isLoginLoading$ | async"
+                        class="w-100"
+                    >
+                        <div class="loader">
+                            <mat-spinner matPrefix diameter="20" *ngIf="isLoginLoading$ | async"></mat-spinner>
+                            Submit
+                        </div>
+                    </button>
+                </div>
+            </ng-container>
+        </ng-container>
+    </ng-template>
+
+    <!-- Social Buttons Only Template (without create account) -->
+    <ng-template #socialButtonsOnlyTemplate let-widgetDataArray="widgetDataArray">
+        <ng-container *ngIf="loginStep === 1">
+            <!-- Icons only mode (show_social_login_icons = true) -->
+            <div class="social-icons-row" *ngIf="show_social_login_icons">
+                <ng-container *ngFor="let widgetData of widgetDataArray">
+                    <ng-container
+                        *ngIf="
+                            widgetData?.service_id !== featureServiceIds.PasswordAuthentication ||
+                            (widgetData?.service_id === featureServiceIds.PasswordAuthentication && version === 'v1')
+                        "
+                    >
+                        <button
+                            *ngIf="
+                                widgetData?.service_id !== featureServiceIds.Msg91OtpService ||
+                                !(otpScriptLoading | async)
+                            "
+                            (click)="onVerificationBtnClick(widgetData)"
+                            class="auth-icon-btn"
+                            type="button"
+                        >
+                            <img
+                                [src]="widgetData.icon"
+                                [alt]="widgetData.text"
+                                class="auth-icon-only"
+                                loading="lazy"
+                            />
+                        </button>
+                    </ng-container>
+                </ng-container>
+            </div>
+
+            <!-- Full buttons mode (show_social_login_icons = false) -->
+            <ng-container *ngIf="!show_social_login_icons">
+                <ng-container *ngFor="let widgetData of widgetDataArray">
+                    <ng-container
+                        *ngIf="
+                            widgetData?.service_id !== featureServiceIds.PasswordAuthentication ||
+                            (widgetData?.service_id === featureServiceIds.PasswordAuthentication && version === 'v1')
+                        "
+                    >
+                        <button
+                            *ngIf="
+                                widgetData?.service_id !== featureServiceIds.Msg91OtpService ||
+                                !(otpScriptLoading | async)
+                            "
+                            mat-stroked-button
+                            (click)="onVerificationBtnClick(widgetData)"
+                            class="auth-option-btn"
+                        >
+                            <div class="auth-option-content">
+                                <img
+                                    [src]="widgetData.icon"
+                                    [alt]="widgetData.text"
+                                    class="auth-option-icon"
+                                    loading="lazy"
+                                />
+                                <span class="auth-option-text">{{ widgetData.text }}</span>
+                            </div>
+                        </button>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </ng-template>
 </ng-container>
