@@ -104,17 +104,11 @@ export const ProxyAuthScript = (
     baseUrl: string,
     referenceId = '<reference_id>',
     type = '<type>',
-    version?: string,
-    input_fields?: string,
-    show_social_login_icons?: string,
     time?: number
 ) => `<script type="text/javascript">
     var configuration = {
         referenceId: '${referenceId}',
         type: '${type}',
-        version: '${version}',
-        input_fields: '${input_fields}',
-        show_social_login_icons: '${show_social_login_icons}',
         success: (data) => {
             // get verified token in response
             console.log('success response', data);

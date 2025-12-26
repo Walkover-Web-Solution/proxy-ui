@@ -554,32 +554,6 @@
             </div>
         </div>
         <div *ngIf="isEditMode">
-            <div
-                *ngIf="
-                    featureForm.get('serviceDetails')?.at(3).controls.is_enable.value &&
-                    featureForm.get('authorizationDetails.version')?.value === 'v2'
-                "
-                class="d-flex align-items-center justify-content-center w-100 mb-3"
-            >
-                <div class="custom-toggle-group">
-                    <button
-                        type="button"
-                        class="custom-toggle-btn"
-                        [class.active]="previewInputPosition !== 'bottom'"
-                        (click)="previewInputPosition = 'top'"
-                    >
-                        Input on Top
-                    </button>
-                    <button
-                        type="button"
-                        class="custom-toggle-btn"
-                        [class.active]="previewInputPosition === 'bottom'"
-                        (click)="previewInputPosition = 'bottom'"
-                    >
-                        Input on Bottom
-                    </button>
-                </div>
-            </div>
             <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
         </div>
     </div>
@@ -924,6 +898,32 @@
             </div>
         </div>
         <div *ngIf="isEditMode">
+            <div
+                *ngIf="
+                    featureForm.get('serviceDetails')?.at(3).controls.is_enable.value &&
+                    featureForm.get('authorizationDetails.version')?.value === 'v2'
+                "
+                class="d-flex align-items-center justify-content-center w-100 mb-3"
+            >
+                <div class="custom-toggle-group">
+                    <button
+                        type="button"
+                        class="custom-toggle-btn"
+                        [class.active]="previewInputPosition !== 'bottom'"
+                        (click)="previewInputPosition = 'top'"
+                    >
+                        Input on Top
+                    </button>
+                    <button
+                        type="button"
+                        class="custom-toggle-btn"
+                        [class.active]="previewInputPosition === 'bottom'"
+                        (click)="previewInputPosition = 'bottom'"
+                    >
+                        Input on Bottom
+                    </button>
+                </div>
+            </div>
             <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
         </div>
     </div>
