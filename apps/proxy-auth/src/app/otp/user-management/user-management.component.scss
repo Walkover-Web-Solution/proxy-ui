@@ -494,6 +494,13 @@ body {
         transition: all 0.2s ease;
         cursor: pointer;
 
+        &:hover {
+            .user-actions {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
         .user-avatar {
             width: 40px;
             height: 40px;
@@ -514,7 +521,6 @@ body {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 4px;
             min-width: 0;
             font-family: 'DM Sans', sans-serif;
 
@@ -560,6 +566,9 @@ body {
             align-items: center;
             gap: 8px;
             flex-shrink: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
 
             .edit-btn {
                 width: 32px;
@@ -880,7 +889,7 @@ td {
 // Search bar styling
 .search-container {
     flex: 1;
-    max-width: 400px;
+    max-width: 600px;
 
     .search-field {
         .mat-form-field-wrapper {
@@ -1359,4 +1368,7 @@ td {
             }
         }
     }
+}
+.w-45 {
+    width: 45%;
 }
