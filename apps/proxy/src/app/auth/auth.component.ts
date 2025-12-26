@@ -26,6 +26,24 @@ export class AuthComponent extends BaseComponent implements OnInit {
     public logInDataInProcess$: Observable<boolean>;
     public logInDataSuccess$: Observable<boolean>;
 
+    public features = [
+        {
+            icon: 'shield',
+            title: 'Secure & Reliable',
+            description: 'Enterprise-grade security with end-to-end encryption for all your API traffic.',
+        },
+        {
+            icon: 'bolt',
+            title: 'Lightning Fast',
+            description: 'Optimized for speed with global edge caching and intelligent routing.',
+        },
+        {
+            icon: 'bar_chart',
+            title: 'Real-time Analytics',
+            description: 'Monitor your APIs with comprehensive dashboards and alerting systems.',
+        },
+    ];
+
     public description = [
         {
             title: 'Feature of SAAR',
@@ -37,7 +55,10 @@ export class AuthComponent extends BaseComponent implements OnInit {
                 'Secure your APIs',
             ],
         },
-        { title: 'Why choose SAAR?', list: ['Secure and Reliable', 'Future-Proof Solution', 'User-Centric Design'] },
+        {
+            title: 'Why choose SAAR?',
+            list: ['Secure and Reliable', 'Future-Proof Solution', 'User-Centric Design'],
+        },
     ];
 
     constructor(
