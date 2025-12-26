@@ -9,7 +9,7 @@
                     <!-- Search Bar -->
                     <div class="my-4 d-flex justify-content-between align-items-center gap-4">
                         <div class="search-container">
-                            <mat-form-field appearance="outline" class="search-field no-space w-25">
+                            <mat-form-field appearance="outline" class="search-field no-space w-45">
                                 <mat-label>Search User</mat-label>
                                 <input
                                     matInput
@@ -20,7 +20,7 @@
                                 />
                             </mat-form-field>
                         </div>
-                        <div class="add-btn d-flex justify-content-end gap-4 full-width" *ngIf="canAddUser">
+                        <div class="add-btn d-flex justify-content-end gap-4" *ngIf="canAddUser">
                             <button mat-flat-button class="button-add" (click)="addUser()">Invite User</button>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                                     />
                                 </svg>
                             </div>
-                            <div class="user-info">
+                            <div class="user-info bg-light-grey">
                                 <div class="user-name">{{ user.name }}</div>
                                 <div class="user-email" matTooltipPosition="above">
                                     {{ user.email }}
@@ -67,14 +67,19 @@
                                 <div class="user-role">{{ user.role || 'User' }}</div>
                             </div>
                             <div class="user-actions">
-                                <button *ngIf="canEditUser" mat-button (click)="editUser(user, i)" matTooltip="Edit">
+                                <button
+                                    *ngIf="canEditUser"
+                                    mat-flat-button
+                                    class="button-add"
+                                    (click)="editUser(user, i)"
+                                >
                                     Edit
                                 </button>
                                 <button
                                     *ngIf="canRemoveUser"
-                                    mat-button
+                                    mat-flat-button
+                                    class="button-add"
                                     (click)="deleteUser(user, i)"
-                                    matTooltip="Delete"
                                 >
                                     Remove
                                 </button>
