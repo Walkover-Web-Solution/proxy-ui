@@ -46,7 +46,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
 
     public description = [
         {
-            title: 'Feature of SAAR',
+            title: 'Feature of 36Blocks',
             list: [
                 'Flexible Proxy Pass',
                 'Custom Gateway Domains',
@@ -56,7 +56,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
             ],
         },
         {
-            title: 'Why choose SAAR?',
+            title: 'Why choose 36Blocks?',
             list: ['Secure and Reliable', 'Future-Proof Solution', 'User-Centric Design'],
         },
     ];
