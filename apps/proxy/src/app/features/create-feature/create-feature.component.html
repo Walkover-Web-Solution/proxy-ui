@@ -842,8 +842,20 @@
                     ></ng-container>
                 </ng-container>
 
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: featureForm.get('authorizationDetails.encryptionKey'),
+                            fieldConfig: {
+                                label: 'Encryption Key',
+                                hint: 'Enter the JWT secret key used for token generation and validation. Make sure it is correct and kept confidential.'
+                            }
+                        }
+                    "
+                ></ng-container>
                 <ng-container *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1">
-                    <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="d-flex align-items-center gap-2 mb-3 mt-4">
                         <span class="mat-body-2">Show Create Account For New User: </span>
                         <mat-slide-toggle
                             [formControl]="featureForm.get('authorizationDetails.allowNewUserRegistration')"

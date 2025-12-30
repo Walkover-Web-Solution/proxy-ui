@@ -195,6 +195,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             allowNewUserRegistration: new FormControl<boolean>(false, []),
             showSocialLoginIcons: new FormControl<boolean>(false, []),
             blockNewUserSignUps: new FormControl<boolean>(false, []),
+            encryptionKey: new FormControl<string>(null, []),
         }),
         webhookDetails: new FormGroup({
             webhookUrl: new FormControl<string>(null, [Validators.required]),
@@ -285,6 +286,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 showSocialLoginIcons: feature.ui_preferences?.icons || false,
                                 allowNewUserRegistration: feature.ui_preferences?.create_account_link || false,
                                 blockNewUserSignUps: feature.block_registration || false,
+                                encryptionKey: feature.encryption_key,
                             },
                             webhookDetails: {
                                 webhookUrl: feature.webhook?.url,
@@ -552,6 +554,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             },
                         },
                         block_registration: authorizationDetailsForm.value.blockNewUserSignUps || false,
+                        encryption_key: authorizationDetailsForm.value.encryptionKey,
                         authorization_format: {
                             ...featureDetails.authorization_format,
                             key: authorizationDetailsForm.value.authorizationKey,
@@ -582,7 +585,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 break;
             case 'webhook':
                 const webhookDetailsForm = this.featureForm.controls.webhookDetails;
-                console.log(webhookDetailsForm.value);
+
                 if (webhookDetailsForm.valid) {
                     payload = {
                         webhook: {
@@ -1561,21 +1564,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             ) {
                 return plan.interval;
             }
-
-            // Handle trial period fields
             if (fieldLabel.includes('trial') && plan.trial_period !== undefined) {
                 return plan.trial_period;
             }
-
-            // Handle pay in advance fields
             if (fieldLabel.includes('advance') && plan.pay_in_advance !== undefined) {
                 return plan.pay_in_advance;
             }
-
-            // Handle tax fields
             if (fieldLabel.includes('tax') && plan.taxes && Array.isArray(plan.taxes)) {
                 const taxCodes = plan.taxes.map((tax) => tax.code);
-                // Return array for multi-select, single value for single select
                 return taxCodes.length === 1 ? taxCodes[0] : taxCodes;
             }
         }
@@ -1584,7 +1580,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     }
 
     public addPlan(): void {
-        // Ensure taxes and billable metrics are loaded before opening dialog
         if (!this.billableMetricstabledata || this.billableMetricstabledata.length === 0) {
             this.getAllBillableMetrics();
         }
@@ -1708,7 +1703,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 value: key,
             };
         });
-        console.log(this.webhookEventsData);
         return this.webhookEventsData;
     }
     public copySampleResponse(sampleResponse: any): void {

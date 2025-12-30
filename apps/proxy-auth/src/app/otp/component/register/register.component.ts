@@ -330,6 +330,28 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         }
     }
 
+    private resetOtpStoreState(): void {
+        this.store.dispatch(
+            resetAnyState({
+                request: {
+                    otpGenerateData: null,
+                    getOtpInProcess: false,
+                    getOtpSuccess: false,
+                    verifyOtpV2Data: null,
+                    verifyOtpV2InProcess: false,
+                    verifyOtpV2Success: false,
+                    resendOtpInProcess: false,
+                    resendOtpSuccess: false,
+                    verifyOtpData: null,
+                    verifyOtpInProcess: false,
+                    verifyOtpSuccess: false,
+                    resendCount: 0,
+                    apiErrorResponse: null,
+                    errors: null,
+                },
+            })
+        );
+    }
     private resetFormState(): void {
         // Reset OTP verification states
         this.isOtpVerified = false;
