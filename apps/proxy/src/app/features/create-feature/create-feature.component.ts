@@ -1545,21 +1545,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             ) {
                 return plan.interval;
             }
-
-            // Handle trial period fields
             if (fieldLabel.includes('trial') && plan.trial_period !== undefined) {
                 return plan.trial_period;
             }
-
-            // Handle pay in advance fields
             if (fieldLabel.includes('advance') && plan.pay_in_advance !== undefined) {
                 return plan.pay_in_advance;
             }
-
-            // Handle tax fields
             if (fieldLabel.includes('tax') && plan.taxes && Array.isArray(plan.taxes)) {
                 const taxCodes = plan.taxes.map((tax) => tax.code);
-                // Return array for multi-select, single value for single select
                 return taxCodes.length === 1 ? taxCodes[0] : taxCodes;
             }
         }
@@ -1568,14 +1561,13 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     }
 
     public addPlan(): void {
-        // Ensure taxes and billable metrics are loaded before opening dialog
         if (!this.billableMetricstabledata || this.billableMetricstabledata.length === 0) {
             this.getAllBillableMetrics();
         }
 
         if (!this.taxes || this.taxes.length === 0) {
             this.getTaxes();
-        } // Wait a bit for data to load, then open dialog
+        }
         setTimeout(() => {
             this.openEditPlanDialog(null, true);
         }, 500);
