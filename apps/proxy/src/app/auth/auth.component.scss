@@ -1,30 +1,482 @@
 @import '../../assets/scss/utils/mixins/common-utils';
-.login-left-menu {
-    display: flex;
-    padding: 80px 40px 0px 40px;
-    max-width: 500px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 24px;
-    background-color: var(--color-common-silver);
-    height: 100vh;
-    @include media-breakpoint-down('phone') {
-        display: none;
+
+// Color palette
+$primary-color: #10b981;
+$primary-light: #34d399;
+$primary-dark: #059669;
+$accent-color: #14b8a6;
+$text-dark: #0f172a;
+$text-medium: #475569;
+$text-muted: #94a3b8;
+$border-color: #e2e8f0;
+$bg-light: #f8fafc;
+$bg-gradient-start: #f8fafc;
+$bg-gradient-end: #ecfdf5;
+
+// Animations
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
-    .brand-title {
-        font-size: 40px !important;
-        font-weight: 600 !important;
-        line-height: normal;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-.login-content {
-    display: flex;
-    padding: 80px 80px 0px 80px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 24px;
-    .right-title {
-        font-size: var(--font-size-common-24) !important;
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0);
     }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.landing-page {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #ffffff 0%, $bg-gradient-end 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
+    position: relative;
+
+    // Decorative background elements
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba($primary-color, 0.05) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 20%;
+        left: -200px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba($accent-color, 0.05) 0%, transparent 70%);
+        pointer-events: none;
+    }
+}
+
+// Header
+.landing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba($border-color, 0.5);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    @include media-breakpoint-down('phone') {
+        padding: 16px 20px;
+    }
+
+    .logo {
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.5px;
+    }
+
+    .login-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba($primary-color, 0.4);
+        }
+
+        mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        &:hover mat-icon {
+            transform: translateX(3px);
+        }
+    }
+}
+
+// Hero Section
+.hero-section {
+    text-align: center;
+    padding: 100px 60px 80px;
+    max-width: 900px;
+    margin: 0 auto;
+    animation: fadeInUp 0.8s ease-out;
+    position: relative;
+    z-index: 1;
+
+    @include media-breakpoint-down('phone') {
+        padding: 60px 20px 50px;
+    }
+
+    .hero-title {
+        font-size: 58px;
+        font-weight: 800;
+        color: $text-dark;
+        line-height: 1.1;
+        margin: 0 0 28px;
+        letter-spacing: -2px;
+
+        @include media-breakpoint-down('phone') {
+            font-size: 36px;
+            letter-spacing: -1px;
+        }
+
+        .highlight {
+            display: block;
+            background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-style: italic;
+            margin-top: 4px;
+        }
+    }
+
+    .hero-subtitle {
+        font-size: 20px;
+        color: $text-medium;
+        line-height: 1.7;
+        margin: 0 0 48px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+
+        @include media-breakpoint-down('phone') {
+            font-size: 17px;
+            margin-bottom: 36px;
+        }
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+
+        .btn-primary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba($primary-color, 0.35);
+
+            &:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 30px rgba($primary-color, 0.45);
+            }
+
+            mat-icon {
+                font-size: 20px;
+                width: 20px;
+                height: 20px;
+                transition: transform 0.3s ease;
+            }
+
+            &:hover mat-icon {
+                transform: translateX(4px);
+            }
+        }
+
+        .btn-secondary {
+            padding: 16px 32px;
+            background: #ffffff;
+            color: $text-dark;
+            border: 2px solid $border-color;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+                border-color: $primary-color;
+                color: $primary-color;
+                background: rgba($primary-color, 0.04);
+                transform: translateY(-2px);
+            }
+        }
+    }
+}
+
+// Features Section
+.features-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    padding: 60px 60px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+
+    @include media-breakpoint-down('tablet') {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 40px 40px 60px;
+    }
+
+    @include media-breakpoint-down('phone') {
+        grid-template-columns: 1fr;
+        padding: 30px 20px 50px;
+        gap: 20px;
+    }
+
+    .feature-card {
+        padding: 36px;
+        background: #ffffff;
+        border: 1px solid rgba($border-color, 0.6);
+        border-radius: 20px;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out backwards;
+
+        &:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+        &:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        &:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, $primary-color, $accent-color);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        &:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba($primary-color, 0.12);
+            border-color: transparent;
+
+            &::before {
+                opacity: 1;
+            }
+
+            .feature-icon {
+                animation: float 2s ease-in-out infinite;
+            }
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba($primary-color, 0.1) 0%, rgba($accent-color, 0.1) 100%);
+            border-radius: 16px;
+            margin-bottom: 24px;
+
+            mat-icon {
+                font-size: 28px;
+                width: 28px;
+                height: 28px;
+                color: $primary-color;
+            }
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: $text-dark;
+            margin: 0 0 14px;
+            letter-spacing: -0.3px;
+        }
+
+        .feature-description {
+            font-size: 15px;
+            color: $text-medium;
+            line-height: 1.7;
+            margin: 0;
+        }
+    }
+}
+
+// Description Section
+.description-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 60px;
+    padding: 70px 80px;
+    max-width: 1100px;
+    margin: 0 auto 80px;
+    background: linear-gradient(135deg, #ffffff 0%, $bg-gradient-end 100%);
+    border-radius: 32px;
+    box-shadow: 0 4px 30px rgba($primary-color, 0.08), inset 0 0 0 1px rgba($border-color, 0.5);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+
+    // Decorative gradient orb
+    &::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba($primary-color, 0.08) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -80px;
+        left: -80px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba($accent-color, 0.06) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    @include media-breakpoint-down('tablet') {
+        margin-left: 40px;
+        margin-right: 40px;
+        max-width: calc(100% - 80px);
+        padding: 50px 50px;
+        gap: 40px;
+    }
+
+    @include media-breakpoint-down('phone') {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 40px 28px;
+        margin-left: 20px;
+        margin-right: 20px;
+        max-width: calc(100% - 40px);
+        border-radius: 24px;
+    }
+
+    .description-card {
+        position: relative;
+        z-index: 1;
+
+        .description-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: $text-dark;
+            margin: 0 0 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            letter-spacing: -0.5px;
+
+            &::before {
+                content: '';
+                display: inline-block;
+                width: 5px;
+                height: 28px;
+                background: linear-gradient(180deg, $primary-color 0%, $accent-color 100%);
+                border-radius: 3px;
+                flex-shrink: 0;
+            }
+        }
+
+        .description-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+
+            li {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                font-size: 16px;
+                color: $text-dark;
+                font-weight: 500;
+                padding: 14px 18px;
+                background: rgba(#ffffff, 0.7);
+                border-radius: 12px;
+                border: 1px solid rgba($border-color, 0.4);
+                transition: all 0.3s ease;
+
+                &:hover {
+                    background: #ffffff;
+                    transform: translateX(6px);
+                    box-shadow: 0 4px 15px rgba($primary-color, 0.08);
+                    border-color: rgba($primary-color, 0.2);
+                }
+
+                mat-icon {
+                    font-size: 22px;
+                    width: 22px;
+                    height: 22px;
+                    color: $primary-color;
+                    flex-shrink: 0;
+                }
+
+                span {
+                    line-height: 1.4;
+                }
+            }
+        }
+    }
+}
+
+// Footer spacing
+.landing-page {
+    padding-bottom: 40px;
 }
