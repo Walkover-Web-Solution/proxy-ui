@@ -1586,7 +1586,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
         if (!this.taxes || this.taxes.length === 0) {
             this.getTaxes();
-        } // Wait a bit for data to load, then open dialog
+        }
         setTimeout(() => {
             this.openEditPlanDialog(null, true);
         }, 500);
