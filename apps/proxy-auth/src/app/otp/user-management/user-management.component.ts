@@ -335,6 +335,20 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     ngOnDestroy(): void {
+        // Close all open dialogs when navigating away
+        if (this.addUserDialogRef) {
+            this.addUserDialogRef.close();
+        }
+        if (this.editPermissionDialogRef) {
+            this.editPermissionDialogRef.close();
+        }
+        if (this.addPermissionDialogRef) {
+            this.addPermissionDialogRef.close();
+        }
+
+        // Remove body class if it was added
+        document.body.classList.remove('dark-dialog-open');
+
         // Clean up the paginator select observer
         if ((this as any)._paginatorSelectObserver) {
             (this as any)._paginatorSelectObserver.disconnect();
