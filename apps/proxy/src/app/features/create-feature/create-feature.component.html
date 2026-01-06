@@ -452,7 +452,7 @@
                     [ngClass]="{ 'active': selectedServiceIndex === i }"
                     (click)="selectedServiceIndex = i"
                 >
-                    <div class="d-flex align-items-center flex-grow-1">
+                    <div class="d-flex align-items-center flex-grow-1" style="color: var(--color-dark-primary)">
                         {{ service.name }}
                         <ng-container *ngIf="featureForm.get('serviceDetails')?.at(i) as serviceForm">
                             <mat-icon
@@ -468,7 +468,9 @@
                             </mat-icon>
                         </ng-container>
                     </div>
-                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1" style="color: var(--color-dark-primary)"
+                        >navigate_next</mat-icon
+                    >
                 </mat-list-item>
             </mat-list>
         </div>
