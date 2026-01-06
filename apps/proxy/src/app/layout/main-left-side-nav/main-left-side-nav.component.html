@@ -13,6 +13,20 @@
             >
             <span matLine class="menu-list-span menu-label">Logs</span>
         </a>
+
+        <a
+            mat-list-item
+            [routerLink]="['dashboard']"
+            routerLinkActive="active-list-item"
+            [matTooltipPosition]="'right'"
+            [matTooltip]="isSideNavOpen ? 'Dashboard' : ''"
+        >
+            <mat-icon matListIcon class="mat-icon-20 material-icons-outlined p-0" aria-hidden="false"
+                >dashboard</mat-icon
+            >
+            <span matLine class="menu-list-span menu-label">Dashboard</span>
+        </a>
+
         <a
             mat-list-item
             [routerLink]="['features']"

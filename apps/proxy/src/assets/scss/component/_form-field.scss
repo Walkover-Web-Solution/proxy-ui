@@ -203,3 +203,52 @@ input[matinput]::-webkit-inner-spin-button {
 .mat-form-field-outside-error {
     height: 21.5px;
 }
+
+// Input focus/highlight color
+.mat-form-field.mat-focused {
+    .mat-form-field-ripple {
+        background-color: var(--color-dark-accent) !important;
+    }
+    
+    .mat-form-field-outline-thick {
+        color: var(--color-dark-accent) !important;
+    }
+    
+    .mat-form-field-label {
+        color: var(--color-dark-primary) !important;
+    }
+}
+
+// MDC Form Field styles (Angular Material 15+)
+.mat-mdc-form-field.mat-focused {
+    .mdc-text-field--outlined:not(.mdc-text-field--disabled) {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+            border-color: var(--color-dark-accent) !important;
+        }
+    }
+    
+    .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+        .mdc-line-ripple::after {
+            border-bottom-color: var(--color-dark-accent) !important;
+        }
+    }
+    
+    .mat-mdc-floating-label {
+        color: var(--color-dark-primary) !important;
+    }
+}
+
+// MDC focused outline
+.mdc-text-field--focused:not(.mdc-text-field--disabled) {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+        border-color: var(--color-dark-accent) !important;
+    }
+    
+    .mdc-floating-label {
+        color: var(--color-dark-primary) !important;
+    }
+}
