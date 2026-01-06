@@ -36,13 +36,13 @@ import { UiLoaderModule } from '@proxy/ui/loader';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserDialogModule } from './user-profile/user-dialog/user-dialog.module';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SubscriptionCenterComponent } from './component/subscription-center/subscription-center.component';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogModule } from '@angular/material/dialog';
 import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
 
 export const CHAT_COMPONENTS: any[] = [
@@ -76,13 +76,13 @@ export const CHAT_COMPONENTS: any[] = [
         MatSortModule,
         UserDialogModule,
         MatCardModule,
+        MatDividerModule,
         MatSelectModule,
         MatTooltipModule,
         MatTabsModule,
         NgHcaptchaModule.forRoot({
             siteKey: environment.hCaptchaSiteKey,
         }),
-        MatDividerModule,
         UiConfirmDialogModule,
 
         DirectivesRemoveCharacterDirectiveModule,

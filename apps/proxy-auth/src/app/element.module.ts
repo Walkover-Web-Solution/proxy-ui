@@ -45,7 +45,9 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.isLogin = config?.isLogin;
             sendOtpElement.loginRedirectUrl = config?.loginRedirectUrl;
             sendOtpElement.theme = config?.theme;
-
+            sendOtpElement.version = config?.version;
+            sendOtpElement.input_fields = config?.input_fields;
+            sendOtpElement.show_social_login_icons = config?.show_social_login_icons;
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;
             if (!config.success || typeof config.success !== 'function') {
