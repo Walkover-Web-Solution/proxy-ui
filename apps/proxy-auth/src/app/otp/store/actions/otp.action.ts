@@ -88,7 +88,10 @@ export const createPermissionError = createAction(
     '[OTP] Create Permission Error',
     props<{ errors: string[]; errorResponse: any }>()
 );
-export const getPermissions = createAction('[OTP] Get Permissions', props<{ authToken: string }>());
+export const getPermissions = createAction(
+    '[OTP] Get Permissions',
+    props<{ authToken: string; itemsPerPage?: number }>()
+);
 export const getPermissionsComplete = createAction('[OTP] Get Permissions Complete', props<{ response: any }>());
 export const getPermissionsError = createAction(
     '[OTP] Get Permissions Error',

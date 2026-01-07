@@ -160,10 +160,15 @@ export class OtpService {
         const url = otpVerificationUrls.createPermission(this.clientUrl);
         return this.http.post<any>(url, { name }, this.options);
     }
-    public getPermissions(authToken: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
+    public getPermissions(
+        authToken: string,
+        itemsPerPage?: number
+    ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;
         const url = otpVerificationUrls.createPermission(this.clientUrl);
-        return this.http.get<any>(url, {}, this.options);
+        const queryParams: any = {};
+        if (itemsPerPage) queryParams.itemsPerPage = itemsPerPage;
+        return this.http.get<any>(url, queryParams, this.options);
     }
     public updateCompanyUser(
         payload: any,

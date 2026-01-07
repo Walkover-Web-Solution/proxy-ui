@@ -396,8 +396,8 @@ export class OtpEffects {
     getPermissions$ = createEffect(() =>
         this.actions$.pipe(
             ofType(otpActions.getPermissions),
-            switchMap(({ authToken }) => {
-                return this.otpService.getPermissions(authToken).pipe(
+            switchMap(({ authToken, itemsPerPage }) => {
+                return this.otpService.getPermissions(authToken, itemsPerPage).pipe(
                     map((res: any) => {
                         if (res.status === 'success') {
                             return otpActions.getPermissionsComplete({

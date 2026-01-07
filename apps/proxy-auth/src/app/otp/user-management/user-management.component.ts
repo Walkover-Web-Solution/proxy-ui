@@ -898,7 +898,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.store.dispatch(otpActions.getRoles({ authToken: this.userToken, itemsPerPage: event.pageSize }));
     }
     public getPermissions(): void {
-        this.store.dispatch(otpActions.getPermissions({ authToken: this.userToken }));
+        const pageSize = 1000;
+        this.store.dispatch(otpActions.getPermissions({ authToken: this.userToken, itemsPerPage: pageSize }));
     }
 
     public refreshFormData(): void {
