@@ -26,38 +26,26 @@ export class AuthComponent extends BaseComponent implements OnInit {
     public logInDataInProcess$: Observable<boolean>;
     public logInDataSuccess$: Observable<boolean>;
 
-    public features = [
+    public benefits = [
         {
-            icon: 'shield',
-            title: 'Secure & Reliable',
-            description: 'Enterprise-grade security with end-to-end encryption for all your API traffic.',
+            icon: 'fingerprint',
+            title: 'Social & OTP Login',
+            description: 'Support Google, Apple, and mobile OTP authentication out of the box.',
         },
         {
-            icon: 'bolt',
-            title: 'Lightning Fast',
-            description: 'Optimized for speed with global edge caching and intelligent routing.',
+            icon: 'verified_user',
+            title: 'Role-based Access',
+            description: 'Define user roles and permissions to control access to your application.',
         },
         {
-            icon: 'bar_chart',
-            title: 'Real-time Analytics',
-            description: 'Monitor your APIs with comprehensive dashboards and alerting systems.',
-        },
-    ];
-
-    public description = [
-        {
-            title: 'Feature of 36Blocks',
-            list: [
-                'Flexible Proxy Pass',
-                'Custom Gateway Domains',
-                'Real-time Analytics',
-                'Developer-Friendly Documentation',
-                'Secure your APIs',
-            ],
+            icon: 'timeline',
+            title: 'Activity Tracking',
+            description: 'Monitor user sessions, login history, and activity patterns.',
         },
         {
-            title: 'Why choose 36Blocks?',
-            list: ['Secure and Reliable', 'Future-Proof Solution', 'User-Centric Design'],
+            icon: 'lock',
+            title: 'Secure Session Handling',
+            description: 'Automatic session management with secure token handling and refresh.',
         },
     ];
 

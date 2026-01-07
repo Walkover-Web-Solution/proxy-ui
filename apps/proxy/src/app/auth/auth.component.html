@@ -1,53 +1,96 @@
-<div class="landing-page">
-    <!-- Header -->
-    <header class="landing-header">
-        <div class="logo">36Blocks</div>
-        <button class="login-btn" (click)="login()">
-            Login
-            <mat-icon>arrow_forward</mat-icon>
-        </button>
+<div class="auth-landing">
+    <header class="top-bar">
+        <div class="brand">
+            <div class="brand-mark">36</div>
+            <span class="brand-name">36Blocks</span>
+        </div>
+        <nav class="nav-links">
+            <a href="#">Features</a>
+            <a href="#">Pricing</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </nav>
+        <button class="primary-btn" (click)="login()">Start Building</button>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <h1 class="hero-title">
-            Seamless Authentication
-            <span class="highlight">Made Simple</span>
-        </h1>
-        <p class="hero-subtitle">
-            Securely access your APIs with 36Blocks. A modern authentication gateway built for reliability and
-            performance.
-        </p>
-        <div class="hero-buttons">
-            <button class="btn-primary" (click)="login()">
-                Get Started Free
-                <mat-icon>arrow_forward</mat-icon>
-            </button>
-            <button class="btn-secondary">View Documentation</button>
+    <main class="hero">
+        <div class="hero-copy">
+            <h1>
+                User Identity,
+                <span>Simplified</span>
+            </h1>
+            <p class="lead">
+                Set up user login in minutes. Support Google, Apple, or mobile OTP. Map roles, track activity, and
+                control access — all from one panel.
+            </p>
+            <button class="cta" (click)="login()">Enable User Management</button>
         </div>
-    </section>
 
-    <!-- Features Section -->
-    <section class="features-section">
-        <div class="feature-card" *ngFor="let feature of features">
-            <div class="feature-icon">
-                <mat-icon>{{ feature.icon }}</mat-icon>
+        <div class="code-card">
+            <div class="card-header">
+                <span>JavaScript</span>
+                <button class="ghost-btn" type="button">
+                    <mat-icon>content_copy</mat-icon>
+                    Copy
+                </button>
             </div>
-            <h3 class="feature-title">{{ feature.title }}</h3>
-            <p class="feature-description">{{ feature.description }}</p>
+            <pre
+                class="code-snippet"
+            ><code class="language-js"><span class="token tag">&lt;script</span> <span class="token attr-name">type</span>=<span class="token string">"text/javascript"</span><span class="token tag">&gt;</span>
+
+  <span class="token keyword">var</span> <span class="token variable">configuration</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">referenceId:</span> <span class="token string">'2395968g176466...'</span>,
+    <span class="token property">type:</span> <span class="token string">'authorization'</span>,
+    <span class="token property">success:</span> <span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// get verified token</span>
+      <span class="token object">console</span>.<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'success'</span>, data<span class="token punctuation">)</span>;
+    <span class="token punctuation">&#125;</span>,
+    <span class="token property">failure:</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// handle error</span>
+      <span class="token object">console</span>.<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'failure'</span>, error<span class="token punctuation">)</span>;
+    <span class="token punctuation">&#125;</span>,
+  <span class="token punctuation">&#125;</span>;
+
+<span class="token tag">&lt;/script&gt;</span></code></pre>
+            <div class="code-footer">
+                <span>Note: Add a div with matching ID to display the login button.</span>
+                <div class="code-placeholder">&lt;div id="2395089176466..."&gt;&lt;/div&gt;</div>
+            </div>
+        </div>
+    </main>
+
+    <section class="benefits">
+        <div class="section-heading">
+            <h2>Key Benefits</h2>
+            <p>Everything you need for user authentication and management</p>
+        </div>
+
+        <div class="benefit-grid">
+            <article
+                class="benefit-card"
+                *ngFor="let benefit of benefits; let i = index"
+                [style.animationDelay]="i * 0.08 + 's'"
+            >
+                <div class="icon-wrap">
+                    <mat-icon>{{ benefit.icon }}</mat-icon>
+                </div>
+                <div class="benefit-text">
+                    <h3>{{ benefit.title }}</h3>
+                    <p>{{ benefit.description }}</p>
+                </div>
+            </article>
         </div>
     </section>
 
-    <!-- Description Section -->
-    <section class="description-section">
-        <div class="description-card" *ngFor="let data of description">
-            <h3 class="description-title">{{ data.title }}</h3>
-            <ul class="description-list">
-                <li *ngFor="let item of data.list">
-                    <mat-icon>check_circle</mat-icon>
-                    <span>{{ item }}</span>
-                </li>
-            </ul>
+    <footer class="page-footer">
+        <div class="brand">
+            <div class="brand-mark">36</div>
+            <span class="brand-name">36Blocks</span>
         </div>
-    </section>
+        <div class="footer-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Contact</a>
+        </div>
+    </footer>
 </div>
