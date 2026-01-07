@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout.component';
 import { CanActivateRouteGuard } from '../auth/authguard';
 import { redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
-import { ProjectGuard } from '../guard/project.guard';
 import { ChatbotComponent } from '../chatbot/chatbot.component';
+import { ProjectGuard } from '../guard/project.guard';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
@@ -13,10 +13,14 @@ const routes: Routes = [
         path: '',
         component: LayoutComponent,
         children: [
-            { path: '', redirectTo: 'logs', pathMatch: 'full' },
+            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             {
                 path: 'logs',
                 loadChildren: () => import('../logs/logs.module').then((p) => p.LogsModule),
+            },
+            {
+                path: 'dashboard',
+                loadChildren: () => import('../dashboard/dashborad.module').then((p) => p.DashboardModule),
             },
             {
                 path: 'features',

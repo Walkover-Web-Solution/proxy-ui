@@ -132,6 +132,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public updatePaymentDetails$: Observable<any> = this.componentStore.updatePaymentDetails$;
     public webhookEvents$: Observable<any> = this.componentStore.webhookEvents$;
     public isEditMode = false;
+    public previewInputPosition: 'top' | 'bottom' = 'top';
     public selectedServiceIndex = 0;
     public selectedSubscriptionServiceIndex = -2;
 
@@ -190,7 +191,11 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 CustomValidators.minLengthThreeWithoutSpace,
             ]),
             theme: new FormControl<string>('system', []),
+            version: new FormControl<string>('v1', []),
             allowNewUserRegistration: new FormControl<boolean>(false, []),
+            showSocialLoginIcons: new FormControl<boolean>(false, []),
+            blockNewUserSignUps: new FormControl<boolean>(false, []),
+            encryptionKey: new FormControl<string>(null, []),
         }),
         webhookDetails: new FormGroup({
             webhookUrl: new FormControl<string>(null, [Validators.required]),
@@ -276,8 +281,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             authorizationDetails: {
                                 session_time: feature.session_time,
                                 authorizationKey: feature.authorization_format.key,
-                                theme: feature.extra_configurations?.theme || 'system',
-                                allowNewUserRegistration: feature.extra_configurations?.create_account_link || false,
+                                theme: feature.ui_preferences?.theme || 'system',
+                                version: feature.ui_preferences?.version || 'v1',
+                                showSocialLoginIcons: feature.ui_preferences?.icons || false,
+                                allowNewUserRegistration: feature.ui_preferences?.create_account_link || false,
+                                blockNewUserSignUps: feature.block_registration || false,
+                                encryptionKey: feature.encryption_key,
                             },
                             webhookDetails: {
                                 webhookUrl: feature.webhook?.url,
@@ -285,6 +294,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 triggerEvents: feature.trigger_events || feature.webhook_events || [],
                             },
                         });
+                        this.previewInputPosition = feature.ui_preferences?.input_fields || 'top';
                     });
                 });
         }
@@ -543,9 +553,18 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 value: 1,
                             },
                         },
+                        block_registration: authorizationDetailsForm.value.blockNewUserSignUps || false,
+                        encryption_key: authorizationDetailsForm.value.encryptionKey,
                         authorization_format: {
                             ...featureDetails.authorization_format,
                             key: authorizationDetailsForm.value.authorizationKey,
+                        },
+                        ui_preferences: {
+                            theme: authorizationDetailsForm.value.theme,
+                            create_account_link: authorizationDetailsForm.value.allowNewUserRegistration || false,
+                            icons: authorizationDetailsForm.value.showSocialLoginIcons || false,
+                            version: authorizationDetailsForm.value.version,
+                            input_fields: this.previewInputPosition,
                         },
                         session_time: authorizationDetailsForm.value.session_time,
                     };
@@ -566,7 +585,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 break;
             case 'webhook':
                 const webhookDetailsForm = this.featureForm.controls.webhookDetails;
-                console.log(webhookDetailsForm.value);
+
                 if (webhookDetailsForm.valid) {
                     payload = {
                         webhook: {
@@ -1545,21 +1564,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             ) {
                 return plan.interval;
             }
-
-            // Handle trial period fields
             if (fieldLabel.includes('trial') && plan.trial_period !== undefined) {
                 return plan.trial_period;
             }
-
-            // Handle pay in advance fields
             if (fieldLabel.includes('advance') && plan.pay_in_advance !== undefined) {
                 return plan.pay_in_advance;
             }
-
-            // Handle tax fields
             if (fieldLabel.includes('tax') && plan.taxes && Array.isArray(plan.taxes)) {
                 const taxCodes = plan.taxes.map((tax) => tax.code);
-                // Return array for multi-select, single value for single select
                 return taxCodes.length === 1 ? taxCodes[0] : taxCodes;
             }
         }
@@ -1568,14 +1580,13 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     }
 
     public addPlan(): void {
-        // Ensure taxes and billable metrics are loaded before opening dialog
         if (!this.billableMetricstabledata || this.billableMetricstabledata.length === 0) {
             this.getAllBillableMetrics();
         }
 
         if (!this.taxes || this.taxes.length === 0) {
             this.getTaxes();
-        } // Wait a bit for data to load, then open dialog
+        }
         setTimeout(() => {
             this.openEditPlanDialog(null, true);
         }, 500);
@@ -1692,7 +1703,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 value: key,
             };
         });
-        console.log(this.webhookEventsData);
         return this.webhookEventsData;
     }
     public copySampleResponse(sampleResponse: any): void {

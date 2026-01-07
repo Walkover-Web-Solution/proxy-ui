@@ -11,6 +11,7 @@ export class OtpWidgetService {
     private userState: string;
     private scriptAdded = false;
     public showlogin = new BehaviorSubject<boolean>(false);
+    public forgotPasswordMode = new BehaviorSubject<{ active: boolean; prefillEmail?: string }>({ active: false });
 
     public scriptLoading = new BehaviorSubject<boolean>(false);
     public otpWidgetToken = new BehaviorSubject<string>(null);
@@ -62,5 +63,13 @@ export class OtpWidgetService {
     }
     public openLogin(value: boolean) {
         this.showlogin.next(value);
+    }
+
+    public openForgotPassword(prefillEmail: string = '') {
+        this.forgotPasswordMode.next({ active: true, prefillEmail });
+    }
+
+    public closeForgotPassword() {
+        this.forgotPasswordMode.next({ active: false });
     }
 }
