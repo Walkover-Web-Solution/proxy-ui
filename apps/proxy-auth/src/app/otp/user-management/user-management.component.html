@@ -10,7 +10,7 @@
                     <div class="my-4 d-flex justify-content-between align-items-center gap-4">
                         <div class="search-container">
                             <mat-form-field appearance="outline" class="search-field no-space w-45">
-                                <mat-label>Search User</mat-label>
+                                <mat-label>Search Member</mat-label>
                                 <input
                                     matInput
                                     [(ngModel)]="searchTerm"
@@ -21,15 +21,39 @@
                             </mat-form-field>
                         </div>
                         <div class="add-btn d-flex justify-content-end gap-4" *ngIf="canAddUser">
-                            <button mat-flat-button class="button-add" (click)="addUser()">Invite User</button>
+                            <button mat-flat-button class="button-add" (click)="addUser()">Invite Member</button>
                         </div>
                     </div>
 
                     <div class="users-list-container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
+                        <!-- Skeleton Loading -->
+                        <ng-container *ngIf="isUsersLoading">
+                            <div
+                                *ngFor="let item of [1, 2, 3, 4, 5]"
+                                class="user-item skeleton-item"
+                                [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'"
+                            >
+                                <div class="user-avatar skeleton-avatar"></div>
+                                <div class="user-info bg-light-grey">
+                                    <div class="skeleton-text skeleton-name"></div>
+                                    <div class="skeleton-text skeleton-email"></div>
+                                </div>
+                                <div class="user-role-row">
+                                    <div class="skeleton-text skeleton-role"></div>
+                                </div>
+                                <div class="user-actions">
+                                    <div class="skeleton-button"></div>
+                                    <div class="skeleton-button"></div>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Actual User Data -->
                         <div
                             *ngFor="let user of dataSource.data; let i = index"
                             class="user-item"
                             [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'"
+                            [class.hidden]="isUsersLoading"
                         >
                             <div class="user-avatar" *ngIf="theme !== 'dark'">
                                 <svg
@@ -85,8 +109,8 @@
                                 </button>
                             </div>
                         </div>
-                        <p class="no-data" *ngIf="dataSource.data.length === 0">
-                            Nothing Here, There are no users to show
+                        <p class="no-data" *ngIf="!isUsersLoading && dataSource.data.length === 0">
+                            Nothing Here, There are no Members to show
                         </p>
                         <mat-paginator
                             [pageSizeOptions]="[10, 20, 50, 100, 1000]"

@@ -97,7 +97,7 @@ export const getPermissionsError = createAction(
 
 export const getCompanyUsers = createAction(
     '[OTP] Get Company Users',
-    props<{ authToken: string; itemsPerPage?: number; pageNo?: number }>()
+    props<{ authToken: string; itemsPerPage?: number; pageNo?: number; search?: string }>()
 );
 export const getCompanyUsersComplete = createAction('[OTP] Get Company Users Complete', props<{ response: any }>());
 export const getCompanyUsersError = createAction(
