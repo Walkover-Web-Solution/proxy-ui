@@ -26,28 +26,14 @@ export class AuthComponent extends BaseComponent implements OnInit {
     public logInDataInProcess$: Observable<boolean>;
     public logInDataSuccess$: Observable<boolean>;
 
-    public benefits = [
-        {
-            icon: 'fingerprint',
-            title: 'Social & OTP Login',
-            description: 'Support Google, Apple, and mobile OTP authentication out of the box.',
-        },
-        {
-            icon: 'verified_user',
-            title: 'Role-based Access',
-            description: 'Define user roles and permissions to control access to your application.',
-        },
-        {
-            icon: 'timeline',
-            title: 'Activity Tracking',
-            description: 'Monitor user sessions, login history, and activity patterns.',
-        },
-        {
-            icon: 'lock',
-            title: 'Secure Session Handling',
-            description: 'Automatic session management with secure token handling and refresh.',
-        },
+    public currentlyBuilding: string = '';
+    private buildingTexts = [
+        'A developer-friendly authentication platform with social login, OTP, analytics, and role-based access control.',
     ];
+    private currentTextIndex = 0;
+    private currentCharIndex = 0;
+    private isDeleting = false;
+    private typewriterInterval: any;
 
     constructor(
         private toast: PrimeNgToastService,
@@ -91,10 +77,42 @@ export class AuthComponent extends BaseComponent implements OnInit {
                 this.router.navigate(['/app']);
             }
         });
+
+        this.startTypewriter();
     }
 
     ngOnDestroy() {
+        if (this.typewriterInterval) {
+            clearInterval(this.typewriterInterval);
+        }
         super.ngOnDestroy();
+    }
+
+    private startTypewriter(): void {
+        this.typewriterInterval = setInterval(
+            () => {
+                const currentText = this.buildingTexts[this.currentTextIndex];
+
+                if (!this.isDeleting) {
+                    this.currentlyBuilding = currentText.substring(0, this.currentCharIndex + 1);
+                    this.currentCharIndex++;
+
+                    if (this.currentCharIndex === currentText.length) {
+                        this.isDeleting = true;
+                        setTimeout(() => {}, 1500);
+                    }
+                } else {
+                    this.currentlyBuilding = currentText.substring(0, this.currentCharIndex - 1);
+                    this.currentCharIndex--;
+
+                    if (this.currentCharIndex === 0) {
+                        this.isDeleting = false;
+                        this.currentTextIndex = (this.currentTextIndex + 1) % this.buildingTexts.length;
+                    }
+                }
+            },
+            this.isDeleting ? 50 : 100
+        );
     }
 
     login() {

@@ -1,96 +1,374 @@
 <div class="auth-landing">
-    <header class="top-bar">
-        <div class="brand">
-            <div class="brand-mark">36</div>
-            <span class="brand-name">36Blocks</span>
-        </div>
-        <nav class="nav-links">
-            <a href="#">Features</a>
-            <a href="#">Pricing</a>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
-        </nav>
-        <button class="primary-btn" (click)="login()">Start Building</button>
-    </header>
-
     <main class="hero">
         <div class="hero-copy">
-            <h1>
-                User Identity,
-                <span>Simplified</span>
-            </h1>
+            <div class="badge-pill">
+                <span class="badge-dot"></span>
+                Plug & Play Authentication
+            </div>
+
+            <h1><span class="accent-text">Secure Auth</span> & User <br />Management for <br />Modern Apps</h1>
+
             <p class="lead">
-                Set up user login in minutes. Support Google, Apple, or mobile OTP. Map roles, track activity, and
-                control access — all from one panel.
+                Launch secure user signup, login, roles, and access control in minutes— without building complex
+                authentication systems from scratch.
             </p>
-            <button class="cta" (click)="login()">Enable User Management</button>
+
+            <div class="currently-building">
+                <span class="building-value">{{ currentlyBuilding }}</span>
+            </div>
+
+            <div class="cta-buttons">
+                <button class="cta-primary" (click)="login()">Explore Platform</button>
+                <button class="cta-secondary" (click)="login()">View Documentation</button>
+            </div>
+
+            <div class="feature-badges">
+                <div class="feature-badge">
+                    <mat-icon>check</mat-icon>
+                    Social Login
+                </div>
+                <div class="feature-badge">
+                    <mat-icon>check</mat-icon>
+                    OTP Auth
+                </div>
+                <div class="feature-badge">
+                    <mat-icon>check</mat-icon>
+                    RBAC
+                </div>
+            </div>
         </div>
 
-        <div class="code-card">
-            <div class="card-header">
-                <span>JavaScript</span>
-                <button class="ghost-btn" type="button">
-                    <mat-icon>content_copy</mat-icon>
-                    Copy
-                </button>
+        <div class="code-card-wrapper">
+            <div class="code-badge typescript-badge">
+                <span class="badge-dot green"></span>
+                JavaScript Ready
             </div>
-            <pre
-                class="code-snippet"
-            ><code class="language-js"><span class="token tag">&lt;script</span> <span class="token attr-name">type</span>=<span class="token string">"text/javascript"</span><span class="token tag">&gt;</span>
+            <div class="code-badge enterprise-badge">
+                <mat-icon>verified</mat-icon>
+                Enterprise-grade
+            </div>
 
-  <span class="token keyword">var</span> <span class="token variable">configuration</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
-    <span class="token property">referenceId:</span> <span class="token string">'2395968g176466...'</span>,
-    <span class="token property">type:</span> <span class="token string">'authorization'</span>,
-    <span class="token property">success:</span> <span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">&#123;</span>
-      <span class="token comment">// get verified token</span>
-      <span class="token object">console</span>.<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'success'</span>, data<span class="token punctuation">)</span>;
-    <span class="token punctuation">&#125;</span>,
-    <span class="token property">failure:</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">&#123;</span>
-      <span class="token comment">// handle error</span>
-      <span class="token object">console</span>.<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'failure'</span>, error<span class="token punctuation">)</span>;
-    <span class="token punctuation">&#125;</span>,
-  <span class="token punctuation">&#125;</span>;
-
-<span class="token tag">&lt;/script&gt;</span></code></pre>
-            <div class="code-footer">
-                <span>Note: Add a div with matching ID to display the login button.</span>
-                <div class="code-placeholder">&lt;div id="2395089176466..."&gt;&lt;/div&gt;</div>
+            <div class="code-card">
+                <div class="card-header">
+                    <div class="window-controls">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <span class="file-name">proxy-auth.js</span>
+                </div>
+                <pre
+                    class="code-snippet"
+                ><code class="language-js"><span class="line-num">01</span>  <span class="token tag">&lt;script</span> <span class="token attr-name">type</span>=<span class="token string">"text/javascript"</span><span class="token tag">&gt;</span>
+<span class="line-num">02</span>    <span class="token keyword">var</span> <span class="token variable">configuration</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+<span class="line-num">03</span>      <span class="token property">referenceId:</span> <span class="token string">'4512365a176770...'</span>,
+<span class="line-num">04</span>      <span class="token property">type:</span> <span class="token string">'authorization'</span>,
+<span class="line-num">05</span>      <span class="token property">success:</span> <span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">&#123;</span>
+<span class="line-num">06</span>        <span class="token comment">// get verified token in response</span>
+<span class="line-num">07</span>        <span class="token object">console</span>.<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'success response'</span>, data<span class="token punctuation">)</span>;
+<span class="line-num">08</span>      <span class="token punctuation">&#125;</span>,
+<span class="line-num">09</span>      <span class="token property">failure:</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">&#123;</span>
+<span class="line-num">10</span>        <span class="token comment">// handle error</span>
+<span class="line-num">11</span>        <span class="token object">console</span>.<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'failure reason'</span>, error<span class="token punctuation">)</span>;
+<span class="line-num">12</span>      <span class="token punctuation">&#125;</span>,
+<span class="line-num">13</span>    <span class="token punctuation">&#125;</span>;
+<span class="line-num">14</span>  <span class="token tag">&lt;/script&gt;</span>
+<span class="line-num">15</span>  <span class="token tag">&lt;script</span>
+<span class="line-num">16</span>    <span class="token attr-name">type</span>=<span class="token string">"text/javascript"</span>
+<span class="line-num">17</span>    <span class="token attr-name">onload</span>=<span class="token string">"initVerification(configuration)"</span>
+<span class="line-num">18</span>    <span class="token attr-name">src</span>=<span class="token string">"https://proxy.msg91.com/..."</span><span class="token tag">&gt;</span>
+<span class="line-num">19</span>  <span class="token tag">&lt;/script&gt;</span></code></pre>
+                <div class="code-footer-badge">
+                    <mat-icon>bolt</mat-icon>
+                    5 min setup
+                </div>
             </div>
         </div>
     </main>
 
-    <section class="benefits">
-        <div class="section-heading">
-            <h2>Key Benefits</h2>
-            <p>Everything you need for user authentication and management</p>
+    <!-- Second Section: Customizable Auth Forms -->
+    <section class="forms-section">
+        <div class="forms-preview">
+            <!-- Color Picker -->
+            <div class="control-card color-picker">
+                <span class="control-label">Colour</span>
+                <div class="color-dots">
+                    <span class="color-dot red active"></span>
+                    <span class="color-dot orange"></span>
+                    <span class="color-dot blue"></span>
+                    <span class="color-dot green"></span>
+                </div>
+            </div>
+
+            <!-- Login Form Mockup -->
+            <div class="login-form-wrapper">
+                <div class="login-form-card">
+                    <div class="form-logo">C</div>
+                    <h3>Sign in to SuperApp</h3>
+
+                    <div class="form-field">
+                        <label>Email</label>
+                        <div class="input-mock">Your email address</div>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Password</label>
+                        <div class="input-mock">Enter your password</div>
+                    </div>
+
+                    <button class="form-btn-primary">Continue</button>
+
+                    <div class="divider">
+                        <span>OR</span>
+                    </div>
+
+                    <button class="form-btn-google">
+                        <span class="google-icon">G</span>
+                        Continue with Google
+                    </button>
+
+                    <p class="signup-link">Don't have an account? <span class="accent-link">Sign up</span></p>
+                </div>
+            </div>
+
+            <!-- Logo Icon Control -->
+            <div class="control-card logo-control">
+                <span class="control-label">Logo icon</span>
+                <div class="logo-options">
+                    <div class="logo-option active">C</div>
+                    <div class="logo-option">
+                        <mat-icon>tune</mat-icon>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appearance Control - Below Logo Icon -->
+            <div class="control-card appearance-control">
+                <span class="control-label">Appearance</span>
+                <div class="appearance-toggle">
+                    <button class="toggle-btn">System</button>
+                    <button class="toggle-btn">Light</button>
+                    <button class="toggle-btn active">Dark</button>
+                </div>
+            </div>
+
+            <!-- Radius Control -->
+            <div class="control-card radius-control">
+                <span class="control-label">Radius</span>
+                <div class="slider-mock">
+                    <div class="slider-track">
+                        <div class="slider-fill"></div>
+                        <div class="slider-thumb"></div>
+                    </div>
+                </div>
+                <div class="slider-labels">
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
         </div>
 
-        <div class="benefit-grid">
-            <article
-                class="benefit-card"
-                *ngFor="let benefit of benefits; let i = index"
-                [style.animationDelay]="i * 0.08 + 's'"
-            >
-                <div class="icon-wrap">
-                    <mat-icon>{{ benefit.icon }}</mat-icon>
+        <div class="forms-content">
+            <div class="badge-pill">
+                <span class="badge-dot"></span>
+                Beautiful UI Components
+            </div>
+
+            <h2>Customizable <span class="accent-text">Auth Forms</span> <br />Ready to Deploy</h2>
+
+            <p class="section-lead">
+                Pre-built, beautiful authentication components that match your brand. Customize colors, radius, logos,
+                and more with our visual editor.
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <mat-icon>brush</mat-icon>
+                    </div>
+                    <h4>Theme Editor</h4>
+                    <p>Match your brand colors</p>
                 </div>
-                <div class="benefit-text">
-                    <h3>{{ benefit.title }}</h3>
-                    <p>{{ benefit.description }}</p>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <mat-icon>dashboard</mat-icon>
+                    </div>
+                    <h4>Layout Options</h4>
+                    <p>Multiple form layouts</p>
                 </div>
-            </article>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <mat-icon>smartphone</mat-icon>
+                    </div>
+                    <h4>Responsive</h4>
+                    <p>Works on all devices</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <mat-icon>translate</mat-icon>
+                    </div>
+                    <h4>i18n Ready</h4>
+                    <p>30+ languages</p>
+                </div>
+            </div>
         </div>
     </section>
 
-    <footer class="page-footer">
-        <div class="brand">
-            <div class="brand-mark">36</div>
-            <span class="brand-name">36Blocks</span>
+    <!-- Third Section: Features Grid -->
+    <section class="features-section">
+        <div class="section-header">
+            <h2>
+                Everything You Need to Manage Users
+                <br /><span class="accent-text">Securely</span>
+            </h2>
+            <p class="section-description">
+                Replace months of custom authentication development with production-ready components built for security,
+                scale, and speed.
+            </p>
         </div>
-        <div class="footer-links">
+
+        <div class="features-main-grid">
+            <div class="feature-main-card">
+                <div class="feature-main-icon">
+                    <mat-icon>link</mat-icon>
+                </div>
+                <h4>Plug and Play</h4>
+                <p>Pre-built signup, login, profile, and access control components.</p>
+            </div>
+
+            <div class="feature-main-card">
+                <div class="feature-main-icon">
+                    <mat-icon>security</mat-icon>
+                </div>
+                <h4>Secure with hCaptcha</h4>
+                <p>Bot protection to prevent fake signups and abuse.</p>
+            </div>
+
+            <div class="feature-main-card">
+                <div class="feature-main-icon">
+                    <mat-icon>group</mat-icon>
+                </div>
+                <h4>Multiple Login Options</h4>
+                <p>Google, Apple, OTP, and username-password authentication.</p>
+            </div>
+
+            <div class="feature-main-card">
+                <div class="feature-main-icon">
+                    <mat-icon>bar_chart</mat-icon>
+                </div>
+                <h4>User Analytics</h4>
+                <p>Track total users, active users, and login trends.</p>
+            </div>
+
+            <div class="feature-main-card">
+                <div class="feature-main-icon">
+                    <mat-icon>contactless</mat-icon>
+                </div>
+                <h4>Social & OTP Login</h4>
+                <p>Passwordless and social authentication for better conversion.</p>
+            </div>
+
+            <div class="feature-main-card">
+                <div class="feature-main-icon">
+                    <mat-icon>lock</mat-icon>
+                </div>
+                <h4>Role-Based Access</h4>
+                <p>Fine-grained permissions using RBAC.</p>
+            </div>
+
+            <div class="feature-main-card">
+                <div class="feature-main-icon">
+                    <mat-icon>trending_up</mat-icon>
+                </div>
+                <h4>Activity Tracking</h4>
+                <p>Audit logs and user activity monitoring.</p>
+            </div>
+
+            <div class="feature-main-card">
+                <div class="feature-main-icon">
+                    <mat-icon>schedule</mat-icon>
+                </div>
+                <h4>Secure Sessions</h4>
+                <p>Token-based authentication with session expiry.</p>
+            </div>
+
+            <div class="feature-main-card">
+                <div class="feature-main-icon">
+                    <mat-icon>menu_book</mat-icon>
+                </div>
+                <h4>Developer Documentation</h4>
+                <p>Clear APIs, SDKs, and step-by-step guides.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fourth Section: What You Can Build -->
+    <section class="build-section">
+        <div class="section-header">
+            <h2>What You Can <span class="accent-text">Build</span></h2>
+        </div>
+
+        <div class="build-grid">
+            <div class="build-card">
+                <div class="build-icon">
+                    <mat-icon>edit</mat-icon>
+                </div>
+                <h4>SaaS Applications</h4>
+                <p>Launch faster with secure authentication and access control.</p>
+            </div>
+
+            <div class="build-card">
+                <div class="build-icon">
+                    <mat-icon>business</mat-icon>
+                </div>
+                <h4>Enterprise Tools</h4>
+                <p>Manage teams, roles, and permissions at scale.</p>
+            </div>
+
+            <div class="build-card highlighted">
+                <div class="build-icon">
+                    <mat-icon>smartphone</mat-icon>
+                </div>
+                <h4>Consumer Apps</h4>
+                <p>Seamless social login and OTP authentication.</p>
+            </div>
+
+            <div class="build-card">
+                <div class="build-icon">
+                    <mat-icon>settings</mat-icon>
+                </div>
+                <h4>Internal Admin Panels</h4>
+                <p>Track activity and control access across tools.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fifth Section: CTA -->
+    <section class="cta-section">
+        <h2>
+            Stop Building Authentication.
+            <br /><span class="accent-text">Start Building Your Product.</span>
+        </h2>
+        <p class="cta-description">
+            Handle user signup, login, security, and access control with a modern authentication and user management
+            platform.
+        </p>
+        <button class="cta-button" (click)="login()">Get Started Free</button>
+    </section>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+        <div class="footer-copyright">© 2026 Your Company. All rights reserved.</div>
+        <nav class="footer-nav">
+            <a href="#">Product</a>
+            <a href="#">Documentation</a>
+            <a href="#">Pricing</a>
+            <a href="#">Security</a>
             <a href="#">Privacy</a>
             <a href="#">Terms</a>
-            <a href="#">Contact</a>
-        </div>
+        </nav>
     </footer>
 </div>
