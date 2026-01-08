@@ -37,7 +37,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     public roleSearchTerm: string = '';
     public permissionSearchTerm: string = '';
     public rolesPageSize: number = 25;
-    public permissionsPageSize: number = 25;
+    public permissionsPageSize: number = 100;
     public rolesPageIndex: number = 0;
     public permissionsPageIndex: number = 0;
     public rolesTotalCount: number = 0;

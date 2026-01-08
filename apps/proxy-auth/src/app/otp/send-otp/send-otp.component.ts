@@ -127,9 +127,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     ngOnInit() {
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
         prefersDark.addEventListener('change', (event) => {
-            if (!this.theme) {
-                this.theme = event.matches ? Theme.DARK : Theme.LIGHT;
-            }
+            this.theme = event?.matches ? Theme.DARK : Theme.LIGHT;
         });
         if (!this.theme) {
             this.theme = prefersDark.matches ? Theme.DARK : Theme.LIGHT;
