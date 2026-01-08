@@ -480,7 +480,6 @@ body {
 .users-list-container {
     display: flex;
     flex-direction: column;
-    gap: 12px;
     padding: 16px 0;
     min-height: 200px;
 
@@ -490,7 +489,7 @@ body {
         justify-content: space-between;
         gap: 12px;
         padding: 12px 16px;
-        border-radius: 8px;
+        // border-radius: 8px;
         transition: all 0.2s ease;
         cursor: pointer;
 
@@ -686,15 +685,16 @@ body {
     &.dark-theme {
         .user-item {
             background-color: #3f4346;
-            border-radius: 12px;
-            padding: 12px 16px;
+            // border-radius: 12px;
+            padding: 18px 16px;
+            margin: 0;
+            border-bottom: 1px solid gray;
+            // border-bottom: 1px solid #e0e0e0; // subtle bottom divider
             transition: background-color 0.2s ease;
 
             &:hover {
                 background-color: #000000 !important;
                 border-color: #8f9396;
-                transform: translateY(-1px);
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 
                 // Ensure all child elements maintain visibility on black background
                 .user-avatar,
