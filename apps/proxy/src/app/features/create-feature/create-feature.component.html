@@ -438,6 +438,110 @@
                 "
             ></ng-container>
         </form>
+
+        <!-- Template Choice Cards -->
+        <div class="template-choice-container">
+            <div
+                class="template-card template-card--default"
+                [class.active]="selectedTemplateType === 'default'"
+                (click)="selectedTemplateType = 'default'"
+            >
+                <span class="recommended-badge">Recommended</span>
+                <div class="template-card__icon template-card__icon--green">
+                    <mat-icon>bolt</mat-icon>
+                </div>
+                <h3 class="template-card__title">Use Default Configuration</h3>
+                <p class="template-card__subtitle">Start immediately with pre-configured configuration</p>
+
+                <ul class="template-card__features">
+                    <li>
+                        <mat-icon class="check-icon">check_circle</mat-icon>
+                        <span>Ready in under 2 minutes</span>
+                    </li>
+                    <li>
+                        <mat-icon class="check-icon">check_circle</mat-icon>
+                        <span>Professional configurations</span>
+                    </li>
+
+                    <li>
+                        <mat-icon class="check-icon">check_circle</mat-icon>
+                        <span>Can be customized later</span>
+                    </li>
+                </ul>
+
+                <div class="template-card__templates-info">
+                    <p class="templates-label">Included Templates:</p>
+                    <div class="template-item">
+                        <mat-icon>description</mat-icon>
+                        <span>Sales Invoice</span>
+                    </div>
+                    <div class="template-item">
+                        <mat-icon>receipt</mat-icon>
+                        <span>Payment Receipt</span>
+                    </div>
+                    <p class="more-templates">+ 2 more templates</p>
+                </div>
+
+                <button
+                    type="button"
+                    mat-flat-button
+                    color="primary"
+                    class="template-card__button template-card__button--green"
+                >
+                    <mat-icon>bolt</mat-icon>
+                    Use Default Configuration
+                </button>
+            </div>
+
+            <div
+                class="template-card template-card--custom"
+                [class.active]="selectedTemplateType === 'custom'"
+                (click)="selectedTemplateType = 'custom'"
+            >
+                <div class="template-card__icon template-card__icon--blue">
+                    <mat-icon>settings</mat-icon>
+                </div>
+                <h3 class="template-card__title">Custom Mapping</h3>
+                <p class="template-card__subtitle">Configure your own voucher-to-campaign mapping</p>
+
+                <ul class="template-card__features">
+                    <li>
+                        <mat-icon class="check-icon check-icon--blue">check_circle</mat-icon>
+                        <span>Full control over messages</span>
+                    </li>
+                    <li>
+                        <mat-icon class="check-icon check-icon--blue">check_circle</mat-icon>
+                        <span>Custom variable mapping</span>
+                    </li>
+                    <li>
+                        <mat-icon class="check-icon check-icon--blue">check_circle</mat-icon>
+                        <span>Use existing MSG91 campaigns</span>
+                    </li>
+                    <li>
+                        <mat-icon class="check-icon check-icon--blue">check_circle</mat-icon>
+                        <span>Brand-specific messaging</span>
+                    </li>
+                </ul>
+
+                <div class="template-card__setup-time">
+                    <mat-icon>schedule</mat-icon>
+                    <div>
+                        <span class="setup-label">Setup Time</span>
+                        <span class="setup-value">5-10 minutes</span>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    mat-stroked-button
+                    color="primary"
+                    class="template-card__button template-card__button--outline"
+                >
+                    <mat-icon>settings</mat-icon>
+                    Configure Custom Mapping
+                </button>
+            </div>
+        </div>
     </div>
 </ng-template>
 <ng-template #configureMethodTemplate let-selectedIndex="selectedIndex">
