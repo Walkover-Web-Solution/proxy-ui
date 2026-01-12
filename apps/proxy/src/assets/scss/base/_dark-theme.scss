@@ -8,6 +8,14 @@ body.dark-theme {
     --color-common-dark: #212528;
     --color-common-silver: rgba(123, 127, 130, 0.07);
 
+    // New design color variables
+    --color-dark-primary: #171c26;
+    --color-dark-secondary: #7b879D;
+    --color-dark-accent: #19E6CE;
+    --color-dark-accent-light: #19E6CE1A;
+    --color-dark-muted: #A7AFBE;
+    --color-dark-light: #F0F2F4;
+
     --color-common-bg: var(--color-common-dark);
     --color-common-text: var(--color-common-smoke);
     --color-common-border: var(--color-common-grey);
@@ -65,4 +73,9 @@ body.dark-theme {
     --color-sidenav-menu-active-link-icon: var(--color-common-white);
 
     --color-common-sidenav-shadow: 1px 0px 4px rgba(0, 0, 0, 0.5);
+
+
+    // new design variables
+
+    --sidenav-menu-background: var(--color-common-primary);
 }

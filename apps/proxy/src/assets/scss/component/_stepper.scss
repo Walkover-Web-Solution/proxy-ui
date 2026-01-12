@@ -39,6 +39,17 @@
 }
 
 
+.mat-stepper-horizontal,
+.mat-stepper-vertical {
+    .mat-step-icon-selected,
+    .mat-step-icon-state-done,
+    .mat-step-icon-state-edit {
+        background-color: var(--color-dark-accent) !important;
+        color: var(--color-dark-primary) !important;
+    }
+}
+
+
 // &.mat-stepper-starched {
 //     .mat-horizontal-stepper-wrapper {
 //         height: 100%;
