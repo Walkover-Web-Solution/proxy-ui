@@ -287,6 +287,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 triggerEvents: feature.trigger_events || feature.webhook_events || [],
                             },
                         });
+                        // Clear redirect_url validators in edit mode since the field is hidden
+                        this.featureForm.get('authorizationDetails.redirect_url')?.clearValidators();
+                        this.featureForm.get('authorizationDetails.redirect_url')?.updateValueAndValidity();
                     });
                 });
         }
