@@ -102,12 +102,12 @@
         </mat-step>
         <mat-step
             *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
-            [completed]="isConfigureMethodValid"
+            [completed]="featureForm.get('authorizationDetails')?.valid"
             [editable]="!(createUpdateObject$ | async)"
         >
-            <ng-template matStepLabel>Configure Method</ng-template>
+            <ng-template matStepLabel>Authorization Setup</ng-template>
             <div class="d-flex flex-column h-100">
-                <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
+                <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
                 <div class="d-flex align-items-center justify-content-between">
                     <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
@@ -118,7 +118,7 @@
                         mat-flat-button
                         color="primary"
                         matStepperNext
-                        (click)="markDirtyServiceFormTouched()"
+                        (click)="setRedirectUrlInServiceDetails()"
                     >
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
@@ -255,11 +255,12 @@
 
         <mat-step
             *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
-            [completed]="(createUpdateObject$ | async) && featureForm.get('authorizationDetails')?.valid"
+            [completed]="isConfigureMethodValid"
+            [editable]="!(createUpdateObject$ | async)"
         >
-            <ng-template matStepLabel>Authorization Setup</ng-template>
+            <ng-template matStepLabel>Configure Method</ng-template>
             <div class="d-flex flex-column h-100">
-                <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
+                <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
                 <div class="d-flex align-items-center justify-content-between">
                     <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
@@ -423,7 +424,7 @@
 <ng-template #featureName let-nameControl="nameControl">
     <div class="my-3 flex-grow-1">
         <p class="mat-body-2 text-secondary fw-bold">Give a name of your Block</p>
-        <form class="w-50">
+        <form class="w-50 mb-4">
             <ng-container
                 *ngTemplateOutlet="
                     inputField;
@@ -640,11 +641,7 @@
                                 tooltip="Copy URL"
                             ></proxy-copy-button>
                         </mat-form-field>
-                        <mat-slide-toggle
-                            *ngIf="isEditMode"
-                            class="w-100 mat-body-2 mb-4"
-                            [formControl]="serviceForm.controls.is_enable"
-                        >
+                        <mat-slide-toggle class="w-100 mat-body-2 mb-4" [formControl]="serviceForm.controls.is_enable">
                             Enable Service
                         </mat-slide-toggle>
                         <button
@@ -890,6 +887,22 @@
     <div class="d-flex gap-3">
         <div class="d-flex flex-column gap-3 w-75 code-snippet-view">
             <div class="d-flex flex-column w-50">
+                <ng-container *ngIf="!isEditMode">
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('authorizationDetails.redirect_url'),
+                                fieldConfig: {
+                                    label: 'Redirect URL',
+                                    is_required: true,
+                                    hint: 'Enter redirect URL',
+                                    patternErrorText: 'Invalid URL'
+                                }
+                            }
+                        "
+                    ></ng-container>
+                </ng-container>
                 <ng-container
                     *ngTemplateOutlet="
                         inputField;
@@ -1397,11 +1410,7 @@
                                 tooltip="Copy URL"
                             ></proxy-copy-button>
                         </mat-form-field>
-                        <mat-slide-toggle
-                            *ngIf="isEditMode"
-                            class="w-100 mat-body-2 mb-4"
-                            [formControl]="serviceForm.controls.is_enable"
-                        >
+                        <mat-slide-toggle class="w-100 mat-body-2 mb-4" [formControl]="serviceForm.controls.is_enable">
                             Enable Service
                         </mat-slide-toggle>
                     </form>
