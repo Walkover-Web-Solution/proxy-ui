@@ -157,8 +157,6 @@ $accent-dark: #14b8a6;
         min-height: 28px;
 
         &::after {
-            content: '|';
-            animation: blink 1s infinite;
             margin-left: 2px;
         }
     }
