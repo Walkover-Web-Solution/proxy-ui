@@ -10,7 +10,7 @@
             class="w-xs-100"
         ></proxy-lib-search>
         <div class="d-flex align-items-center gap-3 ml-auto">
-            <button mat-flat-button color="primary" class="mat-btn-xs" [routerLink]="['/app', 'features', 'create']">
+            <button mat-flat-button class="mat-btn-xs button-add" [routerLink]="['/app', 'features', 'create']">
                 <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
                 <span class="hide-xs">Add New Blocks</span>
             </button>
@@ -60,11 +60,26 @@
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Reference Id</th>
                         <td mat-cell *matCellDef="let element" data-label="Reference Id">
                             <ng-container *ngIf="!loading.dataLoading; else loadingRef">
-                                {{ element.reference_id }}
-                                <proxy-copy-button
-                                    [copyData]="element.reference_id"
-                                    tooltip="Copy Reference Id"
-                                ></proxy-copy-button>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span
+                                        [matTooltip]="element.reference_id"
+                                        matTooltipPosition="above"
+                                        class="cursor-pointer"
+                                        style="min-width: 150px"
+                                    >
+                                        {{
+                                            element.reference_id?.length > 15
+                                                ? (element.reference_id | slice: 0:10) +
+                                                  '...' +
+                                                  (element.reference_id | slice: -5)
+                                                : element.reference_id
+                                        }}
+                                    </span>
+                                    <proxy-copy-button
+                                        [copyData]="element.reference_id"
+                                        tooltip="Copy Reference Id"
+                                    ></proxy-copy-button>
+                                </div>
                             </ng-container>
                         </td>
                     </ng-container>
@@ -97,7 +112,7 @@
                                 <div class="actions">
                                     <button
                                         mat-stroked-button
-                                        color="primary"
+                                        color="new-primary"
                                         [routerLink]="['manage', element.id]"
                                         class="mat-btn-md"
                                     >

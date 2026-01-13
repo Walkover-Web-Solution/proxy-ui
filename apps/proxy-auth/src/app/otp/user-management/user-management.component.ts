@@ -17,10 +17,11 @@ import { select, Store } from '@ngrx/store';
 import { IAppState } from '../store/app.state';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { otpActions } from '../store/actions';
-import { distinctUntilChanged, Observable, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 import {
     addUserData,
     companyUsersData,
+    companyUsersDataInProcess,
     deleteUserData,
     permissionCreateData,
     permissionData,
@@ -73,6 +74,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public dataSource = new MatTableDataSource<UserData>([]);
     public searchTerm: string = '';
     public filteredData: UserData[] = [];
+    private searchSubject = new Subject<string>();
 
     // Roles table properties
     public rolesDisplayedColumns: string[] = ['role', 'permissions'];
@@ -105,6 +107,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public totalUsers: number = 0;
     public currentPageIndex: number = 0;
     public currentPageSize: number = 50;
+    public isUsersLoading: boolean = true;
+    private openAddUserDialogHandler = this.addUser.bind(this);
     constructor(private fb: FormBuilder, private dialog: MatDialog, private store: Store<IAppState>) {
         super();
         this.getRoles$ = this.store.pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
@@ -207,6 +211,17 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     ngOnInit(): void {
+        this.searchSubject
+            .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+            .subscribe((searchTerm) => {
+                this.getCompanyUsers(searchTerm);
+            });
+
+        this.store.pipe(select(companyUsersDataInProcess), takeUntil(this.destroy$)).subscribe((isLoaded) => {
+            // Note: companyUsersDataInProcess is true when loaded, false when loading
+            this.isUsersLoading = !isLoaded;
+        });
+
         this.getRoles$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.roles = res.data?.data;
@@ -321,6 +336,9 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         // Initialize dataSource with userData
         this.filteredData = [...this.userData];
         this.dataSource.data = this.filteredData;
+
+        // Listen for window event to open add user dialog
+        window.addEventListener('openAddUserDialog', this.openAddUserDialogHandler);
     }
 
     ngAfterViewInit(): void {
@@ -335,6 +353,23 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     ngOnDestroy(): void {
+        // Remove window event listener
+        window.removeEventListener('openAddUserDialog', this.openAddUserDialogHandler);
+
+        // Close all open dialogs when navigating away
+        if (this.addUserDialogRef) {
+            this.addUserDialogRef.close();
+        }
+        if (this.editPermissionDialogRef) {
+            this.editPermissionDialogRef.close();
+        }
+        if (this.addPermissionDialogRef) {
+            this.addPermissionDialogRef.close();
+        }
+
+        // Remove body class if it was added
+        document.body.classList.remove('dark-dialog-open');
+
         // Clean up the paginator select observer
         if ((this as any)._paginatorSelectObserver) {
             (this as any)._paginatorSelectObserver.disconnect();
@@ -365,7 +400,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
             panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
-            disableClose: true,
+            disableClose: false,
         });
 
         // Add body class for dark theme select panel styling
@@ -425,20 +460,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     public applyFilter(): void {
-        if (!this.searchTerm || this.searchTerm.trim() === '') {
-            this.filteredData = [...this.userData];
-        } else {
-            const searchLower = this.searchTerm.toLowerCase().trim();
-            this.filteredData = this.userData.filter(
-                (user) =>
-                    user.name.toLowerCase().includes(searchLower) ||
-                    user.email.toLowerCase().includes(searchLower) ||
-                    user.role.toLowerCase().includes(searchLower) ||
-                    (user.permissions &&
-                        user.permissions.some((permission) => permission.toLowerCase().includes(searchLower)))
-            );
-        }
-        this.dataSource.data = this.filteredData;
+        this.searchSubject.next(this.searchTerm);
     }
 
     public clearSearch(): void {
@@ -544,7 +566,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
             panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
-            disableClose: true,
+            disableClose: false,
         });
 
         // Add body class for dark theme select panel styling
@@ -687,7 +709,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         });
         this.editPermissionDialogRef = this.dialog.open(this.editPermissionDialog, {
             width: '500px',
-            disableClose: true,
+            disableClose: false,
         });
     }
 
@@ -755,14 +777,14 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
             panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
-            disableClose: true,
+            disableClose: false,
         });
     }
 
     public addPermission(): void {
         this.addPermissionDialogRef = this.dialog.open(this.addPermissionDialog, {
             width: '500px',
-            disableClose: true,
+            disableClose: false,
         });
     }
 
@@ -839,23 +861,31 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             this.closeDialog();
         }
     }
-    public getCompanyUsers(): void {
+    public getCompanyUsers(search?: string): void {
         const pageSize = this.paginator?.pageSize || this.currentPageSize;
         const pageIndex = this.paginator?.pageIndex || this.currentPageIndex;
+        const searchTerm = search?.trim() || undefined;
         this.store.dispatch(
-            otpActions.getCompanyUsers({ authToken: this.userToken, itemsPerPage: pageSize, pageNo: pageIndex })
+            otpActions.getCompanyUsers({
+                authToken: this.userToken,
+                itemsPerPage: pageSize,
+                pageNo: pageIndex,
+                search: searchTerm,
+            })
         );
     }
 
     public onUsersPageChange(event: PageEvent): void {
         this.currentPageIndex = event.pageIndex;
         this.currentPageSize = event.pageSize;
+        const searchTerm = this.searchTerm?.trim() || undefined;
         // API expects 1-based page number
         this.store.dispatch(
             otpActions.getCompanyUsers({
                 authToken: this.userToken,
                 itemsPerPage: event.pageSize,
                 pageNo: event.pageIndex,
+                search: searchTerm,
             })
         );
     }
@@ -868,7 +898,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.store.dispatch(otpActions.getRoles({ authToken: this.userToken, itemsPerPage: event.pageSize }));
     }
     public getPermissions(): void {
-        this.store.dispatch(otpActions.getPermissions({ authToken: this.userToken }));
+        const pageSize = 1000;
+        this.store.dispatch(otpActions.getPermissions({ authToken: this.userToken, itemsPerPage: pageSize }));
     }
 
     public refreshFormData(): void {
@@ -924,7 +955,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
             panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
-            disableClose: true,
+            disableClose: false,
         });
 
         // Populate the addRoleForm with the role data after dialog is opened
@@ -972,7 +1003,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
             panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
-            disableClose: true,
+            disableClose: false,
         });
     }
 
@@ -989,7 +1020,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
             panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
-            disableClose: true,
+            disableClose: false,
         });
     }
 

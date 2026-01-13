@@ -1,19 +1,16 @@
 <div #container class="container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
     <div class="members-container">
-        <h2>Invite Team Members</h2>
-        <p>
-            View all members in your project and invite new ones. Assign roles and manage access for secure
-            collaboration
-        </p>
-        <mat-tab-group class="user-management-tabs full-width">
+        <h2>Invite Members</h2>
+
+        <mat-tab-group class="user-management-tabs">
             <!-- Members Tab -->
             <mat-tab label="Members" class="bold-tab-label">
                 <div class="tab-content">
                     <!-- Search Bar -->
                     <div class="my-4 d-flex justify-content-between align-items-center gap-4">
                         <div class="search-container">
-                            <mat-form-field appearance="outline" class="search-field no-space w-25">
-                                <mat-label>Search User</mat-label>
+                            <mat-form-field appearance="outline" class="search-field no-space w-45">
+                                <mat-label>Search Member</mat-label>
                                 <input
                                     matInput
                                     [(ngModel)]="searchTerm"
@@ -23,16 +20,40 @@
                                 />
                             </mat-form-field>
                         </div>
-                        <div class="add-btn d-flex justify-content-end gap-4 full-width" *ngIf="canAddUser">
-                            <button mat-flat-button class="button-add" (click)="addUser()">Add User</button>
+                        <div class="add-btn d-flex justify-content-end gap-4" *ngIf="canAddUser">
+                            <button mat-flat-button class="button-add" (click)="addUser()">Invite Member</button>
                         </div>
                     </div>
 
                     <div class="users-list-container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
+                        <!-- Skeleton Loading -->
+                        <ng-container *ngIf="isUsersLoading">
+                            <div
+                                *ngFor="let item of [1, 2, 3, 4, 5]"
+                                class="user-item skeleton-item"
+                                [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'"
+                            >
+                                <div class="user-avatar skeleton-avatar"></div>
+                                <div class="user-info bg-light-grey">
+                                    <div class="skeleton-text skeleton-name"></div>
+                                    <div class="skeleton-text skeleton-email"></div>
+                                </div>
+                                <div class="user-role-row">
+                                    <div class="skeleton-text skeleton-role"></div>
+                                </div>
+                                <div class="user-actions">
+                                    <div class="skeleton-button"></div>
+                                    <div class="skeleton-button"></div>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Actual User Data -->
                         <div
                             *ngFor="let user of dataSource.data; let i = index"
                             class="user-item"
                             [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'"
+                            [class.hidden]="isUsersLoading"
                         >
                             <div class="user-avatar" *ngIf="theme !== 'dark'">
                                 <svg
@@ -60,7 +81,7 @@
                                     />
                                 </svg>
                             </div>
-                            <div class="user-info">
+                            <div class="user-info bg-light-grey">
                                 <div class="user-name">{{ user.name }}</div>
                                 <div class="user-email" matTooltipPosition="above">
                                     {{ user.email }}
@@ -70,57 +91,26 @@
                                 <div class="user-role">{{ user.role || 'User' }}</div>
                             </div>
                             <div class="user-actions">
-                                <div *ngIf="canEditUser" (click)="editUser(user, i)">
-                                    <button *ngIf="theme !== 'dark'" mat-icon-button>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            height="24px"
-                                            viewBox="0 -960 960 960"
-                                            width="24px"
-                                            fill="#0000000"
-                                        >
-                                            <path
-                                                d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
-                                            />
-                                        </svg>
-                                    </button>
-                                    <button *ngIf="theme === 'dark'" mat-icon-button>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            height="24px"
-                                            viewBox="0 -960 960 960"
-                                            width="24px"
-                                            fill="#c1c5c8"
-                                        >
-                                            <path
-                                                d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
-                                            />
-                                        </svg>
-                                    </button>
-                                </div>
+                                <button
+                                    *ngIf="canEditUser"
+                                    mat-flat-button
+                                    class="button-add"
+                                    (click)="editUser(user, i)"
+                                >
+                                    Edit
+                                </button>
                                 <button
                                     *ngIf="canRemoveUser"
-                                    mat-icon-button
+                                    mat-flat-button
+                                    class="button-add"
                                     (click)="deleteUser(user, i)"
-                                    matTooltip="Delete"
-                                    class=""
                                 >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24px"
-                                        viewBox="0 -960 960 960"
-                                        width="24px"
-                                        fill="#992B15"
-                                    >
-                                        <path
-                                            d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
-                                        />
-                                    </svg>
+                                    Remove
                                 </button>
                             </div>
                         </div>
-                        <p class="no-data" *ngIf="dataSource.data.length === 0">
-                            Nothing Here, There are no users to show
+                        <p class="no-data" *ngIf="!isUsersLoading && dataSource.data.length === 0">
+                            Nothing Here, There are no Members to show
                         </p>
                         <mat-paginator
                             [pageSizeOptions]="[10, 20, 50, 100, 1000]"

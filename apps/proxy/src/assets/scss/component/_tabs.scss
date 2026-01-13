@@ -13,8 +13,45 @@
             opacity: 1;
             &.mat-tab-label-active {
                 font-weight: 600;
-                color: mat.get-color-from-palette($primary);
             }
         }
+    }
+}
+
+// MDC Tab styles (Angular Material 15+)
+.mat-mdc-tab-group,
+.mat-mdc-tab-nav-bar {
+    // Active tab text color
+    .mdc-tab--active .mdc-tab__text-label {
+        color: var(--color-dark-accent) !important;
+    }
+    
+    // Tab underline/indicator color - multiple selectors for compatibility
+    .mdc-tab-indicator--active .mdc-tab-indicator__content--underline {
+        border-color: var(--color-dark-accent) !important;
+    }
+    
+    .mat-mdc-tab-header .mat-mdc-ink-bar {
+        background-color: var(--color-dark-accent) !important;
+    }
+    
+    .mat-ink-bar {
+        background-color: var(--color-dark-accent) !important;
+    }
+    
+    // Inactive tab text color
+    .mdc-tab:not(.mdc-tab--active) .mdc-tab__text-label {
+        color: var(--color-dark-primary) !important;
+    }
+}
+
+// Legacy tab styles
+.mat-tab-group {
+    .mat-ink-bar {
+        background-color: var(--color-dark-accent) !important;
+    }
+    
+    .mat-tab-label-active {
+        color: var(--color-dark-primary) !important;
     }
 }

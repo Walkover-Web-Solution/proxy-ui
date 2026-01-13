@@ -16,7 +16,7 @@ import {
     ProxyAuthScriptUrl,
 } from '@proxy/models/features-model';
 import { FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
-import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
+import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { environment } from '../../../environments/environment';
@@ -110,7 +110,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public taxesDisplayedColumns: string[] = ['name', 'code', 'rate', 'action'];
     public taxesData: any[] = [];
     public webhookEventsData: any;
-
+    public selectedTemplateType: string = 'default';
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public featureType$: Observable<IFeatureType[]> = this.componentStore.featureType$;
     public serviceMethods$: Observable<IMethod[]> = this.componentStore.serviceMethods$;
@@ -195,6 +195,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             allowNewUserRegistration: new FormControl<boolean>(false, []),
             showSocialLoginIcons: new FormControl<boolean>(false, []),
             blockNewUserSignUps: new FormControl<boolean>(false, []),
+            encryptionKey: new FormControl<string>(null, []),
+            redirect_url: new FormControl<any>(null, [Validators.required, Validators.pattern(URL_REGEX)]),
         }),
         webhookDetails: new FormGroup({
             webhookUrl: new FormControl<string>(null, [Validators.required]),
@@ -285,6 +287,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 showSocialLoginIcons: feature.ui_preferences?.icons || false,
                                 allowNewUserRegistration: feature.ui_preferences?.create_account_link || false,
                                 blockNewUserSignUps: feature.block_registration || false,
+                                encryptionKey: feature.encryption_key,
                             },
                             webhookDetails: {
                                 webhookUrl: feature.webhook?.url,
@@ -496,8 +499,20 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             }
         });
     }
+    public setRedirectUrlInServiceDetails(): void {
+        const serviceDetailsForm = this.featureForm.controls.serviceDetails;
+        const redirectUrl = this.featureForm.controls.authorizationDetails.value.redirect_url;
+        serviceDetailsForm.controls.forEach((formGroup) => {
+            const redirectUrlControl = formGroup.controls.configurations.controls['redirect_uri'] as FormControl;
+            if (redirectUrlControl) {
+                redirectUrlControl.setValue(redirectUrl);
+                formGroup.markAsDirty();
+            }
+        });
+    }
 
     public createFeature() {
+        this.markDirtyServiceFormTouched();
         if (this.featureForm.controls.authorizationDetails.invalid) {
             this.featureForm.controls.authorizationDetails.markAllAsTouched();
         } else {
@@ -552,6 +567,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             },
                         },
                         block_registration: authorizationDetailsForm.value.blockNewUserSignUps || false,
+                        encryption_key: authorizationDetailsForm.value.encryptionKey,
                         authorization_format: {
                             ...featureDetails.authorization_format,
                             key: authorizationDetailsForm.value.authorizationKey,
@@ -582,7 +598,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 break;
             case 'webhook':
                 const webhookDetailsForm = this.featureForm.controls.webhookDetails;
-                console.log(webhookDetailsForm.value);
+
                 if (webhookDetailsForm.valid) {
                     payload = {
                         webhook: {
@@ -609,7 +625,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     private getServicePayload(selectedMethod: IMethod): IMethodService[] {
         const services = [];
         this.featureForm.controls.serviceDetails.controls.forEach((formGroup, index) => {
-            if (formGroup.dirty) {
+            if (formGroup.dirty && formGroup.value.is_enable) {
                 const service = selectedMethod.method_services[index];
                 const formData = formGroup.value;
                 this.setFormDataInPayload(service?.requirements, formData.requirements, index);
@@ -1561,21 +1577,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             ) {
                 return plan.interval;
             }
-
-            // Handle trial period fields
             if (fieldLabel.includes('trial') && plan.trial_period !== undefined) {
                 return plan.trial_period;
             }
-
-            // Handle pay in advance fields
             if (fieldLabel.includes('advance') && plan.pay_in_advance !== undefined) {
                 return plan.pay_in_advance;
             }
-
-            // Handle tax fields
             if (fieldLabel.includes('tax') && plan.taxes && Array.isArray(plan.taxes)) {
                 const taxCodes = plan.taxes.map((tax) => tax.code);
-                // Return array for multi-select, single value for single select
                 return taxCodes.length === 1 ? taxCodes[0] : taxCodes;
             }
         }
@@ -1584,14 +1593,13 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     }
 
     public addPlan(): void {
-        // Ensure taxes and billable metrics are loaded before opening dialog
         if (!this.billableMetricstabledata || this.billableMetricstabledata.length === 0) {
             this.getAllBillableMetrics();
         }
 
         if (!this.taxes || this.taxes.length === 0) {
             this.getTaxes();
-        } // Wait a bit for data to load, then open dialog
+        }
         setTimeout(() => {
             this.openEditPlanDialog(null, true);
         }, 500);
@@ -1708,7 +1716,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 value: key,
             };
         });
-        console.log(this.webhookEventsData);
         return this.webhookEventsData;
     }
     public copySampleResponse(sampleResponse: any): void {
