@@ -1019,9 +1019,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.getValueFromObservable(this.featureDetails$)?.reference_id,
             type: featureId === 1 ? 'authorization' : 'subscription',
             isPreview: true,
-            version: this.featureForm.get('authorizationDetails.version')?.value || 'v1',
-            input_fields: this.previewInputPosition,
-            show_social_login_icons: this.featureForm.get('authorizationDetails.showSocialLoginIcons')?.value || false,
             target: '_blank',
             success: (data) => {
                 // get verified token in response
