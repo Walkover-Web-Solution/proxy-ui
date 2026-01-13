@@ -611,6 +611,51 @@
     }
 }
 
+// Auth option buttons (Continue with Google, etc.)
+.auth-option-btn {
+    width: 85%;
+    height: 44px;
+    border: 1px solid #7d7c7c !important;
+    border-radius: 8px !important;
+    font-size: 14px;
+    font-weight: 600;
+    background-color: #fff !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.dark-theme {
+        background-color: transparent !important;
+        border-color: #ffffff !important;
+    }
+}
+
+.auth-option-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 180px;
+}
+
+.auth-option-icon {
+    height: 24px;
+    width: 24px;
+    min-width: 24px;
+    margin-right: 12px;
+
+    &.dark-theme {
+        filter: invert(1);
+    }
+}
+
+.auth-option-text {
+    white-space: nowrap;
+
+    &.dark-theme {
+        color: #ffffff;
+    }
+}
+
 .mat-step-header .mat-step-icon-selected,
 .mat-step-header .mat-step-icon-state-done,
 .mat-step-header .mat-step-icon-state-edit {

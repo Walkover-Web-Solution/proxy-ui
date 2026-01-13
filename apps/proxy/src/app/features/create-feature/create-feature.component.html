@@ -802,59 +802,59 @@
             <button
                 *ngIf="featureForm.get('serviceDetails')?.at(0)?.controls?.is_enable?.value"
                 type="button"
-                mat-stroked-button
-                class="w-85 d-flex align-items-center justify-content-center"
+                class="auth-option-btn"
+                [class.dark-theme]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
             >
-                <mat-icon
-                    class="material-icons-outlined"
-                    [style.color]="
-                        featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#000000'
-                    "
-                    style="margin-right: 12px"
-                    >phone_android</mat-icon
-                >
-                <span
-                    class="text-secondary"
-                    [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
-                    >Continue with OTP</span
-                >
-            </button>
-            <button
-                *ngIf="featureForm.get('serviceDetails')?.at(1)?.controls?.is_enable?.value"
-                type="button"
-                mat-stroked-button
-                class="w-85 d-flex align-items-center justify-content-center"
-            >
-                <img
-                    src="https://www.google.com/favicon.ico"
-                    alt="Google"
-                    style="width: 20px; height: 20px; margin-right: 12px"
-                />
-                <span
-                    class="text-secondary"
-                    [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
-                    >Continue with Google</span
-                >
+                <div class="auth-option-content">
+                    <mat-icon
+                        class="material-icons-outlined auth-option-icon"
+                        [style.color]="
+                            featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#000000'
+                        "
+                        >phone_android</mat-icon
+                    >
+                    <span
+                        class="auth-option-text"
+                        [class.dark-theme]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                        >Login With OTP</span
+                    >
+                </div>
             </button>
             <button
                 *ngIf="featureForm.get('serviceDetails')?.at(2)?.controls?.is_enable?.value"
                 type="button"
-                mat-stroked-button
-                class="w-85 d-flex align-items-center justify-content-center"
+                class="auth-option-btn"
+                [class.dark-theme]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
             >
-                <mat-icon
-                    class="material-icons-outlined"
-                    [style.color]="
-                        featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#000000'
-                    "
-                    style="margin-right: 12px"
-                    >apple</mat-icon
-                >
-                <span
-                    class="text-secondary"
-                    [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
-                    >Continue with Apple</span
-                >
+                <div class="auth-option-content">
+                    <mat-icon
+                        class="material-icons-outlined auth-option-icon"
+                        [style.color]="
+                            featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#000000'
+                        "
+                        >apple</mat-icon
+                    >
+                    <span
+                        class="auth-option-text"
+                        [class.dark-theme]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                        >Continue with Apple</span
+                    >
+                </div>
+            </button>
+            <button
+                *ngIf="featureForm.get('serviceDetails')?.at(1)?.controls?.is_enable?.value"
+                type="button"
+                class="auth-option-btn"
+                [class.dark-theme]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+            >
+                <div class="auth-option-content">
+                    <img src="https://www.google.com/favicon.ico" alt="Google" class="auth-option-icon" />
+                    <span
+                        class="auth-option-text"
+                        [class.dark-theme]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                        >Continue with Google</span
+                    >
+                </div>
             </button>
             <button
                 *ngIf="
@@ -862,22 +862,23 @@
                     featureForm.get('authorizationDetails.version')?.value === 'v1'
                 "
                 type="button"
-                mat-stroked-button
-                class="w-85 d-flex align-items-center justify-content-center"
+                class="auth-option-btn"
+                [class.dark-theme]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
             >
-                <mat-icon
-                    class="material-icons-outlined"
-                    [style.color]="
-                        featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#000000'
-                    "
-                    style="margin-right: 12px"
-                    >password</mat-icon
-                >
-                <span
-                    class="text-secondary"
-                    [class.bg-dark]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
-                    >Continue with Password</span
-                >
+                <div class="auth-option-content">
+                    <mat-icon
+                        class="material-icons-outlined auth-option-icon"
+                        [style.color]="
+                            featureForm.get('authorizationDetails.theme')?.value === 'dark' ? '#ffffff' : '#000000'
+                        "
+                        >password</mat-icon
+                    >
+                    <span
+                        class="auth-option-text"
+                        [class.dark-theme]="featureForm.get('authorizationDetails.theme')?.value === 'dark'"
+                        >Continue with Password</span
+                    >
+                </div>
             </button>
         </div>
     </ng-template>
