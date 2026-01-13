@@ -36,8 +36,46 @@ $custom-blue: (
 );
 
 /*
+// Custom Teal/Cyan (#19E6CE) - Light version
+*/
+$custom-teal: (
+    50: #e8fdf9,
+    100: #c5faf2,
+    200: #9ef7e9,
+    300: #77f3e0,
+    400: #5af0da,
+    500: #3cedd3,
+    600: #19E6CE,
+    700: #15cdb7,
+    800: #11b4a0,
+    900: #0d9b89,
+    A100: #c5fff7,
+    A200: #8ffff0,
+    A400: #5cffe6,
+    A700: #19E6CE,
+    contrast: (
+        50: #000000,
+        100: #000000,
+        200: #000000,
+        300: #000000,
+        400: #000000,
+        500: #000000,
+        600: #000000,
+        700: #000000,
+        800: #000000,
+        900: #ffffff,
+        A100: #000000,
+        A200: #000000,
+        A400: #000000,
+        A700: #000000,
+    ),
+);
+
+/*
 // Define a theme.
 */
 $primary: mat.define-palette(mat.$indigo-palette);
 $accent: mat.define-palette(mat.$indigo-palette, 400);
 $warn: mat.define-palette(mat.$red-palette);
+$new-primary: mat.define-palette($custom-teal);
+

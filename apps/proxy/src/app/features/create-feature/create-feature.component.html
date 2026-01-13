@@ -102,12 +102,12 @@
         </mat-step>
         <mat-step
             *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
-            [completed]="isConfigureMethodValid"
             [editable]="!(createUpdateObject$ | async)"
+            [completed]="featureForm.get('authorizationDetails')?.valid"
         >
-            <ng-template matStepLabel>Configure Method</ng-template>
+            <ng-template matStepLabel>Authorization Setup</ng-template>
             <div class="d-flex flex-column h-100">
-                <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
+                <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
                 <div class="d-flex align-items-center justify-content-between">
                     <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
@@ -118,7 +118,7 @@
                         mat-flat-button
                         color="primary"
                         matStepperNext
-                        (click)="markDirtyServiceFormTouched()"
+                        (click)="setRedirectUrlInServiceDetails()"
                     >
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
@@ -255,11 +255,12 @@
 
         <mat-step
             *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
-            [completed]="(createUpdateObject$ | async) && featureForm.get('authorizationDetails')?.valid"
+            [completed]="isConfigureMethodValid"
+            [editable]="!(createUpdateObject$ | async)"
         >
-            <ng-template matStepLabel>Authorization Setup</ng-template>
+            <ng-template matStepLabel>Configure Method</ng-template>
             <div class="d-flex flex-column h-100">
-                <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
+                <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
                 <div class="d-flex align-items-center justify-content-between">
                     <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
@@ -423,7 +424,7 @@
 <ng-template #featureName let-nameControl="nameControl">
     <div class="my-3 flex-grow-1">
         <p class="mat-body-2 text-secondary fw-bold">Give a name of your Block</p>
-        <form class="w-50">
+        <form class="w-50 mb-4">
             <ng-container
                 *ngTemplateOutlet="
                     inputField;
@@ -438,6 +439,110 @@
                 "
             ></ng-container>
         </form>
+
+        <!-- Template Choice Cards -->
+        <div class="template-choice-container">
+            <div
+                class="template-card template-card--default"
+                [class.active]="selectedTemplateType === 'default'"
+                (click)="selectedTemplateType = 'default'"
+            >
+                <span class="recommended-badge">Recommended</span>
+                <div class="template-card__icon template-card__icon--green">
+                    <mat-icon>bolt</mat-icon>
+                </div>
+                <h3 class="template-card__title">Use Default Configuration</h3>
+                <p class="template-card__subtitle">Start immediately with pre-configured configuration</p>
+
+                <ul class="template-card__features">
+                    <li>
+                        <mat-icon class="check-icon">check_circle</mat-icon>
+                        <span>Ready in under 2 minutes</span>
+                    </li>
+                    <li>
+                        <mat-icon class="check-icon">check_circle</mat-icon>
+                        <span>Professional configurations</span>
+                    </li>
+
+                    <li>
+                        <mat-icon class="check-icon">check_circle</mat-icon>
+                        <span>Can be customized later</span>
+                    </li>
+                </ul>
+
+                <div class="template-card__templates-info">
+                    <p class="templates-label">Included Templates:</p>
+                    <div class="template-item">
+                        <mat-icon>description</mat-icon>
+                        <span>Sales Invoice</span>
+                    </div>
+                    <div class="template-item">
+                        <mat-icon>receipt</mat-icon>
+                        <span>Payment Receipt</span>
+                    </div>
+                    <p class="more-templates">+ 2 more templates</p>
+                </div>
+
+                <button
+                    type="button"
+                    mat-flat-button
+                    color="primary"
+                    class="template-card__button template-card__button--green"
+                >
+                    <mat-icon>bolt</mat-icon>
+                    Use Default Configuration
+                </button>
+            </div>
+
+            <div
+                class="template-card template-card--custom"
+                [class.active]="selectedTemplateType === 'custom'"
+                (click)="selectedTemplateType = 'custom'"
+            >
+                <div class="template-card__icon template-card__icon--blue">
+                    <mat-icon>settings</mat-icon>
+                </div>
+                <h3 class="template-card__title">Custom Mapping</h3>
+                <p class="template-card__subtitle">Configure your own voucher-to-campaign mapping</p>
+
+                <ul class="template-card__features">
+                    <li>
+                        <mat-icon class="check-icon check-icon--blue">check_circle</mat-icon>
+                        <span>Full control over messages</span>
+                    </li>
+                    <li>
+                        <mat-icon class="check-icon check-icon--blue">check_circle</mat-icon>
+                        <span>Custom variable mapping</span>
+                    </li>
+                    <li>
+                        <mat-icon class="check-icon check-icon--blue">check_circle</mat-icon>
+                        <span>Use existing MSG91 campaigns</span>
+                    </li>
+                    <li>
+                        <mat-icon class="check-icon check-icon--blue">check_circle</mat-icon>
+                        <span>Brand-specific messaging</span>
+                    </li>
+                </ul>
+
+                <div class="template-card__setup-time">
+                    <mat-icon>schedule</mat-icon>
+                    <div>
+                        <span class="setup-label">Setup Time</span>
+                        <span class="setup-value">5-10 minutes</span>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    mat-stroked-button
+                    color="primary"
+                    class="template-card__button template-card__button--outline"
+                >
+                    <mat-icon>settings</mat-icon>
+                    Configure Custom Mapping
+                </button>
+            </div>
+        </div>
     </div>
 </ng-template>
 <ng-template #configureMethodTemplate let-selectedIndex="selectedIndex">
@@ -452,7 +557,7 @@
                     [ngClass]="{ 'active': selectedServiceIndex === i }"
                     (click)="selectedServiceIndex = i"
                 >
-                    <div class="d-flex align-items-center flex-grow-1">
+                    <div class="d-flex align-items-center flex-grow-1" style="color: var(--color-dark-primary)">
                         {{ service.name }}
                         <ng-container *ngIf="featureForm.get('serviceDetails')?.at(i) as serviceForm">
                             <mat-icon
@@ -468,7 +573,9 @@
                             </mat-icon>
                         </ng-container>
                     </div>
-                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1" style="color: var(--color-dark-primary)"
+                        >navigate_next</mat-icon
+                    >
                 </mat-list-item>
             </mat-list>
         </div>
@@ -534,11 +641,7 @@
                                 tooltip="Copy URL"
                             ></proxy-copy-button>
                         </mat-form-field>
-                        <mat-slide-toggle
-                            *ngIf="isEditMode"
-                            class="w-100 mat-body-2 mb-4"
-                            [formControl]="serviceForm.controls.is_enable"
-                        >
+                        <mat-slide-toggle class="w-100 mat-body-2 mb-4" [formControl]="serviceForm.controls.is_enable">
                             Enable Service
                         </mat-slide-toggle>
                         <button
@@ -559,6 +662,23 @@
 <ng-template #authorizationSetup>
     <div class="d-flex flex-column gap-3 my-3 flex-grow-1">
         <div class="d-flex flex-column w-50">
+            <ng-container *ngIf="!isEditMode">
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: featureForm.get('authorizationDetails.redirect_url'),
+                            fieldConfig: {
+                                label: 'Redirect URL',
+                                is_required: true,
+                                hint: 'Enter redirect URL',
+                                patternErrorText: 'Invalid URL'
+                            }
+                        }
+                    "
+                ></ng-container>
+            </ng-container>
+
             <ng-container
                 *ngTemplateOutlet="
                     inputField;

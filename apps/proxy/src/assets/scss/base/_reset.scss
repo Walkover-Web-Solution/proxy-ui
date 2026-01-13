@@ -44,7 +44,7 @@ body {
 
 * {
     scrollbar-width: thin;
-    scrollbar-color: mat.get-color-from-palette($primary) var(--color-common-bg);
+    scrollbar-color: mat.get-color-from-palette($new-primary) var(--color-common-bg);
 }
 
 /* Works on Chrome/Edge/Safari */

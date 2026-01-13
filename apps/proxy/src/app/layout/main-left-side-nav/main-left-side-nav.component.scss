@@ -5,7 +5,7 @@
         .mat-list-item {
             height: 40px !important;
             cursor: pointer !important;
-            color: var(--color-common-slate) !important;
+            color: var(--new-color-common-muted) !important;
             .mat-list-item-content {
                 padding: 0px 0px 0px 16px;
             }
@@ -26,10 +26,10 @@
                 }
             }
             @include sideNavHoverActiveState(
-                var(--color-common-primary),
-                var(--color-common-primary-light),
-                var(--color-common-white),
-                var(--color-common-slate)
+                var(--color-dark-accent),
+                var(--color-dark-accent-light),
+                var(--color-dark-primary),
+                var(--color-dark-muted)
             );
         }
     }
