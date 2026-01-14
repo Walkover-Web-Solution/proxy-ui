@@ -11,12 +11,12 @@
         z-index: 9;
         box-shadow: none !important;
         border-right: 1px solid var(--color-common-border);
-        background-color: var(--color-common-bg);
+        background-color: var(--color-dark-primary);
         &-content {
             .mat-drawer-header {
                 &-title {
                     padding: 12px 0px 12px 12px;
-                    color: var(--color-common-dark);
+                    color: var(--color-dark-accent);
                 }
             }
             &.mat-drawer-toggle-btn-hover {
