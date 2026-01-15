@@ -133,6 +133,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public updatePaymentDetails$: Observable<any> = this.componentStore.updatePaymentDetails$;
     public webhookEvents$: Observable<any> = this.componentStore.webhookEvents$;
     public isEditMode = false;
+    public previewInputPosition: 'top' | 'bottom' = 'top';
     public selectedServiceIndex = 0;
     public selectedSubscriptionServiceIndex = -2;
 
@@ -191,9 +192,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 CustomValidators.minLengthThreeWithoutSpace,
             ]),
             theme: new FormControl<string>('system', []),
+            version: new FormControl<string>('v1', []),
             allowNewUserRegistration: new FormControl<boolean>(false, []),
             encryptionKey: new FormControl<string>(null, []),
             redirect_url: new FormControl<any>(null, [Validators.required, Validators.pattern(URL_REGEX)]),
+            showSocialLoginIcons: new FormControl<boolean>(false, []),
+            blockNewUserSignUps: new FormControl<boolean>(false, []),
         }),
         webhookDetails: new FormGroup({
             webhookUrl: new FormControl<string>(null, [Validators.required]),
@@ -279,9 +283,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             authorizationDetails: {
                                 session_time: feature.session_time,
                                 authorizationKey: feature.authorization_format.key,
-                                theme: feature.extra_configurations?.theme || 'system',
-                                allowNewUserRegistration: feature.extra_configurations?.create_account_link || false,
+                                theme: feature.ui_preferences?.theme || 'system',
+                                version: feature.ui_preferences?.version || 'v1',
+                                showSocialLoginIcons: feature.ui_preferences?.icons || false,
+                                allowNewUserRegistration: feature.ui_preferences?.create_account_link || false,
                                 encryptionKey: feature.encryption_key,
+                                blockNewUserSignUps: feature.block_registration || false,
                             },
                             webhookDetails: {
                                 webhookUrl: feature.webhook?.url,
@@ -292,6 +299,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                         // Clear redirect_url validators in edit mode since the field is hidden
                         this.featureForm.get('authorizationDetails.redirect_url')?.clearValidators();
                         this.featureForm.get('authorizationDetails.redirect_url')?.updateValueAndValidity();
+                        this.previewInputPosition = feature.ui_preferences?.input_fields || 'top';
                     });
                 });
         }
@@ -564,9 +572,17 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             },
                         },
                         encryption_key: authorizationDetailsForm.value.encryptionKey,
+                        block_registration: authorizationDetailsForm.value.blockNewUserSignUps || false,
                         authorization_format: {
                             ...featureDetails.authorization_format,
                             key: authorizationDetailsForm.value.authorizationKey,
+                        },
+                        ui_preferences: {
+                            theme: authorizationDetailsForm.value.theme,
+                            create_account_link: authorizationDetailsForm.value.allowNewUserRegistration || false,
+                            icons: authorizationDetailsForm.value.showSocialLoginIcons || false,
+                            version: authorizationDetailsForm.value.version,
+                            input_fields: this.previewInputPosition,
                         },
                         session_time: authorizationDetailsForm.value.session_time,
                     };
