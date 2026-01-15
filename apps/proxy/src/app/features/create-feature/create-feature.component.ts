@@ -16,7 +16,7 @@ import {
     ProxyAuthScriptUrl,
 } from '@proxy/models/features-model';
 import { FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
-import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX } from '@proxy/regex';
+import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { environment } from '../../../environments/environment';
@@ -110,6 +110,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public taxesDisplayedColumns: string[] = ['name', 'code', 'rate', 'action'];
     public taxesData: any[] = [];
     public webhookEventsData: any;
+    public selectedTemplateType: string = 'default';
 
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public featureType$: Observable<IFeatureType[]> = this.componentStore.featureType$;
@@ -192,6 +193,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             theme: new FormControl<string>('system', []),
             allowNewUserRegistration: new FormControl<boolean>(false, []),
             encryptionKey: new FormControl<string>(null, []),
+            redirect_url: new FormControl<any>(null, [Validators.required, Validators.pattern(URL_REGEX)]),
         }),
         webhookDetails: new FormGroup({
             webhookUrl: new FormControl<string>(null, [Validators.required]),
@@ -287,6 +289,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 triggerEvents: feature.trigger_events || feature.webhook_events || [],
                             },
                         });
+                        // Clear redirect_url validators in edit mode since the field is hidden
+                        this.featureForm.get('authorizationDetails.redirect_url')?.clearValidators();
+                        this.featureForm.get('authorizationDetails.redirect_url')?.updateValueAndValidity();
                     });
                 });
         }
@@ -491,7 +496,20 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         });
     }
 
+    public setRedirectUrlInServiceDetails(): void {
+        const serviceDetailsForm = this.featureForm.controls.serviceDetails;
+        const redirectUrl = this.featureForm.controls.authorizationDetails.value.redirect_url;
+        serviceDetailsForm.controls.forEach((formGroup) => {
+            const redirectUrlControl = formGroup.controls.configurations.controls['redirect_uri'] as FormControl;
+            if (redirectUrlControl) {
+                redirectUrlControl.setValue(redirectUrl);
+                formGroup.markAsDirty();
+            }
+        });
+    }
+
     public createFeature() {
+        this.markDirtyServiceFormTouched();
         if (this.featureForm.controls.authorizationDetails.invalid) {
             this.featureForm.controls.authorizationDetails.markAllAsTouched();
         } else {
@@ -596,7 +614,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     private getServicePayload(selectedMethod: IMethod): IMethodService[] {
         const services = [];
         this.featureForm.controls.serviceDetails.controls.forEach((formGroup, index) => {
-            if (formGroup.dirty) {
+            if (formGroup.dirty && formGroup.value.is_enable) {
                 const service = selectedMethod.method_services[index];
                 const formData = formGroup.value;
                 this.setFormDataInPayload(service?.requirements, formData.requirements, index);
@@ -1570,7 +1588,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
         if (!this.taxes || this.taxes.length === 0) {
             this.getTaxes();
-        } // Wait a bit for data to load, then open dialog
+        }
         setTimeout(() => {
             this.openEditPlanDialog(null, true);
         }, 500);

@@ -12,7 +12,7 @@
     --font-weight-bold: bold;
     --font-weight-bolder: bolder;
 
-    --font-family-common: 'Inter', sans-serif;
+    --font-family-common: 'DM Sans', sans-serif;
     // Common Font Size
     --font-size-common-8: 8px;
     --font-size-common-10: 10px;
@@ -35,6 +35,14 @@
     --color-common-green: #008000;
     --color-common-scrollbar: 0, 0, 0;
     --color-common-hover: var(--color-common-silver);
+
+    // New design color variables
+    --color-dark-primary: #171c26;
+    --color-dark-secondary: #7b879D;
+    --color-dark-accent: #19E6CE;
+    --color-dark-accent-light: #19E6CE1A;
+    --color-dark-muted: #A7AFBE;
+    --color-dark-light: #F0F2F4;
 
     // #1 - Hello
     --color-hello-primary: #f2ca55;
