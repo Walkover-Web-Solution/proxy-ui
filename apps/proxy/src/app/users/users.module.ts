@@ -28,6 +28,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
 import { ManagementComponent } from './management/management.component';
+import { MarkdownModule } from 'ngx-markdown';
+import { UiCopyButtonModule } from '@proxy/ui/copy-button';
 
 // Components
 const routes: Routes = [
@@ -70,6 +72,8 @@ const routes: Routes = [
         ServicesProxyUsersModule,
         ServicesProxyFeaturesModule,
         DirectivesSkeletonModule,
+        MarkdownModule.forRoot(),
+        UiCopyButtonModule,
     ],
     exports: [RouterModule],
 })

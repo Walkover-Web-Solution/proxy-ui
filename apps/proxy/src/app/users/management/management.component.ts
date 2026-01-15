@@ -5,7 +5,8 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { FeatureComponentStore } from '../../features/feature/feature.store';
 import { Observable, of, Subject, takeUntil } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { IFeature } from '@proxy/models/features-model';
+import { IFeature, ProxyUserManagementScript } from '@proxy/models/features-model';
+import { environment } from '../../../environments/environment';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import { UserComponentStore } from '../user/user.store';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -69,6 +70,11 @@ export class ManagementComponent implements OnInit, OnDestroy {
     public deletePermission$: Observable<any> = this.userComponentStore.deletePermission$;
     public updatePermission$: Observable<any> = this.userComponentStore.updatePermission$;
     public featureDetails$: Observable<any> = this.userComponentStore.featureDetails$;
+
+    public get userManagementScript(): string {
+        const referenceId = this.roleForm.get('feature_id')?.value;
+        return ProxyUserManagementScript(environment.proxyServer, referenceId || '<auth_token>');
+    }
 
     @ViewChild('addRoleDialogTemplate', { static: false }) addRoleDialogTemplate: TemplateRef<any>;
     @ViewChild('addPermissionDialogTemplate', { static: false }) addPermissionDialogTemplate: TemplateRef<any>;
