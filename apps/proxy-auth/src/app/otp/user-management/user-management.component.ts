@@ -46,6 +46,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     @Input() public userToken: string;
     @Input() public pass: string;
     @Input() public theme: string;
+    @Input() public exclude_role_ids: any[] = [];
+    @Input() public include_role_ids: any[] = [];
     @ViewChild('addUserDialog') addUserDialog!: TemplateRef<any>;
     @ViewChild('editPermissionDialog') editPermissionDialog!: TemplateRef<any>;
     @ViewChild('addPermissionDialog') addPermissionDialog!: TemplateRef<any>;
@@ -871,6 +873,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                 itemsPerPage: pageSize,
                 pageNo: pageIndex,
                 search: searchTerm,
+                exclude_role_ids: this.exclude_role_ids,
+                include_role_ids: this.include_role_ids,
             })
         );
     }

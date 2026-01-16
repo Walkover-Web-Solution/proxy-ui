@@ -339,28 +339,30 @@ export class OtpEffects {
     getCompanyUsers$ = createEffect(() =>
         this.actions$.pipe(
             ofType(otpActions.getCompanyUsers),
-            switchMap(({ authToken, itemsPerPage, pageNo, search }) => {
-                return this.otpService.getCompanyUsers(authToken, itemsPerPage, pageNo, search).pipe(
-                    map((res: any) => {
-                        if (res.status === 'success') {
-                            return otpActions.getCompanyUsersComplete({
-                                response: res,
+            switchMap(({ authToken, itemsPerPage, pageNo, search, exclude_role_ids, include_role_ids }) => {
+                return this.otpService
+                    .getCompanyUsers(authToken, itemsPerPage, pageNo, search, exclude_role_ids, include_role_ids)
+                    .pipe(
+                        map((res: any) => {
+                            if (res.status === 'success') {
+                                return otpActions.getCompanyUsersComplete({
+                                    response: res,
+                                });
+                            }
+                            return otpActions.getCompanyUsersError({
+                                errors: errorResolver(res.message),
+                                errorResponse: res,
                             });
-                        }
-                        return otpActions.getCompanyUsersError({
-                            errors: errorResolver(res.message),
-                            errorResponse: res,
-                        });
-                    }),
-                    catchError((err) => {
-                        return of(
-                            otpActions.getCompanyUsersError({
-                                errors: errorResolver(err.errors),
-                                errorResponse: err,
-                            })
-                        );
-                    })
-                );
+                        }),
+                        catchError((err) => {
+                            return of(
+                                otpActions.getCompanyUsersError({
+                                    errors: errorResolver(err.errors),
+                                    errorResponse: err,
+                                })
+                            );
+                        })
+                    );
             })
         )
     );
