@@ -2333,8 +2333,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 ${useDiv ? '' : 'gap: 12px;'}
                 font-size: 14px;
                 background-color: transparent;
-                border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #d1d5db'};
-                border-radius: 8px;
+                border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #000000'};
+                border-radius: 4px;
                 height: 44px;
                 color: ${this.theme === 'dark' ? '#ffffff' : '#111827'};
                 margin: 8px 8px 16px 8px;

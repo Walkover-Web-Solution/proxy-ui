@@ -891,6 +891,7 @@
                         "
                     ></ng-container>
                 </ng-container>
+
                 <ng-container
                     *ngTemplateOutlet="
                         inputField;
@@ -933,6 +934,7 @@
                         "
                     ></ng-container>
                 </ng-container>
+
                 <ng-container *ngIf="isEditMode">
                     <ng-container
                         *ngTemplateOutlet="
@@ -961,6 +963,7 @@
                         }
                     "
                 ></ng-container>
+
                 <ng-container *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1">
                     <div class="d-flex align-items-center gap-2 mb-3 mt-4">
                         <span class="mat-body-2">Show Create Account For New User: </span>

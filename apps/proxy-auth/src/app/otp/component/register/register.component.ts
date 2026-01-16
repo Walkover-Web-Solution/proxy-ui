@@ -14,7 +14,7 @@ import {
     ViewChild,
     ElementRef,
 } from '@angular/core';
-import { resetAnyState, sendOtpAction, verifyOtpAction } from '../../store/actions/otp.action';
+import { resetAll, resetAnyState, sendOtpAction, verifyOtpAction } from '../../store/actions/otp.action';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
 import { IAppState } from '../../store/app.state';
@@ -317,7 +317,6 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public close(closeByUser: boolean = false): void {
         // Reset all form and OTP states
         this.resetFormState();
-        // Reset only OTP-specific store states, preserving widgetData
         this.resetOtpStoreState();
 
         this.togglePopUp.emit();
@@ -351,7 +350,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
     /**
      * Reset only OTP-specific store states, preserving widgetData and other non-OTP states
-     */
+    //  */
     private resetOtpStoreState(): void {
         this.store.dispatch(
             resetAnyState({
