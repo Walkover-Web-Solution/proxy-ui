@@ -60,6 +60,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public loginRedirectUrl: string;
     @Input() public theme: string;
     @Input() public version: string = SendOtpCenterVersion.V1;
+    @Input() public exclude_role_ids: any[] = [];
+    @Input() public include_role_ids: any[] = [];
     @Input() public input_fields: string = InputFields.TOP;
     @Input() public show_social_login_icons: boolean = false;
     set css(type: NgStyle['ngStyle']) {

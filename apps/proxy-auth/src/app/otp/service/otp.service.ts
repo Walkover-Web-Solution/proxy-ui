@@ -142,7 +142,9 @@ export class OtpService {
         authToken: string,
         itemsPerPage?: number,
         pageNo?: number,
-        search?: string
+        search?: string,
+        exclude_role_ids?: number[],
+        include_role_ids?: number[]
     ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;
         const url = otpVerificationUrls.getCompanyUsers(this.clientUrl);
@@ -150,6 +152,8 @@ export class OtpService {
         if (itemsPerPage) queryParams.itemsPerPage = itemsPerPage;
         if (pageNo !== undefined) queryParams.pageNo = pageNo + 1; // Convert 0-based to 1-based index
         if (search) queryParams.search = search;
+        if (exclude_role_ids?.length) queryParams.exclude_role_ids = exclude_role_ids.join(',');
+        if (include_role_ids?.length) queryParams.role_ids = include_role_ids.join(',');
         return this.http.get<any>(url, queryParams, this.options);
     }
     public createPermission(
