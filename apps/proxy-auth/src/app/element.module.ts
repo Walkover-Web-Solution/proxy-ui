@@ -48,6 +48,8 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.version = config?.version;
             sendOtpElement.input_fields = config?.input_fields;
             sendOtpElement.show_social_login_icons = config?.show_social_login_icons;
+            sendOtpElement.exclude_role_ids = config?.exclude_role_ids;
+            sendOtpElement.include_role_ids = config?.include_role_ids;
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;
             if (!config.success || typeof config.success !== 'function') {
