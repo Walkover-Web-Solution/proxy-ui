@@ -63,6 +63,8 @@
         [userToken]="authToken"
         [pass]="isRolePermission"
         [theme]="theme"
+        [exclude_role_ids]="exclude_role_ids"
+        [include_role_ids]="include_role_ids"
     ></proxy-user-management>
     <div [ngClass]="{ 'subscription-dialog': type === 'subscription' && isPreview }" *ngIf="type === 'subscription'">
         <proxy-subscription-center
