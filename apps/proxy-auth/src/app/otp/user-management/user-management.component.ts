@@ -48,6 +48,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     @Input() public theme: string;
     @Input() public exclude_role_ids: any[] = [];
     @Input() public include_role_ids: any[] = [];
+    @Input() public isHidden: boolean = false;
     @ViewChild('addUserDialog') addUserDialog!: TemplateRef<any>;
     @ViewChild('editPermissionDialog') editPermissionDialog!: TemplateRef<any>;
     @ViewChild('addPermissionDialog') addPermissionDialog!: TemplateRef<any>;
@@ -111,6 +112,8 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public currentPageSize: number = 50;
     public isUsersLoading: boolean = true;
     private openAddUserDialogHandler = this.addUser.bind(this);
+    private showUserManagementHandler = this.showUserManagement.bind(this);
+    private hideUserManagementHandler = this.hideUserManagement.bind(this);
     constructor(private fb: FormBuilder, private dialog: MatDialog, private store: Store<IAppState>) {
         super();
         this.getRoles$ = this.store.pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
@@ -213,6 +216,10 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     ngOnInit(): void {
+        // Add event listeners for show/hide user management
+        window.addEventListener('showUserManagement', this.showUserManagementHandler);
+        window.addEventListener('hideUserManagement', this.hideUserManagementHandler);
+
         this.searchSubject
             .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
             .subscribe((searchTerm) => {
@@ -355,8 +362,10 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     ngOnDestroy(): void {
-        // Remove window event listener
+        // Remove window event listeners
         window.removeEventListener('openAddUserDialog', this.openAddUserDialogHandler);
+        window.removeEventListener('showUserManagement', this.showUserManagementHandler);
+        window.removeEventListener('hideUserManagement', this.hideUserManagementHandler);
 
         // Close all open dialogs when navigating away
         if (this.addUserDialogRef) {
@@ -378,6 +387,14 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             (this as any)._paginatorSelectObserver = null;
         }
         super.ngOnDestroy();
+    }
+
+    public showUserManagement(): void {
+        this.isHidden = false;
+    }
+
+    public hideUserManagement(): void {
+        this.isHidden = true;
     }
 
     public editUser(user: UserData, index: number): void {
