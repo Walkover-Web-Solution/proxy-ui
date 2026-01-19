@@ -65,7 +65,9 @@ window['initVerification'] = (config: any) => {
             } else if (document.getElementById('userProxyContainer')) {
                 document.getElementById('userProxyContainer').append(sendOtpElement);
             } else {
-                document.getElementsByTagName('body')[0].append(sendOtpElement);
+                if (config?.type !== 'user-management') {
+                    document.getElementsByTagName('body')[0].append(sendOtpElement);
+                }
             }
 
             window['libLoaded'] = true;
