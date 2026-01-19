@@ -1,4 +1,9 @@
-<div #container class="container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
+<div
+    #container
+    class="container"
+    [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'"
+    [ngStyle]="isHidden ? { display: 'none' } : { display: 'block' }"
+>
     <div class="members-container">
         <h2>Invite Members</h2>
 

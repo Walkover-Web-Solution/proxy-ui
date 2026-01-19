@@ -7,6 +7,8 @@ import { SendOtpComponent } from './otp/send-otp/send-otp.component';
 import { omit } from 'lodash-es';
 import { UserProfileComponent } from './otp/user-profile/user-profile.component';
 import { ConfirmationDialogComponent } from './otp/user-profile/user-dialog/user-dialog.component';
+import { interval } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 
 export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure'];
 
@@ -14,8 +16,20 @@ declare global {
     interface Window {
         initVerification: any;
         intlTelInput: any;
+        showUserManagement: any;
+        hideUserManagement: any;
     }
 }
+
+// Global function to show user management component (sets isHidden to false)
+window['showUserManagement'] = () => {
+    window.dispatchEvent(new CustomEvent('showUserManagement'));
+};
+
+// Global function to hide user management component (sets isHidden to true)
+window['hideUserManagement'] = () => {
+    window.dispatchEvent(new CustomEvent('hideUserManagement'));
+};
 
 function documentReady(fn: any) {
     // see if DOM is already available
@@ -50,6 +64,7 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.show_social_login_icons = config?.show_social_login_icons;
             sendOtpElement.exclude_role_ids = config?.exclude_role_ids;
             sendOtpElement.include_role_ids = config?.include_role_ids;
+            sendOtpElement.isHidden = config?.isHidden;
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;
             if (!config.success || typeof config.success !== 'function') {
@@ -60,14 +75,37 @@ window['initVerification'] = (config: any) => {
 
             // omitting keys which are not required in API payload
             sendOtpElement.otherData = omit(config, RESERVED_KEYS);
-            if (document.getElementById('proxyContainer')) {
+            if (document.getElementById('proxyContainer') && config?.type !== 'user-management') {
                 document.getElementById('proxyContainer').append(sendOtpElement);
+            } else if (config?.type === 'user-management') {
+                const container = document.getElementById('userProxyContainer');
+                if (container) {
+                    // Container exists, append directly
+                    container.append(sendOtpElement);
+                } else {
+                    // Container not found - mount to body with display:none
+                    sendOtpElement.style.display = 'none';
+                    document.body.append(sendOtpElement);
+
+                    // Observable to wait for userProxyContainer to appear in the DOM
+                    const containerCheck$ = interval(100).pipe(
+                        filter(() => !!document.getElementById('userProxyContainer')),
+                        take(1)
+                    );
+
+                    containerCheck$.subscribe(() => {
+                        const targetContainer = document.getElementById('userProxyContainer');
+                        if (targetContainer) {
+                            // Move element from body to the container and show it
+                            sendOtpElement.style.display = '';
+                            targetContainer.append(sendOtpElement);
+                        }
+                    });
+                }
             } else if (document.getElementById('userProxyContainer')) {
                 document.getElementById('userProxyContainer').append(sendOtpElement);
             } else {
-                if (config?.type !== 'user-management') {
-                    document.getElementsByTagName('body')[0].append(sendOtpElement);
-                }
+                document.getElementsByTagName('body')[0].append(sendOtpElement);
             }
 
             window['libLoaded'] = true;
