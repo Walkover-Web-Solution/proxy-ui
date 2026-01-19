@@ -171,6 +171,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     ngOnInit(): void {
+        console.log('loginServiceData', this.loginServiceData);
         this.registrationForm
             .get('user.mobile')
             .valueChanges.pipe(takeUntil(this.destroy$))
@@ -401,6 +402,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     public submit(): void {
+        debugger;
         this.apiError.next(null);
         if (!this.isOtpVerified) {
             this.registrationForm.get('user.mobile').setErrors({ otpVerificationFailed: true });
