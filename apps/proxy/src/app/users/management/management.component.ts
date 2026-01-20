@@ -76,6 +76,10 @@ export class ManagementComponent implements OnInit, OnDestroy {
         return ProxyUserManagementScript(environment.proxyServer, referenceId || '<auth_token>');
     }
 
+    public get userProxyContainerHtml(): string {
+        return `<div id="userProxyContainer"></div>`;
+    }
+
     @ViewChild('addRoleDialogTemplate', { static: false }) addRoleDialogTemplate: TemplateRef<any>;
     @ViewChild('addPermissionDialogTemplate', { static: false }) addPermissionDialogTemplate: TemplateRef<any>;
     @ViewChild('rolesPaginator') rolesPaginator!: MatPaginator;
