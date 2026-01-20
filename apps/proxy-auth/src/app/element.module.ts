@@ -8,7 +8,7 @@ import { omit } from 'lodash-es';
 import { UserProfileComponent } from './otp/user-profile/user-profile.component';
 import { ConfirmationDialogComponent } from './otp/user-profile/user-dialog/user-dialog.component';
 import { interval } from 'rxjs';
-import { distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure'];
 
@@ -87,17 +87,22 @@ window['initVerification'] = (config: any) => {
                     sendOtpElement.style.display = 'none';
                     document.body.append(sendOtpElement);
 
-                    // Observable to watch for userProxyContainer to appear/reappear in the DOM
+                    // Observable to watch for userProxyContainer to appear/disappear in the DOM
                     const containerCheck$ = interval(100).pipe(
                         map(() => document.getElementById('userProxyContainer')),
-                        filter((container) => !!container),
-                        distinctUntilChanged() // Only emit when container reference changes (new container after navigation)
+                        distinctUntilChanged() // Emit when container reference changes (including null)
                     );
 
                     containerCheck$.subscribe((targetContainer) => {
-                        // Move element from body to the container and show it
-                        sendOtpElement.style.display = '';
-                        targetContainer.append(sendOtpElement);
+                        if (targetContainer) {
+                            // Container exists - move element there and show it
+                            sendOtpElement.style.display = '';
+                            targetContainer.append(sendOtpElement);
+                        } else {
+                            // Container doesn't exist - move element back to body and hide it
+                            sendOtpElement.style.display = 'none';
+                            document.body.append(sendOtpElement);
+                        }
                     });
                 }
             } else if (document.getElementById('userProxyContainer')) {
