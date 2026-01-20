@@ -78,33 +78,26 @@ window['initVerification'] = (config: any) => {
             if (document.getElementById('proxyContainer') && config?.type !== 'user-management') {
                 document.getElementById('proxyContainer').append(sendOtpElement);
             } else if (config?.type === 'user-management') {
-                const container = document.getElementById('userProxyContainer');
-                if (container) {
-                    // Container exists, append directly
-                    container.append(sendOtpElement);
-                } else {
-                    // Container not found - mount to body with display:none
-                    sendOtpElement.style.display = 'none';
-                    document.body.append(sendOtpElement);
+                // For user-management, element always stays in body
+                // This ensures it can always receive window events (showUserManagement, hideUserManagement)
+                sendOtpElement.style.display = 'none';
+                document.body.append(sendOtpElement);
 
-                    // Observable to watch for userProxyContainer to appear/disappear in the DOM
-                    const containerCheck$ = interval(100).pipe(
-                        map(() => document.getElementById('userProxyContainer')),
-                        distinctUntilChanged() // Emit when container reference changes (including null)
-                    );
+                // Watch for container to control visibility
+                const containerCheck$ = interval(100).pipe(
+                    map(() => document.getElementById('userProxyContainer')),
+                    distinctUntilChanged()
+                );
 
-                    containerCheck$.subscribe((targetContainer) => {
-                        if (targetContainer) {
-                            // Container exists - move element there and show it
-                            sendOtpElement.style.display = '';
-                            targetContainer.append(sendOtpElement);
-                        } else {
-                            // Container doesn't exist - move element back to body and hide it
-                            sendOtpElement.style.display = 'none';
-                            document.body.append(sendOtpElement);
-                        }
-                    });
-                }
+                containerCheck$.subscribe((targetContainer) => {
+                    if (targetContainer) {
+                        // Container exists - show the element
+                        sendOtpElement.style.display = '';
+                    } else {
+                        // Container doesn't exist - hide the element
+                        sendOtpElement.style.display = 'none';
+                    }
+                });
             } else if (document.getElementById('userProxyContainer')) {
                 document.getElementById('userProxyContainer').append(sendOtpElement);
             } else {
