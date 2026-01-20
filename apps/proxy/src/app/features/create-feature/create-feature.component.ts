@@ -111,7 +111,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public taxesData: any[] = [];
     public webhookEventsData: any;
     public selectedTemplateType: string = 'default';
-
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public featureType$: Observable<IFeatureType[]> = this.componentStore.featureType$;
     public serviceMethods$: Observable<IMethod[]> = this.componentStore.serviceMethods$;
@@ -503,7 +502,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             }
         });
     }
-
     public setRedirectUrlInServiceDetails(): void {
         const serviceDetailsForm = this.featureForm.controls.serviceDetails;
         const redirectUrl = this.featureForm.controls.authorizationDetails.value.redirect_url;
@@ -629,8 +627,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     private getServicePayload(selectedMethod: IMethod): IMethodService[] {
         const services = [];
+
         this.featureForm.controls.serviceDetails.controls.forEach((formGroup, index) => {
-            if (formGroup.dirty && formGroup.value.is_enable) {
+            if (formGroup.dirty && (formGroup.value.is_enable || this.isEditMode)) {
                 const service = selectedMethod.method_services[index];
                 const formData = formGroup.value;
                 this.setFormDataInPayload(service?.requirements, formData.requirements, index);
