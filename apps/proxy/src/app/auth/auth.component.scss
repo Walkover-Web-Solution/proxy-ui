@@ -55,6 +55,43 @@ $accent-dark: #14b8a6;
     overflow-x: hidden;
 }
 
+.landing-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 16px 72px;
+
+    @include media-breakpoint-down('tablet') {
+        padding: 16px 32px;
+    }
+
+    @include media-breakpoint-down('phone') {
+        padding: 12px 20px;
+    }
+}
+
+.header-login-btn {
+    padding: 10px 24px;
+    background: transparent;
+    color: $accent;
+    border: 1px solid $accent;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: rgba($accent, 0.1);
+        transform: translateY(-1px);
+    }
+}
+
 .hero {
     position: relative;
     z-index: 1;
