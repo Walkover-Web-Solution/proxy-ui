@@ -31,6 +31,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     @Input() public authToken: string;
     @Input() public target: string;
     @Input() public showCard: boolean;
+    @Input() public theme: string;
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);

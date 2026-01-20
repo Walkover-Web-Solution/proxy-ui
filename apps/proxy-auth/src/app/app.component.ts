@@ -32,9 +32,8 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                 // showCompanyDetails: false,
                 authToken:
                     'clV0YUt4UURVbzJYZTRwMHdBNkZ6QjZoay9qMmRRcjZhMGVXMGtCT1ZtdGNaelFxMmlNaGdNcEJuRy9UWmFSZHQvMHc0YnJYUHExakh5NDNGVjZMOEdXVmg3OG82R094Yk5tdE9XckxjUTV1dlNzUERXRWxaOWIwWm5JRmlMVHl5UmpZUHVDK2piOURJUi9IdytncFZBRWc5QnRyRDRVeUFOZlBCY1FST0FOZStISUVtK055VWNxaGduZWpGeUZxVWxYWjd6YXI2YTF0aGxHZTNka1BlQT09',
-                type: 'user-management',
-                exclude_role_ids: [2],
-                include_role_ids: [1],
+                // type: 'user-management',
+                isHidden: true,
                 theme: 'light',
                 // isPreview: true,
                 isLogin: true,
