@@ -8,7 +8,7 @@ import { omit } from 'lodash-es';
 import { UserProfileComponent } from './otp/user-profile/user-profile.component';
 import { ConfirmationDialogComponent } from './otp/user-profile/user-dialog/user-dialog.component';
 import { interval } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure'];
 
@@ -87,19 +87,17 @@ window['initVerification'] = (config: any) => {
                     sendOtpElement.style.display = 'none';
                     document.body.append(sendOtpElement);
 
-                    // Observable to wait for userProxyContainer to appear in the DOM
+                    // Observable to watch for userProxyContainer to appear/reappear in the DOM
                     const containerCheck$ = interval(100).pipe(
-                        filter(() => !!document.getElementById('userProxyContainer')),
-                        take(1)
+                        map(() => document.getElementById('userProxyContainer')),
+                        filter((container) => !!container),
+                        distinctUntilChanged() // Only emit when container reference changes (new container after navigation)
                     );
 
-                    containerCheck$.subscribe(() => {
-                        const targetContainer = document.getElementById('userProxyContainer');
-                        if (targetContainer) {
-                            // Move element from body to the container and show it
-                            sendOtpElement.style.display = '';
-                            targetContainer.append(sendOtpElement);
-                        }
+                    containerCheck$.subscribe((targetContainer) => {
+                        // Move element from body to the container and show it
+                        sendOtpElement.style.display = '';
+                        targetContainer.append(sendOtpElement);
                     });
                 }
             } else if (document.getElementById('userProxyContainer')) {
