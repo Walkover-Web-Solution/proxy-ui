@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
     <h2>Client Details</h2>
     <form [formGroup]="clientForm" class="form">
         <mat-form-field appearance="outline" class="full-width w-100">
