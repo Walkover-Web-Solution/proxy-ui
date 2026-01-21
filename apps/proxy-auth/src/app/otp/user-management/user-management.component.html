@@ -1,6 +1,6 @@
 <div #container class="container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
     <div class="members-container">
-        <h2>Invite Members</h2>
+        <h2>Members</h2>
 
         <mat-tab-group class="user-management-tabs">
             <!-- Members Tab -->
@@ -27,23 +27,29 @@
 
                     <div class="users-list-container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
                         <!-- Skeleton Loading -->
-                        <ng-container *ngIf="isUsersLoading">
+                        <ng-container *ngIf="isUsersLoading && !skipSkeletonLoading">
                             <div
                                 *ngFor="let item of [1, 2, 3, 4, 5]"
-                                class="user-item skeleton-item"
+                                class="user-item skeleton-item w-50"
                                 [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'"
                             >
-                                <div class="user-avatar skeleton-avatar"></div>
-                                <div class="user-info bg-light-grey">
-                                    <div class="skeleton-text skeleton-name"></div>
-                                    <div class="skeleton-text skeleton-email"></div>
-                                </div>
-                                <div class="user-role-row">
-                                    <div class="skeleton-text skeleton-role"></div>
-                                </div>
-                                <div class="user-actions">
-                                    <div class="skeleton-button"></div>
-                                    <div class="skeleton-button"></div>
+                                <div
+                                    class="item-container w-100 d-flex justify-content-between align-items-center gap-2"
+                                >
+                                    <div class="d-flex justify-content-between align-items-center gap-2 w-35">
+                                        <div class="user-avatar skeleton-avatar"></div>
+                                        <div class="user-info bg-light-grey">
+                                            <div class="skeleton-text skeleton-name"></div>
+                                            <div class="skeleton-text skeleton-email"></div>
+                                        </div>
+                                    </div>
+                                    <div class="user-role-row">
+                                        <div class="skeleton-text skeleton-role"></div>
+                                    </div>
+                                    <div class="user-actions">
+                                        <div class="skeleton-button"></div>
+                                        <div class="skeleton-button"></div>
+                                    </div>
                                 </div>
                             </div>
                         </ng-container>
@@ -53,62 +59,69 @@
                             *ngFor="let user of dataSource.data; let i = index"
                             class="user-item"
                             [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'"
-                            [class.hidden]="isUsersLoading"
+                            [class.hidden]="isUsersLoading && !skipSkeletonLoading"
                         >
-                            <div class="user-avatar" *ngIf="theme !== 'dark'">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    height="18px"
-                                    viewBox="0 -960 960 960"
-                                    width="24px"
-                                    fill="#000000"
-                                >
-                                    <path
-                                        d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"
-                                    />
-                                </svg>
-                            </div>
-                            <div class="user-avatar" *ngIf="theme === 'dark'">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    height="18px"
-                                    viewBox="0 -960 960 960"
-                                    width="24px"
-                                    fill="#c1c5c8"
-                                >
-                                    <path
-                                        d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"
-                                    />
-                                </svg>
-                            </div>
-                            <div class="user-info bg-light-grey">
-                                <div class="user-name">{{ user.name }}</div>
-                                <div class="user-email" matTooltipPosition="above">
-                                    {{ user.email }}
+                            <div class="item-container w-100 d-flex justify-content-between align-items-center gap-2">
+                                <div class="d-flex justify-content-between align-items-center gap-2 w-35">
+                                    <div class="user-avatar" *ngIf="theme !== 'dark'">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            height="18px"
+                                            viewBox="0 -960 960 960"
+                                            width="24px"
+                                            fill="#000000"
+                                        >
+                                            <path
+                                                d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <div class="user-avatar" *ngIf="theme === 'dark'">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            height="18px"
+                                            viewBox="0 -960 960 960"
+                                            width="24px"
+                                            fill="#c1c5c8"
+                                        >
+                                            <path
+                                                d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <div class="user-info bg-light-grey">
+                                        <div class="user-name">{{ user.name }}</div>
+                                        <div class="user-email" matTooltipPosition="above">
+                                            {{ user.email }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="user-role-row justify-content-center">
+                                    <div class="user-role">{{ user.role || 'User' }}</div>
+                                </div>
+                                <div class="user-actions">
+                                    <button
+                                        *ngIf="canEditUser"
+                                        mat-flat-button
+                                        class="button-add"
+                                        (click)="editUser(user, i)"
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        *ngIf="canRemoveUser"
+                                        mat-stroked-button
+                                        class="button-remove"
+                                        [ngClass]="{ 'button-remove-light': theme !== 'dark' }"
+                                        (click)="deleteUser(user, i)"
+                                    >
+                                        Remove
+                                    </button>
                                 </div>
                             </div>
-                            <div class="user-role-row">
-                                <div class="user-role">{{ user.role || 'User' }}</div>
-                            </div>
-                            <div class="user-actions">
-                                <button
-                                    *ngIf="canEditUser"
-                                    mat-flat-button
-                                    class="button-add"
-                                    (click)="editUser(user, i)"
-                                >
-                                    Edit
-                                </button>
-                                <button
-                                    *ngIf="canRemoveUser"
-                                    mat-flat-button
-                                    class="button-add"
-                                    (click)="deleteUser(user, i)"
-                                >
-                                    Remove
-                                </button>
-                            </div>
                         </div>
+
+                        <!-- <div class = "border-bottom"></div> -->
                         <p class="no-data" *ngIf="!isUsersLoading && dataSource.data.length === 0">
                             Nothing Here, There are no Members to show
                         </p>
@@ -428,7 +441,7 @@
                     <input
                         matInput
                         formControlName="name"
-                        placeholder="Enter user name"
+                        placeholder="Enter member name"
                         [readonly]="isEditUser"
                         required
                     />
@@ -483,7 +496,11 @@
                     </mat-select>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width" *ngIf="isEditUser">
+                <mat-form-field
+                    appearance="outline"
+                    class="full-width"
+                    *ngIf="isEditUser && getAvailableAdditionalPermissions().length !== 0"
+                >
                     <mat-label>Additional Permissions</mat-label>
                     <mat-select
                         formControlName="permission"
