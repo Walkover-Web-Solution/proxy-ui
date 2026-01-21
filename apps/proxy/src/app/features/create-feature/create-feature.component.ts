@@ -629,8 +629,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     private getServicePayload(selectedMethod: IMethod): IMethodService[] {
         const services = [];
+
         this.featureForm.controls.serviceDetails.controls.forEach((formGroup, index) => {
-            if (formGroup.dirty && formGroup.value.is_enable) {
+            if (formGroup.dirty && (formGroup.value.is_enable || this.isEditMode)) {
                 const service = selectedMethod.method_services[index];
                 const formData = formGroup.value;
                 this.setFormDataInPayload(service?.requirements, formData.requirements, index);
