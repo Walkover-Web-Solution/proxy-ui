@@ -1,4 +1,4 @@
-<h1 mat-dialog-title class="mat-subheading-2 text-dark mb-3 fw-bold">{{ title }}</h1>
+<h1 mat-dialog-title class="mat-subheading-2 text-dark mb-3 fw-bold" [innerHTML]="title"></h1>
 <div mat-dialog-content class="w-100 mb-4">
     <p class="text-dark mat-body-2 my-0" [innerHTML]="confirmationMessage"></p>
 </div>

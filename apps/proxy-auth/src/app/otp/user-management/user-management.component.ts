@@ -84,6 +84,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public rolesDataSource = new MatTableDataSource<any>([]);
     public roleSearchTerm: string = '';
     public filteredRolesData: any[] = [];
+    public defaultRoles: any;
 
     // Permissions table properties
     public permissionsDisplayedColumns: string[] = ['permission'];
@@ -111,6 +112,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public currentPageIndex: number = 0;
     public currentPageSize: number = 50;
     public isUsersLoading: boolean = true;
+    public skipSkeletonLoading: boolean = false;
     private openAddUserDialogHandler = this.addUser.bind(this);
     private showUserManagementHandler = this.showUserManagement.bind(this);
     private hideUserManagementHandler = this.hideUserManagement.bind(this);
@@ -227,13 +229,13 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
             });
 
         this.store.pipe(select(companyUsersDataInProcess), takeUntil(this.destroy$)).subscribe((isLoaded) => {
-            // Note: companyUsersDataInProcess is true when loaded, false when loading
             this.isUsersLoading = !isLoaded;
         });
 
         this.getRoles$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.roles = res.data?.data;
+                this.defaultRoles = res.data?.default_roles;
                 this.filteredRolesData = [...this.roles];
                 this.rolesDataSource.data = this.filteredRolesData;
             }
@@ -301,13 +303,15 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.updateCompanyUserData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.getCompanyUsers();
+                this.skipSkeletonLoading = false;
             }
         });
-        this.deleteUserData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
-            if (res) {
-                this.getCompanyUsers();
-            }
-        });
+        // this.deleteUserData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+        //     if (res) {
+
+        //         // this.getCompanyUsers();
+        //     }
+        // });
         this.updateUserRoleData$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.getCompanyUsers();
@@ -398,6 +402,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
 
     public editUser(user: UserData, index: number): void {
+        this.skipSkeletonLoading = true;
         this.isEditUser = true;
         this.isEditRole = false;
         this.isEditPermission = false;
@@ -446,16 +451,20 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         });
 
         const componentInstance = dialogRef.componentInstance;
-        componentInstance.title = 'Delete User';
-        componentInstance.confirmationMessage = `Are you sure you want to delete ${user.name}?`;
-        componentInstance.confirmButtonText = 'Delete';
+        componentInstance.title = '<b>Remove User</b>';
+        componentInstance.confirmationMessage = `Are you sure you want to remove ${user.name}?`;
+        componentInstance.confirmButtonText = 'Remove';
         componentInstance.cancelButtonText = 'Cancel';
         componentInstance.confirmButtonColor = '';
         componentInstance.confirmButtonClass = 'mat-flat-button btn-danger confirm-dialog';
 
         dialogRef.afterClosed().subscribe((action) => {
             if (action === 'yes') {
-                this.store.dispatch(otpActions.deleteUser({ companyId: user.user_id, authToken: this.userToken }));
+                const userId = (user as any).user_id;
+                this.userData = this.userData.filter((u: any) => u.user_id !== userId);
+                this.dataSource.data = [...this.userData];
+                this.totalUsers = Math.max(0, this.totalUsers - 1);
+                this.store.dispatch(otpActions.deleteUser({ companyId: userId, authToken: this.userToken }));
             }
         });
     }
@@ -582,6 +591,14 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.isEditPermission = false;
         this.currentEditingUser = null;
         this.addUserForm.reset();
+
+        // Set default role for new user
+        if (this.defaultRoles?.default_member_role) {
+            this.addUserForm.patchValue({
+                role: this.defaultRoles.default_member_role,
+            });
+        }
+
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
             panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
@@ -1052,9 +1069,9 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         } else if (this.isEditRole) {
             return this.currentEditingUser ? 'Edit Role' : 'Add New Role';
         } else if (this.isEditUser) {
-            return 'Edit User';
+            return 'Edit member';
         } else {
-            return 'Add New User';
+            return 'Add New member';
         }
     }
 
@@ -1088,9 +1105,9 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         } else if (this.isEditRole) {
             return this.currentEditingUser ? 'Update Role' : 'Add Role';
         } else if (this.isEditUser) {
-            return 'Update User';
+            return 'Update member';
         } else {
-            return 'Add User';
+            return 'Add member';
         }
     }
 
