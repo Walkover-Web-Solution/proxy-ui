@@ -1,4 +1,9 @@
-<div #container class="container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
+<div
+    #container
+    class="container"
+    [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'"
+    [ngStyle]="isHidden ? { display: 'none' } : { display: 'block' }"
+>
     <div class="members-container">
         <h2>Members</h2>
 
@@ -112,7 +117,7 @@
                                         *ngIf="canRemoveUser"
                                         mat-stroked-button
                                         class="button-remove"
-                                        [ngClass]="{ 'button-remove-light': theme !== 'dark' }"
+                                        [ngClass]="theme === 'dark' ? 'button-add' : 'button-remove-light'"
                                         (click)="deleteUser(user, i)"
                                     >
                                         Remove
