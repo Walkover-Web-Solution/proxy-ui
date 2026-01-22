@@ -152,9 +152,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.theme = prefersDark.matches ? Theme.DARK : Theme.LIGHT;
         }
         this.selectWidgetTheme$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((theme) => {
+            console.log('theme', theme);
             if (theme?.theme !== Theme.SYSTEM) {
                 this.theme = theme?.theme || theme;
             }
+            this.loginWidgetData = theme?.registerState;
             this.version = theme?.version || 'v1';
             this.input_fields = theme?.input_fields || 'top';
             this.show_social_login_icons = theme?.icons || false;
@@ -202,11 +204,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 );
                 this.otpWidgetService.loadScript();
             }
-            this.loginWidgetData = widgetData?.find(
-                (widget) => widget?.service_id === FeatureServiceIds.PasswordAuthentication
-            );
             if (!this.loginWidgetData) {
-                this.loginWidgetData = widgetData[0];
+                this.loginWidgetData = widgetData?.find(
+                    (widget) => widget?.service_id === FeatureServiceIds.PasswordAuthentication
+                );
             }
         });
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
