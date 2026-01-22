@@ -152,7 +152,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.theme = prefersDark.matches ? Theme.DARK : Theme.LIGHT;
         }
         this.selectWidgetTheme$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((theme) => {
-            console.log('theme', theme);
             if (theme?.theme !== Theme.SYSTEM) {
                 this.theme = theme?.theme || theme;
             }
