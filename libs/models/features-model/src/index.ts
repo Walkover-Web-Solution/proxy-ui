@@ -133,3 +133,27 @@ export enum FeatureServiceIds {
     GoogleAuthentication = 7,
     PasswordAuthentication = 9,
 }
+export const ProxyUserManagementScript = (
+    baseUrl: string,
+    authToken = '<auth_token>',
+    type = '<type>',
+    time?: number
+) => `<script type="text/javascript">
+    var configuration = {
+        authToken: '{{authToken}}',
+        type: 'user-management',
+        success: (data) => {
+            // get verified token in response
+            console.log('success response', data);
+        },
+        failure: (error) => {
+            // handle error
+            console.log('failure reason', error);
+        },
+    };
+</script>
+<script
+    type="text/javascript"
+    onload="initVerification(configuration)"
+    src="${ProxyAuthScriptUrl(baseUrl, time)}"
+></script>`;

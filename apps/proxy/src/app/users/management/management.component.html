@@ -219,6 +219,36 @@
                         </mat-paginator>
                     </div>
                 </mat-tab>
+                <mat-tab label="Snippet">
+                    <div class="p-3">
+                        <div class="overflow-auto code-snippet-view position-relative rounded-4 w-50">
+                            <markdown [data]="userManagementScript | language: 'javascript'"> </markdown>
+                            <proxy-copy-button
+                                class="position-absolute"
+                                style="top: 16px; right: 8px"
+                                [copyData]="userManagementScript"
+                                tooltip="Copy Script"
+                                iconClass="text-white"
+                            ></proxy-copy-button>
+                        </div>
+                        <div class="mat-body-2 mt-2">
+                            <strong>Note: </strong> To integrate the user management component into your website or
+                            application, simply add the script to your page. <br />
+                        </div>
+                        <div class="overflow-auto code-snippet-view position-relative rounded-4 w-50 mt-3">
+                            <markdown [data]="userProxyContainerHtml | language: 'html'"> </markdown>
+                            <proxy-copy-button
+                                class="position-absolute"
+                                style="top: 16px; right: 8px"
+                                [copyData]="userProxyContainerHtml"
+                                tooltip="Copy Code"
+                                iconClass="text-white"
+                            ></proxy-copy-button>
+                        </div>
+                    </div>
+                    <div id="userProxyContainer"></div>
+                </mat-tab>
+
                 <mat-tab label="Settings">
                     <div class="">
                         <p class="mat-body-2 text-secondary fw-bold p-0">Default Roles</p>
