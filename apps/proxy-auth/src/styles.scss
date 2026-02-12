@@ -136,3 +136,362 @@ proxy-auth,
         }
     }
 }
+
+/* ========== User profile page only (scoped – does not affect rest of app) ========== */
+/* All selectors below require .profile-page (or .container.profile-page) on the user profile
+   template. Other pages and components do not use these classes and are unchanged. */
+/* Design tokens – spacing (4px base), radius, shadow, typography */
+.profile-page {
+    --tw-space-1: 0.25rem; /* 4px */
+    --tw-space-2: 0.5rem; /* 8px */
+    --tw-space-3: 0.75rem; /* 12px */
+    --tw-space-4: 1rem; /* 16px */
+    --tw-space-5: 1.25rem; /* 20px */
+    --tw-space-6: 1.5rem; /* 24px */
+    --tw-space-10: 2.5rem; /* 40px */
+    --tw-radius-md: 0.375rem;
+    --tw-radius-lg: 0.5rem;
+    --tw-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --tw-font-size-sm: 0.875rem;
+    --tw-font-size-base: 1rem;
+    --tw-font-size-lg: 1.125rem;
+    --tw-font-size-xl: 1.25rem;
+    --tw-font-weight-medium: 500;
+    --tw-font-weight-semibold: 600;
+}
+
+/* Light theme tokens */
+.profile-page:not(.dark-theme),
+.profile-page.light-theme {
+    --tw-bg: #ffffff;
+    --tw-bg-muted: #f9fafb;
+    --tw-border: #e5e7eb;
+    --tw-text: #111827;
+    --tw-text-muted: #6b7280;
+    --tw-success: #059669;
+    --tw-destructive: #dc2626;
+    --tw-table-head-bg: #f3f4f6;
+    --tw-table-body-bg: #ffffff;
+    --tw-table-divide: #e5e7eb;
+    --tw-table-divide-head: #e5e7eb;
+    --tw-table-outline: #e5e7eb;
+    --tw-link: #6366f1;
+    --tw-link-hover: #818cf8;
+}
+
+/* Dark theme tokens */
+.profile-page.dark-theme {
+    --tw-bg: rgba(255, 255, 255, 0.05);
+    --tw-bg-muted: rgba(255, 255, 255, 0.08);
+    --tw-border: rgba(255, 255, 255, 0.12);
+    --tw-text: #f3f4f6;
+    --tw-text-muted: #9ca3af;
+    --tw-success: #34d399;
+    --tw-destructive: #f87171;
+    --tw-table-head-bg: rgba(31, 41, 55, 0.75);
+    --tw-table-body-bg: rgba(31, 41, 55, 0.5);
+    --tw-table-divide: rgba(255, 255, 255, 0.1);
+    --tw-table-divide-head: rgba(255, 255, 255, 0.15);
+    --tw-table-outline: rgba(255, 255, 255, 0.1);
+    --tw-link: #818cf8;
+    --tw-link-hover: #a5b4fc;
+}
+
+/* Page layout */
+.profile-page.container {
+    width: 100%;
+    min-width: 0;
+    padding: var(--tw-space-10) var(--tw-space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--tw-space-10);
+    box-sizing: border-box;
+}
+
+/* ========== Tailwind-like utility classes (scoped to .profile-page) ========== */
+/* Spacing */
+.profile-page .p-0 {
+    padding: 0 !important;
+}
+.profile-page .p-2 {
+    padding: var(--tw-space-2) !important;
+}
+.profile-page .p-4 {
+    padding: var(--tw-space-4) !important;
+}
+.profile-page .p-6 {
+    padding: var(--tw-space-6) !important;
+}
+.profile-page .m-0 {
+    margin: 0 !important;
+}
+.profile-page .mb-2 {
+    margin-bottom: var(--tw-space-2) !important;
+}
+.profile-page .mb-4 {
+    margin-bottom: var(--tw-space-4) !important;
+}
+.profile-page .mt-2 {
+    margin-top: var(--tw-space-2) !important;
+}
+/* Layout */
+.profile-page .w-full {
+    width: 100% !important;
+}
+.profile-page .min-w-0 {
+    min-width: 0 !important;
+}
+.profile-page .flex {
+    display: flex !important;
+}
+.profile-page .flex-col {
+    flex-direction: column !important;
+}
+.profile-page .gap-5 {
+    gap: var(--tw-space-5) !important;
+}
+.profile-page .gap-10 {
+    gap: var(--tw-space-10) !important;
+}
+/* Border & shadow */
+.profile-page .rounded-lg {
+    border-radius: var(--tw-radius-lg) !important;
+}
+.profile-page .border {
+    border-width: 1px !important;
+    border-style: solid !important;
+}
+.profile-page .border-border {
+    border-color: var(--tw-border) !important;
+}
+.profile-page .shadow-sm {
+    box-shadow: var(--tw-shadow-sm) !important;
+}
+/* Background & text (theme-aware) */
+.profile-page .bg-card {
+    background: var(--tw-bg) !important;
+}
+.profile-page .text {
+    color: var(--tw-text) !important;
+}
+.profile-page .text-muted {
+    color: var(--tw-text-muted) !important;
+}
+.profile-page .text-success {
+    color: var(--tw-success) !important;
+}
+.profile-page .text-error {
+    color: var(--tw-destructive) !important;
+}
+/* Typography */
+.profile-page .text-sm {
+    font-size: var(--tw-font-size-sm) !important;
+}
+.profile-page .text-xl {
+    font-size: var(--tw-font-size-xl) !important;
+}
+.profile-page .font-semibold {
+    font-weight: var(--tw-font-weight-semibold) !important;
+}
+.profile-page .tracking-tight {
+    letter-spacing: -0.025em !important;
+}
+/* Grid (form) */
+.profile-page .grid {
+    display: grid !important;
+    box-sizing: border-box !important;
+}
+.profile-page .grid-cols-1 {
+    grid-template-columns: 1fr !important;
+}
+@media (min-width: 640px) {
+    .profile-page .sm\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+@media (min-width: 1024px) {
+    .profile-page .lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+/* Form fields inside .grid: full width */
+.profile-page .grid .mat-form-field,
+.profile-page .grid .mat-mdc-form-field {
+    width: 100%;
+}
+
+/* Disabled inputs (mobile, email): gray text, cursor */
+.profile-page .grid input.input-field--disabled,
+.profile-page .grid input.input-field.input-field--disabled {
+    color: #9ca3af !important;
+    -webkit-text-fill-color: #9ca3af !important;
+    cursor: not-allowed;
+}
+
+.profile-page.dark-theme .grid input.input-field--disabled,
+.profile-page.dark-theme .grid input.input-field.input-field--disabled {
+    color: #6b7280 !important;
+    -webkit-text-fill-color: #6b7280 !important;
+}
+
+/* Disabled fields: gray labels (Mobile, Email) */
+.profile-page .grid .mat-form-field:has(input.input-field--disabled) mat-label,
+.profile-page .grid .mat-mdc-form-field:has(input.input-field--disabled) mat-label,
+.profile-page .grid .mat-form-field:has(input.input-field--disabled) .mat-form-field-label,
+.profile-page .grid .mat-form-field:has(input.input-field--disabled) .mdc-floating-label,
+.profile-page .grid .mat-mdc-form-field:has(input.input-field--disabled) .mat-mdc-floating-label {
+    color: #9ca3af !important;
+}
+
+.profile-page.dark-theme .grid .mat-form-field:has(input.input-field--disabled) mat-label,
+.profile-page.dark-theme .grid .mat-mdc-form-field:has(input.input-field--disabled) mat-label,
+.profile-page.dark-theme .grid .mat-form-field:has(input.input-field--disabled) .mat-form-field-label,
+.profile-page.dark-theme .grid .mat-form-field:has(input.input-field--disabled) .mdc-floating-label,
+.profile-page.dark-theme .grid .mat-mdc-form-field:has(input.input-field--disabled) .mat-mdc-floating-label {
+    color: #6b7280 !important;
+}
+
+// /* Button: small primary */
+/* Messages: use utilities .mt-2 .text-sm .text-success / .text-error / .text-muted */
+
+/* Table wrap: border (not outline so corners follow radius), rounded-lg, overflow-hidden */
+.profile-page .card .profile-table-wrap {
+    width: 100%;
+    min-width: 0;
+    margin-top: 0;
+    padding-top: 0;
+    border-radius: var(--tw-radius-lg);
+    border: 1px solid var(--tw-table-outline);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.profile-page .card .profile-table-wrap .mat-mdc-table-container,
+.profile-page .card .profile-table-wrap .cdk-table-container {
+    padding-top: 0 !important;
+}
+
+/* Table: full width, table body bg (inside profile card only) */
+.profile-page .card .profile-table.mat-elevation-z8 {
+    width: 100%;
+    min-width: 0;
+    margin-top: 0;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border: none;
+    box-shadow: none !important;
+    background: var(--tw-table-body-bg);
+}
+
+/* Thead: bg, divide under header */
+.profile-page .card .profile-table.mat-elevation-z8 thead tr {
+    background: var(--tw-table-head-bg);
+    border-bottom: 1px solid var(--tw-table-divide-head);
+}
+
+.profile-page .card .profile-table.mat-elevation-z8 th.mat-header-cell {
+    padding: 0.375rem 0.5rem 0.375rem 0.75rem;
+    font-size: 12px;
+    font-weight: var(--tw-font-weight-semibold);
+    color: var(--tw-text);
+    text-align: left;
+    vertical-align: middle;
+    border: none;
+    border-left: none !important;
+}
+
+.profile-page .card .profile-table.mat-elevation-z8 th.mat-header-cell:first-child {
+    width: 80%;
+}
+
+.profile-page .card .profile-table.mat-elevation-z8 th.mat-header-cell:last-child {
+    width: 20%;
+    padding-left: 0.5rem;
+    padding-right: 0.75rem;
+    text-align: center;
+    border-right: none !important;
+}
+
+@media (min-width: 640px) {
+    .profile-page .card .profile-table.mat-elevation-z8 th.mat-header-cell:first-child {
+        padding-left: 1rem;
+    }
+    .profile-page .card .profile-table.mat-elevation-z8 th.mat-header-cell:last-child {
+        padding-right: 1rem;
+    }
+}
+
+/* Tbody: bg, divide-y */
+.profile-page .card .profile-table.mat-elevation-z8 tbody {
+    background: var(--tw-table-body-bg);
+}
+
+.profile-page .card .profile-table.mat-elevation-z8 tbody tr.mat-row {
+    transition: background-color 0.12s ease;
+}
+
+.profile-page .card .profile-table.mat-elevation-z8 tbody tr.mat-row:hover {
+    background: var(--tw-bg-muted);
+}
+
+.profile-page .card .profile-table.mat-elevation-z8 td.mat-cell {
+    font-size: 12px;
+    border-bottom: 1px solid var(--tw-table-divide);
+    border-left: none !important;
+}
+
+.profile-page .card .profile-table.mat-elevation-z8 td.mat-cell:first-child {
+    width: 80%;
+    padding: 0.375rem 0.5rem 0.375rem 0.75rem;
+    font-weight: var(--tw-font-weight-medium);
+    color: var(--tw-text-muted);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 0;
+    border-right: 1px solid var(--tw-table-divide) !important;
+}
+
+.profile-page .card .profile-table.mat-elevation-z8 td.mat-cell:last-child {
+    width: 20%;
+    padding: 0.375rem 0.75rem 0.375rem 0.5rem;
+    text-align: center;
+    vertical-align: middle;
+    border-right: none !important;
+}
+
+@media (min-width: 640px) {
+    .profile-page .card .profile-table.mat-elevation-z8 td.mat-cell:first-child {
+        padding-left: 1rem;
+    }
+    .profile-page .card .profile-table.mat-elevation-z8 td.mat-cell:last-child {
+        padding-right: 1rem;
+    }
+}
+
+.profile-page .card .profile-table.mat-elevation-z8 tbody tr.mat-row:last-child td.mat-cell {
+    border-bottom: none;
+}
+
+/* Current Company: text-success italic font-medium (inside profile table only) */
+.profile-page .card .profile-table .profile-table__current {
+    font-style: italic;
+    font-weight: var(--tw-font-weight-medium);
+    color: var(--tw-success);
+    cursor: default;
+}
+
+.profile-page .card .profile-table .profile-table__current:hover {
+    text-decoration: underline;
+}
+
+/* Leave: red/destructive link (inside profile table only) */
+.profile-page .card .profile-table .profile-table__leave {
+    font-weight: var(--tw-font-weight-medium);
+    color: var(--tw-destructive);
+    cursor: pointer;
+}
+
+.profile-page .card .profile-table .profile-table__leave:hover {
+    text-decoration: underline;
+}

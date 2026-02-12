@@ -71,7 +71,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         email: new FormControl({ value: '', disabled: true }),
     });
 
-    displayedColumns: string[] = ['sno', 'companyName', 'action'];
+    displayedColumns: string[] = ['companyName', 'action'];
     constructor(private store: Store<IAppState>, public dialog: MatDialog) {
         super();
         this.userDetails$ = this.store.pipe(
@@ -101,6 +101,8 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
                 this.clientForm.get('name').setValue(res?.name);
                 this.clientForm.get('email').setValue(res?.email);
                 this.clientForm.get('mobile').setValue(res?.mobile ? res.mobile : '--Not Provided--');
+                this.clientForm.get('email')?.disable();
+                this.clientForm.get('mobile')?.disable();
             }
         });
 
