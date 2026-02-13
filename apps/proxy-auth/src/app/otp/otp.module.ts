@@ -40,6 +40,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SubscriptionCenterComponent } from './component/subscription-center/subscription-center.component';
 import { MatDividerModule } from '@angular/material/divider';
@@ -79,6 +80,7 @@ export const CHAT_COMPONENTS: any[] = [
         MatSelectModule,
         MatTooltipModule,
         MatTabsModule,
+        MatSnackBarModule,
         NgHcaptchaModule.forRoot({
             siteKey: environment.hCaptchaSiteKey,
         }),
