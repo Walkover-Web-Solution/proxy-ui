@@ -1,72 +1,95 @@
 <div class="container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
-    <h2>Client Details</h2>
-    <form [formGroup]="clientForm" class="form">
-        <mat-form-field appearance="outline" class="full-width w-100">
-            <mat-label>Name</mat-label>
-            <input matInput formControlName="name" placeholder="Enter your name" disabled class="input-field" />
-            <mat-error *ngIf="clientForm.get('name')?.hasError('required')"> Name is required. </mat-error>
-            <mat-error *ngIf="clientForm.get('name')?.hasError('pattern')"> Invalid name format. </mat-error>
-        </mat-form-field>
+    <mat-card class="mb-3">
+        <mat-card-content>
+            <h2>User Details</h2>
+            <form [formGroup]="clientForm" class="form flex-wrap">
+                <mat-form-field appearance="outline" class="full-width w-100">
+                    <mat-label>Name</mat-label>
+                    <input matInput formControlName="name" placeholder="Enter your name" disabled class="input-field" />
+                    <mat-error *ngIf="clientForm.get('name')?.hasError('required')"> Name is required. </mat-error>
+                    <mat-error *ngIf="clientForm.get('name')?.hasError('pattern')"> Invalid name format. </mat-error>
+                </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width w-100">
-            <mat-label>Mobile</mat-label>
-            <input
-                matInput
-                formControlName="mobile"
-                placeholder="Enter your mobile number"
-                disabled
-                class="input-field"
-            />
-        </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width w-100">
+                    <mat-label>Mobile</mat-label>
+                    <input
+                        matInput
+                        formControlName="mobile"
+                        placeholder="Enter your mobile number"
+                        disabled
+                        class="input-field"
+                    />
+                </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width w-100">
-            <mat-label>Email</mat-label>
-            <input matInput formControlName="email" placeholder="Enter your email" disabled class="input-field" />
-        </mat-form-field>
-    </form>
+                <mat-form-field appearance="outline" class="full-width w-100">
+                    <mat-label>Email</mat-label>
+                    <input
+                        matInput
+                        formControlName="email"
+                        placeholder="Enter your email"
+                        disabled
+                        class="input-field"
+                    />
+                </mat-form-field>
+                <div>
+                    <button type="button" mat-flat-button (click)="updateUser()" color="primary">Update</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
 
-    <ng-container>
-        <button type="button" mat-flat-button (click)="updateUser()" color="primary">Update</button>
-    </ng-container>
-    <p *ngIf="update$ | async" class="success-message">Information successfully updated</p>
-    <p *ngIf="(error$ | async) || errorMessage" class="error-message">Something went wrong</p>
+    <mat-card>
+        <mat-card-content>
+            <h3>Organization Details</h3>
+            <table mat-table [dataSource]="(userDetails$ | async)?.c_companies" class="default-table">
+                <ng-container matColumnDef="companyName">
+                    <th mat-header-cell *matHeaderCellDef>Organization Name</th>
+                    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+                </ng-container>
+                <h3>Organization Details</h3>
 
-    <h3>Company Details</h3>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef class="action-column text-center">Action</th>
+                    <td mat-cell *matCellDef="let element" class="text-center">
+                        <span
+                            *ngIf="this.companyDetails?.currentCompany?.company_uname === element.company_uname"
+                            class="status-active"
+                        >
+                            Current Company
+                        </span>
+                        <button
+                            *ngIf="this.companyDetails?.currentCompany?.company_uname !== element.company_uname"
+                            mat-icon-button
+                            color="warn"
+                            (click)="openModal(element?.id)"
+                        >
+                            <span
+                                class="cursor-pointer d-flex align-items-center justify-content-center"
+                                matTooltip="Leave Company"
+                                matTooltipPosition="above"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    height="22px"
+                                    viewBox="0 -960 960 960"
+                                    width="22px"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
+                                    />
+                                </svg>
+                            </span>
+                        </button>
+                    </td>
+                </ng-container>
 
-    <table mat-table [dataSource]="(userDetails$ | async)?.c_companies" class="mat-elevation-z8">
-        <ng-container matColumnDef="sno">
-            <th mat-header-cell *matHeaderCellDef>SNo.</th>
-            <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="companyName">
-            <th mat-header-cell *matHeaderCellDef>Company Name</th>
-            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef>Action</th>
-            <td mat-cell *matCellDef="let element">
-                <span
-                    *ngIf="this.companyDetails?.currentCompany?.company_uname === element.company_uname"
-                    class="status-active"
-                >
-                    Current Company
-                </span>
-                <button
-                    *ngIf="this.companyDetails?.currentCompany?.company_uname !== element.company_uname"
-                    mat-button
-                    color="warn"
-                    (click)="openModal(element?.id)"
-                >
-                    Leave
-                </button>
-            </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-
-    <p class="no-data" *ngIf="!(userDetails$ | async)?.c_companies">Nothing Here, There are no companies to show</p>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <p class="no-data" *ngIf="!(userDetails$ | async)?.c_companies">
+                Nothing Here, There are no companies to show
+            </p>
+        </mat-card-content>
+    </mat-card>
 </div>
