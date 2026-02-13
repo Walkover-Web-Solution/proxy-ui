@@ -1480,3 +1480,12 @@ td {
 .hidden {
     display: none !important;
 }
+
+.mobile-number-field {
+    @media (max-width: 600px) {
+        margin-bottom: 16px;
+    }
+    @media (max-width: 380px) {
+        margin-bottom: 30px;
+    }
+}
