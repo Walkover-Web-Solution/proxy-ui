@@ -1,7 +1,7 @@
 import { NgStyle } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, of, takeUntil } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map, Observable, of, takeUntil, take } from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { getUserDetails, leaveCompany } from '../store/actions/otp.action';
@@ -18,7 +18,9 @@ import {
 } from '../store/selectors';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash';
+import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component';
 import { updateUser } from '../store/actions/otp.action';
 import { UPDATE_REGEX } from '@proxy/regex';
@@ -71,8 +73,13 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         email: new FormControl({ value: '', disabled: true }),
     });
 
-    displayedColumns: string[] = ['sno', 'companyName', 'action'];
-    constructor(private store: Store<IAppState>, public dialog: MatDialog) {
+    displayedColumns: string[] = ['companyName', 'action'];
+    constructor(
+        private store: Store<IAppState>,
+        public dialog: MatDialog,
+        private snackBar: MatSnackBar,
+        private overlay: Overlay
+    ) {
         super();
         this.userDetails$ = this.store.pipe(
             select(getUserProfileData),
@@ -121,6 +128,8 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '400px',
             data: { companyId: companyId, authToken: this.authToken },
+            // Prevent CDK BlockScrollStrategy from applying left/top on <html> when dialog opens
+            scrollStrategy: this.overlay.scrollStrategies.noop(),
         });
 
         dialogRef.afterClosed().subscribe((result) => {
@@ -152,17 +161,23 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
 
         this.update$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
-                setTimeout(() => {
-                    this.update$ = of(false);
-                }, 3000);
+                this.snackBar.open('Information successfully updated', '✕', {
+                    duration: 10000,
+                    horizontalPosition: 'center',
+                    verticalPosition: 'top',
+                    panelClass: ['success-snackbar'],
+                });
             }
         });
 
-        this.error$.pipe(takeUntil(this.destroy$)).subscribe((err) => {
+        this.error$.pipe(take(1)).subscribe((err) => {
             if (err) {
-                setTimeout(() => {
-                    this.error$ = of(false);
-                }, 3000);
+                this.snackBar.open('Something went wrong', '✕', {
+                    duration: 10000,
+                    horizontalPosition: 'center',
+                    verticalPosition: 'top',
+                    panelClass: ['error-snackbar'],
+                });
             }
         });
 
@@ -171,6 +186,12 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     }
 
     public clear() {
+        this.snackBar.open('Something went wrong', '✕', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar'],
+        });
         setTimeout(() => {
             this.errorMessage = '';
         }, 3000);

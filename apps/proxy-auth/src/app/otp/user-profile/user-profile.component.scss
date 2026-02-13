@@ -6,7 +6,7 @@ body {
     padding: 20px;
 }
 .container {
-    background: #ffffff;
+    background: #fafafa;
     padding: 15px 60px;
     text-align: left;
     position: relative;
@@ -79,8 +79,15 @@ body {
             border-color: #ffffff !important;
         }
 
-        ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
-            color: #ffffff !important;
+        ::ng-deep .mat-form-field-appearance-outline {
+            .mat-form-field-outline {
+                color: #ffffff !important;
+            }
+            &.mat-form-field-disabled {
+                .mat-form-field-outline {
+                    background-color: #fafafa26 !important;
+                }
+            }
         }
 
         ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-thick {
@@ -144,6 +151,10 @@ body {
                 border: 1px solid #ffffff;
             }
         }
+
+        .mat-card {
+            background-color: transparent !important;
+        }
     }
 
     // Light theme (default)
@@ -184,8 +195,15 @@ body {
             border-color: #cccccc !important;
         }
 
-        ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
-            color: #cccccc !important;
+        ::ng-deep .mat-form-field-appearance-outline {
+            .mat-form-field-outline {
+                color: #cccccc !important;
+            }
+            &.mat-form-field-disabled {
+                .mat-form-field-outline {
+                    background-color: #fafafa !important;
+                }
+            }
         }
 
         ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-thick {
@@ -194,28 +212,6 @@ body {
 
         .input-field {
             color: #333333 !important;
-        }
-
-        table {
-            background-color: #ffffff;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e0e0e0;
-
-            th {
-                background-color: #f5f5f5;
-                color: #333333;
-                border-color: #e0e0e0;
-                font-weight: bold;
-            }
-
-            td {
-                color: #434242;
-                border-color: #e0e0e0;
-            }
-
-            tr:hover {
-                background-color: rgba(0, 0, 0, 0.04);
-            }
         }
 
         .status-active {
@@ -273,11 +269,17 @@ body {
     }
 }
 .full-width {
-    max-width: 300px;
+    max-width: 330px;
 }
 .form {
-    display: flex;
-    flex-direction: column;
+    align-items: baseline;
+    display: grid;
+    grid-gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+
+    @media screen and (max-width: 991px) {
+        grid-gap: 4px;
+    }
 }
 
 .dropdown-btn {
@@ -319,33 +321,8 @@ body {
     margin-top: 20px;
     display: none;
 }
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-th,
-td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-    padding: 14px;
-}
 td.mat-cell {
     padding: 10px;
-}
-th {
-    background-color: #f4f4f4;
-    font-size: small;
-    font-weight: bold;
-    height: 22px;
-    padding-left: 24px !important;
-}
-td {
-    font-size: small;
-    height: 22px;
-    color: #434242;
 }
 .toggle-btn {
     display: block;
@@ -367,8 +344,6 @@ td {
     text-align: center;
     padding: 5px 10px;
     border-radius: 5px;
-    text-decoration: underline;
-    font-style: italic;
 }
 .status-rejected {
     text-decoration: underline;
@@ -558,5 +533,37 @@ td {
     .modal-buttons button {
         font-size: 12px;
         padding: 6px;
+    }
+}
+
+::ng-deep .success-snackbar {
+    background-color: #59a75c !important;
+    color: #ffffff !important;
+
+    .mat-mdc-snack-bar-label {
+        color: #ffffff !important;
+    }
+
+    .mat-button {
+        color: #ffffff !important;
+    }
+}
+
+::ng-deep .error-snackbar {
+    background-color: #ffffff !important;
+    color: #ffffff !important;
+
+    .mat-snack-bar-label {
+        color: #ffffff !important;
+    }
+
+    .mat-button {
+        color: #ffffff !important;
+    }
+}
+
+.mat-form-field-disabled {
+    .mat-form-field-disabled {
+        background-color: #fafafa !important;
     }
 }
