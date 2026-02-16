@@ -41,29 +41,38 @@
     <mat-card>
         <mat-card-content>
             <h3>Organization Details</h3>
-            <table mat-table [dataSource]="(userDetails$ | async)?.c_companies" class="default-table">
+            <table mat-table [dataSource]="(userDetails$ | async)?.c_companies" class="w-100">
                 <ng-container matColumnDef="companyName">
                     <th mat-header-cell *matHeaderCellDef>Organization Name</th>
-                    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+                    <td
+                        mat-cell
+                        *matCellDef="let element"
+                        [ngClass]="
+                            companyDetails?.currentCompany?.company_uname === element.company_uname ? 'fw-bold' : ''
+                        "
+                    >
+                        {{ element.name }}
+                    </td>
                 </ng-container>
                 <h3>Organization Details</h3>
 
                 <ng-container matColumnDef="action">
                     <th mat-header-cell *matHeaderCellDef class="action-column text-center">Action</th>
-                    <td mat-cell *matCellDef="let element" class="text-center">
-                        <span
+                    <td mat-cell *matCellDef="let element" class="text-center action-cell">
+                        <!-- <span
                             *ngIf="this.companyDetails?.currentCompany?.company_uname === element.company_uname"
                             class="status-active"
                         >
-                            Current Company
-                        </span>
+                            
+                        </span> -->
                         <button
                             *ngIf="this.companyDetails?.currentCompany?.company_uname !== element.company_uname"
-                            mat-icon-button
+                            mat-flat-button
                             color="warn"
                             (click)="openModal(element?.id)"
+                            class="actions"
                         >
-                            <span
+                            <!-- <span
                                 class="cursor-pointer d-flex align-items-center justify-content-center"
                                 matTooltip="Leave Company"
                                 matTooltipPosition="above"
@@ -79,12 +88,13 @@
                                         d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
                                     />
                                 </svg>
-                            </span>
+                            </span> -->
+                            Leave
                         </button>
                     </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr> -->
                 <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
             </table>
             <p class="no-data" *ngIf="!(userDetails$ | async)?.c_companies">

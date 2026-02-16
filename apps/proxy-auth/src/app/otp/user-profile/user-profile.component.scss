@@ -338,6 +338,19 @@ td.mat-cell {
     background-color: #0056b3;
 }
 
+// Action cell: show Leave button only on row hover
+.action-cell {
+    .actions {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+}
+
+::ng-deep tr.mat-mdc-row:hover .action-cell .actions,
+::ng-deep tr.mat-row:hover .action-cell .actions {
+    opacity: 1;
+}
+
 .status-active {
     color: #008000;
     font-weight: bold;
