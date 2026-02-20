@@ -144,49 +144,6 @@
 
         <mat-step
             *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
-            [completed]="isConfigureMethodValid"
-            [editable]="!(createUpdateObject$ | async)"
-        >
-            <ng-template matStepLabel>Configure Method</ng-template>
-            <div class="d-flex flex-column h-100">
-                <ng-container *ngTemplateOutlet="createBlockConfigureMethodTemplate"></ng-container>
-                <div class="d-flex align-items-center justify-content-between">
-                    <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
-                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
-                        >Back
-                    </button>
-                    <button type="button" mat-flat-button color="primary" matStepperNext>
-                        Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
-                            >navigate_next</mat-icon
-                        >
-                    </button>
-                </div>
-            </div>
-        </mat-step>
-
-        <mat-step
-            *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
-            [editable]="!(createUpdateObject$ | async)"
-        >
-            <ng-template matStepLabel>Branding</ng-template>
-            <div class="d-flex flex-column h-100">
-                <ng-container *ngTemplateOutlet="brandingStepContent"></ng-container>
-                <div class="d-flex align-items-center justify-content-between">
-                    <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
-                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
-                        >Back
-                    </button>
-                    <button type="button" mat-flat-button color="primary" matStepperNext>
-                        Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
-                            >navigate_next</mat-icon
-                        >
-                    </button>
-                </div>
-            </div>
-        </mat-step>
-
-        <mat-step
-            *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
             [completed]="featureForm.get('authorizationDetails')?.valid"
             [editable]="!(createUpdateObject$ | async)"
         >
