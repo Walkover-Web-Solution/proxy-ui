@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { UiLoaderModule } from '@proxy/ui/loader';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,6 +26,7 @@ import { CreatePlanDialogComponent } from './create-plan-dialog/create-plan-dial
 import { CreateTaxDialogComponent } from './create-tax-dialog/create-tax-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatRadioModule } from '@angular/material/radio';
 
 const routes: Routes = [
     {
@@ -41,6 +42,7 @@ const routes: Routes = [
         CommonModule,
         RouterModule.forChild(routes),
         ReactiveFormsModule,
+        FormsModule,
         MatInputModule,
         MatFormFieldModule,
         MatIconModule,
@@ -61,6 +63,7 @@ const routes: Routes = [
         HttpClientModule,
         MatTooltipModule,
         MatExpansionModule,
+        MatRadioModule,
     ],
     exports: [RouterModule],
 })
