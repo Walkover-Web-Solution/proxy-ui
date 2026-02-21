@@ -18,6 +18,7 @@ import { BehaviorSubject, Observable, distinctUntilChanged, filter, of, take, ta
 import { CreateFeatureComponentStore } from './create-feature.store';
 import {
     FeatureFieldType,
+    FeatureServiceIds,
     IFeature,
     IFeatureDetails,
     IFeatureType,
@@ -208,13 +209,13 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             planSelected: new FormControl<string>(null, [Validators.required]),
         }),
         authorizationDetails: new FormGroup({
-            session_time: new FormControl<number>(null, [
+            session_time: new FormControl<number>(86400, [
                 Validators.required,
                 Validators.pattern(ONLY_INTEGER_REGEX),
                 Validators.min(60),
                 Validators.max(999999999),
             ]),
-            authorizationKey: new FormControl<string>(null, [
+            authorizationKey: new FormControl<string>('Authorization', [
                 Validators.required,
                 CustomValidators.minLengthThreeWithoutSpace,
             ]),
@@ -375,7 +376,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     configurations: new FormGroup({}),
                     createPlanForm: new FormGroup({}),
                     chargesForm: new FormGroup({}),
-                    is_enable: new FormControl<boolean>(this.isEditMode ? serviceValues?.is_enable : true),
+                    is_enable: new FormControl<boolean>(
+                        this.isEditMode
+                            ? serviceValues?.is_enable
+                            : FeatureServiceIds.GoogleAuthentication === service.service_id ||
+                              FeatureServiceIds.Msg91OtpService === service.service_id
+                    ),
                 });
                 if (service.requirements) {
                     Object.entries(service.requirements).forEach(([key, config]) => {

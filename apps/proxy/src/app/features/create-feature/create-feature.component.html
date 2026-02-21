@@ -734,7 +734,7 @@
             class="default-table responsive-table w-100 configure-methods-table"
         >
             <ng-container matColumnDef="method">
-                <th mat-header-cell *matHeaderCellDef>Method</th>
+                <th mat-header-cell *matHeaderCellDef class="w-75">Method</th>
                 <td mat-cell *matCellDef="let row">{{ row.name }}</td>
             </ng-container>
             <ng-container matColumnDef="toggle">
@@ -766,6 +766,11 @@
                 </td>
             </tr>
         </table>
+        <p class="mat-body-2 text-secondary my-2">
+            <strong>Note:</strong> By default, 36Blocks credentials will be used, and the consent screen or Sender ID
+            will display the 36Blocks name. You can update these with your own credentials and branding anytime after
+            the block is created.
+        </p>
     </div>
 </ng-template>
 
@@ -1043,7 +1048,7 @@
                             fieldConfig: {
                                 label: 'Session Time',
                                 is_required: true,
-                                hint: 'Enter session time in seconds',
+                                hint: 'Enter session time in seconds. 24 Hours = 86400 Seconds',
                                 patternErrorText: 'Only integer value allowed',
                                 info: 'Defines how long the user session remains active after login.'
                             }
@@ -1072,7 +1077,8 @@
                             fieldControl: featureForm.get('authorizationDetails.encryptionKey'),
                             fieldConfig: {
                                 label: 'Encryption Key',
-                                hint: 'Enter the JWT secret key used for token generation and validation. Make sure it is correct and kept confidential.'
+                                hint: 'Enter the JWT secret key used for token generation and validation. Make sure it is correct and kept confidential.',
+                                type: featureFieldType.Password
                             }
                         }
                     "
@@ -1282,6 +1288,24 @@
                 [formControl]="fieldControl"
                 readonly
             />
+        </ng-container>
+        <ng-container *ngSwitchCase="featureFieldType.Password">
+            <input
+                matInput
+                type="password"
+                placeholder="{{ fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label }}"
+                autocomplete="off"
+                [formControl]="fieldControl"
+            />
+            <mat-icon
+                *ngIf="fieldConfig?.info"
+                matSuffix
+                [matTooltip]="fieldConfig.info"
+                matTooltipPosition="above"
+                class="info-icon"
+            >
+                info
+            </mat-icon>
         </ng-container>
         <ng-container *ngSwitchDefault>
             <input
@@ -1969,11 +1993,11 @@
 <ng-template #brandingStepContent>
     <div class="d-flex gap-4 flex-grow-1 branding-step-content">
         <!-- Left: Branding form -->
-        <div class="d-flex flex-column gap-1 branding-form w-50">
-            <p class="mat-body-2 text-secondary fw-bold mb-0">Customize your login UI</p>
+        <div class="d-flex flex-column branding-form w-50">
+            <p class="mat-body-2 text-secondary fw-bold mb-20 mt-0">Customize your login UI</p>
             <!-- Logo: choose URL or file upload, then show relevant input -->
-            <div class="d-flex align-items-center gap-3 mb-2 flex-wrap">
-                <span class="mat-body-2 text-secondary fw-bold mb-0">Logo</span>
+            <div class="d-flex align-items-center gap-3 font-12 mb-20 flex-wrap">
+                <!-- <span class="mat-body-2 text-secondary fw-bold mb-0">Logo</span> -->
                 <mat-radio-group
                     [(ngModel)]="logoInputMode"
                     [ngModelOptions]="{ standalone: true }"
@@ -1993,7 +2017,7 @@
                     [formControl]="featureForm.get('brandingDetails.logo_url')"
                 />
             </mat-form-field>
-            <div *ngIf="logoInputMode === 'file'" class="d-flex align-items-center gap-2">
+            <div *ngIf="logoInputMode === 'file'" class="d-flex align-items-center gap-2 mb-20">
                 <input
                     #logoFileInput
                     type="file"
@@ -2028,8 +2052,7 @@
                     context: {
                         fieldControl: featureForm.get('brandingDetails.sign_up_button_text'),
                         fieldConfig: {
-                            label: 'Sign up button text',
-                            hint: 'Text shown on the sign up / create account button'
+                            label: 'Sign up button text'
                         }
                     }
                 "
@@ -2082,101 +2105,107 @@
                 ></ng-container>
             </ng-container>
             <!-- Show social login as icon (auth feature only) -->
-            <div
-                *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
-                class="d-flex align-items-center gap-2 mb-2"
-            >
-                <span class="mat-body-2 mb-0">Show the social login as a icon: </span>
-                <mat-slide-toggle [formControl]="featureForm.get('brandingDetails.icons')" color="primary">
-                </mat-slide-toggle>
-            </div>
-            <!-- Show Create Account For New User (edit mode only, auth feature only) -->
-            <div
-                *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1"
-                class="d-flex align-items-center gap-2 mb-2"
-            >
-                <span class="mat-body-2 mb-0">Show Create Account For New User: </span>
-                <mat-slide-toggle
-                    [formControl]="featureForm.get('brandingDetails.create_account_link')"
-                    color="primary"
+            <div class="d-flex flex-column gap-2 mb-2">
+                <div
+                    *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
+                    class="d-flex align-items-center gap-2 mb-2"
                 >
-                </mat-slide-toggle>
-            </div>
-            <!-- Primary color -->
-            <div class="d-flex align-items-center gap-2">
-                <label class="mat-body-2 mb-0" style="min-width: 120px">Primary color</label>
-                <input
-                    type="color"
-                    [value]="featureForm.get('brandingDetails.primary_color')?.value || getDefaultPrimaryColor()"
-                    (input)="featureForm.get('brandingDetails.primary_color')?.setValue($any($event.target).value)"
-                    style="
-                        width: 30px;
-                        height: 30px;
-                        cursor: pointer;
-                        border: 1px solid var(--color-common-border);
-                        border-radius: 4px;
-                    "
-                />
-                <span class="mat-body-2 text-secondary">{{
-                    featureForm.get('brandingDetails.primary_color')?.value || getDefaultPrimaryColor()
-                }}</span>
-            </div>
-            <!-- Button color -->
-            <div class="d-flex align-items-center gap-2">
-                <label class="mat-body-2 mb-0" style="min-width: 120px">Button color</label>
-                <input
-                    type="color"
-                    [value]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
-                    (input)="featureForm.get('brandingDetails.button_color')?.setValue($any($event.target).value)"
-                    style="
-                        width: 30px;
-                        height: 30px;
-                        cursor: pointer;
-                        border: 1px solid var(--color-common-border);
-                        border-radius: 4px;
-                    "
-                />
-                <span class="mat-body-2 text-secondary">{{
-                    featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'
-                }}</span>
-            </div>
-            <!-- Button hover color -->
-            <div class="d-flex align-items-center gap-2">
-                <label class="mat-body-2 mb-0" style="min-width: 120px">Button hover color</label>
-                <input
-                    type="color"
-                    [value]="featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'"
-                    (input)="featureForm.get('brandingDetails.button_hover_color')?.setValue($any($event.target).value)"
-                    style="
-                        width: 30px;
-                        height: 30px;
-                        cursor: pointer;
-                        border: 1px solid var(--color-common-border);
-                        border-radius: 4px;
-                    "
-                />
-                <span class="mat-body-2 text-secondary">{{
-                    featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'
-                }}</span>
-            </div>
-            <!-- Button text color -->
-            <div class="d-flex align-items-center gap-2">
-                <label class="mat-body-2 mb-0" style="min-width: 120px">Button text color</label>
-                <input
-                    type="color"
-                    [value]="featureForm.get('brandingDetails.button_text_color')?.value || '#000000'"
-                    (input)="featureForm.get('brandingDetails.button_text_color')?.setValue($any($event.target).value)"
-                    style="
-                        width: 30px;
-                        height: 30px;
-                        cursor: pointer;
-                        border: 1px solid var(--color-common-border);
-                        border-radius: 4px;
-                    "
-                />
-                <span class="mat-body-2 text-secondary">{{
-                    featureForm.get('brandingDetails.button_text_color')?.value || '#000000'
-                }}</span>
+                    <span class="mat-body-2 mb-0">Show the social login as a icon: </span>
+                    <mat-slide-toggle [formControl]="featureForm.get('brandingDetails.icons')" color="primary">
+                    </mat-slide-toggle>
+                </div>
+                <!-- Show Create Account For New User (edit mode only, auth feature only) -->
+                <div
+                    *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1"
+                    class="d-flex align-items-center gap-2 mb-2"
+                >
+                    <span class="mat-body-2 mb-0">Show Create Account For New User: </span>
+                    <mat-slide-toggle
+                        [formControl]="featureForm.get('brandingDetails.create_account_link')"
+                        color="primary"
+                    >
+                    </mat-slide-toggle>
+                </div>
+                <!-- Primary color -->
+                <div class="d-flex align-items-center gap-2">
+                    <label class="mat-body-2 mb-0" style="min-width: 120px">Primary color</label>
+                    <input
+                        type="color"
+                        [value]="featureForm.get('brandingDetails.primary_color')?.value || getDefaultPrimaryColor()"
+                        (input)="featureForm.get('brandingDetails.primary_color')?.setValue($any($event.target).value)"
+                        style="
+                            width: 30px;
+                            height: 30px;
+                            cursor: pointer;
+                            border: 1px solid var(--color-common-border);
+                            border-radius: 4px;
+                        "
+                    />
+                    <span class="mat-body-2 text-secondary">{{
+                        featureForm.get('brandingDetails.primary_color')?.value || getDefaultPrimaryColor()
+                    }}</span>
+                </div>
+                <!-- Button color -->
+                <div class="d-flex align-items-center gap-2">
+                    <label class="mat-body-2 mb-0" style="min-width: 120px">Button color</label>
+                    <input
+                        type="color"
+                        [value]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
+                        (input)="featureForm.get('brandingDetails.button_color')?.setValue($any($event.target).value)"
+                        style="
+                            width: 30px;
+                            height: 30px;
+                            cursor: pointer;
+                            border: 1px solid var(--color-common-border);
+                            border-radius: 4px;
+                        "
+                    />
+                    <span class="mat-body-2 text-secondary">{{
+                        featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'
+                    }}</span>
+                </div>
+                <!-- Button hover color -->
+                <div class="d-flex align-items-center gap-2">
+                    <label class="mat-body-2 mb-0" style="min-width: 120px">Button hover color</label>
+                    <input
+                        type="color"
+                        [value]="featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'"
+                        (input)="
+                            featureForm.get('brandingDetails.button_hover_color')?.setValue($any($event.target).value)
+                        "
+                        style="
+                            width: 30px;
+                            height: 30px;
+                            cursor: pointer;
+                            border: 1px solid var(--color-common-border);
+                            border-radius: 4px;
+                        "
+                    />
+                    <span class="mat-body-2 text-secondary">{{
+                        featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'
+                    }}</span>
+                </div>
+                <!-- Button text color -->
+                <div class="d-flex align-items-center gap-2">
+                    <label class="mat-body-2 mb-0" style="min-width: 120px">Button text color</label>
+                    <input
+                        type="color"
+                        [value]="featureForm.get('brandingDetails.button_text_color')?.value || '#000000'"
+                        (input)="
+                            featureForm.get('brandingDetails.button_text_color')?.setValue($any($event.target).value)
+                        "
+                        style="
+                            width: 30px;
+                            height: 30px;
+                            cursor: pointer;
+                            border: 1px solid var(--color-common-border);
+                            border-radius: 4px;
+                        "
+                    />
+                    <span class="mat-body-2 text-secondary">{{
+                        featureForm.get('brandingDetails.button_text_color')?.value || '#000000'
+                    }}</span>
+                </div>
             </div>
         </div>
         <!-- Right: Preview (always show version 2 layout for branding) -->
