@@ -38,6 +38,9 @@
             opacity: 1;
         }
     }
+    th {
+        font-size: var(--font-size-common-14) !important;
+    }
 }
 
 // Fix table borders
