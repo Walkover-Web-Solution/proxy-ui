@@ -228,31 +228,6 @@
         background: #1976d2;
         color: #ffffff;
     }
-
-    // Disabled mat-form-field (e.g. Timezone when not editing)
-    // .mat-form-field-disabled.timezone-field,
-    // .mat-form-field .mdc-text-field--disabled {
-    //     opacity: 0.7;
-
-    //     .mat-select-value,
-    //     .mat-select-value-text,
-    //     .mat-input-element,
-    //     mat-label,
-    //     .mat-form-field-label {
-    //         color: rgba(0, 0, 0, 0.38) !important;
-    //     }
-    //     .mat-select-arrow,
-    //     .mat-select-arrow svg {
-    //         color: rgba(0, 0, 0, 0.38) !important;
-    //         fill: rgba(0, 0, 0, 0.38) !important;
-    //     }
-    //     .mdc-notched-outline__leading,
-    //     .mdc-notched-outline__notch,
-    //     .mdc-notched-outline__trailing,
-    //     .mat-form-field-outline {
-    //         border-color: rgba(0, 0, 0, 0.12) !important;
-    //     }
-    // }
 }
 
 // ── Dark theme ────────────────────────────────────────────────────────
@@ -382,31 +357,6 @@
     .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
         border-color: rgba(255, 255, 255, 0.3) !important;
     }
-
-    // Disabled mat-form-field (e.g. Timezone when not editing)
-    // .mat-form-field-disabled.timezone-field,
-    // .mat-form-field .mdc-text-field--disabled {
-    //     opacity: 0.7;
-
-    //     .mat-select-value,
-    //     .mat-select-value-text,
-    //     .mat-select-value-text span,
-    //     .mat-input-element,
-    //     mat-label,
-    //     .mat-form-field-label {
-    //         color: rgba(255, 255, 255, 0.38) !important;
-    //     }
-    //     .mat-select-arrow,
-    //     .mat-select-arrow svg {
-    //         color: rgba(255, 255, 255, 0.38) !important;
-    //         fill: rgba(255, 255, 255, 0.38) !important;
-    //     }
-    //     .mdc-notched-outline__leading,
-    //     .mdc-notched-outline__notch,
-    //     .mdc-notched-outline__trailing {
-    //         border-color: rgba(255, 255, 255, 0.12) !important;
-    //     }
-    // }
 }
 
 // ── Snackbars ─────────────────────────────────────────────────────────
