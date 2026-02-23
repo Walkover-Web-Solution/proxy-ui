@@ -50,6 +50,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     }
 
     ngOnInit(): void {
+        this.organizationForm.get('timeZoneName')?.disable();
         if (this.authToken) {
             this.otpService
                 .getOrganizationDetails(this.authToken)
@@ -134,7 +135,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
             return;
         }
 
-        const organizationDetails = this.organizationForm.value;
+        const organizationDetails = this.organizationForm.getRawValue();
         const current = {
             companyName: organizationDetails.companyName ?? '',
             email: organizationDetails.email ?? '',
@@ -173,21 +174,21 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
                 next: (res) => {
                     this.initialFormValue = { ...current };
                     this.isEditing = false; // ← close edit mode on success
-                    this.snackBar.open(res?.data?.message ?? 'Information successfully updated', '✕', {
-                        duration: 3000,
-                        horizontalPosition: 'center',
-                        verticalPosition: 'top',
-                        panelClass: ['success-snackbar'],
-                    });
+                    // this.snackBar.open(res?.data?.message ?? 'Information successfully updated', '✕', {
+                    //     duration: 3000,
+                    //     horizontalPosition: 'center',
+                    //     verticalPosition: 'top',
+                    //     panelClass: ['success-snackbar'],
+                    // });
                 },
                 error: () => {
                     // Stay in edit mode so user can retry
-                    this.snackBar.open('Something went wrong', '✕', {
-                        duration: 3000,
-                        horizontalPosition: 'center',
-                        verticalPosition: 'top',
-                        panelClass: ['error-snackbar'],
-                    });
+                    // this.snackBar.open('Something went wrong', '✕', {
+                    //     duration: 3000,
+                    //     horizontalPosition: 'center',
+                    //     verticalPosition: 'top',
+                    //     panelClass: ['error-snackbar'],
+                    // });
                 },
             });
     }
