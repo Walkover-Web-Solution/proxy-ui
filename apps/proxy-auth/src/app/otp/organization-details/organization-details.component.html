@@ -142,12 +142,11 @@
                 </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="outline" class="full-width timezone-field">
                 <mat-label>Timezone</mat-label>
                 <mat-select
                     formControlName="timeZoneName"
                     placeholder="Select timezone"
-                    disableOptionCentering
                     [panelClass]="theme === 'dark' ? 'org-dark-select-panel' : 'org-light-select-panel'"
                 >
                     <mat-option *ngFor="let tz of timezones" [value]="getTimezoneValue(tz)">
