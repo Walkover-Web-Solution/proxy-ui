@@ -50,7 +50,6 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     }
 
     ngOnInit(): void {
-        this.organizationForm.get('timeZoneName')?.disable();
         if (this.authToken) {
             this.otpService
                 .getOrganizationDetails(this.authToken)
