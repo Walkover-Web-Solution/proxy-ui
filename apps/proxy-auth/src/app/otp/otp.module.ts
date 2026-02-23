@@ -46,7 +46,6 @@ import { SubscriptionCenterComponent } from './component/subscription-center/sub
 import { MatDialogModule } from '@angular/material/dialog';
 import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
