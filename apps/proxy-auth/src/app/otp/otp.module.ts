@@ -44,6 +44,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { SubscriptionCenterComponent } from './component/subscription-center/subscription-center.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
+import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
@@ -53,6 +55,7 @@ export const CHAT_COMPONENTS: any[] = [
     UserProfileComponent,
     UserManagementComponent,
     SubscriptionCenterComponent,
+    OrganizationDetailsComponent,
 ];
 
 @NgModule({
@@ -95,6 +98,7 @@ export const CHAT_COMPONENTS: any[] = [
         }),
         ServicesHttpWrapperNoAuthModule,
         DirectivesMarkAllAsTouchedModule,
+        MatSnackBarModule,
     ],
     declarations: [...CHAT_COMPONENTS],
     providers: [
