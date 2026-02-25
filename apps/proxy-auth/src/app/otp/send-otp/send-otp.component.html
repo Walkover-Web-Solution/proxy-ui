@@ -9,8 +9,13 @@
 >
     <div
         class="otp-verification-dialog"
-        [ngClass]="{ 'animation-complete': animate, 'register-user': showRegistration | async }"
+        [ngClass]="{
+            'animation-complete': animate,
+            'register-user': showRegistration | async,
+            'dark-theme': theme === 'dark'
+        }"
         *ngIf="!authToken && type !== 'subscription' && type !== 'user-management'"
+        [ngStyle]="dialogBorderRadius ? { 'border-radius': dialogBorderRadius } : {}"
     >
         <mat-progress-bar
             mode="indeterminate"
@@ -42,6 +47,8 @@
             [loginServiceData]="loginWidgetData"
             [registrationViaLogin]="registrationViaLogin"
             [showCompanyDetails]="showCompanyDetails"
+            [version]="version"
+            [theme]="theme"
             (togglePopUp)="setShowRegistration(false)"
             (successReturn)="setShowRegistration(false)"
             (failureReturn)="returnFailureObj($event)"

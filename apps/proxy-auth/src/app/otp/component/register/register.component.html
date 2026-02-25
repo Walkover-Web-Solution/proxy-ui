@@ -1,11 +1,11 @@
 <ng-container>
     <div class="dialog-header">
-        <div class="heading">Register</div>
+        <div class="heading" [ngStyle]="primaryColor ? { color: primaryColor } : {}">Register</div>
         <button mat-icon-button class="close-dialog" (click)="close(true)" type="button">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
-                    fill="#5D6164"
+                    [attr.fill]="isDarkTheme ? '#ffffff' : '#5D6164'"
                 />
             </svg>
         </button>
@@ -17,8 +17,11 @@
             proxyMarkAllAsTouched
             [buttonRef]="submitBtn"
             (valid)="submit()"
+            [class.custom-radius]="!!borderRadiusValue"
+            [style.--field-border-radius]="borderRadiusValue || '4px'"
+            [class.dark-theme-login]="isDarkTheme"
         >
-            <p class="heading">User Details</p>
+            <p class="heading" [ngStyle]="primaryColor ? { color: primaryColor } : {}">User Details</p>
             <div class="one-line">
                 <ng-container
                     [ngTemplateOutlet]="formField"
@@ -59,8 +62,19 @@
                     <button
                         (click)="isOtpSent ? resendOtp() : getOtp()"
                         mat-flat-button
-                        color="primary"
+                        [color]="buttonColor ? null : 'primary'"
                         [disabled]="(selectGetOtpInProcess$ | async) || (isOtpSent && !canResendOtp)"
+                        [ngStyle]="
+                            buttonColor
+                                ? {
+                                      'background-color': buttonColor,
+                                      color: buttonTextColor || '#ffffff',
+                                      'border-radius': borderRadiusValue || '4px'
+                                  }
+                                : borderRadiusValue
+                                ? { 'border-radius': borderRadiusValue }
+                                : {}
+                        "
                     >
                         <span *ngIf="!isOtpSent">
                             {{ (selectGetOtpInProcess$ | async) ? 'Sending...' : 'Get OTP' }}
@@ -170,12 +184,18 @@
                     }"
                 ></ng-container>
             </div>
-            <div class="note">
+            <div class="note" [ngStyle]="primaryColor ? { color: primaryColor } : {}">
                 <span class="subheading">Note: </span>
                 Password should contain atleast one Capital Letter, one Small Letter, one Digit and one Symbol
             </div>
-            <mat-divider *ngIf="showCompanyDetail" class="company-details"></mat-divider>
-            <div *ngIf="showCompanyDetail" class="heading">Company Details (Optional)</div>
+            <mat-divider
+                *ngIf="showCompanyDetail"
+                class="company-details"
+                [class.dark-divider]="isDarkTheme"
+            ></mat-divider>
+            <div *ngIf="showCompanyDetail" class="heading" [ngStyle]="primaryColor ? { color: primaryColor } : {}">
+                Company Details (Optional)
+            </div>
             <ng-container
                 *ngIf="showCompanyDetail"
                 [ngTemplateOutlet]="formField"
@@ -212,7 +232,24 @@
                     </ng-container>
                 </div>
                 <div class="submit-btn">
-                    <button #submitBtn mat-flat-button color="primary">Submit</button>
+                    <button
+                        #submitBtn
+                        mat-flat-button
+                        [color]="buttonColor ? null : 'primary'"
+                        [ngStyle]="
+                            buttonColor
+                                ? {
+                                      'background-color': buttonColor,
+                                      color: buttonTextColor || '#ffffff',
+                                      'border-radius': borderRadiusValue || '4px'
+                                  }
+                                : borderRadiusValue
+                                ? { 'border-radius': borderRadiusValue }
+                                : {}
+                        "
+                    >
+                        Submit
+                    </button>
                 </div>
             </div>
         </div>
