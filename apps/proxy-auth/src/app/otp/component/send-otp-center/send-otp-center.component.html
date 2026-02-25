@@ -3,13 +3,13 @@
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
-                fill="#5D6164"
+                [attr.fill]="isDarkTheme ? '#ffffff' : '#5D6164'"
             />
         </svg>
     </button>
     <div class="otp-verification-content button-gap">
         <ng-container *ngIf="selectWidgetData$ | async as widgetDataArray">
-            <!-- Login Title - Always at top -->
+            <!-- Logo + Login Title - Always at top -->
             <ng-container *ngFor="let widgetData of widgetDataArray">
                 <ng-container
                     *ngIf="
@@ -18,7 +18,17 @@
                         loginStep === 1
                     "
                 >
-                    <div class="heading">Login</div>
+                    <ng-container *ngIf="selectWidgetTheme$ | async as widgetTheme">
+                        <div class="logo-container" *ngIf="widgetTheme?.ui_preferences?.logo_url">
+                            <img
+                                [src]="widgetTheme.ui_preferences.logo_url"
+                                alt="Logo"
+                                class="logo-image"
+                                loading="lazy"
+                            />
+                        </div>
+                    </ng-container>
+                    <div class="heading" [ngStyle]="primaryColor ? { color: primaryColor } : {}">{{ titleText }}</div>
                 </ng-container>
             </ng-container>
 
@@ -60,7 +70,7 @@
 
             <!-- Create Account - Always at bottom -->
             <ng-container *ngIf="loginStep === 1 && widgetDataArray?.length && isCreateAccountLink">
-                <p class="create-account">
+                <p class="create-account" [ngStyle]="primaryColor ? { color: primaryColor } : {}">
                     Are you a new User?
                     <a href="javascript:void(0)" (click)="showRegistration()"> Create an account</a>
                 </p>
@@ -116,7 +126,9 @@
             >
                 <div class="divider-container" *ngIf="hasOtherAuthOptions(widgetDataArray)">
                     <div class="divider-line"></div>
-                    <span class="divider-text">OR</span>
+                    <span class="divider-text" [ngStyle]="primaryColor ? { color: primaryColor } : {}"
+                        >Or continue with
+                    </span>
                     <div class="divider-line"></div>
                 </div>
             </ng-container>
@@ -129,7 +141,14 @@
             <ng-container
                 *ngIf="widgetData?.service_id === featureServiceIds.PasswordAuthentication && version === 'v2'"
             >
-                <div class="login-section" *ngIf="loginStep === 1" [formGroup]="loginForm">
+                <div
+                    class="login-section"
+                    *ngIf="loginStep === 1"
+                    [formGroup]="loginForm"
+                    [class.custom-radius]="!!borderRadiusValue"
+                    [style.--field-border-radius]="borderRadiusValue || '8px'"
+                    [class.dark-theme-login]="isDarkTheme"
+                >
                     <mat-form-field
                         appearance="outline"
                         class="input-width"
@@ -145,7 +164,7 @@
                         <mat-error *ngIf="userNameControl.errors?.required"
                             >Email or Mobile number is required.</mat-error
                         >
-                        <mat-hint class="note">
+                        <mat-hint class="note" [ngStyle]="primaryColor ? { color: primaryColor } : {}">
                             <span class="subheading">Note:</span> Please enter your Mobile number with the country code
                             (e.g. 91)
                         </mat-hint>
@@ -198,10 +217,21 @@
                         </p>
                         <button
                             mat-flat-button
-                            color="primary"
+                            [color]="buttonColor ? null : 'primary'"
                             (click)="login()"
                             [disabled]="isLoginLoading$ | async"
                             class="w-100"
+                            [ngStyle]="
+                                buttonColor
+                                    ? {
+                                          'background-color': buttonColor,
+                                          color: buttonTextColor || '#ffffff',
+                                          'border-radius': borderRadiusValue || '8px'
+                                      }
+                                    : borderRadiusValue
+                                    ? { 'border-radius': borderRadiusValue }
+                                    : {}
+                            "
                         >
                             <div class="loader">
                                 <mat-spinner matPrefix diameter="20" *ngIf="isLoginLoading$ | async"></mat-spinner>
@@ -212,19 +242,26 @@
                 </div>
 
                 <!-- Step 2: Reset Password (Send OTP) -->
-                <div class="login-section" *ngIf="loginStep === 2" [formGroup]="sendOtpLoginForm">
+                <div
+                    class="login-section"
+                    *ngIf="loginStep === 2"
+                    [formGroup]="sendOtpLoginForm"
+                    [class.custom-radius]="!!borderRadiusValue"
+                    [style.--field-border-radius]="borderRadiusValue || '8px'"
+                    [class.dark-theme-login]="isDarkTheme"
+                >
                     <button mat-icon-button class="back-button" (click)="changeLoginStep(1)" type="button">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             height="16px"
                             viewBox="0 -960 960 960"
                             width="16px"
-                            fill="#5f6368"
+                            [attr.fill]="isDarkTheme ? '#ffffff' : '#5f6368'"
                         >
                             <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
                         </svg>
                     </button>
-                    <div class="heading">Reset Password</div>
+                    <div class="heading" [ngStyle]="primaryColor ? { color: primaryColor } : {}">Reset Password</div>
 
                     <mat-form-field appearance="outline" class="input-width">
                         <mat-label>Email or Mobile</mat-label>
@@ -246,10 +283,21 @@
 
                     <button
                         mat-flat-button
-                        color="primary"
+                        [color]="buttonColor ? null : 'primary'"
                         (click)="sendResetPasswordOtp()"
                         [disabled]="isLoginLoading$ | async"
                         class="w-100"
+                        [ngStyle]="
+                            buttonColor
+                                ? {
+                                      'background-color': buttonColor,
+                                      color: buttonTextColor || '#ffffff',
+                                      'border-radius': borderRadiusValue || '8px'
+                                  }
+                                : borderRadiusValue
+                                ? { 'border-radius': borderRadiusValue }
+                                : {}
+                        "
                     >
                         <div class="loader">
                             <mat-spinner matPrefix diameter="20" *ngIf="isLoginLoading$ | async"></mat-spinner>
@@ -259,19 +307,26 @@
                 </div>
 
                 <!-- Step 3: Change Password (Verify OTP) -->
-                <div class="login-section" *ngIf="loginStep === 3" [formGroup]="resetPasswordForm">
+                <div
+                    class="login-section"
+                    *ngIf="loginStep === 3"
+                    [formGroup]="resetPasswordForm"
+                    [class.custom-radius]="!!borderRadiusValue"
+                    [style.--field-border-radius]="borderRadiusValue || '8px'"
+                    [class.dark-theme-login]="isDarkTheme"
+                >
                     <button mat-icon-button class="back-button" (click)="changeLoginStep(2)" type="button">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             height="16px"
                             viewBox="0 -960 960 960"
                             width="16px"
-                            fill="#5f6368"
+                            [attr.fill]="isDarkTheme ? '#ffffff' : '#5f6368'"
                         >
                             <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
                         </svg>
                     </button>
-                    <div class="heading">Change Password</div>
+                    <div class="heading" [ngStyle]="primaryColor ? { color: primaryColor } : {}">Change Password</div>
 
                     <p class="user-info">
                         {{ sendOtpLoginForm.get('userDetails').value }}
@@ -364,10 +419,21 @@
 
                     <button
                         mat-flat-button
-                        color="primary"
+                        [color]="buttonColor ? null : 'primary'"
                         (click)="verifyResetPasswordOtp()"
                         [disabled]="isLoginLoading$ | async"
                         class="w-100"
+                        [ngStyle]="
+                            buttonColor
+                                ? {
+                                      'background-color': buttonColor,
+                                      color: buttonTextColor || '#ffffff',
+                                      'border-radius': borderRadiusValue || '8px'
+                                  }
+                                : borderRadiusValue
+                                ? { 'border-radius': borderRadiusValue }
+                                : {}
+                        "
                     >
                         <div class="loader">
                             <mat-spinner matPrefix diameter="20" *ngIf="isLoginLoading$ | async"></mat-spinner>
@@ -399,12 +465,15 @@
                             (click)="onVerificationBtnClick(widgetData)"
                             class="auth-icon-btn"
                             type="button"
+                            [ngStyle]="borderRadiusValue ? { 'border-radius': borderRadiusValue } : {}"
+                            [class.dark-theme]="isDarkTheme"
                         >
                             <img
                                 [src]="widgetData.icon"
                                 [alt]="widgetData.text"
                                 class="auth-icon-only"
                                 loading="lazy"
+                                [class.dark-invert]="isDarkTheme && widgetData.text?.toLowerCase()?.includes('apple')"
                             />
                         </button>
                     </ng-container>
@@ -428,6 +497,8 @@
                             mat-stroked-button
                             (click)="onVerificationBtnClick(widgetData)"
                             class="auth-option-btn"
+                            [ngStyle]="borderRadiusValue ? { 'border-radius': borderRadiusValue } : {}"
+                            [class.dark-theme]="isDarkTheme"
                         >
                             <div class="auth-option-content">
                                 <img
@@ -435,8 +506,13 @@
                                     [alt]="widgetData.text"
                                     class="auth-option-icon"
                                     loading="lazy"
+                                    [class.dark-invert]="
+                                        isDarkTheme && widgetData.text?.toLowerCase()?.includes('apple')
+                                    "
                                 />
-                                <span class="auth-option-text">{{ widgetData.text }}</span>
+                                <span class="auth-option-text" [class.dark-theme]="isDarkTheme">{{
+                                    widgetData.text
+                                }}</span>
                             </div>
                         </button>
                     </ng-container>

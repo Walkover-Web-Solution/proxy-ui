@@ -74,6 +74,65 @@ input[matinput]::-webkit-inner-spin-button {
     width: 100%;
 }
 
+.login-section.custom-radius {
+    --mdc-outlined-text-field-container-shape: var(--field-border-radius, 8px);
+    --mdc-filled-text-field-container-shape: var(--field-border-radius, 8px);
+    --mat-form-field-container-shape: var(--field-border-radius, 8px);
+    --mdc-shape-small: var(--field-border-radius, 8px);
+
+    ::ng-deep {
+        .mat-mdc-text-field-wrapper,
+        .mdc-text-field--outlined {
+            border-radius: var(--field-border-radius, 8px) !important;
+        }
+
+        .mdc-notched-outline__leading {
+            border-radius: var(--field-border-radius, 8px) 0 0 var(--field-border-radius, 8px) !important;
+            width: var(--field-border-radius, 8px) !important;
+        }
+
+        .mdc-notched-outline__trailing {
+            border-radius: 0 var(--field-border-radius, 8px) var(--field-border-radius, 8px) 0 !important;
+        }
+
+        // Legacy Material
+        .mat-form-field-outline-start {
+            border-radius: var(--field-border-radius, 8px) 0 0 var(--field-border-radius, 8px) !important;
+            width: var(--field-border-radius, 8px) !important;
+        }
+
+        .mat-form-field-outline-end {
+            border-radius: 0 var(--field-border-radius, 8px) var(--field-border-radius, 8px) 0 !important;
+        }
+
+        .mat-form-field-wrapper,
+        .mat-form-field-flex {
+            border-radius: var(--field-border-radius, 8px) !important;
+        }
+
+        .mat-mdc-raised-button,
+        .mat-mdc-flat-button,
+        .mat-mdc-unelevated-button,
+        .mat-raised-button,
+        .mat-flat-button {
+            border-radius: var(--field-border-radius, 8px) !important;
+        }
+    }
+}
+
+.logo-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.logo-image {
+    max-height: 48px;
+    max-width: 200px;
+    object-fit: contain;
+}
+
 .heading {
     font-size: 16px;
     line-height: 20px;
@@ -215,7 +274,7 @@ p {
     width: 100%;
     height: 44px;
     border: 1px solid #7d7c7c !important;
-    border-radius: 8px !important;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
     background-color: #fff !important;
@@ -259,7 +318,7 @@ p {
     width: 56px !important;
     height: 56px !important;
     border: 1px solid #d1d5db !important;
-    border-radius: 8px !important;
+    border-radius: 8px;
     background-color: #fff !important;
     display: flex;
     align-items: center;
@@ -277,4 +336,91 @@ p {
     height: 24px;
     width: 24px;
     object-fit: contain;
+}
+
+// Dark theme styles
+.dark-text {
+    color: #ffffff !important;
+
+    a {
+        color: #ffffff !important;
+    }
+}
+
+.dark-theme-login {
+    ::ng-deep {
+        .mat-mdc-text-field-wrapper,
+        .mdc-text-field--outlined {
+            background-color: transparent !important;
+        }
+
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+            border-color: #ffffff !important;
+        }
+
+        .mat-mdc-form-field-flex {
+            background-color: transparent !important;
+        }
+
+        .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-floating-label,
+        .mat-mdc-form-field .mdc-floating-label {
+            color: #ffffff !important;
+        }
+
+        .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input,
+        .mat-mdc-input-element {
+            color: #ffffff !important;
+        }
+
+        // Legacy Material — set `color` on outline containers so children
+        // inherit it via `border-color: currentColor`. Angular Material's own
+        // `border-top-color: transparent` on the gap when the label floats
+        // has higher specificity and remains unaffected.
+        .mat-form-field-appearance-outline {
+            .mat-form-field-outline,
+            .mat-form-field-outline-thick {
+                color: #ffffff !important;
+            }
+
+            &.mat-form-field-invalid {
+                .mat-form-field-outline,
+                .mat-form-field-outline-thick {
+                    color: red !important;
+                }
+            }
+        }
+
+        .mat-form-field-flex {
+            background-color: transparent !important;
+        }
+
+        .mat-input-element {
+            color: #ffffff !important;
+        }
+
+        .mat-form-field-label {
+            color: #ffffff !important;
+        }
+    }
+}
+
+.auth-option-btn.dark-theme {
+    background-color: transparent !important;
+    border-color: #ffffff !important;
+}
+
+.auth-option-icon.dark-invert,
+.auth-icon-only.dark-invert {
+    filter: invert(1);
+}
+
+.auth-option-text.dark-theme {
+    color: #ffffff;
+}
+
+.auth-icon-btn.dark-theme {
+    background-color: transparent !important;
+    border-color: #ffffff !important;
 }
