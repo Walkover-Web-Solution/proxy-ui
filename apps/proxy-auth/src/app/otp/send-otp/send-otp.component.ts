@@ -1085,7 +1085,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     }): string {
         const isDark =
             this.theme === Theme.DARK ||
-            this.theme === 'dark' ||
             (this.theme === Theme.SYSTEM &&
                 typeof window !== 'undefined' &&
                 window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -2416,9 +2415,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 cursor: pointer;
                 visibility: ${isOtpButton ? 'hidden' : 'visible'};
             `;
-            const isApple = buttonsData?.text?.toLowerCase()?.includes('apple');
-            const isPassword = buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication;
-            const invertIcon = this.theme === 'dark' && (isApple || isPassword);
+            const invertIcon = this.shouldInvertIcon(buttonsData);
             image.style.cssText = `
                 height: 24px;
                 width: 24px;
@@ -2464,9 +2461,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 width: ${useDiv ? '316px' : '260px'};
                 visibility: ${isOtpButton ? 'hidden' : 'visible'}; // Hide only OTP buttons until ready
             `;
-            const isApple = buttonsData?.text?.toLowerCase()?.includes('apple');
-            const isPassword = buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication;
-            const invertIcon = this.theme === 'dark' && (isApple || isPassword);
+            const invertIcon = this.shouldInvertIcon(buttonsData);
             image.style.cssText = `
                 height: 20px;
                 width: 20px;
@@ -2841,5 +2836,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         if (!this.isLogin) {
             window.location.href = this.loginRedirectUrl;
         }
+    }
+
+    private shouldInvertIcon(buttonsData: any): boolean {
+        const isApple = buttonsData?.text?.toLowerCase()?.includes('apple');
+        const isPassword = buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication;
+        return this.theme === Theme.DARK && (isApple || isPassword);
     }
 }
