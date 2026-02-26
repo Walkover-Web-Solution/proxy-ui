@@ -96,6 +96,34 @@ export class OtpService {
         const url = otpVerificationUrls.getUserDetails(this.clientUrl);
         return this.http.get<BaseResponse<IWidgetResponse, IGetWidgetData>>(url, payload ?? {}, this.options);
     }
+
+    public getOrganizationDetails(authToken: string): Observable<any> {
+        this.options.headers['proxy_auth_token'] = authToken;
+        const url = otpVerificationUrls.getUserDetails(this.clientUrl);
+        return this.http.get<any>(url, { fields: 'currentCompany' }, this.options);
+    }
+
+    public getTimezones(authToken: string): Observable<any> {
+        const options = {
+            ...this.options,
+            headers: {
+                ...this.options.headers,
+                Authorization: authToken,
+            },
+        };
+        const url = otpVerificationUrls.getTimezones(this.clientUrl);
+        return this.http.get<any>(url, {}, options);
+    }
+
+    public updateCompany(
+        authToken: string,
+        company: { name: string; email: string; mobile: string; timezone: string; timeZoneName: string }
+    ): Observable<any> {
+        this.options.headers['proxy_auth_token'] = authToken;
+        const url = otpVerificationUrls.updateCompany(this.clientUrl);
+        return this.http.put<any>(url, { company }, this.options);
+    }
+
     public leaveCompanyUser(
         companyId: any,
         authToken: string

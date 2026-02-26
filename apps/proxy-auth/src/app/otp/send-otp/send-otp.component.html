@@ -4,7 +4,7 @@
     [ngClass]="{
         'with-reference-id': referenceId,
         'without-reference-id': authToken,
-        'dark-theme': theme === 'dark' && (type === 'user-management' || authToken)
+        'dark-theme': (theme === 'dark' && (type === 'user-management' || authToken)) || type === 'organization-details'
     }"
 >
     <div
@@ -77,10 +77,15 @@
         ></proxy-subscription-center>
     </div>
     <proxy-user-profile
-        *ngIf="authToken && type !== 'user-management' && type !== 'subscription'"
+        *ngIf="authToken && type !== 'user-management' && type !== 'subscription' && type !== 'organization-details'"
         [authToken]="authToken"
         [theme]="theme"
     ></proxy-user-profile>
+    <organization-details
+        *ngIf="authToken && type === 'organization-details'"
+        [authToken]="authToken"
+        [theme]="theme"
+    ></organization-details>
     <div
         class="otp-verification-footer"
         *ngIf="!authToken && !type === 'user-management' && !type === 'subscription' && referenceId"
