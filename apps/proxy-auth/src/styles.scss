@@ -92,6 +92,7 @@ body {
     width: 100vw;
     height: 100vh;
     overflow-x: hidden;
+    // background-color: black;
 }
 
 *,
@@ -108,10 +109,26 @@ proxy-auth,
 .error-snackbar {
     background-color: #cc5229 !important;
     color: #ffffff !important;
+
+    .mat-simple-snackbar-action .mat-button,
+    .mat-mdc-snack-bar-action .mat-mdc-button,
+    .mat-button,
+    .mat-mdc-button,
+    .mat-icon {
+        color: #ffffff !important;
+    }
 }
 .success-snackbar {
     background-color: #008000 !important;
     color: #ffffff !important;
+
+    .mat-simple-snackbar-action .mat-button,
+    .mat-mdc-snack-bar-action .mat-mdc-button,
+    .mat-button,
+    .mat-mdc-button,
+    .mat-icon {
+        color: #ffffff !important;
+    }
 }
 .mat-snack-bar-container {
     margin: 4px !important;
@@ -212,4 +229,40 @@ proxy-auth,
 }
 .fw-bold {
     font-weight: bold;
+}
+
+// ── Dark dropdown panel (Angular Material 14 legacy: mat-select-panel, mat-option) ──
+// panelClass="org-dark-select-panel" is used e.g. in organization-details timezone select.
+// Overlay is in .cdk-overlay-container; legacy panel uses .mat-select-panel, .mat-option.
+.cdk-overlay-container .mat-select-panel.org-dark-select-panel {
+    background: #2a2a2a !important;
+}
+
+.cdk-overlay-container .mat-select-panel.org-dark-select-panel .mat-option {
+    color: rgba(255, 255, 255, 0.87) !important;
+    background: transparent;
+}
+
+.cdk-overlay-container .mat-select-panel.org-dark-select-panel .mat-option .mat-option-text,
+.cdk-overlay-container .mat-select-panel.org-dark-select-panel .mat-option span,
+.cdk-overlay-container .mat-select-panel.org-dark-select-panel .mat-option * {
+    color: rgba(255, 255, 255, 0.87) !important;
+}
+
+.cdk-overlay-container .mat-select-panel.org-dark-select-panel .mat-option:hover:not(.mat-option-disabled),
+.cdk-overlay-container .mat-select-panel.org-dark-select-panel .mat-option.mat-active {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.cdk-overlay-container .mat-select-panel.org-dark-select-panel .mat-option.mat-selected:not(.mat-option-disabled) {
+    background: rgba(25, 118, 210, 0.25) !important;
+}
+
+.cdk-overlay-container
+    .mat-select-panel.org-dark-select-panel
+    .mat-option.mat-selected:not(.mat-option-disabled)
+    .mat-option-text,
+.cdk-overlay-container .mat-select-panel.org-dark-select-panel .mat-option.mat-selected:not(.mat-option-disabled) span,
+.cdk-overlay-container .mat-select-panel.org-dark-select-panel .mat-option.mat-selected:not(.mat-option-disabled) * {
+    color: #64b5f6 !important;
 }
