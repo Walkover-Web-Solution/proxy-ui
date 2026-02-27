@@ -5,7 +5,15 @@
             <h2 class="page-title">Organization Details</h2>
 
             <div class="header-actions" *ngIf="!isEditing">
-                <button type="button" class="edit-btn" (click)="startEdit()">
+                <button
+                    type="button"
+                    [ngClass]="{ 'disabled': !allowedUpdatePermissions }"
+                    [disabled]="!allowedUpdatePermissions"
+                    class="edit-btn"
+                    (click)="startEdit()"
+                    [matTooltip]="!allowedUpdatePermissions ? 'No permission' : ''"
+                    matTooltipPosition="right"
+                >
                     <svg
                         class="btn-icon"
                         viewBox="0 0 24 24"
@@ -129,7 +137,7 @@
                 <mat-label>Email </mat-label>
                 <input matInput type="email" formControlName="email" placeholder="Enter email" />
                 <mat-error *ngIf="organizationForm.get('email')?.hasError('required')"> Email is required. </mat-error>
-                <mat-error *ngIf="organizationForm.get('email')?.hasError('email')">
+                <mat-error *ngIf="organizationForm.get('email')?.hasError('pattern')">
                     Please enter a valid email.
                 </mat-error>
             </mat-form-field>
