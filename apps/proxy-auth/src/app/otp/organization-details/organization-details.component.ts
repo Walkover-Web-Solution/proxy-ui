@@ -6,6 +6,7 @@ import { BaseComponent } from 'libs/ui/base-component/src/lib/base-component/bas
 import { OtpService } from '../service/otp.service';
 import { finalize, takeUntil } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { EMAIL_REGEX } from '@proxy/regex';
 
 @Component({
     selector: 'organization-details',
@@ -19,7 +20,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
 
     public organizationForm = new FormGroup({
         companyName: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
-        email: new FormControl<string>('', [Validators.required, Validators.email]),
+        email: new FormControl<string>('', [Validators.required, Validators.pattern(EMAIL_REGEX)]),
         phoneNumber: new FormControl<string>('', [Validators.pattern(/^$|^[0-9]{10,15}$/)]),
         timezone: new FormControl<string>('', [Validators.required]),
         timeZoneName: new FormControl<string>('', [Validators.required]),
@@ -49,8 +50,9 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
         super();
     }
 
+    public allowedUpdatePermissions: boolean = false;
+
     ngOnInit(): void {
-        this.organizationForm.get('timeZoneName')?.disable();
         if (this.authToken) {
             this.otpService
                 .getOrganizationDetails(this.authToken)
@@ -58,6 +60,8 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
                 .subscribe({
                     next: (res) => {
                         const company = res?.data?.[0]?.currentCompany;
+                        this.allowedUpdatePermissions =
+                            res?.data?.[0]?.currentCompany?.permissions?.includes('update_c_company');
                         if (company && typeof company === 'object') {
                             const timeZoneName =
                                 company.timeZoneName ??
@@ -180,8 +184,15 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
                     //     verticalPosition: 'top',
                     //     panelClass: ['success-snackbar'],
                     // });
+                    window.dispatchEvent(
+                        new CustomEvent('organizationDetailsUpdateResponse', {
+                            bubbles: true,
+                            composed: true,
+                            detail: { data: res?.data, error: false },
+                        })
+                    );
                 },
-                error: () => {
+                error: (error) => {
                     // Stay in edit mode so user can retry
                     // this.snackBar.open('Something went wrong', '✕', {
                     //     duration: 3000,
@@ -189,6 +200,13 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
                     //     verticalPosition: 'top',
                     //     panelClass: ['error-snackbar'],
                     // });
+                    window.dispatchEvent(
+                        new CustomEvent('organizationDetailsUpdateResponse', {
+                            bubbles: true,
+                            composed: true,
+                            detail: { data: error?.error?.errors ?? error?.error ?? error, error: true },
+                        })
+                    );
                 },
             });
     }

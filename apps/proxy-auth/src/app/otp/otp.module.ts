@@ -46,6 +46,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { ShadowDomOverlayContainer } from '../shadow-dom-overlay-container';
 
 export const CHAT_COMPONENTS: any[] = [
     SendOtpComponent,
@@ -105,6 +107,7 @@ export const CHAT_COMPONENTS: any[] = [
         OtpService,
         OtpUtilityService,
         OtpWidgetService,
+        { provide: OverlayContainer, useClass: ShadowDomOverlayContainer },
         { provide: ProxyBaseUrls.Env, useValue: environment.env },
         {
             provide: ProxyBaseUrls.BaseURL,
