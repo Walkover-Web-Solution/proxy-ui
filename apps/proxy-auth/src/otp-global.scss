@@ -38,6 +38,10 @@
         width: 600px;
         z-index: 9999999 !important;
     }
+    &.dark-theme {
+        background-color: #616161 !important;
+        color: #ffffff !important;
+    }
 
     .otp-verification-header {
         position: relative;

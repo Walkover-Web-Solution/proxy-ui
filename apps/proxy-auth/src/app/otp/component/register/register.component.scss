@@ -263,3 +263,155 @@ input[matinput]::-webkit-inner-spin-button {
 .verify-otp-link {
     font-size: 12px;
 }
+
+.form-wrapper.custom-radius {
+    --mdc-outlined-text-field-container-shape: var(--field-border-radius, 4px);
+    --mdc-filled-text-field-container-shape: var(--field-border-radius, 4px);
+    --mat-form-field-container-shape: var(--field-border-radius, 4px);
+    --mdc-shape-small: var(--field-border-radius, 4px);
+}
+
+:host ::ng-deep .form-wrapper.custom-radius {
+    .mat-mdc-text-field-wrapper,
+    .mdc-text-field--outlined {
+        border-radius: var(--field-border-radius, 4px) !important;
+    }
+
+    .mdc-notched-outline__leading {
+        border-radius: var(--field-border-radius, 4px) 0 0 var(--field-border-radius, 4px) !important;
+        width: var(--field-border-radius, 4px) !important;
+    }
+
+    .mdc-notched-outline__trailing {
+        border-radius: 0 var(--field-border-radius, 4px) var(--field-border-radius, 4px) 0 !important;
+    }
+
+    .mat-form-field-outline-start {
+        border-radius: var(--field-border-radius, 4px) 0 0 var(--field-border-radius, 4px) !important;
+        width: var(--field-border-radius, 4px) !important;
+    }
+
+    .mat-form-field-outline-end {
+        border-radius: 0 var(--field-border-radius, 4px) var(--field-border-radius, 4px) 0 !important;
+    }
+
+    .mat-form-field-wrapper,
+    .mat-form-field-flex,
+    .mat-mdc-form-field-flex {
+        border-radius: var(--field-border-radius, 4px) !important;
+    }
+
+    .mat-mdc-raised-button,
+    .mat-mdc-flat-button,
+    .mat-mdc-unelevated-button,
+    .mat-raised-button,
+    .mat-flat-button {
+        border-radius: var(--field-border-radius, 4px) !important;
+    }
+
+    .register-user-details {
+        .iti {
+            border-radius: var(--field-border-radius, 4px) !important;
+        }
+
+        input[type='tel'] {
+            border-radius: var(--field-border-radius, 4px) !important;
+        }
+    }
+}
+.register-user-details {
+    border-radius: var(--field-border-radius, 4px) !important;
+}
+
+// Dark theme styles
+.dark-text {
+    color: #ffffff !important;
+
+    a {
+        color: #ffffff !important;
+    }
+}
+
+.dark-divider {
+    border-top-color: #ffffff !important;
+}
+
+:host ::ng-deep .form-wrapper.dark-theme-login {
+    .mat-mdc-text-field-wrapper,
+    .mdc-text-field--outlined {
+        background-color: transparent !important;
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+        border-color: #ffffff !important;
+    }
+
+    .mat-mdc-form-field-flex {
+        background-color: transparent !important;
+    }
+
+    .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-floating-label,
+    .mat-mdc-form-field .mdc-floating-label {
+        color: #ffffff !important;
+    }
+
+    .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input,
+    .mat-mdc-input-element {
+        color: #ffffff !important;
+    }
+
+    // Legacy Material — use `color` on outline containers so children
+    // inherit via `currentColor`, preserving the gap's transparent top border
+    .mat-form-field-appearance-outline {
+        .mat-form-field-outline,
+        .mat-form-field-outline-thick {
+            color: #ffffff !important;
+        }
+
+        &.mat-form-field-invalid {
+            .mat-form-field-outline,
+            .mat-form-field-outline-thick {
+                color: red !important;
+            }
+        }
+    }
+
+    .mat-form-field-flex {
+        background-color: transparent !important;
+    }
+
+    .mat-input-element {
+        color: #ffffff !important;
+    }
+
+    .mat-form-field-label {
+        color: #ffffff !important;
+    }
+
+    .register-user-details {
+        input[type='tel'],
+        [id^='init-contact'] {
+            border-color: #ffffff !important;
+            color: #ffffff !important;
+            background-color: #616161 !important;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.7) !important;
+            }
+        }
+
+        .iti__selected-flag {
+            background-color: #616161 !important;
+        }
+
+        .iti__arrow {
+            border-top-color: #ffffff;
+        }
+
+        .iti__dial-code {
+            color: #ffffff !important;
+        }
+    }
+}

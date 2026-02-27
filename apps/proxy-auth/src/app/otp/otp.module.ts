@@ -46,7 +46,6 @@ import { SubscriptionCenterComponent } from './component/subscription-center/sub
 import { MatDialogModule } from '@angular/material/dialog';
 import { UiConfirmDialogModule } from '@proxy/ui/confirm-dialog';
 import { OrganizationDetailsComponent } from './organization-details/organization-details.component';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { ShadowDomOverlayContainer } from '../shadow-dom-overlay-container';
 
