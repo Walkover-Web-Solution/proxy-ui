@@ -383,3 +383,11 @@
         color: #ffffff !important;
     }
 }
+.disabled {
+    opacity: 0.5;
+}
+.timezone-field {
+    .mat-select-arrow-wrapper {
+        height: unset;
+    }
+}
