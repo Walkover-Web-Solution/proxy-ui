@@ -149,6 +149,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public paymentDetailsById$: Observable<any> = this.componentStore.paymentDetailsById$;
     public updatePaymentDetails$: Observable<any> = this.componentStore.updatePaymentDetails$;
     public webhookEvents$: Observable<any> = this.componentStore.webhookEvents$;
+    public uploadLogo$: Observable<any> = this.componentStore.uploadLogo$;
     public isEditMode = false;
     public previewInputPosition: 'top' | 'bottom' = 'top';
     public selectedServiceIndex = 0;
@@ -187,8 +188,11 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     /** Logo input: 'url' = enter URL, 'file' = upload file */
     public logoInputMode: 'url' | 'file' = 'url';
 
+    public isLogoUploading = false;
+
     // Options cache for select fields
     private optionsCache: { [key: string]: any[] } = {};
+    public logoUrl: string = null;
 
     public featureForm = new FormGroup({
         primaryDetails: new FormGroup({
@@ -201,6 +205,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             ]),
             feature_id: new FormControl<number>(1, [Validators.required]),
             method_id: new FormControl<number>(null, [Validators.required]),
+            redirect_url: new FormControl<any>(null, [Validators.required, Validators.pattern(URL_REGEX)]),
         }),
         serviceDetails: new FormArray<ServiceFormGroup>([]),
         planDetails: new FormArray<any>([]),
@@ -221,7 +226,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 CustomValidators.minLengthThreeWithoutSpace,
             ]),
             encryptionKey: new FormControl<string>(null, []),
-            redirect_url: new FormControl<any>(null, [Validators.required, Validators.pattern(URL_REGEX)]),
             blockNewUserSignUps: new FormControl<boolean>(false, []),
         }),
         webhookDetails: new FormGroup({
@@ -232,11 +236,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         brandingDetails: new FormGroup({
             icons: new FormControl<boolean>(false, []),
             logo_url: new FormControl<string>(null, []),
-            primary_color: new FormControl<string>(null, []),
+            light_theme_primary_color: new FormControl<string>('#000000', []),
+            dark_theme_primary_color: new FormControl<string>('#ffffff', []),
             button_color: new FormControl<string>('#19E6CE', []),
             button_hover_color: new FormControl<string>('#19E6CE', []),
             button_text_color: new FormControl<string>('#000000', []),
-            border_radius: new FormControl<string>('medium', []),
+            border_radius: new FormControl<string>('small', []),
             title: new FormControl<string>('Sign in to your account', []),
             sign_up_button_text: new FormControl<string>('Create an account', [Validators.required]),
             create_account_link: new FormControl<boolean>(true, []),
@@ -268,7 +273,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.getFeatureDetalis();
             } else {
                 this.getFeatureType();
-                this.featureForm.get('brandingDetails.primary_color')?.setValue(this.getDefaultPrimaryColor());
+                this.featureForm.get('brandingDetails.light_theme_primary_color')?.setValue('#000000');
+                this.featureForm.get('brandingDetails.dark_theme_primary_color')?.setValue('#ffffff');
             }
         });
 
@@ -333,7 +339,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             },
                             brandingDetails: {
                                 logo_url: feature.ui_preferences?.logo_url,
-                                primary_color: feature.ui_preferences?.primary_color,
+                                light_theme_primary_color: feature.ui_preferences?.light_theme_primary_color,
+                                dark_theme_primary_color: feature.ui_preferences?.dark_theme_primary_color,
                                 button_color: feature.ui_preferences?.button_color,
                                 button_hover_color: feature.ui_preferences?.button_hover_color,
                                 button_text_color:
@@ -348,8 +355,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             },
                         });
                         // Clear redirect_url validators in edit mode since the field is hidden
-                        this.featureForm.get('authorizationDetails.redirect_url')?.clearValidators();
-                        this.featureForm.get('authorizationDetails.redirect_url')?.updateValueAndValidity();
+                        this.featureForm.get('primaryDetails.redirect_url')?.clearValidators();
+                        this.featureForm.get('primaryDetails.redirect_url')?.updateValueAndValidity();
                         this.previewInputPosition = feature.ui_preferences?.input_fields || 'top';
                     });
                 });
@@ -413,7 +420,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             if (
                 !this.isEditMode &&
                 this.featureForm.get('primaryDetails.feature_id')?.value === 1 &&
-                this.featureForm.get('authorizationDetails.redirect_url')?.value
+                this.featureForm.get('primaryDetails.redirect_url')?.value
             ) {
                 this.setRedirectUrlInServiceDetails();
             }
@@ -441,6 +448,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     this.stepper?.first?.next();
                 }, 10);
             }
+            this.featureId = obj.id;
+            this.demoDiv$ = of(`<div id="${obj.reference_id}"></div>`);
         });
 
         this.createBillableMetric$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((metric) => {
@@ -567,19 +576,28 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 }
             }
         });
+        this.uploadLogo$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((data) => {
+            const url = data?.logo_url ?? data?.url;
+            if (url) {
+                // this.featureForm.get('brandingDetails.logo_url')?.setValue(url);
+                this.logoUrl = url;
+            }
+            this.isLogoUploading = false;
+            this.cdr.markForCheck();
+        });
     }
 
     public validateFirstStepAndNext(nameControl: AbstractControl): void {
         nameControl.markAllAsTouched();
         const featureId = this.featureForm.get('primaryDetails.feature_id')?.value;
         if (featureId === 1) {
-            this.featureForm.get('authorizationDetails.redirect_url')?.markAllAsTouched();
+            this.featureForm.get('primaryDetails.redirect_url')?.markAllAsTouched();
         }
         if (nameControl.invalid) {
             return;
         }
         if (featureId === 1) {
-            const redirectUrlControl = this.featureForm.get('authorizationDetails.redirect_url');
+            const redirectUrlControl = this.featureForm.get('primaryDetails.redirect_url');
             if (redirectUrlControl?.invalid) {
                 return;
             }
@@ -592,11 +610,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public get validateFirstStep(): boolean {
         const nameControl = this.featureForm.get('primaryDetails.name');
         const featureId = this.featureForm.get('primaryDetails.feature_id')?.value;
-        if (nameControl.invalid) {
+        const redirectUrlControl = this.featureForm.get('primaryDetails.redirect_url');
+        if (nameControl.invalid || redirectUrlControl?.invalid) {
             return false;
         }
         if (featureId === 1) {
-            const redirectUrlControl = this.featureForm.get('authorizationDetails.redirect_url');
+            const redirectUrlControl = this.featureForm.get('primaryDetails.redirect_url');
             if (redirectUrlControl?.invalid) {
                 return false;
             }
@@ -611,6 +630,20 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         return typeof localStorage !== 'undefined' && localStorage.getItem('selected-theme') === 'dark-theme'
             ? '#ffffff'
             : '#000000';
+    }
+
+    /** Returns the effective primary color based on the selected branding theme */
+    public getEffectivePrimaryColor(): string {
+        const theme = this.featureForm.get('brandingDetails.theme')?.value;
+        const isDark =
+            theme === 'dark' ||
+            (theme === 'system' &&
+                typeof localStorage !== 'undefined' &&
+                localStorage.getItem('selected-theme') === 'dark-theme');
+        if (isDark) {
+            return this.featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff';
+        }
+        return this.featureForm.get('brandingDetails.light_theme_primary_color')?.value || '#000000';
     }
 
     public getBrandingBorderRadiusValue(): string {
@@ -632,19 +665,18 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public onBrandingLogoFileSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
         const file = input?.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = () => {
-            this.featureForm.get('brandingDetails.logo_url')?.setValue(reader.result as string);
-            this.cdr.markForCheck();
-        };
-        reader.readAsDataURL(file);
+        if (!file || !this.featureId) return;
         input.value = '';
+        const formData = new FormData();
+        formData.append('logo', file);
+        this.isLogoUploading = true;
+        this.cdr.markForCheck();
+        this.componentStore.uploadLogo({ id: this.featureId, formData });
     }
 
     public setRedirectUrlInServiceDetails(): void {
         const serviceDetailsForm = this.featureForm.controls.serviceDetails;
-        const redirectUrl = this.featureForm.controls.authorizationDetails.value.redirect_url;
+        const redirectUrl = this.featureForm.controls.primaryDetails.value.redirect_url;
         serviceDetailsForm.controls.forEach((formGroup) => {
             const redirectUrlControl = formGroup.controls.configurations.controls['redirect_uri'] as FormControl;
             if (redirectUrlControl && !redirectUrlControl.value) {
@@ -749,11 +781,13 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     const existingUiPrefs = (featureDetails as unknown as Record<string, unknown>)?.ui_preferences as
                         | Record<string, unknown>
                         | undefined;
+                    const { primary_color: _removed, ...cleanedUiPrefs } = existingUiPrefs || ({} as any);
                     payload = {
                         ui_preferences: {
-                            ...(existingUiPrefs || {}),
+                            ...cleanedUiPrefs,
                             ...brandingDetailsForm.value,
                             input_fields: this.previewInputPosition,
+                            logo_url: this.logoInputMode === 'file' ? this.logoUrl : brandingDetailsForm.value.logo_url,
                         },
                     };
                 } else {
