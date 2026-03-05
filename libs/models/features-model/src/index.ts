@@ -98,7 +98,6 @@ export enum FeatureFieldType {
     ReadFile = 'readFile',
     Select = 'select',
     TextArea = 'textarea',
-    Password = 'password',
 }
 
 export const ProxyAuthScript = (
@@ -133,7 +132,6 @@ export enum FeatureServiceIds {
     Msg91OtpService = 6,
     GoogleAuthentication = 7,
     PasswordAuthentication = 9,
-    AppleAuthentication = 8,
 }
 export const ProxyUserManagementScript = (
     baseUrl: string,

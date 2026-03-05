@@ -29,7 +29,6 @@ export interface ICreateFeatureInitialState {
     paymentDetailsById: any;
     updatePaymentDetails: any;
     webhookEvents: any;
-    uploadLogo: any;
 }
 
 @Injectable()
@@ -59,7 +58,6 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             paymentDetailsById: null,
             updatePaymentDetails: null,
             webhookEvents: null,
-            uploadLogo: null,
         });
     }
     /** Selector for API progress  */
@@ -108,8 +106,6 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly updatePaymentDetails$: Observable<any> = this.select((state) => state.updatePaymentDetails);
     /** Selector for webhook events data */
     readonly webhookEvents$: Observable<any> = this.select((state) => state.webhookEvents);
-    /** Selector for upload logo data */
-    readonly uploadLogo$: Observable<any> = this.select((state) => state.uploadLogo);
     /** Get feature type data */
     readonly getFeatureType = this.effect((data) => {
         return data.pipe(
@@ -682,31 +678,6 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                                 return this.patchState({ isLoading: false });
                             }
                             return this.patchState({ isLoading: false, webhookEvents: res.data });
-                        },
-                        (error: any) => {
-                            this.showError(error.errors);
-                            this.patchState({ isLoading: false });
-                        }
-                    ),
-                    catchError((err) => EMPTY)
-                );
-            })
-        );
-    });
-
-    readonly uploadLogo = this.effect((data: Observable<{ id: string | number; formData: FormData }>) => {
-        return data.pipe(
-            switchMap((req) => {
-                this.patchState({ isLoading: true, uploadLogo: null });
-                return this.service.uploadLogo(req.id, req.formData).pipe(
-                    tapResponse(
-                        (res: BaseResponse<any, void>) => {
-                            if (res?.hasError) {
-                                this.showError(res.errors);
-                                return this.patchState({ isLoading: false });
-                            }
-                            this.toast.success('Logo uploaded successfully');
-                            return this.patchState({ isLoading: false, uploadLogo: res.data });
                         },
                         (error: any) => {
                             this.showError(error.errors);
