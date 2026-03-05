@@ -21,6 +21,28 @@
     width: 250px;
 }
 
+.configure-method-dialog-content {
+    max-height: 65vh;
+    overflow-y: auto;
+}
+
+// Show Configure column edit button only on row hover
+.configure-methods-table {
+    tr.mat-row,
+    tr.mat-mdc-row {
+        .mat-column-configure button {
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+        &:hover .mat-column-configure button {
+            opacity: 1;
+        }
+    }
+    th {
+        font-size: var(--font-size-common-14) !important;
+    }
+}
+
 // Fix table borders
 .default-table {
     .mat-mdc-row {
@@ -409,7 +431,6 @@
 .info-icon {
     color: var(--color-common-primary, #1976d2);
     font-size: 17px;
-    cursor: help;
     opacity: 0.7;
     transition: opacity 0.2s ease-in-out;
     position: absolute;
@@ -575,7 +596,6 @@
             color: #ffffff !important;
         }
         .mat-form-field-outline-thick {
-            background-color: #fffcfc !important;
             color: #ffffff !important;
         }
         .mat-form-field-outline-start,
@@ -892,4 +912,70 @@
             }
         }
     }
+}
+
+// Branding step: apply border radius to all preview elements (variable --branding-border-radius set on .auth-credentials)
+.auth-credentials {
+    border-radius: var(--branding-border-radius, 8px) !important;
+    // mat-form-field and other elements use --border-common-radius-4; override with branding radius
+    --border-common-radius-4: var(--branding-border-radius, 8px);
+}
+.auth-credentials .branding-preview-btn {
+    background-color: var(--branding-button-color, #19e6ce) !important;
+    color: var(--branding-button-text-color, #000000) !important;
+    border-radius: var(--branding-border-radius, 8px) !important;
+}
+.auth-credentials .branding-preview-btn:hover {
+    background-color: var(--branding-button-hover-color, #19e6ce) !important;
+}
+.auth-credentials .auth-option-btn {
+    border-radius: var(--branding-border-radius, 8px) !important;
+}
+.auth-credentials .social-login-icon-box {
+    border-radius: var(--branding-border-radius, 8px) !important;
+}
+
+// Email or Phone & Password fields in preview: apply user's border radius to outline
+::ng-deep .auth-credentials .branding-preview-input .mdc-text-field--outlined {
+    --mdc-outlined-text-field-container-shape: var(--branding-border-radius, 8px) !important;
+}
+::ng-deep .auth-credentials .branding-preview-input .mdc-notched-outline .mdc-notched-outline__leading {
+    border-top-left-radius: var(--branding-border-radius, 8px) !important;
+    border-bottom-left-radius: var(--branding-border-radius, 8px) !important;
+}
+::ng-deep .auth-credentials .branding-preview-input .mdc-notched-outline .mdc-notched-outline__trailing {
+    border-top-right-radius: var(--branding-border-radius, 8px) !important;
+    border-bottom-right-radius: var(--branding-border-radius, 8px) !important;
+}
+::ng-deep .auth-credentials .branding-preview-input .mdc-notched-outline .mdc-notched-outline__notch {
+    border-top-left-radius: var(--branding-border-radius, 8px) !important;
+    border-top-right-radius: var(--branding-border-radius, 8px) !important;
+}
+
+.branding-preview-logo {
+    max-height: 48px;
+    max-width: 160px;
+    object-fit: contain;
+}
+
+.branding-step-content {
+    min-height: 400px;
+}
+
+// Use app green theme for logo radio buttons (instead of default blue)
+::ng-deep .branding-logo-radio {
+    .mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__outer-circle,
+    .mat-mdc-radio-button .mdc-radio__outer-circle {
+        border-color: var(--color-dark-accent) !important;
+    }
+    .mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__inner-circle {
+        border-color: var(--color-dark-accent) !important;
+        background-color: var(--color-dark-accent) !important;
+    }
+    .mat-mdc-radio-button .mdc-radio__background::before {
+        background-color: var(--color-dark-accent) !important;
+    }
+}
+.mat-tab-body-wrapper {
+    height: 100%;
 }
