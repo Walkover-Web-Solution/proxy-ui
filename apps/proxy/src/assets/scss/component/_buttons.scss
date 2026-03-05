@@ -298,3 +298,29 @@ button.mat-btn-md.mat-btn-wran:hover[disabled] {
         }
     }
 }
+.radio-button-custom-style {
+    .mat-radio-button {
+        .mat-radio-outer-circle {
+            border-color: var(--color-dark-accent) !important;
+        }
+
+        .mat-radio-inner-circle {
+            background-color: var(--color-dark-accent) !important;
+        }
+    }
+}
+.accent-color {
+    .material-icons {
+        &.mat-icon {
+            &.mat-icon-no-color {
+                color: var(--color-dark-accent) !important;
+                &:hover {
+                    color: var(--color-dark-accent) !important;
+                }
+            }
+        }
+    }
+}
+.accent-bg-color {
+    background-color: var(--color-dark-accent) !important;
+}
