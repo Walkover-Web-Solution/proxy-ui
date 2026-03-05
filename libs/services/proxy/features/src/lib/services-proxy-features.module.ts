@@ -122,4 +122,10 @@ export class FeaturesService {
     public getWebhookEvents(): Observable<BaseResponse<any, void>> {
         return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getWebhookEvents(this.baseURL));
     }
+
+    public uploadLogo(id: string | number, formData: FormData): Observable<BaseResponse<any, void>> {
+        return this.http.post<BaseResponse<any, void>>(FeaturesUrls.uploadLogo(this.baseURL, id), formData, {
+            headers: {},
+        });
+    }
 }
