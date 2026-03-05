@@ -72,7 +72,7 @@
             <ng-container *ngIf="loginStep === 1 && widgetDataArray?.length && isCreateAccountLink">
                 <p class="create-account" [ngStyle]="primaryColor ? { color: primaryColor } : {}">
                     Are you a new User?
-                    <a href="javascript:void(0)" (click)="showRegistration()"> Create an account</a>
+                    <a href="javascript:void(0)" (click)="showRegistration()">{{ signUpButtonText }}</a>
                 </p>
             </ng-container>
 
@@ -221,6 +221,8 @@
                             (click)="login()"
                             [disabled]="isLoginLoading$ | async"
                             class="w-100"
+                            [class.has-hover-color]="!!buttonHoverColor"
+                            [style.--btn-hover-color]="buttonHoverColor"
                             [ngStyle]="
                                 buttonColor
                                     ? {
@@ -235,7 +237,7 @@
                         >
                             <div class="loader">
                                 <mat-spinner matPrefix diameter="20" *ngIf="isLoginLoading$ | async"></mat-spinner>
-                                Login
+                                Sign in
                             </div>
                         </button>
                     </div>
@@ -287,6 +289,8 @@
                         (click)="sendResetPasswordOtp()"
                         [disabled]="isLoginLoading$ | async"
                         class="w-100"
+                        [class.has-hover-color]="!!buttonHoverColor"
+                        [style.--btn-hover-color]="buttonHoverColor"
                         [ngStyle]="
                             buttonColor
                                 ? {
@@ -423,6 +427,8 @@
                         (click)="verifyResetPasswordOtp()"
                         [disabled]="isLoginLoading$ | async"
                         class="w-100"
+                        [class.has-hover-color]="!!buttonHoverColor"
+                        [style.--btn-hover-color]="buttonHoverColor"
                         [ngStyle]="
                             buttonColor
                                 ? {

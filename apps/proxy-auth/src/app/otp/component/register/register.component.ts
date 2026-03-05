@@ -627,6 +627,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         return this.uiPreferences?.button_color || null;
     }
 
+    public get buttonHoverColor(): string | null {
+        if (this.version !== 'v2') return null;
+        return this.uiPreferences?.button_hover_color || null;
+    }
+
     public get buttonTextColor(): string | null {
         if (this.version !== 'v2') return null;
         return this.uiPreferences?.button_text_color || null;

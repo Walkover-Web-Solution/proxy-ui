@@ -64,6 +64,8 @@
                         mat-flat-button
                         [color]="buttonColor ? null : 'primary'"
                         [disabled]="(selectGetOtpInProcess$ | async) || (isOtpSent && !canResendOtp)"
+                        [class.has-hover-color]="!!buttonHoverColor"
+                        [style.--btn-hover-color]="buttonHoverColor"
                         [ngStyle]="
                             buttonColor
                                 ? {
@@ -236,6 +238,8 @@
                         #submitBtn
                         mat-flat-button
                         [color]="buttonColor ? null : 'primary'"
+                        [class.has-hover-color]="!!buttonHoverColor"
+                        [style.--btn-hover-color]="buttonHoverColor"
                         [ngStyle]="
                             buttonColor
                                 ? {

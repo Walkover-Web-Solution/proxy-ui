@@ -688,6 +688,10 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         return this.theme === 'dark';
     }
 
+    public get signUpButtonText(): string {
+        return this.uiPreferences?.sign_up_button_text || 'Create an account';
+    }
+
     private startResetPasswordTimer(): void {
         this.remainingSeconds = 15;
         this.resetPasswordTimerSubscription = interval(1000).subscribe(() => {

@@ -424,3 +424,16 @@ p {
     background-color: transparent !important;
     border-color: #ffffff !important;
 }
+
+// Custom button hover color applied via --btn-hover-color CSS property.
+// The .has-hover-color class is only added when buttonHoverColor is truthy,
+// so this rule is a no-op when the preference is not configured.
+.has-hover-color:hover:not([disabled]) {
+    background-color: var(--btn-hover-color) !important;
+
+    // Suppress Material's default state-layer ripple so it doesn't wash over the custom color
+    .mdc-button__ripple::before,
+    .mat-mdc-button-ripple::before {
+        opacity: 0 !important;
+    }
+}

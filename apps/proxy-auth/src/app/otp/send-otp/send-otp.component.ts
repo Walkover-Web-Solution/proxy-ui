@@ -2572,7 +2572,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
         // Set the text content
         paragraph.innerHTML = 'Are you a new user? ';
-        link.textContent = 'Create an account';
+        link.textContent = selectWidgetTheme?.ui_preferences?.sign_up_button_text || 'Create an account';
 
         // Add click event to the link
         link.addEventListener('click', (event) => {

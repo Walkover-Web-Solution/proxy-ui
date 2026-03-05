@@ -415,3 +415,14 @@ input[matinput]::-webkit-inner-spin-button {
         }
     }
 }
+
+// Custom button hover color applied via --btn-hover-color CSS property.
+// .has-hover-color is only added when buttonHoverColor is truthy.
+.has-hover-color:hover:not([disabled]) {
+    background-color: var(--btn-hover-color) !important;
+
+    .mdc-button__ripple::before,
+    .mat-mdc-button-ripple::before {
+        opacity: 0 !important;
+    }
+}
