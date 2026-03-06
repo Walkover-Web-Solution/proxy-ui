@@ -6,10 +6,10 @@ import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { environment } from '../../environments/environment';
 
 @Component({
-    selector: 'app-block-registration',
+    selector: 'app-registration',
     template: '',
 })
-export class BlockRegistrationComponent implements OnInit {
+export class RegistrationComponent implements OnInit {
     private scriptLoaded = new BehaviorSubject<boolean>(false);
     public loadingScript = new BehaviorSubject<boolean>(false);
 
@@ -22,6 +22,7 @@ export class BlockRegistrationComponent implements OnInit {
             firstName: params.get('first_name'),
             lastName: params.get('last_name'),
             signupServiceId: params.get('signup_service_id'),
+            email: params.get('email'),
         });
     }
 
@@ -30,14 +31,17 @@ export class BlockRegistrationComponent implements OnInit {
         firstName: string;
         lastName: string;
         signupServiceId: string;
+        email: string;
     }): void {
         const configuration = {
             referenceId: params.referenceId,
             type: 'authorization',
             isPreview: false,
-            first_name: params.firstName,
-            last_name: params.lastName,
-            signup_service_id: params.signupServiceId,
+            isRegisterFormOnly: true,
+            firstName: params.firstName,
+            lastName: params.lastName,
+            signupServiceId: params.signupServiceId,
+            email: params.email,
             success: (data) => {
                 this.ngZone.run(() => {
                     this.toast.success('Authorization successfully completed');
