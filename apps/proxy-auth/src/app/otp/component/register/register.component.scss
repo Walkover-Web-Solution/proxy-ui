@@ -413,6 +413,37 @@ input[matinput]::-webkit-inner-spin-button {
         .iti__dial-code {
             color: #ffffff !important;
         }
+
+        .iti--allow-dropdown {
+            .iti__flag-container {
+                .iti__country-list {
+                    background-color: #616161 !important;
+
+                    .iti__country:hover,
+                    .iti__country.iti__highlight {
+                        background-color: #757575 !important;
+                    }
+
+                    .iti__country {
+                        .iti__country-name {
+                            color: #ffffff !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+:host ::ng-deep .form-wrapper {
+    .register-user-details {
+        .iti--allow-dropdown {
+            .iti__flag-container {
+                .iti__selected-flag {
+                    border-top-left-radius: var(--field-border-radius, 4px) !important;
+                    border-bottom-left-radius: var(--field-border-radius, 4px) !important;
+                }
+            }
+        }
     }
 }
 
