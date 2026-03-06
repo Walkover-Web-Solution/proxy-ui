@@ -46,6 +46,10 @@
             (successReturn)="setShowRegistration(false)"
             (failureReturn)="returnFailureObj($event)"
             [prefillDetails]="prefillDetails"
+            [firstName]="otherData?.firstName"
+            [lastName]="otherData?.lastName"
+            [signupServiceId]="otherData?.signupServiceId"
+            [isRegisterFormOnly]="isRegisterFormOnly"
         ></proxy-register>
         <proxy-login
             *ngIf="showLogin | async"

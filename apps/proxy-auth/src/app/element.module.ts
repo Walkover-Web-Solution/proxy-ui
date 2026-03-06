@@ -65,6 +65,7 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.exclude_role_ids = config?.exclude_role_ids;
             sendOtpElement.include_role_ids = config?.include_role_ids;
             sendOtpElement.isHidden = config?.isHidden;
+            sendOtpElement.isRegisterFormOnly = config?.isRegisterFormOnly;
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;
             if (!config.success || typeof config.success !== 'function') {
