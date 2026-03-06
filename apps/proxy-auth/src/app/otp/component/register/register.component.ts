@@ -51,6 +51,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     @Input() public showCompanyDetails: boolean = true;
     @Input() public firstName: string;
     @Input() public lastName: string;
+    @Input() public email: string;
     @Input() public signupServiceId: string | number;
     @Input() public isRegisterFormOnly: boolean = false;
     public showPassword: boolean = false;
@@ -232,6 +233,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         }
         if (changes?.lastName?.currentValue) {
             this.registrationForm.get('user.lastName').setValue(changes.lastName.currentValue);
+        }
+        if (changes?.email?.currentValue) {
+            this.registrationForm.get('user.email').setValue(changes.email.currentValue);
         }
     }
     checkPrefillDetails() {
