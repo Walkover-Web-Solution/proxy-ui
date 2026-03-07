@@ -188,6 +188,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     ngOnInit(): void {
+        if (this.isRegisterFormOnly) {
+            this.registrationForm.get('user.email').disable();
+        }
         this.selectWidgetTheme$.pipe(takeUntil(this.destroy$)).subscribe((theme) => {
             this.uiPreferences = theme?.ui_preferences || {};
         });
@@ -416,7 +419,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             this.registrationForm.get('user.mobile').setErrors({ otpVerificationFailed: true });
             return;
         }
-        const formData = removeEmptyKeys(cloneDeep(this.registrationForm.value), true);
+        const formData = removeEmptyKeys(cloneDeep(this.registrationForm.getRawValue()), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
                 this.registrationViaLogin ? this.loginServiceData.state : this.serviceData?.state ?? '',
