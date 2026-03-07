@@ -52,6 +52,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     @Input() public showCompanyDetails: boolean = true;
     @Input() public firstName: string;
     @Input() public lastName: string;
+    @Input() public email: string;
     @Input() public signupServiceId: string | number;
     @Input() public isRegisterFormOnly: boolean = false;
     @Input() public version: string = 'v1';
@@ -187,6 +188,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     ngOnInit(): void {
+        if (this.isRegisterFormOnly) {
+            this.registrationForm.get('user.email').disable();
+        }
         this.selectWidgetTheme$.pipe(takeUntil(this.destroy$)).subscribe((theme) => {
             this.uiPreferences = theme?.ui_preferences || {};
         });
@@ -246,6 +250,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         }
         if (changes?.lastName?.currentValue) {
             this.registrationForm.get('user.lastName').setValue(changes.lastName.currentValue);
+        }
+        if (changes?.email?.currentValue) {
+            this.registrationForm.get('user.email').setValue(changes.email.currentValue);
         }
     }
     checkPrefillDetails() {
@@ -412,7 +419,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             this.registrationForm.get('user.mobile').setErrors({ otpVerificationFailed: true });
             return;
         }
-        const formData = removeEmptyKeys(cloneDeep(this.registrationForm.value), true);
+        const formData = removeEmptyKeys(cloneDeep(this.registrationForm.getRawValue()), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
                 this.registrationViaLogin ? this.loginServiceData.state : this.serviceData?.state ?? '',
