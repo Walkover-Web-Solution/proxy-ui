@@ -54,7 +54,6 @@
             (successReturn)="setShowRegistration(false)"
             (failureReturn)="returnFailureObj($event)"
             [prefillDetails]="prefillDetails"
-            [isUserProxyContainer]="isUserProxyContainer"
         ></proxy-register>
         <proxy-login
             *ngIf="showLogin | async"
@@ -63,7 +62,6 @@
             [loginServiceData]="loginWidgetData"
             (openPopUp)="setShowRegistrationFromLogin($event)"
             (failureReturn)="returnFailureObj($event)"
-            [isUserProxyContainer]="isUserProxyContainer"
         >
         </proxy-login>
     </div>
