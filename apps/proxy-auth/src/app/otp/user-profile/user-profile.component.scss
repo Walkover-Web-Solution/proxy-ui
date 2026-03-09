@@ -6,7 +6,7 @@ body {
     padding: 20px;
 }
 .container {
-    background: #fafafa;
+    background: #ffffff;
     padding: 15px 60px;
     text-align: left;
     position: relative;
@@ -101,7 +101,6 @@ body {
         table {
             background-color: transparent;
             box-shadow: none;
-            border: 1px solid #e0e0e0;
 
             th {
                 background-color: transparent;
@@ -136,21 +135,21 @@ body {
             color: #a0a0a0;
         }
 
-        button[mat-flat-button] {
-            background-color: #000000;
-            color: #ffffff;
-            border: 1px solid #ffffff;
+        // button[mat-flat-button] {
+        //     background-color: #000000;
+        //     color: #ffffff;
+        //     border: 1px solid #ffffff;
 
-            &:hover {
-                background-color: #222222;
-            }
+        //     &:hover {
+        //         background-color: #222222;
+        //     }
 
-            &[color='warn'] {
-                background-color: #000000;
-                color: #ffffff;
-                border: 1px solid #ffffff;
-            }
-        }
+        //     &[color='warn'] {
+        //         background-color: #000000;
+        //         color: #ffffff;
+        //         border: 1px solid #ffffff;
+        //     }
+        // }
 
         .mat-card {
             background-color: transparent !important;
@@ -336,6 +335,19 @@ td.mat-cell {
 }
 .toggle-btn:hover {
     background-color: #0056b3;
+}
+
+// Action cell: show Leave button only on row hover
+.action-cell {
+    .actions {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+}
+
+::ng-deep tr.mat-mdc-row:hover .action-cell .actions,
+::ng-deep tr.mat-row:hover .action-cell .actions {
+    opacity: 1;
 }
 
 .status-active {
