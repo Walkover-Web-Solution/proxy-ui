@@ -52,6 +52,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     @Input() public showCompanyDetails: boolean = true;
     @Input() public version: string = 'v1';
     @Input() public theme: string;
+    @Input() public isUserProxyContainer: boolean = true;
     public showPassword: boolean = false;
     public showConfirmPassword: boolean = false;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
@@ -355,7 +356,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                     verifyOtpV2Success: false,
                     resendOtpInProcess: false,
                     resendOtpSuccess: false,
-                    verifyOtpData: null,
+                    ...(this.isUserProxyContainer ? { verifyOtpData: null } : {}),
                     verifyOtpInProcess: false,
                     verifyOtpSuccess: false,
                     resendCount: 0,

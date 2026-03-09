@@ -114,6 +114,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     private createAccountTextAppended: boolean = false; // Flag to track if create account text has been appended
     private hcaptchaLoading: boolean = false;
     private hcaptchaRenderQueue: Array<() => void> = [];
+    public isUserProxyContainer: boolean = true;
 
     constructor(
         private ngZone: NgZone,
@@ -256,7 +257,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             });
         } else {
             this.setShowLogin(false);
-
+            this.isUserProxyContainer = false;
             this.show$ = of(false);
             this.animate = false;
             this.createAccountTextAppended = false;
