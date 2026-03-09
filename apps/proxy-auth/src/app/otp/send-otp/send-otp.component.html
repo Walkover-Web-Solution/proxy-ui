@@ -39,6 +39,7 @@
             (openPopUp)="setShowRegistrationFromSendOtpCenter($event)"
             (successReturn)="returnSuccessObj($event)"
             (failureReturn)="returnFailureObj($event)"
+            [isUserProxyContainer]="isUserProxyContainer"
         ></proxy-send-otp-center>
         <proxy-register
             *ngIf="showRegistration | async"
@@ -53,6 +54,7 @@
             (successReturn)="setShowRegistration(false)"
             (failureReturn)="returnFailureObj($event)"
             [prefillDetails]="prefillDetails"
+            [isUserProxyContainer]="isUserProxyContainer"
             [firstName]="otherData?.firstName"
             [lastName]="otherData?.lastName"
             [email]="otherData?.email"
@@ -66,6 +68,7 @@
             [loginServiceData]="loginWidgetData"
             (openPopUp)="setShowRegistrationFromLogin($event)"
             (failureReturn)="returnFailureObj($event)"
+            [isUserProxyContainer]="isUserProxyContainer"
         >
         </proxy-login>
     </div>
