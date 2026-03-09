@@ -34,7 +34,15 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     /** Store User data */
     public users$: Observable<IPaginatedResponse<IUser[]>> = this.componentStore.users$;
     /** Store display column */
-    public displayedColumns: string[] = ['name', 'email', 'phone_number', 'created_at'];
+    public displayedColumns: string[] = [
+        'name',
+        'email',
+        'phone_number',
+        'user_id',
+        'block_name',
+        'last_login',
+        'created_at',
+    ];
     /** Store params for fetching feature data */
     public params: any = {};
     /** Store default selected date range */

@@ -1,11 +1,24 @@
 import { ActivatedRoute } from '@angular/router';
 import { cloneDeep, isEqual } from 'lodash-es';
-import { Component, OnDestroy, OnInit, NgZone, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
+import {
+    Component,
+    OnDestroy,
+    OnInit,
+    NgZone,
+    ViewChildren,
+    QueryList,
+    ChangeDetectorRef,
+    ViewChild,
+    ElementRef,
+    AfterViewInit,
+    TemplateRef,
+} from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { BehaviorSubject, Observable, distinctUntilChanged, filter, of, take, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
 import {
     FeatureFieldType,
+    FeatureServiceIds,
     IFeature,
     IFeatureDetails,
     IFeatureType,
@@ -15,7 +28,7 @@ import {
     ProxyAuthScript,
     ProxyAuthScriptUrl,
 } from '@proxy/models/features-model';
-import { FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -74,8 +87,12 @@ export interface PeriodicElement {
     styleUrls: ['./create-feature.component.scss'],
     providers: [CreateFeatureComponentStore],
 })
-export class CreateFeatureComponent extends BaseComponent implements OnDestroy, OnInit {
+export class CreateFeatureComponent extends BaseComponent implements OnDestroy, OnInit, AfterViewInit {
     @ViewChildren('stepper') stepper: QueryList<MatStepper>;
+    @ViewChild('blockNameStepContent', { read: ElementRef }) blockNameStepContent: ElementRef<HTMLElement>;
+    @ViewChild('authorizationStepContent', { read: ElementRef }) authorizationStepContent: ElementRef<HTMLElement>;
+    @ViewChild('configureMethodDialogTemplate', { read: TemplateRef })
+    configureMethodDialogTemplateRef: TemplateRef<unknown>;
     public taxes: any[] = [];
     public createPlanForm: any;
     public taxConfigData: any;
@@ -131,10 +148,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public paymentDetailsById$: Observable<any> = this.componentStore.paymentDetailsById$;
     public updatePaymentDetails$: Observable<any> = this.componentStore.updatePaymentDetails$;
     public webhookEvents$: Observable<any> = this.componentStore.webhookEvents$;
+    public uploadLogo$: Observable<any> = this.componentStore.uploadLogo$;
     public isEditMode = false;
     public previewInputPosition: 'top' | 'bottom' = 'top';
     public selectedServiceIndex = 0;
     public selectedSubscriptionServiceIndex = -2;
+
+    /** Duplicate of service form used inside configure method dialog; patched back to serviceForm on close */
+    public configureMethodDialogForm: ServiceFormGroup | null = null;
 
     public selectedMethod = new BehaviorSubject<IMethod>(null);
     public featureId: number = null;
@@ -149,6 +170,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public featureFieldType = FeatureFieldType;
     public proxyAuthScript = ProxyAuthScript(environment.proxyServer);
 
+    public configureMethodsTableColumns: string[] = ['method', 'toggle', 'configure'];
+
+    /** Table data for Configure Method step (create block). Set when method loads so dataSource is stable and toggle binding works. */
+    public configureMethodsTableData: { name: string; index: number }[] = [];
+
+    public configureMethodDialog: MatDialogRef<any>;
     // Chip list
     public chipListSeparatorKeysCodes: number[] = [ENTER, COMMA];
     public chipListValues: { [key: string]: Set<string> } = {};
@@ -157,8 +184,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     // File
     public fileValues: { [key: string]: FileList } = {};
 
+    /** Logo input: 'url' = enter URL, 'file' = upload file */
+    public logoInputMode: 'url' | 'file' = 'url';
+
+    public isLogoUploading = false;
+
     // Options cache for select fields
     private optionsCache: { [key: string]: any[] } = {};
+    public logoUrl: string = null;
 
     public featureForm = new FormGroup({
         primaryDetails: new FormGroup({
@@ -169,8 +202,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 CustomValidators.noStartEndSpaces,
                 Validators.maxLength(60),
             ]),
-            feature_id: new FormControl<number>(null, [Validators.required]),
+            feature_id: new FormControl<number>(1, [Validators.required]),
             method_id: new FormControl<number>(null, [Validators.required]),
+            redirect_url: new FormControl<any>(null, [Validators.required, Validators.pattern(URL_REGEX)]),
         }),
         serviceDetails: new FormArray<ServiceFormGroup>([]),
         planDetails: new FormArray<any>([]),
@@ -180,28 +214,38 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             planSelected: new FormControl<string>(null, [Validators.required]),
         }),
         authorizationDetails: new FormGroup({
-            session_time: new FormControl<number>(null, [
+            session_time: new FormControl<number>(86400, [
                 Validators.required,
                 Validators.pattern(ONLY_INTEGER_REGEX),
                 Validators.min(60),
                 Validators.max(999999999),
             ]),
-            authorizationKey: new FormControl<string>(null, [
+            authorizationKey: new FormControl<string>('Authorization', [
                 Validators.required,
                 CustomValidators.minLengthThreeWithoutSpace,
             ]),
-            theme: new FormControl<string>('system', []),
-            version: new FormControl<string>('v1', []),
-            allowNewUserRegistration: new FormControl<boolean>(false, []),
             encryptionKey: new FormControl<string>(null, []),
-            redirect_url: new FormControl<any>(null, [Validators.required, Validators.pattern(URL_REGEX)]),
-            showSocialLoginIcons: new FormControl<boolean>(false, []),
             blockNewUserSignUps: new FormControl<boolean>(false, []),
         }),
         webhookDetails: new FormGroup({
             webhookUrl: new FormControl<string>(null, [Validators.required]),
             method: new FormControl<string>('POST', [Validators.required]),
             triggerEvents: new FormControl<string[]>([], []),
+        }),
+        brandingDetails: new FormGroup({
+            icons: new FormControl<boolean>(false, []),
+            logo_url: new FormControl<string>(null, []),
+            light_theme_primary_color: new FormControl<string>('#000000', []),
+            dark_theme_primary_color: new FormControl<string>('#ffffff', []),
+            button_color: new FormControl<string>('#19E6CE', []),
+            button_hover_color: new FormControl<string>('#19E6CE', []),
+            button_text_color: new FormControl<string>('#000000', []),
+            border_radius: new FormControl<string>('small', []),
+            title: new FormControl<string>('Sign in to your account', []),
+            sign_up_button_text: new FormControl<string>('Create an account', [Validators.required]),
+            create_account_link: new FormControl<boolean>(true, []),
+            theme: new FormControl<string>('system', []),
+            version: new FormControl<string>('v2', []),
         }),
         // New form controls for conditional steps
     });
@@ -228,6 +272,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.getFeatureDetalis();
             } else {
                 this.getFeatureType();
+                this.featureForm.get('brandingDetails.light_theme_primary_color')?.setValue('#000000');
+                this.featureForm.get('brandingDetails.dark_theme_primary_color')?.setValue('#ffffff');
             }
         });
 
@@ -282,10 +328,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             authorizationDetails: {
                                 session_time: feature.session_time,
                                 authorizationKey: feature.authorization_format.key,
-                                theme: feature.ui_preferences?.theme || 'system',
-                                version: feature.ui_preferences?.version || 'v1',
-                                showSocialLoginIcons: feature.ui_preferences?.icons || false,
-                                allowNewUserRegistration: feature.ui_preferences?.create_account_link || false,
                                 encryptionKey: feature.encryption_key,
                                 blockNewUserSignUps: feature.block_registration || false,
                             },
@@ -294,10 +336,26 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 method: feature.webhook?.method,
                                 triggerEvents: feature.trigger_events || feature.webhook_events || [],
                             },
+                            brandingDetails: {
+                                logo_url: feature.ui_preferences?.logo_url,
+                                light_theme_primary_color: feature.ui_preferences?.light_theme_primary_color,
+                                dark_theme_primary_color: feature.ui_preferences?.dark_theme_primary_color,
+                                button_color: feature.ui_preferences?.button_color,
+                                button_hover_color: feature.ui_preferences?.button_hover_color,
+                                button_text_color:
+                                    feature.ui_preferences?.button_text_color ?? feature.ui_preferences?.text_color,
+                                border_radius: feature.ui_preferences?.border_radius,
+                                title: feature.ui_preferences?.title,
+                                sign_up_button_text: feature.ui_preferences?.sign_up_button_text ?? 'Create an account',
+                                icons: feature.ui_preferences?.icons ?? false,
+                                create_account_link: feature.ui_preferences?.create_account_link ?? true,
+                                theme: feature.ui_preferences?.theme || 'system',
+                                version: feature.ui_preferences?.version || 'v1',
+                            },
                         });
                         // Clear redirect_url validators in edit mode since the field is hidden
-                        this.featureForm.get('authorizationDetails.redirect_url')?.clearValidators();
-                        this.featureForm.get('authorizationDetails.redirect_url')?.updateValueAndValidity();
+                        this.featureForm.get('primaryDetails.redirect_url')?.clearValidators();
+                        this.featureForm.get('primaryDetails.redirect_url')?.updateValueAndValidity();
                         this.previewInputPosition = feature.ui_preferences?.input_fields || 'top';
                     });
                 });
@@ -325,7 +383,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     configurations: new FormGroup({}),
                     createPlanForm: new FormGroup({}),
                     chargesForm: new FormGroup({}),
-                    is_enable: new FormControl<boolean>(this.isEditMode ? serviceValues?.is_enable : true),
+                    is_enable: new FormControl<boolean>(
+                        this.isEditMode
+                            ? serviceValues?.is_enable
+                            : FeatureServiceIds.GoogleAuthentication === service.service_id ||
+                              FeatureServiceIds.Msg91OtpService === service.service_id
+                    ),
                 });
                 if (service.requirements) {
                     Object.entries(service.requirements).forEach(([key, config]) => {
@@ -351,6 +414,15 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 }
                 this.featureForm.controls.serviceDetails.push(serviceFormGroup);
             });
+            this.configureMethodsTableData = method.method_services.map((s, i) => ({ name: s.name, index: i }));
+            // After building service details for authorization block, sync redirect_url into all service redirect_uri fields
+            if (
+                !this.isEditMode &&
+                this.featureForm.get('primaryDetails.feature_id')?.value === 1 &&
+                this.featureForm.get('primaryDetails.redirect_url')?.value
+            ) {
+                this.setRedirectUrlInServiceDetails();
+            }
         });
         this.createUpdateObject$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((obj) => {
             this.proxyAuthScript = ProxyAuthScript(
@@ -375,6 +447,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     this.stepper?.first?.next();
                 }, 10);
             }
+            this.featureId = obj.id;
+            this.demoDiv$ = of(`<div id="${obj.reference_id}"></div>`);
         });
 
         this.createBillableMetric$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((metric) => {
@@ -501,13 +575,110 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 }
             }
         });
+        this.uploadLogo$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((data) => {
+            const url = data?.logo_url ?? data?.url;
+            if (url) {
+                // this.featureForm.get('brandingDetails.logo_url')?.setValue(url);
+                this.logoUrl = url;
+            }
+            this.isLogoUploading = false;
+            this.cdr.markForCheck();
+        });
     }
+
+    public validateFirstStepAndNext(nameControl: AbstractControl): void {
+        nameControl.markAllAsTouched();
+        const featureId = this.featureForm.get('primaryDetails.feature_id')?.value;
+        if (featureId === 1) {
+            this.featureForm.get('primaryDetails.redirect_url')?.markAllAsTouched();
+        }
+        if (nameControl.invalid) {
+            return;
+        }
+        if (featureId === 1) {
+            const redirectUrlControl = this.featureForm.get('primaryDetails.redirect_url');
+            if (redirectUrlControl?.invalid) {
+                return;
+            }
+            // Sync redirect_url into all service redirect_uri fields before showing Configure Method step
+            this.setRedirectUrlInServiceDetails();
+        }
+        this.stepper?.first?.next();
+    }
+
+    public get validateFirstStep(): boolean {
+        const nameControl = this.featureForm.get('primaryDetails.name');
+        const featureId = this.featureForm.get('primaryDetails.feature_id')?.value;
+        const redirectUrlControl = this.featureForm.get('primaryDetails.redirect_url');
+        if (nameControl.invalid || redirectUrlControl?.invalid) {
+            return false;
+        }
+        if (featureId === 1) {
+            const redirectUrlControl = this.featureForm.get('primaryDetails.redirect_url');
+            if (redirectUrlControl?.invalid) {
+                return false;
+            }
+            // Sync redirect_url into all service redirect_uri fields before showing Configure Method step
+            this.setRedirectUrlInServiceDetails();
+        }
+        return true;
+    }
+
+    /** Default primary color: black in light theme, white in dark theme */
+    public getDefaultPrimaryColor(): string {
+        return typeof localStorage !== 'undefined' && localStorage.getItem('selected-theme') === 'dark-theme'
+            ? '#ffffff'
+            : '#000000';
+    }
+
+    /** Returns the effective primary color based on the selected branding theme */
+    public getEffectivePrimaryColor(): string {
+        const theme = this.featureForm.get('brandingDetails.theme')?.value;
+        const isDark =
+            theme === 'dark' ||
+            (theme === 'system' &&
+                typeof localStorage !== 'undefined' &&
+                localStorage.getItem('selected-theme') === 'dark-theme');
+        if (isDark) {
+            return this.featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff';
+        }
+        return this.featureForm.get('brandingDetails.light_theme_primary_color')?.value || '#000000';
+    }
+
+    public getBrandingBorderRadiusValue(): string {
+        const v = this.featureForm.get('brandingDetails.border_radius')?.value;
+        switch (v) {
+            case 'none':
+                return '0';
+            case 'small':
+                return '4px';
+            case 'medium':
+                return '8px';
+            case 'large':
+                return '12px';
+            default:
+                return '8px';
+        }
+    }
+
+    public onBrandingLogoFileSelected(event: Event): void {
+        const input = event.target as HTMLInputElement;
+        const file = input?.files?.[0];
+        if (!file || !this.featureId) return;
+        input.value = '';
+        const formData = new FormData();
+        formData.append('logo', file);
+        this.isLogoUploading = true;
+        this.cdr.markForCheck();
+        this.componentStore.uploadLogo({ id: this.featureId, formData });
+    }
+
     public setRedirectUrlInServiceDetails(): void {
         const serviceDetailsForm = this.featureForm.controls.serviceDetails;
-        const redirectUrl = this.featureForm.controls.authorizationDetails.value.redirect_url;
+        const redirectUrl = this.featureForm.controls.primaryDetails.value.redirect_url;
         serviceDetailsForm.controls.forEach((formGroup) => {
             const redirectUrlControl = formGroup.controls.configurations.controls['redirect_uri'] as FormControl;
-            if (redirectUrlControl) {
+            if (redirectUrlControl && !redirectUrlControl.value) {
                 redirectUrlControl.setValue(redirectUrl);
                 formGroup.markAsDirty();
             }
@@ -529,10 +700,13 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 },
                 session_time: featureFormData.authorizationDetails.session_time,
                 extra_configurations: {
-                    theme: featureFormData.authorizationDetails.theme || 'system',
-                    allowNewUserRegistration: featureFormData.authorizationDetails.allowNewUserRegistration || false,
+                    theme: featureFormData.brandingDetails.theme,
+                    create_account_link: featureFormData.brandingDetails.create_account_link || false,
                 },
                 services: this.getServicePayload(selectedMethod),
+                ui_preferences: {
+                    ...featureFormData.brandingDetails,
+                },
             };
             // Added setTimeout because payload creation might contain promises
             setTimeout(() => {
@@ -541,10 +715,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }
     }
 
-    public updateFeature(type: 'name' | 'service' | 'authorization' | 'webhook') {
+    public updateFeature(type: 'name' | 'service' | 'authorization' | 'branding' | 'webhook') {
         let payload;
         const selectedMethod = cloneDeep(this.selectedMethod.getValue());
         const featureDetails: IFeatureDetails = this.getValueFromObservable(this.featureDetails$);
+        const brandingDetailsForm = this.featureForm.controls.brandingDetails;
+
         switch (type) {
             case 'name':
                 const primaryDetailsForm = this.featureForm.controls.primaryDetails;
@@ -562,8 +738,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 if (authorizationDetailsForm.valid) {
                     payload = {
                         extra_configurations: {
-                            theme: authorizationDetailsForm.value.theme,
-                            create_account_link: authorizationDetailsForm.value.allowNewUserRegistration || false,
+                            theme: brandingDetailsForm.controls.theme.value,
+                            create_account_link: brandingDetailsForm.controls.create_account_link.value || false,
                             default_role: {
                                 name: 'Owner',
                                 value: 1,
@@ -575,13 +751,13 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             ...featureDetails.authorization_format,
                             key: authorizationDetailsForm.value.authorizationKey,
                         },
-                        ui_preferences: {
-                            theme: authorizationDetailsForm.value.theme,
-                            create_account_link: authorizationDetailsForm.value.allowNewUserRegistration || false,
-                            icons: authorizationDetailsForm.value.showSocialLoginIcons || false,
-                            version: authorizationDetailsForm.value.version,
-                            input_fields: this.previewInputPosition,
-                        },
+                        // ui_preferences: {
+                        //     theme: brandingDetailsForm.controls.theme.value || 'system',
+                        //     create_account_link: brandingDetailsForm.controls.create_account_link.value || false,
+                        //     icons: brandingDetailsForm.controls.icons.value || false,
+                        //     version: brandingDetailsForm.controls.version.value || 'v1',
+                        //     input_fields: this.previewInputPosition,
+                        // },
                         session_time: authorizationDetailsForm.value.session_time,
                     };
                 } else {
@@ -596,6 +772,25 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     };
                 } else {
                     this.markDirtyServiceFormTouched();
+                    return;
+                }
+                break;
+            case 'branding':
+                if (brandingDetailsForm.valid) {
+                    const existingUiPrefs = (featureDetails as unknown as Record<string, unknown>)?.ui_preferences as
+                        | Record<string, unknown>
+                        | undefined;
+                    const { primary_color: _removed, ...cleanedUiPrefs } = existingUiPrefs || ({} as any);
+                    payload = {
+                        ui_preferences: {
+                            ...cleanedUiPrefs,
+                            ...brandingDetailsForm.value,
+                            input_fields: this.previewInputPosition,
+                            logo_url: this.logoInputMode === 'file' ? this.logoUrl : brandingDetailsForm.value.logo_url,
+                        },
+                    };
+                } else {
+                    brandingDetailsForm.markAllAsTouched();
                     return;
                 }
                 break;
@@ -661,6 +856,51 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         if (!this.isEditMode && event?.previouslySelectedIndex === 0) {
             this.getServiceMethods(this.featureForm.value.primaryDetails.feature_id);
         }
+        // When entering Block Name step (index 0), focus the name input if empty
+        if (!this.isEditMode && event?.selectedIndex === 0) {
+            setTimeout(() => this.focusBlockNameInputIfEmpty(), 0);
+        }
+        // When entering Authorization Setup step (index 3), focus session time input if empty
+        if (
+            !this.isEditMode &&
+            this.featureForm.get('primaryDetails.feature_id')?.value === 1 &&
+            event?.selectedIndex === 3
+        ) {
+            setTimeout(() => this.focusSessionTimeInputIfEmpty(), 0);
+        }
+        // When entering Configure Method (step 1) for authorization block, ensure redirect_url is synced to all service redirect_uri fields
+        if (
+            !this.isEditMode &&
+            this.featureForm.get('primaryDetails.feature_id')?.value === 1 &&
+            event?.selectedIndex === 1
+        ) {
+            this.setRedirectUrlInServiceDetails();
+        }
+    }
+
+    public ngAfterViewInit(): void {
+        if (!this.isEditMode && this.stepper?.first?.selectedIndex === 0) {
+            setTimeout(() => this.focusBlockNameInputIfEmpty(), 100);
+        }
+    }
+
+    private focusBlockNameInputIfEmpty(): void {
+        const nameValue = this.featureForm.get('primaryDetails.name')?.value;
+        if (nameValue != null && String(nameValue).trim() !== '') {
+            return;
+        }
+        this.blockNameStepContent?.nativeElement?.querySelector<HTMLInputElement>('input')?.focus();
+    }
+
+    private focusSessionTimeInputIfEmpty(): void {
+        const sessionTimeValue = this.featureForm.get('authorizationDetails.session_time')?.value;
+        const hasValue =
+            sessionTimeValue != null &&
+            (typeof sessionTimeValue === 'string' ? String(sessionTimeValue).trim() !== '' : true);
+        if (hasValue) {
+            return;
+        }
+        this.authorizationStepContent?.nativeElement?.querySelector<HTMLInputElement>('input')?.focus();
     }
 
     public ngOnDestroy(): void {
@@ -799,14 +1039,49 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         this.featureForm.controls.planDetails.push(planFormGroup);
     }
 
-    public resetFormGroup(formGroup: FormGroup, index: number): void {
+    public resetFormGroup(formGroup: FormGroup | null | undefined, index: number): void {
+        if (!formGroup) return;
+        const isEnableValue = formGroup.get('is_enable')?.value;
         formGroup.reset();
+        if (formGroup.get('is_enable') && isEnableValue !== undefined) {
+            formGroup.get('is_enable')?.setValue(isEnableValue);
+        }
         Object.keys(this.chipListValues)
             .filter((key) => +key.split('_')[1] === index)
             .forEach((key) => (this.chipListValues[key] = new Set(this.chipListReadOnlyValues[key])));
         Object.keys(this.fileValues)
             .filter((key) => +key.split('_')[1] === index)
             .forEach((key) => (this.fileValues[key] = null));
+    }
+
+    /** Deep-clone a FormGroup (and nested FormGroups/FormArrays/FormControls) for use in dialog. Copies values and validators. */
+    private cloneFormGroup(source: FormGroup): FormGroup {
+        const clone = new FormGroup({});
+        Object.keys(source.controls).forEach((key) => {
+            const control = source.get(key);
+            if (control instanceof FormGroup) {
+                clone.addControl(key, this.cloneFormGroup(control));
+            } else if (control instanceof FormArray) {
+                clone.addControl(
+                    key,
+                    new FormArray(
+                        control.controls.map((c) =>
+                            c instanceof FormGroup ? this.cloneFormGroup(c) : this.cloneFormControl(c as FormControl)
+                        )
+                    )
+                );
+            } else {
+                clone.addControl(key, this.cloneFormControl(control as FormControl));
+            }
+        });
+        return clone;
+    }
+
+    private cloneFormControl(source: FormControl): FormControl {
+        return new FormControl(source.value, {
+            validators: source.validator,
+            asyncValidators: source.asyncValidator,
+        });
     }
 
     public updateChipListValues(
@@ -1730,5 +2005,51 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }
         this.http.post(url, sampleResponse).pipe(takeUntil(this.destroy$)).subscribe();
         this.toast.success('Sample response sent successfully');
+    }
+
+    /** Reset only the configure dialog form (duplicate), preserving is_enable. Does not touch chipListValues/fileValues. */
+    public resetConfigureDialogForm(): void {
+        if (!this.configureMethodDialogForm) return;
+        const isEnableValue = this.configureMethodDialogForm.get('is_enable')?.value;
+        this.configureMethodDialogForm.reset();
+        if (this.configureMethodDialogForm.get('is_enable') && isEnableValue !== undefined) {
+            this.configureMethodDialogForm.get('is_enable')?.setValue(isEnableValue);
+        }
+    }
+
+    public editService(index: number): void {
+        this.selectedServiceIndex = index;
+        const serviceDetailsArray = this.featureForm.get('serviceDetails') as FormArray;
+        const sourceForm = serviceDetailsArray?.at(index) as ServiceFormGroup | null;
+        if (!sourceForm) return;
+        this.configureMethodDialogForm = this.cloneFormGroup(sourceForm) as ServiceFormGroup;
+        this.configureMethodDialog = this.dialog.open(this.configureMethodDialogTemplateRef);
+        this.configureMethodDialog
+            .afterClosed()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((res) => {
+                if (res) {
+                    if (this.configureMethodDialogForm) {
+                        const targetForm = serviceDetailsArray?.at(this.selectedServiceIndex) as FormGroup | null;
+                        if (targetForm) {
+                            targetForm.patchValue(this.configureMethodDialogForm.getRawValue());
+                        }
+                        this.configureMethodDialogForm = null;
+                    }
+                }
+            });
+    }
+
+    public getSelectedServiceName(): string {
+        const method = this.selectedMethod.getValue();
+        return method?.method_services?.[this.selectedServiceIndex]?.name ?? 'Configure Service';
+    }
+
+    public closeDialog(): void {
+        if (this.configureMethodDialogForm?.valid) {
+            this.configureMethodDialog.close('true');
+        } else {
+            this.configureMethodDialogForm.markAllAsTouched();
+        }
     }
 }
