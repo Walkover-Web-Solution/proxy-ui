@@ -39,6 +39,7 @@
             (openPopUp)="setShowRegistrationFromSendOtpCenter($event)"
             (successReturn)="returnSuccessObj($event)"
             (failureReturn)="returnFailureObj($event)"
+            [isUserProxyContainer]="isUserProxyContainer"
         ></proxy-send-otp-center>
         <proxy-register
             *ngIf="showRegistration | async"

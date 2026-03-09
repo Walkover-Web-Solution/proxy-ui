@@ -252,7 +252,13 @@
                     [style.--field-border-radius]="borderRadiusValue || '8px'"
                     [class.dark-theme-login]="isDarkTheme"
                 >
-                    <button mat-icon-button class="back-button" (click)="changeLoginStep(1)" type="button">
+                    <button
+                        mat-icon-button
+                        class="back-button"
+                        (click)="changeLoginStep(1)"
+                        type="button"
+                        *ngIf="isUserProxyContainer"
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             height="16px"

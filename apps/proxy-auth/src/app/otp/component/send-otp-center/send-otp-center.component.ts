@@ -84,6 +84,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     @Input() public show_social_login_icons: boolean = false;
     @Input() public isCreateAccountLink: boolean;
     @Input() public theme: string;
+    @Input() public isUserProxyContainer: boolean = true;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public successReturn: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
@@ -458,7 +459,9 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
 
     public close(closeByUser: boolean = false) {
         document.getElementById(META_TAG_ID)?.remove();
-        this.resetStore();
+        if (this.isUserProxyContainer) {
+            this.resetStore();
+        }
         this.togglePopUp.emit();
         this.timeRemain = 0;
         if (closeByUser) {
