@@ -4,7 +4,10 @@
     [ngClass]="{
         'with-reference-id': referenceId,
         'without-reference-id': authToken,
-        'dark-theme': (theme === 'dark' && (type === 'user-management' || authToken)) || type === 'organization-details'
+        'dark-theme':
+            (theme === 'dark' && (type === 'user-management' || authToken)) || type === 'organization-details',
+        'user-profile-mode':
+            authToken && type !== 'user-management' && type !== 'subscription' && type !== 'organization-details'
     }"
 >
     <div
