@@ -65,6 +65,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public isHidden: boolean = false;
     @Input() public input_fields: string = InputFields.TOP;
     @Input() public show_social_login_icons: boolean = false;
+    @Input() public isRegisterFormOnly: boolean = false;
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
     }
@@ -188,6 +189,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             }, 3000);
         } else {
             this.toggleSendOtp(true);
+            if (this.isRegisterFormOnly) {
+                this.registrationViaLogin = false;
+                this.setShowRegistration(true);
+            }
         }
         this.loadExternalFonts();
         this.store.dispatch(

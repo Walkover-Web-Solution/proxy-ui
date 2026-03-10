@@ -52,6 +52,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     @Input() public showCompanyDetails: boolean = true;
     @Input() public version: string = 'v1';
     @Input() public theme: string;
+    @Input() public firstName: string;
+    @Input() public lastName: string;
+    @Input() public email: string;
+    @Input() public signupServiceId: string | number;
+    @Input() public isRegisterFormOnly: boolean = false;
     public showPassword: boolean = false;
     public showConfirmPassword: boolean = false;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
@@ -117,6 +122,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public isOtpSent: boolean = false;
     public isNumberChanged: boolean = false;
     public otpError: string = '';
+    public otpVerificationToken: string = '';
 
     // Resend OTP timer properties
     public resendTimer: number = 0;
@@ -185,6 +191,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         this.selectWidgetTheme$.pipe(takeUntil(this.destroy$)).subscribe((theme) => {
             this.uiPreferences = theme?.ui_preferences || {};
         });
+        if (this.isRegisterFormOnly) {
+            this.registrationForm.get('user.email').disable();
+        }
         this.registrationForm
             .get('user.mobile')
             .valueChanges.pipe(takeUntil(this.destroy$))
@@ -207,6 +216,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 this.registrationForm.get('user.mobile').setErrors(null);
                 this.otpError = ''; // Clear error on successful verification
             }
+        });
+        this.selectVerifyOtpV2Data$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            this.otpVerificationToken = res?.data?.otp_verification_token;
         });
         this.selectGetOtpSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             this.isOtpSent = res;
@@ -232,6 +244,15 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     ngOnChanges(changes: SimpleChanges) {
         if (changes?.prefillDetails?.currentValue) {
             this.checkPrefillDetails();
+        }
+        if (changes?.firstName?.currentValue) {
+            this.registrationForm.get('user.firstName').setValue(changes.firstName.currentValue);
+        }
+        if (changes?.lastName?.currentValue) {
+            this.registrationForm.get('user.lastName').setValue(changes.lastName.currentValue);
+        }
+        if (changes?.email?.currentValue) {
+            this.registrationForm.get('user.email').setValue(changes.email.currentValue);
         }
     }
     checkPrefillDetails() {
@@ -420,7 +441,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             this.registrationForm.get('user.mobile').setErrors({ otpVerificationFailed: true });
             return;
         }
-        const formData = removeEmptyKeys(cloneDeep(this.registrationForm.value), true);
+        const formData = removeEmptyKeys(cloneDeep(this.registrationForm.getRawValue()), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
                 this.registrationViaLogin ? this.loginServiceData.state : this.serviceData?.state ?? '',
@@ -445,6 +466,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             service_id: this.registrationViaLogin ? this.loginServiceData.service_id : this.serviceData.service_id,
             url_unique_id: state?.url_unique_id,
             request_data: formData,
+            ...(this.signupServiceId && { signup_service_id: this.signupServiceId }),
         };
         const encodedData = this.otpUtilityService.aesEncrypt(
             JSON.stringify(payload),
@@ -453,14 +475,20 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             true
         );
         const registrationState = this.registrationViaLogin ? this.loginServiceData.state : this.serviceData.state;
-        this.otpService.register({ proxy_state: encodedData, state: registrationState }).subscribe(
-            (response) => {
-                window.location.href = response.data.redirect_url;
-            },
-            (err) => {
-                this.apiError.next(errorResolver(err?.error.errors));
-            }
-        );
+        this.otpService
+            .register({
+                proxy_state: encodedData,
+                state: registrationState,
+                otp_verification_token: this.otpVerificationToken,
+            })
+            .subscribe(
+                (response) => {
+                    window.location.href = response.data.redirect_url;
+                },
+                (err) => {
+                    this.apiError.next(errorResolver(err?.error.errors));
+                }
+            );
     }
 
     public getOtp() {
