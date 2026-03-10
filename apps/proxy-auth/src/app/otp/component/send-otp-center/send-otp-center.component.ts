@@ -39,6 +39,7 @@ import {
     selectVerifyOtpInProcess,
     selectVerifyOtpSuccess,
     selectWidgetData,
+    selectWidgetTheme,
 } from '../../store/selectors';
 import { isEqual } from 'lodash-es';
 import { debounceTime, distinctUntilChanged, skip, take, takeUntil } from 'rxjs/operators';
@@ -83,6 +84,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     @Input() public show_social_login_icons: boolean = false;
     @Input() public isCreateAccountLink: boolean;
     @Input() public theme: string;
+    @Input() public isUserProxyContainer: boolean = true;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public successReturn: EventEmitter<any> = new EventEmitter();
     @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
@@ -109,6 +111,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public selectVerifyOtpSuccess$: Observable<boolean>;
 
     public selectWidgetData$: Observable<any>;
+    public selectWidgetTheme$: Observable<any>;
     public selectGetOtpRes$: Observable<IGetOtpRes>;
     public selectResendCount$: Observable<number>;
     public selectApiErrorResponse$: Observable<any>;
@@ -176,6 +179,8 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public otpData$: Observable<any>;
     public resetPasswordResult$: Observable<any>;
 
+    public uiPreferences: any = {};
+
     constructor(
         private store: Store<IAppState>,
         private cdr: ChangeDetectorRef,
@@ -242,6 +247,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
             takeUntil(this.destroy$)
         );
         this.selectWidgetData$ = this.store.pipe(select(selectWidgetData), takeUntil(this.destroy$));
+        this.selectWidgetTheme$ = this.store.pipe(select(selectWidgetTheme), takeUntil(this.destroy$));
         this.isLoginLoading$ = this.loginComponentStore.isLoading$;
         this.otpData$ = this.loginComponentStore.otpdata$;
         this.resetPasswordResult$ = this.loginComponentStore.resetPassword$;
@@ -343,6 +349,10 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
                     this.resetPasswordForm.get('confirmPassword').updateValueAndValidity();
                 }
             });
+
+        this.selectWidgetTheme$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((theme) => {
+            this.uiPreferences = theme?.ui_preferences || {};
+        });
 
         // Subscribe to forgot password mode from service
         this.otpWidgetService.forgotPasswordMode.pipe(takeUntil(this.destroy$)).subscribe((mode) => {
@@ -449,7 +459,9 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
 
     public close(closeByUser: boolean = false) {
         document.getElementById(META_TAG_ID)?.remove();
-        this.resetStore();
+        if (this.isUserProxyContainer) {
+            this.resetStore();
+        }
         this.togglePopUp.emit();
         this.timeRemain = 0;
         if (closeByUser) {
@@ -623,6 +635,64 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
             'otp': this.resetPasswordForm.get('otp').value,
         };
         this.loginComponentStore.verfyPasswordOtp(verifyOtpData);
+    }
+
+    public get titleText(): string {
+        if (this.version === SendOtpCenterVersion.V2 && this.uiPreferences?.title) {
+            return this.uiPreferences.title;
+        }
+        return 'Login';
+    }
+
+    public get primaryColor(): string | null {
+        if (this.version !== SendOtpCenterVersion.V2) {
+            return null;
+        }
+        const isDark = this.theme === 'dark';
+        return isDark
+            ? this.uiPreferences?.dark_theme_primary_color || null
+            : this.uiPreferences?.light_theme_primary_color || null;
+    }
+
+    public get borderRadiusValue(): string | null {
+        if (this.version !== SendOtpCenterVersion.V2) {
+            return null;
+        }
+        switch (this.uiPreferences?.border_radius) {
+            case 'none':
+                return '0';
+            case 'small':
+                return '4px';
+            case 'medium':
+                return '8px';
+            case 'large':
+                return '12px';
+            default:
+                return null;
+        }
+    }
+
+    public get buttonColor(): string | null {
+        if (this.version !== SendOtpCenterVersion.V2) return null;
+        return this.uiPreferences?.button_color || null;
+    }
+
+    public get buttonHoverColor(): string | null {
+        if (this.version !== SendOtpCenterVersion.V2) return null;
+        return this.uiPreferences?.button_hover_color || null;
+    }
+
+    public get buttonTextColor(): string | null {
+        if (this.version !== SendOtpCenterVersion.V2) return null;
+        return this.uiPreferences?.button_text_color || null;
+    }
+
+    public get isDarkTheme(): boolean {
+        return this.theme === 'dark';
+    }
+
+    public get signUpButtonText(): string {
+        return this.uiPreferences?.sign_up_button_text || 'Create an account';
     }
 
     private startResetPasswordTimer(): void {

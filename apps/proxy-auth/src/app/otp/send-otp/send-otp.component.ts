@@ -110,9 +110,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
     public showSkeleton: boolean = false;
     public upgradeSubscriptionData: any;
+    public dialogBorderRadius: string = null;
     private createAccountTextAppended: boolean = false; // Flag to track if create account text has been appended
     private hcaptchaLoading: boolean = false;
     private hcaptchaRenderQueue: Array<() => void> = [];
+    public isUserProxyContainer: boolean = true;
 
     constructor(
         private ngZone: NgZone,
@@ -152,14 +154,15 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.theme = prefersDark.matches ? Theme.DARK : Theme.LIGHT;
         }
         this.selectWidgetTheme$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((theme) => {
-            if (theme?.theme !== Theme.SYSTEM) {
-                this.theme = theme?.theme || theme;
+            if (theme?.ui_preferences?.theme !== Theme.SYSTEM) {
+                this.theme = theme?.ui_preferences.theme || theme;
             }
             this.loginWidgetData = theme?.registerState;
-            this.version = theme?.version || 'v1';
-            this.input_fields = theme?.input_fields || 'top';
-            this.show_social_login_icons = theme?.icons || false;
-            this.isCreateAccountTextAppended = theme?.create_account_link || false;
+            this.version = theme?.ui_preferences?.version || 'v1';
+            this.input_fields = theme?.ui_preferences?.input_fields || 'top';
+            this.show_social_login_icons = theme?.ui_preferences?.icons || false;
+            this.isCreateAccountTextAppended = theme?.ui_preferences?.create_account_link || false;
+            this.dialogBorderRadius = this.getBorderRadiusCssValue(theme?.ui_preferences?.border_radius);
         });
         if (this.type === 'subscription') {
             // Load subscription plans first
@@ -254,7 +257,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             });
         } else {
             this.setShowLogin(false);
-
+            this.isUserProxyContainer = false;
             this.show$ = of(false);
             this.animate = false;
             this.createAccountTextAppended = false;
@@ -1051,11 +1054,81 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             });
     }
 
+    /**
+     * Maps ui_preferences.border_radius to CSS value.
+     * Values: 'none' | 'small' | 'medium' | 'large' -> 0 | 4px | 8px | 12px
+     */
+    private getBorderRadiusCssValue(borderRadius?: string): string {
+        if (this.version !== SendOtpCenterVersion.V2) {
+            return '8px';
+        }
+        switch (borderRadius) {
+            case 'none':
+                return '0';
+            case 'small':
+                return '4px';
+            case 'medium':
+                return '8px';
+            case 'large':
+                return '12px';
+            default:
+                return '8px';
+        }
+    }
+
+    /**
+     * Returns primary color from ui_preferences for the current effective theme.
+     * If theme is 'system', resolves via prefers-color-scheme.
+     */
+    private getPrimaryColorForCurrentTheme(uiPreferences?: {
+        light_theme_primary_color?: string;
+        dark_theme_primary_color?: string;
+    }): string {
+        const isDark =
+            this.theme === Theme.DARK ||
+            (this.theme === Theme.SYSTEM &&
+                typeof window !== 'undefined' &&
+                window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (this.version !== SendOtpCenterVersion.V2) {
+            return isDark ? '#FFFFFF' : '#000000';
+        }
+        return isDark
+            ? uiPreferences?.dark_theme_primary_color ?? '#FFFFFF'
+            : uiPreferences?.light_theme_primary_color ?? '#000000';
+    }
+
+    private createLogoElement(logoUrl: string): HTMLElement | null {
+        if (!logoUrl) {
+            return null;
+        }
+        const wrapper: HTMLElement = this.renderer.createElement('div');
+        wrapper.style.cssText = `
+            width: 316px;
+            display: flex;
+            justify-content: center;
+            margin: 0 8px 12px 8px;
+        `;
+        const img: HTMLImageElement = this.renderer.createElement('img');
+        img.src = logoUrl;
+        img.alt = 'Logo';
+        img.loading = 'lazy';
+        img.style.cssText = `
+            max-height: 48px;
+            max-width: 200px;
+            object-fit: contain;
+        `;
+        this.renderer.appendChild(wrapper, img);
+        return wrapper;
+    }
+
     public appendPasswordAuthenticationButtonV2(element, buttonsData, totalButtons: number): void {
         if (this.showSkeleton) {
             this.showSkeleton = false;
             this.removeSkeletonLoader(element);
         }
+        const selectWidgetTheme = this.getValueFromObservable(this.selectWidgetTheme$);
+        const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
+        const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
 
         const loginContainer: HTMLElement = this.renderer.createElement('div');
         loginContainer.style.cssText = `
@@ -1067,15 +1140,16 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             gap: 8px;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+            border-radius: ${borderRadius};
         `;
 
         const title: HTMLElement = this.renderer.createElement('div');
-        title.textContent = 'Login';
+        title.textContent = selectWidgetTheme?.ui_preferences?.title;
         title.style.cssText = `
             font-size: 16px;
             line-height: 20px;
             font-weight: 600;
-            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            color: ${primaryColor};
             margin: 0 8px 20px 8px;
             text-align: center;
             width: 316px;
@@ -1105,7 +1179,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             height: 44px;
             padding: 0 16px;
             border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
-            border-radius: 4px;
+            border-radius: ${borderRadius};
             background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
             color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
             font-size: 14px;
@@ -1115,10 +1189,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
         const usernameNote: HTMLElement = this.renderer.createElement('p');
         usernameNote.textContent = 'Note: Please enter your Mobile number with the country code (e.g. 91)';
+        const noteColor = this.version === 'v2' ? primaryColor : this.theme === 'dark' ? '#e5e7eb' : '#5d6164';
         usernameNote.style.cssText = `
             font-size: 12px;
             line-height: 18px;
-            color: ${this.theme === 'dark' ? '#e5e7eb' : '#5d6164'};
+            color: ${noteColor};
             margin: 0;
         `;
 
@@ -1150,7 +1225,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             height: 44px;
             padding: 0 44px 0 16px;
             border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
-            border-radius: 4px;
+            border-radius: ${borderRadius};
             background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
             color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
             font-size: 14px;
@@ -1173,6 +1248,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         hcaptchaPlaceholder.style.cssText = `
             display: inline-block;
             background: ${this.theme === 'dark' ? 'transparent' : 'transparent'};
+            border-radius: ${borderRadius};
         `;
         this.renderer.appendChild(hcaptchaWrapper, hcaptchaPlaceholder);
 
@@ -1189,14 +1265,18 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         `;
 
         const loginButton: HTMLButtonElement = this.renderer.createElement('button');
-        loginButton.textContent = 'Login';
+        loginButton.textContent = 'Sign in';
+        const isV2 = this.version === SendOtpCenterVersion.V2;
+        const buttonColor = isV2 ? selectWidgetTheme?.ui_preferences?.button_color || '#3f51b5' : '#3f51b5';
+        const buttonHoverColor = isV2 ? selectWidgetTheme?.ui_preferences?.button_hover_color || '#303f9f' : '#303f9f';
+        const buttonTextColor = isV2 ? selectWidgetTheme?.ui_preferences?.button_text_color || '#ffffff' : '#ffffff';
         loginButton.style.cssText = `
             height: 36px;
             padding: 0 12px;
-            background-color: #3f51b5;
-            color: #ffffff;
+            background-color: ${buttonColor};
+            color: ${buttonTextColor};
             border: none;
-            border-radius: 4px;
+            border-radius: ${borderRadius};
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
@@ -1204,6 +1284,12 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             box-shadow: 0 1px 2px rgba(0,0,0,0.08);
             margin-top: 4px;
         `;
+        loginButton.addEventListener('mouseenter', () => {
+            if (buttonHoverColor) loginButton.style.backgroundColor = buttonHoverColor;
+        });
+        loginButton.addEventListener('mouseleave', () => {
+            if (buttonColor) loginButton.style.backgroundColor = buttonColor;
+        });
 
         const forgotPasswordWrapper: HTMLElement = this.renderer.createElement('div');
         forgotPasswordWrapper.style.cssText = `
@@ -1299,9 +1385,21 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         // Position login form based on input_fields setting
         const isInputFieldsTop = this.input_fields === 'top';
 
-        // Always insert the "Login" title at the very top
-        if (element.firstChild) {
-            this.renderer.insertBefore(element, title, element.firstChild);
+        // Insert logo above the title if logo_url is available
+        const logoUrl = selectWidgetTheme?.ui_preferences?.logo_url;
+        const logoElement = this.createLogoElement(logoUrl);
+        if (logoElement) {
+            if (element.firstChild) {
+                this.renderer.insertBefore(element, logoElement, element.firstChild);
+            } else {
+                this.renderer.appendChild(element, logoElement);
+            }
+        }
+
+        // Always insert the "Login" title at the very top (after logo if present)
+        const logoOrFirst = logoElement ? logoElement.nextSibling : element.firstChild;
+        if (logoOrFirst) {
+            this.renderer.insertBefore(element, title, logoOrFirst);
         } else {
             this.renderer.appendChild(element, title);
         }
@@ -1335,11 +1433,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 background-color: #e0e0e0;
             `;
             const dividerText: HTMLElement = this.renderer.createElement('span');
-            dividerText.textContent = 'OR';
+            dividerText.textContent = 'Or continue with';
             dividerText.style.cssText = `
                 padding: 0 12px;
                 font-size: 12px;
-                color: ${this.theme === 'dark' ? '#e5e7eb' : '#5d6164'};
+                color: ${primaryColor};
                 font-weight: 500;
                 letter-spacing: 0.5px;
             `;
@@ -1505,6 +1603,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         // Clear the login container
         loginContainer.innerHTML = '';
 
+        const selectWidgetTheme = this.getValueFromObservable(this.selectWidgetTheme$);
+        const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
+
         // Create back button
         const backButton: HTMLButtonElement = this.renderer.createElement('button');
         backButton.type = 'button';
@@ -1556,7 +1657,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             height: 44px;
             padding: 0 16px;
             border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
-            border-radius: 4px;
+            border-radius: ${borderRadius};
             background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
             color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
             font-size: 14px;
@@ -1583,7 +1684,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             background-color: #3f51b5;
             color: #ffffff;
             border: none;
-            border-radius: 4px;
+            border-radius: ${borderRadius};
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
@@ -1659,6 +1760,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     private showChangePasswordForm(loginContainer: HTMLElement, buttonsData: any, userDetails: string): void {
         // Clear the login container
         loginContainer.innerHTML = '';
+
+        const selectWidgetTheme = this.getValueFromObservable(this.selectWidgetTheme$);
+        const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
 
         let remainingSeconds = 15;
         let timerInterval: any = null;
@@ -1786,7 +1890,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             height: 44px;
             padding: 0 16px;
             border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
-            border-radius: 4px;
+            border-radius: ${borderRadius};
             background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
             color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
             font-size: 14px;
@@ -1838,7 +1942,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             background-color: #3f51b5;
             color: #ffffff;
             border: none;
-            border-radius: 4px;
+            border-radius: ${borderRadius};
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
@@ -1948,6 +2052,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
      * Builds the login form content within the given container
      */
     private buildLoginFormContent(loginContainer: HTMLElement, buttonsData: any): void {
+        const selectWidgetTheme = this.getValueFromObservable(this.selectWidgetTheme$);
+        const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
+        const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
+
         const title: HTMLElement = this.renderer.createElement('div');
         title.textContent = 'Login';
         title.style.cssText = `
@@ -1975,7 +2083,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             height: 44px;
             padding: 0 16px;
             border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
-            border-radius: 4px;
+            border-radius: ${borderRadius};
             background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
             color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
             font-size: 14px;
@@ -1985,10 +2093,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
         const usernameNote: HTMLElement = this.renderer.createElement('p');
         usernameNote.textContent = 'Note: Please enter your Mobile number with the country code (e.g. 91)';
+        const noteColor = this.version === 'v2' ? primaryColor : this.theme === 'dark' ? '#e5e7eb' : '#5d6164';
         usernameNote.style.cssText = `
             font-size: 12px;
             line-height: 18px;
-            color: ${this.theme === 'dark' ? '#e5e7eb' : '#5d6164'};
+            color: ${noteColor};
             margin: 0;
         `;
 
@@ -2016,7 +2125,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             height: 44px;
             padding: 0 44px 0 16px;
             border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
-            border-radius: 4px;
+            border-radius: ${borderRadius};
             background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
             color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
             font-size: 14px;
@@ -2039,6 +2148,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         hcaptchaPlaceholder.style.cssText = `
             display: inline-block;
             background: ${this.theme === 'dark' ? 'transparent' : 'transparent'};
+            border-radius: ${borderRadius};
         `;
         this.renderer.appendChild(hcaptchaWrapper, hcaptchaPlaceholder);
 
@@ -2062,7 +2172,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             background-color: #3f51b5;
             color: #ffffff;
             border: none;
-            border-radius: 4px;
+            border-radius: ${borderRadius};
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
@@ -2148,6 +2258,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             })
         );
 
+        const logoUrl = selectWidgetTheme?.ui_preferences?.logo_url;
+        const logoElement = this.createLogoElement(logoUrl);
+        if (logoElement) {
+            this.renderer.appendChild(loginContainer, logoElement);
+        }
         this.renderer.appendChild(loginContainer, title);
         this.renderer.appendChild(usernameField, usernameInput);
         this.renderer.appendChild(usernameField, usernameNote);
@@ -2245,6 +2360,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.removeSkeletonLoader(element);
         }
 
+        const selectWidgetTheme = this.getValueFromObservable(this.selectWidgetTheme$);
+        const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
+
         const button: HTMLButtonElement = this.renderer.createElement('button');
         const image: HTMLImageElement = this.renderer.createElement('img');
 
@@ -2294,13 +2412,15 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 font-size: 14px;
                 background-color: transparent;
                 border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #d1d5db'};
-                border-radius: 8px;
+                border-radius: ${borderRadius};
                 cursor: pointer;
                 visibility: ${isOtpButton ? 'hidden' : 'visible'};
             `;
+            const invertIcon = this.shouldInvertIcon(buttonsData);
             image.style.cssText = `
                 height: 24px;
                 width: 24px;
+                ${invertIcon ? 'filter: invert(1);' : ''}
             `;
             image.src = buttonsData.icon;
             image.alt = buttonsData.text;
@@ -2334,7 +2454,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 font-size: 14px;
                 background-color: transparent;
                 border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #000000'};
-                border-radius: 4px;
+                border-radius: ${borderRadius};
                 height: 44px;
                 color: ${this.theme === 'dark' ? '#ffffff' : '#111827'};
                 margin: 8px 8px 16px 8px;
@@ -2342,9 +2462,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 width: ${useDiv ? '316px' : '260px'};
                 visibility: ${isOtpButton ? 'hidden' : 'visible'}; // Hide only OTP buttons until ready
             `;
+            const invertIcon = this.shouldInvertIcon(buttonsData);
             image.style.cssText = `
                 height: 20px;
                 width: 20px;
+                ${invertIcon ? 'filter: invert(1);' : ''}
             `;
             span.style.cssText = `
                 color: ${this.theme === 'dark' ? '#ffffff' : '#111827'};
@@ -2417,6 +2539,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         }
         this.createAccountTextAppended = true;
 
+        const selectWidgetTheme = this.getValueFromObservable(this.selectWidgetTheme$);
+        const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
+
         const paragraph: HTMLParagraphElement = this.renderer.createElement('p');
         const link: HTMLAnchorElement = this.renderer.createElement('a');
 
@@ -2430,7 +2555,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     align-items: center !important;
     justify-content: center !important;
     gap: 8px !important;
-    color: ${this.theme === 'dark' ? '#ffffff' : '#3f4346'};
+    color: ${primaryColor} !important;
     cursor: pointer !important;
     width: ${this.version === 'v1' ? '260px' : '316px'} !important;
 `;
@@ -2444,7 +2569,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
         // Set the text content
         paragraph.innerHTML = 'Are you a new user? ';
-        link.textContent = 'Create an account';
+        link.textContent = selectWidgetTheme?.ui_preferences?.sign_up_button_text || 'Create an account';
 
         // Add click event to the link
         link.addEventListener('click', (event) => {
@@ -2712,5 +2837,11 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         if (!this.isLogin) {
             window.location.href = this.loginRedirectUrl;
         }
+    }
+
+    private shouldInvertIcon(buttonsData: any): boolean {
+        const isApple = buttonsData?.text?.toLowerCase()?.includes('apple');
+        const isPassword = buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication;
+        return this.theme === Theme.DARK && (isApple || isPassword);
     }
 }
