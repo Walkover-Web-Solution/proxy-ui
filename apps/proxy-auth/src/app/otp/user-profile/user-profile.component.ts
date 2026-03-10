@@ -1,7 +1,7 @@
 import { NgStyle } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, of, takeUntil, take } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map, Observable, of, takeUntil, take, filter } from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { getUserDetails, leaveCompany, updateUserError } from '../store/actions/otp.action';
@@ -10,11 +10,7 @@ import {
     getUserProfileData,
     getUserProfileInProcess,
     updateSuccess,
-    getUserProfileSuccess,
-    leaveCompanyData,
-    leaveCompanyDataInProcess,
     leaveCompanySuccess,
-    loading,
 } from '../store/selectors';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash';
@@ -28,6 +24,7 @@ import { UPDATE_REGEX } from '@proxy/regex';
     selector: 'proxy-user-profile',
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class UserProfileComponent extends BaseComponent implements OnInit {
     @Input() public authToken: string;
@@ -74,6 +71,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     });
 
     displayedColumns: string[] = ['companyName', 'action'];
+    public isEditing = false;
     constructor(
         private store: Store<IAppState>,
         public dialog: MatDialog,
@@ -127,7 +125,8 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     openModal(companyId: number): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '400px',
-            data: { companyId: companyId, authToken: this.authToken },
+            data: { companyId: companyId, authToken: this.authToken, theme: this.theme },
+            panelClass: this.theme === 'dark' ? 'confirm-dialog-dark' : 'confirm-dialog-light',
             // Prevent CDK BlockScrollStrategy from applying left/top on <html> when dialog opens
             scrollStrategy: this.overlay.scrollStrategies.noop(),
         });
@@ -143,11 +142,20 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         });
     }
 
+    public cancelEdit() {
+        this.isEditing = false;
+        this.clientForm.get('name').setValue(this.previousName);
+    }
+
     updateUser() {
         const nameControl = this.clientForm.get('name');
         const enteredName = nameControl?.value?.trim();
+        if (enteredName === this.previousName) {
+            this.isEditing = false;
+            return;
+        }
 
-        if (!enteredName || enteredName === this.previousName || nameControl.invalid) {
+        if (!enteredName || nameControl.invalid) {
             return;
         }
 
@@ -159,8 +167,10 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
 
         this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken }));
 
-        this.update$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+        this.update$.pipe(filter(Boolean), take(1)).subscribe((res) => {
             if (res) {
+                this.isEditing = false;
+                this.previousName = enteredName;
                 this.snackBar.open('Information successfully updated', '✕', {
                     duration: 10000,
                     horizontalPosition: 'center',
@@ -170,9 +180,9 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
             }
         });
 
-        this.error$.pipe(take(1)).subscribe((err) => {
+        this.error$.pipe(filter(Boolean), take(1)).subscribe((err) => {
             if (err) {
-                this.snackBar.open('Something went wrong', '✕', {
+                this.snackBar.open(err[0], '✕', {
                     duration: 10000,
                     horizontalPosition: 'center',
                     verticalPosition: 'top',
@@ -182,7 +192,6 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         });
 
         window.parent.postMessage({ type: 'proxy', data: { event: 'userNameUpdated', enteredName: enteredName } }, '*');
-        this.previousName = enteredName;
     }
 
     public clear() {

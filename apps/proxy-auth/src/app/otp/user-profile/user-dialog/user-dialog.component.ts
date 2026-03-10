@@ -1,25 +1,30 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { select, Store } from '@ngrx/store';
 import { leaveCompany } from '../../store/actions/otp.action';
-import { distinctUntilChanged, Observable, take, takeUntil } from 'rxjs';
-import { leaveCompanyData, leaveCompanyDataInProcess, leaveCompanySuccess } from '../../store/selectors';
+import { Observable } from 'rxjs';
+import { leaveCompanySuccess } from '../../store/selectors';
 import { IAppState } from '../../store/app.state';
-import { isEqual } from 'lodash';
 
 @Component({
     selector: 'proxy-confirmation-dialog',
     templateUrl: './user-dialog.component.html',
     styleUrls: ['./user-dialog.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class ConfirmationDialogComponent {
     deleteCompany$: Observable<any>;
+    theme: string;
     constructor(
         public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { companyId: any; authToken: string },
+        @Inject(MAT_DIALOG_DATA) public data: { companyId: any; authToken: string; theme: string },
         private store: Store<IAppState>
     ) {
         this.deleteCompany$ = this.store.pipe(select(leaveCompanySuccess));
+        this.theme = data.theme;
+        if (this.theme === 'dark') {
+            this.dialogRef.addPanelClass('confirm-dialog-dark');
+        }
     }
 
     confirmleave() {
