@@ -241,7 +241,7 @@ export class OtpEffects {
                     catchError((err) => {
                         return of(
                             otpActions.updateUserError({
-                                errors: errorResolver(err.errors),
+                                errors: errorResolver(err.error.message),
                                 errorResponse: err,
                             })
                         );
