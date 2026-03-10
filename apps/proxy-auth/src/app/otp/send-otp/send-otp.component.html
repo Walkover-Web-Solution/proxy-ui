@@ -4,13 +4,21 @@
     [ngClass]="{
         'with-reference-id': referenceId,
         'without-reference-id': authToken,
-        'dark-theme': (theme === 'dark' && (type === 'user-management' || authToken)) || type === 'organization-details'
+        'dark-theme':
+            (theme === 'dark' && (type === 'user-management' || authToken)) || type === 'organization-details',
+        'user-profile-mode':
+            authToken && type !== 'user-management' && type !== 'subscription' && type !== 'organization-details'
     }"
 >
     <div
         class="otp-verification-dialog"
-        [ngClass]="{ 'animation-complete': animate, 'register-user': showRegistration | async }"
+        [ngClass]="{
+            'animation-complete': animate,
+            'register-user': showRegistration | async,
+            'dark-theme': theme === 'dark'
+        }"
         *ngIf="!authToken && type !== 'subscription' && type !== 'user-management'"
+        [ngStyle]="dialogBorderRadius ? { 'border-radius': dialogBorderRadius } : {}"
     >
         <mat-progress-bar
             mode="indeterminate"
@@ -34,6 +42,7 @@
             (openPopUp)="setShowRegistrationFromSendOtpCenter($event)"
             (successReturn)="returnSuccessObj($event)"
             (failureReturn)="returnFailureObj($event)"
+            [isUserProxyContainer]="isUserProxyContainer"
         ></proxy-send-otp-center>
         <proxy-register
             *ngIf="showRegistration | async"
@@ -42,6 +51,8 @@
             [loginServiceData]="loginWidgetData"
             [registrationViaLogin]="registrationViaLogin"
             [showCompanyDetails]="showCompanyDetails"
+            [version]="version"
+            [theme]="theme"
             (togglePopUp)="setShowRegistration(false)"
             (successReturn)="setShowRegistration(false)"
             (failureReturn)="returnFailureObj($event)"
