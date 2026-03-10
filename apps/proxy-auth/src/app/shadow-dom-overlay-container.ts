@@ -20,6 +20,24 @@ export class ShadowDomOverlayContainer extends OverlayContainer {
         super(document, _platform);
     }
 
+    /**
+     * Before returning the cached container, check whether it is still
+     * connected to the live document.  This can become false when the client
+     * application does a SPA navigation that removes the <proxy-auth> custom
+     * element (and therefore its shadow root) from the DOM.  A new
+     * <proxy-auth> element is created by initVerification() on the next
+     * navigation, but the CDK base class would keep returning the old,
+     * detached container — causing MatDialog / MatSnackBar to render into an
+     * invisible node.  Clearing _containerElement forces _createContainer()
+     * to run again and attach the overlay to the new shadow root.
+     */
+    override getContainerElement(): HTMLElement {
+        if (this._containerElement && !this._containerElement.isConnected) {
+            this._containerElement = null;
+        }
+        return super.getContainerElement();
+    }
+
     protected override _createContainer(): void {
         if (!this._platform.isBrowser) {
             return;
