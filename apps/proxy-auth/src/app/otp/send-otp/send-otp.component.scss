@@ -26,7 +26,7 @@
 .light-theme {
     background: rgb(33 37 40 / 95%);
 }
-.user-profile-mode {
+.user-profile-mode:not(.dark-theme) {
     background: #ffffff !important;
 }
 
