@@ -1,4 +1,4 @@
-<div class="dialog-header">
+<div class="dialog-header" [ngClass]="{ 'dark-theme': theme === 'dark' }">
     <button mat-icon-button class="back-button close-dialog" (click)="changeStep(step - 1)">
         <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#5f6368">
             <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
@@ -13,7 +13,14 @@
         </svg>
     </button>
 </div>
-<div *ngIf="step === 1" [formGroup]="loginForm" proxyMarkAllAsTouched [buttonRef]="loginBtn" (valid)="login()">
+<div
+    *ngIf="step === 1"
+    [formGroup]="loginForm"
+    proxyMarkAllAsTouched
+    [buttonRef]="loginBtn"
+    (valid)="login()"
+    [class.dark-theme-login]="theme === 'dark'"
+>
     <div class="heading">Login</div>
     <mat-form-field appearance="outline" class="input-width" *ngIf="loginForm.get('username') as userNameControl">
         <mat-label>Email or Mobile</mat-label>
@@ -52,7 +59,7 @@
             (verify)="onHCaptchaVerify($event)"
             (expired)="onHCaptchaExpired()"
             (error)="onHCaptchaError($event)"
-            theme="light"
+            [theme]="theme === 'dark' ? 'dark' : 'light'"
             size="normal"
         >
         </ng-hcaptcha>
@@ -72,7 +79,14 @@
     </div>
 </div>
 
-<div *ngIf="step === 2" [formGroup]="sendOtpForm" [buttonRef]="sendOtpBtn" (valid)="sendOtp()" proxyMarkAllAsTouched>
+<div
+    *ngIf="step === 2"
+    [formGroup]="sendOtpForm"
+    [buttonRef]="sendOtpBtn"
+    (valid)="sendOtp()"
+    proxyMarkAllAsTouched
+    [class.dark-theme-login]="theme === 'dark'"
+>
     <div class="heading">Reset Password</div>
     <ng-container
         [ngTemplateOutlet]="formField"
@@ -99,6 +113,7 @@
     proxyMarkAllAsTouched
     [buttonRef]="verifyOtpBtn"
     (valid)="verfiyOtp()"
+    [class.dark-theme-login]="theme === 'dark'"
 >
     <div class="heading">Change Password</div>
 
