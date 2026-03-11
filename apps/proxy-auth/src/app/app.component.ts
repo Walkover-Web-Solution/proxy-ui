@@ -26,17 +26,17 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     public initOtpProvider() {
         if (!environment.production) {
             const sendOTPConfig = {
-                referenceId: '4512365f177271329169a9754b71d4a',
+                // referenceId: '4512365m176216342869087ae458e09',
                 // type: 'organization-details',
                 // loginRedirectUrl: 'https://www.google.com',
                 // showCompanyDetails: false,
                 authToken:
-                    'UCtyL0ZtR3lWUUlqdWxzNC9ZWFpjNmlxdWZ0elBtb3ErUWc4UzJwNCt0TEg2djBGOTJWTENKSGRRbVNFU1pvZk1xU3dRZlZnY3R6T2p3Tlp2ZHRTSVY0WDR1S1ZZQVJzTlk1b1dGbS9Cano0THdOaldMejZqT05WQ3M4eXVVRG1pZ1NJOVB6QVNLYW9GdWlkTGxFczd0WnJuaW11MkpRMDBqZjBqRGQ0NEp6S0pvTG1WcEtPM3RrWVZ2Q2Y4UGlTT3hKaUlnNkplSEhrSGpyRWpGeU1DZz09',
+                    'ZGlYV0Z4ekRleUQwZEhXR2JvRllKaWh6cmhhb2hhTnhTMGdDdHlpa2ZaOU9LcGh5M3puLzZ6QTVRb3pGdGNPU0xlSC9SQjI3ckNweWk5cWg1aytpOVRTVmtUWXFRQW5rWEZ0c21KeEN6c0FmK1d5bWQxUk9lZHM4anlHSDI5Q3dxL0o3V0h6Yk9kMDBSVE5pc1FPekJkQVg3QXZ4K2xFbUViUGdhQ0Z6d3hGNXQreEN2dytUQW9GOEdseFFBU3FaNXYzbFVUalJDRitqc0EvQVduQUkrUT09',
                 // type: 'user-management',
                 // isHidden: true,
-                theme: 'dark',
+                // theme: 'dark',
                 // isPreview: true,
-                isLogin: true,
+                // isLogin: true,
                 target: '_self',
                 success: (data) => {
                     console.log('success response', data);
