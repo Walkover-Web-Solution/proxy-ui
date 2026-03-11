@@ -43,6 +43,14 @@ function documentReady(fn: any) {
 
 window['initVerification'] = (config: any) => {
     documentReady(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isRegisterFormOnlyFromParams = urlParams.get('isRegisterFormOnly') === 'true';
+        const paramsData = {
+            ...(urlParams.get('first_name') && { firstName: urlParams.get('first_name') }),
+            ...(urlParams.get('last_name') && { lastName: urlParams.get('last_name') }),
+            ...(urlParams.get('email') && { email: urlParams.get('email') }),
+            ...(urlParams.get('signup_service_id') && { signupServiceId: urlParams.get('signup_service_id') }),
+        };
         if (config?.referenceId || config?.authToken || config?.showCompanyDetails) {
             const findOtpProvider = document.querySelector('proxy-auth');
             if (findOtpProvider) {
@@ -65,6 +73,7 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.exclude_role_ids = config?.exclude_role_ids;
             sendOtpElement.include_role_ids = config?.include_role_ids;
             sendOtpElement.isHidden = config?.isHidden;
+            sendOtpElement.isRegisterFormOnly = config?.isRegisterFormOnly || isRegisterFormOnlyFromParams;
             sendOtpElement.target = config?.target ?? '_self';
             sendOtpElement.css = config.style;
             if (!config.success || typeof config.success !== 'function') {
@@ -73,8 +82,8 @@ window['initVerification'] = (config: any) => {
             sendOtpElement.successReturn = config.success;
             sendOtpElement.failureReturn = config.failure;
 
-            // omitting keys which are not required in API payload
-            sendOtpElement.otherData = omit(config, RESERVED_KEYS);
+            // omitting keys which are not required in API payload; query params fill in missing values
+            sendOtpElement.otherData = { ...paramsData, ...omit(config, RESERVED_KEYS) };
             if (document.getElementById('proxyContainer') && config?.type !== 'user-management') {
                 document.getElementById('proxyContainer').append(sendOtpElement);
             } else if (config?.type === 'user-management') {
