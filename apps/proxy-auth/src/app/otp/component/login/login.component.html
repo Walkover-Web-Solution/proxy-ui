@@ -54,15 +54,29 @@
 
     <!-- hCaptcha Component -->
     <div class="hcaptcha-container">
-        <ng-hcaptcha
-            #hCaptcha
-            (verify)="onHCaptchaVerify($event)"
-            (expired)="onHCaptchaExpired()"
-            (error)="onHCaptchaError($event)"
-            [theme]="theme === 'dark' ? 'dark' : 'light'"
-            size="normal"
-        >
-        </ng-hcaptcha>
+        <!-- hCaptcha is in 2.6 version but angular is in 14, due to this incompatibility, we are using ng-container to wrap the hCaptcha component instead of using [theme]="theme === 'dark' ? 'dark' : 'light'"-->
+        <ng-container *ngIf="theme === 'dark'">
+            <ng-hcaptcha
+                #hCaptcha
+                (verify)="onHCaptchaVerify($event)"
+                (expired)="onHCaptchaExpired()"
+                (error)="onHCaptchaError($event)"
+                theme="dark"
+                size="normal"
+            >
+            </ng-hcaptcha>
+        </ng-container>
+        <ng-container *ngIf="theme === 'light'">
+            <ng-hcaptcha
+                #hCaptcha
+                (verify)="onHCaptchaVerify($event)"
+                (expired)="onHCaptchaExpired()"
+                (error)="onHCaptchaError($event)"
+                theme="light"
+                size="normal"
+            >
+            </ng-hcaptcha>
+        </ng-container>
     </div>
 
     <div class="error-message" *ngIf="apiError | async">
