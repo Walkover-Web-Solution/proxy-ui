@@ -47,6 +47,15 @@ p {
 .close-button {
     right: 16px;
 }
+
+.dark-theme {
+    .back-button svg {
+        fill: #ffffff;
+    }
+    .close-button svg path {
+        fill: #ffffff;
+    }
+}
 .heading {
     font-size: 16px;
     line-height: 20px;
@@ -90,4 +99,71 @@ p {
     display: flex;
     justify-content: center;
     padding: 8px 0;
+}
+
+// Dark theme — mat-form-field overrides (mirrors register.component.scss pattern)
+:host ::ng-deep .dark-theme-login {
+    .mat-mdc-text-field-wrapper,
+    .mdc-text-field--outlined {
+        background-color: transparent !important;
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+        border-color: #ffffff !important;
+    }
+
+    .mat-mdc-form-field-flex {
+        background-color: transparent !important;
+    }
+
+    .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-floating-label,
+    .mat-mdc-form-field .mdc-floating-label {
+        color: #ffffff !important;
+    }
+
+    .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input,
+    .mat-mdc-input-element {
+        color: #ffffff !important;
+    }
+
+    // Legacy Material outline fields
+    .mat-form-field-appearance-outline {
+        .mat-form-field-outline,
+        .mat-form-field-outline-thick {
+            color: #ffffff !important;
+        }
+
+        &.mat-form-field-invalid {
+            .mat-form-field-outline,
+            .mat-form-field-outline-thick {
+                color: red !important;
+            }
+        }
+    }
+
+    .mat-form-field-flex {
+        background-color: transparent !important;
+    }
+
+    .mat-input-element {
+        color: #ffffff !important;
+    }
+
+    .mat-form-field-label {
+        color: #ffffff !important;
+    }
+
+    // Hint text
+    .mat-hint,
+    .mat-mdc-form-field-hint,
+    .mat-mdc-form-field-hint-wrapper {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    // Suffix icon (password toggle)
+    .mat-icon-button svg path {
+        fill: #ffffff;
+    }
 }

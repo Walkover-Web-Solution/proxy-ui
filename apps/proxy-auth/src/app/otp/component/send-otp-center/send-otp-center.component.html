@@ -203,7 +203,7 @@
                             (verify)="onHCaptchaVerify($event)"
                             (expired)="onHCaptchaExpired()"
                             (error)="onHCaptchaError($event)"
-                            theme="light"
+                            [theme]="theme === 'dark' ? 'dark' : 'light'"
                             size="normal"
                         >
                         </ng-hcaptcha>

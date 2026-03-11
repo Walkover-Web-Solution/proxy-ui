@@ -68,6 +68,7 @@
             (togglePopUp)="toggleSendOtp()"
             (closePopUp)="setShowLogin(false)"
             [loginServiceData]="loginWidgetData"
+            [theme]="theme"
             (openPopUp)="setShowRegistrationFromLogin($event)"
             (failureReturn)="returnFailureObj($event)"
         >
