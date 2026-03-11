@@ -4,14 +4,21 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
 
 const CONTAINER_CLASS = 'cdk-overlay-container';
-/** Full-viewport overlay container style so positioning is viewport-based when in shadow root */
+/**
+ * Full-viewport overlay container style so positioning is viewport-based when in shadow root.
+ * z-index is set to 9999 — well above the content z-indices used inside the shadow root
+ * (send-otp .container = 1000, user-profile/user-management .container = 10).  The container
+ * is also appended as the LAST child of the shadow root so that, even when a content element
+ * ends up with an equal z-index via the CSS cascade, DOM-order tie-breaking still favours the
+ * overlay.
+ */
 const OVERLAY_CONTAINER_STYLE =
-    'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;pointer-events:none!important;z-index:1000!important;';
+    'position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;pointer-events:none!important;z-index:9999!important;';
 /**
  * OverlayContainer that:
  * - When proxy-auth with shadow root exists (script load): attaches the overlay as the
- *   **first** child of the shadow root with full-viewport fixed style, so it is NOT
- *   inside the fixed .container and positioning is correct (dropdown below the right field).
+ *   **last** child of the shadow root with full-viewport fixed style and a high z-index,
+ *   ensuring MatDialog / MatSnackBar / dropdowns always render above the component content.
  * - Otherwise: attaches to document.body (default behaviour).
  */
 @Injectable()
@@ -49,15 +56,8 @@ export class ShadowDomOverlayContainer extends OverlayContainer {
         const parent = this._getOverlayParent();
         if (parent !== this._document.body) {
             container.setAttribute('style', OVERLAY_CONTAINER_STYLE);
-            const first = parent.firstChild;
-            if (first) {
-                parent.insertBefore(container, first);
-            } else {
-                parent.appendChild(container);
-            }
-        } else {
-            parent.appendChild(container);
         }
+        parent.appendChild(container);
         this._containerElement = container;
     }
 
