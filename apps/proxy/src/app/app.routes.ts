@@ -25,4 +25,8 @@ export const appRoutes: Route[] = [
         path: 'p',
         loadChildren: () => import('./public.module').then((p) => p.PublicModule),
     },
+    {
+        path: 'client',
+        loadChildren: () => import('./client.module').then((p) => p.ClientModule),
+    },
 ];

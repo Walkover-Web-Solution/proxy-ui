@@ -23,6 +23,7 @@ import { NgHcaptchaComponent } from 'ng-hcaptcha';
 })
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     @Input() public loginServiceData: any;
+    @Input() public theme: string;
     @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public closePopUp: EventEmitter<any> = new EventEmitter();
     @Output() public openPopUp: EventEmitter<any> = new EventEmitter();
