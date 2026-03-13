@@ -30,6 +30,7 @@ export interface ICreateFeatureInitialState {
     updatePaymentDetails: any;
     webhookEvents: any;
     uploadLogo: any;
+    errorInUploadLogo: boolean;
 }
 
 @Injectable()
@@ -60,6 +61,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             updatePaymentDetails: null,
             webhookEvents: null,
             uploadLogo: null,
+            errorInUploadLogo: false,
         });
     }
     /** Selector for API progress  */
@@ -110,6 +112,8 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly webhookEvents$: Observable<any> = this.select((state) => state.webhookEvents);
     /** Selector for upload logo data */
     readonly uploadLogo$: Observable<any> = this.select((state) => state.uploadLogo);
+    /** Selector for error in upload logo data */
+    readonly errorInUploadLogo$: Observable<boolean> = this.select((state) => state.errorInUploadLogo);
     /** Get feature type data */
     readonly getFeatureType = this.effect((data) => {
         return data.pipe(
@@ -697,7 +701,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly uploadLogo = this.effect((data: Observable<{ id: string | number; formData: FormData }>) => {
         return data.pipe(
             switchMap((req) => {
-                this.patchState({ isLoading: true, uploadLogo: null });
+                this.patchState({ isLoading: true, uploadLogo: null, errorInUploadLogo: false });
                 return this.service.uploadLogo(req.id, req.formData).pipe(
                     tapResponse(
                         (res: BaseResponse<any, void>) => {
@@ -710,7 +714,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
                         },
                         (error: any) => {
                             this.showError(error.errors);
-                            this.patchState({ isLoading: false });
+                            this.patchState({ isLoading: false, errorInUploadLogo: true });
                         }
                     ),
                     catchError((err) => EMPTY)
