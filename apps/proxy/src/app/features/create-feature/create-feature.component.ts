@@ -150,6 +150,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public updatePaymentDetails$: Observable<any> = this.componentStore.updatePaymentDetails$;
     public webhookEvents$: Observable<any> = this.componentStore.webhookEvents$;
     public uploadLogo$: Observable<any> = this.componentStore.uploadLogo$;
+    public errorInUploadLogo$: Observable<boolean> = this.componentStore.errorInUploadLogo$;
     public isEditMode = false;
     public previewInputPosition: 'top' | 'bottom' = 'top';
     public selectedServiceIndex = 0;
@@ -583,6 +584,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.logoUrl = url;
             }
             this.isLogoUploading = false;
+            this.cdr.markForCheck();
+        });
+        this.errorInUploadLogo$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((error) => {
+            if (error) {
+                this.isLogoUploading = false;
+            }
             this.cdr.markForCheck();
         });
     }
