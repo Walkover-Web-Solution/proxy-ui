@@ -1,0 +1,61 @@
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.io/guide/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+- Copying assets...
+[32m✔[39m Copying assets complete.
+- Generating index html...
+[32m✔[39m Index html generation complete.
+[37m[0m[0m[39m
+[37m[0m[1mInitial chunk files[22m                                                                                    [2m | [22m[1mNames[22m                                   [2m | [22m [1mRaw size[22m[0m[39m
+[37m[0m[32mvendor.js[39m[37m                                                                                              [2m | [22m[2mvendor[22m                                  [2m | [22m  [36m6.37 MB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mstyles.css[39m[37m                                                                                             [2m | [22m[2mstyles[22m                                  [2m | [22m[36m525.92 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mmain.js[39m[37m                                                                                                [2m | [22m[2mmain[22m                                    [2m | [22m[36m154.82 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mpolyfills.js[39m[37m                                                                                           [2m | [22m[2mpolyfills[22m                               [2m | [22m[36m116.97 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mscripts.js[39m[37m                                                                                             [2m | [22m[2mscripts[22m                                 [2m | [22m [36m64.11 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mruntime.js[39m[37m                                                                                             [2m | [22m[2mruntime[22m                                 [2m | [22m [36m12.47 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m[1m [22m                                                                                                      [2m | [22m[1mInitial total[22m                           [2m | [22m  [1m7.23 MB[22m[0m[39m
+[37m[0m[0m[39m
+[37m[0m[1mLazy chunk files[22m                                                                                       [2m | [22m[1mNames[22m                                   [2m | [22m [1[39m[37mmRaw size[22m[0m[39m
+[37m[0m[32mapps_proxy_src_app_features_create-feature_create-feature_module_ts.js[39m[37m                                 [2m | [22m[2mcreate-feature-create-feature-module[22m    [2m | [22m  [36m1.76 MB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-libs_custom-validator_src_index_ts.js[39m[37m                                                          [2m | [22m[2mapp-create-project-create-project-module[22m[2m | [22m[36m437.81 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-node_modules_rxjs_dist_esm_internal_operators_delay_js-node_modules_angular_material_-afa883.js[39m[37m[2m | [22m[2mlayout-layout-module[22m                    [2m | [22m[36m431.44 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-libs_services_proxy_logs_src_index_ts-libs_ui_date-range-picker_src_index_ts.js[39m[37m                [2m | [22m[2mlogs-logs-module[22m                        [2m | [22m[36m396.05 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-libs_models_features-model_src_index_ts-node_modules_angular_material_fesm2022_slide--ccccdf.js[39m[37m[2m | [22m[2musers-users-module[22m                      [2m | [22m[36m379.98 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mapps_proxy_src_app_layout_layout_module_ts.js[39m[37m                                                          [2m | [22m[2mlayout-layout-module[22m                    [2m | [22m[36m341.67 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-libs_ui_mat-paginator-goto_src_index_ts-libs_ui_no-record-found_src_index_ts-libs_ui_-d1baa7.js[39m[37m[2m | [22m[2mlogs-logs-module[22m                        [2m | [22m[36m320.49 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mapps_proxy_src_app_users_users_module_ts.js[39m[37m                                                            [2m | [22m[2musers-users-module[22m                      [2m | [22m[36m151.51 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-node_modules_angular_material_fesm2022_autocomplete_mjs-node_modules_angular_material-80994c.js[39m[37m[2m | [22m[2mapp-create-project-create-project-module[39m[37m[22m[2m | [22m[36m150.49 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mapps_proxy_src_app_logs_logs_module_ts.js[39m[37m                                                              [2m | [22m[2mlogs-logs-module[22m                        [2m | [22m[36m145.52 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mapps_proxy_src_app_auth_auth_module_ts.js[39m[37m                                                              [2m | [22m[2mauth-auth-module[22m                        [2m | [22m[36m140.03 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-node_modules_angular_material_fesm2022_stepper_mjs.js[39m[37m                                          [2m | [22m[2mapp-create-project-create-project-module[22m[2m | [22m[36m113.47 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-node_modules_angular_material_fesm2022_select_mjs-node_modules_ngrx_component-store_f-270f39.js[39m[37m[2m | [22m[2mapp-create-project-create-project-module[22m[2m | [22m[36m103.71 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-libs_constant_src_index_ts.js[39m[37m                                                                  [2m | [22m[2mlayout-layout-module[22m                    [2m | [22m [36m89.83 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mapps_proxy_src_app_create-project_create-project_module_ts.js[39m[37m                                          [2m | [22m[2mapp-create-project-create-project-module[22m[2m | [22m [36m79.10 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-node_modules_angular_material_fesm2022_input_mjs-node_modules_lodash-es__baseGet_js-n-8a88cf.js[39m[37m[2m | [22m[2mapp-create-project-create-project-module[22m[2m | [22m [36m66.40 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mapps_proxy_src_app_register_register_module_ts.js[39m[37m                                                      [2m | [22m[2mregister-register-module[22m                [2m | [22m [36m49.53 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-apps_proxy_src_app_features_feature_feature_store_ts-libs_directives_skeleton_src_ind-eb6cd8.js[39m[37m[2m | [22m[2mfeatur[39m[37mes-features-module[22m                [2m | [22m [36m48.65 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mapps_proxy_src_app_features_features_module_ts.js[39m[37m                                                      [2m | [22m[2mfeatures-features-module[22m                [2m | [22m [36m43.64 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-libs_ui_loader_src_index_ts.js[39m[37m                                                                 [2m | [22m[2mauth-auth-module[22m                        [2m | [22m [36m37.04 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-node_modules_angular_material_fesm2022_card_mjs.js[39m[37m                                             [2m | [22m[2mauth-auth-module[22m                        [2m | [22m [36m36.78 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mcommon.js[39m[37m                                                                                              [2m | [22m[2mcommon[22m                                  [2m | [22m [36m22.02 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mdefault-libs_ui_copy-button_src_index_ts.js[39m[37m                                                            [2m | [22m[2mapp-create-project-create-project-module[22m[2m | [22m [36m17.76 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mapps_proxy_src_app_dashboard_dashborad_module_ts.js[39m[37m                                                    [2m | [22m[2mdashboard-dashborad-module[22m              [2m | [22m [36m14.79 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mapps_proxy_src_app_registration_registration_module_ts.js[39m[37m                                              [2m | [22m[2mregistration-registration-module[22m        [2m | [22m  [36m9.58 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mapps_proxy_src_app_public_module_ts.js[39m[37m                                                                 [2m | [22m[2mpublic-module[22m                           [2m | [22m  [36m3.02 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[32mapps_proxy_src_app_client_module_ts.js[39m[37m                                                     [39m[37m            [2m | [22m[2mclient-module[22m                           [2m | [22m  [36m2.25 kB[39m[37m[2m | [22m[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-03-16T14:51:35.080Z[39m[37m[22m - Hash: [1m[37maf46b308544f7b2e[39m[37m[22m - Time: [1m[37m12696[39m[37m[22mms[0m[39m
+[1m[33m[39m[22m
+[1m[33m[0m[33mWarning: [39m[33m[0m/Users/divyanshu/walkover/proxy-ui/libs/services/proxy/auth/src/lib/services-proxy-auth.module.ts depends on 'dayjs'. CommonJS or AMD dependencies can cause optimization bailouts.[39m[22m
+[1m[33mFor more info see: https://angular.io/guide/build#configuring-commonjs-dependencies[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[33mWarning: [39m[33m[0m/Users/divyanshu/walkover/proxy-ui/libs/ui/date-range-picker/src/lib/date-range-picker/date-range-picker.component.ts depends on 'dayjs/plugin/advancedFormat'. CommonJS or AMD dependencies can cause optimization bailouts.[39m[22m
+[1m[33mFor more info see: https://angular.io/guide/build#configuring-commonjs-dependencies[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[33mWarning: [39m[33m[0m/Users/divyanshu/walkover/proxy-ui/libs/ui/date-range-picker/src/lib/date-range-picker/date-range-picker.component.ts depends on 'dayjs/plugin/quarterOfYear'. CommonJS or AMD dependencies can cause optimization bailouts.[39m[22m
+[1m[33mFor more info see: https://angular.io/guide/build#configuring-commonjs-dependencies[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m

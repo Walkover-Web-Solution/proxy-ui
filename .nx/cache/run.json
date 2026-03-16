@@ -1,0 +1,21 @@
+{
+    "run": {
+        "command": "nx build proxy-auth",
+        "startTime": "2026-03-16T14:51:57.563Z",
+        "endTime": "2026-03-16T14:52:08.011Z",
+        "inner": false
+    },
+    "tasks": [
+        {
+            "taskId": "proxy-auth:build:production",
+            "target": "build",
+            "projectName": "proxy-auth",
+            "hash": "9408375908133330176",
+            "startTime": "2026-03-16T14:51:57.568Z",
+            "endTime": "2026-03-16T14:52:08.011Z",
+            "params": "",
+            "cacheStatus": "cache-miss",
+            "status": 0
+        }
+    ]
+}

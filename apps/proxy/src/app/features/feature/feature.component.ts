@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { PAGE_SIZE_OPTIONS } from '@proxy/constant';
 import { omit } from 'lodash-es';
-import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
+import { PageEvent } from '@angular/material/paginator';
 import { FeatureComponentStore } from './feature.store';
 import { Observable } from 'rxjs';
 import { IFeature } from '@proxy/models/features-model';

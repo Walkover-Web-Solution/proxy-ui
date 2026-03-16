@@ -5,9 +5,9 @@ import { RippleModule } from 'primeng/ripple';
 import { PrimeNgToastComponent } from './prime-ng-toast/prime-ng-toast.component';
 import { PrimeNgToastService } from './prime-ng-toast.service';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatButtonModule } from '@angular/material/button';
 import { ButtonModule } from 'primeng/button';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
     declarations: [PrimeNgToastComponent],

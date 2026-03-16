@@ -7,7 +7,7 @@ import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, skip, take, takeUntil } from 'rxjs/operators';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 import { getSubscriptionPlans, getWidgetData, upgradeSubscription } from '../store/actions/otp.action';
 import { IAppState } from '../store/app.state';

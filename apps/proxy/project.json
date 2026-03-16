@@ -122,6 +122,9 @@
                 },
                 "development": {
                     "browserTarget": "proxy:build:development"
+                },
+                "serve": {
+                    "browserTarget": "proxy:build:development"
                 }
             },
             "defaultConfiguration": "development"

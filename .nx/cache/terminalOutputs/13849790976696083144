@@ -1,0 +1,73 @@
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.io/guide/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+[1m[33m[39m[22m
+[1m[33m[0m[33mWarning: [39m[33m[0m/Users/divyanshu/walkover/proxy-ui/libs/services/proxy/auth/src/lib/services-proxy-auth.module.ts depends on 'dayjs'. CommonJS or AMD dependencies can cause optimization bailouts.[39m[22m
+[1m[33mFor more info see: https://angular.io/guide/build#configuring-commonjs-dependencies[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mapps/proxy/src/app/auth/ngrx/effects/login.effects.ts[0m:[93m24[0m:[93m17[0m - [91merror[0m[90m TS2322: [0mType 'Observable<({ errors: string[]; } & TypedAction<"[Auth] Log In Or Sign Up Error">) | ({ response: IFirebaseUserModel; } & TypedAction<"[Auth] Authenticated">) | ({ ...; } & TypedAction<...>)>' is not assignable to type 'ObservableInput<any>'.[39m[22m
+[1m[31m  Type 'Observable<({ errors: string[]; } & TypedAction<"[Auth] Log In Or Sign Up Error">) | ({ response: IFirebaseUserModel; } & TypedAction<"[Auth] Authenticated">) | ({ ...; } & TypedAction<...>)>' is not assignable to type 'Observable<any>'.[39m[22m
+[1m[31m    Types of property 'source' are incompatible.[39m[22m
+[1m[31m      Type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/fire/node_modules/rxjs/dist/types/internal/Observable").Observable<any>' is not assignable to type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/rxjs/dist/types/internal/Observable").Observable<any>'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m 24[0m                 this.afAuth.authState.pipe([39m[22m
+[1m[31m[7m   [0m [91m                ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[7m 25[0m                     take(1),[39m[22m
+[1m[31m[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[7m...[0m [39m[22m
+[1m[31m[7m 49[0m                     })[39m[22m
+[1m[31m[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[7m 50[0m                 )[39m[22m
+[1m[31m[7m   [0m [91m~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  [96mnode_modules/rxjs/dist/types/internal/operators/exhaustMap.d.ts[0m:[93m2[0m:[93m80[0m[39m[22m
+[1m[31m    [7m2[0m export declare function exhaustMap<T, O extends ObservableInput<any>>(project: (value: T, index: number) => O): OperatorFunction<T, ObservedValueOf<O>>;[39m[22m
+[1m[31m    [7m [0m [96m                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    The expected type comes from the return type of this signature.[39m[22m
+[1m[31m  [96mapps/proxy/src/app/auth/ngrx/effects/login.effects.ts[0m:[93m23[0m:[93m24[0m[39m[22m
+[1m[31m    [7m 23[0m             exhaustMap(() =>[39m[22m
+[1m[31m    [7m   [0m [96m                       ~[39m[22m[1m[31m~~~~[0m[39m[22m
+[1m[31m    [7m 24[0m                 this.afAuth.authState.pipe([39m[22m
+[1m[31m    [7m   [0m [96m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    [7m...[0m [39m[22m
+[1m[31m    [7m 49[0m                     })[39m[22m
+[1m[31m    [7m   [0m [96m~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    [7m 50[0m                 )[39m[22m
+[1m[31m    [7m   [0m [96m~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m    Did you mean to mark this function as 'async'?[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mapps/proxy/src/app/auth/ngrx/effects/login.effects.ts[0m:[93m25[0m:[93m21[0m - [91merror[0m[90m TS2345: [0mArgument of type 'MonoTypeOperatorFunction<User>' is not assignable to parameter of type 'OperatorFunction<User, User>'.[39m[22m
+[1m[31m  Types of parameters 'source' and 'source' are incompatible.[39m[22m
+[1m[31m    Type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/fire/node_modules/rxjs/dist/types/internal/Observable").Observable<firebase.default.User>' is not assignable to type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/rxjs/dist/types/internal/Observable").Observable<firebase.default.User>'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m25[0m                     take(1),[39m[22m
+[1m[31m[7m  [0m [91m                    ~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mlibs/services/proxy/auth/src/lib/services-proxy-auth.module.ts[0m:[93m39[0m:[93m9[0m - [91merror[0m[90m TS2322: [0mType 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/fire/node_modules/rxjs/dist/types/internal/Observable").Observable<string>' is not assignable to type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/rxjs/dist/types/internal/Observable").Observable<string>'.[39m[22m
+[1m[31m  Types of property 'source' are incompatible.[39m[22m
+[1m[31m    Type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/fire/node_modules/rxjs/dist/types/internal/Observable").Observable<any>' is not assignable to type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/rxjs/dist/types/internal/Observable").Observable<any>'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m39[0m         return this.afAuth.authState.pipe(switchMap((p) => p.getIdToken(fetchRefreshToken)));[39m[22m
+[1m[31m[[39m[22m[1m[31m7m  [0m [91m        ~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mlibs/services/proxy/auth/src/lib/services-proxy-auth.module.ts[0m:[93m39[0m:[93m43[0m - [91merror[0m[90m TS2345: [0mArgument of type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/rxjs/dist/types/internal/types").OperatorFunction<firebase.default.User, string>' is not assignable to parameter of type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/fire/node_modules/rxjs/dist/types/internal/types").OperatorFunction<firebase.default.User, string>'.[39m[22m
+[1m[31m  Types of parameters 'source' and 'source' are incompatible.[39m[22m
+[1m[31m    Type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/fire/node_modules/rxjs/dist/types/internal/Observable").Observable<firebase.default.User>' is not assignable to type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/rxjs/dist/types/internal/Observable").Observable<firebase.default.User>'.[39m[22m
+[1m[31m      The types of 'source.operator.call' are incompatible between these types.[39m[22m
+[1m[31m        Type '(subscriber: import("/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/fire/node_modules/rxjs/dist/types/internal/Subscriber").Subscriber<any>, source: any) => import("/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/fire/node_modules/rxjs/dist/types/internal/types").TeardownLogic' is not assignable to type '(subscriber: import("/Users/divyanshu/walkover/proxy-ui/node_modules/rxjs/dist/types/internal/Subscriber").Subscriber<any>, source: any) => import("/Users/divyanshu/walkover/proxy-ui/node_modules/rxjs/dist/types/internal/types").TeardownLogic'.[39m[22m
+[1m[31m          Types of parameters 'subscriber' and 'subscriber' are incompatible.[39m[22m
+[1m[31m            Type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/rxjs/dist/types/internal/Subscriber").Subscriber<any>' is not assignable to type 'import("/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/fire/node_modules/rxjs/dist/types/internal/Subscriber").Subscriber<any>'.[39m[22m
+[1m[31m              Property 'is[39m[22m[1m[31mStopped' is protected but type 'Subscriber<T>' is not a class derived from 'Subscriber<T>'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m39[0m         return this.afAuth.authState.pipe(switchMap((p) => p.getIdToken(fetchRefreshToken)));[39m[22m
+[1m[31m[7m  [0m [91m                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m

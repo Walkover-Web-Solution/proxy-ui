@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { MatLegacyPaginator as MatPaginator, LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { FeatureComponentStore } from '../../features/feature/feature.store';
 import { Observable, of, Subject, takeUntil } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { IFeature, ProxyUserManagementScript } from '@proxy/models/features-mode
 import { environment } from '../../../environments/environment';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import { UserComponentStore } from '../user/user.store';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 
 interface IRole {

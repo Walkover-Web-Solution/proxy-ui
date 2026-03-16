@@ -15,8 +15,8 @@ import {
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash-es';
 import { Overlay } from '@angular/cdk/overlay';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component';
 import { updateUser } from '../store/actions/otp.action';
 import { UPDATE_REGEX } from '@proxy/regex';

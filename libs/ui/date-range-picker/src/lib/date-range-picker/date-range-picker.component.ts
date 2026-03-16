@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { DateRange, MatCalendar } from '@angular/material/datepicker';
-import { MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { DEFAULT_SELECTED_DATE_RANGE, JS_START_DATE, SelectDateRange } from '@proxy/constant';
 import { DATE_FORMAT_REGEX } from '@proxy/regex';
 import * as dayjs from 'dayjs';
