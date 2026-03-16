@@ -10,15 +10,15 @@ import {
 import { Observable } from 'rxjs';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import * as dayjs from 'dayjs';
-import { omit } from 'lodash';
-import { PageEvent } from '@angular/material/paginator';
+import { omit } from 'lodash-es';
+import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
 import { UserComponentStore } from './user.store';
 import { IUser } from '@proxy/models/users-model';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FeatureComponentStore } from '../../features/feature/feature.store';
 import { IFeature } from '@proxy/models/features-model';
 import { takeUntil } from 'rxjs/operators';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
 
 @Component({
     selector: 'proxy-users',

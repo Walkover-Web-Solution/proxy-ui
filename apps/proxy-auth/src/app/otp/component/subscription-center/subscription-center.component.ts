@@ -3,10 +3,13 @@ import { select, Store } from '@ngrx/store';
 import { IAppState } from '../../store/app.state';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { distinctUntilChanged, Observable, takeUntil } from 'rxjs';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { subscriptionPlansData } from '../../store/selectors';
 import { getSubscriptionPlans } from '../../store/actions/otp.action';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+    MatLegacyDialogRef as MatDialogRef,
+} from '@angular/material/legacy-dialog';
 
 export interface SubscriptionPlan {
     id: string;

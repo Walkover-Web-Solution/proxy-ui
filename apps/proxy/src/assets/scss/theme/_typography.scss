@@ -2,7 +2,7 @@
 
 $font-family: var(--font-family-common);
 
-$custom-typography: mat.define-typography-config(
+$custom-typography: mat.define-legacy-typography-config(
     $font-family: $font-family,
     $display-1: mat.define-typography-level(18px, 28px, 400),
     $display-2: mat.define-typography-level(16px, 22px, 600),

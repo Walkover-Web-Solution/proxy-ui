@@ -2,12 +2,13 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "outDir": "../../dist/out-tsc",
-        "target": "es2015",
+        "target": "ES2022",
         "declaration": true,
         "declarationMap": true,
         "inlineSources": true,
         "types": [],
-        "lib": ["dom", "esnext"]
+        "lib": ["dom", "esnext"],
+        "useDefineForClassFields": false
     },
     "angularCompilerOptions": {
         "skipTemplateCodegen": true,

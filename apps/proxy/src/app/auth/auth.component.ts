@@ -4,7 +4,7 @@ import { IFirebaseUserModel } from '@proxy/models/root-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { Store, select } from '@ngrx/store';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { Observable, distinctUntilChanged, takeUntil, debounceTime } from 'rxjs';
 import {
     selectLogInErrors,

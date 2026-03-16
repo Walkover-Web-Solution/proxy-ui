@@ -5,7 +5,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from 'libs/ui/base-component/src/lib/base-component/base.component';
 import { OtpService } from '../service/otp.service';
 import { finalize, takeUntil } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { EMAIL_REGEX } from '@proxy/regex';
 
 @Component({

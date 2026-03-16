@@ -2,10 +2,6 @@
 export default {
     displayName: 'pipes-greeting-pipe',
     preset: '../../../jest.preset.js',
-    globals: {
-        'ts-jest': {
-            tsconfig: '<rootDir>/tsconfig.spec.json',
-        },
-    },
+    globals: {},
     coverageDirectory: '../../../coverage/libs/pipes/greeting-pipe',
 };

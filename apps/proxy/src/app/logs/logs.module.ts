@@ -1,30 +1,30 @@
 import { RouterModule, Routes } from '@angular/router';
 import { LogComponent } from './log/log.component';
 import { NgModule } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
+import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { CommonModule } from '@angular/common';
 import { UiComponentsSearchModule } from '@proxy/ui/search';
-import { MatSelectModule } from '@angular/material/select';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { UiDateRangePickerModule } from '@proxy/date-range-picker';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTableModule } from '@angular/material/table';
+import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { ServicesProxyLogsModule } from '@proxy/services/proxy/logs';
 import { MatSortModule } from '@angular/material/sort';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { UiNoRecordFoundModule } from '@proxy/ui/no-record-found';
 import { DirectivesRemoveCharacterDirectiveModule } from '@proxy/directives/RemoveCharacterDirective';
 import { UiMatPaginatorGotoModule } from '@proxy/ui/mat-paginator-goto';
 import { LogsDetailsSideDialogComponent } from './log-details-side-dialog/log-details-side-dialog.component';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { UiLoaderModule } from '@proxy/ui/loader';
 import { UiVirtualScrollModule } from '@proxy/ui/virtual-scroll';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 
 const routes: Routes = [
     {
@@ -50,13 +50,12 @@ const routes: Routes = [
         MatMenuModule,
         MatIconModule,
         MatTableModule,
-        MatMenuModule,
+        ServicesProxyLogsModule,
         MatSortModule,
         MatCheckboxModule,
         MatDividerModule,
         MatDialogModule,
         UiDateRangePickerModule,
-        ServicesProxyLogsModule,
         UiNoRecordFoundModule,
         UiMatPaginatorGotoModule,
         UiLoaderModule,

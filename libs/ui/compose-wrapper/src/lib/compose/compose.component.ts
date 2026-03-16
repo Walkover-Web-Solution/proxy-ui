@@ -13,14 +13,6 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { DOCUMENT } from '@angular/common';
-// import { Agent } from '../../hello/models/team';
-// import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
-// import { isEqual } from 'lodash';
-// import { select, Store } from '@ngrx/store';
-// import { Agent } from 'http';
-// import { IAppState } from '../../store/reducers/app.state';
-// import { selectRootUserSetting } from '../../store/selectors';
-// import { generalActions } from '../../store/actions';
 
 @Component({
     selector: 'proxy-compose-wrapper',

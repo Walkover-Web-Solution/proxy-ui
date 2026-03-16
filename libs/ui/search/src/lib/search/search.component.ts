@@ -9,7 +9,7 @@ import {
     SimpleChanges,
 } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { TooltipPosition } from '@angular/material/tooltip';
+import { LegacyTooltipPosition as TooltipPosition } from '@angular/material/legacy-tooltip';
 import { DEBOUNCE_TIME } from '@proxy/constant';
 import { debounceTime } from 'rxjs/operators';
 

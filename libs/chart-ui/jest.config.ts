@@ -2,10 +2,6 @@
 export default {
     displayName: 'chart-ui',
     preset: '../../jest.preset.js',
-    globals: {
-        'ts-jest': {
-            tsconfig: '<rootDir>/tsconfig.spec.json',
-        },
-    },
+    globals: {},
     coverageDirectory: '../../coverage/libs/chart-ui',
 };

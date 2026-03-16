@@ -144,28 +144,6 @@ window['initVerification'] = (config: any) => {
             }
 
             window['libLoaded'] = true;
-
-            // } else if (config?.authToken) {
-            //     const findOtpProvider = document.querySelector('user-profile');
-            //     if (findOtpProvider) {
-            //         document.body.removeChild(findOtpProvider);
-            //     }
-            //     const sendOtpElement = document.createElement('user-profile') as NgElement &
-            //         WithProperties<UserProfileComponent>;
-            //     sendOtpElement.authToken = config.authToken;
-            //     sendOtpElement.target = config?.target ?? '_self';
-            //     sendOtpElement.css = config.style;
-            //     if (!config.success || typeof config.success !== 'function') {
-            //         throw Error('success callback function missing !');
-            //     }
-            //     sendOtpElement.successReturn = config.success;
-            //     sendOtpElement.failureReturn = config.failure;
-
-            //     // omitting keys which are not required in API payload
-            //     // sendOtpElement.otherData = omit(config, RESERVED_KEYS);
-
-            //     document.getElementsByTagName('body')[0].append(sendOtpElement);
-            //     window['libLoaded'] = true;
         } else {
             if (!config?.referenceId) {
                 throw Error('Reference Id is missing!');
@@ -188,27 +166,7 @@ export class ElementModule implements DoBootstrap {
             });
             customElements.define('proxy-auth', sendOtpComponent);
         }
-
-        // if (!customElements.get('user-profile')) {
-        //     const userProfileComponent = createCustomElement(UserProfileComponent, {
-        //         injector: this.injector,
-        //     });
-        //     customElements.define('user-profile', userProfileComponent);
-        // }
     }
 
-    ngDoBootstrap(appRef: ApplicationRef) {
-        if (!customElements.get('proxy-auth')) {
-            const sendOtpComponent = createCustomElement(SendOtpComponent, {
-                injector: this.injector,
-            });
-            customElements.define('proxy-auth', sendOtpComponent);
-        }
-        // if (!customElements.get('user-details')) {
-        //     const userProfileComponent = createCustomElement(UserProfileComponent, {
-        //         injector: this.injector,
-        //     });
-        //     customElements.define('user-details', userProfileComponent);
-        // }
-    }
+    ngDoBootstrap(appRef: ApplicationRef) {}
 }

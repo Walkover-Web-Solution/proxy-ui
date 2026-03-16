@@ -3,12 +3,12 @@ import { IClient, IClientSettings, IFirebaseUserModel, IPaginatedResponse } from
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store, select } from '@ngrx/store';
 import { selectLogInData } from '../auth/ngrx/selector/login.selector';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { BehaviorSubject, Observable, distinctUntilChanged, filter, takeUntil, combineLatest } from 'rxjs';
 import { ILogInFeatureStateWithRootState } from '../auth/ngrx/store/login.state';
 import * as logInActions from '../auth/ngrx/actions/login.action';
 import { rootActions } from '../ngrx/actions';
-import { selectAllClient, selectClientSettings, selectSwtichClientSuccess } from '../ngrx';
+import { selectAllClient, selectClientSettings, selectSwitchClientSuccess } from '../ngrx';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { RootService } from '@proxy/services/proxy/root';
 import { environment } from '../../environments/environment';
@@ -57,7 +57,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
             takeUntil(this.destroy$)
         );
         this.swtichClientSuccess$ = this.store.pipe(
-            select(selectSwtichClientSuccess),
+            select(selectSwitchClientSuccess),
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
@@ -116,7 +116,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
                             parentId: 'ChatbotContainer',
                             fullScreen: true,
                         };
-                        console.log('SendDataToChatbot ==>', payload);
                         setTimeout(() => {
                             (window as any).SendDataToChatbot(payload);
                             (window as any).openChatbot();

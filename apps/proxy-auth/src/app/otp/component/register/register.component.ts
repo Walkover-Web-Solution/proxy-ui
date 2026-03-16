@@ -20,7 +20,7 @@ import { select, Store } from '@ngrx/store';
 import { IAppState } from '../../store/app.state';
 import { IntlPhoneLib, removeEmptyKeys } from '@proxy/utils';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import * as _ from 'lodash';
+import { isEqual } from 'lodash-es';
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { OtpUtilityService } from '../../service/otp-utility.service';
@@ -147,42 +147,42 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         super();
         this.selectGetOtpRes$ = this.store.pipe(
             select(selectGetOtpRes),
-            distinctUntilChanged(_.isEqual),
+            distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
         this.selectGetOtpInProcess$ = this.store.pipe(
             select(selectGetOtpInProcess),
-            distinctUntilChanged(_.isEqual),
+            distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
         this.selectGetOtpSuccess$ = this.store.pipe(
             select(selectGetOtpSuccess),
-            distinctUntilChanged(_.isEqual),
+            distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
         this.selectVerifyOtpV2Data$ = this.store.pipe(
             select(selectVerifyOtpV2Data),
-            distinctUntilChanged(_.isEqual),
+            distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
         this.selectVerifyOtpV2InProcess$ = this.store.pipe(
             select(selectVerifyOtpV2InProcess),
-            distinctUntilChanged(_.isEqual),
+            distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
         this.selectVerifyOtpV2Success$ = this.store.pipe(
             select(selectVerifyOtpV2Success),
-            distinctUntilChanged(_.isEqual),
+            distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
         this.selectApiErrorResponse$ = this.store.pipe(
             select(selectApiErrorResponse),
-            distinctUntilChanged(_.isEqual),
+            distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
         this.selectWidgetTheme$ = this.store.pipe(
             select(selectWidgetTheme),
-            distinctUntilChanged(_.isEqual),
+            distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
     }

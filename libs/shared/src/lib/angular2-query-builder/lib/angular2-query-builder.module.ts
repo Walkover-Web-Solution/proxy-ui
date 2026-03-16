@@ -16,7 +16,7 @@ import { QueryEmptyWarningDirective } from './query-builder/query-empty-warning.
 import { QueryAdditionalButtonDirective } from './query-builder/query-additional-button.directive';
 import { PipesFieldValuePipeModule } from '@proxy/pipes/FieldValuePipe';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 
 @NgModule({
     imports: [CommonModule, FormsModule, PipesFieldValuePipeModule, MatIconModule, MatButtonModule],

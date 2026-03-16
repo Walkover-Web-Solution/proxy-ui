@@ -16,11 +16,11 @@ import { LogInEffectsModule } from './auth/ngrx/effects/login-effects.module';
 import { ServicesProxyAuthModule } from '@proxy/services/proxy/auth';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
 import { environment } from '../environments/environment';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { MAT_LEGACY_FORM_FIELD_DEFAULT_OPTIONS as MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/legacy-form-field';
+import { MAT_LEGACY_DIALOG_DEFAULT_OPTIONS as MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/legacy-dialog';
 import { ErrorInterceptor } from '@proxy/services/interceptor/errorInterceptor';
 import { VersionCheckServiceModule } from '@proxy/service';
-import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
+import { MAT_LEGACY_TOOLTIP_DEFAULT_OPTIONS as MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/legacy-tooltip';
 import { ServicesProxyRootModule } from '@proxy/services/proxy/root';
 
 @NgModule({

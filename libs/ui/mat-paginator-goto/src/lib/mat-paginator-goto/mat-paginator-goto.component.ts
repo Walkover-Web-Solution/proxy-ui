@@ -1,7 +1,10 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSelect, MAT_SELECT_CONFIG } from '@angular/material/select';
+import { MatLegacyPaginator as MatPaginator, LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
+import {
+    MatLegacySelect as MatSelect,
+    MAT_LEGACY_SELECT_CONFIG as MAT_SELECT_CONFIG,
+} from '@angular/material/legacy-select';
 import { SHOW_PAGINATOR_LENGTH } from '@proxy/constant';
 
 @Component({

@@ -23,9 +23,9 @@ export const selectClientsInProcess = createSelector(
     selectRootState,
     (rootState: IRootState) => rootState.clientsInProcess
 );
-export const selectSwtichClientSuccess = createSelector(
+export const selectSwitchClientSuccess = createSelector(
     selectRootState,
-    (rootState: IRootState) => rootState.swtichClientSuccess
+    (rootState: IRootState) => rootState.switchClientSuccess
 );
 export const selectAllProjectList = createSelector(selectRootState, ({ allProjects }) => allProjects);
 export const selectProjectInProcess = createSelector(
