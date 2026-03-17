@@ -1,13 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { PAGE_SIZE_OPTIONS } from '@proxy/constant';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import { PageEvent } from '@angular/material/paginator';
 import { FeatureComponentStore } from './feature.store';
 import { Observable } from 'rxjs';
 import { IFeature } from '@proxy/models/features-model';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 @Component({
+    standalone: false,
     selector: 'proxy-features',
     templateUrl: './feature.component.html',
     styleUrls: ['./feature.component.scss'],

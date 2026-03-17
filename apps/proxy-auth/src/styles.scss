@@ -1,15 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@use '@angular/material/prebuilt-themes/indigo-pink.css';
 
 /* Layout*/
-@import 'assets/scss/layout/positions.scss';
-@import 'assets/scss/layout/display.scss';
-@import 'assets/scss/layout/spacing.scss';
+@use 'assets/scss/layout/positions';
+@use 'assets/scss/layout/spacing';
+@use 'assets/scss/layout/display';
 
 /* Components*/
-@import 'assets/scss/component/form-field';
-@import 'assets/scss/component/tabs';
+@use 'assets/scss/component/form-field';
+@use 'assets/scss/component/tabs';
 
 :root {
     --color-common-dark: #000000;
@@ -67,11 +67,11 @@ $custom-blue: (
     ),
 );
 
-$primary: mat.define-palette($custom-blue);
-$accent: mat.define-palette($custom-blue);
-$warn: mat.define-palette(mat.$red-palette);
+$primary: mat.m2-define-palette($custom-blue);
+$accent: mat.m2-define-palette($custom-blue);
+$warn: mat.m2-define-palette(mat.$m2-red-palette);
 
-$theme: mat.define-light-theme(
+$theme: mat.m2-define-light-theme(
     (
         color: (
             primary: $primary,

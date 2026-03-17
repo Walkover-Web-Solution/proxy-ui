@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, UrlTree, Router } from '@angular/router';
+import { UrlTree, Router } from '@angular/router';
 import { Observable, filter } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { rootActions } from '../ngrx/actions';
@@ -11,7 +11,7 @@ import { IProjects } from '@proxy/models/logs-models';
 @Injectable({
     providedIn: 'root',
 })
-export class ProjectGuard implements CanActivate {
+export class ProjectGuard {
     public getProject$: Observable<IPaginatedResponse<IProjects[]>>;
 
     constructor(private router: Router, private store: Store<IAppState>) {

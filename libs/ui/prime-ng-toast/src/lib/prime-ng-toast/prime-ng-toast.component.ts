@@ -8,6 +8,7 @@ import { distinctUntilChanged, takeUntil } from 'rxjs';
 import { PrimeNgToastService } from '../prime-ng-toast.service';
 
 @Component({
+    standalone: false,
     selector: 'proxy-prime-ng-toast',
     templateUrl: './prime-ng-toast.component.html',
     styleUrls: ['./prime-ng-toast.component.scss'],

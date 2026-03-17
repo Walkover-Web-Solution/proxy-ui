@@ -15,6 +15,7 @@ import * as logInActions from './auth/ngrx/actions/login.action';
 import { IClientSettings, IFirebaseUserModel } from '@proxy/models/root-models';
 
 @Component({
+    standalone: false,
     selector: 'proxy-root',
     templateUrl: './app.component.html',
 })

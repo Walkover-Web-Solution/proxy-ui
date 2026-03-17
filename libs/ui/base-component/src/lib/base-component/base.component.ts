@@ -7,6 +7,7 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
+    standalone: false,
     template: '',
 })
 export abstract class BaseComponent implements OnDestroy {

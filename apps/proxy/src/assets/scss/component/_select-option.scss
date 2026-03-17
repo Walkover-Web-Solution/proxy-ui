@@ -1,4 +1,4 @@
-@import '../theme/theme-colors';
+@use '../theme/theme-colors' as *;
 
 .cdk-overlay-pane {
     .mat-select-panel-wrap {

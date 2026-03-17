@@ -10,7 +10,7 @@ import {
 import { Observable } from 'rxjs';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import * as dayjs from 'dayjs';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import { PageEvent } from '@angular/material/paginator';
 import { UserComponentStore } from './user.store';
 import { IUser } from '@proxy/models/users-model';
@@ -21,6 +21,7 @@ import { takeUntil } from 'rxjs/operators';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
+    standalone: false,
     selector: 'proxy-users',
     templateUrl: './user.component.html',
     styleUrls: ['./user.component.scss'],

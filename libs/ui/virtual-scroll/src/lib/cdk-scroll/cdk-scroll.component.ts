@@ -5,6 +5,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { DEBOUNCE_TIME } from '@proxy/constant';
 
 @Component({
+    standalone: false,
     selector: 'proxy-cdk-scroll',
     templateUrl: './cdk-scroll.component.html',
 })

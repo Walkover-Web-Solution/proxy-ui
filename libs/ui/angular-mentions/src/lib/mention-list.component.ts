@@ -19,6 +19,7 @@ import { getCaretCoordinates } from './caret-coords';
  * Copyright (c) 2016 Dan MacFarlane
  */
 @Component({
+    standalone: false,
     selector: 'mention-list',
     styles: [
         `

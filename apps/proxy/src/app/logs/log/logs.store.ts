@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BaseResponse, IPaginatedResponse, errorResolver, IReqParams } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
-import { ComponentStore, tapResponse } from '@ngrx/component-store';
+import { ComponentStore } from '@ngrx/component-store';
+import { tapResponse } from '@ngrx/operators';
 import { IEnvironments, ILogDetailRes, ILogsReq, ILogsRes, IProjects } from '@proxy/models/logs-models';
 import { LogsService } from '@proxy/services/proxy/logs';
 import { EMPTY, Observable, catchError, switchMap } from 'rxjs';

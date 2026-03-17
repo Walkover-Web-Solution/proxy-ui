@@ -74,7 +74,7 @@
                 <div class="drp-calendar" [class.show-calendar]="showRangePicker">
                     <div class="drp-inputs">
                         <form [formGroup]="range">
-                            <mat-form-field appearance="legacy" class="mat-form-custom">
+                            <mat-form-field appearance="outline" class="mat-form-custom">
                                 <mat-label>From</mat-label>
                                 <input
                                     matInput
@@ -86,7 +86,7 @@
                                 <mat-icon matSuffix class="mat-icon-18">today</mat-icon>
                                 <mat-error *ngIf="range.get('start').errors?.pattern">Invalid Date Format.</mat-error>
                             </mat-form-field>
-                            <mat-form-field appearance="legacy" class="mat-form-custom">
+                            <mat-form-field appearance="outline" class="mat-form-custom">
                                 <mat-label>To</mat-label>
                                 <input
                                     matInput

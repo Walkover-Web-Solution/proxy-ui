@@ -3,7 +3,10 @@ import { NgControl } from '@angular/forms';
 import { MatAutocomplete, _MatAutocompleteBase } from '@angular/material/autocomplete';
 import { MatSelect } from '@angular/material/select';
 
-@Directive({ selector: '[proxyAutoSelectDropdown]' })
+@Directive({
+    standalone: false,
+    selector: '[proxyAutoSelectDropdown]',
+})
 export class AutoSelectDropDownDirective implements AfterViewInit {
     @Input() public disableAutoSelectDirective: boolean = false;
     @Output() public setControlValue = new EventEmitter<any>();

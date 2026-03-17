@@ -2,16 +2,16 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "outDir": "../../dist/out-tsc",
-        "target": "es2015",
+        "target": "ES2022",
         "declaration": true,
         "inlineSources": true,
         "types": [],
         "lib": ["dom", "esnext"],
         "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "useDefineForClassFields": false
     },
     "angularCompilerOptions": {
-        "enableIvy": false,
         "skipTemplateCodegen": true,
         "strictMetadataEmit": true,
         "enableResourceInlining": true

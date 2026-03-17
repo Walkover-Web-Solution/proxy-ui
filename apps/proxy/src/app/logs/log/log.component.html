@@ -104,7 +104,6 @@
                                     <mat-label>Select request type</mat-label>
                                     <mat-select
                                         placeholder="Select request types"
-                                        [disableOptionCentering]="true"
                                         formControlName="requestType"
                                         multiple
                                     >
@@ -132,7 +131,6 @@
                                     <mat-label>Select range type</mat-label>
                                     <mat-select
                                         placeholder="Select range type"
-                                        [disableOptionCentering]="true"
                                         formControlName="range"
                                         (selectionChange)="changeRangeType($event.value)"
                                     >

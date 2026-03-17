@@ -4,10 +4,11 @@
 /*
 // Typography
 */
-@import 'theme-colors';
-@import 'typography';
+@use 'theme-colors' as *;
+@use 'typography' as *;
 
-@include mat.core($custom-typography);
+@include mat.core();
+@include mat.all-component-typographies($custom-typography);
 $dark-primary-text: rgba(black, 0.87);
 $dark-secondary-text: rgba(black, 0.54);
 $dark-disabled-text: rgba(black, 0.38);
@@ -129,22 +130,22 @@ $dark-theme-foreground-palette: (
     slider-off: rgba(white, 0.3),
     slider-off-active: rgba(white, 0.3),
 );
-$theme: (
-    primary: $primary,
-    accent: $accent,
-    warn: $warn,
-    is-dark: false,
-    foreground: $light-theme-foreground-palette,
-    background: $light-theme-background-palette,
-);
-$altTheme: (
-    primary: $primary,
-    accent: $accent,
-    warn: $warn,
-    is-dark: true,
-    foreground: $dark-theme-foreground-palette,
-    background: $dark-theme-background-palette,
-);
+$theme: mat.m2-define-light-theme((
+    color: (
+        primary: $primary,
+        accent: $accent,
+        warn: $warn,
+    ),
+    typography: $custom-typography,
+    density: 0,
+));
+$altTheme: mat.m2-define-dark-theme((
+    color: (
+        primary: $primary,
+        accent: $accent,
+        warn: $warn,
+    ),
+));
 
 /*
 // Include all theme styles for the components.
@@ -152,5 +153,5 @@ $altTheme: (
 @include mat.all-component-themes($theme);
 
 .dark-theme {
-    @include mat.all-component-themes($altTheme);
+    @include mat.all-component-colors($altTheme);
 }

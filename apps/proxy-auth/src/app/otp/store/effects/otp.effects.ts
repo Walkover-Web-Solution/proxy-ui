@@ -95,7 +95,6 @@ export class OtpEffects {
                         });
                     }),
                     catchError((err) => {
-                        console.log('err', err);
                         return of(
                             otpActions.verifyOtpActionError({
                                 errors: errorResolver(err.errors),

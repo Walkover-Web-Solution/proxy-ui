@@ -13,7 +13,7 @@ import {
     leaveCompanySuccess,
 } from '../store/selectors';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -21,6 +21,7 @@ import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component
 import { updateUser } from '../store/actions/otp.action';
 import { UPDATE_REGEX } from '@proxy/regex';
 @Component({
+    standalone: false,
     selector: 'proxy-user-profile',
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.scss'],

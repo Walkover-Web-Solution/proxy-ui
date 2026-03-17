@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
+    standalone: false,
     selector: 'proxy-copy-button',
     template: `
         <button

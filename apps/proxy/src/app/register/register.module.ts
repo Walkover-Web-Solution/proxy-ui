@@ -25,7 +25,6 @@ const routes: Routes = [
         FormsModule,
         ReactiveFormsModule,
         MatCardModule,
-        FormsModule,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,

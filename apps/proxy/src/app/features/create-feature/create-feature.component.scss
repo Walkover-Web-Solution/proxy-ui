@@ -1,4 +1,3 @@
-@import '../../../styles.scss';
 .features-layout {
     display: grid;
     grid-gap: 16px;
@@ -150,6 +149,8 @@
     border: 2px solid #e0e0e0;
     border-radius: 12px;
     background-color: #fafafa;
+    // Add subtle animation on load
+    animation: slideInUp 0.5s ease-out;
 
     .charges-title {
         font-size: 1.2rem;
@@ -202,9 +203,6 @@
             min-height: 80px;
         }
     }
-
-    // Add subtle animation on load
-    animation: slideInUp 0.5s ease-out;
 
     // Charges table styling
     .charges-table-container {

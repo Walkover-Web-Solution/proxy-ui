@@ -51,3 +51,11 @@ Thumbs.db
 
 # dotenv environment variables file
 .env
+
+# Generated environment variable files (created by tools/set-env.js from .env)
+apps/proxy/src/environments/env-variables.ts
+apps/proxy-auth/src/environments/env-variables.ts
+
+# Nx cache
+.nx/cache
+.nx/workspace-data
