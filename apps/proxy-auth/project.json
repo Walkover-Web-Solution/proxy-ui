@@ -59,14 +59,14 @@
         "serve": {
             "executor": "@angular-builders/custom-webpack:dev-server",
             "options": {
-                "browserTarget": "proxy-auth:build"
+                "buildTarget": "proxy-auth:build"
             },
             "configurations": {
                 "production": {
-                    "browserTarget": "proxy-auth:build:production"
+                    "buildTarget": "proxy-auth:build:production"
                 },
                 "development": {
-                    "browserTarget": "proxy-auth:build:development"
+                    "buildTarget": "proxy-auth:build:development"
                 }
             },
             "defaultConfiguration": "development"
@@ -74,7 +74,7 @@
         "extract-i18n": {
             "executor": "@angular-devkit/build-angular:extract-i18n",
             "options": {
-                "browserTarget": "proxy-auth:build"
+                "buildTarget": "proxy-auth:build"
             }
         },
         "lint": {

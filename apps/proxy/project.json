@@ -118,13 +118,13 @@
             "executor": "@angular-builders/custom-webpack:dev-server",
             "configurations": {
                 "production": {
-                    "browserTarget": "proxy:build:production"
+                    "buildTarget": "proxy:build:production"
                 },
                 "development": {
-                    "browserTarget": "proxy:build:development"
+                    "buildTarget": "proxy:build:development"
                 },
                 "serve": {
-                    "browserTarget": "proxy:build:development"
+                    "buildTarget": "proxy:build:development"
                 }
             },
             "defaultConfiguration": "development"
@@ -132,7 +132,7 @@
         "extract-i18n": {
             "executor": "@angular-devkit/build-angular:extract-i18n",
             "options": {
-                "browserTarget": "proxy:build"
+                "buildTarget": "proxy:build"
             }
         },
         "lint": {
