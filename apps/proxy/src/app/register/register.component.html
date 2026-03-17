@@ -164,7 +164,7 @@
             (keypress)="intlClass?.onlyPhoneNumber($event)"
             [attr.id]="'init-contact-user'"
             [placeholder]="'Enter ' + label"
-            [ngClass]="{ 'invalid-input': formControl.touched && !intlClass?.[required ? 'isRequiredValidNumber' : 'isValidNumber'] }"
+            [class.invalid-input]="formControl.touched && !intlClass?.[required ? 'isRequiredValidNumber' : 'isValidNumber']"
             (blur)="formControl?.markAsTouched(); formControl?.setValue(intlClass?.phoneNumber?.replace('+', ''))"
         />
 

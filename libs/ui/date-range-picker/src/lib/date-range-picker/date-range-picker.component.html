@@ -7,7 +7,7 @@
             #trigger="matMenuTrigger"
             (click)="setInputDate()"
             (menuClosed)="menuClosed()"
-            [ngClass]="cssClass"
+            [class]="cssClass"
             [disableRipple]="true"
         >
             <span class="rounded-4 position-absolute outline-position"></span>
@@ -28,7 +28,7 @@
                         <button
                             mat-button
                             class="px-3 btn-hide"
-                            [ngClass]="{ 'selected': monthSelected === null && quarterSelected === null }"
+                            [class.selected]="monthSelected === null && quarterSelected === null"
                             (click)="toggleRangePicker()"
                         >
                             Custom Date Range
@@ -36,7 +36,7 @@
                         <button
                             mat-button
                             class="px-3"
-                            [ngClass]="{ 'selected': monthSelected === 'current' }"
+                            [class.selected]="monthSelected === 'current'"
                             (click)="selectThisMonth()"
                             [disabled]="!customOptionActive"
                         >
@@ -45,7 +45,7 @@
                         <button
                             mat-button
                             class="px-3"
-                            [ngClass]="{ 'selected': monthSelected === 'last' }"
+                            [class.selected]="monthSelected === 'last'"
                             (click)="selectLastMonth()"
                             [disabled]="!customOptionActive"
                         >
@@ -54,7 +54,7 @@
                         <button
                             mat-button
                             class="px-3"
-                            [ngClass]="{ 'selected': quarterSelected === 'current' }"
+                            [class.selected]="quarterSelected === 'current'"
                             (click)="selectThisQuarter()"
                             [disabled]="!customOptionActive"
                         >
@@ -63,7 +63,7 @@
                         <button
                             mat-button
                             class="px-3"
-                            [ngClass]="{ 'selected': quarterSelected === 'last' }"
+                            [class.selected]="quarterSelected === 'last'"
                             (click)="selectLastQuarter()"
                             [disabled]="!customOptionActive"
                         >

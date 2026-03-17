@@ -1,6 +1,6 @@
 <ng-container>
     <div class="dialog-header">
-        <div class="heading" [ngStyle]="primaryColor ? { color: primaryColor } : {}">Register</div>
+        <div class="heading" [style.color]="primaryColor || null">Register</div>
         <button mat-icon-button class="close-dialog" (click)="close(true)" type="button" *ngIf="!isRegisterFormOnly">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -21,7 +21,7 @@
             [style.--field-border-radius]="borderRadiusValue || '4px'"
             [class.dark-theme-login]="isDarkTheme"
         >
-            <p class="heading" [ngStyle]="primaryColor ? { color: primaryColor } : {}">User Details</p>
+            <p class="heading" [style.color]="primaryColor || null">User Details</p>
             <div class="one-line">
                 <ng-container
                     [ngTemplateOutlet]="formField"
@@ -66,17 +66,9 @@
                         [disabled]="(selectGetOtpInProcess$ | async) || (isOtpSent && !canResendOtp)"
                         [class.has-hover-color]="!!buttonHoverColor"
                         [style.--btn-hover-color]="buttonHoverColor"
-                        [ngStyle]="
-                            buttonColor
-                                ? {
-                                      'background-color': buttonColor,
-                                      color: buttonTextColor || '#ffffff',
-                                      'border-radius': borderRadiusValue || '4px'
-                                  }
-                                : borderRadiusValue
-                                ? { 'border-radius': borderRadiusValue }
-                                : {}
-                        "
+                        [style.background-color]="buttonColor || null"
+                        [style.color]="buttonColor ? buttonTextColor || '#ffffff' : null"
+                        [style.border-radius]="buttonColor ? borderRadiusValue || '4px' : borderRadiusValue || null"
                     >
                         <span *ngIf="!isOtpSent">
                             {{ (selectGetOtpInProcess$ | async) ? 'Sending...' : 'Get OTP' }}
@@ -186,7 +178,7 @@
                     }"
                 ></ng-container>
             </div>
-            <div class="note" [ngStyle]="primaryColor ? { color: primaryColor } : {}">
+            <div class="note" [style.color]="primaryColor || null">
                 <span class="subheading">Note: </span>
                 Password should contain atleast one Capital Letter, one Small Letter, one Digit and one Symbol
             </div>
@@ -195,7 +187,7 @@
                 class="company-details"
                 [class.dark-divider]="isDarkTheme"
             ></mat-divider>
-            <div *ngIf="showCompanyDetail" class="heading" [ngStyle]="primaryColor ? { color: primaryColor } : {}">
+            <div *ngIf="showCompanyDetail" class="heading" [style.color]="primaryColor || null">
                 Company Details (Optional)
             </div>
             <ng-container
@@ -240,17 +232,9 @@
                         [color]="buttonColor ? null : 'primary'"
                         [class.has-hover-color]="!!buttonHoverColor"
                         [style.--btn-hover-color]="buttonHoverColor"
-                        [ngStyle]="
-                            buttonColor
-                                ? {
-                                      'background-color': buttonColor,
-                                      color: buttonTextColor || '#ffffff',
-                                      'border-radius': borderRadiusValue || '4px'
-                                  }
-                                : borderRadiusValue
-                                ? { 'border-radius': borderRadiusValue }
-                                : {}
-                        "
+                        [style.background-color]="buttonColor || null"
+                        [style.color]="buttonColor ? buttonTextColor || '#ffffff' : null"
+                        [style.border-radius]="buttonColor ? borderRadiusValue || '4px' : borderRadiusValue || null"
                     >
                         Submit
                     </button>
@@ -355,7 +339,7 @@
             (keypress)="intlClass?.[key]?.onlyPhoneNumber($event)"
             [attr.id]="'init-contact-' + key"
             [placeholder]="'Enter ' + label + (required ? ' *' : '')"
-            [ngClass]="{ 'invalid-input': formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber'] }"
+            [class.invalid-input]="formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']"
             (input)="onMobileInput($event, key)"
             (blur)="formControl?.markAsTouched(); formControl?.setValue(intlClass?.[key]?.phoneNumber?.replace('+', ''))"
             [disabled]="isFieldFocused"

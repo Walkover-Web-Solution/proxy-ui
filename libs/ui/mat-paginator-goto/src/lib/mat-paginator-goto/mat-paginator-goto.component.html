@@ -1,11 +1,11 @@
 <div
-    [ngClass]="{ 'hide-pagination-arrows': hidePaginationArrows }"
+    [class.hide-pagination-arrows]="hidePaginationArrows"
     *ngIf="length > showPaginatorLength"
     class="d-flex justify-content-end align-items-center go-to-pagination"
 >
     <div class="go-to-container" [hidden]="pageNumbers?.length < 1">
         <div class="go-to-label">Go To:</div>
-        <mat-form-field class="goto-dropdown" [ngStyle]="{ 'width.px': minWidth }">
+        <mat-form-field class="goto-dropdown" [style.width.px]="minWidth">
             <mat-select
                 [(ngModel)]="goTo"
                 (selectionChange)="goToChange()"

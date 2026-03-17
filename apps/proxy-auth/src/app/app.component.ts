@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
 
@@ -7,6 +7,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
     selector: 'proxy-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
+    host: { '(window:beforeunload)': 'ngOnDestroy()' },
 })
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     public title = 'otp-provider';
@@ -19,7 +20,6 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         this.initOtpProvider();
     }
 
-    @HostListener('window:beforeunload')
     ngOnDestroy() {
         super.ngOnDestroy();
     }

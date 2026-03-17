@@ -130,7 +130,7 @@
                         mat-row
                         *matRowDef="let row; columns: displayedColumns; let i = index"
                         class="hover-action"
-                        [ngClass]="{ 'last-child': i + 1 === pageSizeOptions[0] }"
+                        [class.last-child]="i + 1 === pageSizeOptions[0]"
                     ></tr>
 
                     <tr *matNoDataRow>

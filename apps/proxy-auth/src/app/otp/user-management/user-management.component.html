@@ -1,8 +1,9 @@
 <div
     #container
     class="container"
-    [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'"
-    [ngStyle]="isHidden ? { display: 'none' } : { display: 'block' }"
+    [class.dark-theme]="theme === 'dark'"
+    [class.light-theme]="theme !== 'dark'"
+    [style.display]="isHidden ? 'none' : 'block'"
 >
     <div class="members-container">
         <h2>Members</h2>
@@ -30,13 +31,18 @@
                         </div>
                     </div>
 
-                    <div class="users-list-container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
+                    <div
+                        class="users-list-container"
+                        [class.dark-theme]="theme === 'dark'"
+                        [class.light-theme]="theme !== 'dark'"
+                    >
                         <!-- Skeleton Loading -->
                         <ng-container *ngIf="isUsersLoading && !skipSkeletonLoading">
                             <div
                                 *ngFor="let item of [1, 2, 3, 4, 5]"
                                 class="user-item skeleton-item w-50"
-                                [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'"
+                                [class.dark-theme]="theme === 'dark'"
+                                [class.light-theme]="theme !== 'dark'"
                             >
                                 <div
                                     class="item-container w-100 d-flex justify-content-between align-items-center gap-2"
@@ -63,7 +69,8 @@
                         <div
                             *ngFor="let user of dataSource.data; let i = index"
                             class="user-item"
-                            [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'"
+                            [class.dark-theme]="theme === 'dark'"
+                            [class.light-theme]="theme !== 'dark'"
                             [class.hidden]="isUsersLoading && !skipSkeletonLoading"
                         >
                             <div class="item-container w-100 d-flex justify-content-between align-items-center gap-2">
@@ -117,7 +124,8 @@
                                         *ngIf="canRemoveUser"
                                         mat-stroked-button
                                         class="button-remove"
-                                        [ngClass]="theme === 'dark' ? 'button-add' : 'button-remove-light'"
+                                        [class.button-add]="theme === 'dark'"
+                                        [class.button-remove-light]="theme !== 'dark'"
                                         (click)="deleteUser(user, i)"
                                     >
                                         Remove
