@@ -1,4 +1,4 @@
-import { ApplicationRef, DoBootstrap, NgModule } from '@angular/core';
+import { ApplicationRef, DoBootstrap, NgModule, provideZoneChangeDetection } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from '../environments/environment';
@@ -29,6 +29,7 @@ if (environment.production) {
         }),
         ...conditional_imports,
     ],
+    providers: [provideZoneChangeDetection({ eventCoalescing: true })],
 })
 export class AppModule implements DoBootstrap {
     ngDoBootstrap(appRef: ApplicationRef) {
