@@ -3,7 +3,7 @@ import { select, Store } from '@ngrx/store';
 import { IAppState } from '../../store/app.state';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { distinctUntilChanged, Observable, takeUntil } from 'rxjs';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { subscriptionPlansData } from '../../store/selectors';
 import { getSubscriptionPlans } from '../../store/actions/otp.action';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -29,6 +29,7 @@ export interface SubscriptionPlan {
 }
 
 @Component({
+    standalone: false,
     selector: 'proxy-subscription-center',
     templateUrl: './subscription-center.component.html',
     styleUrls: ['./subscription-center.component.scss'],

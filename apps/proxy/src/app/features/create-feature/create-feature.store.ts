@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BaseResponse, errorResolver } from '@proxy/models/root-models';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
-import { ComponentStore, tapResponse } from '@ngrx/component-store';
+import { ComponentStore } from '@ngrx/component-store';
+import { tapResponse } from '@ngrx/operators';
 import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
 import { IFeature, IFeatureDetails, IFeatureType, IMethod } from '@proxy/models/features-model';
 import { FeaturesService } from '@proxy/services/proxy/features';

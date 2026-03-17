@@ -3,7 +3,7 @@
     "compilerOptions": {
         "declaration": true,
         "outDir": "../out-tsc/app",
-        "types": []
+        "types": ["node"]
     },
     "angularCompilerOptions": {
         "annotateForClosureCompiler": true,

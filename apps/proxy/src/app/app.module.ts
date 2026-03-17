@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, provideZoneChangeDetection } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -41,6 +41,7 @@ import { ServicesProxyRootModule } from '@proxy/services/proxy/root';
         ServicesProxyRootModule,
     ],
     providers: [
+        provideZoneChangeDetection({ eventCoalescing: true }),
         { provide: ProxyBaseUrls.FirebaseConfig, useValue: environment.firebaseConfig },
         {
             provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

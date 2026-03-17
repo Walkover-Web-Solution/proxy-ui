@@ -20,6 +20,7 @@ import {
 import { IClientData } from '@proxy/models/users-model';
 
 @Component({
+    standalone: false,
     selector: 'proxy-create-project',
     templateUrl: './create-project.component.html',
     styleUrls: ['./create-project.component.scss'],

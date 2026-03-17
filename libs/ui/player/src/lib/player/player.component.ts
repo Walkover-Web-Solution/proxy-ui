@@ -18,6 +18,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 
 @Component({
+    standalone: false,
     selector: 'proxy-lib-audio-player',
     templateUrl: './player.component.html',
     styleUrls: ['./player.component.scss'],

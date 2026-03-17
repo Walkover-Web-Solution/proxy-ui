@@ -21,6 +21,7 @@ interface IRole {
 }
 
 @Component({
+    standalone: false,
     selector: 'proxy-management',
     templateUrl: './management.component.html',
     styleUrls: ['./management.component.scss'],

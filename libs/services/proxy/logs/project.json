@@ -6,7 +6,7 @@
     "prefix": "proxy",
     "targets": {
         "lint": {
-            "executor": "@nrwl/linter:eslint",
+            "executor": "@nx/eslint:lint",
             "options": {
                 "lintFilePatterns": ["libs/services/proxy/logs/**/*.ts", "libs/services/proxy/logs/**/*.html"]
             }

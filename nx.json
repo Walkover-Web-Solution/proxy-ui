@@ -5,27 +5,25 @@
     },
     "tasksRunnerOptions": {
         "default": {
-            "runner": "@nrwl/nx-cloud",
+            "runner": "nx/tasks-runners/default",
             "options": {
-                "cacheableOperations": ["lint", "test"],
-                "accessToken": "Yzk3NzU2OWMtZTJhZC00NWNhLTk1OGQtMWJiOThhMWM2MzE0fHJlYWQtd3JpdGU=",
-                "parallel": 3
+                "cacheableOperations": ["lint", "test"]
             }
         }
     },
     "generators": {
-        "@nrwl/angular:application": {
+        "@nx/angular:application": {
             "style": "scss",
             "linter": "eslint",
             "unitTestRunner": "none",
             "e2eTestRunner": "cypress"
         },
-        "@nrwl/angular:library": {
+        "@nx/angular:library": {
             "linter": "eslint",
             "unitTestRunner": "none",
             "strict": false
         },
-        "@nrwl/angular:component": {
+        "@nx/angular:component": {
             "style": "scss"
         }
     },

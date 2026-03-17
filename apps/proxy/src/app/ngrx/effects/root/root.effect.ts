@@ -18,7 +18,7 @@ export class RootEffects {
                     map((res: BaseResponse<IClientSettings, void>) => {
                         if (res.hasError) {
                             this.showError(res.errors);
-                            rootActions.getClientSettingsError();
+                            return rootActions.getClientSettingsError();
                         }
                         return rootActions.getClientSettingsSuccess({ response: res.data });
                     }),
@@ -39,7 +39,7 @@ export class RootEffects {
                     map((res: BaseResponse<IPaginatedResponse<IClient[]>, void>) => {
                         if (res.hasError) {
                             this.showError(res.errors);
-                            rootActions.getAllClientsError();
+                            return rootActions.getAllClientsError();
                         }
                         return rootActions.getAllClientsSuccess({ response: res.data });
                     }),
@@ -60,7 +60,7 @@ export class RootEffects {
                     map((res: BaseResponse<{ message: string }, void>) => {
                         if (res.hasError) {
                             this.showError(res.errors);
-                            rootActions.switchClientError();
+                            return rootActions.switchClientError();
                         }
                         return rootActions.switchClientSuccess();
                     }),
@@ -80,13 +80,13 @@ export class RootEffects {
                     map((res) => {
                         if (res.hasError) {
                             this.showError(res.errors);
-                            rootActions.getAllProjectsError();
+                            return rootActions.getAllProjectsError();
                         }
                         return rootActions.getAllProjectSuccess({ response: res.data });
                     }),
                     catchError((err) => {
                         this.showError(err.errors);
-                        return of(rootActions.getAllProjectsError);
+                        return of(rootActions.getAllProjectsError());
                     })
                 );
             })

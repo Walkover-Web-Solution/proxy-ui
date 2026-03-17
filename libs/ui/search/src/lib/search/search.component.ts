@@ -14,6 +14,7 @@ import { DEBOUNCE_TIME } from '@proxy/constant';
 import { debounceTime } from 'rxjs/operators';
 
 @Component({
+    standalone: false,
     selector: 'proxy-lib-search',
     templateUrl: './search.component.html',
     styleUrls: ['./search.component.scss'],

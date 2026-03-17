@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 
 @Component({
+    standalone: false,
     selector: 'proxy-main-left-side-nav',
     templateUrl: './main-left-side-nav.component.html',
     styleUrls: ['./main-left-side-nav.component.scss'],

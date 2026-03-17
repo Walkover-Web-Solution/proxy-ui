@@ -1,13 +1,13 @@
 export const envVariables = {
     firebaseConfig: {
-        apiKey: process.env.FIREBASE_CONFIG_API_KEY,
-        authDomain: process.env.FIREBASE_CONFIG_AUTH_DOMAIN,
-        projectId: process.env.FIREBASE_CONFIG_PROJECT_ID,
-        storageBucket: process.env.FIREBASE_CONFIG_STORAGE_BUCKET,
-        messagingSenderId: process.env.FIREBASE_CONFIG_MESSAGING_SENDER_ID,
-        appId: process.env.FIREBASE_CONFIG_APP_ID,
+        apiKey: 'AIzaSyCxRjom_yz_suroteRqwqBk91HPqgh4Z3c',
+        authDomain: 'admin-panel-test-b5a7e.firebaseapp.com',
+        projectId: 'admin-panel-test-b5a7e',
+        storageBucket: 'admin-panel-test-b5a7e.appspot.com',
+        messagingSenderId: '970692014254',
+        appId: '1:970692014254:web:a50174f6d1d939533f7d3f',
     },
 
     // VIASOCKET INTERFACE
-    interfaceScriptUrl: process.env.INTERFACE_SCRIPT_URL,
+    interfaceScriptUrl: 'https://chatbot-embed.viasocket.com/chatbot-prod.js',
 };

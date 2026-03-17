@@ -13,7 +13,7 @@ import { Observable, distinctUntilChanged, takeUntil } from 'rxjs';
 import { IEnvironments, ILogDetailRes, ILogsRes, IProjects } from '@proxy/models/logs-models';
 import { IClientSettings, IPaginatedResponse } from '@proxy/models/root-models';
 import * as dayjs from 'dayjs';
-import { isEqual, omit } from 'lodash';
+import { isEqual, omit } from 'lodash-es';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -28,6 +28,7 @@ import { IAppState, selectClientSettings } from '../../ngrx';
 type FilterTypes = 'environments' | 'projects';
 
 @Component({
+    standalone: false,
     selector: 'proxy-logs',
     templateUrl: './log.component.html',
     styleUrls: ['./log.component.scss'],

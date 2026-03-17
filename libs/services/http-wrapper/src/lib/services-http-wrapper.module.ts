@@ -1,5 +1,4 @@
 import { cloneDeep } from 'lodash-es';
-import { finalize, tap } from 'rxjs/operators';
 import { NgModule, Inject, Injectable, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -45,47 +44,32 @@ export class HttpWrapperService {
         options = { withCredentials: true, ...options };
         options = this.prepareOptions(options);
         options.params = params;
-        return this.http.get<T>(url, options).pipe(
-            tap((res) => {}),
-            finalize(() => {})
-        );
+        return this.http.get<T>(url, options);
     }
 
     public post<T>(url: string, body: any, options?: any, addcontentType: boolean = true): Observable<any> {
         options = { withCredentials: true, ...options };
         options = this.prepareOptions(options, addcontentType);
-        return this.http.post<T>(url, body, options).pipe(
-            tap((res) => {}),
-            finalize(() => {})
-        );
+        return this.http.post<T>(url, body, options);
     }
 
     public put<T>(url: string, body: any, options?: any): Observable<any> {
         options = { withCredentials: true, ...options };
         options = this.prepareOptions(options);
-        return this.http.put<T>(url, body, options).pipe(
-            tap((res) => {}),
-            finalize(() => {})
-        );
+        return this.http.put<T>(url, body, options);
     }
 
     public delete<T>(url: string, params?: any, options?: any): Observable<any> {
         options = { withCredentials: true, ...options };
         options = this.prepareOptions(options);
         options.search = this.objectToParams(params);
-        return this.http.delete<T>(url, options).pipe(
-            tap((res) => {}),
-            finalize(() => {})
-        );
+        return this.http.delete<T>(url, options);
     }
 
     public patch<T>(url: string, body: any, options?: any): Observable<any> {
         options = { withCredentials: true, ...options };
         options = this.prepareOptions(options);
-        return this.http.patch<T>(url, body, options).pipe(
-            tap((res) => {}),
-            finalize(() => {})
-        );
+        return this.http.patch<T>(url, body, options);
     }
 
     public prepareOptions(options: any, addcontentType: boolean = true): any {

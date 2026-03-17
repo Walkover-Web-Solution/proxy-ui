@@ -14,7 +14,7 @@ export interface IRootState {
     // All Clients
     clients: IPaginatedResponse<IClient[]>;
     clientsInProcess: boolean;
-    swtichClientSuccess: boolean;
+    switchClientSuccess: boolean;
     //All project
     allProjects: IPaginatedResponse<IProjects[]>;
     projectInProcess: boolean;
@@ -31,7 +31,7 @@ export const initialState: IRootState = {
     // All Clients
     clients: null,
     clientsInProcess: false,
-    swtichClientSuccess: false,
+    switchClientSuccess: false,
     projectInProcess: false,
     allProjects: null,
 };
@@ -99,21 +99,21 @@ const _rootReducer = createReducer(
         return {
             ...state,
             clientsInProcess: true,
-            swtichClientSuccess: false,
+            switchClientSuccess: false,
         };
     }),
     on(rootActions.switchClientSuccess, (state) => {
         return {
             ...state,
             clientsInProcess: false,
-            swtichClientSuccess: true,
+            switchClientSuccess: true,
         };
     }),
     on(rootActions.switchClientError, (state) => {
         return {
             ...state,
             clientsInProcess: false,
-            swtichClientSuccess: false,
+            switchClientSuccess: false,
         };
     }),
 
@@ -133,7 +133,7 @@ const _rootReducer = createReducer(
     on(rootActions.getAllProjectsError, (state) => {
         return {
             ...state,
-            projects: null,
+            allProjects: null,
             projectInProcess: false,
         };
     })

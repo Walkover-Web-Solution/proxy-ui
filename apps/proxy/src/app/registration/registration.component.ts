@@ -6,6 +6,7 @@ import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { environment } from '../../environments/environment';
 
 @Component({
+    standalone: false,
     selector: 'app-registration',
     template: '',
 })

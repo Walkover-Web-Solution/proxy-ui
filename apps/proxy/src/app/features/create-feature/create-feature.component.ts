@@ -36,8 +36,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { MatStepper } from '@angular/material/stepper';
-import { MatDialog } from '@angular/material/dialog';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { getAcceptedTypeRegex } from '@proxy/utils';
 import { SimpleDialogComponent } from './simple-dialog/simple-dialog.component';
 import { CreatePlanDialogComponent } from './create-plan-dialog/create-plan-dialog.component';
@@ -82,6 +81,7 @@ export interface PeriodicElement {
     code?: string;
 }
 @Component({
+    standalone: false,
     selector: 'proxy-create-feature',
     templateUrl: './create-feature.component.html',
     styleUrls: ['./create-feature.component.scss'],

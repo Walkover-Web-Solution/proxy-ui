@@ -5,6 +5,7 @@ import { CustomValidators } from '@proxy/custom-validator';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
+    standalone: false,
     selector: 'proxy-simple-dialog',
     template: `
         <div class="d-flex justify-content-between align-items-center mb-3">

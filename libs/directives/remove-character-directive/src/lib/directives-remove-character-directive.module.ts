@@ -1,6 +1,7 @@
 import { Directive, HostListener, Input, NgModule } from '@angular/core';
 
 @Directive({
+    standalone: false,
     selector: '[proxyRemoveCharacter]',
 })
 export class RemoveCharacterDirective {

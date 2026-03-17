@@ -7,6 +7,7 @@ import { leaveCompanySuccess } from '../../store/selectors';
 import { IAppState } from '../../store/app.state';
 
 @Component({
+    standalone: false,
     selector: 'proxy-confirmation-dialog',
     templateUrl: './user-dialog.component.html',
     styleUrls: ['./user-dialog.component.scss'],

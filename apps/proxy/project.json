@@ -6,7 +6,7 @@
     "prefix": "proxy",
     "targets": {
         "build": {
-            "executor": "@angular-builders/custom-webpack:browser",
+            "executor": "@angular-devkit/build-angular:browser",
             "outputs": ["{options.outputPath}"],
             "options": {
                 "outputPath": "dist/apps/proxy",
@@ -15,9 +15,6 @@
                 "polyfills": "apps/proxy/src/polyfills.ts",
                 "tsConfig": "apps/proxy/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
-                "customWebpackConfig": {
-                    "path": "/webpack.config.js"
-                },
                 "assets": ["apps/proxy/src/favicon.ico", "apps/proxy/src/assets"],
                 "styles": [
                     "apps/proxy/src/styles.scss",
@@ -102,18 +99,29 @@
                     "extractLicenses": false,
                     "sourceMap": true,
                     "namedChunks": true
+                },
+                "local": {
+                    "buildOptimizer": false,
+                    "optimization": false,
+                    "vendorChunk": true,
+                    "extractLicenses": false,
+                    "sourceMap": true,
+                    "namedChunks": true
                 }
             },
             "defaultConfiguration": "production"
         },
         "serve": {
-            "executor": "@angular-builders/custom-webpack:dev-server",
+            "executor": "@angular-devkit/build-angular:dev-server",
             "configurations": {
                 "production": {
-                    "browserTarget": "proxy:build:production"
+                    "buildTarget": "proxy:build:production"
                 },
                 "development": {
-                    "browserTarget": "proxy:build:development"
+                    "buildTarget": "proxy:build:development"
+                },
+                "serve": {
+                    "buildTarget": "proxy:build:development"
                 }
             },
             "defaultConfiguration": "development"
@@ -121,11 +129,11 @@
         "extract-i18n": {
             "executor": "@angular-devkit/build-angular:extract-i18n",
             "options": {
-                "browserTarget": "proxy:build"
+                "buildTarget": "proxy:build"
             }
         },
         "lint": {
-            "executor": "@nrwl/linter:eslint",
+            "executor": "@nx/eslint:lint",
             "options": {
                 "lintFilePatterns": ["apps/proxy/**/*.ts", "apps/proxy/**/*.html"]
             }

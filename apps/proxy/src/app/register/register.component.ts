@@ -3,7 +3,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import * as _ from 'lodash';
 import { EMAIL_REGEX, MOBILE_NUMBER_REGEX, NAME_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { takeUntil } from 'rxjs';
@@ -14,6 +13,7 @@ import { IntlPhoneLib } from '@proxy/utils';
 import { Router } from '@angular/router';
 
 @Component({
+    standalone: false,
     selector: 'app-register-component',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
