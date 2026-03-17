@@ -77,44 +77,42 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
                 <!-- Chip List -->
                 <ng-container *ngIf="fieldConfig?.type === 'chipList'">
-                    <mat-chip-list
-                        #chipList
-                        [disabled]="fieldControl.disabled"
-                        aria-label="{{ fieldConfig?.label }}"
-                        *ngIf="fieldConfig?.label"
-                    >
-                        <mat-chip
-                            *ngFor="let item of getChipListArray(fieldConfig?.label + '_0')"
-                            (removed)="updateChipListValues('delete', fieldConfig?.label + '_0', fieldControl, item)"
-                            [removable]="!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)"
-                            disableRipple
-                        >
-                            {{ item }}
-                            <button
-                                type="button"
-                                matChipRemove
-                                *ngIf="!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)"
+                    <ng-container *ngIf="fieldConfig?.label">
+                        <mat-chip-grid #chipList [formControl]="fieldControl" aria-label="{{ fieldConfig?.label }}">
+                            <mat-chip-row
+                                *ngFor="let item of getChipListArray(fieldConfig?.label + '_0')"
+                                (removed)="
+                                    updateChipListValues('delete', fieldConfig?.label + '_0', fieldControl, item)
+                                "
+                                [removable]="!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)"
+                                disableRipple
                             >
-                                <mat-icon>cancel</mat-icon>
-                            </button>
-                        </mat-chip>
-                        <input
-                            matChipInput
-                            type="text"
-                            [placeholder]="
-                                (getChipListArray(fieldConfig?.label + '_0')?.length || 0) > 0
-                                    ? ''
-                                    : 'Enter ' + fieldConfig?.label
-                            "
-                            autocomplete="off"
-                            [formControl]="fieldControl"
-                            [matChipInputFor]="chipList"
-                            [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
-                            (matChipInputTokenEnd)="
-                                updateChipListValues('add', fieldConfig?.label + '_0', fieldControl, $event.value)
-                            "
-                        />
-                    </mat-chip-list>
+                                {{ item }}
+                                <button
+                                    type="button"
+                                    matChipRemove
+                                    *ngIf="!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)"
+                                >
+                                    <mat-icon>cancel</mat-icon>
+                                </button>
+                            </mat-chip-row>
+                            <input
+                                matChipInput
+                                type="text"
+                                [placeholder]="
+                                    (getChipListArray(fieldConfig?.label + '_0')?.length || 0) > 0
+                                        ? ''
+                                        : 'Enter ' + fieldConfig?.label
+                                "
+                                autocomplete="off"
+                                [matChipInputFor]="chipList"
+                                [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
+                                (matChipInputTokenEnd)="
+                                    updateChipListValues('add', fieldConfig?.label + '_0', fieldControl, $event.value)
+                                "
+                            />
+                        </mat-chip-grid>
+                    </ng-container>
                 </ng-container>
 
                 <!-- Textarea -->

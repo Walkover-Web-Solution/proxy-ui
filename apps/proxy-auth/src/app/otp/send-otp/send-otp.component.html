@@ -11,14 +11,6 @@
         'user-management': authToken && type === 'user-management'
     }"
 >
-    <pre>
-    {{ otpWidgetData | json }}
-    ============================
-    authToken: {{ authToken }}
-    ============================
-    type: {{ type }}
-</pre
-    >
     <div
         class="otp-verification-dialog"
         [ngClass]="{

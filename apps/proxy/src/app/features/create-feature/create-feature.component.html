@@ -1220,34 +1220,30 @@
             >{{ fieldConfig?.label }} <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span>
         </mat-label>
         <ng-container *ngSwitchCase="featureFieldType.ChipList">
-            <mat-chip-list
-                #chipList
-                [disabled]="fieldControl.disabled"
-                aria-label="{{ fieldConfig?.label }}"
-                *ngIf="fieldConfig?.label + '_' + this.selectedServiceIndex as chipListKey"
-            >
-                <mat-chip
-                    *ngFor="let item of chipListValues[chipListKey]"
-                    (removed)="updateChipListValues('delete', chipListKey, fieldControl, item)"
-                    [removable]="!chipListReadOnlyValues[chipListKey].has(item)"
-                    disableRipple
-                >
-                    {{ item }}
-                    <button type="button" matChipRemove *ngIf="!chipListReadOnlyValues[chipListKey].has(item)">
-                        <mat-icon>cancel</mat-icon>
-                    </button>
-                </mat-chip>
-                <input
-                    matChipInput
-                    type="text"
-                    [placeholder]="chipListValues[chipListKey].size ? '' : 'Enter ' + fieldConfig?.label"
-                    autocomplete="off"
-                    [formControl]="fieldControl"
-                    [matChipInputFor]="chipList"
-                    [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
-                    (matChipInputTokenEnd)="updateChipListValues('add', chipListKey, fieldControl, $event.value)"
-                />
-            </mat-chip-list>
+            <ng-container *ngIf="fieldConfig?.label + '_' + this.selectedServiceIndex as chipListKey">
+                <mat-chip-grid #chipList [formControl]="fieldControl" aria-label="{{ fieldConfig?.label }}">
+                    <mat-chip-row
+                        *ngFor="let item of chipListValues[chipListKey]"
+                        (removed)="updateChipListValues('delete', chipListKey, fieldControl, item)"
+                        [removable]="!chipListReadOnlyValues[chipListKey].has(item)"
+                        disableRipple
+                    >
+                        {{ item }}
+                        <button type="button" matChipRemove *ngIf="!chipListReadOnlyValues[chipListKey].has(item)">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </mat-chip-row>
+                    <input
+                        matChipInput
+                        type="text"
+                        [placeholder]="chipListValues[chipListKey].size ? '' : 'Enter ' + fieldConfig?.label"
+                        autocomplete="off"
+                        [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
+                        (matChipInputTokenEnd)="updateChipListValues('add', chipListKey, fieldControl, $event.value)"
+                    />
+                </mat-chip-grid>
+            </ng-container>
         </ng-container>
 
         <ng-container *ngSwitchCase="featureFieldType.Select">
@@ -2255,7 +2251,7 @@
             <div
                 *ngIf="
                     isEditMode &&
-                    featureForm.get('serviceDetails')?.at(3).controls.is_enable.value &&
+                    featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
                     featureForm.get('brandingDetails.version')?.value === 'v2'
                 "
                 class="d-flex align-items-center justify-content-center w-100 mb-3"

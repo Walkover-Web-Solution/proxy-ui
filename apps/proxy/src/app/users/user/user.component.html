@@ -37,11 +37,7 @@
                                         </mat-form-field>
                                         <mat-form-field appearance="outline" floatLabel="always" class="w-100">
                                             <mat-label>Block</mat-label>
-                                            <mat-select
-                                                placeholder="Select Block"
-                                                [disableOptionCentering]="true"
-                                                formControlName="feature_id"
-                                            >
+                                            <mat-select placeholder="Select Block" formControlName="feature_id">
                                                 <mat-option [value]="null">None</mat-option>
                                                 <mat-option
                                                     *ngFor="let feature of features"
