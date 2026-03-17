@@ -45,6 +45,50 @@
                     "sourceMap": false,
                     "namedChunks": false
                 },
+                "test": {
+                    "budgets": [
+                        {
+                            "type": "initial",
+                            "maximumWarning": "1mb",
+                            "maximumError": "3mb"
+                        }
+                    ],
+                    "fileReplacements": [
+                        {
+                            "replace": "apps/proxy-auth/src/environments/environment.ts",
+                            "with": "apps/proxy-auth/src/environments/environment.test.ts"
+                        }
+                    ],
+                    "buildOptimizer": true,
+                    "optimization": true,
+                    "vendorChunk": false,
+                    "extractLicenses": false,
+                    "sourceMap": false,
+                    "namedChunks": false,
+                    "outputHashing": "all"
+                },
+                "stage": {
+                    "budgets": [
+                        {
+                            "type": "initial",
+                            "maximumWarning": "1mb",
+                            "maximumError": "3mb"
+                        }
+                    ],
+                    "fileReplacements": [
+                        {
+                            "replace": "apps/proxy-auth/src/environments/environment.ts",
+                            "with": "apps/proxy-auth/src/environments/environment.stage.ts"
+                        }
+                    ],
+                    "buildOptimizer": true,
+                    "optimization": true,
+                    "vendorChunk": false,
+                    "extractLicenses": false,
+                    "sourceMap": false,
+                    "namedChunks": false,
+                    "outputHashing": "all"
+                },
                 "development": {
                     "buildOptimizer": false,
                     "optimization": false,

@@ -1,4 +1,4 @@
-@import '../utils/mixins/common-utils';
+@use '../utils/mixins/common-utils' as *;
 
 .h-100 {
     height: 100% !important;

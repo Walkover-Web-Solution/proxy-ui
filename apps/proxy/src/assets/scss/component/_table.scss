@@ -1,4 +1,4 @@
-@import "../../scss/utils/mixins/common-utils";
+@use '../../scss/utils/mixins/common-utils' as *;
 .table-scroll {
     display: block;
     @include  media-breakpoint-up('tablet') {

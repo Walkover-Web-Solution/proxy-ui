@@ -4,8 +4,8 @@
 /*
 // Typography
 */
-@import 'theme-colors';
-@import 'typography';
+@use 'theme-colors' as *;
+@use 'typography' as *;
 
 @include mat.core();
 @include mat.all-component-typographies($custom-typography);

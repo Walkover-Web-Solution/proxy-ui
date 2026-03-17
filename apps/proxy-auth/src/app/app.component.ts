@@ -25,14 +25,17 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     public initOtpProvider() {
+        if (customElements.get('h-captcha')) {
+            return;
+        }
         if (!environment.production) {
             const sendOTPConfig = {
-                // referenceId: '4512365m176216342869087ae458e09',
-                // type: 'organization-details',
+                referenceId: '4512365e1772083784699fda48abd90',
+                type: 'user-management', // 'user-management', 'organization-details'
                 // loginRedirectUrl: 'https://www.google.com',
                 // showCompanyDetails: false,
                 authToken:
-                    'ZGlYV0Z4ekRleUQwZEhXR2JvRllKaWh6cmhhb2hhTnhTMGdDdHlpa2ZaOU9LcGh5M3puLzZ6QTVRb3pGdGNPU0xlSC9SQjI3ckNweWk5cWg1aytpOVRTVmtUWXFRQW5rWEZ0c21KeEN6c0FmK1d5bWQxUk9lZHM4anlHSDI5Q3dxL0o3V0h6Yk9kMDBSVE5pc1FPekJkQVg3QXZ4K2xFbUViUGdhQ0Z6d3hGNXQreEN2dytUQW9GOEdseFFBU3FaNXYzbFVUalJDRitqc0EvQVduQUkrUT09',
+                    'VWVJOXVmR0NEcXlmbUJpcjd6M0dnN1YvbEJxcTNSSWp1cFd0U01mQmpZMHdzRW82N0w3QzZid3Y0eFpDNkx6UU1OWEsxNDdMQ0JLb1JSZzV0Y2dBc0ExbWxHaFVGa3FmQnpXcEpRT2ZndGczditFL1hpWXZKdEJha25DcVhxR1hWSFQvQVlZZE1LNThxWk9sTERhMnVwUkVyNWxDdkhUdWF1TDFKc0JiMG91eXhRUndxQjRLclpWL21OVXNxL0RYK0ZiZ005MU1RUlByQmo3aGxGdFpDZz09',
                 // type: 'user-management',
                 // isHidden: true,
                 // theme: 'dark',
