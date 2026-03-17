@@ -7,13 +7,21 @@ const path = require('path');
 
     const distDir = './dist/apps/proxy-auth';
     const allFiles = await fs.readdir(distDir);
-    const mainFile = allFiles.find((f) => f.startsWith('main') && f.endsWith('.js'));
 
-    if (!mainFile) {
-        throw new Error(`Could not find main.js or main.<hash>.js in ${distDir}`);
-    }
+    // Find each chunk by prefix — order matters: runtime → polyfills → main
+    const findChunk = (prefix) => {
+        const match = allFiles.find((f) => f.startsWith(prefix) && f.endsWith('.js'));
+        if (!match) throw new Error(`Could not find ${prefix}*.js in ${distDir}`);
+        return path.join(distDir, match);
+    };
 
-    const files = [path.join(distDir, mainFile)];
+    const files = [
+        findChunk('runtime'),
+        findChunk('polyfills'),
+        findChunk('main'),
+    ];
+
+    console.info('Concatenating:', files);
 
     await fs.ensureDir('./dist/apps/proxy/assets/proxy-auth');
 
