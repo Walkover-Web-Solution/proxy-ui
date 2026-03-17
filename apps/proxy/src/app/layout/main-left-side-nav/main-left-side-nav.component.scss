@@ -1,4 +1,4 @@
-@import '../../../assets/scss/utils/mixins/common-utils';
+@use '../../../assets/scss/utils/mixins/common-utils' as *;
 .default-drawer {
     .mat-nav-list {
         padding-top: 0px;

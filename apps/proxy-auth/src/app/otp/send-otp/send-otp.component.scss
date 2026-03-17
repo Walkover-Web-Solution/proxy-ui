@@ -1,6 +1,6 @@
-@import '~intl-tel-input/build/css/intlTelInput.css';
-@import '../../../intl.scss';
-@import '../../../otp-global.scss';
+@use 'intl-tel-input/build/css/intlTelInput.css';
+@use '../../../intl' as *;
+@use '../../../otp-global' as *;
 
 .container {
     width: 100%;

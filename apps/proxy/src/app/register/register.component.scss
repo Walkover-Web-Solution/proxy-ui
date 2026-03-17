@@ -1,4 +1,4 @@
-@import '../../assets/scss/utils/mixins/common-utils';
+@use '../../assets/scss/utils/mixins/common-utils' as *;
 .app-content {
     background-color: var(--color-common-app-bg);
     height: 100vh;
