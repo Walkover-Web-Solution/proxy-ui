@@ -6,6 +6,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
+    standalone: false,
     selector: 'proxy-create-plan-dialog',
     template: `
         <div class="d-flex justify-content-between align-items-center">

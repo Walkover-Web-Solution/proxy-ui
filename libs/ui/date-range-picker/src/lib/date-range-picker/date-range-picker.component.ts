@@ -23,6 +23,7 @@ dayjs.extend(quarterOfYear);
 dayjs.extend(advancedFormat);
 
 @Component({
+    standalone: false,
     selector: 'date-range-picker',
     templateUrl: './date-range-picker.component.html',
     styleUrls: ['./date-range-picker.component.scss'],

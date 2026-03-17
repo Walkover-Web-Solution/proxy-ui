@@ -21,6 +21,7 @@ import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component
 import { updateUser } from '../store/actions/otp.action';
 import { UPDATE_REGEX } from '@proxy/regex';
 @Component({
+    standalone: false,
     selector: 'proxy-user-profile',
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.scss'],

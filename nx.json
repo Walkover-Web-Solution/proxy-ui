@@ -12,18 +12,18 @@
         }
     },
     "generators": {
-        "@nrwl/angular:application": {
+        "@nx/angular:application": {
             "style": "scss",
             "linter": "eslint",
             "unitTestRunner": "none",
             "e2eTestRunner": "cypress"
         },
-        "@nrwl/angular:library": {
+        "@nx/angular:library": {
             "linter": "eslint",
             "unitTestRunner": "none",
             "strict": false
         },
-        "@nrwl/angular:component": {
+        "@nx/angular:component": {
             "style": "scss"
         }
     },

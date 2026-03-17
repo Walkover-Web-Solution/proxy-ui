@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { IFeature } from '@proxy/models/features-model';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 @Component({
+    standalone: false,
     selector: 'proxy-features',
     templateUrl: './feature.component.html',
     styleUrls: ['./feature.component.scss'],

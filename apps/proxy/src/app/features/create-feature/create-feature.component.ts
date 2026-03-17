@@ -81,6 +81,7 @@ export interface PeriodicElement {
     code?: string;
 }
 @Component({
+    standalone: false,
     selector: 'proxy-create-feature',
     templateUrl: './create-feature.component.html',
     styleUrls: ['./create-feature.component.scss'],

@@ -130,7 +130,7 @@ $dark-theme-foreground-palette: (
     slider-off: rgba(white, 0.3),
     slider-off-active: rgba(white, 0.3),
 );
-$theme: mat.define-light-theme((
+$theme: mat.m2-define-light-theme((
     color: (
         primary: $primary,
         accent: $accent,
@@ -139,7 +139,7 @@ $theme: mat.define-light-theme((
     typography: $custom-typography,
     density: 0,
 ));
-$altTheme: mat.define-dark-theme((
+$altTheme: mat.m2-define-dark-theme((
     color: (
         primary: $primary,
         accent: $accent,

@@ -1,6 +1,7 @@
 import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { ComponentStore, tapResponse } from '@ngrx/component-store';
+import { ComponentStore } from '@ngrx/component-store';
+import { tapResponse } from '@ngrx/operators';
 import { IEnvironments, IProjects } from '@proxy/models/logs-models';
 import { BaseResponse, IPaginatedResponse, IReqParams, errorResolver } from '@proxy/models/root-models';
 import { CreateProjectService } from '@proxy/services/proxy/create-project';

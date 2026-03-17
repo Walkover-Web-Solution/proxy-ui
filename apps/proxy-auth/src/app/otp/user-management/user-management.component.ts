@@ -38,6 +38,7 @@ import { UserData, Role } from '../model/otp';
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 
 @Component({
+    standalone: false,
     selector: 'proxy-user-management',
     templateUrl: './user-management.component.html',
     styleUrls: ['./user-management.component.scss'],

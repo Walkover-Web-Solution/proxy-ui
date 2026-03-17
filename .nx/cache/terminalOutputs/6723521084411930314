@@ -1,0 +1,668 @@
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.dev/tools/cli/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+<t> [webpack.cache.PackFileCacheStrategy] restore cache container: 1975.213334 ms
+<t> [webpack.cache.PackFileCacheStrategy] check build dependencies: 0.276292 ms
+<t> [webpack.cache.PackFileCacheStrategy] restore cache content metadata: 11.289833 ms
+    [webpack.cache.PackFileCacheStrategy] starting to restore cache content 1 (145 bytes) because of request to: ProgressPlugin|counts
+    [webpack.cache.PackFileCacheStrategy] starting to restore cache content 0 (174 MiB) because of request to: ResolverCachePlugin|normal|default|dependencyType=|esm|path=|/Users/divyanshu/walkover/proxy-ui|request=|/Users/divyanshu/walkover/proxy-ui/libs/ui/prime-ng-toast/src/lib/prime-ng-toast/prime-ng-toast.component.scss?ngResource
+<t> [webpack.cache.PackFileCacheStrategy] restore cache content 1 (145 bytes): 9.957791 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/core/fesm2022/core.mjs': 1.5435 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/common/fesm2022/common.mjs': 1.256334 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/rxjs/dist/esm/index.js': 1.049375 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/router/fesm2022/router.mjs': 1.401666 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/lodash-es/lodash.js': 2.040125 ms
+<i> [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js!/Users/divyanshu/walkover/proxy-ui/libs/ui/prime-ng-toast/src/lib/prime-ng-toast/prime-ng-toast.component.ts': 7.024083 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/material/fesm2022/table.mjs': 4.507541 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/material/fesm2022/tabs.mjs': 4.243583 ms
+<i> [webpack.cache.PackFileCacheStrategy] Deserialization of 'FlagDependencyExportsPlugin|json|/Users/divyanshu/walkover/proxy-ui/libs/ui/handle-domain/src/lib/rules.json': 5.378125 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/codeGeneration|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/crypto-js/core.js|runtime': 3.746417 ms
+<t> [webpack.cache.PackFileCacheStrategy] restore cache content 0 (174 MiB): 311.511417 ms
+    [webpack.cache.PackFileCacheStrategy] starting to restore cache content 3 (166 MiB) because of request to: angular-compiler:resource|15|Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[1].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[1].use[1]!/Users/divyanshu/walkover/proxy-ui/node_modules/resolve-url-loader/index.js??ruleSet[1].rules[6].rules[1].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[6].rules[1].use[1]!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/features/create-feature/create-feature.component.scss?ngResource
+<i> [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/features/create-feature/create-feature.component.ts': 11.843875 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/assets|chunkvendor': 2.111083 ms
+<t> [webpack.cache.PackFileCacheStrategy] restore cache content 3 (166 MiB): 394.105291 ms
+    [IdleFileCachePlugin] Initial cache was generated and cache will be persisted in 5s.
+[32m✔[39m Browser application bundle generation complete.
+    [webpack.cache.PackFileCacheStrategy] Pack got invalid because of write to: Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@firebase/util/dist/index.esm2017.js
+    [webpack.cache.PackFileCacheStrategy] Pack 3 got empty and is removed
+[37masset vendor.js 6.46 MiB {vendor} [cached] (name: vendor) (id hint: defaultVendors) 1 related asset[39m
+[37masset apps_proxy_src_app_features_create-feature_create-feature_module_ts.js 860 KiB {apps_proxy_src_app_features_create-feature_create-feature_module_ts} [cached] (name: create-feature-create-feature-module) 1 related asset[39m
+[37masset default-libs_custom-validator_src_index_ts.js 438 KiB {default-libs_custom-validator_src_index_ts} [cached] (name: app-create-project-create-project-module) (id hint: default) 1 related asset[39m
+[37masset default-libs_services_proxy_logs_src_index_ts-libs_ui_date-range-picker_src_index_ts.js 402 KiB {default-libs_services_proxy_logs_src_index_ts-libs_ui_date-range-picker_src_index_ts} [cached] (name: logs-logs-module) (id hint: default) 1 related asset[39m
+[37masset default-libs_models_features-model_src_index_ts-node_modules_angular_material_fesm2022_slide--ccccdf.js 375 KiB {default-libs_models_features-model_src_index_ts-node_modules_angular_material_fesm2022_slide--ccccdf} [cached] (name: users-users-module) (id hint: default) 1 related asset[39m
+[37masset apps_proxy_src_app_layout_layout_module_ts.js 346 KiB {apps_proxy_src_app_layout_layout_module_ts} [cached] (name: layout-layout-module) 1 related asset[39m
+[37masset default-libs_ui_mat-paginator-goto_src_index_ts-libs_ui_no-record-found_src_index_ts-libs_ui_-d1baa7.js 324 KiB {default-libs_ui_mat-paginator-goto_src_index_ts-libs_ui_no-record-found_src_index_ts-libs_ui_-d1baa7} [cached] (name: logs-logs-module) (id hint: default) 1 related asset[39m
+[37masset styles.css 256 KiB {styles} [cached] (name: styles) 1 related asset[39m
+[37masset default-node_modules_rxjs_dist_esm_internal_operators_delay_js-node_modules_angular_material_-afa883.js 248 KiB {default-node_modules_rxjs_dist_esm_internal_operators_delay_js-node_modules_angular_material_-afa883} [cached] (name: layout-layout-module) (id hint: default) 1 related asset[39m
+[37masset main.js 156 KiB {main} [cached] (name: main) 1 related asset[39m
+[37masset apps_proxy_src_app_users_users_module[39m[37m_ts.js 152 KiB {apps_proxy_src_app_users_users_module_ts} [cached] (name: users-users-module) 1 related asset[39m
+[37masset apps_proxy_src_app_logs_logs_module_ts.js 145 KiB {apps_proxy_src_app_logs_logs_module_ts} [cached] (name: logs-logs-module) 1 related asset[39m
+[37masset default-node_modules_angular_material_fesm2022_autocomplete_mjs-node_modules_angular_material-80994c.js 141 KiB {default-node_modules_angular_material_fesm2022_autocomplete_mjs-node_modules_angular_material-80994c} [cached] (name: app-create-project-create-project-module) (id hint: default) 1 related asset[39m
+[37masset apps_proxy_src_app_auth_auth_module_ts.js 140 KiB {apps_proxy_src_app_auth_auth_module_ts} [cached] (name: auth-auth-module) 1 related asset[39m
+[37m+ 27 assets[39m
+[37mEntrypoint main = runtime.js vendor.js main.js 3 auxiliary assets[39m
+[37mEntrypoint polyfills = runtime.js polyfills.js 2 auxiliary assets[39m
+[37mEntrypoint styles = runtime.js styles.css 10 auxiliary assets[39m
+[37mEntrypoint scripts = scripts.js 1 auxiliary asset[39m
+[37mchunk {apps_proxy_src_app_auth_auth_module_ts} (runtime: runtime) apps_proxy_src_app_auth_auth_module_ts.js (auth-auth-module) 109 KiB[39m
+[37m  cached modules 109 KiB [cached] 2 modules[39m
+[37mchunk {apps_proxy_src_app_client_module_ts} (runtime: runtime) apps_proxy_src_app_client_module_ts.js (client-module) 940 bytes[39m
+[37m  cached modules 940 bytes [cached] 1 module[39m
+[37mchunk {apps_proxy_src_app_create-project_create-project_module_ts} (runtime: runtime) apps_proxy_src_app_create-project_create-project_module_ts.js (app-create-project-create-project-module) 48.1 KiB[39m
+[37m  cached modules 48.1 KiB [cached] 6 modules[39m
+[37mchunk {apps_proxy_src_app_dashboard_dashborad_module_ts} (runtime: runtime) apps_proxy_src_app_dashboard_dashborad_module_ts.js (dashboard-dashborad-module) 11.1 KiB[39m
+[37m  cached modules 11.1 KiB [cached] 2 modules[39m
+[37mchunk {apps_proxy_src_app_features_create-feature_create-feature_module_ts} (runtime: runtime) apps_proxy_src_app_features_create-feature_create-feature_module_ts.js (create-feature-create-feature-module) 651 KiB[39m
+[37m  cac[39m[37mhed modules 377 KiB [cached] 7 modules[39m
+[37m  dependent modules 275 KiB [dependent] 1 module[39m
+[37mchunk {apps_proxy_src_app_features_features_module_ts} (runtime: runtime) apps_proxy_src_app_features_features_module_ts.js (features-features-module) 24.4 KiB[39m
+[37m  cached modules 24.4 KiB [cached] 2 modules[39m
+[37mchunk {apps_proxy_src_app_layout_layout_module_ts} (runtime: runtime) apps_proxy_src_app_layout_layout_module_ts.js (layout-layout-module) 266 KiB[39m
+[37m  cached modules 266 KiB [cached] 16 modules[39m
+[37mchunk {apps_proxy_src_app_logs_logs_module_ts} (runtime: runtime) apps_proxy_src_app_logs_logs_module_ts.js (logs-logs-module) 96 KiB[39m
+[37m  cached modules 96 KiB [cached] 5 modules[39m
+[37mchunk {apps_proxy_src_app_public_module_ts} (runtime: runtime) apps_proxy_src_app_public_module_ts.js (public-module) 1.11 KiB[39m
+[37m  cached modules 1.11 KiB [cached] 1 module[39m
+[37mchunk {apps_proxy_src_app_register_register_module_ts} (runtime: runtime) apps_proxy_src_app_register_register_module_ts.js (register-register-module) 33.3 KiB[39m
+[37m  cached modules 33.3 KiB [cached] 2 modules[39m
+[37mchunk {apps_proxy_src_app_registration_registration_module_ts} (runtime: runtime) apps_proxy_src_app_registration_registration_module_ts.js (registration-registration-module) 6.02 KiB[39m
+[37m  cached modules 6.02 KiB [cached] 3 modules[39m
+[37mchunk {apps_proxy_src_app_users_users_module_ts} (runtime: runtime) apps_proxy_src_app_users_users_module_ts.js (users-users-module) 95.8 KiB[39m
+[37m  cached modules 95.8 KiB [cached] 4 modules[39m
+[37mchunk {common} (runtime: runtime) common.js (common) (id hint: common) 12.8 KiB split chunk (cache group: common) (name: common)[39m
+[37m  cached modules 12.8 KiB [cached] 7 modules[39m
+[37mchunk {default-apps_proxy_src_app_features_feature_feature_store_ts-libs_directives_skeleton_src_ind-eb6cd8} (runtime: runtime) default-apps_proxy_src_app_features_feature_feature_store_ts-libs_directives_skeleton_src_ind-eb6cd8.js (features-features-module) (id hint: default) 27.3 KiB split chunk (cache group: default)[39m
+[37m  cached modules 27.3 KiB [cached] 18 modules[39m
+[37mchun[39m[37mk {default-libs_constant_src_index_ts} (runtime: runtime) default-libs_constant_src_index_ts.js (layout-layout-module) (id hint: default) 75.8 KiB split chunk (cache group: default)[39m
+[37m  cached modules 75.8 KiB [cached] 12 modules[39m
+[37mchunk {default-libs_custom-validator_src_index_ts} (runtime: runtime) default-libs_custom-validator_src_index_ts.js (app-create-project-create-project-module) (id hint: default) 399 KiB split chunk (cache group: default)[39m
+[37m  cached modules 242 KiB [cached] 74 modules[39m
+[37m  dependent modules 157 KiB [dependent] 1 module[39m
+[37mchunk {default-libs_models_features-model_src_index_ts-node_modules_angular_material_fesm2022_slide--ccccdf} (runtime: runtime) default-libs_models_features-model_src_index_ts-node_modules_angular_material_fesm2022_slide--ccccdf.js (users-users-module) (id hint: default) 323 KiB split chunk (cache group: default)[39m
+[37m  cached modules 323 KiB [cached] 5 modules[39m
+[37mchunk {default-libs_services_proxy_logs_src_index_ts-libs_ui_date-range-picker_src_index_ts} (runtime: runtime) default-libs_services_proxy_logs_src_index_ts-libs_ui_date-range-picker_src_index_ts.js (logs-logs-module) (id hint: default) 329 KiB split chunk (cache group: default)[39m
+[37m  cached modules 329 KiB [cached] 9 modules[39m
+[37mchunk {default-libs_ui_copy-button_src_index_ts} (runtime: runtime) default-libs_ui_copy-button_src_index_ts.js (app-create-project-create-project-module) (id hint: default) 12.2 KiB split chunk (cache group: default)[39m
+[37m  cached modules 12.2 KiB [cached] 3 modules[39m
+[37mchunk {default-libs_ui_loader_src_index_ts} (runtime: runtime) default-libs_ui_loader_src_index_ts.js (auth-auth-module) (id hint: default) 24 KiB split chunk (cache group: default)[39m
+[37m  cached modules 24 KiB [cached] 4 modules[39m
+[37mchunk {default-libs_ui_mat-paginator-goto_src_index_ts-libs_ui_no-record-found_src_index_ts-libs_ui_-d1baa7} (runtime: runtime) default-libs_ui_mat-paginator-goto_src_index_ts-libs_ui_no-record-found_src_index_ts-libs_ui_-d1baa7.js (logs-logs-module) (id hint: default) 246 KiB split c[39m[37mhunk (cache group: default)[39m
+[37m  cached modules 246 KiB [cached] 31 modules[39m
+[37mchunk {default-node_modules_angular_material_fesm2022_autocomplete_mjs-node_modules_angular_material-80994c} (runtime: runtime) default-node_modules_angular_material_fesm2022_autocomplete_mjs-node_modules_angular_material-80994c.js (app-create-project-create-project-module) (id hint: default) 120 KiB split chunk (cache group: default)[39m
+[37m  cached modules 120 KiB [cached] 2 modules[39m
+[37mchunk {default-node_modules_angular_material_fesm2022_card_mjs} (runtime: runtime) default-node_modules_angular_material_fesm2022_card_mjs.js (auth-auth-module) (id hint: default) 28.7 KiB split chunk (cache group: default)[39m
+[37m  cached modules 28.7 KiB [cached] 1 module[39m
+[37mchunk {default-node_modules_angular_material_fesm2022_input_mjs-node_modules_lodash-es__baseGet_js-n-8a88cf} (runtime: runtime) default-node_modules_angular_material_fesm2022_input_mjs-node_modules_lodash-es__baseGet_js-n-8a88cf.js (app-create-project-create-project-module) (id hint: default) 50 KiB split chunk (cache group: default)[39m
+[37m  cached modules 50 KiB [cached] 14 modules[39m
+[37mchunk {default-node_modules_angular_material_fesm2022_select_mjs-node_modules_ngrx_component-store_f-0acd32} (runtime: runtime) default-node_modules_angular_material_fesm2022_select_mjs-node_modules_ngrx_component-store_f-0acd32.js (app-create-project-create-project-module) (id hint: default) 86.2 KiB split chunk (cache group: default)[39m
+[37m  cached modules 86.2 KiB [cached] 3 modules[39m
+[37mchunk {default-node_modules_angular_material_fesm2022_stepper_mjs} (runtime: runtime) default-node_modules_angular_material_fesm2022_stepper_mjs.js (app-create-project-create-project-module) (id hint: default) 89.9 KiB split chunk (cache group: default)[39m
+[37m  cached modules 89.9 KiB [cached] 2 modules[39m
+[37mchunk {default-node_modules_rxjs_dist_esm_internal_operators_delay_js-node_modules_angular_material_-afa883} (runtime: runtime) default-node_modules_rxjs_dist_esm_internal_operators_delay_js-node_modules_angular_mate[39m[37mrial_-afa883.js (layout-layout-module) (id hint: default) 224 KiB split chunk (cache group: default)[39m
+[37m  cached modules 224 KiB [cached] 4 modules[39m
+[37mchunk {main} (runtime: runtime) main.js (main) 72.2 KiB [initial][39m
+[37m  cached modules 72.2 KiB [cached] 51 modules[39m
+[37mchunk {polyfills} (runtime: runtime) polyfills.js (polyfills) 116 KiB [initial][39m
+[37m  cached modules 116 KiB [cached] 2 modules[39m
+[37mchunk {runtime} (runtime: runtime) runtime.js (runtime) 9.89 KiB [entry][39m
+[37m  cached modules 9.89 KiB [cached] 14 modules[39m
+[37mchunk {scripts} scripts.js (scripts) [initial] [rendered][39m
+[37mchunk {styles} (runtime: runtime) styles.css (styles) 189 bytes (javascript) 254 KiB (css/mini-extract) [initial][39m
+[37m  cached modules 150 bytes (javascript) 254 KiB (css/mini-extract) [cached] 6 modules[39m
+[37m  ./apps/proxy/src/styles.scss?ngGlobalStyle [81526] 39 bytes {styles} [built] [1 error][39m
+[37m    [used exports unknown][39m
+[37m    entry /Users/divyanshu/walkover/proxy-ui/apps/proxy/src/styles.scss?ngGlobalStyle styles[39m
+[37mchunk {vendor} (runtime: runtime) vendor.js (vendor) (id hint: defaultVendors) 5.81 MiB [initial] [rendered] split chunk (cache group: defaultVendors) (name: vendor)[39m
+[37m  cached modules 5.74 MiB [cached] 309 modules[39m
+[37m  dependent modules 65 KiB [dependent] 1 module[39m
+[37m  [39m
+[37m[39m
+[37mLOG from webpack.FileSystemInfo[39m
+[37m    3 new snapshots created[39m
+[37m    23% root snapshot uncached (3398 / 15055)[39m
+[37m    9% children snapshot uncached (827 / 9226)[39m
+[37m    9891 entries tested[39m
+[37m    File info in cache: 1438 timestamps 0 hashes 0 timestamp hash combinations[39m
+[37m    File timestamp snapshot optimization: 0% (0/18) entries shared via 0 shared snapshots (0 times referenced)[39m
+[37m    Directory info in cache: 0 timestamps 0 hashes 0 timestamp hash combinations[39m
+[37m    Managed items info in cache: 234 items[39m
+[37m    Managed items snapshot optimization: 0% (0/14) entries shared via 0 shared snapshots (0 times referenced)[39m
+[37m    Managed files snapshot optimization: 0% (0/31) entries shared via 0 shared snapshots (0 times referenced)[39m
+[37m+ 1 hidden lines[39m
+[37m[39m
+[37mLOG from webpack.Compilation[39m
+[37m<t> runtim[39m[37me requirements.modules: 0.011917 ms[39m
+[37m<t> runtime requirements.chunks: 0.068292 ms[39m
+[37m<t> runtime requirements.entries: 0.050834 ms[39m
+[37m<t> compute affected modules: 0.005042 ms[39m
+[37m<t> finish modules: 521.972917 ms[39m
+[37m<t> report dependency errors and warnings: 15.815 ms[39m
+[37m<t> optimize dependencies: 15.949666 ms[39m
+[37m<t> create chunks: 16.406541 ms[39m
+[37m<t> compute affected modules with chunk graph: 0.002667 ms[39m
+[37m<t> optimize: 20.032834 ms[39m
+[37m    611 modules hashed, 0 from cache (0.52 variants per module in average)[39m
+[37m<t> module hashing: 20.155166 ms[39m
+[37m    0% code generated (1 generated, 610 from cache)[39m
+[37m<t> code generation: 3.586459 ms[39m
+[37m<t> runtime requirements.modules: 1.194209 ms[39m
+[37m<t> runtime requirements.chunks: 0.411166 ms[39m
+[37m<t> runtime requirements.entries: 1.949875 ms[39m
+[37m<t> runtime requirements: 3.589292 ms[39m
+[37m<t> hashing: initialize hash: 0.00525 ms[39m
+[37m<t> hashing: hash warnings: 0.003833 ms[39m
+[37m<t> hashing: hash errors: 0.001125 ms[39m
+[37m<t> hashing: sort chunks: 0.046084 ms[39m
+[37m<t> hashing: hash runtime modules: 2.249957 ms[39m
+[37m<t> hashing: hash chunks: 1.61275 ms[39m
+[37m<t> hashing: hash digest: 0.038375 ms[39m
+[37m<t> hashing: process full hash modules: 0.001208 ms[39m
+[37m<t> hashing: 4.035875 ms[39m
+[37m    0% code generated (0 generated, 14 from cache)[39m
+[37m<t> module assets: 0.480083 ms[39m
+[37m<t> create chunk assets: 4.3495 ms[39m
+[37m<t> process assets: 559.601375 ms[39m
+[37m[39m
+[37mLOG from webpack.Compiler[39m
+[37m<t> make hook: 3008.164625 ms[39m
+[37m<t> finish make hook: 0.158958 ms[39m
+[37m<t> finish compilation: 537.83 ms[39m
+[37m<t> seal compilation: 651.632 ms[39m
+[37m<t> afterCompile hook: 0.043042 ms[39m
+[37m[39m
+[37mLOG from webpack.ResolverCachePlugin[39m
+[37m    0% really resolved (0 real resolves with 0 cached but invalid, 13886 cached valid, 0 concurrent)[39m
+[37m[39m
+[37mLOG from webpack.FlagDependencyExportsPlugin[39m
+[37m<t> restore cached provided exports: 13.121958 ms[39m
+[37m<t> figure out provided exports: 13.21175 ms[39m
+[37m    7% of exports of modules have been determined (45 no declared exports, 79 not cached, 0 flagged uncacheable, 1052 from cache, 0 from mem cache, 10 additional calculations due to dependencies)[39m
+[37m<t> store provided exports into cache: 0.0[39m[37m04625 ms[39m
+[37m[39m
+[37mLOG from webpack.SideEffectsFlagPlugin[39m
+[37m<t> update dependencies: 15.6975 ms[39m
+[37m[39m
+[37mLOG from webpack.buildChunkGraph[39m
+[37m<t> visitModules: prepare: 3.515245 ms[39m
+[37m<t> visitModules: visiting: 4.668541 ms[39m
+[37m<t> visitModules: calculating available modules: 0.074125 ms[39m
+[37m<t> visitModules: merging available modules: 0.029125 ms[39m
+[37m<t> visitModules: check modules for revisit: 0.059458 ms[39m
+[37m<t> visitModules: prepare: 1.635419 ms[39m
+[37m<t> visitModules: visiting: 2.306625 ms[39m
+[37m<t> visitModules: calculating available modules: 0.007459 ms[39m
+[37m<t> visitModules: merging available modules: 0.008167 ms[39m
+[37m<t> visitModules: check modules for revisit: 0.114542 ms[39m
+[37m<t> visitModules: prepare: 2.280171 ms[39m
+[37m<t> visitModules: visiting: 3.336125 ms[39m
+[37m<t> visitModules: calculating available modules: 0.0785 ms[39m
+[37m<t> visitModules: merging available modules: 0.006583 ms[39m
+[37m<t> visitModules: check modules for revisit: 0.002417 ms[39m
+[37m<t> visitModules: prepare: 1.101124 ms[39m
+[37m<t> visitModules: visiting: 1.43725 ms[39m
+[37m    2444 queue items processed (1156 blocks)[39m
+[37m    14 chunk groups connected[39m
+[37m    14 chunk groups processed for merging (14 module sets, 0 forked, 0 + 0 modules forked, 0 + 0 modules merged into fork, 0 resulting modules)[39m
+[37m    14 chunk group info updated (0 already connected chunk groups reconnected)[39m
+[37m<t> visitModules: 14.152167 ms[39m
+[37m<t> connectChunkGroups: 0.145875 ms[39m
+[37m<t> cleanup: 0.092959 ms[39m
+[37m[39m
+[37mLOG from webpack.SplitChunksPlugin[39m
+[37m<t> prepare: 0.042417 ms[39m
+[37m<t> modules: 6.021708 ms[39m
+[37m<t> queue: 1.030959 ms[39m
+[37m<t> maxSize: 0.038209 ms[39m
+[37m[39m
+[37mWARNING in /Users/divyanshu/walkover/proxy-ui/libs/services/proxy/auth/src/lib/services-proxy-auth.module.ts depends on 'dayjs'. CommonJS or AMD dependencies can cause optimization bailouts.[39m
+[37mFor more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies[39m
+[37mError: /Users/divyanshu/walkover/proxy-ui/libs/services/proxy/auth/src/lib/services-proxy-auth.module.ts depends on 'dayjs'. CommonJS or AMD dependencies can cause optimization bailouts.[39m
+[37mFor more info see: https://angular.dev/tools/cli/bu[39m[37mild#configuring-commonjs-dependencies[39m
+[37m    at addWarning (/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/utils/webpack-diagnostics.js:13:31)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/webpack/plugins/common-js-usage-warn-plugin.js:79:70[39m
+[37m    at _next0 (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)[39m
+[37m    at eval (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:71:1)[39m
+[37m[39m
+[37mERROR in ./apps/proxy/src/styles.scss?ngGlobalStyle (./apps/proxy/src/styles.scss.webpack[javascript/auto]!=!./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[2]!./node_modules/resolve-url-loader/index.js??ruleSet[1].rules[6].rules[1].use[0]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[6].rules[1].use[1]!./apps/proxy/src/styles.scss?ngGlobalStyle)[39m
+[37mModule build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m
+[37mUndefined function.[39m
+[37m   ╷[39m
+[37m5  │   $custom-typography: mat.define-typography-config([39m
+[37m   │ ┌─────────────────────^[39m
+[37m6  │ │     $font-family: $font-family,[39m
+[37m7  │ │     $headline-1: mat.define-typography-level(20px, 27px, 600),[39m
+[37m8  │ │     $headline-2: mat.define-typography-level(18px, 28px, 400),[39m
+[37m9  │ │     $headline-3: mat.define-typography-level(16px, 22px, 600),[39m
+[37m10 │ │     $headline-4: mat.define-typography-level(14px, 18px, 500),[39m
+[37m11 │ │     $headline-5: mat.define-typography-level(19px, 26px, 700),[39m
+[37m12 │ │     $headline-6: mat.define-typography-level(19px, 26px, 600),[39m
+[37m13 │ │     $subtitle-1: mat.define-typography-level(16px, 22px, 600),[39m
+[37m14 │ │     $subtitle-2: mat.define-typography-level(14px, 19px, 600),[39m
+[37m15 │ │     $body-1: mat.define-typography-level(16px, 22px, 400),[39m
+[37m16 │ │     $body-2: mat.define-typography-level(14px, 19px, 400),[39m
+[37m17 │ │     $capt[39m[37mion: mat.define-typography-level(11px, 15px, 600),[39m
+[37m18 │ │ );[39m
+[37m   │ └─^[39m
+[37m   ╵[39m
+[37m  apps/proxy/src/assets/scss/theme/_typography.scss 5:21    @import[39m
+[37m  apps/proxy/src/assets/scss/theme/_default-theme.scss 8:9  @import[39m
+[37m  apps/proxy/src/styles.scss 34:9                           root stylesheet[39m
+[37mModuleBuildError: Module build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m
+[37mUndefined function.[39m
+[37m   ╷[39m
+[37m5  │   $custom-typography: mat.define-typography-config([39m
+[37m   │ ┌─────────────────────^[39m
+[37m6  │ │     $font-family: $font-family,[39m
+[37m7  │ │     $headline-1: mat.define-typography-level(20px, 27px, 600),[39m
+[37m8  │ │     $headline-2: mat.define-typography-level(18px, 28px, 400),[39m
+[37m9  │ │     $headline-3: mat.define-typography-level(16px, 22px, 600),[39m
+[37m10 │ │     $headline-4: mat.define-typography-level(14px, 18px, 500),[39m
+[37m11 │ │     $headline-5: mat.define-typography-level(19px, 26px, 700),[39m
+[37m12 │ │     $headline-6: mat.define-typography-level(19px, 26px, 600),[39m
+[37m13 │ │     $subtitle-1: mat.define-typography-level(16px, 22px, 600),[39m
+[37m14 │ │     $subtitle-2: mat.define-typography-level(14px, 19px, 600),[39m
+[37m15 │ │     $body-1: mat.define-typography-level(16px, 22px, 400),[39m
+[37m16 │ │     $body-2: mat.define-typography-level(14px, 19px, 400),[39m
+[37m17 │ │     $caption: mat.define-typography-level(11px, 15px, 600),[39m
+[37m18 │ │ );[39m
+[37m   │ └─^[39m
+[37m   ╵[39m
+[37m  apps/proxy/src/assets/scss/theme/_typography.scss 5:21    @import[39m
+[37m  apps/proxy/src/assets/scss/theme/_default-theme.scss 8:9  @import[39m
+[37m  apps/proxy/src/styles.scss 34:9                           root stylesheet[39m
+[37m    at processResult (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/NormalModule.js:885:19)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/NormalModule.js:1026:5[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/loader-runner/lib/LoaderRunner.js:499:11[39m
+[37m    at runSyncOrAsyncCallback (/Users/divyanshu/walkover/proxy-ui/node_modules/loader-runner/lib/LoaderRunner.js:259:19)[39m
+[37m    at innerCallback (/Users/divyanshu/walkover/proxy-ui/node_modules/[39m[37mloader-runner/lib/LoaderRunner.js:175:13)[39m
+[37m    at Object.loader (/Users/divyanshu/walkover/proxy-ui/node_modules/sass-loader/dist/index.js:67:5)[39m
+[37m @ ./apps/proxy/src/styles.scss?ngGlobalStyle[39m
+[37m[39m
+[37mERROR in ./apps/proxy/src/app/features/create-feature/create-feature.component.scss?ngResource[39m
+[37mModule build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m
+[37mUndefined function.[39m
+[37m   ╷[39m
+[37m5  │   $custom-typography: mat.define-typography-config([39m
+[37m   │ ┌─────────────────────^[39m
+[37m6  │ │     $font-family: $font-family,[39m
+[37m7  │ │     $headline-1: mat.define-typography-level(20px, 27px, 600),[39m
+[37m8  │ │     $headline-2: mat.define-typography-level(18px, 28px, 400),[39m
+[37m9  │ │     $headline-3: mat.define-typography-level(16px, 22px, 600),[39m
+[37m10 │ │     $headline-4: mat.define-typography-level(14px, 18px, 500),[39m
+[37m11 │ │     $headline-5: mat.define-typography-level(19px, 26px, 700),[39m
+[37m12 │ │     $headline-6: mat.define-typography-level(19px, 26px, 600),[39m
+[37m13 │ │     $subtitle-1: mat.define-typography-level(16px, 22px, 600),[39m
+[37m14 │ │     $subtitle-2: mat.define-typography-level(14px, 19px, 600),[39m
+[37m15 │ │     $body-1: mat.define-typography-level(16px, 22px, 400),[39m
+[37m16 │ │     $body-2: mat.define-typography-level(14px, 19px, 400),[39m
+[37m17 │ │     $caption: mat.define-typography-level(11px, 15px, 600),[39m
+[37m18 │ │ );[39m
+[37m   │ └─^[39m
+[37m   ╵[39m
+[37m  apps/proxy/src/assets/scss/theme/_typography.scss 5:21                        @import[39m
+[37m  apps/proxy/src/assets/scss/theme/_default-theme.scss 8:9                      @import[39m
+[37m  apps/proxy/src/styles.scss 34:9                                               @import[39m
+[37m  apps/proxy/src/app/features/create-feature/create-feature.component.scss 1:9  root stylesheet[39m
+[37mModuleBuildError: Module build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m
+[37mUndefined function.[39m
+[37m   ╷[39m
+[37m5  │   $custom-typography: mat.define-typography-config([39m
+[37m   │ ┌─────────────────────^[39m
+[37m6  │ │     $font-family: $font-family,[39m
+[37m7  │ │     $headline-1: mat.define-typography-level(20px, 27px, 600),[39m
+[37m8  │ │     $headline-2: mat.define-typography-lev[39m[37mel(18px, 28px, 400),[39m
+[37m9  │ │     $headline-3: mat.define-typography-level(16px, 22px, 600),[39m
+[37m10 │ │     $headline-4: mat.define-typography-level(14px, 18px, 500),[39m
+[37m11 │ │     $headline-5: mat.define-typography-level(19px, 26px, 700),[39m
+[37m12 │ │     $headline-6: mat.define-typography-level(19px, 26px, 600),[39m
+[37m13 │ │     $subtitle-1: mat.define-typography-level(16px, 22px, 600),[39m
+[37m14 │ │     $subtitle-2: mat.define-typography-level(14px, 19px, 600),[39m
+[37m15 │ │     $body-1: mat.define-typography-level(16px, 22px, 400),[39m
+[37m16 │ │     $body-2: mat.define-typography-level(14px, 19px, 400),[39m
+[37m17 │ │     $caption: mat.define-typography-level(11px, 15px, 600),[39m
+[37m18 │ │ );[39m
+[37m   │ └─^[39m
+[37m   ╵[39m
+[37m  apps/proxy/src/assets/scss/theme/_typography.scss 5:21                        @import[39m
+[37m  apps/proxy/src/assets/scss/theme/_default-theme.scss 8:9                      @import[39m
+[37m  apps/proxy/src/styles.scss 34:9                                               @import[39m
+[37m  apps/proxy/src/app/features/create-feature/create-feature.component.scss 1:9  root stylesheet[39m
+[37m    at processResult (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/NormalModule.js:885:19)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/NormalModule.js:1026:5[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/loader-runner/lib/LoaderRunner.js:499:11[39m
+[37m    at runSyncOrAsyncCallback (/Users/divyanshu/walkover/proxy-ui/node_modules/loader-runner/lib/LoaderRunner.js:259:19)[39m
+[37m    at innerCallback (/Users/divyanshu/walkover/proxy-ui/node_modules/loader-runner/lib/LoaderRunner.js:175:13)[39m
+[37m    at Object.loader (/Users/divyanshu/walkover/proxy-ui/node_modules/sass-loader/dist/index.js:67:5)[39m
+[37m[39m
+[37mERROR in ./apps/proxy/src/styles.scss?ngGlobalStyle[39m
+[37mModule build failed (from ./node_modules/mini-css-extract-plugin/dist/loader.js):[39m
+[37mHookWebpackError: Module build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m
+[37mUndefined function.[39m
+[37m   ╷[39m
+[37m77 │ $primary: mat.define-palette(mat.$indigo-palette);[39m
+[37m   │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[39m[37m^^^^^^[39m
+[37m   ╵[39m
+[37m  apps/proxy/src/assets/scss/theme/_theme-colors.scss 77:11  @import[39m
+[37m  apps/proxy/src/styles.scss 6:9                             root stylesheet[39m
+[37m    at tryRunOrWebpackError (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/HookWebpackError.js:86:9)[39m
+[37m    at __webpack_require_module__ (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5276:12)[39m
+[37m    at __webpack_require__ (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5233:18)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5305:20[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at done (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3527:9)[39m
+[37m    at Hook.eval [as callAsync] (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)[39m
+[37m    at Hook.CALL_ASYNC_DELEGATE [as _callAsync] (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/Hook.js:21:14)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5211:43[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3482:9)[39m
+[37m    at timesSync (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:2297:7)[39m
+[37m    at Object.eachLimit (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3463:5)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5173:16[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at timesSync (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:2297:7)[39m
+[37m    at Object.eachLimit (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3463:5)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5141:15[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:[39m[37m3485:9)[39m
+[37m    at done (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3527:9)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5087:8[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:3521:5[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Cache.js:95:34[39m
+[37m    at Array.<anonymous> (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/cache/MemoryWithGcCachePlugin.js:122:13)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Cache.js:95:19[39m
+[37m    at eval (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)[39m
+[37m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[37m-- inner error --[39m
+[37mError: Module build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m
+[37mUndefined function.[39m
+[37m   ╷[39m
+[37m77 │ $primary: mat.define-palette(mat.$indigo-palette);[39m
+[37m   │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[39m
+[37m   ╵[39m
+[37m  apps/proxy/src/assets/scss/theme/_theme-colors.scss 77:11  @import[39m
+[37m  apps/proxy/src/styles.scss 6:9                             root stylesheet[39m
+[37m    at Object.<anonymous> (/Users/divyanshu/walkover/proxy-ui/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[1]!/Users/divyanshu/walkover/proxy-ui/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[2]!/Users/divyanshu/walkover/proxy-ui/node_modules/resolve-url-loader/index.js??ruleSet[1].rules[6].rules[1].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[6].rules[1].use[1]!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/styles.scss?ngGlobalStyle:1:7)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/javascript/JavascriptModulesPlugin.js:453:10[39m
+[37m    at Hook.eval [as call] (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:19:10), <anonymous>:7:1)[39m
+[37m    at Hook[39m[37m.CALL_DELEGATE [as _call] (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/Hook.js:16:14)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5278:39[39m
+[37m    at tryRunOrWebpackError (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/HookWebpackError.js:81:7)[39m
+[37m    at __webpack_require_module__ (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5276:12)[39m
+[37m    at __webpack_require__ (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5233:18)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5305:20[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at done (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3527:9)[39m
+[37m    at Hook.eval [as callAsync] (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)[39m
+[37m    at Hook.CALL_ASYNC_DELEGATE [as _callAsync] (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/Hook.js:21:14)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5211:43[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3482:9)[39m
+[37m    at timesSync (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:2297:7)[39m
+[37m    at Object.eachLimit (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3463:5)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5173:16[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at timesSync (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:2297:7)[39m
+[37m    at Object.eachLimit (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3463:5)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5141:15[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-u[39m[37mi/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at done (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3527:9)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5087:8[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:3521:5[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Cache.js:95:34[39m
+[37m    at Array.<anonymous> (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/cache/MemoryWithGcCachePlugin.js:122:13)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Cache.js:95:19[39m
+[37m    at eval (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)[39m
+[37m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[37m[39m
+[37mGenerated code for /Users/divyanshu/walkover/proxy-ui/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[1]!/Users/divyanshu/walkover/proxy-ui/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[2]!/Users/divyanshu/walkover/proxy-ui/node_modules/resolve-url-loader/index.js??ruleSet[1].rules[6].rules[1].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[6].rules[1].use[1]!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/styles.scss?ngGlobalStyle[39m
+[37m1 | throw new Error("Module build failed (from ./node_modules/sass-loader/dist/cjs.js):\nUndefined function.\n   ╷\n77 │ $primary: mat.define-palette(mat.$indigo-palette);\n   │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   ╵\n  apps/proxy/src/assets/scss/theme/_theme-colors.scss 77:11  @import\n  apps/proxy/src/styles.scss 6:9                             root stylesheet");[39m
+[37mModuleBuildError: Module build failed (from ./node_modules/mini-css-extract-plugin/dist/loader.js):[39m
+[37mHookWebpackError: Module build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m
+[37mUndefined function.[39m
+[37m   ╷[39m
+[37m77 │ $primary: mat.define-palette[39m[37m(mat.$indigo-palette);[39m
+[37m   │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[39m
+[37m   ╵[39m
+[37m  apps/proxy/src/assets/scss/theme/_theme-colors.scss 77:11  @import[39m
+[37m  apps/proxy/src/styles.scss 6:9                             root stylesheet[39m
+[37m    at tryRunOrWebpackError (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/HookWebpackError.js:86:9)[39m
+[37m    at __webpack_require_module__ (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5276:12)[39m
+[37m    at __webpack_require__ (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5233:18)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5305:20[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at done (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3527:9)[39m
+[37m    at Hook.eval [as callAsync] (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)[39m
+[37m    at Hook.CALL_ASYNC_DELEGATE [as _callAsync] (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/Hook.js:21:14)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5211:43[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3482:9)[39m
+[37m    at timesSync (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:2297:7)[39m
+[37m    at Object.eachLimit (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3463:5)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5173:16[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at timesSync (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:2297:7)[39m
+[37m    at Object.eachLimit (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3463:5)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5141:15[39m
+[37m    at symbolIterat[39m[37mor (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at done (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3527:9)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5087:8[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:3521:5[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Cache.js:95:34[39m
+[37m    at Array.<anonymous> (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/cache/MemoryWithGcCachePlugin.js:122:13)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Cache.js:95:19[39m
+[37m    at eval (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)[39m
+[37m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[37m-- inner error --[39m
+[37mError: Module build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m
+[37mUndefined function.[39m
+[37m   ╷[39m
+[37m77 │ $primary: mat.define-palette(mat.$indigo-palette);[39m
+[37m   │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[39m
+[37m   ╵[39m
+[37m  apps/proxy/src/assets/scss/theme/_theme-colors.scss 77:11  @import[39m
+[37m  apps/proxy/src/styles.scss 6:9                             root stylesheet[39m
+[37m    at Object.<anonymous> (/Users/divyanshu/walkover/proxy-ui/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[1]!/Users/divyanshu/walkover/proxy-ui/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[2]!/Users/divyanshu/walkover/proxy-ui/node_modules/resolve-url-loader/index.js??ruleSet[1].rules[6].rules[1].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[6].rules[1].use[1]!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/styles.scss?ngGlobalStyle:1:7)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/javascript/JavascriptModulesPlugin.js:453:10[39m
+[37m    at Hook.eval [as call] (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modu[39m[37mles/tapable/lib/HookCodeFactory.js:19:10), <anonymous>:7:1)[39m
+[37m    at Hook.CALL_DELEGATE [as _call] (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/Hook.js:16:14)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5278:39[39m
+[37m    at tryRunOrWebpackError (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/HookWebpackError.js:81:7)[39m
+[37m    at __webpack_require_module__ (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5276:12)[39m
+[37m    at __webpack_require__ (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5233:18)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5305:20[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at done (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3527:9)[39m
+[37m    at Hook.eval [as callAsync] (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)[39m
+[37m    at Hook.CALL_ASYNC_DELEGATE [as _callAsync] (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/Hook.js:21:14)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5211:43[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3482:9)[39m
+[37m    at timesSync (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:2297:7)[39m
+[37m    at Object.eachLimit (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3463:5)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5173:16[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at timesSync (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:2297:7)[39m
+[37m    at Object.eachLimit (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3463:5)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilat[39m[37mion.js:5141:15[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at done (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3527:9)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5087:8[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:3521:5[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Cache.js:95:34[39m
+[37m    at Array.<anonymous> (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/cache/MemoryWithGcCachePlugin.js:122:13)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Cache.js:95:19[39m
+[37m    at eval (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)[39m
+[37m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[37m[39m
+[37mGenerated code for /Users/divyanshu/walkover/proxy-ui/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[1]!/Users/divyanshu/walkover/proxy-ui/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[2]!/Users/divyanshu/walkover/proxy-ui/node_modules/resolve-url-loader/index.js??ruleSet[1].rules[6].rules[1].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[6].rules[1].use[1]!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/styles.scss?ngGlobalStyle[39m
+[37m1 | throw new Error("Module build failed (from ./node_modules/sass-loader/dist/cjs.js):\nUndefined function.\n   ╷\n77 │ $primary: mat.define-palette(mat.$indigo-palette);\n   │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   ╵\n  apps/proxy/src/assets/scss/theme/_theme-colors.scss 77:11  @import\n  apps/proxy/src/styles.scss 6:9                             root stylesheet");[39m
+[37m    at processResult (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/NormalModule.js:885:19)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib[39m[37m/NormalModule.js:1026:5[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/loader-runner/lib/LoaderRunner.js:499:11[39m
+[37m    at runSyncOrAsyncCallback (/Users/divyanshu/walkover/proxy-ui/node_modules/loader-runner/lib/LoaderRunner.js:323:21)[39m
+[37m    at innerCallback (/Users/divyanshu/walkover/proxy-ui/node_modules/loader-runner/lib/LoaderRunner.js:175:13)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/mini-css-extract-plugin/dist/loader.js:263:9[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/dependencies/LoaderPlugin.js:209:27[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5314:17[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at done (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3527:9)[39m
+[37m    at Hook.eval [as callAsync] (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)[39m
+[37m    at Hook.CALL_ASYNC_DELEGATE [as _callAsync] (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/Hook.js:21:14)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5211:43[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3482:9)[39m
+[37m    at timesSync (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:2297:7)[39m
+[37m    at Object.eachLimit (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3463:5)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5173:16[39m
+[37m    at symbolIterator (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at timesSync (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:2297:7)[39m
+[37m    at Object.eachLimit (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3463:5)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5141:15[39m
+[37m    at symbolIterator (/Users/divyansh[39m[37mu/walkover/proxy-ui/node_modules/neo-async/async.js:3485:9)[39m
+[37m    at done (/Users/divyanshu/walkover/proxy-ui/node_modules/neo-async/async.js:3527:9)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:5087:8[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Compilation.js:3521:5[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Cache.js:95:34[39m
+[37m    at Array.<anonymous> (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/cache/MemoryWithGcCachePlugin.js:122:13)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/Cache.js:95:19[39m
+[37m    at eval (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)[39m
+[37m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[37m[39m
+[37m2026-03-17 10:43:32: webpack 5.94.0 compiled in 6142 ms (ebf06ec71cd7226f)[39m
+    [webpack.cache.PackFileCacheStrategy] Storing pack...
+    [webpack.cache.PackFileCacheStrategy] 9 fresh items in cache put into pack 3
+    [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item (in build error): No serializer registered for URL
+    while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> Error -> Object { span, message, stack, sassMessage, sassStack } -> Object { text, context, end, start, url } -> URL
+    [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'angular-compiler:resource|15|Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[1].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[1].use[1]!/Users/divyanshu/walkover/proxy-ui/node_modules/resolve-url-loader/index.js??ruleSet[1].rules[6].rules[1].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[6].rules[1].use[1]!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/features/create-feature/create-feature.component.scss?ngResource' (in build error): Error: No serializer registered for URL
+    while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> Error -> Object { span, message, stack, sassMessage, sassStack } -> Object { text, context, end, start, url } -> URL
+        at ObjectMiddleware.getSerializerFor (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:260:22)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:497:23)
+        at Object.write (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:419:6)
+        at PlainObjectSerializer.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/PlainObjectSerializer.js:87:13)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:512:17)
+        at Object.write (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:419:6)
+        at PlainObjectSerializer.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/PlainObjectSerializer.js:87:13)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:512:17)
+        at Object.write (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:419:6)
+        at ErrorObjectSerializer.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ErrorObjectSerializer.js:25:11)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:512:17)
+        at write (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:419:6)
+        at ModuleBuildError.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/ModuleBuildError.js:60:3)
+        at ClassSerializer.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/util/makeSerializable.js:17:7)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:512:17)
+        at write (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:419:6)
+        at NormalModule.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/NormalModule.js:1593:3)
+        at ClassSerializer.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/util/makeSerializable.js:17:7)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:512:17)
+        at write (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:419:6)
+        at PackContentItems.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/cache/PackFileCacheStrategy.js:665:6)
+        at ClassSerializer.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/util/makeSerializable.js:17:7)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:512:17)
+        at ObjectMiddleware.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:571:5)
+        at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:557:12
+        at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/SerializerMiddleware.js:106:11
+        at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/util/memoize.js:23:12
+        at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/SerializerMiddleware.js:102:14
+        at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/util/memoize.js:23:12
+        at serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/FileMiddleware.js:130:21)
+    [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item (in build error): No serializer registered for URL
+    while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> Error -> Object { span, message, stack, sassMessage, sassStack } -> Object { text, context, end, start, url } -> URL
+    [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[1]!/Users/divyanshu/walkover/proxy-ui/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[2]!/Users/divyanshu/walkover/proxy-ui/node_modules/resolve-url-loader/index.js??ruleSet[1].rules[6].rules[1].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[6].rules[1].use[1]!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/styles.scss?ngGlobalStyle' (in build error): Error: No serializer registered for URL
+    while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> Error -> Object { span, message, stack, sassMessage, sassStack } -> Object { text, context, end, start, url } -> URL
+        at ObjectMiddleware.getSerializerFor (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:260:22)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:497:23)
+        at Object.write (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:419:6)
+        at PlainObjectSerializer.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/PlainObjectSerializer.js:87:13)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:512:17)
+        at Object.write (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:419:6)
+        at PlainObjectSerializer.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/PlainObjectSerializer.js:87:13)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:512:17)
+        at Object.write (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:419:6)
+        at ErrorObjectSerializer.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ErrorObjectSerializer.js:25:11)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:512:17)
+        at write (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:419:6)
+        at ModuleBuildError.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/ModuleBuildError.js:60:3)
+        at ClassSerializer.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/util/makeSerializable.js:17:7)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:512:17)
+        at write (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:419:6)
+        at NormalModule.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/NormalModule.js:1593:3)
+        at ClassSerializer.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/util/makeSerializable.js:17:7)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:512:17)
+        at write (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:419:6)
+        at PackContentItems.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/cache/PackFileCacheStrategy.js:665:6)
+        at ClassSerializer.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/util/makeSerializable.js:17:7)
+        at process (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:512:17)
+        at ObjectMiddleware.serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:571:5)
+        at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/ObjectMiddleware.js:557:12
+        at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/SerializerMiddleware.js:106:11
+        at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/util/memoize.js:23:12
+        at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/SerializerMiddleware.js:102:14
+        at /Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/util/memoize.js:23:12
+        at serialize (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/serialization/FileMiddleware.js:130:21)
+<i> [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/features/create-feature/create-feature.component.ts': 10.55325 ms
+<i> [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/assets|chunkvendor': 17.225292 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'SourceMapDevToolPlugin|vendor.js': 9.834917 ms
+<t> [webpack.cache.PackFileCacheStrategy] store pack: 287.649 ms
+    [webpack.cache.PackFileCacheStrategy] Stored pack (5488 items, 4 files, 342 MiB)
+[32m✔[39m Browser application bundle generation complete.
+[1m[33m[39m[22m
+[1m[33m[0m[33mWarning: [39m[33m[0m/Users/divyanshu/walkover/proxy-ui/libs/services/proxy/auth/src/lib/services-proxy-auth.module.ts depends on 'dayjs'. CommonJS or AMD dependencies can cause optimization bailouts.[39m[22m
+[1m[33mFor more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/styles.scss[39m[31m[0m - [0m[91mError: [39m[31m[0mModule build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[31mUndefined function.[39m[22m
+[1m[31m   ╷[39m[22m
+[1m[31m5  │   $custom-typography: mat.define-typography-config([39m[22m
+[1m[31m   │ ┌─────────────────────^[39m[22m
+[1m[31m6  │ │     $font-family: $font-family,[39m[22m
+[1m[31m7  │ │     $headline-1: mat.define-typography-level(20px, 27px, 600),[39m[22m
+[1m[31m8  │ │     $headline-2: mat.define-typography-level(18px, 28px, 400),[39m[22m
+[1m[31m9  │ │     $headline-3: mat.define-typography-level(16px, 22px, 600),[39m[22m
+[1m[31m10 │ │     $headline-4: mat.define-typography-level(14px, 18px, 500),[39m[22m
+[1m[31m11 │ │     $headline-5: mat.define-typography-level(19px, 26px, 700),[39m[22m
+[1m[31m12 │ │     $headline-6: mat.define-typography-level(19px, 26px, 600),[39m[22m
+[1m[31m13 │ │     $subtitle-1: mat.define-typography-level(16px, 22px, 600),[39m[22m
+[1m[31m14 │ │     $subtitle-2: mat.define-typography-level(14px, 19px, 600),[39m[22m
+[1m[31m15 │ │     $body-1: mat.define-typography-level(16px, 22px, 400),[39m[22m
+[1m[31m16 │ │     $body-2: mat.define-typography-level(14px, 19px, 400),[39m[22m
+[1m[31m17 │ │     $caption: mat.define-typography-level(11px, 15px, 600),[39m[22m
+[1m[31m18 │ │ );[39m[22m
+[1m[31m   │ └─^[39m[22m
+[1m[31m   ╵[39m[22m
+[1m[31m  apps/proxy/src/assets/scss/theme/_typography.scss 5:21    @import[39m[22m
+[1m[31m  apps/proxy/src/assets/scss/theme/_default-theme.scss 8:9  @import[39m[22m
+[1m[31m  apps/proxy/src/styles.scss 34:9                           root stylesheet[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.component.scss?ngResource[39m[31m[0m - [0m[91mError: [39m[31m[0mModule build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[31mUndefined function.[39m[22m
+[1m[31m   ╷[39m[22m
+[1m[31m5  │   $custom-typography: mat.define-typography-config([39m[22m
+[1m[31m   │ ┌─────────────────────^[39m[22m
+[1m[31m6  │ │     $font-family: $font-family,[39m[22m
+[1m[31m7  │ │     $headline-1: mat.define-typography-level(20px, 27px, 600),[39m[22m
+[1m[31m8  │ │     $headline-2: mat.define-typography-level(18px, 28px, 400),[39m[22m
+[1m[31m9  │ │     $headline-3: mat.define-typography-level(16px, 22px, 600),[39m[22m
+[1m[31m10 │ │     $headline-4: mat.define-typography-level(14px, 18px, 500),[39m[22m
+[1m[31m11 │ │     $headline-5: mat.define-typography-level(19px, 26px, 700),[39m[22m
+[1m[31m12 │ │     $he[39m[22m[1m[31madline-6: mat.define-typography-level(19px, 26px, 600),[39m[22m
+[1m[31m13 │ │     $subtitle-1: mat.define-typography-level(16px, 22px, 600),[39m[22m
+[1m[31m14 │ │     $subtitle-2: mat.define-typography-level(14px, 19px, 600),[39m[22m
+[1m[31m15 │ │     $body-1: mat.define-typography-level(16px, 22px, 400),[39m[22m
+[1m[31m16 │ │     $body-2: mat.define-typography-level(14px, 19px, 400),[39m[22m
+[1m[31m17 │ │     $caption: mat.define-typography-level(11px, 15px, 600),[39m[22m
+[1m[31m18 │ │ );[39m[22m
+[1m[31m   │ └─^[39m[22m
+[1m[31m   ╵[39m[22m
+[1m[31m  apps/proxy/src/assets/scss/theme/_typography.scss 5:21                        @import[39m[22m
+[1m[31m  apps/proxy/src/assets/scss/theme/_default-theme.scss 8:9                      @import[39m[22m
+[1m[31m  apps/proxy/src/styles.scss 34:9                                               @import[39m[22m
+[1m[31m  apps/proxy/src/app/features/create-feature/create-feature.component.scss 1:9  root stylesheet[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/styles.scss?ngGlobalStyle[39m[31m[0m - [0m[91mError: [39m[31m[0mModule build failed (from ./node_modules/mini-css-extract-plugin/dist/loader.js):[39m[22m
+[1m[31mHookWebpackError: Module build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[31mUndefined function.[39m[22m
+[1m[31m   ╷[39m[22m
+[1m[31m77 │ $primary: mat.define-palette(mat.$indigo-palette);[39m[22m
+[1m[31m   │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[39m[22m
+[1m[31m   ╵[39m[22m
+[1m[31m  apps/proxy/src/assets/scss/theme/_theme-colors.scss 77:11  @import[39m[22m
+[1m[31m  apps/proxy/src/styles.scss 6:9                             root stylesheet[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m

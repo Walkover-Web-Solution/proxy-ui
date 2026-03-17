@@ -5,6 +5,7 @@ import { MatSelect, MAT_SELECT_CONFIG } from '@angular/material/select';
 import { SHOW_PAGINATOR_LENGTH } from '@proxy/constant';
 
 @Component({
+    standalone: false,
     selector: 'mat-paginator-goto',
     templateUrl: './mat-paginator-goto.component.html',
     styleUrls: ['./mat-paginator-goto.component.scss'],

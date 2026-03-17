@@ -3,7 +3,10 @@ import { random } from 'lodash-es';
 import { Subject } from 'rxjs';
 import { SkeletonComponent } from './skeleton.component';
 
-@Directive({ selector: '[skeleton]' })
+@Directive({
+    standalone: false,
+    selector: '[skeleton]',
+})
 export class SkeletonDirective implements OnChanges {
     /** skeleton show/hide */
     @Input('skeleton') isLoading: boolean = false;

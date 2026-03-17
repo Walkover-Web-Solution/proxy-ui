@@ -14,6 +14,7 @@ import { RootService } from '@proxy/services/proxy/root';
 import { environment } from '../../environments/environment';
 import { AuthService } from '@proxy/services/proxy/auth';
 @Component({
+    standalone: false,
     selector: 'proxy-layout',
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.scss'],

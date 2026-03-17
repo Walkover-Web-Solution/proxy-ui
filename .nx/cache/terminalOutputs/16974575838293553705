@@ -1,0 +1,324 @@
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.dev/tools/cli/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+<t> [webpack.cache.PackFileCacheStrategy] restore cache container: 1875.688917 ms
+<t> [webpack.cache.PackFileCacheStrategy] check build dependencies: 0.261083 ms
+<t> [webpack.cache.PackFileCacheStrategy] restore cache content metadata: 10.607542 ms
+    [webpack.cache.PackFileCacheStrategy] starting to restore cache content 1 (145 bytes) because of request to: ProgressPlugin|counts
+    [webpack.cache.PackFileCacheStrategy] starting to restore cache content 0 (174 MiB) because of request to: ResolverCachePlugin|normal|default|dependencyType=|esm|path=|/Users/divyanshu/walkover/proxy-ui|request=|/Users/divyanshu/walkover/proxy-ui/libs/ui/prime-ng-toast/src/lib/prime-ng-toast/prime-ng-toast.component.scss?ngResource
+<t> [webpack.cache.PackFileCacheStrategy] restore cache content 1 (145 bytes): 9.010375 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/common/fesm2022/common.mjs': 1.481333 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/router/fesm2022/router.mjs': 1.766875 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/material/fesm2022/form-field.mjs': 1.171958 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/lodash-es/lodash.js': 1.451458 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/material/fesm2022/button.mjs': 1.059208 ms
+<i> [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/lodash-es/toInteger.js': 6.32475 ms
+<i> [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/lodash-es/wrapperAt.js': 6.083083 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/features/create-feature/create-tax-dialog/create-tax-dialog.component.ts': 3.762625 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/material/fesm2022/datepicker.mjs': 4.355042 ms
+<i> [webpack.cache.PackFileCacheStrategy] Deserialization of 'FlagDependencyExportsPlugin|json|/Users/divyanshu/walkover/proxy-ui/libs/ui/handle-domain/src/lib/rules.json': 5.640458 ms
+<t> [webpack.cache.PackFileCacheStrategy] restore cache content 0 (174 MiB): 345.379791 ms
+    [webpack.cache.PackFileCacheStrategy] starting to restore cache content 3 (166 MiB) because of request to: angular-compiler:resource|15|Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[1].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[1].use[1]!/Users/divyanshu/walkover/proxy-ui/node_modules/resolve-url-loader/index.js??ruleSet[1].rules[6].rules[1].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[6].rules[1].use[1]!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/features/create-feature/create-feature.component.scss?ngResource
+<i> [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/features/create-feature/create-feature.component.ts': 8.961375 ms
+    [webpack.cache.PackFileCacheStrategy] Deserialization of 'Compilation/assets|chunkvendor': 2.515834 ms
+<t> [webpack.cache.PackFileCacheStrategy] restore cache content 3 (166 MiB): 273.419583 ms
+    [webpack.cache.PackFileCacheStrategy] starting to restore cache content 2 (1.96 MiB) because of request to: Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/css-loader/dist/runtime/sourceMaps.js
+<t> [webpack.cache.PackFileCacheStrategy] restore cache content 2 (1.96 MiB): 3.652584 ms
+    [IdleFileCachePlugin] Initial cache was generated and cache will be persisted in 5s.
+[32m✔[39m Browser application bundle generation complete.
+    [webpack.cache.PackFileCacheStrategy] Pack got invalid because of write to: Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@firebase/util/dist/index.esm2017.js
+    [webpack.cache.PackFileCacheStrategy] Pack 3 got empty and is removed
+    [webpack.cache.PackFileCacheStrategy] Pack 1 got empty and is removed
+[37masset vendor.js 6.46 MiB {vendor} [emitted] (name: vendor) (id hint: defaultVendors) 1 related asset[39m
+[37masset apps_proxy_src_app_features_create-feature_create-feature_module_ts.js 1.69 MiB {apps_proxy_src_app_features_create-feature_create-feature_module_ts} [emitted] (name: create-feature-create-feature-module) 1 related asset[39m
+[37masset styles.css 525 KiB {styles} [emitted] (name: styles) 1 related asset[39m
+[37masset default-libs_custom-validator_src_index_ts.js 438 KiB {default-libs_custom-validator_src_index_ts} [emitted] (name: app-create-project-create-project-module) (id hint: default) 1 related asset[39m
+[37masset default-libs_services_proxy_logs_src_index_ts-libs_ui_date-range-picker_src_index_ts.js 402 KiB {default-libs_services_proxy_logs_src_index_ts-libs_ui_date-range-picker_src_index_ts} [emitted] (name: logs-logs-module) (id hint: default) 1 related asset[39m
+[37masset default-libs_models_features-model_src_index_ts-node_modules_angular_material_fesm2022_slide--ccccdf.js 375 KiB {default-libs_models_features-model_src_index_ts-node_modules_angular_material_fesm2022_slide--ccccdf} [emitted] (name: users-users-module) (id hint: default) 1 related asset[39m
+[37masset apps_proxy_src_app_layout_layout_module_ts.js 346 KiB {apps_proxy_src_app_layout_layout_module_ts} [emitted] (name: layout-layout-module) 1 related asset[39m
+[37masset default-libs_ui_mat-paginator-goto_src_index_ts-libs_ui_no-record-found_src_index_ts-libs_ui_-d1baa7.js 324 KiB {default-libs_ui_mat-paginator-goto_src_index_ts-libs_ui_no-record-found_src_index_ts-libs_ui_-d1baa7} [emitted] (name: logs-logs-module) (id hint: default) 1 related asset[39m
+[37masset Inter-Bold.ttf 309 KiB ({styles}) [emitted] [from: /Users/divyanshu/walkover/proxy-ui/apps/proxy/src/assets/fonts/Inter-Bold.ttf] (auxiliary name: styles)[39m
+[37masset Inter-Medium.ttf 307 KiB ({styles}) [emitted] [from: /Users/divyanshu/walkover/proxy-ui/apps/proxy/src/assets/fonts/Inter-Medium.ttf] (auxiliary name: styles)[39m
+[37masset Inter-Light.ttf 303 KiB ({styles}) [emitted] [from: /Users/divy[39m[37manshu/walkover/proxy-ui/apps/proxy/src/assets/fonts/Inter-Light.ttf] (auxiliary name: styles)[39m
+[37masset Inter-Regular.ttf 303 KiB ({styles}) [emitted] [from: /Users/divyanshu/walkover/proxy-ui/apps/proxy/src/assets/fonts/Inter-Regular.ttf] (auxiliary name: styles)[39m
+[37masset default-node_modules_rxjs_dist_esm_internal_operators_delay_js-node_modules_angular_material_-afa883.js 248 KiB {default-node_modules_rxjs_dist_esm_internal_operators_delay_js-node_modules_angular_material_-afa883} [emitted] (name: layout-layout-module) (id hint: default) 1 related asset[39m
+[37masset main.js 156 KiB {main} [emitted] (name: main) 1 related asset[39m
+[37m+ 31 assets[39m
+[37mEntrypoint main 6.62 MiB (10.7 MiB) = runtime.js 12.5 KiB vendor.js 6.46 MiB main.js 156 KiB 3 auxiliary assets[39m
+[37mEntrypoint polyfills 129 KiB (246 KiB) = runtime.js 12.5 KiB polyfills.js 117 KiB 2 auxiliary assets[39m
+[37mEntrypoint styles 538 KiB (2.02 MiB) = runtime.js 12.5 KiB styles.css 525 KiB 14 auxiliary assets[39m
+[37mEntrypoint scripts 64.1 KiB (84.7 KiB) = scripts.js 1 auxiliary asset[39m
+[37mchunk {apps_proxy_src_app_auth_auth_module_ts} (runtime: runtime) apps_proxy_src_app_auth_auth_module_ts.js (auth-auth-module) 109 KiB[39m
+[37m  cached modules 109 KiB [cached] 2 modules[39m
+[37mchunk {apps_proxy_src_app_client_module_ts} (runtime: runtime) apps_proxy_src_app_client_module_ts.js (client-module) 940 bytes[39m
+[37m  cached modules 940 bytes [cached] 1 module[39m
+[37mchunk {apps_proxy_src_app_create-project_create-project_module_ts} (runtime: runtime) apps_proxy_src_app_create-project_create-project_module_ts.js (app-create-project-create-project-module) 48.1 KiB[39m
+[37m  cached modules 48.1 KiB [cached] 6 modules[39m
+[37mchunk {apps_proxy_src_app_dashboard_dashborad_module_ts} (runtime: runtime) apps_proxy_src_app_dashboard_dashborad_module_ts.js (dashboard-dashborad-module) 11.1 KiB[39m
+[37m  cached modules 11.1 KiB [cached] 2 modules[39m
+[37mchunk {apps_proxy_src_app_features_create-feature_create-feature_module_ts} (runtime: runtime) apps_proxy_src_app_features_create-feature_create-feature_module_ts.js (create-f[39m[37meature-create-feature-module) 1.48 MiB [rendered][39m
+[37m  cached modules 377 KiB [cached] 7 modules[39m
+[37m  dependent modules 1.12 MiB [dependent] 1 module[39m
+[37mchunk {apps_proxy_src_app_features_features_module_ts} (runtime: runtime) apps_proxy_src_app_features_features_module_ts.js (features-features-module) 24.4 KiB[39m
+[37m  cached modules 24.4 KiB [cached] 2 modules[39m
+[37mchunk {apps_proxy_src_app_layout_layout_module_ts} (runtime: runtime) apps_proxy_src_app_layout_layout_module_ts.js (layout-layout-module) 266 KiB[39m
+[37m  cached modules 266 KiB [cached] 16 modules[39m
+[37mchunk {apps_proxy_src_app_logs_logs_module_ts} (runtime: runtime) apps_proxy_src_app_logs_logs_module_ts.js (logs-logs-module) 96 KiB[39m
+[37m  cached modules 96 KiB [cached] 5 modules[39m
+[37mchunk {apps_proxy_src_app_public_module_ts} (runtime: runtime) apps_proxy_src_app_public_module_ts.js (public-module) 1.11 KiB[39m
+[37m  cached modules 1.11 KiB [cached] 1 module[39m
+[37mchunk {apps_proxy_src_app_register_register_module_ts} (runtime: runtime) apps_proxy_src_app_register_register_module_ts.js (register-register-module) 33.3 KiB[39m
+[37m  cached modules 33.3 KiB [cached] 2 modules[39m
+[37mchunk {apps_proxy_src_app_registration_registration_module_ts} (runtime: runtime) apps_proxy_src_app_registration_registration_module_ts.js (registration-registration-module) 6.02 KiB[39m
+[37m  cached modules 6.02 KiB [cached] 3 modules[39m
+[37mchunk {apps_proxy_src_app_users_users_module_ts} (runtime: runtime) apps_proxy_src_app_users_users_module_ts.js (users-users-module) 95.8 KiB[39m
+[37m  cached modules 95.8 KiB [cached] 4 modules[39m
+[37mchunk {common} (runtime: runtime) common.js (common) (id hint: common) 12.8 KiB split chunk (cache group: common) (name: common)[39m
+[37m  cached modules 12.8 KiB [cached] 7 modules[39m
+[37mchunk {default-apps_proxy_src_app_features_feature_feature_store_ts-libs_directives_skeleton_src_ind-eb6cd8} (runtime: runtime) default-apps_proxy_src_app_features_feature_feature_store_ts-libs_directives_skeleton_src_ind-eb6cd8.js (features-features-module) (id hint: default) 27.3 KiB split chunk (cache group: def[39m[37mault)[39m
+[37m  cached modules 27.3 KiB [cached] 18 modules[39m
+[37mchunk {default-libs_constant_src_index_ts} (runtime: runtime) default-libs_constant_src_index_ts.js (layout-layout-module) (id hint: default) 75.8 KiB split chunk (cache group: default)[39m
+[37m  cached modules 75.8 KiB [cached] 12 modules[39m
+[37mchunk {default-libs_custom-validator_src_index_ts} (runtime: runtime) default-libs_custom-validator_src_index_ts.js (app-create-project-create-project-module) (id hint: default) 399 KiB split chunk (cache group: default)[39m
+[37m  cached modules 242 KiB [cached] 74 modules[39m
+[37m  dependent modules 157 KiB [dependent] 1 module[39m
+[37mchunk {default-libs_models_features-model_src_index_ts-node_modules_angular_material_fesm2022_slide--ccccdf} (runtime: runtime) default-libs_models_features-model_src_index_ts-node_modules_angular_material_fesm2022_slide--ccccdf.js (users-users-module) (id hint: default) 323 KiB split chunk (cache group: default)[39m
+[37m  cached modules 323 KiB [cached] 5 modules[39m
+[37mchunk {default-libs_services_proxy_logs_src_index_ts-libs_ui_date-range-picker_src_index_ts} (runtime: runtime) default-libs_services_proxy_logs_src_index_ts-libs_ui_date-range-picker_src_index_ts.js (logs-logs-module) (id hint: default) 329 KiB split chunk (cache group: default)[39m
+[37m  cached modules 329 KiB [cached] 9 modules[39m
+[37mchunk {default-libs_ui_copy-button_src_index_ts} (runtime: runtime) default-libs_ui_copy-button_src_index_ts.js (app-create-project-create-project-module) (id hint: default) 12.2 KiB split chunk (cache group: default)[39m
+[37m  cached modules 12.2 KiB [cached] 3 modules[39m
+[37mchunk {default-libs_ui_loader_src_index_ts} (runtime: runtime) default-libs_ui_loader_src_index_ts.js (auth-auth-module) (id hint: default) 24 KiB split chunk (cache group: default)[39m
+[37m  cached modules 24 KiB [cached] 4 modules[39m
+[37mchunk {default-libs_ui_mat-paginator-goto_src_index_ts-libs_ui_no-record-found_src_index_ts-libs_ui_-d1baa7} (runtime: runtime) default-libs_ui_mat-paginator-goto_src_index_ts-libs_ui_no-record-found_src_index_ts-libs_ui_-d1baa7.[39m[37mjs (logs-logs-module) (id hint: default) 246 KiB split chunk (cache group: default)[39m
+[37m  cached modules 246 KiB [cached] 31 modules[39m
+[37mchunk {default-node_modules_angular_material_fesm2022_autocomplete_mjs-node_modules_angular_material-80994c} (runtime: runtime) default-node_modules_angular_material_fesm2022_autocomplete_mjs-node_modules_angular_material-80994c.js (app-create-project-create-project-module) (id hint: default) 120 KiB split chunk (cache group: default)[39m
+[37m  cached modules 120 KiB [cached] 2 modules[39m
+[37mchunk {default-node_modules_angular_material_fesm2022_card_mjs} (runtime: runtime) default-node_modules_angular_material_fesm2022_card_mjs.js (auth-auth-module) (id hint: default) 28.7 KiB split chunk (cache group: default)[39m
+[37m  cached modules 28.7 KiB [cached] 1 module[39m
+[37mchunk {default-node_modules_angular_material_fesm2022_input_mjs-node_modules_lodash-es__baseGet_js-n-8a88cf} (runtime: runtime) default-node_modules_angular_material_fesm2022_input_mjs-node_modules_lodash-es__baseGet_js-n-8a88cf.js (app-create-project-create-project-module) (id hint: default) 50 KiB split chunk (cache group: default)[39m
+[37m  cached modules 50 KiB [cached] 14 modules[39m
+[37mchunk {default-node_modules_angular_material_fesm2022_select_mjs-node_modules_ngrx_component-store_f-0acd32} (runtime: runtime) default-node_modules_angular_material_fesm2022_select_mjs-node_modules_ngrx_component-store_f-0acd32.js (app-create-project-create-project-module) (id hint: default) 86.2 KiB split chunk (cache group: default)[39m
+[37m  cached modules 86.2 KiB [cached] 3 modules[39m
+[37mchunk {default-node_modules_angular_material_fesm2022_stepper_mjs} (runtime: runtime) default-node_modules_angular_material_fesm2022_stepper_mjs.js (app-create-project-create-project-module) (id hint: default) 89.9 KiB split chunk (cache group: default)[39m
+[37m  cached modules 89.9 KiB [cached] 2 modules[39m
+[37mchunk {default-node_modules_rxjs_dist_esm_internal_operators_delay_js-node_modules_angular_material_-afa883} (runtime: runtime) default-node_modules_rxjs_dist_e[39m[37msm_internal_operators_delay_js-node_modules_angular_material_-afa883.js (layout-layout-module) (id hint: default) 224 KiB split chunk (cache group: default)[39m
+[37m  cached modules 224 KiB [cached] 4 modules[39m
+[37mchunk {main} (runtime: runtime) main.js (main) 72.2 KiB [initial][39m
+[37m  cached modules 72.2 KiB [cached] 51 modules[39m
+[37mchunk {polyfills} (runtime: runtime) polyfills.js (polyfills) 116 KiB [initial][39m
+[37m  cached modules 116 KiB [cached] 2 modules[39m
+[37mchunk {runtime} (runtime: runtime) runtime.js (runtime) 9.89 KiB [entry][39m
+[37m  cached modules 9.89 KiB [cached] 14 modules[39m
+[37mchunk {scripts} scripts.js (scripts) [initial] [rendered][39m
+[37mchunk {styles} (runtime: runtime) styles.css (styles) 200 bytes (javascript) 522 KiB (css/mini-extract) [initial] [rendered][39m
+[37m  cached modules 150 bytes (javascript) 254 KiB (css/mini-extract) [cached] 6 modules[39m
+[37m  dependent modules 268 KiB [dependent] 1 module[39m
+[37m  ./apps/proxy/src/styles.scss?ngGlobalStyle [81526] 50 bytes {styles} [built] [code generated][39m
+[37m    [used exports unknown][39m
+[37m    entry /Users/divyanshu/walkover/proxy-ui/apps/proxy/src/styles.scss?ngGlobalStyle styles[39m
+[37mchunk {vendor} (runtime: runtime) vendor.js (vendor) (id hint: defaultVendors) 5.81 MiB [initial] [rendered] split chunk (cache group: defaultVendors) (name: vendor)[39m
+[37m  cached modules 5.74 MiB [cached] 309 modules[39m
+[37m  dependent modules 65 KiB [dependent] 1 module[39m
+[37m  [39m
+[37m[39m
+[37mLOG from webpack.FileSystemInfo[39m
+[37m    17 new snapshots created[39m
+[37m    23% root snapshot uncached (3400 / 15076)[39m
+[37m    9% children snapshot uncached (827 / 9226)[39m
+[37m    9893 entries tested[39m
+[37m    File info in cache: 1482 timestamps 0 hashes 0 timestamp hash combinations[39m
+[37m    File timestamp snapshot optimization: 87% (263/302) entries shared via 4 shared snapshots (12 times referenced)[39m
+[37m    Directory info in cache: 0 timestamps 0 hashes 0 timestamp hash combinations[39m
+[37m    Missing items snapshot optimization: 100% (124/124) entries shared via 5 shared snapshots (13 times referenced)[39m
+[37m    Managed items info in cache: 234 items[39m
+[37m    Managed items snapshot optim[39m[37mization: 58% (26/45) entries shared via 1 shared snapshots (1 times referenced)[39m
+[37m    Managed files snapshot optimization: 96% (824/860) entries shared via 3 shared snapshots (5 times referenced)[39m
+[37m    Managed missing snapshot optimization: 89% (68/76) entries shared via 1 shared snapshots (1 times referenced)[39m
+[37m+ 1 hidden lines[39m
+[37m[39m
+[37mLOG from webpack.Compilation[39m
+[37m<t> runtime requirements.modules: 0.083291 ms[39m
+[37m<t> runtime requirements.chunks: 0.068959 ms[39m
+[37m<t> runtime requirements.entries: 0.337125 ms[39m
+[37m<t> compute affected modules: 0.00225 ms[39m
+[37m<t> finish modules: 519.30075 ms[39m
+[37m<t> report dependency errors and warnings: 15.879459 ms[39m
+[37m<t> optimize dependencies: 16.824208 ms[39m
+[37m<t> create chunks: 15.780375 ms[39m
+[37m<t> compute affected modules with chunk graph: 0.002 ms[39m
+[37m<t> optimize: 21.14325 ms[39m
+[37m    612 modules hashed, 0 from cache (0.52 variants per module in average)[39m
+[37m<t> module hashing: 17.328791 ms[39m
+[37m    1% code generated (4 generated, 608 from cache)[39m
+[37m<t> code generation: 19.695542 ms[39m
+[37m<t> runtime requirements.modules: 0.886 ms[39m
+[37m<t> runtime requirements.chunks: 0.262458 ms[39m
+[37m<t> runtime requirements.entries: 1.767084 ms[39m
+[37m<t> runtime requirements: 2.958125 ms[39m
+[37m<t> hashing: initialize hash: 0.005 ms[39m
+[37m<t> hashing: hash warnings: 0.004375 ms[39m
+[37m<t> hashing: sort chunks: 0.051167 ms[39m
+[37m<t> hashing: hash runtime modules: 2.070334 ms[39m
+[37m<t> hashing: hash chunks: 1.574708 ms[39m
+[37m<t> hashing: hash digest: 0.008958 ms[39m
+[37m<t> hashing: process full hash modules: 0.000625 ms[39m
+[37m<t> hashing: 3.782458 ms[39m
+[37m    0% code generated (0 generated, 14 from cache)[39m
+[37m<t> record hash: 0.021458 ms[39m
+[37m<t> module assets: 0.332708 ms[39m
+[37m<t> create chunk assets: 7.84825 ms[39m
+[37m<t> process assets: 670.786542 ms[39m
+[37m[39m
+[37mLOG from webpack.Compiler[39m
+[37m<t> make hook: 4716.3215 ms[39m
+[37m<t> finish make hook: 0.0645 ms[39m
+[37m<t> finish compilation: 535.200583 ms[39m
+[37m<t> seal compilation: 779.46375 ms[39m
+[37m<t> afterCompile hook: 0.090584 ms[39m
+[37m<t> emitAssets: 35.476833 ms[39m
+[37m<t> emitRecords: 0.088375 ms[39m
+[37m<t> done hook: 0.084166 ms[39m
+[37m<t> beginIdle: 0.412875 ms[39m
+[37m[39m
+[37mLOG from webpack.ResolverCachePlugin[39m
+[37m    0% really r[39m[37mesolved (12 real resolves with 0 cached but invalid, 13905 cached valid, 0 concurrent)[39m
+[37m[39m
+[37mLOG from webpack.FlagDependencyExportsPlugin[39m
+[37m<t> restore cached provided exports: 12.367125 ms[39m
+[37m<t> figure out provided exports: 14.657417 ms[39m
+[37m    7% of exports of modules have been determined (50 no declared exports, 82 not cached, 0 flagged uncacheable, 1051 from cache, 0 from mem cache, 10 additional calculations due to dependencies)[39m
+[37m<t> store provided exports into cache: 0.111375 ms[39m
+[37m[39m
+[37mLOG from webpack.SideEffectsFlagPlugin[39m
+[37m<t> update dependencies: 16.639375 ms[39m
+[37m[39m
+[37mLOG from webpack.buildChunkGraph[39m
+[37m<t> visitModules: prepare: 3.311804 ms[39m
+[37m<t> visitModules: visiting: 4.406917 ms[39m
+[37m<t> visitModules: calculating available modules: 0.101083 ms[39m
+[37m<t> visitModules: merging available modules: 0.031208 ms[39m
+[37m<t> visitModules: check modules for revisit: 0.061833 ms[39m
+[37m<t> visitModules: prepare: 1.696416 ms[39m
+[37m<t> visitModules: visiting: 2.374833 ms[39m
+[37m<t> visitModules: calculating available modules: 0.012083 ms[39m
+[37m<t> visitModules: merging available modules: 0.010333 ms[39m
+[37m<t> visitModules: check modules for revisit: 0.130917 ms[39m
+[37m<t> visitModules: prepare: 2.013166 ms[39m
+[37m<t> visitModules: visiting: 3.013042 ms[39m
+[37m<t> visitModules: calculating available modules: 0.067125 ms[39m
+[37m<t> visitModules: merging available modules: 0.005083 ms[39m
+[37m<t> visitModules: check modules for revisit: 0.002375 ms[39m
+[37m<t> visitModules: prepare: 1.0465 ms[39m
+[37m<t> visitModules: visiting: 1.380625 ms[39m
+[37m    2446 queue items processed (1157 blocks)[39m
+[37m    14 chunk groups connected[39m
+[37m    14 chunk groups processed for merging (14 module sets, 0 forked, 0 + 0 modules forked, 0 + 0 modules merged into fork, 0 resulting modules)[39m
+[37m    14 chunk group info updated (0 already connected chunk groups reconnected)[39m
+[37m<t> visitModules: 13.48375 ms[39m
+[37m<t> connectChunkGroups: 0.104625 ms[39m
+[37m<t> cleanup: 0.095292 ms[39m
+[37m[39m
+[37mLOG from webpack.SplitChunksPlugin[39m
+[37m<t> prepare: 0.03225 ms[39m
+[37m<t> modules: 6.132083 ms[39m
+[37m<t> queue: 3.805583 ms[39m
+[37m<t> maxSize: 0.093625 ms[39m
+[37m[39m
+[37mWARNING in /Users/divyanshu/walkover/proxy-ui/libs[39m[37m/services/proxy/auth/src/lib/services-proxy-auth.module.ts depends on 'dayjs'. CommonJS or AMD dependencies can cause optimization bailouts.[39m
+[37mFor more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies[39m
+[37mError: /Users/divyanshu/walkover/proxy-ui/libs/services/proxy/auth/src/lib/services-proxy-auth.module.ts depends on 'dayjs'. CommonJS or AMD dependencies can cause optimization bailouts.[39m
+[37mFor more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies[39m
+[37m    at addWarning (/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/utils/webpack-diagnostics.js:13:31)[39m
+[37m    at /Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/webpack/plugins/common-js-usage-warn-plugin.js:79:70[39m
+[37m    at _next0 (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)[39m
+[37m    at eval (eval at create (/Users/divyanshu/walkover/proxy-ui/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:71:1)[39m
+[37m[39m
+[37m2026-03-17 10:44:06: webpack 5.94.0 compiled in 7913 ms (1e446cc7259993d4)[39m
+    [webpack.cache.PackFileCacheStrategy] Storing pack...
+    [webpack.cache.PackFileCacheStrategy] Capturing build dependencies... (/Users/divyanshu/walkover/proxy-ui/node_modules/webpack/lib/, /Users/divyanshu/walkover/proxy-ui/node_modules/css-loader/dist/cjs.js, /Users/divyanshu/walkover/proxy-ui/node_modules/postcss-loader/dist/cjs.js, /Users/divyanshu/walkover/proxy-ui/node_modules/resolve-url-loader/index.js, /Users/divyanshu/walkover/proxy-ui/node_modules/sass-loader/dist/cjs.js, /Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js, /Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js, /Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/loaders/inline-resource.js, /Users/divyanshu/walkover/proxy-ui/node_modules/mini-css-extract-plugin/dist/loader.js, /Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js)
+<t> [webpack.cache.PackFileCacheStrategy] resolve build dependencies: 284.440958 ms
+<t> [webpack.cache.PackFileCacheStrategy] snapshot build dependencies: 17.378209 ms
+    [webpack.cache.PackFileCacheStrategy] Captured build dependencies
+    [webpack.cache.PackFileCacheStrategy] 42 fresh items in cache put into pack 1
+    [webpack.cache.PackFileCacheStrategy] Split pack 2 into pack 2 with 8 used items and pack 3 with 32 unused items
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs': 1.46625 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/core/fesm2022/core.mjs': 1.661166 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/common/fesm2022/common.mjs': 1.933292 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/router/fesm2022/router.mjs': 1.358 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/material/fesm2022/dialog.mjs': 1.234291 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/lodash-es/lodash.js': 1.000459 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/material/fesm2022/button.mjs': 5.746917 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/lodash-es/lodash.default.js': 1.574333 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/material/fesm2022/list.mjs': 2.988209 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/auth/auth.component.ts': 1.288541 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'ResolverCachePlugin|normal|default|fullySpecified=|false|dependencyType=|esm|path=|/Users/divyanshu/walkover/proxy-ui/node_modules/@firebase/firestore-compat/dist|request=|@firebase/firestore': 5.569541 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/lodash-es/object.default.js': 2.794041 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/logs/log/log.component.ts': 1.083875 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/material/fesm2022/tabs.mjs': 1.702583 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/users/management/management.component.ts': 1.572 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/users/user/user.component.ts': 1.075083 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/material/fesm2022/chips.mjs': 1.196667 ms
+<i> [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/material/fesm2022/datepicker.mjs': 16.814917 ms
+<i> [webpack.cache.PackFileCacheStrategy] Serialization of 'FlagDependencyExportsPlugin|json|/Users/divyanshu/walkover/proxy-ui/libs/ui/handle-domain/src/lib/rules.json': 18.8 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/codeGeneration|javascript/esm|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/source-map-loader/dist/cjs.js??ruleSet[1].rules[3]!/Users/divyanshu/walkover/proxy-ui/node_modules/@angular/core/fesm2022/core.mjs|runtime': 1.259334 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/codeGeneration|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js!/Users/divyanshu/walkover/proxy-ui/libs/ui/loader/src/lib/ui-loader.module.ts|runtime': 5.913625 ms
+<i> [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/modules|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/features/create-feature/create-feature.component.ts': 14.99475 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/codeGeneration|/Users/divyanshu/walkover/proxy-ui/node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js??ruleSet[1].rules[2].use[0]!/Users/divyanshu/walkover/proxy-ui/node_modules/@ngtools/webpack/src/ivy/index.js!/Users/divyanshu/walkover/proxy-ui/apps/proxy/src/app/features/create-feature/create-feature.component.ts|runtime': 3.098792 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/assets|chunkapps_proxy_src_app_features_create-feature_create-feature_module_ts': 3.11675 ms
+<i> [webpack.cache.PackFileCacheStrategy] Serialization of 'Compilation/assets|chunkvendor': 29.3275 ms
+    [webpack.cache.PackFileCacheStrategy] Serialization of 'SourceMapDevToolPlugin|apps_proxy_src_app_features_create-feature_create-feature_module_ts.js': 1.306916 ms
+<i> [webpack.cache.PackFileCacheStrategy] Serialization of 'SourceMapDevToolPlugin|vendor.js': 11.974 ms
+<t> [webpack.cache.PackFileCacheStrategy] store pack: 830.043917 ms
+    [webpack.cache.PackFileCacheStrategy] Stored pack (5508 items, 4 files, 363 MiB)
+[32m✔[39m Browser application bundle generation complete.
+- Copying assets...
+[32m✔[39m Copying assets complete.
+- Generating index html...
+[32m✔[39m Index html generation complete.
+[37m[39m
+[37mInitial chunk files                                                                                     | Names                                    |  Raw size[39m
+[37mvendor.js                                                                                               | vendor                                   |   6.77 MB | [39m
+[37mstyles.css                                                                                              | styles                                   | 537.99 kB | [39m
+[37mmain.js                                                                                                 | main                                     | 159.30 kB | [39m
+[37mpolyfills.js                                                                                            | polyfills                                | 119.78 kB | [39m
+[37mscripts.js                                                                                              | scripts                                  |  65.65 kB | [39m
+[37mruntime.js                                                                                              | runtime                                  |  12.77 kB | [39m
+[37m[39m
+[37m                                                                                                        | Initial total                            |   7.67 MB[39m
+[37m[39m
+[37mLazy chunk files                                                                                        | Names                                    |  Raw size[39m
+[37mapps_proxy_src_app_features_create-feature_create-feature_module_ts.js                                  | create-feature-create-feature-module     |   1.77 MB | [39m
+[37mdefault-libs_custom-validator_src_index_ts.js                                                           | app-create-project-create-project-module | 448.35 kB | [39m
+[37mdefault-libs_services_proxy_logs_src_index_ts-libs_ui_date-range-picker_src_index_ts.js                 | logs-logs-module                         | 411.32 kB | [39m
+[37mdefault-libs_models_features-model_src_index_ts-node_modules_a[39m[37mngular_material_fesm2022_slide--ccccdf.js | users-users-module                       | 384.33 kB | [39m
+[37mapps_proxy_src_app_layout_layout_module_ts.js                                                           | layout-layout-module                     | 354.21 kB | [39m
+[37mdefault-libs_ui_mat-paginator-goto_src_index_ts-libs_ui_no-record-found_src_index_ts-libs_ui_-d1baa7.js | logs-logs-module                         | 331.95 kB | [39m
+[37mdefault-node_modules_rxjs_dist_esm_internal_operators_delay_js-node_modules_angular_material_-afa883.js | layout-layout-module                     | 253.56 kB | [39m
+[37mapps_proxy_src_app_users_users_module_ts.js                                                             | users-users-module                       | 155.34 kB | [39m
+[37mapps_proxy_src_app_logs_logs_module_ts.js                                                               | logs-logs-module                         | 148.82 kB | [39m
+[37mdefault-node_modules_angular_material_fesm2022_autocomplete_mjs-node_modules_angular_material-80994c.js | app-create-project-create-project-module | 144.85 kB | [39m
+[37mapps_proxy_src_app_auth_auth_module_ts.js                                                               | auth-auth-module                         | 143.41 kB | [39m
+[37mdefault-node_modules_angular_material_fesm2022_stepper_mjs.js                                           | app-create-project-create-project-module | 118.81 kB | [39m
+[37mdefault-node_modules_angular_material_fesm2022_select_mjs-node_modules_ngrx_component-store_f-0acd32.js | app-create-project-create-project-module | 111.65 kB | [39m
+[37mdefault-libs_constant_src_index_ts.js                                                                   | layout-layout-module                     |  91.99 kB | [39m
+[37mapps_proxy_src_app_create-project_create-project_module_ts.js                                           | app-create-project-create-project-module |  81.25 kB | [39m
+[37mdefault-node_modules_angular_material_fesm2022_input_mjs-node_modules_lodash-es__baseGet_js-n-8a88cf.js | app-create-p[39m[37mroject-create-project-module |  69.56 kB | [39m
+[37mapps_proxy_src_app_register_register_module_ts.js                                                       | register-register-module                 |  50.78 kB | [39m
+[37mdefault-apps_proxy_src_app_features_feature_feature_store_ts-libs_directives_skeleton_src_ind-eb6cd8.js | features-features-module                 |  49.87 kB | [39m
+[37mapps_proxy_src_app_features_features_module_ts.js                                                       | features-features-module                 |  44.75 kB | [39m
+[37mdefault-node_modules_angular_material_fesm2022_card_mjs.js                                              | auth-auth-module                         |  34.72 kB | [39m
+[37mdefault-libs_ui_loader_src_index_ts.js                                                                  | auth-auth-module                         |  32.27 kB | [39m
+[37mcommon.js                                                                                               | common                                   |  22.74 kB | [39m
+[37mdefault-libs_ui_copy-button_src_index_ts.js                                                             | app-create-project-create-project-module |  18.21 kB | [39m
+[37mapps_proxy_src_app_dashboard_dashborad_module_ts.js                                                     | dashboard-dashborad-module               |  15.21 kB | [39m
+[37mapps_proxy_src_app_registration_registration_module_ts.js                                               | registration-registration-module         |   9.87 kB | [39m
+[37mapps_proxy_src_app_public_module_ts.js                                                                  | public-module                            |   3.12 kB | [39m
+[37mapps_proxy_src_app_client_module_ts.js                                                                  | client-module                            |   2.33 kB | [39m
+[37m[39m
+[37mBuild at: 2026-03-17T05:14:07.590Z - Hash: 1e446cc7259993d4 - Time: 9165ms[39m
+[1m[33m[39m[22m
+[1m[33mWarning: /Users/divyanshu/walkover/proxy-ui/libs/services/proxy/auth/src/lib/services-proxy-auth.module.ts depends on 'dayjs'. CommonJS or AMD dependencies can cause optimization bailouts.[39m[22m
+[1m[33mFor more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m

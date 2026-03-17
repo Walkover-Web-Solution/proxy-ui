@@ -5,6 +5,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { Observable } from 'rxjs';
 
 @Component({
+    standalone: false,
     selector: 'proxy-log-details-side-dialog',
     templateUrl: './log-details-side-dialog.component.html',
     styleUrls: ['./log-details-side-dialog.component.scss'],

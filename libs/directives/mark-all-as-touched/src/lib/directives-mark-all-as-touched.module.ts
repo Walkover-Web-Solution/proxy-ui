@@ -15,6 +15,7 @@ import {
 import { ControlContainer, FormGroup, FormGroupDirective } from '@angular/forms';
 
 @Directive({
+    standalone: false,
     selector: '[proxyMarkAllAsTouched]',
 })
 export class MarkAllAsTouchedDirective implements OnInit, OnDestroy {

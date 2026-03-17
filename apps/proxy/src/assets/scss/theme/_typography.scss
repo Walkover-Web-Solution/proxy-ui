@@ -2,19 +2,19 @@
 
 $font-family: var(--font-family-common);
 
-$custom-typography: mat.define-typography-config(
+$custom-typography: mat.m2-define-typography-config(
     $font-family: $font-family,
-    $headline-1: mat.define-typography-level(20px, 27px, 600),
-    $headline-2: mat.define-typography-level(18px, 28px, 400),
-    $headline-3: mat.define-typography-level(16px, 22px, 600),
-    $headline-4: mat.define-typography-level(14px, 18px, 500),
-    $headline-5: mat.define-typography-level(19px, 26px, 700),
-    $headline-6: mat.define-typography-level(19px, 26px, 600),
-    $subtitle-1: mat.define-typography-level(16px, 22px, 600),
-    $subtitle-2: mat.define-typography-level(14px, 19px, 600),
-    $body-1: mat.define-typography-level(16px, 22px, 400),
-    $body-2: mat.define-typography-level(14px, 19px, 400),
-    $caption: mat.define-typography-level(11px, 15px, 600),
+    $headline-1: mat.m2-define-typography-level(20px, 27px, 600),
+    $headline-2: mat.m2-define-typography-level(18px, 28px, 400),
+    $headline-3: mat.m2-define-typography-level(16px, 22px, 600),
+    $headline-4: mat.m2-define-typography-level(14px, 18px, 500),
+    $headline-5: mat.m2-define-typography-level(19px, 26px, 700),
+    $headline-6: mat.m2-define-typography-level(19px, 26px, 600),
+    $subtitle-1: mat.m2-define-typography-level(16px, 22px, 600),
+    $subtitle-2: mat.m2-define-typography-level(14px, 19px, 600),
+    $body-1: mat.m2-define-typography-level(16px, 22px, 400),
+    $body-2: mat.m2-define-typography-level(14px, 19px, 400),
+    $caption: mat.m2-define-typography-level(11px, 15px, 600),
 );
 
 /*// 700 - Bold

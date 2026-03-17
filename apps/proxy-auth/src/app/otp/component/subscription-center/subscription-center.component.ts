@@ -29,6 +29,7 @@ export interface SubscriptionPlan {
 }
 
 @Component({
+    standalone: false,
     selector: 'proxy-subscription-center',
     templateUrl: './subscription-center.component.html',
     styleUrls: ['./subscription-center.component.scss'],

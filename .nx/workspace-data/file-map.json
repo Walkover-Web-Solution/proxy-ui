@@ -1,0 +1,3922 @@
+{
+  "version": "6.0",
+  "nxVersion": "19.8.14",
+  "deps": {
+    "@abacritt/angularx-social-login": "1.2.5",
+    "@angular-material-components/datetime-picker": "8.0.0",
+    "@angular-material-components/moment-adapter": "8.0.0",
+    "@angular/animations": "19.2.20",
+    "@angular/cdk": "19.2.19",
+    "@angular/common": "19.2.20",
+    "@angular/compiler": "19.2.20",
+    "@angular/core": "19.2.20",
+    "@angular/elements": "19.2.20",
+    "@angular/fire": "19.2.0",
+    "@angular/forms": "19.2.20",
+    "@angular/localize": "19.2.20",
+    "@angular/material": "19.2.19",
+    "@angular/material-moment-adapter": "19.2.19",
+    "@angular/platform-browser": "19.2.20",
+    "@angular/platform-browser-dynamic": "19.2.20",
+    "@angular/router": "19.2.20",
+    "@highcharts/map-collection": "2.0.1",
+    "@materia-ui/ngx-monaco-editor": "6.0.0",
+    "@ngrx/component": "19.2.1",
+    "@ngrx/component-store": "19.2.1",
+    "@ngrx/effects": "19.2.1",
+    "@ngrx/entity": "19.2.1",
+    "@ngrx/operators": "19.2.1",
+    "@ngrx/router-store": "19.2.1",
+    "@ngrx/store": "19.2.1",
+    "@webcomponents/custom-elements": "1.6.0",
+    "angular-froala-wysiwyg": "4.0.15",
+    "angular-text-input-highlight": "1.4.3",
+    "chart.js": "2.9.4",
+    "concat": "1.0.3",
+    "core-js": "3.27.2",
+    "cross-fetch": "3.1.5",
+    "crypto-js": "4.1.1",
+    "d3-array": "3.2.2",
+    "d3-brush": "3.0.0",
+    "d3-format": "3.1.0",
+    "d3-hierarchy": "3.1.2",
+    "d3-interpolate": "3.0.1",
+    "d3-scale": "3.3.0",
+    "d3-selection": "3.0.0",
+    "d3-shape": "3.2.0",
+    "d3-time-format": "3.0.0",
+    "d3-transition": "3.0.1",
+    "dayjs": "1.11.7",
+    "firebase": "10.12.0",
+    "froala-editor": "4.0.15",
+    "fs-extra": "5.0.0",
+    "google-libphonenumber": "3.2.32",
+    "highcharts": "10.3.3",
+    "highcharts-angular": "3.0.0",
+    "intl-tel-input": "17.0.19",
+    "jssip": "3.10.0",
+    "lodash-es": "4.17.21",
+    "ng-click-outside": "9.0.1",
+    "ng-hcaptcha": "^2.6.0",
+    "ng-otp-input": "1.8.5",
+    "ngrx-store-localstorage": "14.0.0",
+    "ngx-bootstrap": "9.0.0",
+    "ngx-cookie-service": "14.0.1",
+    "ngx-markdown": "14.0.1",
+    "primeng": "14.2.2",
+    "random-avatar-generator": "2.0.0",
+    "recordrtc": "5.6.2",
+    "rxjs": "7.8.2",
+    "socket.io-client": "4.5.4",
+    "tributejs": "5.1.3",
+    "tslib": "2.5.0",
+    "zone.js": "0.14.10",
+    "@angular-builders/custom-webpack": "19.0.1",
+    "@angular-devkit/build-angular": "19.2.20",
+    "@angular-devkit/build-webpack": "0.1902.22",
+    "@angular-devkit/core": "19.2.20",
+    "@angular-devkit/schematics": "19.2.20",
+    "@angular-eslint/eslint-plugin": "19.2.1",
+    "@angular-eslint/eslint-plugin-template": "19.2.1",
+    "@angular-eslint/template-parser": "19.2.1",
+    "@angular/cli": "~19.2.0",
+    "@angular/compiler-cli": "19.2.20",
+    "@angular/language-service": "19.2.20",
+    "@ngrx/store-devtools": "19.2.1",
+    "@nx/angular": "19.8.14",
+    "@nx/cypress": "19.8.14",
+    "@nx/eslint": "19.8.14",
+    "@nx/jest": "19.8.14",
+    "@nx/workspace": "19.8.14",
+    "@schematics/angular": "19.2.20",
+    "@types/chart.js": "^2.9.28",
+    "@types/jest": "29.4.4",
+    "@types/lodash": "^4.14.161",
+    "@types/lodash-es": "^4.17.3",
+    "@types/node": "14.14.33",
+    "@typescript-eslint/eslint-plugin": "5.38.1",
+    "@typescript-eslint/parser": "5.38.1",
+    "base64-inline-loader": "^2.0.1",
+    "codelyzer": "6.0.2",
+    "cypress": "^9.1.0",
+    "dotenv": "10.0.0",
+    "eslint": "8.15.0",
+    "eslint-config-prettier": "8.1.0",
+    "eslint-plugin-cypress": "^2.10.3",
+    "gzipper": "^4.3.0",
+    "husky": "^7.0.2",
+    "jest": "29.4.3",
+    "jest-worker": "^27.3.1",
+    "linkifyjs": "3.0.0-beta.3",
+    "lint-staged": "^11.2.3",
+    "ngx-build-plus": "^19.0.0",
+    "nx": "19.8.14",
+    "postcss": "^8.2.8",
+    "prettier": "2.7.1",
+    "ts-jest": "29.0.5",
+    "ts-node": "10.9.1",
+    "tslint": "6.1.3",
+    "typescript": "5.5.4",
+    "webpack-dev-server": "^4.11.1"
+  },
+  "pathMappings": {
+    "@proxy/constant": [
+      "libs/constant/src/index.ts"
+    ],
+    "@proxy/constant/file-size": [
+      "libs/constant/src/file-size/index.ts"
+    ],
+    "@proxy/custom-validator": [
+      "libs/custom-validator/src/index.ts"
+    ],
+    "@proxy/date-range-picker": [
+      "libs/ui/date-range-picker/src/index.ts"
+    ],
+    "@proxy/directives/RemoveCharacterDirective": [
+      "libs/directives/remove-character-directive/src/index.ts"
+    ],
+    "@proxy/directives/auto-select-dropdown": [
+      "libs/directives/auto-select-dropdown/src/index.ts"
+    ],
+    "@proxy/directives/mark-all-as-touched": [
+      "libs/directives/mark-all-as-touched/src/index.ts"
+    ],
+    "@proxy/directives/skeleton": [
+      "libs/directives/skeleton/src/index.ts"
+    ],
+    "@proxy/models/features-model": [
+      "libs/models/features-model/src/index.ts"
+    ],
+    "@proxy/models/logs-models": [
+      "libs/models/logs-models/src/index.ts"
+    ],
+    "@proxy/models/project-model": [
+      "libs/models/project-model/src/index.ts"
+    ],
+    "@proxy/models/root-models": [
+      "libs/models/root-models/src/index.ts"
+    ],
+    "@proxy/models/users-model": [
+      "libs/models/users-model/src/index.ts"
+    ],
+    "@proxy/pipes/ChartDateAdd": [
+      "libs/pipes/chart-date-add/src/index.ts"
+    ],
+    "@proxy/pipes/DecimalFormatter": [
+      "libs/pipes/decimal-formatter/src/index.ts"
+    ],
+    "@proxy/pipes/FieldValuePipe": [
+      "libs/pipes/field-value-pipe/src/index.ts"
+    ],
+    "@proxy/pipes/SafeURLPipe": [
+      "libs/pipes/safe-urlpipe/src/index.ts"
+    ],
+    "@proxy/pipes/TimeTokenPipe": [
+      "libs/pipes/time-token-pipe/src/index.ts"
+    ],
+    "@proxy/pipes/replace": [
+      "libs/pipes/replace/src/index.ts"
+    ],
+    "@proxy/pipes/typeof": [
+      "libs/pipes/typeof/src/index.ts"
+    ],
+    "@proxy/regex": [
+      "libs/regex/src/index.ts"
+    ],
+    "@proxy/service": [
+      "libs/service/src/index.ts"
+    ],
+    "@proxy/services/http-wrapper-no-auth": [
+      "libs/services/http-wrapper-no-auth/src/index.ts"
+    ],
+    "@proxy/services/httpWrapper": [
+      "libs/services/http-wrapper/src/index.ts"
+    ],
+    "@proxy/services/interceptor/errorInterceptor": [
+      "libs/services/interceptor/error-interceptor/src/index.ts"
+    ],
+    "@proxy/services/login": [
+      "libs/services/login/src/index.ts"
+    ],
+    "@proxy/services/proxy/auth": [
+      "libs/services/proxy/auth/src/index.ts"
+    ],
+    "@proxy/services/proxy/create-project": [
+      "libs/services/proxy/create-project/src/index.ts"
+    ],
+    "@proxy/services/proxy/features": [
+      "libs/services/proxy/features/src/index.ts"
+    ],
+    "@proxy/services/proxy/logs": [
+      "libs/services/proxy/logs/src/index.ts"
+    ],
+    "@proxy/services/proxy/root": [
+      "libs/services/proxy/root/src/index.ts"
+    ],
+    "@proxy/services/proxy/users": [
+      "libs/services/proxy/users/src/index.ts"
+    ],
+    "@proxy/ui/angular-mentions": [
+      "libs/ui/angular-mentions/src/index.ts"
+    ],
+    "@proxy/ui/base-component": [
+      "libs/ui/base-component/src/index.ts"
+    ],
+    "@proxy/ui/confirm-dialog": [
+      "libs/ui/confirm-dialog/src/index.ts"
+    ],
+    "@proxy/ui/copy-button": [
+      "libs/ui/copy-button/src/index.ts"
+    ],
+    "@proxy/ui/handle-domain": [
+      "libs/ui/handle-domain/src/index.ts"
+    ],
+    "@proxy/ui/loader": [
+      "libs/ui/loader/src/index.ts"
+    ],
+    "@proxy/ui/mat-paginator-goto": [
+      "libs/ui/mat-paginator-goto/src/index.ts"
+    ],
+    "@proxy/ui/no-record-found": [
+      "libs/ui/no-record-found/src/index.ts"
+    ],
+    "@proxy/ui/player": [
+      "libs/ui/player/src/index.ts"
+    ],
+    "@proxy/ui/prime-ng-toast": [
+      "libs/ui/prime-ng-toast/src/index.ts"
+    ],
+    "@proxy/ui/search": [
+      "libs/ui/search/src/index.ts"
+    ],
+    "@proxy/ui/virtual-scroll": [
+      "libs/ui/virtual-scroll/src/index.ts"
+    ],
+    "@proxy/urls/create-project-urls": [
+      "libs/urls/create-project-urls/src/index.ts"
+    ],
+    "@proxy/urls/features-url": [
+      "libs/urls/features-url/src/index.ts"
+    ],
+    "@proxy/urls/logs-urls": [
+      "libs/urls/logs-urls/src/index.ts"
+    ],
+    "@proxy/urls/root-urls": [
+      "libs/urls/root-urls/src/index.ts"
+    ],
+    "@proxy/urls/users-urls": [
+      "libs/urls/users-urls/src/index.ts"
+    ],
+    "@proxy/utils": [
+      "libs/utils/src/index.ts"
+    ]
+  },
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "nonProjectFiles": [
+      {
+        "file": ".eslintrc",
+        "hash": "12849972335035896188"
+      },
+      {
+        "file": "README.md",
+        "hash": "7165132284971758374"
+      },
+      {
+        "file": "DESIGNGUIDE.md",
+        "hash": "12144468426372916276"
+      },
+      {
+        "file": "apps/.gitkeep",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "1177626400270411230"
+      },
+      {
+        "file": "nx.json",
+        "hash": "10626903840907441542"
+      },
+      {
+        "file": ".eslintrc.json",
+        "hash": "4598763878092457095"
+      },
+      {
+        "file": "tslint.json",
+        "hash": "16011804367217988119"
+      },
+      {
+        "file": "migrations.json",
+        "hash": "14500448442138988972"
+      },
+      {
+        "file": ".env.example",
+        "hash": "15611654078912372047"
+      },
+      {
+        "file": ".github/workflows/main.yml",
+        "hash": "5960860165490639840"
+      },
+      {
+        "file": ".husky/pre-commit",
+        "hash": "8906304965158091741"
+      },
+      {
+        "file": ".eslintignore",
+        "hash": "7663861978715868291"
+      },
+      {
+        "file": "tools/tsconfig.tools.json",
+        "hash": "5513430557937895201"
+      },
+      {
+        "file": "docs/angular-v14-to-v17-migration-report.md",
+        "hash": "14563216798805288361"
+      },
+      {
+        "file": "package.json",
+        "hash": "8021909446951301155"
+      },
+      {
+        "file": ".prettierrc.json",
+        "hash": "6463395512980275380"
+      },
+      {
+        "file": "webpack.config.js",
+        "hash": "14062238190490164203"
+      },
+      {
+        "file": "jest.preset.js",
+        "hash": "13554759684756312731"
+      },
+      {
+        "file": "docs/angular-upgrade-plan.md",
+        "hash": "12449464683107397432"
+      },
+      {
+        "file": "tools/postbuild.js",
+        "hash": "4043928459023532992"
+      },
+      {
+        "file": "package-lock.json",
+        "hash": "14026767112516745614"
+      },
+      {
+        "file": "jest.config.ts",
+        "hash": "12766236196894558407"
+      },
+      {
+        "file": "libs/.gitkeep",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": ".github/workflows/CODEOWNERS",
+        "hash": "13850359212331874294"
+      },
+      {
+        "file": ".prettierignore",
+        "hash": "13088220492028095117"
+      },
+      {
+        "file": "tsconfig.base.json",
+        "hash": "8304400181709170630"
+      }
+    ],
+    "projectFileMap": {
+      "pipes-decimal-formatter": [
+        {
+          "file": "libs/pipes/decimal-formatter/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/pipes/decimal-formatter/README.md",
+          "hash": "8401024249135718455"
+        },
+        {
+          "file": "libs/pipes/decimal-formatter/project.json",
+          "hash": "10620973378281863399"
+        },
+        {
+          "file": "libs/pipes/decimal-formatter/src/index.ts",
+          "hash": "4014926509521661214"
+        },
+        {
+          "file": "libs/pipes/decimal-formatter/src/lib/pipes-decimal-formatter.module.ts",
+          "hash": "3425991579754495164",
+          "deps": [
+            "constant",
+            "pipes-field-value-pipe"
+          ]
+        },
+        {
+          "file": "libs/pipes/decimal-formatter/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/pipes/decimal-formatter/tsconfig.lib.json",
+          "hash": "7431332473510325183"
+        }
+      ],
+      "directives-skeleton": [
+        {
+          "file": "libs/directives/skeleton/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/directives/skeleton/README.md",
+          "hash": "14644951947377598119"
+        },
+        {
+          "file": "libs/directives/skeleton/project.json",
+          "hash": "11893447489880196923"
+        },
+        {
+          "file": "libs/directives/skeleton/src/index.ts",
+          "hash": "6653504460109953344"
+        },
+        {
+          "file": "libs/directives/skeleton/src/lib/directives-skeleton.module.ts",
+          "hash": "10913472527635093627",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "libs/directives/skeleton/src/lib/skeleton/skeleton.component.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "libs/directives/skeleton/src/lib/skeleton/skeleton.component.ts",
+          "hash": "152280143965760262",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/directives/skeleton/src/lib/skeleton/skeleton.directive.ts",
+          "hash": "10487026458546215454",
+          "deps": [
+            "npm:@angular/core",
+            "npm:lodash-es",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/directives/skeleton/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/directives/skeleton/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "models-root-models": [
+        {
+          "file": "libs/models/root-models/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/models/root-models/README.md",
+          "hash": "16519993465144512516"
+        },
+        {
+          "file": "libs/models/root-models/project.json",
+          "hash": "11890561505859308534"
+        },
+        {
+          "file": "libs/models/root-models/src/index.ts",
+          "hash": "11071083542884310616"
+        },
+        {
+          "file": "libs/models/root-models/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/models/root-models/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "services-proxy-create-project": [
+        {
+          "file": "libs/services/proxy/create-project/.eslintrc.json",
+          "hash": "6543255649485862907"
+        },
+        {
+          "file": "libs/services/proxy/create-project/README.md",
+          "hash": "8171826414710026653"
+        },
+        {
+          "file": "libs/services/proxy/create-project/project.json",
+          "hash": "14022320591035003783"
+        },
+        {
+          "file": "libs/services/proxy/create-project/src/index.ts",
+          "hash": "4402121091232804956"
+        },
+        {
+          "file": "libs/services/proxy/create-project/src/lib/services-proxy-create-project.module.ts",
+          "hash": "11361767450251664306",
+          "deps": [
+            "services-http-wrapper",
+            "models-root-models",
+            "urls-create-project-urls",
+            "models-logs-models",
+            "models-project-model",
+            "models-users-model"
+          ]
+        },
+        {
+          "file": "libs/services/proxy/create-project/tsconfig.json",
+          "hash": "8636678831130240728"
+        },
+        {
+          "file": "libs/services/proxy/create-project/tsconfig.lib.json",
+          "hash": "4149867912996691340"
+        }
+      ],
+      "pipes-field-value-pipe": [
+        {
+          "file": "libs/pipes/field-value-pipe/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/pipes/field-value-pipe/README.md",
+          "hash": "6795712740950124175"
+        },
+        {
+          "file": "libs/pipes/field-value-pipe/project.json",
+          "hash": "4505880840372476328"
+        },
+        {
+          "file": "libs/pipes/field-value-pipe/src/index.ts",
+          "hash": "16073013721354690098"
+        },
+        {
+          "file": "libs/pipes/field-value-pipe/src/lib/pipes-field-value-pipe.module.ts",
+          "hash": "3825974456228409163",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/pipes/field-value-pipe/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/pipes/field-value-pipe/tsconfig.lib.json",
+          "hash": "7431332473510325183"
+        }
+      ],
+      "directives-remove-character-directive": [
+        {
+          "file": "libs/directives/remove-character-directive/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/directives/remove-character-directive/README.md",
+          "hash": "191764866437794530"
+        },
+        {
+          "file": "libs/directives/remove-character-directive/jest.config.ts",
+          "hash": "13140708222003892300"
+        },
+        {
+          "file": "libs/directives/remove-character-directive/project.json",
+          "hash": "14336133804078242236"
+        },
+        {
+          "file": "libs/directives/remove-character-directive/src/index.ts",
+          "hash": "15909684567228273253"
+        },
+        {
+          "file": "libs/directives/remove-character-directive/src/lib/directives-remove-character-directive.module.ts",
+          "hash": "9287789559219027479",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/directives/remove-character-directive/tsconfig.json",
+          "hash": "10187831933615095447"
+        },
+        {
+          "file": "libs/directives/remove-character-directive/tsconfig.lib.json",
+          "hash": "13252366829522396991"
+        },
+        {
+          "file": "libs/directives/remove-character-directive/tsconfig.spec.json",
+          "hash": "13209188181456395838"
+        }
+      ],
+      "pipes-safe-urlpipe": [
+        {
+          "file": "libs/pipes/safe-urlpipe/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/pipes/safe-urlpipe/README.md",
+          "hash": "10873524696765330420"
+        },
+        {
+          "file": "libs/pipes/safe-urlpipe/jest.config.ts",
+          "hash": "12089193286150321610"
+        },
+        {
+          "file": "libs/pipes/safe-urlpipe/project.json",
+          "hash": "251982833935809222"
+        },
+        {
+          "file": "libs/pipes/safe-urlpipe/src/index.ts",
+          "hash": "5140565525835738030"
+        },
+        {
+          "file": "libs/pipes/safe-urlpipe/src/lib/pipes-safe-urlpipe.module.ts",
+          "hash": "7042242397135169582",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "libs/pipes/safe-urlpipe/tsconfig.json",
+          "hash": "10187831933615095447"
+        },
+        {
+          "file": "libs/pipes/safe-urlpipe/tsconfig.lib.json",
+          "hash": "13252366829522396991"
+        },
+        {
+          "file": "libs/pipes/safe-urlpipe/tsconfig.spec.json",
+          "hash": "13209188181456395838"
+        }
+      ],
+      "services-proxy-logs": [
+        {
+          "file": "libs/services/proxy/logs/.eslintrc.json",
+          "hash": "6543255649485862907"
+        },
+        {
+          "file": "libs/services/proxy/logs/README.md",
+          "hash": "8458471596376211295"
+        },
+        {
+          "file": "libs/services/proxy/logs/project.json",
+          "hash": "15122006089532215898"
+        },
+        {
+          "file": "libs/services/proxy/logs/src/index.ts",
+          "hash": "3935961261752165518"
+        },
+        {
+          "file": "libs/services/proxy/logs/src/lib/services-proxy-logs.module.ts",
+          "hash": "6483899395316144082",
+          "deps": [
+            "models-root-models",
+            "services-http-wrapper",
+            "models-logs-models",
+            "urls-logs-urls"
+          ]
+        },
+        {
+          "file": "libs/services/proxy/logs/tsconfig.json",
+          "hash": "8636678831130240728"
+        },
+        {
+          "file": "libs/services/proxy/logs/tsconfig.lib.json",
+          "hash": "4149867912996691340"
+        }
+      ],
+      "proxy": [
+        {
+          "file": "apps/proxy/.eslintrc.json",
+          "hash": "124239851292367500"
+        },
+        {
+          "file": "apps/proxy/project.json",
+          "hash": "9294726303741650449"
+        },
+        {
+          "file": "apps/proxy/src/app/app-firebase.module.ts",
+          "hash": "6532227896649606336",
+          "deps": [
+            "npm:@angular/fire",
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/app.component.html",
+          "hash": "14584713555421599347"
+        },
+        {
+          "file": "apps/proxy/src/app/app.component.ts",
+          "hash": "6698845451068902629",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "service",
+            "npm:@ngrx/store",
+            "npm:lodash-es",
+            "npm:rxjs",
+            "ui-components-base-component",
+            "models-root-models"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/app.module.ts",
+          "hash": "6356472412156315124",
+          "deps": [
+            "ui-prime-ng-toast",
+            "services-proxy-auth",
+            "models-root-models",
+            "services-interceptor-error-interceptor",
+            "service",
+            "services-proxy-root"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/app.routes.ts",
+          "hash": "12579504544809763866",
+          "deps": [
+            "npm:@angular/router",
+            "npm:@angular/fire"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/auth/auth.component.html",
+          "hash": "16379778635863254675"
+        },
+        {
+          "file": "apps/proxy/src/app/auth/auth.component.scss",
+          "hash": "2946632408783313694"
+        },
+        {
+          "file": "apps/proxy/src/app/auth/auth.component.ts",
+          "hash": "16780009030966483543",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "models-root-models",
+            "ui-components-base-component",
+            "ui-prime-ng-toast",
+            "npm:@ngrx/store",
+            "npm:lodash-es",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/auth/auth.module.ts",
+          "hash": "15448522720420607687",
+          "deps": [
+            "ui-loader",
+            "services-proxy-auth"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/auth/authguard/index.ts",
+          "hash": "16081298465754627813",
+          "deps": [
+            "services-proxy-auth"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/auth/ngrx/actions/index.ts",
+          "hash": "1742913867725453033"
+        },
+        {
+          "file": "apps/proxy/src/app/auth/ngrx/actions/login.action.ts",
+          "hash": "15227089366163106454",
+          "deps": [
+            "models-root-models"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/auth/ngrx/effects/login-effects.module.ts",
+          "hash": "15656977191846092974",
+          "deps": [
+            "services-login"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/auth/ngrx/effects/login.effects.ts",
+          "hash": "7973696408516554492",
+          "deps": [
+            "models-root-models",
+            "services-proxy-auth",
+            "services-login"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/auth/ngrx/selector/login.selector.ts",
+          "hash": "9307436440780733521",
+          "deps": [
+            "npm:@ngrx/store"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/auth/ngrx/store/login.reducer.ts",
+          "hash": "17005443633136707412",
+          "deps": [
+            "models-root-models"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/auth/ngrx/store/login.state.ts",
+          "hash": "18238554009951621472"
+        },
+        {
+          "file": "apps/proxy/src/app/chatbot/chatbot.component.ts",
+          "hash": "9750750576411571896",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/client.module.ts",
+          "hash": "5509437267032504437",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/create-project/create-project.component.html",
+          "hash": "10070256416888285815"
+        },
+        {
+          "file": "apps/proxy/src/app/create-project/create-project.component.scss",
+          "hash": "6752270954929252837"
+        },
+        {
+          "file": "apps/proxy/src/app/create-project/create-project.component.ts",
+          "hash": "16645226067036592268",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "regex",
+            "custom-validator",
+            "npm:rxjs",
+            "models-root-models",
+            "models-logs-models",
+            "ui-components-base-component",
+            "npm:@ngrx/store",
+            "models-project-model",
+            "models-users-model"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/create-project/create-project.module.ts",
+          "hash": "8499343213673803784",
+          "deps": [
+            "ui-copy-button",
+            "services-proxy-logs",
+            "services-proxy-create-project",
+            "directives-mark-all-as-touched"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/create-project/create-project.store.ts",
+          "hash": "4282720968159388362",
+          "deps": [
+            "models-logs-models",
+            "models-root-models",
+            "services-proxy-create-project",
+            "ui-prime-ng-toast",
+            "models-project-model",
+            "models-users-model"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/dashboard/dashboard.component.html",
+          "hash": "11149876937335227301"
+        },
+        {
+          "file": "apps/proxy/src/app/dashboard/dashboard.component.scss",
+          "hash": "4521845796876296815"
+        },
+        {
+          "file": "apps/proxy/src/app/dashboard/dashboard.component.ts",
+          "hash": "5633985574888054345",
+          "deps": [
+            "npm:@angular/core",
+            "ui-components-base-component"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/dashboard/dashborad.module.ts",
+          "hash": "4785610269775412294",
+          "deps": [
+            "npm:@angular/router",
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/features/create-feature/create-feature.component.html",
+          "hash": "17221356023676505110"
+        },
+        {
+          "file": "apps/proxy/src/app/features/create-feature/create-feature.component.scss",
+          "hash": "10171978135352314987"
+        },
+        {
+          "file": "apps/proxy/src/app/features/create-feature/create-feature.component.ts",
+          "hash": "7524832324397810129",
+          "deps": [
+            "npm:@angular/router",
+            "npm:lodash-es",
+            "npm:@angular/core",
+            "ui-components-base-component",
+            "npm:rxjs",
+            "models-features-model",
+            "npm:@angular/forms",
+            "regex",
+            "custom-validator",
+            "npm:@angular/cdk",
+            "npm:@angular/common",
+            "ui-prime-ng-toast",
+            "npm:@angular/material",
+            "utils",
+            "ui-confirm-dialog"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/features/create-feature/create-feature.module.ts",
+          "hash": "9491576012117131749",
+          "deps": [
+            "ui-loader",
+            "services-proxy-features",
+            "ui-copy-button"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/features/create-feature/create-feature.store.ts",
+          "hash": "9791043315909960992",
+          "deps": [
+            "models-root-models",
+            "ui-prime-ng-toast",
+            "models-features-model",
+            "services-proxy-features"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/features/create-feature/create-plan-dialog/create-plan-dialog.component.ts",
+          "hash": "15967482511429769868",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "custom-validator",
+            "ui-components-base-component",
+            "npm:@angular/cdk"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/features/create-feature/create-tax-dialog/create-tax-dialog.component.ts",
+          "hash": "17198723583561117063",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "custom-validator",
+            "ui-components-base-component",
+            "npm:@angular/cdk"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/features/create-feature/simple-dialog/simple-dialog.component.ts",
+          "hash": "11191896902316841143",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "custom-validator",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/features/feature/feature.component.html",
+          "hash": "15103017373398881870"
+        },
+        {
+          "file": "apps/proxy/src/app/features/feature/feature.component.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "apps/proxy/src/app/features/feature/feature.component.ts",
+          "hash": "8634936252937992418",
+          "deps": [
+            "npm:@angular/core",
+            "ui-components-base-component",
+            "constant",
+            "npm:lodash-es",
+            "npm:@angular/material",
+            "npm:rxjs",
+            "models-features-model",
+            "models-root-models"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/features/feature/feature.store.ts",
+          "hash": "14804193245426374775",
+          "deps": [
+            "models-root-models",
+            "ui-prime-ng-toast",
+            "models-features-model",
+            "services-proxy-features"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/features/features.module.ts",
+          "hash": "251842241605199316",
+          "deps": [
+            "ui-components-search",
+            "ui-no-record-found",
+            "ui-mat-paginator-goto",
+            "ui-loader",
+            "services-proxy-features",
+            "directives-skeleton",
+            "ui-copy-button",
+            "ui-confirm-dialog"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/guard/project.guard.ts",
+          "hash": "764001115776123554",
+          "deps": [
+            "models-root-models",
+            "models-logs-models"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/layout/layout-routing.module.ts",
+          "hash": "8258283594260791752",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "npm:@angular/fire"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/layout/layout.component.html",
+          "hash": "10638074265608714448"
+        },
+        {
+          "file": "apps/proxy/src/app/layout/layout.component.scss",
+          "hash": "5453295827306957957"
+        },
+        {
+          "file": "apps/proxy/src/app/layout/layout.component.ts",
+          "hash": "10101015895721769295",
+          "deps": [
+            "npm:@angular/core",
+            "models-root-models",
+            "ui-components-base-component",
+            "npm:@ngrx/store",
+            "npm:lodash-es",
+            "npm:rxjs",
+            "npm:@angular/router",
+            "services-proxy-root",
+            "services-proxy-auth"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/layout/layout.module.ts",
+          "hash": "8141519628413733884",
+          "deps": [
+            "ui-virtual-scroll"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/layout/main-left-side-nav/main-left-side-nav.component.html",
+          "hash": "7111280764815776291"
+        },
+        {
+          "file": "apps/proxy/src/app/layout/main-left-side-nav/main-left-side-nav.component.scss",
+          "hash": "12296488572460595365"
+        },
+        {
+          "file": "apps/proxy/src/app/layout/main-left-side-nav/main-left-side-nav.component.ts",
+          "hash": "17355202043856980293",
+          "deps": [
+            "npm:@angular/core",
+            "ui-components-base-component"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/logs/log-details-side-dialog/log-details-side-dialog.component.html",
+          "hash": "1077460423475222385"
+        },
+        {
+          "file": "apps/proxy/src/app/logs/log-details-side-dialog/log-details-side-dialog.component.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "apps/proxy/src/app/logs/log-details-side-dialog/log-details-side-dialog.component.ts",
+          "hash": "15892139116475671768",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/material",
+            "models-logs-models",
+            "ui-components-base-component",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/logs/log/log.component.html",
+          "hash": "10710124831331077932"
+        },
+        {
+          "file": "apps/proxy/src/app/logs/log/log.component.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "apps/proxy/src/app/logs/log/log.component.ts",
+          "hash": "1809020414085185257",
+          "deps": [
+            "npm:@angular/core",
+            "ui-components-base-component",
+            "constant",
+            "npm:@angular/material",
+            "npm:rxjs",
+            "models-logs-models",
+            "models-root-models",
+            "npm:dayjs",
+            "npm:lodash-es",
+            "npm:@angular/forms",
+            "regex",
+            "custom-validator",
+            "npm:@ngrx/store"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/logs/log/logs.store.ts",
+          "hash": "15603142999569243858",
+          "deps": [
+            "models-root-models",
+            "ui-prime-ng-toast",
+            "models-logs-models",
+            "services-proxy-logs"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/logs/logs.module.ts",
+          "hash": "5147640268717439490",
+          "deps": [
+            "ui-components-search",
+            "ui-date-range-picker",
+            "services-proxy-logs",
+            "ui-no-record-found",
+            "directives-remove-character-directive",
+            "ui-mat-paginator-goto",
+            "ui-loader",
+            "ui-virtual-scroll"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/ngrx/actions/index.ts",
+          "hash": "9853564591496667852"
+        },
+        {
+          "file": "apps/proxy/src/app/ngrx/actions/root.action.ts",
+          "hash": "12608647350968329243",
+          "deps": [
+            "models-root-models"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/ngrx/effects/effects.module.ts",
+          "hash": "2544223305653077147",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@ngrx/effects"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/ngrx/effects/index.ts",
+          "hash": "4311229613417894025"
+        },
+        {
+          "file": "apps/proxy/src/app/ngrx/effects/root/index.ts",
+          "hash": "13935844303199082130"
+        },
+        {
+          "file": "apps/proxy/src/app/ngrx/effects/root/root.effect.ts",
+          "hash": "149358907844404001",
+          "deps": [
+            "services-proxy-root",
+            "models-root-models",
+            "ui-prime-ng-toast"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/ngrx/index.ts",
+          "hash": "10696444215079764937"
+        },
+        {
+          "file": "apps/proxy/src/app/ngrx/store/app.state.ts",
+          "hash": "9779870504908398009",
+          "deps": [
+            "npm:@ngrx/store"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/ngrx/store/index.ts",
+          "hash": "3193368419568056803"
+        },
+        {
+          "file": "apps/proxy/src/app/ngrx/store/reducer/root.reducer.ts",
+          "hash": "4026234039800886152",
+          "deps": [
+            "models-root-models",
+            "models-logs-models"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/ngrx/store/selectors/index.ts",
+          "hash": "15095007484614526705"
+        },
+        {
+          "file": "apps/proxy/src/app/ngrx/store/selectors/root.selector.ts",
+          "hash": "15634495963893837737",
+          "deps": [
+            "npm:@ngrx/store"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/public.module.ts",
+          "hash": "3821354869696397515",
+          "deps": [
+            "services-http-wrapper-no-auth"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/register/register.component.html",
+          "hash": "5668173538348807568"
+        },
+        {
+          "file": "apps/proxy/src/app/register/register.component.scss",
+          "hash": "4356610783759368518"
+        },
+        {
+          "file": "apps/proxy/src/app/register/register.component.ts",
+          "hash": "5776123136804185553",
+          "deps": [
+            "npm:@angular/core",
+            "ui-components-base-component",
+            "npm:@ngrx/store",
+            "npm:@angular/forms",
+            "regex",
+            "custom-validator",
+            "npm:rxjs",
+            "ui-prime-ng-toast",
+            "services-proxy-users",
+            "utils"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/register/register.module.ts",
+          "hash": "11009582086748058382",
+          "deps": [
+            "directives-mark-all-as-touched",
+            "services-proxy-users"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/registration/registration.component.ts",
+          "hash": "17442728284622076379",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "npm:rxjs",
+            "models-features-model",
+            "ui-prime-ng-toast"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/registration/registration.module.ts",
+          "hash": "17733181158325636740",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/users/management/management.component.html",
+          "hash": "12065323295583078069"
+        },
+        {
+          "file": "apps/proxy/src/app/users/management/management.component.scss",
+          "hash": "15696323108072667644"
+        },
+        {
+          "file": "apps/proxy/src/app/users/management/management.component.ts",
+          "hash": "929776149835246962",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:rxjs",
+            "models-features-model",
+            "models-root-models",
+            "ui-confirm-dialog"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/users/user/user.component.html",
+          "hash": "15661763339577070366"
+        },
+        {
+          "file": "apps/proxy/src/app/users/user/user.component.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "apps/proxy/src/app/users/user/user.component.ts",
+          "hash": "13070188479783199347",
+          "deps": [
+            "npm:@angular/core",
+            "ui-components-base-component",
+            "constant",
+            "npm:rxjs",
+            "models-root-models",
+            "npm:dayjs",
+            "npm:lodash-es",
+            "npm:@angular/material",
+            "models-users-model",
+            "npm:@angular/forms",
+            "models-features-model"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/users/user/user.store.ts",
+          "hash": "16966820538683992396",
+          "deps": [
+            "models-users-model",
+            "services-proxy-users",
+            "models-root-models",
+            "ui-prime-ng-toast",
+            "services-proxy-features",
+            "models-features-model"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/app/users/users.module.ts",
+          "hash": "17198145665008485417",
+          "deps": [
+            "ui-components-search",
+            "ui-date-range-picker",
+            "services-proxy-logs",
+            "ui-no-record-found",
+            "directives-remove-character-directive",
+            "ui-mat-paginator-goto",
+            "services-proxy-users",
+            "services-proxy-features",
+            "directives-skeleton",
+            "ui-confirm-dialog",
+            "ui-copy-button"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/assets/fonts/Inter-Black.ttf",
+          "hash": "5509091956937438089"
+        },
+        {
+          "file": "apps/proxy/src/assets/fonts/Inter-Bold.ttf",
+          "hash": "10644715919994621296"
+        },
+        {
+          "file": "apps/proxy/src/assets/fonts/Inter-ExtraBold.ttf",
+          "hash": "10359791341086969602"
+        },
+        {
+          "file": "apps/proxy/src/assets/fonts/Inter-ExtraLight.ttf",
+          "hash": "10105559701753318801"
+        },
+        {
+          "file": "apps/proxy/src/assets/fonts/Inter-Light.ttf",
+          "hash": "3113252211902841569"
+        },
+        {
+          "file": "apps/proxy/src/assets/fonts/Inter-Medium.ttf",
+          "hash": "10858019714219463142"
+        },
+        {
+          "file": "apps/proxy/src/assets/fonts/Inter-Regular.ttf",
+          "hash": "18351409176218132362"
+        },
+        {
+          "file": "apps/proxy/src/assets/fonts/Inter-SemiBold.ttf",
+          "hash": "694870079828686061"
+        },
+        {
+          "file": "apps/proxy/src/assets/fonts/Inter-Thin.ttf",
+          "hash": "5357428621467438875"
+        },
+        {
+          "file": "apps/proxy/src/assets/images/logos/google-logo.svg",
+          "hash": "4458409165409192958"
+        },
+        {
+          "file": "apps/proxy/src/assets/images/utility/no_records_graphic.png",
+          "hash": "654341226426688043"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/base/_dark-theme.scss",
+          "hash": "13830482661444486852"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/base/_default-variables.scss",
+          "hash": "1355261320906427224"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/base/_fonts.scss",
+          "hash": "17007578857991956588"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/base/_light-theme.scss",
+          "hash": "2050964169754519690"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/base/_reset.scss",
+          "hash": "17873439844283842966"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_animation.scss",
+          "hash": "177262876540688615"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_buttons.scss",
+          "hash": "6686906715611394165"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_card.scss",
+          "hash": "17345572846350414188"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_chart.scss",
+          "hash": "13541783824664455789"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_checkbox.scss",
+          "hash": "1373138774205879793"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_filters.scss",
+          "hash": "11601224122038547013"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_form-field.scss",
+          "hash": "1820350921592249472"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_icon.scss",
+          "hash": "5900806082309342236"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_loader.scss",
+          "hash": "13897185421960017313"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_mat-list.scss",
+          "hash": "5180880564273628058"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_menu.scss",
+          "hash": "15947847844003246762"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_modal.scss",
+          "hash": "9575072860764821375"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_pagination.scss",
+          "hash": "17958384940228372286"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_select-option.scss",
+          "hash": "15633262397699496666"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_side-dialog.scss",
+          "hash": "17475816935932642439"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_sidenav.scss",
+          "hash": "10328062932655076124"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_status.scss",
+          "hash": "7931430908704666372"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_stepper.scss",
+          "hash": "12397681317223786514"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_table.scss",
+          "hash": "2543661856221143686"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_tabs.scss",
+          "hash": "135717269721606305"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_text-style.scss",
+          "hash": "2507404167351589297"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/component/_toast.scss",
+          "hash": "13504013454035698169"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/layout/_display.scss",
+          "hash": "18436555139855348939"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/layout/_flex.scss",
+          "hash": "17990750305221686173"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/layout/_grid.scss",
+          "hash": "9384293119698839302"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/layout/_positions.scss",
+          "hash": "10890149622252303335"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/layout/_sizing.scss",
+          "hash": "15902899656883154041"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/layout/_spacing.scss",
+          "hash": "4009354260054601774"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/layout/_text.scss",
+          "hash": "18426435075185980209"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/theme/_default-theme.scss",
+          "hash": "3048375555036432729"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/theme/_theme-colors.scss",
+          "hash": "16884148058802900187"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/theme/_typography.scss",
+          "hash": "4961756349596355415"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/utils/_bg-colors.scss",
+          "hash": "8615912058644266345"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/utils/_common-classes.scss",
+          "hash": "1398579854009088857"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/utils/_placeholder.scss",
+          "hash": "6428565635011123622"
+        },
+        {
+          "file": "apps/proxy/src/assets/scss/utils/mixins/_common-utils.scss",
+          "hash": "15339189979408853439"
+        },
+        {
+          "file": "apps/proxy/src/assets/utils/intl-tel-input-custom.css",
+          "hash": "2079218629484521774"
+        },
+        {
+          "file": "apps/proxy/src/environments/env-variables.ts",
+          "hash": "5984580999915234348"
+        },
+        {
+          "file": "apps/proxy/src/environments/environment.prod.ts",
+          "hash": "18025946408775443933"
+        },
+        {
+          "file": "apps/proxy/src/environments/environment.stage.ts",
+          "hash": "498336545151347364"
+        },
+        {
+          "file": "apps/proxy/src/environments/environment.test.ts",
+          "hash": "12549420421421944566"
+        },
+        {
+          "file": "apps/proxy/src/environments/environment.ts",
+          "hash": "3350996212160391832"
+        },
+        {
+          "file": "apps/proxy/src/favicon.ico",
+          "hash": "9303420814833116677"
+        },
+        {
+          "file": "apps/proxy/src/index.html",
+          "hash": "10834558616807978845"
+        },
+        {
+          "file": "apps/proxy/src/main.ts",
+          "hash": "10712971423501430479",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser-dynamic"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/polyfills.ts",
+          "hash": "13952578668946952738",
+          "deps": [
+            "npm:zone.js"
+          ]
+        },
+        {
+          "file": "apps/proxy/src/styles.scss",
+          "hash": "823347476148055346"
+        },
+        {
+          "file": "apps/proxy/tsconfig.app.json",
+          "hash": "4666418566124035045"
+        },
+        {
+          "file": "apps/proxy/tsconfig.editor.json",
+          "hash": "17160379160801647573"
+        },
+        {
+          "file": "apps/proxy/tsconfig.json",
+          "hash": "18369188422741339042"
+        }
+      ],
+      "pipes-typeof": [
+        {
+          "file": "libs/pipes/typeof/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/pipes/typeof/README.md",
+          "hash": "11335266343819705917"
+        },
+        {
+          "file": "libs/pipes/typeof/project.json",
+          "hash": "3731678100736811788"
+        },
+        {
+          "file": "libs/pipes/typeof/src/index.ts",
+          "hash": "4074381181141968021"
+        },
+        {
+          "file": "libs/pipes/typeof/src/lib/pipes-typeof.module.ts",
+          "hash": "10816850019502889363",
+          "deps": [
+            "models-root-models"
+          ]
+        },
+        {
+          "file": "libs/pipes/typeof/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/pipes/typeof/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "services-proxy-auth": [
+        {
+          "file": "libs/services/proxy/auth/.eslintrc.json",
+          "hash": "6543255649485862907"
+        },
+        {
+          "file": "libs/services/proxy/auth/README.md",
+          "hash": "13855208270829002946"
+        },
+        {
+          "file": "libs/services/proxy/auth/project.json",
+          "hash": "9459232887390555837"
+        },
+        {
+          "file": "libs/services/proxy/auth/src/index.ts",
+          "hash": "13030439391395201674"
+        },
+        {
+          "file": "libs/services/proxy/auth/src/lib/services-proxy-auth.module.ts",
+          "hash": "4700525686463073180",
+          "deps": [
+            "models-root-models"
+          ]
+        },
+        {
+          "file": "libs/services/proxy/auth/tsconfig.json",
+          "hash": "8636678831130240728"
+        },
+        {
+          "file": "libs/services/proxy/auth/tsconfig.lib.json",
+          "hash": "4149867912996691340"
+        }
+      ],
+      "models-logs-models": [
+        {
+          "file": "libs/models/logs-models/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/models/logs-models/README.md",
+          "hash": "10385909306383445678"
+        },
+        {
+          "file": "libs/models/logs-models/project.json",
+          "hash": "3642774528198362821"
+        },
+        {
+          "file": "libs/models/logs-models/src/index.ts",
+          "hash": "13032719113175717450"
+        },
+        {
+          "file": "libs/models/logs-models/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/models/logs-models/tsconfig.lib.json",
+          "hash": "7431332473510325183"
+        }
+      ],
+      "ui-handle-domain": [
+        {
+          "file": "libs/ui/handle-domain/.eslintrc.json",
+          "hash": "1780713563645515302"
+        },
+        {
+          "file": "libs/ui/handle-domain/README.md",
+          "hash": "2260583985511071305"
+        },
+        {
+          "file": "libs/ui/handle-domain/jest.config.ts",
+          "hash": "18168772818692616429"
+        },
+        {
+          "file": "libs/ui/handle-domain/project.json",
+          "hash": "6195125032252915624"
+        },
+        {
+          "file": "libs/ui/handle-domain/src/index.ts",
+          "hash": "540465048892541925"
+        },
+        {
+          "file": "libs/ui/handle-domain/src/lib/handle-domain/handle-domain.ts",
+          "hash": "14494517982697107029",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/handle-domain/src/lib/handle-domain/utils.ts",
+          "hash": "305768962161081089"
+        },
+        {
+          "file": "libs/ui/handle-domain/src/lib/parser/public-suffix.js",
+          "hash": "2848904067095513444"
+        },
+        {
+          "file": "libs/ui/handle-domain/src/lib/rules.json",
+          "hash": "1095927125864951777"
+        },
+        {
+          "file": "libs/ui/handle-domain/src/lib/ui-handle-domain.module.ts",
+          "hash": "5542159287462225882",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "libs/ui/handle-domain/src/lib/updater.js",
+          "hash": "8027009007555808706"
+        },
+        {
+          "file": "libs/ui/handle-domain/tsconfig.json",
+          "hash": "10187831933615095447"
+        },
+        {
+          "file": "libs/ui/handle-domain/tsconfig.lib.json",
+          "hash": "2804241410501123865"
+        },
+        {
+          "file": "libs/ui/handle-domain/tsconfig.spec.json",
+          "hash": "13209188181456395838"
+        }
+      ],
+      "ui-angular-mentions": [
+        {
+          "file": "libs/ui/angular-mentions/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/ui/angular-mentions/README.md",
+          "hash": "12504928724317436442"
+        },
+        {
+          "file": "libs/ui/angular-mentions/project.json",
+          "hash": "15416291024269377883"
+        },
+        {
+          "file": "libs/ui/angular-mentions/src/index.ts",
+          "hash": "17702264355950078910"
+        },
+        {
+          "file": "libs/ui/angular-mentions/src/lib/caret-coords.ts",
+          "hash": "18029385114435774740"
+        },
+        {
+          "file": "libs/ui/angular-mentions/src/lib/index.ts",
+          "hash": "91977059608176623"
+        },
+        {
+          "file": "libs/ui/angular-mentions/src/lib/mention-config.ts",
+          "hash": "6198632682441221770"
+        },
+        {
+          "file": "libs/ui/angular-mentions/src/lib/mention-list.component.ts",
+          "hash": "9381880576635770736",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/angular-mentions/src/lib/mention-utils.ts",
+          "hash": "4937866293783174958"
+        },
+        {
+          "file": "libs/ui/angular-mentions/src/lib/mention.directive.ts",
+          "hash": "5063210289513982585",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/angular-mentions/src/lib/ui-angular-mentions.module.ts",
+          "hash": "11428860198259578236",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "libs/ui/angular-mentions/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/ui/angular-mentions/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "constant": [
+        {
+          "file": "libs/constant/.eslintrc.json",
+          "hash": "124239851292367500"
+        },
+        {
+          "file": "libs/constant/README.md",
+          "hash": "14966978207848527999"
+        },
+        {
+          "file": "libs/constant/jest.config.ts",
+          "hash": "1898130079525039320"
+        },
+        {
+          "file": "libs/constant/project.json",
+          "hash": "3896948566030203917"
+        },
+        {
+          "file": "libs/constant/src/drop-down.ts",
+          "hash": "15767818828011223875"
+        },
+        {
+          "file": "libs/constant/src/file-size/file-size.ts",
+          "hash": "12803249749420154673"
+        },
+        {
+          "file": "libs/constant/src/file-size/index.ts",
+          "hash": "152151198227377784"
+        },
+        {
+          "file": "libs/constant/src/index.ts",
+          "hash": "3544404088300965648",
+          "deps": [
+            "npm:rxjs",
+            "npm:@angular/cdk",
+            "npm:lodash-es"
+          ]
+        },
+        {
+          "file": "libs/constant/src/jitsi-calling.ts",
+          "hash": "13455959488105551845"
+        },
+        {
+          "file": "libs/constant/src/mat-icon.ts",
+          "hash": "2058432696408926528"
+        },
+        {
+          "file": "libs/constant/src/moment.ts",
+          "hash": "14855686389520164342"
+        },
+        {
+          "file": "libs/constant/src/permission-mapping.ts",
+          "hash": "9217940439598330456"
+        },
+        {
+          "file": "libs/constant/src/verification/index.ts",
+          "hash": "1748689600650196329"
+        },
+        {
+          "file": "libs/constant/src/verification/verification.ts",
+          "hash": "13944353086021752421"
+        },
+        {
+          "file": "libs/constant/tsconfig.json",
+          "hash": "4977303413632845571"
+        },
+        {
+          "file": "libs/constant/tsconfig.lib.json",
+          "hash": "14742894725035078065"
+        },
+        {
+          "file": "libs/constant/tsconfig.spec.json",
+          "hash": "14976685729441106628"
+        }
+      ],
+      "models-project-model": [
+        {
+          "file": "libs/models/project-model/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/models/project-model/README.md",
+          "hash": "1434173126816600975"
+        },
+        {
+          "file": "libs/models/project-model/project.json",
+          "hash": "15392791231988156497"
+        },
+        {
+          "file": "libs/models/project-model/src/index.ts",
+          "hash": "9724696074752691038",
+          "deps": [
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "libs/models/project-model/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/models/project-model/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "ui-virtual-scroll": [
+        {
+          "file": "libs/ui/virtual-scroll/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/ui/virtual-scroll/README.md",
+          "hash": "16223352886302540303"
+        },
+        {
+          "file": "libs/ui/virtual-scroll/jest.config.ts",
+          "hash": "3301361562086510823"
+        },
+        {
+          "file": "libs/ui/virtual-scroll/project.json",
+          "hash": "17884206278547945514"
+        },
+        {
+          "file": "libs/ui/virtual-scroll/src/index.ts",
+          "hash": "6858372650709630856"
+        },
+        {
+          "file": "libs/ui/virtual-scroll/src/lib/cdk-scroll/cdk-scroll.component.html",
+          "hash": "8438137344182185274"
+        },
+        {
+          "file": "libs/ui/virtual-scroll/src/lib/cdk-scroll/cdk-scroll.component.ts",
+          "hash": "2645709416714199849",
+          "deps": [
+            "npm:@angular/cdk",
+            "npm:@angular/core",
+            "npm:rxjs",
+            "constant"
+          ]
+        },
+        {
+          "file": "libs/ui/virtual-scroll/src/lib/cdk-scroll/cdk-scroll.module.ts",
+          "hash": "2194126138847472624",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/cdk"
+          ]
+        },
+        {
+          "file": "libs/ui/virtual-scroll/src/lib/ui-virtual-scroll.module.ts",
+          "hash": "8199871024617257466",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "libs/ui/virtual-scroll/tsconfig.json",
+          "hash": "11589942496601026805"
+        },
+        {
+          "file": "libs/ui/virtual-scroll/tsconfig.lib.json",
+          "hash": "391629339335190573"
+        },
+        {
+          "file": "libs/ui/virtual-scroll/tsconfig.spec.json",
+          "hash": "13209188181456395838"
+        }
+      ],
+      "services-http-wrapper-no-auth": [
+        {
+          "file": "libs/services/http-wrapper-no-auth/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/services/http-wrapper-no-auth/README.md",
+          "hash": "14091295352237914898"
+        },
+        {
+          "file": "libs/services/http-wrapper-no-auth/project.json",
+          "hash": "4241889063070858562"
+        },
+        {
+          "file": "libs/services/http-wrapper-no-auth/src/index.ts",
+          "hash": "2490693213601396536"
+        },
+        {
+          "file": "libs/services/http-wrapper-no-auth/src/lib/services-http-wrapper-no-auth.module.ts",
+          "hash": "8981497587787292590",
+          "deps": [
+            "models-root-models"
+          ]
+        },
+        {
+          "file": "libs/services/http-wrapper-no-auth/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/services/http-wrapper-no-auth/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "ui-components-search": [
+        {
+          "file": "libs/ui/search/.eslintrc.json",
+          "hash": "6543255649485862907"
+        },
+        {
+          "file": "libs/ui/search/README.md",
+          "hash": "10372868217663345562"
+        },
+        {
+          "file": "libs/ui/search/project.json",
+          "hash": "8389168091640217776"
+        },
+        {
+          "file": "libs/ui/search/src/index.ts",
+          "hash": "12723913492734957882"
+        },
+        {
+          "file": "libs/ui/search/src/lib/search/search.component.html",
+          "hash": "17616525953156032977"
+        },
+        {
+          "file": "libs/ui/search/src/lib/search/search.component.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "libs/ui/search/src/lib/search/search.component.ts",
+          "hash": "11153714801243284791",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "constant",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ui/search/src/lib/search/types.ts",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "libs/ui/search/src/lib/ui-components-search.module.ts",
+          "hash": "12788713377085720942",
+          "deps": [
+            "directives-remove-character-directive"
+          ]
+        },
+        {
+          "file": "libs/ui/search/tsconfig.json",
+          "hash": "8636678831130240728"
+        },
+        {
+          "file": "libs/ui/search/tsconfig.lib.json",
+          "hash": "4604750720703559097"
+        }
+      ],
+      "custom-validator": [
+        {
+          "file": "libs/custom-validator/.eslintrc.json",
+          "hash": "124239851292367500"
+        },
+        {
+          "file": "libs/custom-validator/README.md",
+          "hash": "2861038849390873984"
+        },
+        {
+          "file": "libs/custom-validator/jest.config.ts",
+          "hash": "135349297531351189"
+        },
+        {
+          "file": "libs/custom-validator/project.json",
+          "hash": "3714719337819584881"
+        },
+        {
+          "file": "libs/custom-validator/src/index.ts",
+          "hash": "16292670762399810493",
+          "deps": [
+            "regex",
+            "utils"
+          ]
+        },
+        {
+          "file": "libs/custom-validator/tsconfig.json",
+          "hash": "4977303413632845571"
+        },
+        {
+          "file": "libs/custom-validator/tsconfig.lib.json",
+          "hash": "14742894725035078065"
+        },
+        {
+          "file": "libs/custom-validator/tsconfig.spec.json",
+          "hash": "14976685729441106628"
+        }
+      ],
+      "pipes-chart-date-add": [
+        {
+          "file": "libs/pipes/chart-date-add/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/pipes/chart-date-add/README.md",
+          "hash": "8693408489962295233"
+        },
+        {
+          "file": "libs/pipes/chart-date-add/jest.config.ts",
+          "hash": "14989701636727692145"
+        },
+        {
+          "file": "libs/pipes/chart-date-add/project.json",
+          "hash": "13218466047457526991"
+        },
+        {
+          "file": "libs/pipes/chart-date-add/src/index.ts",
+          "hash": "10680524873553360796"
+        },
+        {
+          "file": "libs/pipes/chart-date-add/src/lib/pipes-chart-date-add.module.ts",
+          "hash": "10604937974192765446",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser",
+            "npm:dayjs"
+          ]
+        },
+        {
+          "file": "libs/pipes/chart-date-add/tsconfig.json",
+          "hash": "10187831933615095447"
+        },
+        {
+          "file": "libs/pipes/chart-date-add/tsconfig.lib.json",
+          "hash": "13252366829522396991"
+        },
+        {
+          "file": "libs/pipes/chart-date-add/tsconfig.spec.json",
+          "hash": "13209188181456395838"
+        }
+      ],
+      "urls-create-project-urls": [
+        {
+          "file": "libs/urls/create-project-urls/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/urls/create-project-urls/README.md",
+          "hash": "15533727909541580481"
+        },
+        {
+          "file": "libs/urls/create-project-urls/project.json",
+          "hash": "5426976699627551184"
+        },
+        {
+          "file": "libs/urls/create-project-urls/src/index.ts",
+          "hash": "18165563177094533807",
+          "deps": [
+            "service"
+          ]
+        },
+        {
+          "file": "libs/urls/create-project-urls/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/urls/create-project-urls/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "urls-users-urls": [
+        {
+          "file": "libs/urls/users-urls/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/urls/users-urls/README.md",
+          "hash": "6958108381775247449"
+        },
+        {
+          "file": "libs/urls/users-urls/project.json",
+          "hash": "8147512025150279396"
+        },
+        {
+          "file": "libs/urls/users-urls/src/index.ts",
+          "hash": "12160467056337499831",
+          "deps": [
+            "service"
+          ]
+        },
+        {
+          "file": "libs/urls/users-urls/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/urls/users-urls/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "urls-logs-urls": [
+        {
+          "file": "libs/urls/logs-urls/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/urls/logs-urls/README.md",
+          "hash": "17478595684577556441"
+        },
+        {
+          "file": "libs/urls/logs-urls/project.json",
+          "hash": "12385801734532387276"
+        },
+        {
+          "file": "libs/urls/logs-urls/src/index.ts",
+          "hash": "10355777889701413182",
+          "deps": [
+            "service"
+          ]
+        },
+        {
+          "file": "libs/urls/logs-urls/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/urls/logs-urls/tsconfig.lib.json",
+          "hash": "7431332473510325183"
+        }
+      ],
+      "services-proxy-users": [
+        {
+          "file": "libs/services/proxy/users/.eslintrc.json",
+          "hash": "6543255649485862907"
+        },
+        {
+          "file": "libs/services/proxy/users/README.md",
+          "hash": "5847790772751177738"
+        },
+        {
+          "file": "libs/services/proxy/users/project.json",
+          "hash": "13392472826800106418"
+        },
+        {
+          "file": "libs/services/proxy/users/src/index.ts",
+          "hash": "10439775447894226296"
+        },
+        {
+          "file": "libs/services/proxy/users/src/lib/services-proxy-users.module.ts",
+          "hash": "8104670863053011159",
+          "deps": [
+            "services-http-wrapper",
+            "services-http-wrapper-no-auth",
+            "models-root-models",
+            "models-users-model",
+            "urls-users-urls"
+          ]
+        },
+        {
+          "file": "libs/services/proxy/users/tsconfig.json",
+          "hash": "8636678831130240728"
+        },
+        {
+          "file": "libs/services/proxy/users/tsconfig.lib.json",
+          "hash": "4149867912996691340"
+        }
+      ],
+      "ui-player": [
+        {
+          "file": "libs/ui/player/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/ui/player/README.md",
+          "hash": "12881679843818240574"
+        },
+        {
+          "file": "libs/ui/player/jest.config.ts",
+          "hash": "4805020347933186100"
+        },
+        {
+          "file": "libs/ui/player/project.json",
+          "hash": "8477039397301782451"
+        },
+        {
+          "file": "libs/ui/player/src/index.ts",
+          "hash": "4294458914649880613"
+        },
+        {
+          "file": "libs/ui/player/src/lib/player/player.component.html",
+          "hash": "3275770717950464558"
+        },
+        {
+          "file": "libs/ui/player/src/lib/player/player.component.scss",
+          "hash": "14866860546331378975"
+        },
+        {
+          "file": "libs/ui/player/src/lib/player/player.component.ts",
+          "hash": "6669579988574112779",
+          "deps": [
+            "npm:@angular/core",
+            "npm:dayjs",
+            "npm:rxjs",
+            "npm:@angular/platform-browser",
+            "ui-prime-ng-toast"
+          ]
+        },
+        {
+          "file": "libs/ui/player/src/lib/ui-player.module.ts",
+          "hash": "10995480345139077726",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "libs/ui/player/tsconfig.json",
+          "hash": "10187831933615095447"
+        },
+        {
+          "file": "libs/ui/player/tsconfig.lib.json",
+          "hash": "10053221659975949909"
+        },
+        {
+          "file": "libs/ui/player/tsconfig.spec.json",
+          "hash": "13209188181456395838"
+        }
+      ],
+      "directives-mark-all-as-touched": [
+        {
+          "file": "libs/directives/mark-all-as-touched/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/directives/mark-all-as-touched/README.md",
+          "hash": "6231712733234244948"
+        },
+        {
+          "file": "libs/directives/mark-all-as-touched/project.json",
+          "hash": "7561759948875141519"
+        },
+        {
+          "file": "libs/directives/mark-all-as-touched/src/index.ts",
+          "hash": "1125678004317544700"
+        },
+        {
+          "file": "libs/directives/mark-all-as-touched/src/lib/directives-mark-all-as-touched.module.ts",
+          "hash": "606955502841006508",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "libs/directives/mark-all-as-touched/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/directives/mark-all-as-touched/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "services-http-wrapper": [
+        {
+          "file": "libs/services/http-wrapper/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/services/http-wrapper/README.md",
+          "hash": "4977841812644044410"
+        },
+        {
+          "file": "libs/services/http-wrapper/project.json",
+          "hash": "16126109468410875955"
+        },
+        {
+          "file": "libs/services/http-wrapper/src/index.ts",
+          "hash": "12335616522707307117"
+        },
+        {
+          "file": "libs/services/http-wrapper/src/lib/services-http-wrapper.module.ts",
+          "hash": "8238960542982487706",
+          "deps": [
+            "models-root-models",
+            "services-proxy-auth"
+          ]
+        },
+        {
+          "file": "libs/services/http-wrapper/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/services/http-wrapper/tsconfig.lib.json",
+          "hash": "7431332473510325183"
+        }
+      ],
+      "models-users-model": [
+        {
+          "file": "libs/models/users-model/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/models/users-model/README.md",
+          "hash": "7391324645485734854"
+        },
+        {
+          "file": "libs/models/users-model/project.json",
+          "hash": "16360323204476824855"
+        },
+        {
+          "file": "libs/models/users-model/src/index.ts",
+          "hash": "3100777055143316124"
+        },
+        {
+          "file": "libs/models/users-model/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/models/users-model/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "directives-auto-select-dropdown": [
+        {
+          "file": "libs/directives/auto-select-dropdown/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/directives/auto-select-dropdown/README.md",
+          "hash": "4808707187421820099"
+        },
+        {
+          "file": "libs/directives/auto-select-dropdown/project.json",
+          "hash": "4902658924604271604"
+        },
+        {
+          "file": "libs/directives/auto-select-dropdown/src/index.ts",
+          "hash": "15941393757313561007"
+        },
+        {
+          "file": "libs/directives/auto-select-dropdown/src/lib/auto-select-dropdown-directive.ts",
+          "hash": "14148117812641385344",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "libs/directives/auto-select-dropdown/src/lib/directives-auto-select-dropdown.module.ts",
+          "hash": "7627817598454417503",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "libs/directives/auto-select-dropdown/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/directives/auto-select-dropdown/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "utils": [
+        {
+          "file": "libs/utils/.eslintrc.json",
+          "hash": "124239851292367500"
+        },
+        {
+          "file": "libs/utils/README.md",
+          "hash": "7895454965472636336"
+        },
+        {
+          "file": "libs/utils/project.json",
+          "hash": "17600648717485909475"
+        },
+        {
+          "file": "libs/utils/src/convert-to-utc.ts",
+          "hash": "13956994335360078803"
+        },
+        {
+          "file": "libs/utils/src/crypto.ts",
+          "hash": "11832916394999863820",
+          "deps": [
+            "npm:crypto-js"
+          ]
+        },
+        {
+          "file": "libs/utils/src/email-variable-check.ts",
+          "hash": "12131521985812715610",
+          "deps": [
+            "regex"
+          ]
+        },
+        {
+          "file": "libs/utils/src/index.ts",
+          "hash": "4610651648287566892",
+          "deps": [
+            "ui-handle-domain"
+          ]
+        },
+        {
+          "file": "libs/utils/src/intl-phone-lib.class.ts",
+          "hash": "7016094130308454153",
+          "deps": [
+            "constant",
+            "regex"
+          ]
+        },
+        {
+          "file": "libs/utils/src/rename-key-recursively.ts",
+          "hash": "10543519612023697192"
+        },
+        {
+          "file": "libs/utils/tsconfig.json",
+          "hash": "3823412380274099115"
+        },
+        {
+          "file": "libs/utils/tsconfig.lib.json",
+          "hash": "14635770009198878057"
+        }
+      ],
+      "urls-features-url": [
+        {
+          "file": "libs/urls/features-url/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/urls/features-url/README.md",
+          "hash": "3336291811861979767"
+        },
+        {
+          "file": "libs/urls/features-url/project.json",
+          "hash": "8623587394975696475"
+        },
+        {
+          "file": "libs/urls/features-url/src/index.ts",
+          "hash": "6691363102422996911",
+          "deps": [
+            "service"
+          ]
+        },
+        {
+          "file": "libs/urls/features-url/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/urls/features-url/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "service": [
+        {
+          "file": "libs/service/README.md",
+          "hash": "2672681639680675415"
+        },
+        {
+          "file": "libs/service/jest.config.ts",
+          "hash": "16823691423303366330"
+        },
+        {
+          "file": "libs/service/project.json",
+          "hash": "672791649680124136"
+        },
+        {
+          "file": "libs/service/src/index.ts",
+          "hash": "5037053551110748464"
+        },
+        {
+          "file": "libs/service/src/lib/custom.encoder.ts",
+          "hash": "818960814030252457",
+          "deps": [
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "libs/service/src/lib/service.module.ts",
+          "hash": "15874764097152426964",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "libs/service/src/lib/version-check/index.ts",
+          "hash": "1442995208031899271"
+        },
+        {
+          "file": "libs/service/src/lib/version-check/version-check.module.ts",
+          "hash": "4104113269659129434",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/service/src/lib/version-check/version-check.service.ts",
+          "hash": "441687418252695696",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/service/tsconfig.json",
+          "hash": "3209181277267691329"
+        },
+        {
+          "file": "libs/service/tsconfig.lib.json",
+          "hash": "839257404900340487"
+        },
+        {
+          "file": "libs/service/tsconfig.spec.json",
+          "hash": "14976685729441106628"
+        },
+        {
+          "file": "libs/service/tslint.json",
+          "hash": "1545134548723243874"
+        }
+      ],
+      "urls-root-urls": [
+        {
+          "file": "libs/urls/root-urls/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/urls/root-urls/README.md",
+          "hash": "13969253527271964127"
+        },
+        {
+          "file": "libs/urls/root-urls/project.json",
+          "hash": "3658176568994302289"
+        },
+        {
+          "file": "libs/urls/root-urls/src/index.ts",
+          "hash": "5965909912509375167",
+          "deps": [
+            "service"
+          ]
+        },
+        {
+          "file": "libs/urls/root-urls/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/urls/root-urls/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "ui-prime-ng-toast": [
+        {
+          "file": "libs/ui/prime-ng-toast/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/ui/prime-ng-toast/README.md",
+          "hash": "13888943250812577002"
+        },
+        {
+          "file": "libs/ui/prime-ng-toast/project.json",
+          "hash": "8670143661727901877"
+        },
+        {
+          "file": "libs/ui/prime-ng-toast/src/index.ts",
+          "hash": "11237955517809267495"
+        },
+        {
+          "file": "libs/ui/prime-ng-toast/src/lib/prime-ng-toast.service.ts",
+          "hash": "8682334352706304429",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ui/prime-ng-toast/src/lib/prime-ng-toast/prime-ng-toast.component.html",
+          "hash": "1487475261423765124"
+        },
+        {
+          "file": "libs/ui/prime-ng-toast/src/lib/prime-ng-toast/prime-ng-toast.component.scss",
+          "hash": "9047444146526625507"
+        },
+        {
+          "file": "libs/ui/prime-ng-toast/src/lib/prime-ng-toast/prime-ng-toast.component.ts",
+          "hash": "10321381480111512008",
+          "deps": [
+            "npm:@angular/core",
+            "models-root-models",
+            "ui-components-base-component",
+            "npm:lodash-es",
+            "npm:primeng",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ui/prime-ng-toast/src/lib/ui-prime-ng-toast.module.ts",
+          "hash": "11515965192321849453",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:primeng",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "libs/ui/prime-ng-toast/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/ui/prime-ng-toast/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "services-interceptor-error-interceptor": [
+        {
+          "file": "libs/services/interceptor/error-interceptor/.eslintrc.json",
+          "hash": "6543255649485862907"
+        },
+        {
+          "file": "libs/services/interceptor/error-interceptor/README.md",
+          "hash": "1979486663717533579"
+        },
+        {
+          "file": "libs/services/interceptor/error-interceptor/project.json",
+          "hash": "18213043115565771281"
+        },
+        {
+          "file": "libs/services/interceptor/error-interceptor/src/index.ts",
+          "hash": "935740948050773611"
+        },
+        {
+          "file": "libs/services/interceptor/error-interceptor/src/lib/services-interceptor-error-interceptor.module.ts",
+          "hash": "17401387268902380638",
+          "deps": [
+            "ui-prime-ng-toast"
+          ]
+        },
+        {
+          "file": "libs/services/interceptor/error-interceptor/tsconfig.json",
+          "hash": "8636678831130240728"
+        },
+        {
+          "file": "libs/services/interceptor/error-interceptor/tsconfig.lib.json",
+          "hash": "4604750720703559097"
+        }
+      ],
+      "pipes-time-token-pipe": [
+        {
+          "file": "libs/pipes/time-token-pipe/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/pipes/time-token-pipe/README.md",
+          "hash": "17559739156616374556"
+        },
+        {
+          "file": "libs/pipes/time-token-pipe/jest.config.ts",
+          "hash": "18412318317969800222"
+        },
+        {
+          "file": "libs/pipes/time-token-pipe/project.json",
+          "hash": "967550047953103967"
+        },
+        {
+          "file": "libs/pipes/time-token-pipe/src/index.ts",
+          "hash": "9422470608766352314"
+        },
+        {
+          "file": "libs/pipes/time-token-pipe/src/lib/pipes-time-token-pipe.module.ts",
+          "hash": "2415131133068908124",
+          "deps": [
+            "utils"
+          ]
+        },
+        {
+          "file": "libs/pipes/time-token-pipe/tsconfig.json",
+          "hash": "10187831933615095447"
+        },
+        {
+          "file": "libs/pipes/time-token-pipe/tsconfig.lib.json",
+          "hash": "13252366829522396991"
+        },
+        {
+          "file": "libs/pipes/time-token-pipe/tsconfig.spec.json",
+          "hash": "13209188181456395838"
+        }
+      ],
+      "services-login": [
+        {
+          "file": "libs/services/login/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/services/login/README.md",
+          "hash": "13582019632536709920"
+        },
+        {
+          "file": "libs/services/login/project.json",
+          "hash": "1601265039011902559"
+        },
+        {
+          "file": "libs/services/login/src/index.ts",
+          "hash": "16933338032304926217"
+        },
+        {
+          "file": "libs/services/login/src/lib/services-login.module.ts",
+          "hash": "15310435494538904975",
+          "deps": [
+            "models-root-models",
+            "services-proxy-auth",
+            "services-http-wrapper"
+          ]
+        },
+        {
+          "file": "libs/services/login/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/services/login/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "ui-loader": [
+        {
+          "file": "libs/ui/loader/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/ui/loader/README.md",
+          "hash": "157049895900544172"
+        },
+        {
+          "file": "libs/ui/loader/jest.config.ts",
+          "hash": "13593733147951951862"
+        },
+        {
+          "file": "libs/ui/loader/project.json",
+          "hash": "4658933000722093138"
+        },
+        {
+          "file": "libs/ui/loader/src/index.ts",
+          "hash": "15907139659119185180"
+        },
+        {
+          "file": "libs/ui/loader/src/lib/loader.component.ts",
+          "hash": "3357789562021485046",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/loader/src/lib/ui-loader.module.ts",
+          "hash": "12329146223653128099",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "libs/ui/loader/tsconfig.json",
+          "hash": "11589942496601026805"
+        },
+        {
+          "file": "libs/ui/loader/tsconfig.lib.json",
+          "hash": "391629339335190573"
+        },
+        {
+          "file": "libs/ui/loader/tsconfig.spec.json",
+          "hash": "13209188181456395838"
+        }
+      ],
+      "ui-confirm-dialog": [
+        {
+          "file": "libs/ui/confirm-dialog/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/ui/confirm-dialog/README.md",
+          "hash": "1593180391185017351"
+        },
+        {
+          "file": "libs/ui/confirm-dialog/project.json",
+          "hash": "4630321205628399009"
+        },
+        {
+          "file": "libs/ui/confirm-dialog/src/index.ts",
+          "hash": "11637600367217271187"
+        },
+        {
+          "file": "libs/ui/confirm-dialog/src/lib/confirm-dialog/confirm-dialog.component.html",
+          "hash": "12882993303877189450"
+        },
+        {
+          "file": "libs/ui/confirm-dialog/src/lib/confirm-dialog/confirm-dialog.component.ts",
+          "hash": "17757659484912567378",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "libs/ui/confirm-dialog/src/lib/ui-confirm-dialog.module.ts",
+          "hash": "3856405329239722396",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/material",
+            "npm:@angular/cdk"
+          ]
+        },
+        {
+          "file": "libs/ui/confirm-dialog/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/ui/confirm-dialog/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "ui-mat-paginator-goto": [
+        {
+          "file": "libs/ui/mat-paginator-goto/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/ui/mat-paginator-goto/README.md",
+          "hash": "5443006291762930217"
+        },
+        {
+          "file": "libs/ui/mat-paginator-goto/project.json",
+          "hash": "4891223587053656499"
+        },
+        {
+          "file": "libs/ui/mat-paginator-goto/src/index.ts",
+          "hash": "558568002259895008"
+        },
+        {
+          "file": "libs/ui/mat-paginator-goto/src/lib/mat-paginator-goto/mat-paginator-goto.component.html",
+          "hash": "6641538320449296347"
+        },
+        {
+          "file": "libs/ui/mat-paginator-goto/src/lib/mat-paginator-goto/mat-paginator-goto.component.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "libs/ui/mat-paginator-goto/src/lib/mat-paginator-goto/mat-paginator-goto.component.ts",
+          "hash": "6178527892691540997",
+          "deps": [
+            "npm:@angular/cdk",
+            "npm:@angular/core",
+            "npm:@angular/material",
+            "constant"
+          ]
+        },
+        {
+          "file": "libs/ui/mat-paginator-goto/src/lib/ui-mat-paginator-goto.module.ts",
+          "hash": "17062217588452447555",
+          "deps": [
+            "npm:@angular/cdk",
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "libs/ui/mat-paginator-goto/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/ui/mat-paginator-goto/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "models-features-model": [
+        {
+          "file": "libs/models/features-model/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/models/features-model/README.md",
+          "hash": "14464459439012053914"
+        },
+        {
+          "file": "libs/models/features-model/project.json",
+          "hash": "13257200895694638275"
+        },
+        {
+          "file": "libs/models/features-model/src/index.ts",
+          "hash": "13937845759732241661"
+        },
+        {
+          "file": "libs/models/features-model/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/models/features-model/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "regex": [
+        {
+          "file": "libs/regex/.eslintrc.json",
+          "hash": "124239851292367500"
+        },
+        {
+          "file": "libs/regex/README.md",
+          "hash": "11029690098981733029"
+        },
+        {
+          "file": "libs/regex/jest.config.ts",
+          "hash": "14273274601453793617"
+        },
+        {
+          "file": "libs/regex/project.json",
+          "hash": "2929494117555329571"
+        },
+        {
+          "file": "libs/regex/src/index.ts",
+          "hash": "11370280995104262924"
+        },
+        {
+          "file": "libs/regex/tsconfig.json",
+          "hash": "4041483701269408600"
+        },
+        {
+          "file": "libs/regex/tsconfig.lib.json",
+          "hash": "14742894725035078065"
+        },
+        {
+          "file": "libs/regex/tsconfig.spec.json",
+          "hash": "14976685729441106628"
+        }
+      ],
+      "ui-components-base-component": [
+        {
+          "file": "libs/ui/base-component/.eslintrc.json",
+          "hash": "6543255649485862907"
+        },
+        {
+          "file": "libs/ui/base-component/README.md",
+          "hash": "14768790588306129351"
+        },
+        {
+          "file": "libs/ui/base-component/project.json",
+          "hash": "18224064432823493116"
+        },
+        {
+          "file": "libs/ui/base-component/src/index.ts",
+          "hash": "12450930612358844535"
+        },
+        {
+          "file": "libs/ui/base-component/src/lib/base-component/base.component.ts",
+          "hash": "9931307198830272376",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs",
+            "npm:@angular/forms",
+            "regex",
+            "npm:@angular/common",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "libs/ui/base-component/tsconfig.json",
+          "hash": "8636678831130240728"
+        },
+        {
+          "file": "libs/ui/base-component/tsconfig.lib.json",
+          "hash": "4604750720703559097"
+        }
+      ],
+      "services-proxy-features": [
+        {
+          "file": "libs/services/proxy/features/.eslintrc.json",
+          "hash": "6543255649485862907"
+        },
+        {
+          "file": "libs/services/proxy/features/README.md",
+          "hash": "5689142965372515978"
+        },
+        {
+          "file": "libs/services/proxy/features/project.json",
+          "hash": "4950476752533790810"
+        },
+        {
+          "file": "libs/services/proxy/features/src/index.ts",
+          "hash": "12174918675455204185"
+        },
+        {
+          "file": "libs/services/proxy/features/src/lib/services-proxy-features.module.ts",
+          "hash": "3491534315797907189",
+          "deps": [
+            "services-http-wrapper",
+            "models-root-models",
+            "models-features-model",
+            "urls-features-url"
+          ]
+        },
+        {
+          "file": "libs/services/proxy/features/tsconfig.json",
+          "hash": "8636678831130240728"
+        },
+        {
+          "file": "libs/services/proxy/features/tsconfig.lib.json",
+          "hash": "4149867912996691340"
+        }
+      ],
+      "services-proxy-root": [
+        {
+          "file": "libs/services/proxy/root/.eslintrc.json",
+          "hash": "6543255649485862907"
+        },
+        {
+          "file": "libs/services/proxy/root/README.md",
+          "hash": "291106448486488842"
+        },
+        {
+          "file": "libs/services/proxy/root/project.json",
+          "hash": "5406956561191412276"
+        },
+        {
+          "file": "libs/services/proxy/root/src/index.ts",
+          "hash": "647368422996414025"
+        },
+        {
+          "file": "libs/services/proxy/root/src/lib/services-proxy-root.module.ts",
+          "hash": "1357521717134308368",
+          "deps": [
+            "models-root-models",
+            "services-http-wrapper",
+            "urls-root-urls",
+            "models-logs-models"
+          ]
+        },
+        {
+          "file": "libs/services/proxy/root/tsconfig.json",
+          "hash": "8636678831130240728"
+        },
+        {
+          "file": "libs/services/proxy/root/tsconfig.lib.json",
+          "hash": "4149867912996691340"
+        }
+      ],
+      "ui-no-record-found": [
+        {
+          "file": "libs/ui/no-record-found/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/ui/no-record-found/README.md",
+          "hash": "11889249976031867360"
+        },
+        {
+          "file": "libs/ui/no-record-found/jest.config.ts",
+          "hash": "6258549016215556322"
+        },
+        {
+          "file": "libs/ui/no-record-found/project.json",
+          "hash": "17843853899004017922"
+        },
+        {
+          "file": "libs/ui/no-record-found/src/index.ts",
+          "hash": "2230000546549350482"
+        },
+        {
+          "file": "libs/ui/no-record-found/src/lib/no-record-found.component.html",
+          "hash": "10258628933601595053"
+        },
+        {
+          "file": "libs/ui/no-record-found/src/lib/no-record-found.component.scss",
+          "hash": "13748715917786700969"
+        },
+        {
+          "file": "libs/ui/no-record-found/src/lib/no-record-found.component.ts",
+          "hash": "8300940534605757245",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ui/no-record-found/src/lib/ui-no-record-found.module.ts",
+          "hash": "16669895358153558034",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "libs/ui/no-record-found/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/ui/no-record-found/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        },
+        {
+          "file": "libs/ui/no-record-found/tsconfig.spec.json",
+          "hash": "13209188181456395838"
+        }
+      ],
+      "ui-date-range-picker": [
+        {
+          "file": "libs/ui/date-range-picker/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/ui/date-range-picker/README.md",
+          "hash": "17981003293600478264"
+        },
+        {
+          "file": "libs/ui/date-range-picker/jest.config.ts",
+          "hash": "14009989770480661195"
+        },
+        {
+          "file": "libs/ui/date-range-picker/project.json",
+          "hash": "4822200132278255983"
+        },
+        {
+          "file": "libs/ui/date-range-picker/src/index.ts",
+          "hash": "17573269326563344347"
+        },
+        {
+          "file": "libs/ui/date-range-picker/src/lib/date-range-picker/date-range-picker.component.html",
+          "hash": "7042208389357233723"
+        },
+        {
+          "file": "libs/ui/date-range-picker/src/lib/date-range-picker/date-range-picker.component.scss",
+          "hash": "9194924062451875959"
+        },
+        {
+          "file": "libs/ui/date-range-picker/src/lib/date-range-picker/date-range-picker.component.ts",
+          "hash": "16942730490232242217",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "constant",
+            "regex",
+            "npm:dayjs",
+            "npm:lodash-es",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ui/date-range-picker/src/lib/ui-date-range-picker.module.ts",
+          "hash": "7050788234019886652",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "libs/ui/date-range-picker/tsconfig.json",
+          "hash": "10187831933615095447"
+        },
+        {
+          "file": "libs/ui/date-range-picker/tsconfig.lib.json",
+          "hash": "391629339335190573"
+        },
+        {
+          "file": "libs/ui/date-range-picker/tsconfig.spec.json",
+          "hash": "13209188181456395838"
+        }
+      ],
+      "proxy-auth": [
+        {
+          "file": "apps/proxy-auth/.eslintrc.json",
+          "hash": "124239851292367500"
+        },
+        {
+          "file": "apps/proxy-auth/build-elements.js",
+          "hash": "4719601639483260012",
+          "deps": [
+            "npm:fs-extra",
+            "npm:concat"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/project.json",
+          "hash": "8658590995027048384"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/app.component.html",
+          "hash": "16407321470586107624"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/app.component.scss",
+          "hash": "8609104980323632376"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/app.component.ts",
+          "hash": "380813819348435584",
+          "deps": [
+            "npm:@angular/core",
+            "ui-components-base-component"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/app.module.ts",
+          "hash": "14553940548715550043",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser",
+            "npm:@ngrx/store-devtools",
+            "npm:ng-hcaptcha"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/element.module.ts",
+          "hash": "10686345540544716629",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/elements",
+            "npm:@angular/platform-browser",
+            "npm:lodash-es",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/index.ts",
+          "hash": "2962347870841807381"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/login/login.component.html",
+          "hash": "5120228259591479130"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/login/login.component.scss",
+          "hash": "9124631827068632576"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/login/login.component.ts",
+          "hash": "9602364769059963992",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs",
+            "npm:@ngrx/store",
+            "ui-components-base-component",
+            "models-features-model",
+            "npm:@angular/forms",
+            "regex",
+            "custom-validator",
+            "constant",
+            "npm:ng-hcaptcha"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/login/login.store.ts",
+          "hash": "12253132439664846451",
+          "deps": [
+            "ui-prime-ng-toast",
+            "models-root-models"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/register/register.component.html",
+          "hash": "10590093739949222937"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/register/register.component.scss",
+          "hash": "18334666347446046805"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/register/register.component.ts",
+          "hash": "19000420240839147",
+          "deps": [
+            "npm:lodash-es",
+            "npm:@angular/core",
+            "ui-components-base-component",
+            "npm:@ngrx/store",
+            "utils",
+            "npm:@angular/forms",
+            "regex",
+            "custom-validator",
+            "models-root-models",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/send-otp-center/send-otp-center.component.html",
+          "hash": "10599793701754183717"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/send-otp-center/send-otp-center.component.scss",
+          "hash": "100543087097045164"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/send-otp-center/send-otp-center.component.ts",
+          "hash": "7358104364215173930",
+          "deps": [
+            "npm:@angular/core",
+            "npm:ng-hcaptcha",
+            "npm:@angular/forms",
+            "npm:@ngrx/store",
+            "custom-validator",
+            "ui-components-base-component",
+            "npm:rxjs",
+            "npm:lodash-es",
+            "regex",
+            "utils",
+            "constant",
+            "models-features-model"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/subscription-center/subscription-center.component.html",
+          "hash": "14365539723067273663"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/subscription-center/subscription-center.component.scss",
+          "hash": "4856533928478154540"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/component/subscription-center/subscription-center.component.ts",
+          "hash": "9261539633812558696",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@ngrx/store",
+            "ui-components-base-component",
+            "npm:rxjs",
+            "npm:lodash-es",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/index.ts",
+          "hash": "2361580292357705546"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/model/otp.ts",
+          "hash": "4217649905027184647"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/organization-details/organization-details.component.html",
+          "hash": "2861511475176290586"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/organization-details/organization-details.component.scss",
+          "hash": "1066593984695944479"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/organization-details/organization-details.component.ts",
+          "hash": "13229837195683289776",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "ui-components-base-component",
+            "npm:rxjs",
+            "npm:@angular/material",
+            "regex"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/otp.module.ts",
+          "hash": "2117055396325800097",
+          "deps": [
+            "models-root-models",
+            "directives-remove-character-directive",
+            "services-http-wrapper-no-auth",
+            "directives-mark-all-as-touched",
+            "ui-loader",
+            "ui-confirm-dialog"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/send-otp/send-otp.component.html",
+          "hash": "10482654137885039139"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss",
+          "hash": "8785819123722232274"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/send-otp/send-otp.component.ts",
+          "hash": "10967912909244860152",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "constant",
+            "ui-components-base-component",
+            "npm:@ngrx/store",
+            "npm:lodash-es",
+            "npm:rxjs",
+            "npm:@angular/material",
+            "models-features-model"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/service/otp-utility.service.ts",
+          "hash": "4914858805636019802",
+          "deps": [
+            "npm:@angular/core",
+            "npm:crypto-js"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/service/otp-widget.service.ts",
+          "hash": "5607493033919801270",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/service/otp.service.ts",
+          "hash": "13718010180543093885",
+          "deps": [
+            "models-root-models",
+            "services-http-wrapper-no-auth"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/service/urls/otp-urls.ts",
+          "hash": "18143123172880378261",
+          "deps": [
+            "service"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/store/actions/index.ts",
+          "hash": "15722205448066919621"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/store/actions/otp.action.ts",
+          "hash": "6793647830106622479",
+          "deps": [
+            "npm:@ngrx/store"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/store/app.state.ts",
+          "hash": "13344460458727446684",
+          "deps": [
+            "npm:@ngrx/store"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/store/effects/index.ts",
+          "hash": "1611095516327385663"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/store/effects/otp.effects.ts",
+          "hash": "4784777245669650399",
+          "deps": [
+            "models-root-models"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/store/reducers/otp.reducer.ts",
+          "hash": "18090312378314261674",
+          "deps": [
+            "npm:@ngrx/store",
+            "npm:lodash-es"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/store/selectors/index.ts",
+          "hash": "18169501812487654079"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/store/selectors/otp.selector.ts",
+          "hash": "10292446309495659440",
+          "deps": [
+            "npm:@ngrx/store"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/user-management/user-management.component.html",
+          "hash": "14617512748481921925"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/user-management/user-management.component.scss",
+          "hash": "10224407335668353979"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/user-management/user-management.component.ts",
+          "hash": "15772033918977771563",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/material",
+            "npm:@ngrx/store",
+            "ui-components-base-component",
+            "npm:rxjs",
+            "npm:lodash-es",
+            "ui-confirm-dialog"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/user-profile/user-dialog/user-dialog.component.html",
+          "hash": "13769739097403369913"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/user-profile/user-dialog/user-dialog.component.scss",
+          "hash": "5061016686432372135"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/user-profile/user-dialog/user-dialog.component.ts",
+          "hash": "6907031409096989496",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/material",
+            "npm:@ngrx/store",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/user-profile/user-dialog/user-dialog.module.ts",
+          "hash": "8941385232937990726",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/user-profile/user-profile.component.html",
+          "hash": "6877873341426245303"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/user-profile/user-profile.component.scss",
+          "hash": "15242029600386638246"
+        },
+        {
+          "file": "apps/proxy-auth/src/app/otp/user-profile/user-profile.component.ts",
+          "hash": "14366443747286763500",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:rxjs",
+            "npm:@ngrx/store",
+            "ui-components-base-component",
+            "npm:lodash-es",
+            "npm:@angular/cdk",
+            "npm:@angular/material",
+            "regex"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/app/shadow-dom-overlay-container.ts",
+          "hash": "14977433358023457577",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/cdk"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/assets/.gitkeep",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "apps/proxy-auth/src/assets/scss/component/_form-field.scss",
+          "hash": "1755139006900112241"
+        },
+        {
+          "file": "apps/proxy-auth/src/assets/scss/component/_tabs.scss",
+          "hash": "13926466825785442784"
+        },
+        {
+          "file": "apps/proxy-auth/src/assets/scss/layout/_display.scss",
+          "hash": "17072225693420317459"
+        },
+        {
+          "file": "apps/proxy-auth/src/assets/scss/layout/_positions.scss",
+          "hash": "15581858931426280306"
+        },
+        {
+          "file": "apps/proxy-auth/src/assets/scss/layout/_spacing.scss",
+          "hash": "4009354260054601774"
+        },
+        {
+          "file": "apps/proxy-auth/src/environments/env-variables.ts",
+          "hash": "1410973080228836949"
+        },
+        {
+          "file": "apps/proxy-auth/src/environments/environment.prod.ts",
+          "hash": "401300144006515826"
+        },
+        {
+          "file": "apps/proxy-auth/src/environments/environment.stage.ts",
+          "hash": "401300144006515826"
+        },
+        {
+          "file": "apps/proxy-auth/src/environments/environment.test.ts",
+          "hash": "13358864951222920831"
+        },
+        {
+          "file": "apps/proxy-auth/src/environments/environment.ts",
+          "hash": "18011911875241737482"
+        },
+        {
+          "file": "apps/proxy-auth/src/favicon.ico",
+          "hash": "9303420814833116677"
+        },
+        {
+          "file": "apps/proxy-auth/src/index.html",
+          "hash": "14612023533340991273"
+        },
+        {
+          "file": "apps/proxy-auth/src/intl.scss",
+          "hash": "3039495669588317357"
+        },
+        {
+          "file": "apps/proxy-auth/src/main.element.ts",
+          "hash": "13789007653891377698",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser-dynamic",
+            "npm:zone.js",
+            "npm:@webcomponents/custom-elements"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/main.ts",
+          "hash": "10712971423501430479",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser-dynamic"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/otp-global.scss",
+          "hash": "339173624512556889"
+        },
+        {
+          "file": "apps/proxy-auth/src/polyfills.element.ts",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "apps/proxy-auth/src/polyfills.ts",
+          "hash": "3930002986729850177",
+          "deps": [
+            "npm:zone.js"
+          ]
+        },
+        {
+          "file": "apps/proxy-auth/src/styles.scss",
+          "hash": "12768945909872501050"
+        },
+        {
+          "file": "apps/proxy-auth/tsconfig.app.json",
+          "hash": "4666418566124035045"
+        },
+        {
+          "file": "apps/proxy-auth/tsconfig.editor.json",
+          "hash": "17160379160801647573"
+        },
+        {
+          "file": "apps/proxy-auth/tsconfig.element.json",
+          "hash": "9214366951843766444"
+        },
+        {
+          "file": "apps/proxy-auth/tsconfig.json",
+          "hash": "11328929610102352648"
+        },
+        {
+          "file": "apps/proxy-auth/webpack.config.js",
+          "hash": "11614454713504431674",
+          "deps": [
+            "npm:webpack",
+            "npm:dotenv"
+          ]
+        }
+      ],
+      "pipes-replace": [
+        {
+          "file": "libs/pipes/replace/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/pipes/replace/README.md",
+          "hash": "5336694404344121494"
+        },
+        {
+          "file": "libs/pipes/replace/project.json",
+          "hash": "14903826227613616773"
+        },
+        {
+          "file": "libs/pipes/replace/src/index.ts",
+          "hash": "16437866202367805037"
+        },
+        {
+          "file": "libs/pipes/replace/src/lib/pipes-replace.module.ts",
+          "hash": "5342583391310131378",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "libs/pipes/replace/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/pipes/replace/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ],
+      "ui-copy-button": [
+        {
+          "file": "libs/ui/copy-button/.eslintrc.json",
+          "hash": "6157530135887630736"
+        },
+        {
+          "file": "libs/ui/copy-button/README.md",
+          "hash": "2188309001732676766"
+        },
+        {
+          "file": "libs/ui/copy-button/project.json",
+          "hash": "818432872065129301"
+        },
+        {
+          "file": "libs/ui/copy-button/src/index.ts",
+          "hash": "10706514278964758407"
+        },
+        {
+          "file": "libs/ui/copy-button/src/lib/ui-copy-button.module.ts",
+          "hash": "7762260462697732214",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/common",
+            "npm:@angular/material",
+            "npm:@angular/cdk",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ui/copy-button/tsconfig.json",
+          "hash": "17857888602898328738"
+        },
+        {
+          "file": "libs/ui/copy-button/tsconfig.lib.json",
+          "hash": "16782682835958434805"
+        }
+      ]
+    }
+  }
+}

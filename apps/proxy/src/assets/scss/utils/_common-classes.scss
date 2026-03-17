@@ -32,10 +32,10 @@
     color: var(--color-common-green) !important;
 }
 .text-danger {
-    color: mat.get-color-from-palette($warn) !important;
+    color: mat.m2-get-color-from-palette($warn) !important;
 }
 .text-primary {
-    color: mat.get-color-from-palette($primary) !important;
+    color: mat.m2-get-color-from-palette($primary) !important;
 }
 .mat-error {
     font-size: 12px;

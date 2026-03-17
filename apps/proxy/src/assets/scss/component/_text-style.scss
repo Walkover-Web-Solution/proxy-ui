@@ -41,7 +41,7 @@
     color: var(--color-short-url-primary);
 }
 .text-danger {
-    color: mat.get-color-from-palette($warn) !important;
+    color: mat.m2-get-color-from-palette($warn) !important;
 }
 .text-primary {
     color: var(--color-common-primary) !important;

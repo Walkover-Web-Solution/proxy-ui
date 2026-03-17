@@ -39,6 +39,7 @@ import {
 import { IGetOtpRes } from '../../model/otp';
 
 @Component({
+    standalone: false,
     selector: 'proxy-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],

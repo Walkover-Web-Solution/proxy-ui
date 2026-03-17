@@ -42,6 +42,7 @@ export enum InputFields {
 }
 
 @Component({
+    standalone: false,
     selector: 'proxy-send-otp',
     templateUrl: './send-otp.component.html',
     encapsulation: ViewEncapsulation.ShadowDom,

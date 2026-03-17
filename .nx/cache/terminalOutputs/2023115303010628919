@@ -1,0 +1,153 @@
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.dev/tools/cli/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss?ngResource[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 1, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss:1:8:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m1 | @import '../../../intl.scss';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss 2:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss?ngResource[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 2, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss:2:8:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m2 | @import '../../../otp-global.scss';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss 3:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/styles.scss?ngGlobalStyle[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 5, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/styles.scss:5:8:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m5 | @import 'assets/scss/layout/positions.scss';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/styles.scss 6:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/styles.scss?ngGlobalStyle[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 6, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/styles.scss:6:8[39m[22m[1m[33m:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m6 | @import 'assets/scss/layout/spacing.scss';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/styles.scss 7:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/styles.scss?ngGlobalStyle[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 7, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/styles.scss:7:8:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m7 | @import 'assets/scss/layout/display.scss';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/styles.scss 8:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/styles.scss?ngGlobalStyle[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 10, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/styles.scss:10:8:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m10 | @import 'assets/scss/component/form-field';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/styles.scss 11:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/styles.scss?ngGlobalStyle[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 11, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/styles.scss:11:8:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m11 | @import 'assets/scss/component/tabs';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/styles.scss 12:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[33mWarning: [39m[33m[0m/Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/app/otp/service/otp-utility.service.ts depends on 'crypto-js'. CommonJS or AMD dependencies can[39m[22m[1m[33m cause optimization bailouts.[39m[22m
+[1m[33mFor more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[33mWarning: [39m[33m[0m/Users/divyanshu/walkover/proxy-ui/libs/utils/src/index.ts depends on 'dayjs'. CommonJS or AMD dependencies can cause optimization bailouts.[39m[22m
+[1m[33mFor more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mapps/proxy-auth/src/app/app.module.ts[0m:[93m26[0m:[93m9[0m - [91merror[0m[90m NG6002: [0mThis import contains errors, which may affect components that depend on this NgModule.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m26[0m         ElementModule,[39m[22m
+[1m[31m[7m  [0m [91m        ~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mapps/proxy-auth/src/app/element.module.ts[0m:[93m158[0m:[93m55[0m - [91merror[0m[90m NG6002: [0mThis import contains errors, which may affect components that depend on this NgModule.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m158[0m     imports: [BrowserModule, BrowserAnimationsModule, OtpModule],[39m[22m
+[1m[31m[7m   [0m [91m                                                      ~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mapps/proxy-auth/src/app/element.module.ts[0m:[93m159[0m:[93m15[0m - [91merror[0m[90m NG6003: [0mThis export contains errors, which may affect components that depend on this NgModule.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m159[0m     exports: [OtpModule],[39m[22m
+[1m[31m[7m   [0m [91m              ~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mapps/proxy-auth/src/app/otp/otp.module.ts[0m:[93m94[0m:[93m9[0m - [91merror[0m[90m NG6002: [0mThis import contains errors, which may affect components that depend on this NgModule.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m94[0m         DirectivesRemoveCharacterDirectiveModule,[39m[22m
+[1m[31m[7m  [0m [91m        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mapps/proxy-auth/src/app/otp/otp.module.ts[0m:[93m103[0m:[93m9[0m - [91merror[0m[90m NG6002: [0mThis import contains errors, which may affect components that depend on this NgModule.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m103[0m         DirectivesMarkAllAsTouchedModule,[39m[22m
+[1m[31m[7m   [0m [91m        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mlibs/directives/mark-all-as-touched/src/lib/directives-mark-all-as-touched.module.ts[0m:[93m101[0m:[93m20[0m - [91merror[0m[90m NG6008: [0mDirective MarkAllAsTouchedDirective is standalone, and cannot be declared in an NgModule. Did you mean to import it instead?[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m101[0m[39m[22m[1m[31m     declarations: [MarkAllAsTouchedDirective],[39m[22m
+[1m[31m[7m   [0m [91m                   ~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mlibs/directives/mark-all-as-touched/src/lib/directives-mark-all-as-touched.module.ts[0m:[93m102[0m:[93m15[0m - [91merror[0m[90m NG6004: [0mCan't be exported from this NgModule, as it must be imported first[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m102[0m     exports: [MarkAllAsTouchedDirective],[39m[22m
+[1m[31m[7m   [0m [91m              ~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mlibs/directives/remove-character-directive/src/lib/directives-remove-character-directive.module.ts[0m:[93m21[0m:[93m20[0m - [91merror[0m[90m NG6008: [0mDirective RemoveCharacterDirective is standalone, and cannot be declared in an NgModule. Did you mean to import it instead?[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m21[0m     declarations: [RemoveCharacterDirective],[39m[22m
+[1m[31m[7m  [0m [91m                   ~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mlibs/directives/remove-character-directive/src/lib/directives-remove-character-directive.module.ts[0m:[93m22[0m:[93m15[0m - [91merror[0m[90m NG6004: [0mCan't be exported from this NgModule, as it must be imported first[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m22[0m     exports: [RemoveCharacterDirective],[39m[22m
+[1m[31m[7m  [0m [91m              ~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m

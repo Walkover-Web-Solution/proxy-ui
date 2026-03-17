@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { EMAIL_REGEX } from '@proxy/regex';
 
 @Component({
+    standalone: false,
     selector: 'organization-details',
     templateUrl: './organization-details.component.html',
     encapsulation: ViewEncapsulation.ShadowDom,

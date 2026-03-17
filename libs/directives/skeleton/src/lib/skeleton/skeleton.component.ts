@@ -1,6 +1,7 @@
 import { Component, ElementRef } from '@angular/core';
 
 @Component({
+    standalone: false,
     selector: 'skeleton-rect',
     host: {
         'class': 'shimmer-loading',

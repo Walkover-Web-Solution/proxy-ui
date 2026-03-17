@@ -1,0 +1,161 @@
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.dev/tools/cli/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+[1m[33m[39m[22m
+[1m[33m[0m[33mWarning: [39m[33m[0m/Users/divyanshu/walkover/proxy-ui/libs/services/proxy/auth/src/lib/services-proxy-auth.module.ts depends on 'dayjs'. CommonJS or AMD dependencies can cause optimization bailouts.[39m[22m
+[1m[33mFor more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/create-project/create-project.store.ts[39m[31m[0m:[0m[93m32:54-65[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/create-project/create-project.store.ts[39m[31m[0m:[0m[93m50:52-63[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/create-project/create-project.store.ts[39m[31m[0m:[0m[93m70:52-63[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/create-project/create-project.store.ts[39m[31m[0m:[0m[93m95:51-62[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/create-project/create-project.store.ts[39m[31m[0m:[0m[93m120:65-76[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m96:50-61[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m119:55-66[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as '[39m[22m[1m[31mtapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m141:52-63[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m166:65-76[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m192:55-66[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m214:56-67[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m239:72-83[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m263:64-75[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentS[39m[22m[1m[31mtore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m288:85-96[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m313:75-86[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m338:57-68[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m362:57-68[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m386:53-64[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m410:64-75[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m435:64-75[39m[31m[0m - [0m[39m[22m[1m[31m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m460:60-71[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m484:56-67[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m508:75-86[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m532:65-76[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m557:57-68[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m581:70-81[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports[39m[22m[1m[31m: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m605:75-86[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m630:52-63[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.store.ts[39m[31m[0m:[0m[93m656:66-77[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/feature/feature.store.ts[39m[31m[0m:[0m[93m28:49-60[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/logs/log/logs.store.ts[39m[31m[0m:[0m[93m38:51-62[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/logs/log/logs.store.ts[39m[31m[0m:[0m[93m61:55-66[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/logs/log/logs.store.ts[39m[31m[0m:[0m[93m88:54-65[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapRespo[39m[22m[1m[31mnse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/logs/log/logs.store.ts[39m[31m[0m:[0m[93m113:50-61[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/users/user/user.store.ts[39m[31m[0m:[0m[93m52:47-58[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/users/user/user.store.ts[39m[31m[0m:[0m[93m71:50-61[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/users/user/user.store.ts[39m[31m[0m:[0m[93m91:53-64[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/users/user/user.store.ts[39m[31m[0m:[0m[93m114:53-64[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/users/user/user.store.ts[39m[31m[0m:[0m[93m137:53-64[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/users/user/user.store.ts[39m[31m[0m:[0m[93m157:56-67[39m[31m[0m - [0m[91mError: [39m[31m[[39m[22m[1m[31m0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/users/user/user.store.ts[39m[31m[0m:[0m[93m177:59-70[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/users/user/user.store.ts[39m[31m[0m:[0m[93m233:59-70[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/users/user/user.store.ts[39m[31m[0m:[0m[93m256:59-70[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/users/user/user.store.ts[39m[31m[0m:[0m[93m276:67-78[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/users/user/user.store.ts[39m[31m[0m:[0m[93m293:72-83[39m[31m[0m - [0m[91mError: [39m[31m[0mexport 'tapResponse' (imported as 'tapResponse') was not found in '@ngrx/component-store' (possible exports: ComponentStore, INITIAL_STATE_TOKEN, provideComponentStore)[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/styles.scss[39m[31m[0m - [0m[91mError: [39m[31m[0mModule build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[31mUndefined function.[39m[22m
+[1m[31m   ╷[39m[22m
+[1m[31m77 │ $primary: mat.define-palette(mat.$indigo-palette);[39m[22m
+[1m[31m   │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[39m[22m
+[1m[31m   ╵[39m[22m
+[1m[31m  apps/proxy/src/assets/scss/theme/_theme-colors.scss 77:11  @import[39m[22m
+[1m[31m  apps/proxy/src/styles.scss 6:9[39m[22m[1m[31m                             root stylesheet[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/app/features/create-feature/create-feature.component.scss?ngResource[39m[31m[0m - [0m[91mError: [39m[31m[0mModule build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[31mUndefined function.[39m[22m
+[1m[31m   ╷[39m[22m
+[1m[31m77 │ $primary: mat.define-palette(mat.$indigo-palette);[39m[22m
+[1m[31m   │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[39m[22m
+[1m[31m   ╵[39m[22m
+[1m[31m  apps/proxy/src/assets/scss/theme/_theme-colors.scss 77:11                     @import[39m[22m
+[1m[31m  apps/proxy/src/styles.scss 6:9                                                @import[39m[22m
+[1m[31m  apps/proxy/src/app/features/create-feature/create-feature.component.scss 1:9  root stylesheet[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[36m./apps/proxy/src/styles.scss?ngGlobalStyle[39m[31m[0m - [0m[91mError: [39m[31m[0mModule build failed (from ./node_modules/mini-css-extract-plugin/dist/loader.js):[39m[22m
+[1m[31mHookWebpackError: Module build failed (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[31mUndefined function.[39m[22m
+[1m[31m   ╷[39m[22m
+[1m[31m77 │ $primary: mat.define-palette(mat.$indigo-palette);[39m[22m
+[1m[31m   │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[39m[22m
+[1m[31m   ╵[39m[22m
+[1m[31m  apps/proxy/src/assets/scss/theme/_theme-colors.scss 77:11  @import[39m[22m
+[1m[31m  apps/proxy/src/styles.scss 6:9                             root stylesheet[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mapps/proxy/src/app/create-project/create-project.store.ts[0m:[93m3[0m:[93m26[0m - [91merror[0m[90m TS2305: [0mModule '"@ngrx/component-store"' has no exported member 'tapResponse'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m3[0m import { ComponentStore, tapResponse } from '@ngrx/component-store';[39m[22m
+[1m[31m[7m [0m [91m                         ~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mapps/proxy/src/app/features/create-feature/create-feature.store.ts[0m:[93m4[0m:[93m26[0m - [91merror[0m[90m TS2305: [0mModule '"@ngrx/component-store"' has no exported member 'tapResponse'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { ComponentStore, tapResponse } from '@ngrx/component-store';[39m[22m
+[1m[31m[7m [0m [91m                         ~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mapps/proxy/src/app/features/feature/feature.[39m[22m[1m[31mstore.ts[0m:[93m4[0m:[93m26[0m - [91merror[0m[90m TS2305: [0mModule '"@ngrx/component-store"' has no exported member 'tapResponse'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { ComponentStore, tapResponse } from '@ngrx/component-store';[39m[22m
+[1m[31m[7m [0m [91m                         ~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mapps/proxy/src/app/logs/log/logs.store.ts[0m:[93m4[0m:[93m26[0m - [91merror[0m[90m TS2305: [0mModule '"@ngrx/component-store"' has no exported member 'tapResponse'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m4[0m import { ComponentStore, tapResponse } from '@ngrx/component-store';[39m[22m
+[1m[31m[7m [0m [91m                         ~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[0m[91mError: [39m[31m[0m[96mapps/proxy/src/app/users/user/user.store.ts[0m:[93m1[0m:[93m26[0m - [91merror[0m[90m TS2305: [0mModule '"@ngrx/component-store"' has no exported member 'tapResponse'.[39m[22m
+[1m[31m[39m[22m
+[1m[31m[7m1[0m import { ComponentStore, tapResponse } from '@ngrx/component-store';[39m[22m
+[1m[31m[7m [0m [91m                         ~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m

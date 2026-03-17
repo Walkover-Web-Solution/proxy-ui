@@ -1,0 +1,113 @@
+- Generating browser application bundles (phase: setup)...
+[1m[33m    TypeScript compiler options "target" and "useDefineForClassFields" are set to "ES2022" and "false" respectively by the Angular CLI. To control ECMA version and features use the Browserslist configuration. For more information, see https://angular.dev/tools/cli/build#configuring-browser-compatibility[39m[22m
+[1m[33m    NOTE: You can set the "target" to "ES2022" in the project's tsconfig to remove this warning.[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+- Copying assets...
+[32m✔[39m Copying assets complete.
+- Generating index html...
+[32m✔[39m Index html generation complete.
+[37m[0m[0m[39m
+[37m[0m[1mInitial chunk files[22m[2m | [22m[1mNames[22m        [2m | [22m[1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m[0m[39m
+[37m[0m[32mmain.js[39m[37m            [2m | [22m[2mmain[22m         [2m | [22m [36m1.57 MB[39m[37m[2m | [22m              [36m282.96 kB[39m[37m[0m[39m
+[37m[0m[32mstyles.css[39m[37m         [2m | [22m[2mstyles[22m       [2m | [22m[36m99.19 kB[39m[37m[2m | [22m                [36m9.20 kB[39m[37m[0m[39m
+[37m[0m[32mpolyfills.js[39m[37m       [2m | [22m[2mpolyfills[22m    [2m | [22m[36m34.93 kB[39m[37m[2m | [22m               [36m11.40 kB[39m[37m[0m[39m
+[37m[0m[32mruntime.js[39m[37m         [2m | [22m[2mruntime[22m      [2m | [22m [36m1.08 kB[39m[37m[2m | [22m              [36m601 bytes[39m[37m[0m[39m
+[37m[0m[0m[39m
+[37m[0m[1m [22m                  [2m | [22m[1mInitial total[22m[2m | [22m [1m[93m1.71 MB[39m[37m[22m[2m | [22m              [1m304.16 kB[22m[0m[39m
+[37m[0m[0m[39m
+[37m[0mBuild at: [1m[37m2026-03-17T05:36:50.387Z[39m[37m[22m - Hash: [1m[37m5daa04def917da90[39m[37m[22m - Time: [1m[37m19640[39m[37m[22mms[0m[39m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss?ngResource[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 1, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss:1:8:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m1 | @import '../../../intl.scss';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss 2:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss?ngResource[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 2, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss:2:8:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m2 | @import '../../../otp-global.scss';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/app/otp/send-otp/send-otp.component.scss 3:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/styles.scss?ngResource[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 5, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/styles.scss:5:8:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m5 | @import 'assets/scss/layout/positions.scss';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/styles.scss 6:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/styles.scss?ngResource[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 6, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/styles.scss:6:8:[39m[22m
+[1m[33mSass[39m[22m[1m[33m @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m6 | @import 'assets/scss/layout/spacing.scss';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/styles.scss 7:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/styles.scss?ngResource[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 7, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/styles.scss:7:8:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m7 | @import 'assets/scss/layout/display.scss';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/styles.scss 8:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/styles.scss?ngResource[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 10, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/styles.scss:10:8:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m10 | @import 'assets/scss/component/form-field';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/styles.scss 11:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[36m./apps/proxy-auth/src/styles.scss?ngResource[39m[33m[0m - [0m[33mWarning: [39m[33m[0mModule Warning (from ./node_modules/sass-loader/dist/cjs.js):[39m[22m
+[1m[33mDeprecation Warning on line 11, column 8 of file:///Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/styles.scss:11:8:[39m[22m
+[1m[33mSass @import rules are deprecated and will be removed in Dart Sass 3.0.0.[39m[22m
+[1m[33m[39m[22m
+[1m[33mMore info and automated migrator: https://sass-lang.com/d/import[39m[22m
+[1m[33m[39m[22m
+[1m[33m11 | @import 'assets/scss/component/tabs';[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33mapps/proxy-auth/src/styles.scss 12:9  root stylesheet[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[33mWarning: [39m[33m[0m/Users/divyanshu/walkover/proxy-ui/apps/proxy-auth/src/app/otp/service/otp-utility.service.ts depends on 'crypto-js'. CommonJS or AMD dependencies can cause optimiza[39m[22m[1m[33mtion bailouts.[39m[22m
+[1m[33mFor more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[33mWarning: [39m[33m[0m/Users/divyanshu/walkover/proxy-ui/libs/utils/src/index.ts depends on 'dayjs'. CommonJS or AMD dependencies can cause optimization bailouts.[39m[22m
+[1m[33mFor more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies[39m[22m
+[1m[33m[39m[22m
+[1m[33m[0m[33mWarning: [39m[33m[0mbundle initial exceeded maximum budget. Budget 1.00 MB was not met by 706.91 kB with a total of 1.71 MB.[39m[22m
+[1m[33m[39m[22m
+[1m[33m[39m[22m

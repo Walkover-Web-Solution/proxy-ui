@@ -1,6 +1,7 @@
 import { Component, Input, TemplateRef } from '@angular/core';
 
 @Component({
+    standalone: false,
     selector: 'proxy-loader',
     template: `
         <div class="h-100 content-loader">

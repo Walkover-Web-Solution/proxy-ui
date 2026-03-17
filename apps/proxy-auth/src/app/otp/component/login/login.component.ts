@@ -16,6 +16,7 @@ import { OtpUtilityService } from '../../service/otp-utility.service';
 import { NgHcaptchaComponent } from 'ng-hcaptcha';
 
 @Component({
+    standalone: false,
     selector: 'proxy-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],

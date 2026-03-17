@@ -243,7 +243,7 @@ $secondary-btn-height: 30px;
     line-height: 30px !important;
     font-size: var(--font-size-common-12) !important;
     &.mat-btn-wran {
-        border-color: mat.get-color-from-palette($warn) !important;
+        border-color: mat.m2-get-color-from-palette($warn) !important;
     }
 }
 .mat-btn-xs {

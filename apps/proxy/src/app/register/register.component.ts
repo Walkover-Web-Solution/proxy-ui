@@ -12,6 +12,7 @@ import { UsersService } from '@proxy/services/proxy/users';
 import { IntlPhoneLib } from '@proxy/utils';
 
 @Component({
+    standalone: false,
     selector: 'app-register-component',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],

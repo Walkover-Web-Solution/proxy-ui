@@ -28,6 +28,7 @@ import { IAppState, selectClientSettings } from '../../ngrx';
 type FilterTypes = 'environments' | 'projects';
 
 @Component({
+    standalone: false,
     selector: 'proxy-logs',
     templateUrl: './log.component.html',
     styleUrls: ['./log.component.scss'],

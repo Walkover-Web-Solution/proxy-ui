@@ -67,6 +67,7 @@ export enum InputFields {
     BOTTOM = 'bottom',
 }
 @Component({
+    standalone: false,
     selector: 'proxy-send-otp-center',
     templateUrl: './send-otp-center.component.html',
     styleUrls: ['./send-otp-center.component.scss'],

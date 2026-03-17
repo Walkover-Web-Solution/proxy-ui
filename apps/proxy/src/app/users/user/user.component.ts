@@ -21,6 +21,7 @@ import { takeUntil } from 'rxjs/operators';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
+    standalone: false,
     selector: 'proxy-users',
     templateUrl: './user.component.html',
     styleUrls: ['./user.component.scss'],

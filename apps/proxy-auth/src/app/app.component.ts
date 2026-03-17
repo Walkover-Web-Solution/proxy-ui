@@ -3,6 +3,7 @@ import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
 
 @Component({
+    standalone: false,
     selector: 'proxy-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],

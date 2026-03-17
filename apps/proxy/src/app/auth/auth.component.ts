@@ -16,6 +16,7 @@ import { ILogInFeatureStateWithRootState } from './ngrx/store/login.state';
 import * as logInActions from './ngrx/actions/login.action';
 
 @Component({
+    standalone: false,
     selector: 'proxy-auth',
     templateUrl: './auth.component.html',
     styleUrls: ['./auth.component.scss'],

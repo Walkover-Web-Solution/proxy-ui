@@ -65,11 +65,11 @@ $custom-blue: (
     ),
 );
 
-$primary: mat.define-palette($custom-blue);
-$accent: mat.define-palette($custom-blue);
-$warn: mat.define-palette(mat.$red-palette);
+$primary: mat.m2-define-palette($custom-blue);
+$accent: mat.m2-define-palette($custom-blue);
+$warn: mat.m2-define-palette(mat.$m2-red-palette);
 
-$theme: mat.define-light-theme(
+$theme: mat.m2-define-light-theme(
     (
         color: (
             primary: $primary,
