@@ -93,45 +93,45 @@
 .inline-block {
     display: inline-block;
 }
-.list-view {
-    .mat-list-item {
-        .mat-list-item-content {
-            padding: 0px !important;
-        }
-    }
-}
+// .list-view {
+//     .mat-list-item {
+//         .mat-list-item-content {
+//             padding: 0px !important;
+//         }
+//     }
+// }
 
-.mat-expansion-panel {
-    &.custom-expansion-panel {
-        .mat-expansion-panel-header {
-            padding: 0 16px !important;
-            &.mat-expanded {
-                height: 40px;
-            }
-        }
-        .mat-expansion-panel-content {
-            .mat-expansion-panel-body {
-                padding: 0px;
-                .mat-nav-list {
-                    .mat-list-item {
-                        .mat-list-item-content {
-                            padding-left: 30px !important;
-                            .mat-icon {
-                                color: var(--color-common-grey);
+// .mat-expansion-panel {
+//     &.custom-expansion-panel {
+//         .mat-expansion-panel-header {
+//             padding: 0 16px !important;
+//             &.mat-expanded {
+//                 height: 40px;
+//             }
+//         }
+//         .mat-expansion-panel-content {
+//             .mat-expansion-panel-body {
+//                 padding: 0px;
+//                 .mat-nav-list {
+//                     .mat-list-item {
+//                         .mat-list-item-content {
+//                             padding-left: 30px !important;
+//                             .mat-icon {
+//                                 color: var(--color-common-grey);
 
-                                svg {
-                                    path {
-                                        fill: var(--color-common-grey) !important;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+//                                 svg {
+//                                     path {
+//                                         fill: var(--color-common-grey) !important;
+//                                     }
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
 
 .breadcrumb {
     font-size: 13px;
