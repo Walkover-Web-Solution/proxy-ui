@@ -1,5 +1,6 @@
 <div class="container">
-    <button *ngIf="isPreview" mat-icon-button mat-dialog-close class="close-dialog" (click)="close(true)">
+    @if (isPreview) {
+    <button matIconButton mat-dialog-close class="close-dialog" (click)="close(true)">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
@@ -7,18 +8,21 @@
             />
         </svg>
     </button>
+    }
 
     <div class="subscription-plans-container flex flex-col items-center justify-center">
         <div class="plans-grid flex flex-row gap-6 justify-start items-stretch w-full py-6">
+            @for (plan of subscriptionPlans; track plan.title; let i = $index) {
             <div
-                *ngFor="let plan of subscriptionPlans; let i = index"
                 class="plan-card flex flex-col justify-between relative"
                 [class.popular]="plan.isPopular"
                 [class.selected]="plan.isSelected"
                 [class.highlighted]="plan.isPopular"
             >
                 <!-- Popular Badge -->
-                <div *ngIf="plan.tag" class="popular-badge">{{ plan.tag }}</div>
+                @if (plan.tag) {
+                <div class="popular-badge">{{ plan.tag }}</div>
+                }
                 <div>
                     <!-- Plan Title -->
                     <h1 class="plan-title mt-0">{{ plan.title }}</h1>
@@ -32,8 +36,8 @@
                     </div>
 
                     <!-- Action Button -->
+                    @if (!plan.subscribeButtonHidden) {
                     <button
-                        *ngIf="!plan.subscribeButtonHidden"
                         class="plan-button"
                         [class.primary]="plan.buttonStyle === 'primary'"
                         [class.secondary]="plan.buttonStyle === 'secondary'"
@@ -42,38 +46,39 @@
                     >
                         {{ plan.buttonText }}
                     </button>
+                    }
 
                     <!-- Hidden Button State -->
-                    <div *ngIf="plan.subscribeButtonHidden" class="plan-button-hidden w-full text-center">
+                    @if (plan.subscribeButtonHidden) {
+                    <div class="plan-button-hidden w-full text-center">
                         {{ plan.buttonText }}
                     </div>
+                    }
 
                     <div class="divider w-full my-6"></div>
                 </div>
 
                 <!-- Included Resources -->
-                <div *ngIf="plan.metrics && plan.metrics.length > 0" class="included-resources mb-2">
+                @if (plan.metrics && plan.metrics.length > 0) {
+                <div class="included-resources mb-2">
                     <h4 class="section-title text-left">Included</h4>
                     <div class="resource-boxes">
-                        <div *ngFor="let metric of plan.metrics" class="resource-box">{{ metric }}</div>
+                        @for (metric of plan.metrics; track metric) {
+                        <div class="resource-box">{{ metric }}</div>
+                        }
                     </div>
                 </div>
+                }
 
                 <!-- Plan Features -->
-                <div
-                    *ngIf="
-                        (plan.features && plan.features.length > 0) ||
-                        (plan.notIncludedFeatures && plan.notIncludedFeatures.length > 0)
-                    "
-                    class="mb-2 text-left"
-                >
+                @if ((plan.features && plan.features.length > 0) || (plan.notIncludedFeatures &&
+                plan.notIncludedFeatures.length > 0)) {
+                <div class="mb-2 text-left">
                     <h4 class="section-title text-left">Features</h4>
                     <ul class="plan-features gap-6 m-0 p-0 text-left">
                         <!-- Included Features -->
-                        <li
-                            *ngFor="let feature of plan.features"
-                            class="feature-item included flex items-center relative p-0 gap-2 m-0"
-                        >
+                        @for (feature of plan.features; track feature) {
+                        <li class="feature-item included flex items-center relative p-0 gap-2 m-0">
                             <span class="feature-icon included">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -87,11 +92,10 @@
                             </span>
                             {{ feature }}
                         </li>
+                        }
                         <!-- Not Included Features -->
-                        <li
-                            *ngFor="let feature of plan.notIncludedFeatures"
-                            class="feature-item not-included flex items-center relative p-0 gap-2"
-                        >
+                        @for (feature of plan.notIncludedFeatures; track feature) {
+                        <li class="feature-item not-included flex items-center relative p-0 gap-2">
                             <span class="feature-icon not-included">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -107,17 +111,18 @@
                             </span>
                             {{ feature }}
                         </li>
+                        }
                     </ul>
                 </div>
+                }
 
                 <!-- Extra Features Section -->
-                <div *ngIf="plan.extraFeatures && plan.extraFeatures.length > 0" class="mb-6 text-left">
+                @if (plan.extraFeatures && plan.extraFeatures.length > 0) {
+                <div class="mb-6 text-left">
                     <h4 class="section-title text-left">Extra</h4>
                     <ul class="plan-features gap-6 m-0 p-0 text-left">
-                        <li
-                            *ngFor="let extraFeature of plan.extraFeatures"
-                            class="feature-item extra flex items-center relative p-0 gap-2 m-0"
-                        >
+                        @for (extraFeature of plan.extraFeatures; track extraFeature) {
+                        <li class="feature-item extra flex items-center relative p-0 gap-2 m-0">
                             <span class="feature-icon extra">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -133,9 +138,12 @@
                             </span>
                             {{ extraFeature }}
                         </li>
+                        }
                     </ul>
                 </div>
+                }
             </div>
+            }
         </div>
     </div>
 </div>

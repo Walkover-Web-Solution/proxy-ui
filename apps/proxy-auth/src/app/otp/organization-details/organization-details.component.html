@@ -4,7 +4,8 @@
         <div class="page-header">
             <h2 class="page-title">Organization Details</h2>
 
-            <div class="header-actions" *ngIf="!isEditing">
+            @if (!isEditing) {
+            <div class="header-actions">
                 <button
                     type="button"
                     [class.disabled]="!allowedUpdatePermissions"
@@ -29,10 +30,12 @@
                     Edit
                 </button>
             </div>
+            }
         </div>
 
         <!-- ── View Mode ── -->
-        <div *ngIf="!isEditing" class="view-container">
+        @if (!isEditing) {
+        <div class="view-container">
             <div class="field-row">
                 <div class="field-label">
                     <!-- building icon -->
@@ -114,10 +117,11 @@
                 <div class="field-value">{{ organizationForm.get('timeZoneName')?.value || '—' }}</div>
             </div>
         </div>
+        }
 
         <!-- ── Edit Mode ── -->
+        @if (isEditing) {
         <form
-            *ngIf="isEditing"
             [formGroup]="organizationForm"
             (ngSubmit)="onSubmit()"
             class="organization-form flex flex-col items-center"
@@ -125,29 +129,25 @@
             <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Company Name </mat-label>
                 <input matInput formControlName="companyName" placeholder="Enter company name" />
-                <mat-error *ngIf="organizationForm.get('companyName')?.hasError('required')">
-                    Company name is required.
-                </mat-error>
-                <mat-error *ngIf="organizationForm.get('companyName')?.hasError('minlength')">
-                    Company name must be at least 3 characters.
-                </mat-error>
+                @if (organizationForm.get('companyName')?.hasError('required')) {
+                <mat-error>Company name is required.</mat-error> } @if
+                (organizationForm.get('companyName')?.hasError('minlength')) {
+                <mat-error>Company name must be at least 3 characters.</mat-error> }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Email </mat-label>
                 <input matInput type="email" formControlName="email" placeholder="Enter email" />
-                <mat-error *ngIf="organizationForm.get('email')?.hasError('required')"> Email is required. </mat-error>
-                <mat-error *ngIf="organizationForm.get('email')?.hasError('pattern')">
-                    Please enter a valid email.
-                </mat-error>
+                @if (organizationForm.get('email')?.hasError('required')) { <mat-error>Email is required.</mat-error> }
+                @if (organizationForm.get('email')?.hasError('pattern')) {
+                <mat-error>Please enter a valid email.</mat-error> }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Phone Number</mat-label>
                 <input matInput type="tel" formControlName="phoneNumber" placeholder="Enter phone number" />
-                <mat-error *ngIf="organizationForm.get('phoneNumber')?.hasError('pattern')">
-                    Phone number must be 10–15 digits.
-                </mat-error>
+                @if (organizationForm.get('phoneNumber')?.hasError('pattern')) {
+                <mat-error>Phone number must be 10–15 digits.</mat-error> }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width timezone-field">
@@ -157,13 +157,14 @@
                     placeholder="Select timezone"
                     [panelClass]="theme === 'dark' ? 'org-dark-select-panel' : 'org-light-select-panel'"
                 >
-                    <mat-option *ngFor="let tz of timezones" [value]="getTimezoneValue(tz)">
+                    @for (tz of timezones; track tz) {
+                    <mat-option [value]="getTimezoneValue(tz)">
                         {{ getTimezoneLabel(tz) }}
                     </mat-option>
+                    }
                 </mat-select>
-                <mat-error *ngIf="organizationForm.get('timezone')?.hasError('required')">
-                    Timezone is required.
-                </mat-error>
+                @if (organizationForm.get('timezone')?.hasError('required')) {
+                <mat-error>Timezone is required.</mat-error> }
             </mat-form-field>
 
             <!-- ── Single action row at bottom ── -->
@@ -172,10 +173,11 @@
                     Cancel
                 </button>
                 <button type="submit" class="save-btn" [disabled]="updateInProgress">
-                    <mat-spinner *ngIf="updateInProgress" diameter="16" class="btn-spinner"></mat-spinner>
-                    <span *ngIf="!updateInProgress">Save Changes</span>
+                    @if (updateInProgress) { <mat-spinner diameter="16" class="btn-spinner"></mat-spinner> } @if
+                    (!updateInProgress) { <span>Save Changes</span> }
                 </button>
             </div>
         </form>
+        }
     </div>
 </div>

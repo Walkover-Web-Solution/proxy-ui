@@ -5,15 +5,18 @@
             <mat-form-field appearance="outline" class="w-1/2">
                 <mat-label>Select Block</mat-label>
                 <mat-select [formControl]="roleForm.get('feature_id')">
-                    <mat-option *ngFor="let feature of features" [value]="feature.reference_id">
-                        {{ feature.name }}
-                    </mat-option>
+                    @for (feature of features; track feature.reference_id) {
+                    <mat-option [value]="feature.reference_id">{{ feature.name }}</mat-option>
+                    }
                 </mat-select>
-                <mat-error *ngIf="roleForm.get('feature_id')?.hasError('required')"> Block is required </mat-error>
+                @if (roleForm.get('feature_id')?.hasError('required')) {
+                <mat-error> Block is required </mat-error>
+                }
             </mat-form-field>
         </div>
 
-        <div *ngIf="roleForm.get('feature_id')?.value" class="mt-2">
+        @if (roleForm.get('feature_id')?.value) {
+        <div class="mt-2">
             <h5 class="mat-body-2 text-secondary fw-bold">Create Roles & Permissions</h5>
 
             <mat-tab-group>
@@ -28,7 +31,7 @@
                                     class="w-xs-100"
                                 ></proxy-lib-search>
                             </div>
-                            <button class="mb-6" mat-flat-button color="primary" (click)="addRole()">Add Role</button>
+                            <button class="mb-6" matButton="filled" (click)="addRole()">Add Role</button>
                         </div>
                         <table
                             mat-table
@@ -50,9 +53,9 @@
                                 <th mat-header-cell *matHeaderCellDef>Permissions</th>
                                 <td mat-cell *matCellDef="let element" data-label="Permissions">
                                     <ul class="permissions-list mb-0">
-                                        <li *ngFor="let permission of element.permissionsList">
-                                            {{ permission.name }}
-                                        </li>
+                                        @for (permission of element.permissionsList; track permission.name) {
+                                        <li>{{ permission.name }}</li>
+                                        }
                                     </ul>
                                 </td>
                             </ng-container>
@@ -69,8 +72,7 @@
                                             matTooltipPosition="above"
                                         >
                                             <button
-                                                mat-stroked-button
-                                                color="primary"
+                                                matButton="outlined"
                                                 (click)="editRole(element)"
                                                 class="mat-btn-md"
                                                 [disabled]="!element.feature_configuration_id"
@@ -90,8 +92,7 @@
                                             matTooltipPosition="above"
                                         >
                                             <button
-                                                mat-stroked-button
-                                                color="primary"
+                                                matButton="outlined"
                                                 (click)="deleteRole(element)"
                                                 class="mat-btn-md"
                                                 [disabled]="!element.feature_configuration_id"
@@ -141,9 +142,7 @@
                                     class="w-xs-100"
                                 ></proxy-lib-search>
                             </div>
-                            <button class="mb-6" mat-flat-button color="primary" (click)="addPermission()">
-                                Add Permission
-                            </button>
+                            <button class="mb-6" matButton="filled" (click)="addPermission()">Add Permission</button>
                         </div>
                         <table
                             mat-table
@@ -165,8 +164,7 @@
                                 <td mat-cell *matCellDef="let element" data-label="Actions">
                                     <div class="actions">
                                         <button
-                                            mat-stroked-button
-                                            color="new-primary"
+                                            matButton="outlined"
                                             (click)="editPermission(element)"
                                             class="mat-btn-md"
                                             [disabled]="element.is_default"
@@ -177,8 +175,7 @@
                                             Edit
                                         </button>
                                         <button
-                                            mat-stroked-button
-                                            color="new-primary"
+                                            matButton="outlined"
                                             (click)="deletePermission(element)"
                                             class="mat-btn-md"
                                             [disabled]="element.is_default"
@@ -263,9 +260,9 @@
                                 <mat-form-field appearance="outline" class="w-1/2">
                                     <mat-label>Select default role for creator</mat-label>
                                     <mat-select formControlName="defaultRoleForCreator">
-                                        <mat-option *ngFor="let role of rolesDataSource.data" [value]="role.id">
-                                            {{ role.role }}
-                                        </mat-option>
+                                        @for (role of rolesDataSource.data; track role.id) {
+                                        <mat-option [value]="role.id">{{ role.role }}</mat-option>
+                                        }
                                     </mat-select>
                                 </mat-form-field>
                             </div>
@@ -277,9 +274,9 @@
                                 <mat-form-field appearance="outline" class="w-1/2">
                                     <mat-label>Select default role for member</mat-label>
                                     <mat-select formControlName="defaultRoleForMember">
-                                        <mat-option *ngFor="let role of rolesDataSource.data" [value]="role.id">
-                                            {{ role.role }}
-                                        </mat-option>
+                                        @for (role of rolesDataSource.data; track role.id) {
+                                        <mat-option [value]="role.id">{{ role.role }}</mat-option>
+                                        }
                                     </mat-select>
                                 </mat-form-field>
                             </div>
@@ -298,20 +295,20 @@
                             <!-- Action Buttons -->
                             <div class="flex gap-2 mt-6">
                                 <button
-                                    mat-flat-button
-                                    color="primary"
+                                    matButton="filled"
                                     (click)="saveDefaultRoles()"
                                     [disabled]="!defaultRolesForm.valid"
                                 >
                                     Save
                                 </button>
-                                <button mat-button (click)="cancelDefaultRoles()">Cancel</button>
+                                <button matButton (click)="cancelDefaultRoles()">Cancel</button>
                             </div>
                         </form>
                     </div>
                 </mat-tab>
             </mat-tab-group>
         </div>
+        }
     </div>
 </div>
 
@@ -319,7 +316,7 @@
 <ng-template #addRoleDialogTemplate>
     <div class="flex justify-between items-center mb-6">
         <h2 mat-dialog-title class="m-0">{{ isEditMode ? 'Edit Role' : 'Add Role' }}</h2>
-        <button mat-icon-button mat-dialog-close>
+        <button matIconButton mat-dialog-close>
             <mat-icon>close</mat-icon>
         </button>
     </div>
@@ -328,17 +325,17 @@
             <mat-form-field appearance="outline" class="w-full mb-6">
                 <mat-label>Role Name <span class="text-danger">*</span></mat-label>
                 <input matInput formControlName="roleName" placeholder="Enter role name" />
-                <mat-error *ngIf="dialogRoleForm.get('roleName')?.hasError('required')">
-                    Role name is required
-                </mat-error>
+                @if (dialogRoleForm.get('roleName')?.hasError('required')) {
+                <mat-error>Role name is required</mat-error>
+                }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full mb-6">
                 <mat-label>Permissions</mat-label>
                 <mat-select formControlName="permissions" multiple>
-                    <mat-option *ngFor="let permission of availablePermissions" [value]="permission.name">
-                        {{ permission.name }}
-                    </mat-option>
+                    @for (permission of availablePermissions; track permission.name) {
+                    <mat-option [value]="permission.name">{{ permission.name }}</mat-option>
+                    }
                 </mat-select>
                 <mat-hint>Select one or more permissions</mat-hint>
             </mat-form-field>
@@ -350,8 +347,8 @@
         </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end" class="mt-6">
-        <button mat-button (click)="closeDialog()">Cancel</button>
-        <button mat-flat-button color="primary" (click)="submitDialog()" [disabled]="!dialogRoleForm.valid">
+        <button matButton (click)="closeDialog()">Cancel</button>
+        <button matButton="filled" (click)="submitDialog()" [disabled]="!dialogRoleForm.valid">
             {{ isEditMode ? 'Update Role' : 'Add Role' }}
         </button>
     </mat-dialog-actions>
@@ -361,7 +358,7 @@
 <ng-template #addPermissionDialogTemplate>
     <div class="flex justify-between items-center mb-6">
         <h2 mat-dialog-title class="m-0">{{ isEditPermissionMode ? 'Edit Permission' : 'Add Permission' }}</h2>
-        <button mat-icon-button mat-dialog-close>
+        <button matIconButton mat-dialog-close>
             <mat-icon>close</mat-icon>
         </button>
     </div>
@@ -370,9 +367,9 @@
             <mat-form-field appearance="outline" class="w-full mb-6">
                 <mat-label>Permission Name <span class="text-danger">*</span></mat-label>
                 <input matInput formControlName="permissionName" placeholder="Enter permission name" />
-                <mat-error *ngIf="dialogPermissionForm.get('permissionName')?.hasError('required')">
-                    Permission name is required
-                </mat-error>
+                @if (dialogPermissionForm.get('permissionName')?.hasError('required')) {
+                <mat-error>Permission name is required</mat-error>
+                }
             </mat-form-field>
             <mat-form-field appearance="outline" class="w-full mb-6">
                 <mat-label>Description</mat-label>
@@ -381,13 +378,8 @@
         </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end" class="mt-6">
-        <button mat-button (click)="closePermissionDialog()">Cancel</button>
-        <button
-            mat-flat-button
-            color="primary"
-            (click)="submitPermissionDialog()"
-            [disabled]="!dialogPermissionForm.valid"
-        >
+        <button matButton (click)="closePermissionDialog()">Cancel</button>
+        <button matButton="filled" (click)="submitPermissionDialog()" [disabled]="!dialogPermissionForm.valid">
             {{ isEditPermissionMode ? 'Update Permission' : 'Add Permission' }}
         </button>
     </mat-dialog-actions>

@@ -1,7 +1,7 @@
 <div class="app-content flex justify-center project">
     <div class="w-3/4 border rounded-8 bg-gray" labelPosition="bottom">
+        @if (currentstep === 1) {
         <div
-            *ngIf="currentstep === 1"
             class="flex flex-col h-full pl-6 items-start"
             [formGroup]="primaryDetailsForm"
             proxyMarkAllAsTouched
@@ -11,14 +11,13 @@
             <h4 class="fw-bold text-secondary mat-body-1">Create Project</h4>
             <ng-container *ngTemplateOutlet="createProject"></ng-container>
 
-            <button mat-flat-button color="primary" #createProjectBtn>
+            <button matButton="filled" #createProjectBtn>
                 Next
                 <mat-icon matSuffix class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
             </button>
         </div>
-
+        } @if (currentstep == 2) {
         <div
-            *ngIf="currentstep == 2"
             class="flex flex-col h-full pl-6 items-start"
             [formGroup]="gatewayUrlDetailsForm"
             proxyMarkAllAsTouched
@@ -33,14 +32,13 @@
 
             <ng-container *ngTemplateOutlet="gateWayUrl"></ng-container>
 
-            <button mat-flat-button color="primary" #gatewayUrlBtn>
+            <button matButton="filled" #gatewayUrlBtn>
                 Next
                 <mat-icon matSuffix class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
             </button>
         </div>
-
+        } @if (currentstep == 3) {
         <div
-            *ngIf="currentstep == 3"
             class="flex flex-col h-full pl-6 items-start"
             proxyMarkAllAsTouched
             [formGroup]="gatewayUrlDetailsForm"
@@ -55,14 +53,15 @@
 
             <ng-container *ngTemplateOutlet="desnationUrl"></ng-container>
             <div class="flex items-center gap-4">
-                <button type="button" mat-flat-button class="flat-default" (click)="changeStep(2)">
+                <button type="button" matButton="filled" class="flat-default" (click)="changeStep(2)">
                     <mat-icon matPrefix class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                         >navigate_before</mat-icon
                     >Back
                 </button>
-                <button mat-flat-button matSuffix color="primary" #submitBtn>Submit</button>
+                <button matButton="filled" matSuffix #submitBtn>Submit</button>
             </div>
         </div>
+        }
     </div>
 </div>
 
@@ -88,19 +87,16 @@
                 [formControl]="primaryDetailsForm.get('selectedEnvironments')"
                 placeholder="Select Environment"
             >
-                <mat-option
-                    *ngFor="let environment of (environments$ | async)?.data"
-                    [value]="environment.name"
-                    class="mat-body-2"
-                >
+                @for (environment of (environments$ | async)?.data; track environment.name) {
+                <mat-option [value]="environment.name" class="mat-body-2">
                     {{ environment.name }}
                 </mat-option>
+                }
             </mat-select>
-            <mat-error *ngIf="primaryDetailsForm.get('selectedEnvironments').touched">
-                <mat-error *ngIf="primaryDetailsForm.get('selectedEnvironments')?.errors?.required">
-                    Environment is required
-                </mat-error>
-            </mat-error>
+            @if (primaryDetailsForm.get('selectedEnvironments').touched &&
+            primaryDetailsForm.get('selectedEnvironments')?.errors?.required) {
+            <mat-error>Environment is required</mat-error>
+            }
         </mat-form-field>
 
         <div class="flex gap-2 mt-6 w-1/2">
@@ -149,37 +145,33 @@
                 >Same for all environments</mat-checkbox
             >
             <div class="mt-2">
-                <ng-container *ngIf="gatewayUrlDetailsForm.get('useSameUrlForAll').value; else multiUrlTemplate">
-                    <ng-container
-                        *ngTemplateOutlet="
-                            inputField;
-                            context: {
-                                fieldControl: gatewayUrlDetailsForm.get('singleUrl'),
-                                fieldConfig: {
-                                    label: 'same url for all environment',
-                                    patternErrorText: 'URL must contain only alphanumeric and underscore'
-                                }
+                @if (gatewayUrlDetailsForm.get('useSameUrlForAll').value) {
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: gatewayUrlDetailsForm.get('singleUrl'),
+                            fieldConfig: {
+                                label: 'same url for all environment',
+                                patternErrorText: 'URL must contain only alphanumeric and underscore'
                             }
-                        "
-                    ></ng-container>
-                </ng-container>
-
-                <ng-template #multiUrlTemplate>
-                    <ng-container *ngFor="let control of gatewayUrls.controls; let i = index">
-                        <ng-container
-                            *ngTemplateOutlet="
-                                inputField;
-                                context: {
-                                    fieldControl: control,
-                                    fieldConfig: {
-                                        label: environments_with_slug[i]?.name,
-                                        patternErrorText: 'URL must contain only alphanumeric and underscore'
-                                    }
-                                }
-                            "
-                        ></ng-container>
-                    </ng-container>
-                </ng-template>
+                        }
+                    "
+                ></ng-container>
+                } @else { @for (control of gatewayUrls.controls; track i; let i = $index) {
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: control,
+                            fieldConfig: {
+                                label: environments_with_slug[i]?.name,
+                                patternErrorText: 'URL must contain only alphanumeric and underscore'
+                            }
+                        }
+                    "
+                ></ng-container>
+                } }
             </div>
         </div>
 
@@ -191,11 +183,13 @@
         <div class="w-40">
             <h5 class="fw-bold text-secondary mat-body-1">Use Ours</h5>
 
-            <div *ngFor="let slug of environments_with_slug">
+            @for (slug of environments_with_slug; track slug.name) {
+            <div>
                 <h5 class="fw-bold text-secondary mat-body-1 mb-1">{{ slug.name }}</h5>
                 <a class="link" target="_blank" [href]="slug.url">{{ slug.url }} </a>
                 <proxy-copy-button matSuffix [copyData]="slug.url" tooltip="Copy URL"></proxy-copy-button>
             </div>
+            }
             <div class="font-12 mt-6">
                 <span class="fw-bolder">Note: </span>
                 please copy the provided Gateway URL and utilize it within your user interface to invoke the API by
@@ -206,7 +200,8 @@
 </ng-template>
 <ng-template #desnationUrl>
     <div class="my-6 w-40">
-        <form class="flex" *ngIf="showEndpoint">
+        @if (showEndpoint) {
+        <form class="flex">
             <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Endpoint</mat-label>
                 <input matInput [formControl]="destinationUrlForm.get('endpoint')" required />
@@ -221,8 +216,8 @@
                 <mat-hint>Project unique identification In URL</mat-hint>
             </mat-form-field>
         </form>
-
-        <div class="flex" *ngFor="let control of forwardUrls.controls; let i = index">
+        } @for (control of forwardUrls.controls; track i; let i = $index) {
+        <div class="flex">
             <div class="width-md-200 flex forward-url">
                 <h5 class="m-0 font-14 fw-bold">{{ environments_with_slug[i]?.name }}</h5>
                 <mat-icon matSuffix>keyboard_arrow_right</mat-icon>
@@ -242,13 +237,14 @@
                 "
             ></ng-container>
         </div>
+        }
     </div>
 </ng-template>
 
 <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
     <mat-form-field appearance="outline" class="w-full">
-        <mat-label
-            >{{ fieldConfig?.label }} <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span>
+        <mat-label>
+            {{ fieldConfig?.label }} @if (fieldConfig?.is_required) { <span class="text-danger">*</span> }
         </mat-label>
 
         <input
@@ -259,7 +255,8 @@
             [formControl]="fieldControl"
         />
 
-        <mat-error *ngIf="fieldControl?.touched">
+        @if (fieldControl?.touched) {
+        <mat-error>
             <ng-container
                 *ngTemplateOutlet="
                     matErrors;
@@ -271,25 +268,20 @@
                 "
             ></ng-container>
         </mat-error>
-
-        <mat-hint *ngIf="fieldConfig?.hint">{{ fieldConfig?.hint }}</mat-hint>
+        } @if (fieldConfig?.hint) { <mat-hint>{{ fieldConfig?.hint }}</mat-hint> }
     </mat-form-field>
 </ng-template>
 
 <ng-template #matErrors let-label="label" let-fieldControl="fieldControl" let-patternErrorText="patternErrorText">
-    <mat-error *ngIf="fieldControl?.errors?.customError as customError"> {{ customError }} </mat-error>
-    <mat-error *ngIf="fieldControl.errors?.required"> {{ label }} is required. </mat-error>
-    <mat-error *ngIf="fieldControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
-    <mat-error *ngIf="fieldControl.errors?.noStartEndSpaces"> Start and End spaces are not allowed</mat-error>
-    <mat-error *ngIf="fieldControl.errors?.min as minError"> Min value required is {{ minError?.min }} </mat-error>
-    <mat-error *ngIf="fieldControl.errors?.max as maxError"> Max value allowed is {{ maxError?.max }} </mat-error>
-    <mat-error *ngIf="fieldControl.errors?.minlength as minLengthError">
-        Min required length is {{ minLengthError?.requiredLength }}
-    </mat-error>
-    <mat-error *ngIf="fieldControl.errors?.maxlength as maxLengthError">
-        Max allowed length is {{ maxLengthError?.requiredLength }}
-    </mat-error>
-    <mat-error *ngIf="fieldControl.errors?.pattern">
-        {{ patternErrorText ?? 'Enter valid ' + label }}
-    </mat-error>
+    @if (fieldControl?.errors?.customError; as customError) { <mat-error> {{ customError }} </mat-error> } @if
+    (fieldControl.errors?.required) { <mat-error> {{ label }} is required. </mat-error> } @if
+    (fieldControl.errors?.minlengthWithSpace) { <mat-error> Min required length is 3 </mat-error> } @if
+    (fieldControl.errors?.noStartEndSpaces) { <mat-error> Start and End spaces are not allowed</mat-error> } @if
+    (fieldControl.errors?.min; as minError) { <mat-error> Min value required is {{ minError?.min }} </mat-error> } @if
+    (fieldControl.errors?.max; as maxError) { <mat-error> Max value allowed is {{ maxError?.max }} </mat-error> } @if
+    (fieldControl.errors?.minlength; as minLengthError) {
+    <mat-error> Min required length is {{ minLengthError?.requiredLength }} </mat-error> } @if
+    (fieldControl.errors?.maxlength; as maxLengthError) {
+    <mat-error> Max allowed length is {{ maxLengthError?.requiredLength }} </mat-error> } @if
+    (fieldControl.errors?.pattern) { <mat-error> {{ patternErrorText ?? 'Enter valid ' + label }} </mat-error> }
 </ng-template>

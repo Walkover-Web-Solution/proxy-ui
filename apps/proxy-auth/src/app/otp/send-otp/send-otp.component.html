@@ -1,6 +1,6 @@
+@if (show$ | async) {
 <div
     class="container"
-    *ngIf="show$ | async"
     [class.with-reference-id]="referenceId"
     [class.without-reference-id]="authToken"
     [class.dark-theme]="
@@ -11,24 +11,19 @@
     "
     [class.user-management]="authToken && type === 'user-management'"
 >
+    @if (!authToken && type !== 'subscription' && type !== 'user-management') {
     <div
         class="otp-verification-dialog"
         [class.animation-complete]="animate"
         [class.register-user]="showRegistration | async"
         [class.dark-theme]="theme === 'dark'"
-        *ngIf="!authToken && type !== 'subscription' && type !== 'user-management'"
         [style.border-radius]="dialogBorderRadius || null"
     >
-        <mat-progress-bar
-            mode="indeterminate"
-            *ngIf="
-                (selectGetOtpInProcess$ | async) ||
-                (selectResendOtpInProcess$ | async) ||
-                (selectVerifyOtpInProcess$ | async)
-            "
-        ></mat-progress-bar>
+        @if ((selectGetOtpInProcess$ | async) || (selectResendOtpInProcess$ | async) || (selectVerifyOtpInProcess$ |
+        async)) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        } @if (!((showRegistration | async) || (showLogin | async))) {
         <proxy-send-otp-center
-            *ngIf="!((showRegistration | async) || (showLogin | async))"
             [referenceId]="referenceId"
             [serviceData]="otpWidgetData"
             [target]="target"
@@ -43,8 +38,8 @@
             (failureReturn)="returnFailureObj($event)"
             [isUserProxyContainer]="isUserProxyContainer"
         ></proxy-send-otp-center>
+        } @if (showRegistration | async) {
         <proxy-register
-            *ngIf="showRegistration | async"
             [referenceId]="referenceId"
             [serviceData]="otpWidgetData"
             [loginServiceData]="loginWidgetData"
@@ -62,8 +57,8 @@
             [signupServiceId]="otherData?.signupServiceId"
             [isRegisterFormOnly]="isRegisterFormOnly"
         ></proxy-register>
+        } @if (showLogin | async) {
         <proxy-login
-            *ngIf="showLogin | async"
             (togglePopUp)="toggleSendOtp()"
             (closePopUp)="setShowLogin(false)"
             [loginServiceData]="loginWidgetData"
@@ -72,10 +67,10 @@
             (failureReturn)="returnFailureObj($event)"
         >
         </proxy-login>
+        }
     </div>
-
+    } @if (authToken && type === 'user-management') {
     <proxy-user-management
-        *ngIf="authToken && type === 'user-management'"
         [userToken]="authToken"
         [pass]="isRolePermission"
         [theme]="theme"
@@ -83,7 +78,8 @@
         [exclude_role_ids]="exclude_role_ids"
         [include_role_ids]="include_role_ids"
     ></proxy-user-management>
-    <div [class.subscription-dialog]="type === 'subscription' && isPreview" *ngIf="type === 'subscription'">
+    } @if (type === 'subscription') {
+    <div [class.subscription-dialog]="type === 'subscription' && isPreview">
         <proxy-subscription-center
             [referenceId]="referenceId"
             (togglePopUp)="handleSubscriptionToggle($event)"
@@ -92,20 +88,12 @@
             [loginRedirectUrl]="loginRedirectUrl"
         ></proxy-subscription-center>
     </div>
-    <proxy-user-profile
-        *ngIf="authToken && type !== 'user-management' && type !== 'subscription' && type !== 'organization-details'"
-        [authToken]="authToken"
-        [theme]="theme"
-    ></proxy-user-profile>
-    <organization-details
-        *ngIf="authToken && type === 'organization-details'"
-        [authToken]="authToken"
-        [theme]="theme"
-    ></organization-details>
-    <div
-        class="otp-verification-footer"
-        *ngIf="!authToken && !type === 'user-management' && !type === 'subscription' && referenceId"
-    >
+    } @if (authToken && type !== 'user-management' && type !== 'subscription' && type !== 'organization-details') {
+    <proxy-user-profile [authToken]="authToken" [theme]="theme"></proxy-user-profile>
+    } @if (authToken && type === 'organization-details') {
+    <organization-details [authToken]="authToken" [theme]="theme"></organization-details>
+    } @if (!authToken && !type === 'user-management' && !type === 'subscription' && referenceId) {
+    <div class="otp-verification-footer">
         <span>Secured by</span>
         <svg
             width="56"
@@ -129,4 +117,6 @@
             />
         </svg>
     </div>
+    }
 </div>
+}

@@ -3,22 +3,22 @@
     <p class="text-dark mat-body-2 my-0" [innerHTML]="confirmationMessage"></p>
 </div>
 <div cdkTrapFocus mat-dialog-actions class="flex gap-2 items-center" [class]="footerButtonPosition">
+    @if (showCancelButton) {
     <button
-        *ngIf="showCancelButton"
         cdkFocusRegionStart
         type="reset"
         [class]="cancelButtonClass"
         mat-dialog-close
-        mat-button
+        matButton
         [color]="cancelButtonColor"
         (click)="closeDialog('no')"
     >
         {{ cancelButtonText }}
     </button>
+    } @if (showConfirmButton) {
     <button
-        *ngIf="showConfirmButton"
         type="button"
-        mat-flat-button
+        matButton="filled"
         mat-dialog-close
         cdkFocusRegionEnd
         cdkFocusInitial
@@ -28,4 +28,5 @@
     >
         {{ confirmButtonText }}
     </button>
+    }
 </div>
