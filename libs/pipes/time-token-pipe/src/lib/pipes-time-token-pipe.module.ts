@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import * as dayjs from 'dayjs';
 import * as objectSupport from 'dayjs/plugin/objectSupport';
 import { ConvertToDigitTimeToken } from '@proxy/utils';
@@ -39,15 +39,8 @@ export class TimeTokenPipe implements PipeTransform {
     }
 }
 
-@NgModule({
+@({
     declarations: [TimeTokenPipe],
     exports: [TimeTokenPipe],
 })
-export class PipesTimeTokenPipeModule {
-    public static forRoot(): ModuleWithProviders<PipesTimeTokenPipeModule> {
-        return {
-            ngModule: PipesTimeTokenPipeModule,
-            providers: [TimeTokenPipe],
-        };
-    }
-}
+export class PipesTimeTokenPipeModule {}

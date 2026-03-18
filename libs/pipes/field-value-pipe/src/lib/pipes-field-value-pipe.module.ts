@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
 type KeyValue = { [key: string]: any };
 type ReturnValue = string | KeyValue;
@@ -37,15 +37,8 @@ export class FieldValuePipe implements PipeTransform {
     }
 }
 
-@NgModule({
+@({
     declarations: [FieldValuePipe],
     exports: [FieldValuePipe],
 })
-export class PipesFieldValuePipeModule {
-    public static forRoot(): ModuleWithProviders<PipesFieldValuePipeModule> {
-        return {
-            ngModule: PipesFieldValuePipeModule,
-            providers: [FieldValuePipe],
-        };
-    }
-}
+export class PipesFieldValuePipeModule {}

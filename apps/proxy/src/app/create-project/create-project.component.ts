@@ -1,4 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { CopyButtonComponent } from '@proxy/ui/copy-button';
+import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
@@ -20,13 +36,36 @@ import {
 import { IClientData } from '@proxy/models/users-model';
 
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-create-project',
+    imports: [
+        CommonModule,
+        RouterModule,
+        ReactiveFormsModule,
+        MatStepperModule,
+        MatIconModule,
+        MatCardModule,
+        MatButtonModule,
+        MatListModule,
+        MatSelectModule,
+        MatInputModule,
+        MatCheckboxModule,
+        MatAutocompleteModule,
+        MatTooltipModule,
+        MatFormFieldModule,
+        CopyButtonComponent,
+        MarkAllAsTouchedDirective,
+    ],
     templateUrl: './create-project.component.html',
     styleUrls: ['./create-project.component.scss'],
     providers: [CreateProjectComponentStore],
 })
 export class CreateProjectComponent extends BaseComponent implements OnInit {
+    private componentStore = inject(CreateProjectComponentStore);
+    private fb = inject(FormBuilder);
+    private store = inject<Store<IAppState>>(Store);
+    private cdr = inject(ChangeDetectorRef);
+
     public primaryDetailsForm: FormGroup<IPrimaryDetailsForm>;
     public gatewayUrlDetailsForm: FormGroup<IGatewayUrlDetailsForm>;
     public destinationUrlForm: FormGroup<IDestinationUrlForm>;
@@ -47,11 +86,7 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
     public projectId: number;
     public urlUniqId: string;
 
-    constructor(
-        private componentStore: CreateProjectComponentStore,
-        private fb: FormBuilder,
-        private store: Store<IAppState>
-    ) {
+    constructor() {
         super();
         this.projects$ = this.store.pipe(select(selectAllProjectList));
 
@@ -99,6 +134,7 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
                     });
                     this.populateGatewayUrls();
                     this.populateForwardUrls();
+                    this.cdr.markForCheck();
                 }
             });
         });
@@ -119,6 +155,7 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
                 });
                 this.populateGatewayUrls();
                 this.populateForwardUrls();
+                this.cdr.markForCheck();
             }
         });
         this.createProjectSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
@@ -126,6 +163,7 @@ export class CreateProjectComponent extends BaseComponent implements OnInit {
                 this.changeStep(2);
                 this.store.dispatch(rootActions.getAllProject());
                 this.getClientData(res.client_id);
+                this.cdr.markForCheck();
             }
         });
     }

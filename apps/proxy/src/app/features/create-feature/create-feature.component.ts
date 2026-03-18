@@ -1,6 +1,28 @@
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { LoaderComponent } from '@proxy/ui/loader';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatListModule } from '@angular/material/list';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { CopyButtonComponent } from '@proxy/ui/copy-button';
+import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatRadioModule } from '@angular/material/radio';
+import { MarkdownModule } from 'ngx-markdown';
 import { cloneDeep, isEqual } from 'lodash-es';
 import {
+    ChangeDetectionStrategy,
     Component,
     OnDestroy,
     OnInit,
@@ -12,6 +34,7 @@ import {
     ElementRef,
     AfterViewInit,
     TemplateRef,
+    inject,
 } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { BehaviorSubject, Observable, distinctUntilChanged, filter, of, take, takeUntil } from 'rxjs';
@@ -81,8 +104,33 @@ export interface PeriodicElement {
     code?: string;
 }
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-create-feature',
+    imports: [
+        CommonModule,
+        RouterModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatCardModule,
+        MatButtonModule,
+        LoaderComponent,
+        MatStepperModule,
+        MatListModule,
+        MatChipsModule,
+        MarkdownModule,
+        MatTabsModule,
+        MatSlideToggleModule,
+        CopyButtonComponent,
+        MatTableModule,
+        MatDialogModule,
+        MatSelectModule,
+        MatTooltipModule,
+        MatExpansionModule,
+        MatRadioModule,
+    ],
     templateUrl: './create-feature.component.html',
     styleUrls: ['./create-feature.component.scss'],
     providers: [CreateFeatureComponentStore],
@@ -93,6 +141,15 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     @ViewChild('authorizationStepContent', { read: ElementRef }) authorizationStepContent: ElementRef<HTMLElement>;
     @ViewChild('configureMethodDialogTemplate', { read: TemplateRef })
     configureMethodDialogTemplateRef: TemplateRef<unknown>;
+
+    private componentStore = inject(CreateFeatureComponentStore);
+    private cdr = inject(ChangeDetectorRef);
+    private activatedRoute = inject(ActivatedRoute);
+    private toast = inject(PrimeNgToastService);
+    private ngZone = inject(NgZone);
+    private dialog = inject(MatDialog);
+    private http = inject(HttpClient);
+
     public taxes: any[] = [];
     public createPlanForm: any;
     public taxConfigData: any;
@@ -253,17 +310,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     });
     public demoDiv$: Observable<string> = of(null);
     public keepOrder = () => 0;
-    constructor(
-        private componentStore: CreateFeatureComponentStore,
-        private cdr: ChangeDetectorRef,
-        private activatedRoute: ActivatedRoute,
-        private toast: PrimeNgToastService,
-        private ngZone: NgZone,
-        private dialog: MatDialog,
-        private http: HttpClient
-    ) {
-        super();
-    }
 
     ngOnInit(): void {
         this.componentStore.getWebhookEvents();
@@ -1216,9 +1262,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     public deleteMetric(index: number): void {
         const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
-        const componentInstance = dialogRef.componentInstance;
-        componentInstance.confirmationMessage = `Are you sure to delete this metric?`;
-        componentInstance.confirmButtonText = 'Delete';
+        dialogRef.componentRef.setInput('confirmationMessage', `Are you sure to delete this metric?`);
+        dialogRef.componentRef.setInput('confirmButtonText', 'Delete');
         dialogRef.afterClosed().subscribe((action) => {
             if (action === 'yes') {
                 this.componentStore.deleteBillableMetric({
@@ -1785,9 +1830,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     }
     public deletePlan(plan: any): void {
         const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
-        const componentInstance = dialogRef.componentInstance;
-        componentInstance.confirmationMessage = `Are you sure to delete this metric?`;
-        componentInstance.confirmButtonText = 'Delete';
+        dialogRef.componentRef.setInput('confirmationMessage', `Are you sure to delete this metric?`);
+        dialogRef.componentRef.setInput('confirmButtonText', 'Delete');
         dialogRef.afterClosed().subscribe((action) => {
             if (action === 'yes') {
                 this.componentStore.deletePlan({ refId: this.getReferenceId(), code: plan.code });
@@ -1935,9 +1979,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     }
     public deleteTax(tax: any): void {
         const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
-        const componentInstance = dialogRef.componentInstance;
-        componentInstance.confirmationMessage = `Are you sure to delete this tax?`;
-        componentInstance.confirmButtonText = 'Delete';
+        dialogRef.componentRef.setInput('confirmationMessage', `Are you sure to delete this tax?`);
+        dialogRef.componentRef.setInput('confirmButtonText', 'Delete');
         dialogRef.afterClosed().subscribe((action) => {
             if (action === 'yes') {
                 this.componentStore.deleteTax({ refId: this.getReferenceId(), code: tax.code });

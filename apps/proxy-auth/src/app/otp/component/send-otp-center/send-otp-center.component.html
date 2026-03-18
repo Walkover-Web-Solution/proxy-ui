@@ -11,7 +11,7 @@
         @if (selectWidgetData$ | async; as widgetDataArray) {
         <!-- Logo + Login Title - Always at top -->
         @for (widgetData of widgetDataArray; track widgetData.service_id) { @if (widgetData?.service_id ===
-        featureServiceIds.PasswordAuthentication && version === 'v2' && loginStep === 1) { @if (selectWidgetTheme$ |
+        featureServiceIds.PasswordAuthentication && version() === 'v2' && loginStep === 1) { @if (selectWidgetTheme$ |
         async; as widgetTheme) { @if (widgetTheme?.ui_preferences?.logo_url) {
         <div class="logo-container">
             <img [src]="widgetTheme.ui_preferences.logo_url" alt="Logo" class="logo-image" loading="lazy" />
@@ -21,7 +21,7 @@
         } }
 
         <!-- input_fields = 'top': Login form first, OR divider, then social buttons -->
-        @if (input_fields === 'top') {
+        @if (input_fields() === 'top') {
         <!-- Password Authentication Login Form (without OR divider) -->
         <ng-container
             *ngTemplateOutlet="loginFormTemplate; context: { widgetDataArray: widgetDataArray }"
@@ -39,7 +39,7 @@
         }
 
         <!-- input_fields = 'bottom': Social buttons first, OR divider, then login form -->
-        @if (input_fields === 'bottom') {
+        @if (input_fields() === 'bottom') {
         <!-- Social buttons (without create account) -->
         <ng-container
             *ngTemplateOutlet="socialButtonsOnlyTemplate; context: { widgetDataArray: widgetDataArray }"
@@ -101,7 +101,7 @@
     <!-- OR Divider Template -->
     <ng-template #orDividerTemplate let-widgetDataArray="widgetDataArray">
         @for (widgetData of widgetDataArray; track widgetData.service_id) { @if (widgetData?.service_id ===
-        featureServiceIds.PasswordAuthentication && version === 'v2' && loginStep === 1) { @if
+        featureServiceIds.PasswordAuthentication && version() === 'v2' && loginStep === 1) { @if
         (hasOtherAuthOptions(widgetDataArray)) {
         <div class="divider-container">
             <div class="divider-line"></div>
@@ -114,7 +114,7 @@
     <!-- Login Form Template (without OR divider) -->
     <ng-template #loginFormTemplate let-widgetDataArray="widgetDataArray">
         @for (widgetData of widgetDataArray; track widgetData.service_id) { @if (widgetData?.service_id ===
-        featureServiceIds.PasswordAuthentication && version === 'v2') { @if (loginStep === 1) {
+        featureServiceIds.PasswordAuthentication && version() === 'v2') { @if (loginStep === 1) {
         <div
             class="login-section"
             [formGroup]="loginForm"
@@ -158,8 +158,8 @@
 
             <!-- hCaptcha Component -->
             <div class="hcaptcha-container">
-                <!-- hCaptcha is in 2.6 version but angular is in 14, due to this incompatibility, we are using ng-container to wrap the hCaptcha component instead of using [theme]="theme === 'dark' ? 'dark' : 'light'"-->
-                @if (theme === 'dark') {
+                <!-- hCaptcha is in 2.6 version but angular is in 14, due to this incompatibility, we are using ng-container to wrap the hCaptcha component instead of using [theme]="theme() === 'dark' ? 'dark' : 'light'"-->
+                @if (theme() === 'dark') {
                 <ng-hcaptcha
                     #hCaptcha
                     (verify)="onHCaptchaVerify($event)"
@@ -168,7 +168,7 @@
                     theme="dark"
                     size="normal"
                 ></ng-hcaptcha>
-                } @if (theme === 'light') {
+                } @if (theme() === 'light') {
                 <ng-hcaptcha
                     #hCaptcha
                     (verify)="onHCaptchaVerify($event)"
@@ -380,7 +380,7 @@
         <div class="social-icons-row">
             @for (widgetData of widgetDataArray; track widgetData.service_id) { @if (widgetData?.service_id !==
             featureServiceIds.PasswordAuthentication || (widgetData?.service_id ===
-            featureServiceIds.PasswordAuthentication && version === 'v1')) { @if (widgetData?.service_id !==
+            featureServiceIds.PasswordAuthentication && version() === 'v1')) { @if (widgetData?.service_id !==
             featureServiceIds.Msg91OtpService || !(otpScriptLoading | async)) {
             <button
                 (click)="onVerificationBtnClick(widgetData)"
@@ -404,7 +404,7 @@
         <!-- Full buttons mode (show_social_login_icons = false) -->
         @if (!show_social_login_icons) { @for (widgetData of widgetDataArray; track widgetData.service_id) { @if
         (widgetData?.service_id !== featureServiceIds.PasswordAuthentication || (widgetData?.service_id ===
-        featureServiceIds.PasswordAuthentication && version === 'v1')) { @if (widgetData?.service_id !==
+        featureServiceIds.PasswordAuthentication && version() === 'v1')) { @if (widgetData?.service_id !==
         featureServiceIds.Msg91OtpService || !(otpScriptLoading | async)) {
         <button
             matButton="outlined"

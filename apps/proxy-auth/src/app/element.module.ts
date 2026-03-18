@@ -1,14 +1,26 @@
-import { ApplicationRef, DoBootstrap, Injector, NgModule } from '@angular/core';
+import { ApplicationRef, DoBootstrap, Injector, NgModule, inject } from '@angular/core';
 import { createCustomElement, NgElement, WithProperties } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { OtpModule } from './otp/otp.module';
 import { SendOtpComponent } from './otp/send-otp/send-otp.component';
 import { omit } from 'lodash-es';
 import { UserProfileComponent } from './otp/user-profile/user-profile.component';
 import { ConfirmationDialogComponent } from './otp/user-profile/user-dialog/user-dialog.component';
 import { interval } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { HttpClientModule } from '@angular/common/http';
+import { NgHcaptchaModule } from 'ng-hcaptcha';
+import { reducers } from './otp/store/app.state';
+import { OtpEffects } from './otp/store/effects';
+import { OtpService } from './otp/service/otp.service';
+import { OtpUtilityService } from './otp/service/otp-utility.service';
+import { OtpWidgetService } from './otp/service/otp-widget.service';
+import { ProxyBaseUrls } from '@proxy/models/root-models';
+import { environment } from '../environments/environment';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { ShadowDomOverlayContainer } from './shadow-dom-overlay-container';
 
 export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure'];
 
@@ -155,11 +167,35 @@ window['initVerification'] = (config: any) => {
 };
 
 @NgModule({
-    imports: [BrowserModule, BrowserAnimationsModule, OtpModule],
-    exports: [OtpModule],
+    imports: [
+        SendOtpComponent,
+        ConfirmationDialogComponent,
+        BrowserModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        NgHcaptchaModule.forRoot({ siteKey: environment.hCaptchaSiteKey }),
+        EffectsModule.forRoot([OtpEffects]),
+        StoreModule.forRoot(reducers, {
+            runtimeChecks: {
+                strictStateImmutability: true,
+                strictActionImmutability: true,
+            },
+        }),
+    ],
+    providers: [
+        OtpService,
+        OtpUtilityService,
+        OtpWidgetService,
+        { provide: OverlayContainer, useClass: ShadowDomOverlayContainer },
+        { provide: ProxyBaseUrls.Env, useValue: environment.env },
+        { provide: ProxyBaseUrls.BaseURL, useValue: environment.apiUrl + environment.msgMidProxy },
+        { provide: ProxyBaseUrls.ClientURL, useValue: environment.apiUrl + environment.msgMidProxy },
+    ],
 })
 export class ElementModule implements DoBootstrap {
-    constructor(private injector: Injector) {
+    private injector = inject(Injector);
+
+    constructor() {
         if (!customElements.get('proxy-auth')) {
             const sendOtpComponent = createCustomElement(SendOtpComponent, {
                 injector: this.injector,

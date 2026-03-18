@@ -1,4 +1,23 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatListModule } from '@angular/material/list';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { NoRecordFoundComponent } from '@proxy/ui/no-record-found';
+import { MatPaginatorGotoComponent } from '@proxy/ui/mat-paginator-goto';
+import { SearchComponent } from '@proxy/ui/search';
+import { SkeletonDirective } from '@proxy/directives/skeleton';
+import { LoaderComponent } from '@proxy/ui/loader';
+import { CopyButtonComponent } from '@proxy/ui/copy-button';
+import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { PAGE_SIZE_OPTIONS } from '@proxy/constant';
 import { omit } from 'lodash-es';
@@ -8,13 +27,37 @@ import { Observable } from 'rxjs';
 import { IFeature } from '@proxy/models/features-model';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-features',
+    imports: [
+        CommonModule,
+        RouterModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatCardModule,
+        MatButtonModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatTableModule,
+        MatStepperModule,
+        MatListModule,
+        MatTooltipModule,
+        NoRecordFoundComponent,
+        MatPaginatorGotoComponent,
+        SearchComponent,
+        SkeletonDirective,
+        LoaderComponent,
+        CopyButtonComponent,
+        ConfirmDialogComponent,
+    ],
     templateUrl: './feature.component.html',
     styleUrls: ['./feature.component.scss'],
     providers: [FeatureComponentStore],
 })
 export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit {
+    private componentStore = inject(FeatureComponentStore);
+
     /** Store Feature Data */
     public feature$: Observable<IPaginatedResponse<IFeature[]>> = this.componentStore.feature$;
     /** Store current API Inprogress State */
@@ -28,9 +71,6 @@ export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit
     /** Store page size option */
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
 
-    constructor(private componentStore: FeatureComponentStore) {
-        super();
-    }
     ngOnInit(): void {
         this.getFeatures();
     }

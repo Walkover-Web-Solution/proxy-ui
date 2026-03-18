@@ -13,9 +13,3 @@ export class DateAddPipe implements PipeTransform {
         return currentDate;
     }
 }
-
-@({
-    declarations: [DateAddPipe],
-    exports: [DateAddPipe],
-})
-export class PipesChartDateAddModule {}

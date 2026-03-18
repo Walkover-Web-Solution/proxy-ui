@@ -1,5 +1,7 @@
-import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { select, Store } from '@ngrx/store';
 import { leaveCompany } from '../../store/actions/otp.action';
 import { Observable } from 'rxjs';
@@ -7,22 +9,24 @@ import { leaveCompanySuccess } from '../../store/selectors';
 import { IAppState } from '../../store/app.state';
 
 @Component({
-    standalone: false,
     selector: 'proxy-confirmation-dialog',
+    imports: [CommonModule, MatDialogModule, MatButtonModule],
     templateUrl: './user-dialog.component.html',
     styleUrls: ['./user-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmationDialogComponent {
     deleteCompany$: Observable<any>;
     theme: string;
-    constructor(
-        public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { companyId: any; authToken: string; theme: string },
-        private store: Store<IAppState>
-    ) {
+
+    public dialogRef = inject<MatDialogRef<ConfirmationDialogComponent>>(MatDialogRef);
+    public data = inject<{ companyId: any; authToken: string; theme: string }>(MAT_DIALOG_DATA);
+    private store = inject<Store<IAppState>>(Store);
+
+    constructor() {
         this.deleteCompany$ = this.store.pipe(select(leaveCompanySuccess));
-        this.theme = data.theme;
+        this.theme = this.data.theme;
         if (this.theme === 'dark') {
             this.dialogRef.addPanelClass('confirm-dialog-dark');
         }

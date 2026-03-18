@@ -1,5 +1,4 @@
-import { NgModule, Pipe, PipeTransform } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
     name: 'replace',
@@ -32,11 +31,3 @@ export class ReplacePipe implements PipeTransform {
         return value;
     }
 }
-
-@NgModule({
-    imports: [CommonModule],
-    declarations: [ReplacePipe],
-    exports: [ReplacePipe],
-    providers: [ReplacePipe],
-})
-export class PipesReplaceModule {}

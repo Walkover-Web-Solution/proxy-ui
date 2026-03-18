@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, Output, EventEmitter, Inject, Optional } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { select, Store } from '@ngrx/store';
 import { IAppState } from '../../store/app.state';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -29,28 +35,29 @@ export interface SubscriptionPlan {
 }
 
 @Component({
-    standalone: false,
     selector: 'proxy-subscription-center',
+    imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatDialogModule, MatProgressSpinnerModule],
     templateUrl: './subscription-center.component.html',
     styleUrls: ['./subscription-center.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubscriptionCenterComponent extends BaseComponent implements OnInit {
-    @Input() public referenceId: string;
-    @Output() public closeEvent = new EventEmitter<boolean>();
-    @Output() public planSelected = new EventEmitter<SubscriptionPlan>();
-    @Input() public isPreview: boolean = false;
-    @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
-    @Input() public isLogin: boolean;
-    @Input() public loginRedirectUrl: string;
+    public referenceId = input<string>();
+    public closeEvent = output<boolean>();
+    public planSelected = output<SubscriptionPlan>();
+    public isPreview = input<boolean>(false);
+    public togglePopUp = output<void>();
+    public isLogin = input<boolean>();
+    public loginRedirectUrl = input<string>();
 
     public subscriptionPlans$: Observable<any>;
     public subscriptionPlans: any[] = [];
 
-    constructor(
-        private store: Store<IAppState>,
-        @Optional() public dialogRef: MatDialogRef<SubscriptionCenterComponent>,
-        @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
-    ) {
+    private store = inject<Store<IAppState>>(Store);
+    public dialogRef = inject<MatDialogRef<SubscriptionCenterComponent>>(MatDialogRef, { optional: true });
+    public dialogData = inject<any>(MAT_DIALOG_DATA, { optional: true });
+
+    constructor() {
         super();
 
         this.subscriptionPlans$ = this.store.pipe(
@@ -78,7 +85,7 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
             priceValue: this.extractPriceValue(plan.plan_price),
             currency: this.extractCurrency(plan.plan_price),
             period: 'per month',
-            buttonText: this.isLogin ? 'Upgrade' : 'Get Started',
+            buttonText: this.isLogin() ? 'Upgrade' : 'Get Started',
             buttonStyle: 'primary',
             isPopular: plan.PlanMeta?.highlight_plan || false,
             tag: plan.plan_meta?.tag || '',
@@ -88,9 +95,9 @@ export class SubscriptionCenterComponent extends BaseComponent implements OnInit
             metrics: plan.plan_meta?.metrics || [],
             extraFeatures: plan.plan_meta?.extra || [],
             status: 'active',
-            subscribeButtonLink: this.isLogin
-                ? plan.subscribe_button_link?.replace('{ref_id}', this.referenceId)
-                : this.loginRedirectUrl,
+            subscribeButtonLink: this.isLogin()
+                ? plan.subscribe_button_link?.replace('{ref_id}', this.referenceId())
+                : this.loginRedirectUrl(),
             subscribeButtonHidden: false,
         }));
     }

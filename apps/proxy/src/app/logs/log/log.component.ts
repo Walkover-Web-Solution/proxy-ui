@@ -1,4 +1,36 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    inject,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { DateRangePickerComponent } from '@proxy/date-range-picker';
+import { NoRecordFoundComponent } from '@proxy/ui/no-record-found';
+import { MatPaginatorGotoComponent } from '@proxy/ui/mat-paginator-goto';
+import { LoaderComponent } from '@proxy/ui/loader';
+import { SearchComponent } from '@proxy/ui/search';
+import { RemoveCharacterDirective } from '@proxy/directives/RemoveCharacterDirective';
+import { CDKScrollComponent } from '@proxy/ui/virtual-scroll';
+import { LogsDetailsSideDialogComponent } from '../log-details-side-dialog/log-details-side-dialog.component';
 import { BaseComponent } from '@proxy/ui/base-component';
 import {
     DEFAULT_END_DATE,
@@ -21,15 +53,41 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { CustomValidators } from '@proxy/custom-validator';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { LogsDetailsSideDialogComponent } from '../log-details-side-dialog/log-details-side-dialog.component';
 import { Store, select } from '@ngrx/store';
 import { IAppState, selectClientSettings } from '../../ngrx';
 
 type FilterTypes = 'environments' | 'projects';
 
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-logs',
+    imports: [
+        CommonModule,
+        RouterModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatCardModule,
+        MatButtonModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatMenuModule,
+        MatIconModule,
+        MatTableModule,
+        MatSortModule,
+        MatCheckboxModule,
+        MatDividerModule,
+        MatDialogModule,
+        MatAutocompleteModule,
+        DateRangePickerComponent,
+        NoRecordFoundComponent,
+        MatPaginatorGotoComponent,
+        LoaderComponent,
+        SearchComponent,
+        RemoveCharacterDirective,
+        CDKScrollComponent,
+        LogsDetailsSideDialogComponent,
+    ],
     templateUrl: './log.component.html',
     styleUrls: ['./log.component.scss'],
     providers: [LogsComponentStore],
@@ -37,6 +95,11 @@ type FilterTypes = 'environments' | 'projects';
 export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
     @ViewChild(MatSort) matSort: MatSort;
     @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+
+    private componentStore = inject(LogsComponentStore);
+    private store = inject<Store<IAppState>>(Store);
+    private dialog = inject(MatDialog);
+    private cdr = inject(ChangeDetectorRef);
 
     public displayedColumns: string[] = [
         'created_at',
@@ -96,11 +159,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
         CustomValidators.greaterThan('from', 'to')
     );
 
-    constructor(
-        private componentStore: LogsComponentStore,
-        private store: Store<IAppState>,
-        private dialog: MatDialog
-    ) {
+    constructor() {
         super();
         this.clientSettings$ = this.store.pipe(
             select(selectClientSettings),
@@ -320,6 +379,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
             this.logDetailDialogRef.afterClosed().subscribe(() => {
                 this.componentStore.resetReqLog();
                 this.logDetailDialogRef = null;
+                this.cdr.markForCheck();
             });
         }
     }

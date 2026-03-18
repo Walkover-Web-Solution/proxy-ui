@@ -1,6 +1,21 @@
 import { OtpService } from './../service/otp.service';
-import { NgStyle } from '@angular/common';
-import { Component, Input, NgZone, OnDestroy, OnInit, Renderer2, ViewEncapsulation } from '@angular/core';
+import { CommonModule, NgStyle } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { SendOtpCenterComponent } from '../component';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    Input,
+    NgZone,
+    OnDestroy,
+    OnInit,
+    Renderer2,
+    ViewEncapsulation,
+    inject,
+} from '@angular/core';
 import { META_TAG_ID } from '@proxy/constant';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
@@ -42,10 +57,19 @@ export enum InputFields {
 }
 
 @Component({
-    standalone: false,
     selector: 'proxy-send-otp',
+    imports: [
+        CommonModule,
+        MatProgressSpinnerModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatIconModule,
+        SubscriptionCenterComponent,
+        SendOtpCenterComponent,
+    ],
     templateUrl: './send-otp.component.html',
     encapsulation: ViewEncapsulation.ShadowDom,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['../../../styles.scss', './send-otp.component.scss'],
 })
 export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy {
@@ -109,6 +133,9 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     public authReference: HTMLElement = null;
     public showCard: boolean = false;
     public subscriptionPlans: any[] = [];
+
+    private otpWidgetService = inject(OtpWidgetService);
+
     public showLogin: BehaviorSubject<boolean> = this.otpWidgetService.showlogin;
     public showSkeleton: boolean = false;
     public upgradeSubscriptionData: any;
@@ -118,15 +145,14 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     private hcaptchaRenderQueue: Array<() => void> = [];
     public isUserProxyContainer: boolean = true;
 
-    constructor(
-        private ngZone: NgZone,
-        private store: Store<IAppState>,
-        private renderer: Renderer2,
-        private otpWidgetService: OtpWidgetService,
-        private otpUtilityService: OtpUtilityService,
-        private otpService: OtpService,
-        private dialog: MatDialog
-    ) {
+    private ngZone = inject(NgZone);
+    private store = inject<Store<IAppState>>(Store);
+    private renderer = inject(Renderer2);
+    private otpUtilityService = inject(OtpUtilityService);
+    private otpService = inject(OtpService);
+    private dialog = inject(MatDialog);
+
+    constructor() {
         super();
         this.selectGetOtpInProcess$ = this.store.pipe(
             select(selectGetOtpInProcess),

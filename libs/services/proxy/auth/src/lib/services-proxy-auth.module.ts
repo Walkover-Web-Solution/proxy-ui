@@ -1,5 +1,4 @@
-import { NgModule, Inject, Injectable } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { from, Observable } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
@@ -8,13 +7,8 @@ import { IToken, ProxyBaseUrls } from '@proxy/models/root-models';
 import * as dayjs from 'dayjs';
 import { CookieService } from 'ngx-cookie-service';
 
-@NgModule({
-    imports: [CommonModule],
-})
-export class ServicesProxyAuthModule {}
-
 @Injectable({
-    providedIn: ServicesProxyAuthModule,
+    providedIn: 'root',
 })
 export class AuthService {
     constructor(

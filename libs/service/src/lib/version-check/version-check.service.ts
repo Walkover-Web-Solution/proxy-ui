@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { VersionCheckServiceModule } from '.';
@@ -14,7 +14,7 @@ export class VersionCheckService {
     /** This will be replaced by actual hash */
     private currentHash = '{{POST_BUILD_ENTERS_HASH_HERE}}';
 
-    constructor(private http: HttpClient) {}
+    private http = inject(HttpClient);
 
     /**
      * Checks in every set frequency the version of frontend application

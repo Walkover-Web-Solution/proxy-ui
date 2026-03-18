@@ -1,4 +1,18 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CDKScrollComponent } from '@proxy/ui/virtual-scroll';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MainLeftSideNavComponent } from './main-left-side-nav/main-left-side-nav.component';
 import { IClient, IClientSettings, IFirebaseUserModel, IPaginatedResponse } from '@proxy/models/root-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store, select } from '@ngrx/store';
@@ -14,8 +28,24 @@ import { RootService } from '@proxy/services/proxy/root';
 import { environment } from '../../environments/environment';
 import { AuthService } from '@proxy/services/proxy/auth';
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-layout',
+    imports: [
+        RouterModule,
+        CommonModule,
+        MatMenuModule,
+        MatButtonModule,
+        MatDividerModule,
+        MatIconModule,
+        MatListModule,
+        MatSidenavModule,
+        MatToolbarModule,
+        MatExpansionModule,
+        MatTooltipModule,
+        CDKScrollComponent,
+        ScrollingModule,
+        MainLeftSideNavComponent,
+    ],
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.scss'],
 })
@@ -33,14 +63,15 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
         itemsPerPage: 25,
         pageNo: 1,
     };
-    constructor(
-        private store: Store<ILogInFeatureStateWithRootState>,
 
-        private router: Router,
-        private route: ActivatedRoute,
-        private rootService: RootService,
-        private authService: AuthService
-    ) {
+    private store = inject<Store<ILogInFeatureStateWithRootState>>(Store);
+    private router = inject(Router);
+    private route = inject(ActivatedRoute);
+    private rootService = inject(RootService);
+    private authService = inject(AuthService);
+    private cdr = inject(ChangeDetectorRef);
+
+    constructor() {
         super();
         this.logInData$ = this.store.pipe(
             select(selectLogInData),
@@ -71,6 +102,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
             } else {
                 console.error('Element with ID "chatbotContainer" not found');
             }
+            this.cdr.markForCheck();
         });
     }
     ngOnInit(): void {

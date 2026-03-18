@@ -1,1 +1,1 @@
-export * from './lib/ui-virtual-scroll.module';
+export * from './lib/cdk-scroll/cdk-scroll.component';

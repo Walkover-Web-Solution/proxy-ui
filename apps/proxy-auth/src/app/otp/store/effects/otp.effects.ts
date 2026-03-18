@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { errorResolver } from '@proxy/models/root-models';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
@@ -11,11 +11,9 @@ import { environment } from 'apps/proxy-auth/src/environments/environment';
 
 @Injectable()
 export class OtpEffects {
-    constructor(
-        private actions$: Actions,
-        private otpService: OtpService,
-        private otpUtilityService: OtpUtilityService
-    ) {}
+    private actions$ = inject(Actions);
+    private otpService = inject(OtpService);
+    private otpUtilityService = inject(OtpUtilityService);
 
     getWidgetData$ = createEffect(() =>
         this.actions$.pipe(

@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, inject, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MatRadioModule } from '@angular/material/radio';
+import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
+import { RemoveCharacterDirective } from '@proxy/directives/RemoveCharacterDirective';
 import { LoginComponentStore } from './login.store';
 import { BehaviorSubject, filter, interval, Observable, Subscription, takeUntil } from 'rxjs';
 import { IAppState } from '../../store/app.state';
@@ -16,19 +26,31 @@ import { OtpUtilityService } from '../../service/otp-utility.service';
 import { NgHcaptchaComponent } from 'ng-hcaptcha';
 
 @Component({
-    standalone: false,
     selector: 'proxy-login',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        MatIconModule,
+        MatRadioModule,
+        MarkAllAsTouchedDirective,
+        RemoveCharacterDirective,
+    ],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     providers: [LoginComponentStore],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
-    @Input() public loginServiceData: any;
-    @Input() public theme: string;
-    @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
-    @Output() public closePopUp: EventEmitter<any> = new EventEmitter();
-    @Output() public openPopUp: EventEmitter<any> = new EventEmitter();
-    @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
+    public loginServiceData = input<any>();
+    public theme = input<string>();
+    public togglePopUp = output<void>();
+    public closePopUp = output<void>();
+    public openPopUp = output<any>();
+    public failureReturn = output<any>();
     public state: string;
     public step: number = 1;
     public showPassword: boolean = false;
@@ -39,6 +61,10 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public hCaptchaToken: string = '';
     public hCaptchaVerified: boolean = false;
     @ViewChild(NgHcaptchaComponent) hCaptchaComponent: NgHcaptchaComponent;
+    private componentStore = inject(LoginComponentStore);
+    private store = inject<Store<IAppState>>(Store);
+    private otpUtilityService = inject(OtpUtilityService);
+
     public otpData$: Observable<any> = this.componentStore.otpdata$;
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
     public resetPassword$: Observable<any> = this.componentStore.resetPassword$;
@@ -66,11 +92,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         ]),
     });
 
-    constructor(
-        private componentStore: LoginComponentStore,
-        private store: Store<IAppState>,
-        private otpUtilityService: OtpUtilityService
-    ) {
+    constructor() {
         super();
         this.selectWidgetData$ = this.store.pipe(select(selectWidgetData), takeUntil(this.destroy$));
     }

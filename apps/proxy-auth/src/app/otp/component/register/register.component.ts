@@ -1,18 +1,28 @@
 import { cloneDeep } from 'lodash-es';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
+import { RemoveCharacterDirective } from '@proxy/directives/RemoveCharacterDirective';
 import { OtpService } from './../../service/otp.service';
 import { environment } from './../../../../environments/environment';
 import {
     AfterViewInit,
+    ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    EventEmitter,
-    Input,
     OnDestroy,
     OnInit,
-    Output,
-    SimpleChanges,
     ViewChild,
     ElementRef,
+    effect,
+    inject,
+    input,
+    output,
 } from '@angular/core';
 import { resetAll, resetAnyState, sendOtpAction, verifyOtpAction } from '../../store/actions/otp.action';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -39,34 +49,44 @@ import {
 import { IGetOtpRes } from '../../model/otp';
 
 @Component({
-    standalone: false,
     selector: 'proxy-register',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        MatIconModule,
+        MarkAllAsTouchedDirective,
+        RemoveCharacterDirective,
+    ],
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent extends BaseComponent implements AfterViewInit, OnDestroy, OnInit {
-    @Input() public referenceId: string;
-    @Input() public serviceData: any;
-    @Input() public loginServiceData: any;
-    @Input() public registrationViaLogin: boolean;
-    @Input() public prefillDetails;
-    @Input() public showCompanyDetails: boolean = true;
-    @Input() public version: string = 'v1';
-    @Input() public theme: string;
-    @Input() public firstName: string;
-    @Input() public lastName: string;
-    @Input() public email: string;
-    @Input() public signupServiceId: string | number;
-    @Input() public isRegisterFormOnly: boolean = false;
+    public referenceId = input<string>();
+    public serviceData = input<any>();
+    public loginServiceData = input<any>();
+    public registrationViaLogin = input<boolean>();
+    public prefillDetails = input<any>();
+    public showCompanyDetails = input<boolean>(true);
+    public version = input<string>('v1');
+    public theme = input<string>();
+    public firstName = input<string>();
+    public lastName = input<string>();
+    public email = input<string>();
+    public signupServiceId = input<string | number>();
+    public isRegisterFormOnly = input<boolean>(false);
     public showPassword: boolean = false;
     public showConfirmPassword: boolean = false;
-    @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
-    @Output() public successReturn: EventEmitter<any> = new EventEmitter();
-    @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
+    public togglePopUp = output<void>();
+    public successReturn = output<any>();
+    public failureReturn = output<any>();
 
     get showCompanyDetail(): boolean {
-        // Show company details by default, only hide when explicitly set to false
-        return this.showCompanyDetails !== false;
+        return this.showCompanyDetails() !== false;
     }
 
     public registrationForm = new FormGroup({
@@ -139,12 +159,12 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     @ViewChild('otp3', { static: false }) otp3Ref: ElementRef;
     @ViewChild('otp4', { static: false }) otp4Ref: ElementRef;
 
-    constructor(
-        private store: Store<IAppState>,
-        private otpService: OtpService,
-        private otpUtilityService: OtpUtilityService,
-        private cdr: ChangeDetectorRef
-    ) {
+    private store = inject<Store<IAppState>>(Store);
+    private otpService = inject(OtpService);
+    private otpUtilityService = inject(OtpUtilityService);
+    private cdr = inject(ChangeDetectorRef);
+
+    constructor() {
         super();
         this.selectGetOtpRes$ = this.store.pipe(
             select(selectGetOtpRes),
@@ -192,7 +212,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         this.selectWidgetTheme$.pipe(takeUntil(this.destroy$)).subscribe((theme) => {
             this.uiPreferences = theme?.ui_preferences || {};
         });
-        if (this.isRegisterFormOnly) {
+        if (this.isRegisterFormOnly()) {
             this.registrationForm.get('user.email').disable();
         }
         this.registrationForm
@@ -242,28 +262,15 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         // Add global paste event listener
         document.addEventListener('paste', this.handleGlobalPaste.bind(this));
     }
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes?.prefillDetails?.currentValue) {
-            this.checkPrefillDetails();
-        }
-        if (changes?.firstName?.currentValue) {
-            this.registrationForm.get('user.firstName').setValue(changes.firstName.currentValue);
-        }
-        if (changes?.lastName?.currentValue) {
-            this.registrationForm.get('user.lastName').setValue(changes.lastName.currentValue);
-        }
-        if (changes?.email?.currentValue) {
-            this.registrationForm.get('user.email').setValue(changes.email.currentValue);
-        }
-    }
     checkPrefillDetails() {
-        if (isNaN(Number(this.prefillDetails))) {
-            this.registrationForm.get('user.email').setValue(this.prefillDetails);
+        const val = this.prefillDetails();
+        if (isNaN(Number(val))) {
+            this.registrationForm.get('user.email').setValue(val);
             this.registrationForm.get('user.mobile').setValue(null);
         } else {
             this.registrationForm.get('user.email').setValue(null);
-            this.prefilledNumber = this.prefillDetails;
-            this.registrationForm.get('user.mobile').setValue(this.prefillDetails);
+            this.prefilledNumber = val;
+            this.registrationForm.get('user.mobile').setValue(val);
         }
     }
     ngAfterViewInit(): void {
@@ -329,7 +336,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             this.store.dispatch(
                 sendOtpAction({
                     request: {
-                        referenceId: this.referenceId,
+                        referenceId: this.referenceId(),
                         mobile: mobileControl.value,
                         authkey: environment.sendOtpAuthKey,
                     },
@@ -445,7 +452,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         const formData = removeEmptyKeys(cloneDeep(this.registrationForm.getRawValue()), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
-                this.registrationViaLogin ? this.loginServiceData.state : this.serviceData?.state ?? '',
+                this.registrationViaLogin() ? this.loginServiceData().state : this.serviceData()?.state ?? '',
                 environment.uiEncodeKey,
                 environment.uiIvKey,
                 true
@@ -463,11 +470,13 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             formData.company['meta'] = {};
         }
         const payload = {
-            reference_id: this.referenceId,
-            service_id: this.registrationViaLogin ? this.loginServiceData.service_id : this.serviceData.service_id,
+            reference_id: this.referenceId(),
+            service_id: this.registrationViaLogin()
+                ? this.loginServiceData().service_id
+                : this.serviceData().service_id,
             url_unique_id: state?.url_unique_id,
             request_data: formData,
-            ...(this.signupServiceId && { signup_service_id: this.signupServiceId }),
+            ...(this.signupServiceId() && { signup_service_id: this.signupServiceId() }),
         };
         const encodedData = this.otpUtilityService.aesEncrypt(
             JSON.stringify(payload),
@@ -475,7 +484,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             environment.uiIvKey,
             true
         );
-        const registrationState = this.registrationViaLogin ? this.loginServiceData.state : this.serviceData.state;
+        const registrationState = this.registrationViaLogin()
+            ? this.loginServiceData().state
+            : this.serviceData().state;
         this.otpService
             .register({
                 proxy_state: encodedData,
@@ -526,7 +537,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             this.store.dispatch(
                 verifyOtpAction({
                     request: {
-                        referenceId: this.referenceId,
+                        referenceId: this.referenceId(),
                         mobile: mobileControl.value,
                         otp: otpString,
                         authkey: environment.sendOtpAuthKey,
@@ -646,17 +657,17 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     public get primaryColor(): string | null {
-        if (this.version !== 'v2') {
+        if (this.version() !== 'v2') {
             return null;
         }
-        const isDark = this.theme === 'dark';
+        const isDark = this.theme() === 'dark';
         return isDark
             ? this.uiPreferences?.dark_theme_primary_color || null
             : this.uiPreferences?.light_theme_primary_color || null;
     }
 
     public get borderRadiusValue(): string | null {
-        if (this.version !== 'v2') {
+        if (this.version() !== 'v2') {
             return null;
         }
         switch (this.uiPreferences?.border_radius) {
@@ -674,21 +685,21 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     public get buttonColor(): string | null {
-        if (this.version !== 'v2') return null;
+        if (this.version() !== 'v2') return null;
         return this.uiPreferences?.button_color || null;
     }
 
     public get buttonHoverColor(): string | null {
-        if (this.version !== 'v2') return null;
+        if (this.version() !== 'v2') return null;
         return this.uiPreferences?.button_hover_color || null;
     }
 
     public get buttonTextColor(): string | null {
-        if (this.version !== 'v2') return null;
+        if (this.version() !== 'v2') return null;
         return this.uiPreferences?.button_text_color || null;
     }
 
     public get isDarkTheme(): boolean {
-        return this.theme === 'dark';
+        return this.theme() === 'dark';
     }
 }

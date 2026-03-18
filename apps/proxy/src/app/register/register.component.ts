@@ -1,5 +1,13 @@
 import { environment } from '../../environments/environment';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -12,8 +20,20 @@ import { UsersService } from '@proxy/services/proxy/users';
 import { IntlPhoneLib } from '@proxy/utils';
 
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-register-component',
+    imports: [
+        RouterModule,
+        CommonModule,
+        NgTemplateOutlet,
+        FormsModule,
+        ReactiveFormsModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MarkAllAsTouchedDirective,
+    ],
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
 })
@@ -51,9 +71,10 @@ export class RegisterComponent extends BaseComponent implements OnDestroy, OnIni
     });
 
     public intlClass: IntlPhoneLib;
-    constructor(private store: Store<IAppState>, private service: UsersService, private toast: PrimeNgToastService) {
-        super();
-    }
+
+    private store = inject<Store<IAppState>>(Store);
+    private service = inject(UsersService);
+    private toast = inject(PrimeNgToastService);
 
     ngOnInit(): void {
         this.registrationForm

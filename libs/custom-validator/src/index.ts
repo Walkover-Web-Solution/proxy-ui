@@ -2,8 +2,7 @@ import {
     AbstractControl,
     AsyncValidatorFn,
     FormControl,
-    UntypedFormControl,
-    UntypedFormGroup,
+    FormGroup,
     ValidationErrors,
     ValidatorFn,
     Validators,
@@ -24,7 +23,7 @@ export class CustomValidators {
             return null;
         }
         const emails = (control.value || '').split(',');
-        const forbidden = emails.some((email: any) => Validators.email(new UntypedFormControl(email)));
+        const forbidden = emails.some((email: any) => Validators.email(new FormControl(email)));
         return forbidden ? { multipleemails: true } : null;
     }
 
@@ -124,8 +123,8 @@ export class CustomValidators {
         return isValid || isEmpty ? null : { noStartEndDashValidator: true };
     }
 
-    public static passwordsMatch(group: UntypedFormGroup, formControlName: string) {
-        return (control: UntypedFormControl): { [s: string]: boolean } | null => {
+    public static passwordsMatch(group: FormGroup, formControlName: string) {
+        return (control: FormControl): { [s: string]: boolean } | null => {
             if (control.value && group && group.controls[formControlName].value === control.value) {
                 return null;
             }
@@ -133,8 +132,8 @@ export class CustomValidators {
         };
     }
 
-    public static passwordsMatchWithConfirm(group: UntypedFormGroup, formControlName: string) {
-        return (control: UntypedFormControl): { [s: string]: boolean } => {
+    public static passwordsMatchWithConfirm(group: FormGroup, formControlName: string) {
+        return (control: FormControl): { [s: string]: boolean } => {
             if (control.value && group && group.controls[formControlName].value === control.value) {
                 return { mismatchwithconfirm: false };
             }
@@ -144,7 +143,7 @@ export class CustomValidators {
 
     // custom validator to check that two fields match
     public static MustMatch(controlName: string, matchingControlName: string) {
-        return (formGroup: UntypedFormGroup) => {
+        return (formGroup: FormGroup) => {
             const control = formGroup.controls[controlName];
             const matchingControl = formGroup.controls[matchingControlName];
 
@@ -180,7 +179,7 @@ export class CustomValidators {
         };
     }
 
-    public static validUrl(control: UntypedFormControl): { [s: string]: boolean } | null {
+    public static validUrl(control: FormControl): { [s: string]: boolean } | null {
         if (!control.value) {
             return null;
         }
@@ -191,7 +190,7 @@ export class CustomValidators {
         return valid ? null : { url: true };
     }
 
-    public static validJson(control: UntypedFormControl): { [s: string]: boolean } | null {
+    public static validJson(control: FormControl): { [s: string]: boolean } | null {
         try {
             JSON.parse(control.value);
         } catch (e) {
@@ -200,28 +199,28 @@ export class CustomValidators {
         return null;
     }
 
-    public static cannotContainSpace(control: UntypedFormControl): { [s: string]: boolean } | null {
+    public static cannotContainSpace(control: FormControl): { [s: string]: boolean } | null {
         if (control.value && (control.value as string).indexOf(' ') >= 0) {
             return { cannotContainSpace: true };
         }
         return null;
     }
 
-    public static startWithAlpha(control: UntypedFormControl): { [s: string]: boolean } | null {
+    public static startWithAlpha(control: FormControl): { [s: string]: boolean } | null {
         if (control.value && !START_WITH_ALPHABET.test(control.value)) {
             return { startWithAlpha: true };
         }
         return null;
     }
 
-    public static noStartEndSpaces(control: UntypedFormControl): { [s: string]: boolean } | null {
+    public static noStartEndSpaces(control: FormControl): { [s: string]: boolean } | null {
         if (control.value && (control.value.toString().startsWith(' ') || control.value.toString().endsWith(' '))) {
             return { noStartEndSpaces: true };
         }
         return null;
     }
 
-    public static noStartEndHyphenOrUnderscore(control: UntypedFormControl): { [s: string]: boolean } | null {
+    public static noStartEndHyphenOrUnderscore(control: FormControl): { [s: string]: boolean } | null {
         if (
             control?.value?.toString()?.startsWith('_') ||
             control?.value?.toString()?.endsWith('_') ||
@@ -233,7 +232,7 @@ export class CustomValidators {
         return null;
     }
 
-    public static noStartEndSpacesFroalaContain(control: UntypedFormControl): { [s: string]: boolean } | null {
+    public static noStartEndSpacesFroalaContain(control: FormControl): { [s: string]: boolean } | null {
         const value = (control.value || '')
             .replace(/<[^>]*>/g, '')
             .replace(/&nbsp;/g, '')
@@ -247,7 +246,7 @@ export class CustomValidators {
         return null;
     }
 
-    public static onlySpaceFroalaContain(control: UntypedFormControl): { [s: string]: boolean } | null {
+    public static onlySpaceFroalaContain(control: FormControl): { [s: string]: boolean } | null {
         const value = (control.value || '')
             .replace(/<[^>]*>/g, '')
             .replace(/&nbsp;/g, '')
@@ -258,7 +257,7 @@ export class CustomValidators {
         return null;
     }
 
-    public static noStartEndSlash(control: UntypedFormControl): { [s: string]: boolean } | null {
+    public static noStartEndSlash(control: FormControl): { [s: string]: boolean } | null {
         if (control.value && (control.value.toString().startsWith('/') || control.value.toString().endsWith('/'))) {
             return { noStartEndSlash: true };
         }
@@ -274,14 +273,14 @@ export class CustomValidators {
         };
     }
 
-    public static minLengthThreeWithoutSpace(control: UntypedFormControl): { [s: string]: boolean } | null {
+    public static minLengthThreeWithoutSpace(control: FormControl): { [s: string]: boolean } | null {
         if (control.value && control.value.trim()?.length < 3) {
             return { minlengthWithSpace: true };
         }
         return null;
     }
 
-    public static minLengthFourWithoutSpace(control: UntypedFormControl): { [s: string]: boolean } | null {
+    public static minLengthFourWithoutSpace(control: FormControl): { [s: string]: boolean } | null {
         if (control.value && control.value.trim()?.length < 4) {
             return { minlengthWithSpace: true };
         }

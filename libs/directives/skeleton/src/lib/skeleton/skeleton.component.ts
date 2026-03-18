@@ -1,13 +1,13 @@
-import { Component, ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject } from '@angular/core';
 
 @Component({
-    standalone: false,
     selector: 'skeleton-rect',
     host: {
         'class': 'shimmer-loading',
     },
     template: ``,
     styleUrls: ['./skeleton.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styles: [
         `
             :host {
@@ -23,7 +23,7 @@ export class SkeletonComponent {
     height: string;
     className: string | string[];
 
-    constructor(private host: ElementRef<HTMLElement>) {}
+    private host = inject(ElementRef<HTMLElement>);
 
     ngOnInit() {
         const host = this.host.nativeElement;

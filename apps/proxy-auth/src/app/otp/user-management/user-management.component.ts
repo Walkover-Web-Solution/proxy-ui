@@ -1,4 +1,5 @@
 import {
+    ChangeDetectionStrategy,
     Component,
     Input,
     OnInit,
@@ -7,7 +8,26 @@ import {
     TemplateRef,
     AfterViewInit,
     ViewEncapsulation,
+    inject,
+    input,
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
+import { RemoveCharacterDirective } from '@proxy/directives/RemoveCharacterDirective';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -35,20 +55,39 @@ import {
 } from '../store/selectors';
 import { isEqual } from 'lodash-es';
 import { UserData, Role } from '../model/otp';
-import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 
 @Component({
-    standalone: false,
     selector: 'proxy-user-management',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatSelectModule,
+        MatDialogModule,
+        MatTooltipModule,
+        MatTabsModule,
+        MatProgressSpinnerModule,
+        MatCheckboxModule,
+        ConfirmDialogComponent,
+        RemoveCharacterDirective,
+    ],
     templateUrl: './user-management.component.html',
     styleUrls: ['./user-management.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserManagementComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
-    @Input() public userToken: string;
-    @Input() public pass: string;
-    @Input() public theme: string;
-    @Input() public exclude_role_ids: any[] = [];
-    @Input() public include_role_ids: any[] = [];
+    public userToken = input<string>();
+    public pass = input<string>();
+    public theme = input<string>();
+    public exclude_role_ids = input<any[]>([]);
+    public include_role_ids = input<any[]>([]);
     @Input() public isHidden: boolean = false;
     @ViewChild('addUserDialog') addUserDialog!: TemplateRef<any>;
     @ViewChild('editPermissionDialog') editPermissionDialog!: TemplateRef<any>;
@@ -117,7 +156,12 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     private openAddUserDialogHandler = this.addUser.bind(this);
     private showUserManagementHandler = this.showUserManagement.bind(this);
     private hideUserManagementHandler = this.hideUserManagement.bind(this);
-    constructor(private fb: FormBuilder, private dialog: MatDialog, private store: Store<IAppState>) {
+
+    private fb = inject(FormBuilder);
+    private dialog = inject(MatDialog);
+    private store = inject<Store<IAppState>>(Store);
+
+    constructor() {
         super();
         this.getRoles$ = this.store.pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
         this.getPermissions$ = this.store.pipe(
@@ -424,12 +468,12 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
-            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
             disableClose: false,
         });
 
         // Add body class for dark theme select panel styling
-        if (this.theme === 'dark') {
+        if (this.theme() === 'dark') {
             document.body.classList.add('dark-dialog-open');
             this.addUserDialogRef.afterClosed().subscribe(() => {
                 document.body.classList.remove('dark-dialog-open');
@@ -437,7 +481,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
 
         // Add body class for dark theme select panel styling
-        if (this.theme === 'dark') {
+        if (this.theme() === 'dark') {
             document.body.classList.add('dark-dialog-open');
             this.addUserDialogRef.afterClosed().subscribe(() => {
                 document.body.classList.remove('dark-dialog-open');
@@ -448,16 +492,15 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public deleteUser(user: any, index: number): void {
         const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
             width: '400px',
-            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
         });
 
-        const componentInstance = dialogRef.componentInstance;
-        componentInstance.title = '<b>Remove User</b>';
-        componentInstance.confirmationMessage = `Are you sure you want to remove ${user.name}?`;
-        componentInstance.confirmButtonText = 'Remove';
-        componentInstance.cancelButtonText = 'Cancel';
-        componentInstance.confirmButtonColor = '';
-        componentInstance.confirmButtonClass = 'mat-flat-button btn-danger confirm-dialog';
+        dialogRef.componentRef.setInput('title', '<b>Remove User</b>');
+        dialogRef.componentRef.setInput('confirmationMessage', `Are you sure you want to remove ${user.name}?`);
+        dialogRef.componentRef.setInput('confirmButtonText', 'Remove');
+        dialogRef.componentRef.setInput('cancelButtonText', 'Cancel');
+        dialogRef.componentRef.setInput('confirmButtonColor', '');
+        dialogRef.componentRef.setInput('confirmButtonClass', 'mat-flat-button btn-danger confirm-dialog');
 
         dialogRef.afterClosed().subscribe((action) => {
             if (action === 'yes') {
@@ -465,7 +508,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                 this.userData = this.userData.filter((u: any) => u.user_id !== userId);
                 this.dataSource.data = [...this.userData];
                 this.totalUsers = Math.max(0, this.totalUsers - 1);
-                this.store.dispatch(otpActions.deleteUser({ companyId: userId, authToken: this.userToken }));
+                this.store.dispatch(otpActions.deleteUser({ companyId: userId, authToken: this.userToken() }));
             }
         });
     }
@@ -602,12 +645,12 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
-            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
             disableClose: false,
         });
 
         // Add body class for dark theme select panel styling
-        if (this.theme === 'dark') {
+        if (this.theme() === 'dark') {
             document.body.classList.add('dark-dialog-open');
             this.addUserDialogRef.afterClosed().subscribe(() => {
                 document.body.classList.remove('dark-dialog-open');
@@ -615,7 +658,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
 
         // Add body class for dark theme select panel styling
-        if (this.theme === 'dark') {
+        if (this.theme() === 'dark') {
             document.body.classList.add('dark-dialog-open');
             this.addUserDialogRef.afterClosed().subscribe(() => {
                 document.body.classList.remove('dark-dialog-open');
@@ -623,7 +666,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
 
         // Add body class for dark theme select panel styling
-        if (this.theme === 'dark') {
+        if (this.theme() === 'dark') {
             document.body.classList.add('dark-dialog-open');
             this.addUserDialogRef.afterClosed().subscribe(() => {
                 document.body.classList.remove('dark-dialog-open');
@@ -677,9 +720,11 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                         id: userPayload.id,
                         cpermissions: formValue.permission,
                     };
-                    this.store.dispatch(otpActions.updateUserRole({ payload: rolePayload, authToken: this.userToken }));
                     this.store.dispatch(
-                        otpActions.updateUserPermission({ payload: permissionPayload, authToken: this.userToken })
+                        otpActions.updateUserRole({ payload: rolePayload, authToken: this.userToken() })
+                    );
+                    this.store.dispatch(
+                        otpActions.updateUserPermission({ payload: permissionPayload, authToken: this.userToken() })
                     );
                 }
             } else {
@@ -701,7 +746,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                     role_id: formValue.role,
                 };
 
-                this.store.dispatch(otpActions.addUser({ payload, authToken: this.userToken }));
+                this.store.dispatch(otpActions.addUser({ payload, authToken: this.userToken() }));
             }
 
             // Update dataSource to reflect changes
@@ -797,7 +842,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                     otpActions.createRole({
                         name: formValue.roleName,
                         permissions: formValue.permission,
-                        authToken: this.userToken,
+                        authToken: this.userToken(),
                     })
                 );
             }
@@ -813,7 +858,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addRoleForm.reset();
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
-            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
             disableClose: false,
         });
     }
@@ -848,7 +893,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                             name: formValue.roleName,
                             cpermissions: formValue.permission,
                         },
-                        authToken: this.userToken,
+                        authToken: this.userToken(),
                     })
                 );
                 // TODO: Implement role update logic
@@ -858,7 +903,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                     otpActions.createRole({
                         name: formValue.roleName,
                         permissions: permissionNames,
-                        authToken: this.userToken,
+                        authToken: this.userToken(),
                     })
                 );
             }
@@ -880,7 +925,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                             id: (this.currentEditingPermission as any).id,
                             name: formValue.permission,
                         },
-                        authToken: this.userToken,
+                        authToken: this.userToken(),
                     })
                 );
             } else {
@@ -889,7 +934,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
                     otpActions.createPermission({
                         name: formValue.permission,
 
-                        authToken: this.userToken,
+                        authToken: this.userToken(),
                     })
                 );
             }
@@ -904,12 +949,12 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         const searchTerm = search?.trim() || undefined;
         this.store.dispatch(
             otpActions.getCompanyUsers({
-                authToken: this.userToken,
+                authToken: this.userToken(),
                 itemsPerPage: pageSize,
                 pageNo: pageIndex,
                 search: searchTerm,
-                exclude_role_ids: this.exclude_role_ids,
-                include_role_ids: this.include_role_ids,
+                exclude_role_ids: this.exclude_role_ids(),
+                include_role_ids: this.include_role_ids(),
             })
         );
     }
@@ -921,7 +966,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         // API expects 1-based page number
         this.store.dispatch(
             otpActions.getCompanyUsers({
-                authToken: this.userToken,
+                authToken: this.userToken(),
                 itemsPerPage: event.pageSize,
                 pageNo: event.pageIndex,
                 search: searchTerm,
@@ -930,15 +975,15 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     }
     public getRoles(): void {
         const pageSize = this.rolesPaginator?.pageSize || 1000;
-        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken, itemsPerPage: pageSize }));
+        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken(), itemsPerPage: pageSize }));
     }
 
     public onRolesPageChange(event: PageEvent): void {
-        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken, itemsPerPage: event.pageSize }));
+        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken(), itemsPerPage: event.pageSize }));
     }
     public getPermissions(): void {
         const pageSize = 1000;
-        this.store.dispatch(otpActions.getPermissions({ authToken: this.userToken, itemsPerPage: pageSize }));
+        this.store.dispatch(otpActions.getPermissions({ authToken: this.userToken(), itemsPerPage: pageSize }));
     }
 
     public refreshFormData(): void {
@@ -993,7 +1038,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         // Open the add user dialog (which contains the role form)
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
-            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
             disableClose: false,
         });
 
@@ -1041,7 +1086,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addPermissionTabForm.reset();
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
-            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
             disableClose: false,
         });
     }
@@ -1058,7 +1103,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
-            panelClass: this.theme === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
             disableClose: false,
         });
     }
