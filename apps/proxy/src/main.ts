@@ -9,7 +9,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
-import { provideMarkdown } from 'ngx-markdown';
+import { MarkdownModule } from 'ngx-markdown';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AppComponent } from './app/app.component';
@@ -50,6 +50,6 @@ bootstrapApplication(AppComponent, {
             provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
             useValue: { disableTooltipInteractivity: true },
         },
-        provideMarkdown(),
+        importProvidersFrom(MarkdownModule.forRoot()),
     ],
 }).catch((err) => console.error(err));
