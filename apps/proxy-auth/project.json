@@ -22,6 +22,9 @@
                 "polyfills": "apps/proxy-auth/src/polyfills.ts",
                 "tsConfig": "apps/proxy-auth/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
+                "stylePreprocessorOptions": {
+                    "includePaths": ["apps/shared/scss"]
+                },
                 "assets": ["apps/proxy-auth/src/favicon.ico", "apps/proxy-auth/src/assets"],
                 "styles": ["apps/proxy-auth/src/styles.scss"],
                 "aot": true,

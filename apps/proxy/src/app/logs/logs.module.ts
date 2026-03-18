@@ -25,6 +25,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { UiLoaderModule } from '@proxy/ui/loader';
 import { UiVirtualScrollModule } from '@proxy/ui/virtual-scroll';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const routes: Routes = [
     {
@@ -63,6 +64,7 @@ const routes: Routes = [
         DirectivesRemoveCharacterDirectiveModule,
         UiVirtualScrollModule,
         MatAutocompleteModule,
+        MatTooltipModule,
     ],
     exports: [RouterModule],
 })
