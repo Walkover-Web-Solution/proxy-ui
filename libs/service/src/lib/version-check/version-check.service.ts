@@ -2,10 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { VersionCheckServiceModule } from '.';
-
 @Injectable({
-    providedIn: VersionCheckServiceModule,
+    providedIn: 'root',
 })
 export class VersionCheckService {
     /** Subject to store version change status */
