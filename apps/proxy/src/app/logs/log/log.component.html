@@ -1,5 +1,7 @@
 <div class="app-content flex flex-col">
-    <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
+    @if (isLoading$ | async) {
+    <proxy-loader></proxy-loader>
+    }
     <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
         <div class="flex flex-wrap items-start grow gap-4">
             <form [formGroup]="engProjectFormGroup" class="flex flex-wrap gap-4">
@@ -24,16 +26,12 @@
                     >
                         <proxy-cdk-scroll (fetchNextPage)="fetchNextPage('projects')" scrollableElementId="projects">
                             <mat-option [value]="''" class="mat-body-2">All</mat-option>
-                            <mat-option
-                                *ngFor="
-                                    let project of engProjectFormGroup.value?.environments?.projects ??
-                                        (projects$ | async)?.data
-                                "
-                                [value]="project"
-                                class="mat-body-2"
-                            >
+                            @for (project of engProjectFormGroup.value?.environments?.projects ?? (projects$ |
+                            async)?.data; track project.id) {
+                            <mat-option [value]="project" class="mat-body-2">
                                 {{ project.name }}
                             </mat-option>
+                            }
                         </proxy-cdk-scroll>
                     </mat-autocomplete>
                     <mat-icon matSuffix>arrow_drop_down</mat-icon>
@@ -62,16 +60,12 @@
                             scrollableElementId="environments"
                         >
                             <mat-option [value]="''" class="mat-body-2">All</mat-option>
-                            <mat-option
-                                *ngFor="
-                                    let environment of engProjectFormGroup.value?.projects?.environments ??
-                                        (environments$ | async)?.data
-                                "
-                                [value]="environment"
-                                class="mat-body-2"
-                            >
+                            @for (environment of engProjectFormGroup.value?.projects?.environments ?? (environments$ |
+                            async)?.data; track environment.id) {
+                            <mat-option [value]="environment" class="mat-body-2">
                                 {{ environment.name }}
                             </mat-option>
+                            }
                         </proxy-cdk-scroll>
                     </mat-autocomplete>
                     <mat-icon matSuffix>arrow_drop_down</mat-icon>
@@ -122,9 +116,9 @@
                                         >
                                             All
                                         </mat-checkbox>
-                                        <mat-option [value]="type" *ngFor="let type of requestTypes">{{
-                                            type
-                                        }}</mat-option>
+                                        @for (type of requestTypes; track type) {
+                                        <mat-option [value]="type">{{ type }}</mat-option>
+                                        }
                                     </mat-select>
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" floatLabel="always" class="w-full">
@@ -140,57 +134,48 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <ng-container *ngIf="logsFilterForm.controls.range.value">
-                                <div class="col-lg-6 pr-2 mb-2">
-                                    <mat-form-field appearance="outline" class="w-full" floatLabel="always">
-                                        <mat-label>From</mat-label>
-                                        <input
-                                            matInput
-                                            placeholder="From"
-                                            autocomplete="off"
-                                            formControlName="from"
-                                            proxyRemoveCharacter
-                                            [charactersToRemove]="['e', '+', '-', '.', ' ']"
-                                        />
-                                        <mat-error *ngIf="logsFilterForm.controls.from.invalid">
-                                            <mat-error *ngIf="logsFilterForm.get('from').errors?.pattern">
-                                                Invalid Number
-                                            </mat-error>
-                                            <mat-error *ngIf="logsFilterForm.get('from').errors?.limitExceeded">
-                                                <b>From</b> should be less than or equal to <b>To</b>
-                                            </mat-error>
-                                            <mat-error
-                                                *ngIf="logsFilterForm.get('from').errors?.maxlength as maxlengthError"
-                                            >
-                                                Max {{ maxlengthError.requiredLength }} number are allowed
-                                            </mat-error>
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
-                                <div class="col-lg-6 pl-2">
-                                    <mat-form-field appearance="outline" class="w-full" floatLabel="always">
-                                        <mat-label>To</mat-label>
-                                        <input
-                                            matInput
-                                            placeholder="To"
-                                            autocomplete="off"
-                                            formControlName="to"
-                                            proxyRemoveCharacter
-                                            [charactersToRemove]="['e', '+', '-', '.', ' ']"
-                                        />
-                                        <mat-error *ngIf="logsFilterForm.controls.to.invalid">
-                                            <mat-error *ngIf="logsFilterForm.get('to').errors?.pattern">
-                                                Invalid Number
-                                            </mat-error>
-                                            <mat-error
-                                                *ngIf="logsFilterForm.get('to').errors?.maxlength as maxlengthError"
-                                            >
-                                                Max {{ maxlengthError.requiredLength }} number are allowed
-                                            </mat-error>
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
-                            </ng-container>
+                            @if (logsFilterForm.controls.range.value) {
+                            <div class="col-lg-6 pr-2 mb-2">
+                                <mat-form-field appearance="outline" class="w-full" floatLabel="always">
+                                    <mat-label>From</mat-label>
+                                    <input
+                                        matInput
+                                        placeholder="From"
+                                        autocomplete="off"
+                                        formControlName="from"
+                                        proxyRemoveCharacter
+                                        [charactersToRemove]="['e', '+', '-', '.', ' ']"
+                                    />
+                                    @if (logsFilterForm.controls.from.invalid) { @if
+                                    (logsFilterForm.get('from').errors?.pattern) {
+                                    <mat-error>Invalid Number</mat-error>
+                                    } @if (logsFilterForm.get('from').errors?.limitExceeded) {
+                                    <mat-error><b>From</b> should be less than or equal to <b>To</b></mat-error>
+                                    } @if (logsFilterForm.get('from').errors?.maxlength; as maxlengthError) {
+                                    <mat-error>Max {{ maxlengthError.requiredLength }} number are allowed</mat-error>
+                                    } }
+                                </mat-form-field>
+                            </div>
+                            <div class="col-lg-6 pl-2">
+                                <mat-form-field appearance="outline" class="w-full" floatLabel="always">
+                                    <mat-label>To</mat-label>
+                                    <input
+                                        matInput
+                                        placeholder="To"
+                                        autocomplete="off"
+                                        formControlName="to"
+                                        proxyRemoveCharacter
+                                        [charactersToRemove]="['e', '+', '-', '.', ' ']"
+                                    />
+                                    @if (logsFilterForm.controls.to.invalid) { @if
+                                    (logsFilterForm.get('to').errors?.pattern) {
+                                    <mat-error>Invalid Number</mat-error>
+                                    } @if (logsFilterForm.get('to').errors?.maxlength; as maxlengthError) {
+                                    <mat-error>Max {{ maxlengthError.requiredLength }} number are allowed</mat-error>
+                                    } }
+                                </mat-form-field>
+                            </div>
+                            }
                         </div>
                     </div>
                     <mat-divider></mat-divider>

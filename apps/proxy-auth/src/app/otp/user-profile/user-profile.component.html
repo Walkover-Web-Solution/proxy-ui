@@ -22,12 +22,14 @@
                 </div>
             </div>
             <!-- Edit button — only shown in view mode -->
-            <button *ngIf="!isEditing" type="button" matButton="outlined" class="btn-edit" (click)="isEditing = true">
+            @if (!isEditing) {
+            <button type="button" matButton="outlined" class="btn-edit" (click)="isEditing = true">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M11 2l3 3-8 8H3v-3l8-8z" />
                 </svg>
                 Edit
             </button>
+            }
         </div>
 
         <!-- Profile Banner -->
@@ -50,7 +52,8 @@
         </div>
 
         <!-- ── VIEW MODE ── -->
-        <div *ngIf="!isEditing" class="view-fields">
+        @if (!isEditing) {
+        <div class="view-fields">
             <div class="view-row">
                 <div class="view-field-icon">
                     <svg
@@ -120,16 +123,19 @@
                 </div>
             </div>
         </div>
+        }
 
         <!-- ── EDIT MODE ── -->
-        <form *ngIf="isEditing" [formGroup]="clientForm" class="profile-form">
+        @if (isEditing) {
+        <form [formGroup]="clientForm" class="profile-form">
             <div class="fields-row">
                 <div class="form-field-wrap">
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Full Name</mat-label>
                         <input matInput formControlName="name" placeholder="Enter your name" class="input-field" />
-                        <mat-error *ngIf="clientForm.get('name')?.hasError('required')">Name is required.</mat-error>
-                        <mat-error *ngIf="clientForm.get('name')?.hasError('pattern')">Invalid name format.</mat-error>
+                        @if (clientForm.get('name')?.hasError('required')) { <mat-error>Name is required.</mat-error> }
+                        @if (clientForm.get('name')?.hasError('pattern')) {
+                        <mat-error>Invalid name format.</mat-error> }
                     </mat-form-field>
                 </div>
 
@@ -175,6 +181,7 @@
                 </div>
             </div>
         </form>
+        }
     </div>
 
     <!-- ── ORGANIZATIONS CARD ── -->
@@ -221,11 +228,9 @@
                             "
                         >
                             {{ element.name }}
-                            <span
-                                *ngIf="companyDetails?.currentCompany?.company_uname === element.company_uname"
-                                class="current-badge"
-                                >● Current</span
-                            >
+                            @if (companyDetails?.currentCompany?.company_uname === element.company_uname) {
+                            <span class="current-badge">● Current</span>
+                            }
                         </span>
                     </div>
                 </td>
@@ -234,14 +239,11 @@
             <ng-container matColumnDef="action">
                 <th mat-header-cell *matHeaderCellDef class="action-column">Actions</th>
                 <td mat-cell *matCellDef="let element" class="action-cell">
-                    <button
-                        *ngIf="companyDetails?.currentCompany?.company_uname !== element.company_uname"
-                        matButton="filled"
-                        (click)="openModal(element?.id)"
-                        class="actions btn-leave"
-                    >
+                    @if (companyDetails?.currentCompany?.company_uname !== element.company_uname) {
+                    <button matButton="filled" (click)="openModal(element?.id)" class="actions btn-leave">
                         ↗ Leave
                     </button>
+                    }
                 </td>
             </ng-container>
 
@@ -249,8 +251,8 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
 
-        <p class="no-data" *ngIf="!(userDetails$ | async)?.c_companies">
-            Nothing here — there are no companies to show
-        </p>
+        @if (!(userDetails$ | async)?.c_companies) {
+        <p class="no-data">Nothing here — there are no companies to show</p>
+        }
     </div>
 </div>

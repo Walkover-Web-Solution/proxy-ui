@@ -1,5 +1,7 @@
 <div class="relative mat-right-dialog-container">
-    <proxy-loader *ngIf="data.isLoading$ | async"></proxy-loader>
+    @if (data.isLoading$ | async) {
+    <proxy-loader></proxy-loader>
+    }
     <!-- Top Fixed Header::START -->
     <div class="mat-right-dialog-header flex items-center justify-between">
         <h2 class="mat-title mat-subheading-2 mb-0 text-dark">Logs Details</h2>
@@ -10,28 +12,28 @@
     <!-- Top Fixed Header::END -->
 
     <!-- Content::START -->
-    <div class="mat-right-dialog-content" *ngIf="data" style="height: calc(100vh - 57px)">
-        <ng-container *ngIf="data.logData$ | async as logdata; else noData">
-            <ng-container *ngIf="data?.logSettings?.store_headers">
-                <ng-container
-                    [ngTemplateOutlet]="jsonCard"
-                    [ngTemplateOutletContext]="{ title: 'Headers', jsonData: logdata?.headers }"
-                ></ng-container>
-            </ng-container>
-            <ng-container *ngIf="data?.logSettings?.store_requestBody">
-                <ng-container
-                    [ngTemplateOutlet]="jsonCard"
-                    [ngTemplateOutletContext]="{ title: 'Request body', jsonData: logdata?.request_body }"
-                ></ng-container>
-            </ng-container>
-            <ng-container *ngIf="data?.logSettings?.store_response">
-                <ng-container
-                    [ngTemplateOutlet]="jsonCard"
-                    [ngTemplateOutletContext]="{ title: 'Response', jsonData: logdata?.response }"
-                ></ng-container>
-            </ng-container>
-        </ng-container>
+    @if (data) {
+    <div class="mat-right-dialog-content" style="height: calc(100vh - 57px)">
+        @if (data.logData$ | async; as logdata) { @if (data?.logSettings?.store_headers) {
+        <ng-container
+            [ngTemplateOutlet]="jsonCard"
+            [ngTemplateOutletContext]="{ title: 'Headers', jsonData: logdata?.headers }"
+        ></ng-container>
+        } @if (data?.logSettings?.store_requestBody) {
+        <ng-container
+            [ngTemplateOutlet]="jsonCard"
+            [ngTemplateOutletContext]="{ title: 'Request body', jsonData: logdata?.request_body }"
+        ></ng-container>
+        } @if (data?.logSettings?.store_response) {
+        <ng-container
+            [ngTemplateOutlet]="jsonCard"
+            [ngTemplateOutletContext]="{ title: 'Response', jsonData: logdata?.response }"
+        ></ng-container>
+        } } @else { @if ((data.isLoading$ | async) === false) {
+        <proxy-no-record-found [title]="'Log Details'" [showBtn]="false"></proxy-no-record-found>
+        } }
     </div>
+    }
 </div>
 
 <ng-template #jsonCard let-title="title" let-jsonData="jsonData">
@@ -41,12 +43,4 @@
             <pre [innerHtml]="jsonData | json"></pre>
         </mat-card-content>
     </mat-card>
-</ng-template>
-
-<ng-template #noData>
-    <proxy-no-record-found
-        [title]="'Log Details'"
-        [showBtn]="false"
-        *ngIf="(data.isLoading$ | async) === false"
-    ></proxy-no-record-found>
 </ng-template>

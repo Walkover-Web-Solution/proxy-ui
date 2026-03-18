@@ -6,10 +6,11 @@
                 style="line-height: 28px; word-break: break-word"
             >
                 {{ message.detail?.customAction ? message.detail?.message : message.detail }}
-                <span *ngIf="message.detail?.customAction && undoTimer > 0" class="mr-2 text-danger">
-                    undo in {{ undoTimer }}
-                </span>
+                @if (message.detail?.customAction && undoTimer > 0) {
+                <span class="mr-2 text-danger"> undo in {{ undoTimer }} </span>
+                }
             </p>
+            @if ((message.detail?.customAction && undoTimer > 0) || !message.detail?.customAction) {
             <button
                 matIconButton
                 disableRipple
@@ -17,10 +18,10 @@
                 style="margin-right: -21px; margin-top: 1px"
                 [matTooltip]="message.detail?.customAction ? 'Undo' : ''"
                 matTooltipPosition="above"
-                *ngIf="(message.detail?.customAction && undoTimer > 0) || !message.detail?.customAction"
             >
                 <mat-icon>{{ !message.detail?.customAction ? 'close' : 'undo' }}</mat-icon>
             </button>
+            }
         </div>
     </ng-template>
 </p-toast>

@@ -26,9 +26,11 @@
                                 />
                             </mat-form-field>
                         </div>
-                        <div class="add-btn flex justify-end gap-6" *ngIf="canAddUser">
+                        @if (canAddUser) {
+                        <div class="add-btn flex justify-end gap-6">
                             <button matButton="filled" class="button-add" (click)="addUser()">Invite Member</button>
                         </div>
+                        }
                     </div>
 
                     <div
@@ -37,35 +39,34 @@
                         [class.light-theme]="theme !== 'dark'"
                     >
                         <!-- Skeleton Loading -->
-                        <ng-container *ngIf="isUsersLoading && !skipSkeletonLoading">
-                            <div
-                                *ngFor="let item of [1, 2, 3, 4, 5]"
-                                class="user-item skeleton-item w-1/2"
-                                [class.dark-theme]="theme === 'dark'"
-                                [class.light-theme]="theme !== 'dark'"
-                            >
-                                <div class="item-container w-full flex justify-between items-center gap-2">
-                                    <div class="flex justify-between items-center gap-2 w-35">
-                                        <div class="user-avatar skeleton-avatar"></div>
-                                        <div class="user-info bg-light-grey">
-                                            <div class="skeleton-text skeleton-name"></div>
-                                            <div class="skeleton-text skeleton-email"></div>
-                                        </div>
-                                    </div>
-                                    <div class="user-role-row">
-                                        <div class="skeleton-text skeleton-role"></div>
-                                    </div>
-                                    <div class="user-actions">
-                                        <div class="skeleton-button"></div>
-                                        <div class="skeleton-button"></div>
+                        @if (isUsersLoading && !skipSkeletonLoading) { @for (item of [1, 2, 3, 4, 5]; track item) {
+                        <div
+                            class="user-item skeleton-item w-1/2"
+                            [class.dark-theme]="theme === 'dark'"
+                            [class.light-theme]="theme !== 'dark'"
+                        >
+                            <div class="item-container w-full flex justify-between items-center gap-2">
+                                <div class="flex justify-between items-center gap-2 w-35">
+                                    <div class="user-avatar skeleton-avatar"></div>
+                                    <div class="user-info bg-light-grey">
+                                        <div class="skeleton-text skeleton-name"></div>
+                                        <div class="skeleton-text skeleton-email"></div>
                                     </div>
                                 </div>
+                                <div class="user-role-row">
+                                    <div class="skeleton-text skeleton-role"></div>
+                                </div>
+                                <div class="user-actions">
+                                    <div class="skeleton-button"></div>
+                                    <div class="skeleton-button"></div>
+                                </div>
                             </div>
-                        </ng-container>
+                        </div>
+                        } }
 
                         <!-- Actual User Data -->
+                        @for (user of dataSource.data; track user; let i = $index) {
                         <div
-                            *ngFor="let user of dataSource.data; let i = index"
                             class="user-item"
                             [class.dark-theme]="theme === 'dark'"
                             [class.light-theme]="theme !== 'dark'"
@@ -73,7 +74,8 @@
                         >
                             <div class="item-container w-full flex justify-between items-center gap-2">
                                 <div class="flex justify-between items-center gap-2 w-35">
-                                    <div class="user-avatar" *ngIf="theme !== 'dark'">
+                                    @if (theme !== 'dark') {
+                                    <div class="user-avatar">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             height="18px"
@@ -86,7 +88,8 @@
                                             />
                                         </svg>
                                     </div>
-                                    <div class="user-avatar" *ngIf="theme === 'dark'">
+                                    } @if (theme === 'dark') {
+                                    <div class="user-avatar">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             height="18px"
@@ -99,6 +102,7 @@
                                             />
                                         </svg>
                                     </div>
+                                    }
                                     <div class="user-info bg-light-grey">
                                         <div class="user-name">{{ user.name }}</div>
                                         <div class="user-email" matTooltipPosition="above">
@@ -110,16 +114,12 @@
                                     <div class="user-role">{{ user.role || 'User' }}</div>
                                 </div>
                                 <div class="user-actions">
-                                    <button
-                                        *ngIf="canEditUser"
-                                        matButton="filled"
-                                        class="button-add"
-                                        (click)="editUser(user, i)"
-                                    >
+                                    @if (canEditUser) {
+                                    <button matButton="filled" class="button-add" (click)="editUser(user, i)">
                                         Edit
                                     </button>
+                                    } @if (canRemoveUser) {
                                     <button
-                                        *ngIf="canRemoveUser"
                                         matButton="outlined"
                                         class="button-remove"
                                         [class.button-add]="theme === 'dark'"
@@ -128,14 +128,16 @@
                                     >
                                         Remove
                                     </button>
+                                    }
                                 </div>
                             </div>
                         </div>
+                        }
 
                         <!-- <div class = "border-bottom"></div> -->
-                        <p class="no-data" *ngIf="!isUsersLoading && dataSource.data.length === 0">
-                            Nothing Here, There are no Members to show
-                        </p>
+                        @if (!isUsersLoading && dataSource.data.length === 0) {
+                        <p class="no-data">Nothing Here, There are no Members to show</p>
+                        }
                         <mat-paginator
                             [pageSizeOptions]="[10, 20, 50, 100, 1000]"
                             [pageSize]="currentPageSize"
@@ -151,7 +153,8 @@
             </mat-tab>
 
             <!-- Roles and Permission Tab -->
-            <mat-tab *ngIf="pass" label="Roles">
+            @if (pass) {
+            <mat-tab label="Roles">
                 <div class="tab-content">
                     <!-- Nested tabs for Roles and Permissions -->
                     <mat-tab-group class="nested-tabs full-width">
@@ -208,29 +211,21 @@
                                                 class="text-left permissions-column"
                                             >
                                                 <div class="permissions-cell-content flex flex-col gap-2 relative">
-                                                    <div
-                                                        class="permissions-list"
-                                                        *ngIf="
-                                                            element.c_permissions && element.c_permissions.length > 0
-                                                        "
-                                                    >
+                                                    @if (element.c_permissions && element.c_permissions.length > 0) {
+                                                    <div class="permissions-list">
                                                         <ul class="permission-bullets">
-                                                            <li
-                                                                *ngFor="let permission of element.c_permissions"
-                                                                class="permission-bullet"
-                                                            >
-                                                                {{ permission.name }}
-                                                            </li>
+                                                            @for (permission of element.c_permissions; track permission)
+                                                            {
+                                                            <li class="permission-bullet">{{ permission.name }}</li>
+                                                            }
                                                         </ul>
                                                     </div>
-                                                    <div
-                                                        class="no-permissions"
-                                                        *ngIf="
-                                                            !element.c_permissions || element.c_permissions.length === 0
-                                                        "
-                                                    >
+                                                    } @if (!element.c_permissions || element.c_permissions.length === 0)
+                                                    {
+                                                    <div class="no-permissions">
                                                         <span class="no-permissions-text">No permissions assigned</span>
                                                     </div>
+                                                    }
                                                     <div class="permissions-actions hover-actions">
                                                         <button
                                                             matButton="filled"
@@ -256,7 +251,9 @@
                                             class="hover-action table-row"
                                         ></tr>
                                     </table>
-                                    <p class="no-data" *ngIf="rolesDataSource.data.length === 0">No roles found</p>
+                                    @if (rolesDataSource.data.length === 0) {
+                                    <p class="no-data">No roles found</p>
+                                    }
                                     <mat-paginator
                                         #rolesPaginator
                                         [pageSizeOptions]="[10, 20, 50, 100, 1000]"
@@ -271,7 +268,8 @@
                         </mat-tab>
 
                         <!-- Permissions Tab -->
-                        <mat-tab *ngIf="pass" label="Permissions">
+                        @if (pass) {
+                        <mat-tab label="Permissions">
                             <div class="nested-tab-content">
                                 <!-- Permissions Table Section -->
                                 <div class="permissions-table-section full-width">
@@ -348,9 +346,9 @@
                                                 class="hover-action table-row"
                                             ></tr>
                                         </table>
-                                        <p class="no-data" *ngIf="permissionsDataSource.data.length === 0">
-                                            No permissions found
-                                        </p>
+                                        @if (permissionsDataSource.data.length === 0) {
+                                        <p class="no-data">No permissions found</p>
+                                        }
                                         <mat-paginator
                                             #permissionsPaginator
                                             [pageSizeOptions]="[10, 20, 50, 100, 1000]"
@@ -363,9 +361,11 @@
                                 </div>
                             </div>
                         </mat-tab>
+                        }
                     </mat-tab-group>
                 </div>
             </mat-tab>
+            }
         </mat-tab-group>
     </div>
     <!-- Add User Dialog -->
@@ -373,13 +373,13 @@
         <h2 mat-dialog-title>{{ getDialogTitle() }}</h2>
         <mat-dialog-content>
             <!-- Role Form (shown when isEditRole is true) -->
-            <form [formGroup]="addRoleForm" class="flex flex-col items-center" *ngIf="isEditRole">
+            @if (isEditRole) {
+            <form [formGroup]="addRoleForm" class="flex flex-col items-center">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Role Name</mat-label>
                     <input matInput formControlName="roleName" placeholder="Enter role name" required />
-                    <mat-error *ngIf="addRoleForm.get('roleName')?.hasError('required')">
-                        Role name is required
-                    </mat-error>
+                    @if (addRoleForm.get('roleName')?.hasError('required')) {
+                    <mat-error>Role name is required</mat-error> }
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Permissions</mat-label>
@@ -390,13 +390,12 @@
                         panelClass="permission-select-panel"
                         (openedChange)="onPermissionSelectOpenedChange($event)"
                     >
-                        <mat-option *ngFor="let permission of permissions" [value]="permission.id">
-                            {{ permission.name }}
-                        </mat-option>
+                        @for (permission of permissions; track permission.id) {
+                        <mat-option [value]="permission.id">{{ permission.name }}</mat-option>
+                        }
                     </mat-select>
-                    <mat-error *ngIf="addRoleForm.get('permission')?.hasError('required')">
-                        At least one permission is required
-                    </mat-error>
+                    @if (addRoleForm.get('permission')?.hasError('required')) {
+                    <mat-error>At least one permission is required</mat-error> }
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Description</mat-label>
@@ -408,15 +407,16 @@
                     ></textarea>
                 </mat-form-field>
             </form>
+            }
 
             <!-- Permission Form (shown when isEditPermission is true) -->
-            <form [formGroup]="addPermissionTabForm" class="flex flex-col items-center" *ngIf="isEditPermission">
+            @if (isEditPermission) {
+            <form [formGroup]="addPermissionTabForm" class="flex flex-col items-center">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Permission Name</mat-label>
                     <input matInput formControlName="permission" placeholder="Enter permission name" required />
-                    <mat-error *ngIf="addPermissionTabForm.get('permission')?.hasError('required')">
-                        Permission name is required
-                    </mat-error>
+                    @if (addPermissionTabForm.get('permission')?.hasError('required')) {
+                    <mat-error>Permission name is required</mat-error> }
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
@@ -429,13 +429,11 @@
                     ></textarea>
                 </mat-form-field>
             </form>
+            }
 
             <!-- User Form (shown when editing user or adding new user) -->
-            <form
-                [formGroup]="addUserForm"
-                class="flex flex-col items-center"
-                *ngIf="isEditUser || (!isEditRole && !isEditPermission)"
-            >
+            @if (isEditUser || (!isEditRole && !isEditPermission)) {
+            <form [formGroup]="addUserForm" class="flex flex-col items-center">
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Name</mat-label>
                     <input
@@ -445,10 +443,11 @@
                         [readonly]="isEditUser"
                         required
                     />
-                    <mat-error *ngIf="addUserForm.get('name')?.hasError('required')"> Name is required </mat-error>
+                    @if (addUserForm.get('name')?.hasError('required')) { <mat-error>Name is required</mat-error> }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width" *ngIf="isEditUser || !isEditRole">
+                @if (isEditUser || !isEditRole) {
+                <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Email</mat-label>
                     <input
                         matInput
@@ -458,11 +457,11 @@
                         [readonly]="isEditUser"
                         required
                     />
-                    <mat-error *ngIf="addUserForm.get('email')?.hasError('required')"> Email is required </mat-error>
-                    <mat-error *ngIf="addUserForm.get('email')?.hasError('email')">
-                        Please enter a valid email
-                    </mat-error>
+                    @if (addUserForm.get('email')?.hasError('required')) { <mat-error>Email is required</mat-error> }
+                    @if (addUserForm.get('email')?.hasError('email')) {
+                    <mat-error>Please enter a valid email</mat-error> }
                 </mat-form-field>
+                }
 
                 <mat-form-field appearance="outline" class="full-width mobile-number-field">
                     <mat-label>Mobile Number</mat-label>
@@ -473,9 +472,8 @@
                         placeholder="Enter mobile number"
                         [readonly]="isEditUser"
                     />
-                    <mat-error *ngIf="addUserForm.get('mobileNumber')?.hasError('pattern')">
-                        Please enter a valid mobile number with country code
-                    </mat-error>
+                    @if (addUserForm.get('mobileNumber')?.hasError('pattern')) {
+                    <mat-error>Please enter a valid mobile number with country code</mat-error> }
                     <mat-hint>Note: Please enter mobile number with country code (e.g., 917***221227)</mat-hint>
                 </mat-form-field>
 
@@ -485,7 +483,8 @@
                         <mat-select-trigger>
                             {{ getRoleNameById(addUserForm.get('role')?.value) }}
                         </mat-select-trigger>
-                        <mat-option *ngFor="let role of roles" [value]="role.id">
+                        @for (role of roles; track role.id) {
+                        <mat-option [value]="role.id">
                             <div class="role-option-content">
                                 <div class="role-name">{{ role.name }}</div>
                                 <span>
@@ -493,14 +492,12 @@
                                 </span>
                             </div>
                         </mat-option>
+                        }
                     </mat-select>
                 </mat-form-field>
 
-                <mat-form-field
-                    appearance="outline"
-                    class="full-width"
-                    *ngIf="isEditUser && getAvailableAdditionalPermissions().length !== 0"
-                >
+                @if (isEditUser && getAvailableAdditionalPermissions().length !== 0) {
+                <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Additional Permissions</mat-label>
                     <mat-select
                         formControlName="permission"
@@ -508,25 +505,22 @@
                         panelClass="permission-select-panel"
                         (openedChange)="onPermissionSelectOpenedChange($event)"
                     >
-                        <mat-option
-                            *ngFor="let permission of getAvailableAdditionalPermissions()"
-                            [value]="permission.id"
-                        >
-                            <span class="role-name">{{ permission.name }}</span> &nbsp;<span
-                                class="permission-description"
-                                *ngIf="permission.description"
+                        @for (permission of getAvailableAdditionalPermissions(); track permission.id) {
+                        <mat-option [value]="permission.id">
+                            <span class="role-name">{{ permission.name }}</span>
+                            @if (permission.description) { &nbsp;<span class="permission-description"
                                 >({{ permission.description }})</span
                             >
+                            }
                         </mat-option>
-                        <mat-option *ngIf="getAvailableAdditionalPermissions().length === 0" disabled>
-                            No additional permissions available
-                        </mat-option>
+                        }
                     </mat-select>
-                    <mat-error *ngIf="addUserForm.get('permission')?.hasError('required')">
-                        At least one permission is required
-                    </mat-error>
+                    @if (addUserForm.get('permission')?.hasError('required')) {
+                    <mat-error>At least one permission is required</mat-error> }
                 </mat-form-field>
+                }
             </form>
+            }
         </mat-dialog-content>
         <mat-dialog-actions align="end">
             <button matButton (click)="closeDialog()">Cancel</button>
@@ -543,9 +537,8 @@
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Permission</mat-label>
                     <input matInput formControlName="permission" placeholder="Enter permission" required />
-                    <mat-error *ngIf="addPermissionForm.get('permission')?.hasError('required')">
-                        Permission is required
-                    </mat-error>
+                    @if (addPermissionForm.get('permission')?.hasError('required')) {
+                    <mat-error>Permission is required</mat-error> }
                 </mat-form-field>
             </form>
         </mat-dialog-content>
@@ -563,13 +556,13 @@
         <mat-dialog-content>
             <form [formGroup]="editPermissionForm" class="edit-permission-form">
                 <!-- Show all fields when adding new role -->
-                <div *ngIf="!currentEditingPermission">
+                @if (!currentEditingPermission) {
+                <div>
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Role Name</mat-label>
                         <input matInput formControlName="roleName" placeholder="Enter role name" required />
-                        <mat-error *ngIf="editPermissionForm.get('roleName')?.hasError('required')">
-                            Role name is required
-                        </mat-error>
+                        @if (editPermissionForm.get('roleName')?.hasError('required')) {
+                        <mat-error>Role name is required</mat-error> }
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="full-width">
@@ -581,9 +574,8 @@
                             rows="3"
                             required
                         ></textarea>
-                        <mat-error *ngIf="editPermissionForm.get('description')?.hasError('required')">
-                            Description is required
-                        </mat-error>
+                        @if (editPermissionForm.get('description')?.hasError('required')) {
+                        <mat-error>Description is required</mat-error> }
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="full-width">
@@ -595,18 +587,19 @@
                             panelClass="permission-select-panel"
                             (openedChange)="onPermissionSelectOpenedChange($event)"
                         >
-                            <mat-option *ngFor="let permission of permissions" [value]="permission.id">
-                                {{ permission.name }}
-                            </mat-option>
+                            @for (permission of permissions; track permission.id) {
+                            <mat-option [value]="permission.id">{{ permission.name }}</mat-option>
+                            }
                         </mat-select>
-                        <mat-error *ngIf="editPermissionForm.get('permission')?.hasError('required')">
-                            At least one permission is required
-                        </mat-error>
+                        @if (editPermissionForm.get('permission')?.hasError('required')) {
+                        <mat-error>At least one permission is required</mat-error> }
                     </mat-form-field>
                 </div>
+                }
 
                 <!-- Show only permission selection and name when editing -->
-                <div *ngIf="currentEditingPermission">
+                @if (currentEditingPermission) {
+                <div>
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Select Permission to Edit</mat-label>
                         <mat-select
@@ -614,20 +607,16 @@
                             (selectionChange)="onPermissionSelected($event.value)"
                             required
                         >
-                            <mat-option *ngFor="let perm of currentEditingPermission.permissions" [value]="perm">
-                                {{ perm }}
-                            </mat-option>
+                            @for (perm of currentEditingPermission.permissions; track perm) {
+                            <mat-option [value]="perm">{{ perm }}</mat-option>
+                            }
                         </mat-select>
-                        <mat-error *ngIf="editPermissionForm.get('selectedPermission')?.hasError('required')">
-                            Please select a permission to edit
-                        </mat-error>
+                        @if (editPermissionForm.get('selectedPermission')?.hasError('required')) {
+                        <mat-error>Please select a permission to edit</mat-error> }
                     </mat-form-field>
 
-                    <mat-form-field
-                        appearance="outline"
-                        class="full-width"
-                        *ngIf="editPermissionForm.get('selectedPermission')?.value"
-                    >
+                    @if (editPermissionForm.get('selectedPermission')?.value) {
+                    <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Permission Name</mat-label>
                         <input
                             matInput
@@ -635,11 +624,12 @@
                             placeholder="Enter new permission name"
                             required
                         />
-                        <mat-error *ngIf="editPermissionForm.get('permissionName')?.hasError('required')">
-                            Permission name is required
-                        </mat-error>
+                        @if (editPermissionForm.get('permissionName')?.hasError('required')) {
+                        <mat-error>Permission name is required</mat-error> }
                     </mat-form-field>
+                    }
                 </div>
+                }
             </form>
         </mat-dialog-content>
         <mat-dialog-actions align="end">

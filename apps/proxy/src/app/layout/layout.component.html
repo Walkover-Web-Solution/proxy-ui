@@ -17,38 +17,47 @@
                     <span class="font-16 fw-bolder overflow-dotted" style="max-width: 145px">
                         {{ (clientSettings$ | async)?.client?.name }}
                     </span>
-                    <mat-icon class="mat-icon-18" *ngIf="isSideNavOpen | async">{{
+                    @if (isSideNavOpen | async) {
+                    <mat-icon class="mat-icon-18">{{
                         clientsMenuTrigger?.menuOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
                     }}</mat-icon>
+                    }
                     <mat-menu #clientsMenu="matMenu" class="profile-sub-dropdown" xPosition="before">
-                        <mat-list *ngIf="clients$ | async as clientList">
-                            <proxy-cdk-scroll
-                                (fetchNextPage)="fetchClientsNextPage()"
-                                *ngIf="clientList.totalEntityCount > 25; else clientListRef"
-                            >
+                        @if (clients$ | async as clientList) {
+                        <mat-list>
+                            @if (clientList.totalEntityCount > 25) {
+                            <proxy-cdk-scroll (fetchNextPage)="fetchClientsNextPage()">
                                 <cdk-virtual-scroll-viewport
                                     [itemSize]="40"
-                                    style="overflow: hidden overlay"
                                     minBufferPx="400"
                                     maxBufferPx="400"
                                     id="scrollableWrapper"
-                                    style="height: 80vh; width: 280px"
+                                    style="height: 80vh; width: 280px; overflow: hidden overlay"
                                 >
-                                    <ng-container *ngTemplateOutlet="clientListRef"></ng-container>
+                                    @for (client of clientList?.data; track client.id) {
+                                    <button
+                                        mat-menu-item
+                                        (click)="switchClient(client?.id)"
+                                        [disabled]="(clientSettings$ | async)?.client?.id === client?.id"
+                                        [class.text-dark]="(clientSettings$ | async)?.client?.id === client?.id"
+                                    >
+                                        {{ client.name }}
+                                    </button>
+                                    }
                                 </cdk-virtual-scroll-viewport>
                             </proxy-cdk-scroll>
-                            <ng-template #clientListRef>
-                                <button
-                                    mat-menu-item
-                                    (click)="switchClient(client?.id)"
-                                    [disabled]="(clientSettings$ | async)?.client?.id === client?.id"
-                                    [class.text-dark]="(clientSettings$ | async)?.client?.id === client?.id"
-                                    *ngFor="let client of clientList?.data"
-                                >
-                                    {{ client.name }}
-                                </button>
-                            </ng-template>
+                            } @else { @for (client of clientList?.data; track client.id) {
+                            <button
+                                mat-menu-item
+                                (click)="switchClient(client?.id)"
+                                [disabled]="(clientSettings$ | async)?.client?.id === client?.id"
+                                [class.text-dark]="(clientSettings$ | async)?.client?.id === client?.id"
+                            >
+                                {{ client.name }}
+                            </button>
+                            } }
                         </mat-list>
+                        }
                     </mat-menu>
                 </div>
             </div>
@@ -71,19 +80,17 @@
             [isSideNavOpen]="!(isSideNavOpen | async)"
         ></proxy-main-left-side-nav>
         <!-- Proxy Sidenav::END -->
-        <div class="mat-drawer-footer" *ngIf="logInData$ | async as user">
+        @if (logInData$ | async as user) {
+        <div class="mat-drawer-footer">
             <button matButton [matMenuTriggerFor]="menu">
                 <div class="flex items-center">
-                    <img
-                        *ngIf="user.photoURL"
-                        [src]="user.photoURL"
-                        alt="No Image"
-                        class="profile-avatar"
-                        loading="lazy"
-                    />
-                    <mat-icon *ngIf="!user.photoURL" aria-hidden="false" class="mr-6 text-grey material-icons-outlined">
+                    @if (user.photoURL) {
+                    <img [src]="user.photoURL" alt="No Image" class="profile-avatar" loading="lazy" />
+                    } @else {
+                    <mat-icon aria-hidden="false" class="mr-6 text-grey material-icons-outlined">
                         account_circle</mat-icon
                     >
+                    }
                     <div class="flex flex-col" style="width: 140px">
                         <h6 class="username m-0">{{ user.displayName }}</h6>
                     </div>
@@ -97,6 +104,7 @@
                 </a>
             </mat-menu>
         </div>
+        }
     </div>
     <div class="app-main-container">
         <!-- Content::START -->

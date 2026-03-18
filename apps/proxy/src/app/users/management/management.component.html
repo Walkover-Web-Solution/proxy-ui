@@ -5,15 +5,18 @@
             <mat-form-field appearance="outline" class="w-1/2">
                 <mat-label>Select Block</mat-label>
                 <mat-select [formControl]="roleForm.get('feature_id')">
-                    <mat-option *ngFor="let feature of features" [value]="feature.reference_id">
-                        {{ feature.name }}
-                    </mat-option>
+                    @for (feature of features; track feature.reference_id) {
+                    <mat-option [value]="feature.reference_id">{{ feature.name }}</mat-option>
+                    }
                 </mat-select>
-                <mat-error *ngIf="roleForm.get('feature_id')?.hasError('required')"> Block is required </mat-error>
+                @if (roleForm.get('feature_id')?.hasError('required')) {
+                <mat-error> Block is required </mat-error>
+                }
             </mat-form-field>
         </div>
 
-        <div *ngIf="roleForm.get('feature_id')?.value" class="mt-2">
+        @if (roleForm.get('feature_id')?.value) {
+        <div class="mt-2">
             <h5 class="mat-body-2 text-secondary fw-bold">Create Roles & Permissions</h5>
 
             <mat-tab-group>
@@ -50,9 +53,9 @@
                                 <th mat-header-cell *matHeaderCellDef>Permissions</th>
                                 <td mat-cell *matCellDef="let element" data-label="Permissions">
                                     <ul class="permissions-list mb-0">
-                                        <li *ngFor="let permission of element.permissionsList">
-                                            {{ permission.name }}
-                                        </li>
+                                        @for (permission of element.permissionsList; track permission.name) {
+                                        <li>{{ permission.name }}</li>
+                                        }
                                     </ul>
                                 </td>
                             </ng-container>
@@ -257,9 +260,9 @@
                                 <mat-form-field appearance="outline" class="w-1/2">
                                     <mat-label>Select default role for creator</mat-label>
                                     <mat-select formControlName="defaultRoleForCreator">
-                                        <mat-option *ngFor="let role of rolesDataSource.data" [value]="role.id">
-                                            {{ role.role }}
-                                        </mat-option>
+                                        @for (role of rolesDataSource.data; track role.id) {
+                                        <mat-option [value]="role.id">{{ role.role }}</mat-option>
+                                        }
                                     </mat-select>
                                 </mat-form-field>
                             </div>
@@ -271,9 +274,9 @@
                                 <mat-form-field appearance="outline" class="w-1/2">
                                     <mat-label>Select default role for member</mat-label>
                                     <mat-select formControlName="defaultRoleForMember">
-                                        <mat-option *ngFor="let role of rolesDataSource.data" [value]="role.id">
-                                            {{ role.role }}
-                                        </mat-option>
+                                        @for (role of rolesDataSource.data; track role.id) {
+                                        <mat-option [value]="role.id">{{ role.role }}</mat-option>
+                                        }
                                     </mat-select>
                                 </mat-form-field>
                             </div>
@@ -305,6 +308,7 @@
                 </mat-tab>
             </mat-tab-group>
         </div>
+        }
     </div>
 </div>
 
@@ -321,17 +325,17 @@
             <mat-form-field appearance="outline" class="w-full mb-6">
                 <mat-label>Role Name <span class="text-danger">*</span></mat-label>
                 <input matInput formControlName="roleName" placeholder="Enter role name" />
-                <mat-error *ngIf="dialogRoleForm.get('roleName')?.hasError('required')">
-                    Role name is required
-                </mat-error>
+                @if (dialogRoleForm.get('roleName')?.hasError('required')) {
+                <mat-error>Role name is required</mat-error>
+                }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full mb-6">
                 <mat-label>Permissions</mat-label>
                 <mat-select formControlName="permissions" multiple>
-                    <mat-option *ngFor="let permission of availablePermissions" [value]="permission.name">
-                        {{ permission.name }}
-                    </mat-option>
+                    @for (permission of availablePermissions; track permission.name) {
+                    <mat-option [value]="permission.name">{{ permission.name }}</mat-option>
+                    }
                 </mat-select>
                 <mat-hint>Select one or more permissions</mat-hint>
             </mat-form-field>
@@ -363,9 +367,9 @@
             <mat-form-field appearance="outline" class="w-full mb-6">
                 <mat-label>Permission Name <span class="text-danger">*</span></mat-label>
                 <input matInput formControlName="permissionName" placeholder="Enter permission name" />
-                <mat-error *ngIf="dialogPermissionForm.get('permissionName')?.hasError('required')">
-                    Permission name is required
-                </mat-error>
+                @if (dialogPermissionForm.get('permissionName')?.hasError('required')) {
+                <mat-error>Permission name is required</mat-error>
+                }
             </mat-form-field>
             <mat-form-field appearance="outline" class="w-full mb-6">
                 <mat-label>Description</mat-label>

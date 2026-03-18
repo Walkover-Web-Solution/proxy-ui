@@ -84,7 +84,9 @@
                                     autocomplete="off"
                                 />
                                 <mat-icon matSuffix class="mat-icon-18">today</mat-icon>
-                                <mat-error *ngIf="range.get('start').errors?.pattern">Invalid Date Format.</mat-error>
+                                @if (range.get('start').errors?.pattern) {
+                                <mat-error>Invalid Date Format.</mat-error>
+                                }
                             </mat-form-field>
                             <mat-form-field appearance="outline" class="mat-form-custom">
                                 <mat-label>To</mat-label>
@@ -96,7 +98,9 @@
                                     autocomplete="off"
                                 />
                                 <mat-icon matSuffix class="mat-icon-18">today</mat-icon>
-                                <mat-error *ngIf="range.get('end').errors?.pattern">Invalid Date Format.</mat-error>
+                                @if (range.get('end').errors?.pattern) {
+                                <mat-error>Invalid Date Format.</mat-error>
+                                }
                             </mat-form-field>
                         </form>
                     </div>
@@ -110,16 +114,13 @@
                         ></mat-calendar>
                     </div>
                     <div class="drp-calendar-content">
-                        <p *ngIf="selectedDateIsGreaterThenToday" class="pl-2 m-0 text-danger" style="font-size: 12px">
-                            Future Date Selected.
-                        </p>
-                        <p
-                            *ngIf="selectedDateIsSmallerThenMinDate"
-                            class="pl-2 m-0 text-danger"
-                            style="font-size: 12px"
-                        >
+                        @if (selectedDateIsGreaterThenToday) {
+                        <p class="pl-2 m-0 text-danger" style="font-size: 12px">Future Date Selected.</p>
+                        } @if (selectedDateIsSmallerThenMinDate) {
+                        <p class="pl-2 m-0 text-danger" style="font-size: 12px">
                             Date Selected older then available data.
                         </p>
+                        }
                     </div>
                     <div class="drp-calendar-actions px-2">
                         <button matButton="outlined" class="mw-auto px-2 btn-hide" (click)="toggleRangePicker()">

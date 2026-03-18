@@ -1,23 +1,17 @@
 <div class="audio-controls flex items-center justify-center">
-    <a
-        class="mr-1 flex text-primary"
-        href="javascript:void(0)"
-        *ngIf="showPlay && !isLoading && !isPlaying"
-        (click)="playAudio()"
-    >
-        <i class="material-icons" aria-hidden="true">play_arrow</i></a
-    >
-    <a
-        class="mr-1 flex text-primary"
-        href="javascript:void(0)"
-        *ngIf="showPlay && !isLoading && isPlaying"
-        (click)="pauseAudio()"
-    >
-        <i class="material-icons" aria-hidden="true">pause</i></a
-    >
-    <a class="mr-1 flex text-dark" href="javascript:void(0)" *ngIf="isLoading">
+    @if (showPlay && !isLoading && !isPlaying) {
+    <a class="mr-1 flex text-primary" href="javascript:void(0)" (click)="playAudio()">
+        <i class="material-icons" aria-hidden="true">play_arrow</i>
+    </a>
+    } @if (showPlay && !isLoading && isPlaying) {
+    <a class="mr-1 flex text-primary" href="javascript:void(0)" (click)="pauseAudio()">
+        <i class="material-icons" aria-hidden="true">pause</i>
+    </a>
+    } @if (isLoading) {
+    <a class="mr-1 flex text-dark" href="javascript:void(0)">
         <mat-spinner diameter="24"></mat-spinner>
     </a>
+    }
     <audio (timeupdate)="updateDuration()" #audio></audio>
     <input
         type="range"
@@ -30,19 +24,19 @@
         (change)="seekAudio($event.target.value)"
         [disabled]="isLoading"
     />
-    <span class="mx-2 mat-body-2 text-dark" style="font-size: 12px" *ngIf="showTime"
-        >{{ duration }}/{{ totalDuration }}</span
-    >
-
+    @if (showTime) {
+    <span class="mx-2 mat-body-2 text-dark" style="font-size: 12px">{{ duration }}/{{ totalDuration }}</span>
+    } @if (showDelete) {
     <button
         matIconButton
         class="icon-btn-md"
-        *ngIf="showDelete"
         href="javascript:void(0)"
         (click)="remove.emit()"
         style="text-decoration: none"
     >
         <mat-icon class="material-icons-outlined mat-icon-16" aria-hidden="true">delete</mat-icon>
     </button>
-    <a *ngIf="showDownload && blobUrl" class="download" download="recording" [href]="blobUrl"> </a>
+    } @if (showDownload && blobUrl) {
+    <a class="download" download="recording" [href]="blobUrl"> </a>
+    }
 </div>

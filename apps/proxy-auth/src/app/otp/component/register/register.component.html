@@ -1,7 +1,8 @@
 <ng-container>
     <div class="dialog-header">
         <div class="heading" [style.color]="primaryColor || null">Register</div>
-        <button matIconButton class="close-dialog" (click)="close(true)" type="button" *ngIf="!isRegisterFormOnly">
+        @if (!isRegisterFormOnly) {
+        <button matIconButton class="close-dialog" (click)="close(true)" type="button">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
@@ -9,6 +10,7 @@
                 />
             </svg>
         </button>
+        }
     </div>
     <div class="otp-verification-content">
         <div
@@ -58,7 +60,8 @@
                         isFieldFocused: isNumberChanged
                     }"
                 ></ng-container>
-                <div class="submit-btn mt-2" *ngIf="!isOtpVerified">
+                @if (!isOtpVerified) {
+                <div class="submit-btn mt-2">
                     <button
                         (click)="isOtpSent ? resendOtp() : getOtp()"
                         matButton="filled"
@@ -69,15 +72,15 @@
                         [style.color]="buttonColor ? buttonTextColor || '#ffffff' : null"
                         [style.border-radius]="buttonColor ? borderRadiusValue || '4px' : borderRadiusValue || null"
                     >
-                        <span *ngIf="!isOtpSent">
-                            {{ (selectGetOtpInProcess$ | async) ? 'Sending...' : 'Get OTP' }}
-                        </span>
-                        <span *ngIf="isOtpSent && !canResendOtp"> Resend OTP in {{ resendTimer }}s </span>
-                        <span *ngIf="isOtpSent && canResendOtp && !(selectGetOtpInProcess$ | async)"> Resend OTP </span>
-                        <span *ngIf="isOtpSent && canResendOtp && (selectGetOtpInProcess$ | async)"> Sending... </span>
+                        @if (!isOtpSent) {
+                        <span>{{ (selectGetOtpInProcess$ | async) ? 'Sending...' : 'Get OTP' }}</span> } @if (isOtpSent
+                        && !canResendOtp) { <span> Resend OTP in {{ resendTimer }}s </span> } @if (isOtpSent &&
+                        canResendOtp && !(selectGetOtpInProcess$ | async)) { <span> Resend OTP </span> } @if (isOtpSent
+                        && canResendOtp && (selectGetOtpInProcess$ | async)) { <span> Sending... </span> }
                     </button>
                 </div>
-                <div *ngIf="isOtpVerified" class="submit-btn mt-2">
+                } @if (isOtpVerified) {
+                <div class="submit-btn mt-2">
                     <span class="success-message font-12">
                         Verified
                         <svg
@@ -93,12 +96,14 @@
                         </svg>
                     </span>
                 </div>
+                }
             </div>
-            <div *ngIf="isNumberChanged || isOtpVerified" class="one-line otp-verify-btn flex justify-end">
+            @if (isNumberChanged || isOtpVerified) {
+            <div class="one-line otp-verify-btn flex justify-end">
                 <a href="javascript:void(0)" (click)="numberChanged()" class="verify-otp-link">Change Number</a>
             </div>
-
-            <div *ngIf="isOtpSent && !isOtpVerified" class="one-line otp-verify-btn">
+            } @if (isOtpSent && !isOtpVerified) {
+            <div class="one-line otp-verify-btn">
                 <div class="otp-container" [formGroup]="otpForm">
                     <input
                         type="text"
@@ -153,10 +158,11 @@
                         {{ (selectVerifyOtpV2InProcess$ | async) ? 'Verifying...' : 'Verify OTP' }}
                     </a>
                 </div>
-                <div *ngIf="otpError" class="otp-error-message">
-                    {{ otpError }}
-                </div>
+                @if (otpError) {
+                <div class="otp-error-message">{{ otpError }}</div>
+                }
             </div>
+            }
             <div class="one-line">
                 <ng-container
                     [ngTemplateOutlet]="formField"
@@ -181,24 +187,14 @@
                 <span class="subheading">Note: </span>
                 Password should contain atleast one Capital Letter, one Small Letter, one Digit and one Symbol
             </div>
-            <mat-divider
-                *ngIf="showCompanyDetail"
-                class="company-details"
-                [class.dark-divider]="isDarkTheme"
-            ></mat-divider>
-            <div *ngIf="showCompanyDetail" class="heading" [style.color]="primaryColor || null">
-                Company Details (Optional)
-            </div>
+            @if (showCompanyDetail) {
+            <mat-divider class="company-details" [class.dark-divider]="isDarkTheme"></mat-divider>
+            <div class="heading" [style.color]="primaryColor || null">Company Details (Optional)</div>
             <ng-container
-                *ngIf="showCompanyDetail"
                 [ngTemplateOutlet]="formField"
-                [ngTemplateOutletContext]="{
-                    label: 'Company Name',
-                    formControl: registrationForm.get('company.name')
-                }"
+                [ngTemplateOutletContext]="{ label: 'Company Name', formControl: registrationForm.get('company.name') }"
             ></ng-container>
             <ng-container
-                *ngIf="showCompanyDetail"
                 [ngTemplateOutlet]="intlFormField"
                 [ngTemplateOutletContext]="{
                     key: 'company',
@@ -207,22 +203,15 @@
                 }"
             ></ng-container>
             <ng-container
-                *ngIf="showCompanyDetail"
                 [ngTemplateOutlet]="formField"
-                [ngTemplateOutletContext]="{
-                    label: 'Email',
-                    formControl: registrationForm.get('company.email')
-                }"
+                [ngTemplateOutletContext]="{ label: 'Email', formControl: registrationForm.get('company.email') }"
             ></ng-container>
+            }
             <div class="one-line submit-wrapper">
                 <div class="error-message">
-                    <ng-container *ngIf="apiError | async as apiError">
-                        <span class="subheading">Error: </span>
-                        <span *ngFor="let error of apiError">
-                            {{ error }}
-                            <br />
-                        </span>
-                    </ng-container>
+                    @if (apiError | async; as apiErrorList) {
+                    <span class="subheading">Error: </span>
+                    @for (error of apiErrorList; track error) { <span>{{ error }}<br /></span> } }
                 </div>
                 <div class="submit-btn">
                     <button
@@ -253,67 +242,51 @@
     <div class="register-user-details-formfield relative flex gap-4 w-full">
         <mat-form-field appearance="outline" style="width: 100%">
             <mat-label>{{ label }} </mat-label>
-            <ng-container *ngIf="type === 'password' || type === 'confirm password'; else normalField">
-                <input
-                    matInput
-                    autocomplete="off"
-                    [type]="(type === 'password' ? showPassword : showConfirmPassword) ? 'text' : 'password'"
-                    [formControl]="formControl"
-                    [placeholder]="'Enter ' + label"
-                    maxlength="15"
-                />
-            </ng-container>
-
-            <ng-template #normalField>
-                <input
-                    matInput
-                    autocomplete="off"
-                    [type]="type || 'text'"
-                    [formControl]="formControl"
-                    [placeholder]="'Enter ' + label"
-                />
-            </ng-template>
-
-            <mat-error *ngIf="formControl.touched">
-                <mat-error *ngIf="formControl.errors?.required"> {{ label }} is required. </mat-error>
-                <mat-error *ngIf="formControl.errors?.minlengthWithSpace"> Min required length is 3 </mat-error>
-                <mat-error *ngIf="formControl.errors?.noStartEndSpaces">
-                    Start and End spaces are not allowed</mat-error
-                >
-                <mat-error *ngIf="formControl.errors?.min as minError">
-                    Min value required is {{ minError?.min }}
-                </mat-error>
-                <mat-error *ngIf="formControl.errors?.max as maxError">
-                    Max value allowed is {{ maxError?.max }}
-                </mat-error>
-                <mat-error *ngIf="formControl.errors?.minlength as minLengthError">
-                    Min required length is {{ minLengthError?.requiredLength }}
-                </mat-error>
-                <mat-error *ngIf="formControl.errors?.maxlength as maxLengthError">
-                    Max allowed length is {{ maxLengthError?.requiredLength }}
-                </mat-error>
-                <mat-error *ngIf="formControl.errors?.pattern">
-                    {{ patternError ? patternError : 'Enter valid ' + label }}
-                </mat-error>
-                <mat-error *ngIf="formControl.errors?.valueSameAsControl"> {{ label }} mismatch </mat-error>
-            </mat-error>
-            <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
+            @if (type === 'password' || type === 'confirm password') {
+            <input
+                matInput
+                autocomplete="off"
+                [type]="(type === 'password' ? showPassword : showConfirmPassword) ? 'text' : 'password'"
+                [formControl]="formControl"
+                [placeholder]="'Enter ' + label"
+                maxlength="15"
+            />
+            } @else {
+            <input
+                matInput
+                autocomplete="off"
+                [type]="type || 'text'"
+                [formControl]="formControl"
+                [placeholder]="'Enter ' + label"
+            />
+            } @if (formControl.touched) { @if (formControl.errors?.required) {
+            <mat-error> {{ label }} is required. </mat-error> } @if (formControl.errors?.minlengthWithSpace) {
+            <mat-error> Min required length is 3 </mat-error> } @if (formControl.errors?.noStartEndSpaces) {
+            <mat-error> Start and End spaces are not allowed</mat-error> } @if (formControl.errors?.min; as minError) {
+            <mat-error> Min value required is {{ minError?.min }} </mat-error> } @if (formControl.errors?.max; as
+            maxError) { <mat-error> Max value allowed is {{ maxError?.max }} </mat-error> } @if
+            (formControl.errors?.minlength; as minLengthError) {
+            <mat-error> Min required length is {{ minLengthError?.requiredLength }} </mat-error> } @if
+            (formControl.errors?.maxlength; as maxLengthError) {
+            <mat-error> Max allowed length is {{ maxLengthError?.requiredLength }} </mat-error> } @if
+            (formControl.errors?.pattern) {
+            <mat-error> {{ patternError ? patternError : 'Enter valid ' + label }} </mat-error> } @if
+            (formControl.errors?.valueSameAsControl) { <mat-error> {{ label }} mismatch </mat-error> } } @if (hint) {
+            <mat-hint>{{ hint }}</mat-hint> }
         </mat-form-field>
+        @if (type === 'password' || type === 'confirm password') {
         <mat-icon
             class="absolute toggle-icon"
-            *ngIf="type === 'password' || type === 'confirm password'"
             (click)="
                 type === 'password' ? (showPassword = !showPassword) : (showConfirmPassword = !showConfirmPassword)
             "
         >
             <ng-container
                 [ngTemplateOutlet]="visibilityIcon"
-                [ngTemplateOutletContext]="{
-                    visible: type === 'password' ? showPassword : showConfirmPassword
-                }"
-            >
-            </ng-container>
+                [ngTemplateOutletContext]="{ visible: type === 'password' ? showPassword : showConfirmPassword }"
+            ></ng-container>
         </mat-icon>
+        }
     </div>
 </ng-template>
 
@@ -343,44 +316,39 @@
             [disabled]="isFieldFocused"
         />
         <div>
-            <mat-error
-                *ngIf="formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']"
-            >
-                Please enter valid mobile number
-            </mat-error>
-
-            <mat-error *ngIf="formControl.errors?.otpVerificationFailed">Please verify the mobile number</mat-error>
+            @if (formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']) {
+            <mat-error>Please enter valid mobile number</mat-error>
+            } @if (formControl.errors?.otpVerificationFailed) { <mat-error>Please verify the mobile number</mat-error> }
         </div>
     </div>
 </ng-template>
 <ng-template #visibilityIcon let-visible="visible">
-    <ng-container matSuffix *ngIf="!visible; else showIcon">
-        <svg
-            matSuffix
-            width="24"
-            height="20"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-        >
-            <path
-                d="M12.01 20c-5.065 0-9.586-4.211-12.01-8.424 2.418-4.103 6.943-7.576 12.01-7.576 5.135 0 9.635 3.453 11.999 7.564-2.241 4.43-6.726 8.436-11.999 8.436zm-10.842-8.416c.843 1.331 5.018 7.416 10.842 7.416 6.305 0 10.112-6.103 10.851-7.405-.772-1.198-4.606-6.595-10.851-6.595-6.116 0-10.025 5.355-10.842 6.584zm10.832-4.584c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5zm0 1c2.208 0 4 1.792 4 4s-1.792 4-4 4-4-1.792-4-4 1.792-4 4-4z"
-            />
-        </svg>
-    </ng-container>
-    <ng-template #showIcon>
-        <svg
-            width="24"
-            height="20"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-        >
-            <path
-                d="M8.137 15.147c-.71-.857-1.146-1.947-1.146-3.147 0-2.76 2.241-5 5-5 1.201 0 2.291.435 3.148 1.145l1.897-1.897c-1.441-.738-3.122-1.248-5.035-1.248-6.115 0-10.025 5.355-10.842 6.584.529.834 2.379 3.527 5.113 5.428l1.865-1.865zm6.294-6.294c-.673-.53-1.515-.853-2.44-.853-2.207 0-4 1.792-4 4 0 .923.324 1.765.854 2.439l5.586-5.586zm7.56-6.146l-19.292 19.293-.708-.707 3.548-3.548c-2.298-1.612-4.234-3.885-5.548-6.169 2.418-4.103 6.943-7.576 12.01-7.576 2.065 0 4.021.566 5.782 1.501l3.501-3.501.707.707zm-2.465 3.879l-.734.734c2.236 1.619 3.628 3.604 4.061 4.274-.739 1.303-4.546 7.406-10.852 7.406-1.425 0-2.749-.368-3.951-.938l-.748.748c1.475.742 3.057 1.19 4.699 1.19 5.274 0 9.758-4.006 11.999-8.436-1.087-1.891-2.63-3.637-4.474-4.978zm-3.535 5.414c0-.554-.113-1.082-.317-1.562l.734-.734c.361.69.583 1.464.583 2.296 0 2.759-2.24 5-5 5-.832 0-1.604-.223-2.295-.583l.734-.735c.48.204 1.007.318 1.561.318 2.208 0 4-1.792 4-4z"
-            />
-        </svg>
-    </ng-template>
+    @if (!visible) {
+    <svg
+        matSuffix
+        width="24"
+        height="20"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+    >
+        <path
+            d="M12.01 20c-5.065 0-9.586-4.211-12.01-8.424 2.418-4.103 6.943-7.576 12.01-7.576 5.135 0 9.635 3.453 11.999 7.564-2.241 4.43-6.726 8.436-11.999 8.436zm-10.842-8.416c.843 1.331 5.018 7.416 10.842 7.416 6.305 0 10.112-6.103 10.851-7.405-.772-1.198-4.606-6.595-10.851-6.595-6.116 0-10.025 5.355-10.842 6.584zm10.832-4.584c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5zm0 1c2.208 0 4 1.792 4 4s-1.792 4-4 4-4-1.792-4-4 1.792-4 4-4z"
+        />
+    </svg>
+    } @else {
+    <svg
+        width="24"
+        height="20"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+    >
+        <path
+            d="M8.137 15.147c-.71-.857-1.146-1.947-1.146-3.147 0-2.76 2.241-5 5-5 1.201 0 2.291.435 3.148 1.145l1.897-1.897c-1.441-.738-3.122-1.248-5.035-1.248-6.115 0-10.025 5.355-10.842 6.584.529.834 2.379 3.527 5.113 5.428l1.865-1.865zm6.294-6.294c-.673-.53-1.515-.853-2.44-.853-2.207 0-4 1.792-4 4 0 .923.324 1.765.854 2.439l5.586-5.586zm7.56-6.146l-19.292 19.293-.708-.707 3.548-3.548c-2.298-1.612-4.234-3.885-5.548-6.169 2.418-4.103 6.943-7.576 12.01-7.576 2.065 0 4.021.566 5.782 1.501l3.501-3.501.707.707zm-2.465 3.879l-.734.734c2.236 1.619 3.628 3.604 4.061 4.274-.739 1.303-4.546 7.406-10.852 7.406-1.425 0-2.749-.368-3.951-.938l-.748.748c1.475.742 3.057 1.19 4.699 1.19 5.274 0 9.758-4.006 11.999-8.436-1.087-1.891-2.63-3.637-4.474-4.978zm-3.535 5.414c0-.554-.113-1.082-.317-1.562l.734-.734c.361.69.583 1.464.583 2.296 0 2.759-2.24 5-5 5-.832 0-1.604-.223-2.295-.583l.734-.735c.48.204 1.007.318 1.561.318 2.208 0 4-1.792 4-4z"
+        />
+    </svg>
+    }
 </ng-template>
