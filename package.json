@@ -91,7 +91,7 @@
         "d3-time-format": "3.0.0",
         "d3-transition": "3.0.1",
         "dayjs": "1.11.7",
-        "firebase": "^10.12.0",
+        "firebase": "^12.10.0",
         "froala-editor": "4.0.15",
         "fs-extra": "5.0.0",
         "google-libphonenumber": "3.2.32",
