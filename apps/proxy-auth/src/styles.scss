@@ -11,6 +11,7 @@
 /* Components*/
 @use 'assets/scss/component/form-field';
 @use 'assets/scss/component/tabs';
+@use '../../shared/scss/component/mat-form-field';
 
 :root {
     --color-common-dark: #000000;
@@ -30,6 +31,8 @@
     --font-size-28: 28px;
     --font-size-30: 30px;
     --font-size-36: 36px;
+
+    --custom-mat-form-field-height: 48px;
 }
 
 /* You can add global styles to this file, and also import other style files */
@@ -210,6 +213,6 @@ proxy-auth,
 //         width: 300px;
 //     }
 // }
-.fw-bold {
-    font-weight: bold;
-}
+// .fw-bold {
+//     font-weight: bold;
+// }

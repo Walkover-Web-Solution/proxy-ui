@@ -10,7 +10,7 @@
     @include mat.all-component-themes(theme.$light-theme);
     @include mat.system-level-colors(theme.$light-theme);
     @include mat.system-level-typography(theme.$light-theme);
-    --mat-sys-primary: #{map.get(theme.$primary-palette, 80)};
+    // --mat-sys-primary: #{map.get(theme.$primary-palette, 80)};
 }
 
 :host-context(body.dark-theme),
@@ -23,7 +23,7 @@
 :host-context(.light-theme) {
     @include mat.all-component-colors(theme.$light-theme);
     @include mat.system-level-colors(theme.$light-theme);
-    --mat-sys-primary: #{map.get(theme.$primary-palette, 80)};
+    // --mat-sys-primary: #{map.get(theme.$primary-palette, 80)};
 }
 
 @media (prefers-color-scheme: dark) {
