@@ -26,6 +26,45 @@ You are an expert in TypeScript, Angular, Nx monorepos, and scalable web applica
 - It MUST pass all AXE checks.
 - It MUST follow all WCAG AA minimums, including focus management, color contrast, and ARIA attributes.
 
+## Design Tokens — Single Source of Truth
+
+**The ONLY file you ever edit to change colors or palette values is:**
+`apps/proxy/src/assets/scss/theme/_custom-palette.scss`
+
+This file defines the Material color palettes and exposes an `emit-design-tokens()` Sass mixin. A single palette change there propagates automatically to all three consumers:
+
+| Consumer | File | How it consumes |
+|---|---|---|
+| Global Material theme | `apps/proxy/src/assets/scss/theme/_default-theme.scss` | `@include theme.emit-design-tokens()` in `html {}` |
+| Shadow DOM Material theme | `apps/proxy-auth/src/shadow-dom-theme.scss` | `@include theme.emit-design-tokens()` in `:host {}` |
+| Tailwind utilities | `tailwind.config.js` (root) | `theme.extend.colors` references `var(--proxy-*)` CSS vars |
+
+**Rules:**
+- **Never hardcode hex color values** in templates, component SCSS, or `tailwind.config.js` — always reference a `var(--proxy-*)` token or a Tailwind color key backed by one.
+- **Never duplicate** palette values between `_custom-palette.scss` and `tailwind.config.js` — Tailwind tokens must always point to `var(--proxy-*)` CSS vars, not raw hex.
+- When adding a new color or tone, add it to `_custom-palette.scss` `$_palettes` map AND expose it via `emit-design-tokens()`, then add the matching `var()` reference to `tailwind.config.js`.
+- The CSS custom property naming convention is `--proxy-{palette}-{tone}` (e.g. `--proxy-primary-80`, `--proxy-neutral-40`).
+- Semantic aliases (`--proxy-color-accent`, `--proxy-color-surface`, etc.) are defined once in `emit-design-tokens()` and should be preferred over raw tone vars in templates when the intent is semantic.
+
+## Styling — Tailwind CSS
+- **Always use Tailwind utility classes** for styling. Never use Bootstrap utility classes (e.g. `d-flex`, `mb-3`, `col-*`) or custom local utility classes.
+- Do NOT write component-scoped CSS/SCSS for spacing, sizing, layout, typography, or color when an equivalent Tailwind class exists — prefer the Tailwind class directly in the template.
+- Use Tailwind's responsive prefixes (`sm:`, `md:`, `lg:`, `xl:`, `2xl:`) for breakpoint-specific styles instead of custom media queries.
+- Use Tailwind's state variants (`hover:`, `focus:`, `active:`, `disabled:`, `group-hover:`) instead of writing pseudo-class CSS rules.
+- Use Tailwind's dark mode variant (`dark:`) for dark theme styles where applicable.
+- Compose utility classes directly on elements — avoid creating wrapper `.container` or `.card` classes that just repeat Tailwind utilities.
+- When a combination of utilities is reused across many components, extract it into a Tailwind `@layer components` block inside the shared `styles.scss`, NOT into a new Angular component SCSS file.
+- Never mix Tailwind utilities with inline `[style]` bindings for the same property — pick one.
+- Use `@apply` sparingly and only inside `@layer components` or `@layer utilities` blocks; never use `@apply` inside component-scoped SCSS files.
+- Avoid arbitrary values (e.g. `w-[347px]`) unless there is no standard scale equivalent; prefer design tokens from `tailwind.config` instead.
+- Keep `tailwind.config` content globs up to date so purging works correctly across all `apps/` and `libs/` paths — always include both `.html` and `.ts` files:
+  ```js
+  content: ['./apps/**/*.{html,ts}', './libs/**/*.{html,ts}']
+  ```
+- Define the project's color palette, spacing scale, and typography in `tailwind.config` `theme.extend` to maintain a consistent design system — never hardcode raw color values or pixel sizes in templates.
+- For complex interactive components (dropdowns, modals, overlays), use Angular CDK primitives styled entirely with Tailwind — do NOT reach for opinionated UI libraries that conflict with Tailwind's utility classes.
+- When a component template accumulates many repeated utility class strings, encapsulate it into a dedicated Angular component rather than duplicating the class list — this keeps templates readable without resorting to `@apply`.
+
 ## Components
 - Keep components small and focused on a single responsibility
 - Use `input()` and `output()` functions instead of `@Input()` and `@Output()` decorators

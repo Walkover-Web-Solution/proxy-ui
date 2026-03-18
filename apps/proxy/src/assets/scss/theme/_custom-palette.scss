@@ -136,7 +136,65 @@ $_rest: (
 $primary-palette: map.merge(map.get($_palettes, primary), $_rest);
 $tertiary-palette: map.merge(map.get($_palettes, tertiary), $_rest);
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SINGLE SOURCE OF TRUTH — Design Tokens
+//
+// Call @include theme.emit-design-tokens() inside any selector (:root, :host,
+// html, etc.) to emit CSS custom properties derived directly from the palettes
+// above. Tailwind's tailwind.config.js references the same var() names so that
+// a single palette change here propagates to Material, Shadow DOM, and Tailwind.
+// ─────────────────────────────────────────────────────────────────────────────
+@mixin emit-design-tokens() {
+  // Primary palette tones (from #19E6CE / teal)
+  --proxy-primary-0:   #{map.get($_palettes, primary, 0)};
+  --proxy-primary-10:  #{map.get($_palettes, primary, 10)};
+  --proxy-primary-20:  #{map.get($_palettes, primary, 20)};
+  --proxy-primary-30:  #{map.get($_palettes, primary, 30)};
+  --proxy-primary-40:  #{map.get($_palettes, primary, 40)};
+  --proxy-primary-50:  #{map.get($_palettes, primary, 50)};
+  --proxy-primary-60:  #{map.get($_palettes, primary, 60)};
+  --proxy-primary-70:  #{map.get($_palettes, primary, 70)};
+  --proxy-primary-80:  #{map.get($_palettes, primary, 80)};
+  --proxy-primary-90:  #{map.get($_palettes, primary, 90)};
+  --proxy-primary-95:  #{map.get($_palettes, primary, 95)};
+  --proxy-primary-100: #{map.get($_palettes, primary, 100)};
 
+  // Secondary palette tones
+  --proxy-secondary-40: #{map.get($_palettes, secondary, 40)};
+  --proxy-secondary-80: #{map.get($_palettes, secondary, 80)};
+  --proxy-secondary-90: #{map.get($_palettes, secondary, 90)};
+
+  // Tertiary palette tones
+  --proxy-tertiary-40: #{map.get($_palettes, tertiary, 40)};
+  --proxy-tertiary-80: #{map.get($_palettes, tertiary, 80)};
+  --proxy-tertiary-90: #{map.get($_palettes, tertiary, 90)};
+
+  // Neutral palette tones
+  --proxy-neutral-10:  #{map.get($_palettes, neutral, 10)};
+  --proxy-neutral-20:  #{map.get($_palettes, neutral, 20)};
+  --proxy-neutral-30:  #{map.get($_palettes, neutral, 30)};
+  --proxy-neutral-40:  #{map.get($_palettes, neutral, 40)};
+  --proxy-neutral-50:  #{map.get($_palettes, neutral, 50)};
+  --proxy-neutral-60:  #{map.get($_palettes, neutral, 60)};
+  --proxy-neutral-70:  #{map.get($_palettes, neutral, 70)};
+  --proxy-neutral-80:  #{map.get($_palettes, neutral, 80)};
+  --proxy-neutral-90:  #{map.get($_palettes, neutral, 90)};
+  --proxy-neutral-95:  #{map.get($_palettes, neutral, 95)};
+  --proxy-neutral-100: #{map.get($_palettes, neutral, 100)};
+
+  // Error palette tones
+  --proxy-error-40:  #{map.get($_palettes, error, 40)};
+  --proxy-error-80:  #{map.get($_palettes, error, 80)};
+  --proxy-error-90:  #{map.get($_palettes, error, 90)};
+
+  // Semantic aliases — light mode defaults (overridden per theme below)
+  --proxy-color-accent:     var(--proxy-primary-80);
+  --proxy-color-on-accent:  var(--proxy-primary-10);
+  --proxy-color-surface:    var(--proxy-neutral-100);
+  --proxy-color-on-surface: var(--proxy-neutral-10);
+  --proxy-color-outline:    var(--proxy-neutral-80);
+  --proxy-color-error:      var(--proxy-error-40);
+}
 
 /* ---------- LIGHT THEME ---------- */
 $light-theme: mat.define-theme(
