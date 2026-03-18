@@ -1,4 +1,4 @@
-<div class="container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
+<div class="container" [class.dark-theme]="theme === 'dark'" [class.light-theme]="theme !== 'dark'">
     <!-- ── USER DETAILS CARD ── -->
     <div class="profile-card mb-4">
         <div class="card-header">
@@ -209,18 +209,15 @@
                     <div class="org-cell-inner">
                         <div
                             class="org-avatar-sm"
-                            [ngClass]="
-                                companyDetails?.currentCompany?.company_uname === element.company_uname ? 'current' : ''
-                            "
+                            [class.current]="companyDetails?.currentCompany?.company_uname === element.company_uname"
                         >
                             {{ element.name | slice: 0:2 | uppercase }}
                         </div>
                         <span
                             class="org-name"
-                            [ngClass]="
+                            [class.fw-bold]="companyDetails?.currentCompany?.company_uname === element.company_uname"
+                            [class.current-org]="
                                 companyDetails?.currentCompany?.company_uname === element.company_uname
-                                    ? 'fw-bold current-org'
-                                    : ''
                             "
                         >
                             {{ element.name }}

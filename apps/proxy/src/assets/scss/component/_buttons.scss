@@ -1,5 +1,3 @@
-@use '../../../../../../node_modules/@angular/material/index' as mat;
-@use '../theme/theme-colors' as *;
 @use '../utils/mixins/common-utils' as *;
 
 $primary-btn-height: 40px;
@@ -243,7 +241,7 @@ $secondary-btn-height: 30px;
     line-height: 30px !important;
     font-size: var(--font-size-common-12) !important;
     &.mat-btn-wran {
-        border-color: mat.m2-get-color-from-palette($warn) !important;
+        border-color: var(--mat-sys-error) !important;
     }
 }
 .mat-btn-xs {

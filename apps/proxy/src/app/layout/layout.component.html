@@ -1,12 +1,12 @@
-<div class="d-flex w-100 h-100" [ngClass]="!(isSideNavOpen | async) ? 'collapsed-sidebar' : ''">
+<div class="d-flex w-100 h-100" [class.collapsed-sidebar]="!(isSideNavOpen | async)">
     <div
         class="d-flex flex-column mat-drawer mat-drawer-content"
-        [ngClass]="(isSideNavOpen | async) ? 'mat-drawer-toggle-btn-hover' : ''"
+        [class.mat-drawer-toggle-btn-hover]="isSideNavOpen | async"
     >
         <div class="d-flex align-items-center mat-drawer-header">
             <div
                 class="d-flex align-items-center flex-grow-1 gap-2 mat-drawer-header-title"
-                [ngStyle]="{ 'padding-right': (isSideNavOpen | async) ? '0px' : '12px' }"
+                [style.padding-right]="(isSideNavOpen | async) ? '0px' : '12px'"
             >
                 <mat-icon class="mat-icon-22">apps</mat-icon>
                 <div
@@ -42,9 +42,7 @@
                                     mat-menu-item
                                     (click)="switchClient(client?.id)"
                                     [disabled]="(clientSettings$ | async)?.client?.id === client?.id"
-                                    [ngClass]="{
-                                        'text-dark': (clientSettings$ | async)?.client?.id === client?.id
-                                    }"
+                                    [class.text-dark]="(clientSettings$ | async)?.client?.id === client?.id"
                                     *ngFor="let client of clientList?.data"
                                 >
                                     {{ client.name }}

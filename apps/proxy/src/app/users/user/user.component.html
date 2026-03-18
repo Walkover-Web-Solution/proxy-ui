@@ -182,7 +182,7 @@
                             <tr
                                 mat-row
                                 *matRowDef="let row; columns: displayedColumns; let i = index"
-                                [ngClass]="{ 'last-child': i + 1 === ((users$ | async)?.itemsPerPage || 25) }"
+                                [class.last-child]="i + 1 === ((users$ | async)?.itemsPerPage || 25)"
                             ></tr>
 
                             <tr *matNoDataRow>

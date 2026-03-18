@@ -13,11 +13,9 @@
             <div
                 *ngFor="let plan of subscriptionPlans; let i = index"
                 class="plan-card d-flex flex-column justify-content-between position-relative"
-                [ngClass]="{
-                    'popular': plan.isPopular,
-                    'selected': plan.isSelected,
-                    'highlighted': plan.isPopular
-                }"
+                [class.popular]="plan.isPopular"
+                [class.selected]="plan.isSelected"
+                [class.highlighted]="plan.isPopular"
             >
                 <!-- Popular Badge -->
                 <div *ngIf="plan.tag" class="popular-badge">{{ plan.tag }}</div>
@@ -37,10 +35,8 @@
                     <button
                         *ngIf="!plan.subscribeButtonHidden"
                         class="plan-button"
-                        [ngClass]="{
-                            'primary': plan.buttonStyle === 'primary',
-                            'secondary': plan.buttonStyle === 'secondary'
-                        }"
+                        [class.primary]="plan.buttonStyle === 'primary'"
+                        [class.secondary]="plan.buttonStyle === 'secondary'"
                         (click)="selectPlan(plan); $event.stopPropagation()"
                         [attr.data-link]="plan.subscribeButtonLink"
                     >

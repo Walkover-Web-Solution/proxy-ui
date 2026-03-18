@@ -1,5 +1,3 @@
-@use '../../../../../../node_modules/@angular/material/index' as mat;
-@use '../theme/theme-colors' as *;
 @use '../utils/mixins/common-utils' as *;
 
 /*// Mat Divider
@@ -32,10 +30,10 @@
     color: var(--color-common-green) !important;
 }
 .text-danger {
-    color: mat.m2-get-color-from-palette($warn) !important;
+    color: var(--mat-sys-error) !important;
 }
 .text-primary {
-    color: mat.m2-get-color-from-palette($primary) !important;
+    color: var(--mat-sys-primary) !important;
 }
 .mat-error {
     font-size: 12px;

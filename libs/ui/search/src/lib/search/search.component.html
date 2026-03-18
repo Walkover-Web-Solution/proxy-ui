@@ -1,4 +1,4 @@
-<mat-form-field class="search-form-field" [ngClass]="matFormFieldClass?.length ? matFormFieldClass : ''">
+<mat-form-field class="search-form-field" [class]="matFormFieldClass?.length ? matFormFieldClass : ''">
     <ng-container *ngIf="!isRemoveChar">
         <input
             [attr.type]="type"

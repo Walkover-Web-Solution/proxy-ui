@@ -1,25 +1,23 @@
 <div
     class="container"
     *ngIf="show$ | async"
-    [ngClass]="{
-        'with-reference-id': referenceId,
-        'without-reference-id': authToken,
-        'dark-theme':
-            (theme === 'dark' && (type === 'user-management' || authToken)) || type === 'organization-details',
-        'user-profile-mode':
-            authToken && type !== 'user-management' && type !== 'subscription' && type !== 'organization-details',
-        'user-management': authToken && type === 'user-management'
-    }"
+    [class.with-reference-id]="referenceId"
+    [class.without-reference-id]="authToken"
+    [class.dark-theme]="
+        (theme === 'dark' && (type === 'user-management' || authToken)) || type === 'organization-details'
+    "
+    [class.user-profile-mode]="
+        authToken && type !== 'user-management' && type !== 'subscription' && type !== 'organization-details'
+    "
+    [class.user-management]="authToken && type === 'user-management'"
 >
     <div
         class="otp-verification-dialog"
-        [ngClass]="{
-            'animation-complete': animate,
-            'register-user': showRegistration | async,
-            'dark-theme': theme === 'dark'
-        }"
+        [class.animation-complete]="animate"
+        [class.register-user]="showRegistration | async"
+        [class.dark-theme]="theme === 'dark'"
         *ngIf="!authToken && type !== 'subscription' && type !== 'user-management'"
-        [ngStyle]="dialogBorderRadius ? { 'border-radius': dialogBorderRadius } : {}"
+        [style.border-radius]="dialogBorderRadius || null"
     >
         <mat-progress-bar
             mode="indeterminate"
@@ -85,7 +83,7 @@
         [exclude_role_ids]="exclude_role_ids"
         [include_role_ids]="include_role_ids"
     ></proxy-user-management>
-    <div [ngClass]="{ 'subscription-dialog': type === 'subscription' && isPreview }" *ngIf="type === 'subscription'">
+    <div [class.subscription-dialog]="type === 'subscription' && isPreview" *ngIf="type === 'subscription'">
         <proxy-subscription-center
             [referenceId]="referenceId"
             (togglePopUp)="handleSubscriptionToggle($event)"

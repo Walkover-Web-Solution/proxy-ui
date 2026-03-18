@@ -2,7 +2,8 @@
     <proxy-loader *ngIf="(isLoading$ | async) || (loadingScript | async)"></proxy-loader>
     <div
         class="d-flex justify-content-start gap-1 mb-3"
-        [ngClass]="isEditMode ? 'align-items-start' : 'align-items-center'"
+        [class.align-items-start]="isEditMode"
+        [class.align-items-center]="!isEditMode"
     >
         <button type="button" mat-icon-button color="primary" [routerLink]="['/app', 'features']">
             <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
@@ -439,7 +440,7 @@
                 *ngFor="let type of featureType"
                 class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center feature-card bg-light-grey cursor-pointer"
                 (click)="radioInput.click()"
-                [ngClass]="{ 'active': type.id === featureTypeControl.value }"
+                [class.active]="type.id === featureTypeControl.value"
             >
                 <mat-icon>{{ type.icon }}</mat-icon>
                 <p class="mat-body-2 text-secondary fe-bold">{{ type.name }}</p>
@@ -593,7 +594,7 @@
                     role="listitem"
                     class="rounded-4"
                     *ngFor="let service of (selectedMethod | async)?.method_services; let i = index"
-                    [ngClass]="{ 'active': selectedServiceIndex === i }"
+                    [class.active]="selectedServiceIndex === i"
                     (click)="selectedServiceIndex = i"
                 >
                     <div class="d-flex align-items-center flex-grow-1" style="color: var(--color-dark-primary)">
@@ -857,9 +858,8 @@
                 featureForm.get('brandingDetails.version')?.value === 'v2'
             "
             class="d-flex flex-column align-items-center gap-1 w-100"
-            [ngClass]="{
-                'dark-theme-login preview-input-field': featureForm.get('brandingDetails.theme')?.value === 'dark'
-            }"
+            [class.dark-theme-login]="featureForm.get('brandingDetails.theme')?.value === 'dark'"
+            [class.preview-input-field]="featureForm.get('brandingDetails.theme')?.value === 'dark'"
         >
             <mat-form-field appearance="outline" class="w-85">
                 <mat-label>Email or Phone</mat-label>
@@ -1208,13 +1208,10 @@
         appearance="outline"
         class="w-100 mb-0"
         [ngSwitch]="fieldConfig?.type"
-        [ngClass]="{
-            'full-width-chip': isMatchChipField,
-            'no-padding': fieldConfig?.type === featureFieldType.ChipList,
-            'mat-form-field-invalid':
-                fieldConfig?.type === featureFieldType.ChipList && fieldControl?.touched && fieldControl?.errors,
-            'full-width': fieldConfig?.type === featureFieldType.TextArea
-        }"
+        [class.full-width-chip]="isMatchChipField"
+        [class.no-padding]="fieldConfig?.type === featureFieldType.ChipList"
+        [class.mat-form-field-invalid]="fieldControl?.invalid && fieldControl?.touched"
+        [class.full-width]="fieldConfig?.type === featureFieldType.TextArea"
     >
         <mat-label
             >{{ fieldConfig?.label }} <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span>
@@ -1369,7 +1366,7 @@
     </mat-form-field>
     <div
         class="mat-form-field-outside-error"
-        [ngClass]="{ 'full-width-chip': isMatchChipField }"
+        [class.full-width-chip]="isMatchChipField"
         *ngIf="fieldConfig?.type === featureFieldType.ChipList"
     >
         <mat-error *ngIf="fieldControl.touched">
@@ -1415,8 +1412,8 @@
                 <div
                     *ngFor="let service of (selectedMethod | async)?.method_services; let i = index"
                     class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center feature-card bg-light-grey cursor-pointer"
+                    [class.active]="selectedServiceIndex === i"
                     (click)="selectedServiceIndex = i"
-                    [ngClass]="{ 'active': selectedServiceIndex === i }"
                 >
                     <p class="mat-body-2 fe-bold mb-1">{{ service.name }}</p>
 
@@ -1917,7 +1914,7 @@
                 <mat-list-item
                     role="listitem"
                     class="rounded-4"
-                    [ngClass]="{ 'active': selectedSubscriptionServiceIndex === -2 }"
+                    [class.active]="selectedSubscriptionServiceIndex === -2"
                     (click)="selectedSubscriptionServiceIndex = -2"
                 >
                     <div class="d-flex align-items-center flex-grow-1">Billable Metric</div>
@@ -1928,7 +1925,7 @@
                 <mat-list-item
                     role="listitem"
                     class="rounded-4"
-                    [ngClass]="{ 'active': selectedSubscriptionServiceIndex === -1 }"
+                    [class.active]="selectedSubscriptionServiceIndex === -1"
                     (click)="selectedSubscriptionServiceIndex = -1"
                 >
                     <div class="d-flex align-items-center flex-grow-1">Plans</div>
@@ -1938,7 +1935,7 @@
                 <mat-list-item
                     role="listitem"
                     class="rounded-4"
-                    [ngClass]="{ 'active': selectedSubscriptionServiceIndex === -3 }"
+                    [class.active]="selectedSubscriptionServiceIndex === -3"
                     (click)="updatePaymentDetails()"
                 >
                     <div class="d-flex align-items-center flex-grow-1">Payment Details</div>
@@ -1947,7 +1944,7 @@
                 <mat-list-item
                     role="listitem"
                     class="rounded-4"
-                    [ngClass]="{ 'active': selectedSubscriptionServiceIndex === -4 }"
+                    [class.active]="selectedSubscriptionServiceIndex === -4"
                     (click)="updateTaxes()"
                 >
                     <div class="d-flex align-items-center flex-grow-1">Taxes</div>

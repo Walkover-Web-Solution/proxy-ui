@@ -1,4 +1,4 @@
-<div class="container" [ngClass]="theme === 'dark' ? 'dark-theme' : 'light-theme'">
+<div class="container" [class.dark-theme]="theme === 'dark'" [class.light-theme]="theme !== 'dark'">
     <div class="organization-details-container">
         <!-- ── Header ── -->
         <div class="page-header">
@@ -7,7 +7,7 @@
             <div class="header-actions" *ngIf="!isEditing">
                 <button
                     type="button"
-                    [ngClass]="{ 'disabled': !allowedUpdatePermissions }"
+                    [class.disabled]="!allowedUpdatePermissions"
                     [disabled]="!allowedUpdatePermissions"
                     class="edit-btn"
                     (click)="startEdit()"

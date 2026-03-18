@@ -28,7 +28,7 @@
                             />
                         </div>
                     </ng-container>
-                    <div class="heading" [ngStyle]="primaryColor ? { color: primaryColor } : {}">{{ titleText }}</div>
+                    <div class="heading" [style.color]="primaryColor || null">{{ titleText }}</div>
                 </ng-container>
             </ng-container>
 
@@ -70,7 +70,7 @@
 
             <!-- Create Account - Always at bottom -->
             <ng-container *ngIf="loginStep === 1 && widgetDataArray?.length && isCreateAccountLink">
-                <p class="create-account" [ngStyle]="primaryColor ? { color: primaryColor } : {}">
+                <p class="create-account" [style.color]="primaryColor || null">
                     Are you a new User?
                     <a href="javascript:void(0)" (click)="showRegistration()">{{ signUpButtonText }}</a>
                 </p>
@@ -126,9 +126,7 @@
             >
                 <div class="divider-container" *ngIf="hasOtherAuthOptions(widgetDataArray)">
                     <div class="divider-line"></div>
-                    <span class="divider-text" [ngStyle]="primaryColor ? { color: primaryColor } : {}"
-                        >Or continue with
-                    </span>
+                    <span class="divider-text" [style.color]="primaryColor || null">Or continue with </span>
                     <div class="divider-line"></div>
                 </div>
             </ng-container>
@@ -164,7 +162,7 @@
                         <mat-error *ngIf="userNameControl.errors?.required"
                             >Email or Mobile number is required.</mat-error
                         >
-                        <mat-hint class="note" [ngStyle]="primaryColor ? { color: primaryColor } : {}">
+                        <mat-hint class="note" [style.color]="primaryColor || null">
                             <span class="subheading">Note:</span> Please enter your Mobile number with the country code
                             (e.g. 91)
                         </mat-hint>
@@ -237,17 +235,9 @@
                             class="w-100"
                             [class.has-hover-color]="!!buttonHoverColor"
                             [style.--btn-hover-color]="buttonHoverColor"
-                            [ngStyle]="
-                                buttonColor
-                                    ? {
-                                          'background-color': buttonColor,
-                                          color: buttonTextColor || '#ffffff',
-                                          'border-radius': borderRadiusValue || '8px'
-                                      }
-                                    : borderRadiusValue
-                                    ? { 'border-radius': borderRadiusValue }
-                                    : {}
-                            "
+                            [style.background-color]="buttonColor || null"
+                            [style.color]="buttonColor ? buttonTextColor || '#ffffff' : null"
+                            [style.border-radius]="buttonColor ? borderRadiusValue || '8px' : borderRadiusValue || null"
                         >
                             <div class="loader">
                                 <mat-spinner matPrefix diameter="20" *ngIf="isLoginLoading$ | async"></mat-spinner>
@@ -283,7 +273,7 @@
                             <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
                         </svg>
                     </button>
-                    <div class="heading" [ngStyle]="primaryColor ? { color: primaryColor } : {}">Reset Password</div>
+                    <div class="heading" [style.color]="primaryColor || null">Reset Password</div>
 
                     <mat-form-field appearance="outline" class="input-width">
                         <mat-label>Email or Mobile</mat-label>
@@ -311,17 +301,9 @@
                         class="w-100"
                         [class.has-hover-color]="!!buttonHoverColor"
                         [style.--btn-hover-color]="buttonHoverColor"
-                        [ngStyle]="
-                            buttonColor
-                                ? {
-                                      'background-color': buttonColor,
-                                      color: buttonTextColor || '#ffffff',
-                                      'border-radius': borderRadiusValue || '8px'
-                                  }
-                                : borderRadiusValue
-                                ? { 'border-radius': borderRadiusValue }
-                                : {}
-                        "
+                        [style.background-color]="buttonColor || null"
+                        [style.color]="buttonColor ? buttonTextColor || '#ffffff' : null"
+                        [style.border-radius]="buttonColor ? borderRadiusValue || '8px' : borderRadiusValue || null"
                     >
                         <div class="loader">
                             <mat-spinner matPrefix diameter="20" *ngIf="isLoginLoading$ | async"></mat-spinner>
@@ -350,7 +332,7 @@
                             <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
                         </svg>
                     </button>
-                    <div class="heading" [ngStyle]="primaryColor ? { color: primaryColor } : {}">Change Password</div>
+                    <div class="heading" [style.color]="primaryColor || null">Change Password</div>
 
                     <p class="user-info">
                         {{ sendOtpLoginForm.get('userDetails').value }}
@@ -449,17 +431,9 @@
                         class="w-100"
                         [class.has-hover-color]="!!buttonHoverColor"
                         [style.--btn-hover-color]="buttonHoverColor"
-                        [ngStyle]="
-                            buttonColor
-                                ? {
-                                      'background-color': buttonColor,
-                                      color: buttonTextColor || '#ffffff',
-                                      'border-radius': borderRadiusValue || '8px'
-                                  }
-                                : borderRadiusValue
-                                ? { 'border-radius': borderRadiusValue }
-                                : {}
-                        "
+                        [style.background-color]="buttonColor || null"
+                        [style.color]="buttonColor ? buttonTextColor || '#ffffff' : null"
+                        [style.border-radius]="buttonColor ? borderRadiusValue || '8px' : borderRadiusValue || null"
                     >
                         <div class="loader">
                             <mat-spinner matPrefix diameter="20" *ngIf="isLoginLoading$ | async"></mat-spinner>
@@ -491,7 +465,7 @@
                             (click)="onVerificationBtnClick(widgetData)"
                             class="auth-icon-btn"
                             type="button"
-                            [ngStyle]="borderRadiusValue ? { 'border-radius': borderRadiusValue } : {}"
+                            [style.border-radius]="borderRadiusValue || null"
                             [class.dark-theme]="isDarkTheme"
                         >
                             <img
@@ -523,7 +497,7 @@
                             mat-stroked-button
                             (click)="onVerificationBtnClick(widgetData)"
                             class="auth-option-btn"
-                            [ngStyle]="borderRadiusValue ? { 'border-radius': borderRadiusValue } : {}"
+                            [style.border-radius]="borderRadiusValue || null"
                             [class.dark-theme]="isDarkTheme"
                         >
                             <div class="auth-option-content">
