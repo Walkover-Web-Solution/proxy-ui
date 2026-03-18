@@ -6,6 +6,7 @@
 @use '../../proxy/src/assets/scss/theme/custom-palette' as theme;
 
 :host {
+    @include theme.emit-design-tokens();
     @include mat.all-component-themes(theme.$light-theme);
     @include mat.system-level-colors(theme.$light-theme);
     @include mat.system-level-typography(theme.$light-theme);

@@ -1,8 +1,5 @@
-<div
-    [class.hide-pagination-arrows]="hidePaginationArrows"
-    *ngIf="length > showPaginatorLength"
-    class="flex justify-end items-center go-to-pagination"
->
+@if (length > showPaginatorLength) {
+<div [class.hide-pagination-arrows]="hidePaginationArrows" class="flex justify-end items-center go-to-pagination">
     <div class="go-to-container" [hidden]="pageNumbers?.length < 1">
         <div class="go-to-label">Go To:</div>
         <mat-form-field class="goto-dropdown" [style.width.px]="minWidth">
@@ -12,22 +9,17 @@
                 (openedChange)="enableVirtualScroll ? openChange($event) : ''"
                 #goToDropdown="matSelect"
             >
-                <ng-container *ngIf="enableVirtualScroll">
-                    <cdk-virtual-scroll-viewport [itemSize]="itemSize" style="height: 200px" minBufferPx="200">
-                        <mat-option
-                            *cdkVirtualFor="let pageNumber of pageNumbers"
-                            [value]="pageNumber"
-                            style="font-size: 11px"
-                            [style.height.px]="itemSize"
-                            >{{ pageNumber }}</mat-option
-                        >
-                    </cdk-virtual-scroll-viewport>
-                </ng-container>
-                <ng-container *ngIf="!enableVirtualScroll">
-                    <mat-option *ngFor="let pageNumber of pageNumbers" [value]="pageNumber" style="font-size: 11px">{{
+                @if (enableVirtualScroll) {
+                <cdk-virtual-scroll-viewport [itemSize]="itemSize" style="height: 200px" minBufferPx="200">
+                    @for (pageNumber of pageNumbers; track pageNumber) {
+                    <mat-option [value]="pageNumber" style="font-size: 11px" [style.height.px]="itemSize">{{
                         pageNumber
                     }}</mat-option>
-                </ng-container>
+                    }
+                </cdk-virtual-scroll-viewport>
+                } @else { @for (pageNumber of pageNumbers; track pageNumber) {
+                <mat-option [value]="pageNumber" style="font-size: 11px">{{ pageNumber }}</mat-option>
+                } }
             </mat-select>
         </mat-form-field>
     </div>
@@ -42,3 +34,4 @@
     >
     </mat-paginator>
 </div>
+}

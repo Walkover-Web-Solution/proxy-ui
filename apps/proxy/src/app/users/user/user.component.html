@@ -1,4 +1,5 @@
-<div class="app-content flex flex-col h-full" *ngIf="loading$ | async as loading">
+@if (loading$ | async; as loading) {
+<div class="app-content flex flex-col h-full">
     <mat-tab-group class="h-full">
         <!-- User Tab -->
         <mat-tab label="User">
@@ -17,7 +18,7 @@
                         [(selectedRangeValue)]="selectedRangeValue"
                         [selectedDefaultDateRange]="selectedDefaultDateRange.CurrentMonth"
                     ></date-range-picker>
-                    <button mat-flat-button class="flat-default mat-btn-xs" [matMenuTriggerFor]="userFilterMenu">
+                    <button matButton="filled" class="flat-default mat-btn-xs" [matMenuTriggerFor]="userFilterMenu">
                         <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">filter_alt</mat-icon>
                         <span class="hide-xs">Filter</span>
                     </button>
@@ -39,12 +40,11 @@
                                             <mat-label>Block</mat-label>
                                             <mat-select placeholder="Select Block" formControlName="feature_id">
                                                 <mat-option [value]="null">None</mat-option>
-                                                <mat-option
-                                                    *ngFor="let feature of features"
-                                                    [value]="feature.reference_id"
-                                                >
-                                                    {{ feature.name }}
-                                                </mat-option>
+                                                @for (feature of features; track feature.reference_id) {
+                                                <mat-option [value]="feature.reference_id">{{
+                                                    feature.name
+                                                }}</mat-option>
+                                                }
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
@@ -52,21 +52,16 @@
                             </div>
                             <mat-divider></mat-divider>
                             <div class="flex items-center gap-x-4 action-button p-6">
-                                <button
-                                    mat-flat-button
-                                    color="primary"
-                                    (click)="applyFilter()"
-                                    [disabled]="userFilterForm.invalid"
-                                >
+                                <button matButton="filled" (click)="applyFilter()" [disabled]="userFilterForm.invalid">
                                     Apply
                                 </button>
-                                <button mat-flat-button class="flat-default" (click)="resetParam()">Reset</button>
-                                <button mat-button (click)="closeMyMenu()">Cancel</button>
+                                <button matButton="filled" class="flat-default" (click)="resetParam()">Reset</button>
+                                <button matButton (click)="closeMyMenu()">Cancel</button>
                             </div>
                         </div>
                     </mat-menu>
                     <button
-                        mat-flat-button
+                        matButton="filled"
                         class="flat-icon-btn flat-default"
                         (click)="getUsers()"
                         matTooltip="Refresh"
@@ -94,9 +89,9 @@
                             <ng-container matColumnDef="name">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
                                 <td mat-cell *matCellDef="let element" data-label="Name">
-                                    <ng-container *ngIf="!loading.dataLoading; else loadingRef">
-                                        {{ element.name }}
-                                    </ng-container>
+                                    @if (!loading.dataLoading) { {{ element.name }} } @else {
+                                    <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>
+                                    }
                                 </td>
                             </ng-container>
 
@@ -104,9 +99,9 @@
                             <ng-container matColumnDef="email">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Email</th>
                                 <td mat-cell *matCellDef="let element" data-label="Email">
-                                    <ng-container *ngIf="!loading.dataLoading; else loadingRef">
-                                        {{ element.email }}
-                                    </ng-container>
+                                    @if (!loading.dataLoading) { {{ element.email }} } @else {
+                                    <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>
+                                    }
                                 </td>
                             </ng-container>
 
@@ -114,9 +109,9 @@
                             <ng-container matColumnDef="phone_number">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone Number</th>
                                 <td mat-cell *matCellDef="let element" data-label="Phone Number">
-                                    <ng-container *ngIf="!loading.dataLoading; else loadingRef">
-                                        {{ element.mobile ?? '-' }}
-                                    </ng-container>
+                                    @if (!loading.dataLoading) { {{ element.mobile ?? '-' }} } @else {
+                                    <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>
+                                    }
                                 </td>
                             </ng-container>
 
@@ -124,13 +119,15 @@
                             <ng-container matColumnDef="user_id">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>User ID</th>
                                 <td mat-cell *matCellDef="let element" data-label="User ID">
-                                    <ng-container *ngIf="!loading.dataLoading; else loadingRef">
-                                        {{ element?.id }}
-                                        <proxy-copy-button
-                                            [copyData]="element?.id"
-                                            tooltip="Copy User ID"
-                                        ></proxy-copy-button>
-                                    </ng-container>
+                                    @if (!loading.dataLoading) {
+                                    {{ element?.id }}
+                                    <proxy-copy-button
+                                        [copyData]="element?.id"
+                                        tooltip="Copy User ID"
+                                    ></proxy-copy-button>
+                                    } @else {
+                                    <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>
+                                    }
                                 </td>
                             </ng-container>
 
@@ -138,9 +135,9 @@
                             <ng-container matColumnDef="block_name">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Block Name</th>
                                 <td mat-cell *matCellDef="let element" data-label="Block Name">
-                                    <ng-container *ngIf="!loading.dataLoading; else loadingRef">
-                                        {{ element?.feature_configuration?.name }}
-                                    </ng-container>
+                                    @if (!loading.dataLoading) { {{ element?.feature_configuration?.name }} } @else {
+                                    <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>
+                                    }
                                 </td>
                             </ng-container>
 
@@ -148,12 +145,12 @@
                             <ng-container matColumnDef="last_login">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Login</th>
                                 <td mat-cell *matCellDef="let element" data-label="Last Login">
-                                    <ng-container *ngIf="!loading.dataLoading; else loadingRef">
-                                        <span>
-                                            {{ element?.last_login_at | date: 'd MMM y' }}
-                                        </span>
-                                        <span>({{ element?.last_login_at | date: 'mediumTime' }})</span>
-                                    </ng-container>
+                                    @if (!loading.dataLoading) {
+                                    <span>{{ element?.last_login_at | date: 'd MMM y' }}</span>
+                                    <span>({{ element?.last_login_at | date: 'mediumTime' }})</span>
+                                    } @else {
+                                    <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>
+                                    }
                                 </td>
                             </ng-container>
 
@@ -161,12 +158,12 @@
                             <ng-container matColumnDef="created_at">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Created At</th>
                                 <td mat-cell *matCellDef="let element" data-label="Created At">
-                                    <ng-container *ngIf="!loading.dataLoading; else loadingRef">
-                                        <span>
-                                            {{ element?.created_at | date: 'd MMM y' }}
-                                        </span>
-                                        <span>({{ element?.created_at | date: 'mediumTime' }})</span>
-                                    </ng-container>
+                                    @if (!loading.dataLoading) {
+                                    <span>{{ element?.created_at | date: 'd MMM y' }}</span>
+                                    <span>({{ element?.created_at | date: 'mediumTime' }})</span>
+                                    } @else {
+                                    <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>
+                                    }
                                 </td>
                             </ng-container>
 
@@ -210,7 +207,4 @@
         </mat-tab>
     </mat-tab-group>
 </div>
-
-<ng-template #loadingRef>
-    <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>
-</ng-template>
+}
