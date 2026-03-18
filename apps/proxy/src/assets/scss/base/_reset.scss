@@ -1,6 +1,3 @@
-@use '../../../../../../node_modules/@angular/material/index' as mat;
-@use '../theme/theme-colors' as *;
-
 *,
 *::before,
 *::after {
@@ -45,7 +42,7 @@ body {
 
 * {
     scrollbar-width: thin;
-    scrollbar-color: mat.m2-get-color-from-palette($new-primary) var(--color-common-bg);
+    scrollbar-color: var(--mat-sys-primary) var(--color-common-bg);
 }
 
 /* Works on Chrome/Edge/Safari */

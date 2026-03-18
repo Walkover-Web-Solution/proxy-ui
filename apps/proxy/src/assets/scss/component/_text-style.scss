@@ -1,6 +1,3 @@
-@use '../../../../../../node_modules/@angular/material/index' as mat;
-@use '../theme/theme-colors' as *;
-
 /* Font Weight */
 .fw-thin {
     font-weight: 100 !important;
@@ -41,7 +38,7 @@
     color: var(--color-short-url-primary);
 }
 .text-danger {
-    color: mat.m2-get-color-from-palette($warn) !important;
+    color: var(--mat-sys-error) !important;
 }
 .text-primary {
     color: var(--color-common-primary) !important;
