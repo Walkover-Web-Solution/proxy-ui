@@ -3,74 +3,73 @@
     <proxy-loader></proxy-loader>
     }
     <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
-        <div class="flex flex-wrap items-start grow gap-4">
-            <form [formGroup]="engProjectFormGroup" class="flex flex-wrap gap-4">
-                <mat-form-field appearance="outline" class="no-padding w-xs-100">
-                    <mat-label>Select Project</mat-label>
-                    <input
-                        type="text"
-                        matInput
-                        [matAutocomplete]="matAutoCompleteProject"
-                        formControlName="projects"
-                        placeholder="Select Project"
-                        (keydown)="(false)"
-                        (paste)="(false)"
-                        style="caret-color: transparent"
-                        class="cursor-pointer"
-                    />
-                    <mat-autocomplete
-                        #matAutoCompleteProject="matAutocomplete"
-                        (optionSelected)="selectEnvProject('projects')"
-                        [displayWith]="envProjectDisplayFunc"
-                        class="mat-autocomplete-panel"
+        <!-- <div class="flex flex-wrap items-start grow gap-4"> -->
+        <form [formGroup]="engProjectFormGroup" class="flex flex-wrap gap-4">
+            <mat-form-field appearance="outline" class="no-padding w-xs-100">
+                <mat-label>Select Project</mat-label>
+                <input
+                    type="text"
+                    matInput
+                    [matAutocomplete]="matAutoCompleteProject"
+                    formControlName="projects"
+                    placeholder="Select Project"
+                    (keydown)="(false)"
+                    (paste)="(false)"
+                    style="caret-color: transparent"
+                    class="cursor-pointer"
+                />
+                <mat-autocomplete
+                    #matAutoCompleteProject="matAutocomplete"
+                    (optionSelected)="selectEnvProject('projects')"
+                    [displayWith]="envProjectDisplayFunc"
+                    class="mat-autocomplete-panel"
+                >
+                    <proxy-cdk-scroll (fetchNextPage)="fetchNextPage('projects')" scrollableElementId="projects">
+                        <mat-option [value]="''" class="mat-body-2">All</mat-option>
+                        @for (project of engProjectFormGroup.value?.environments?.projects ?? (projects$ | async)?.data;
+                        track project.id) {
+                        <mat-option [value]="project" class="mat-body-2">
+                            {{ project.name }}
+                        </mat-option>
+                        }
+                    </proxy-cdk-scroll>
+                </mat-autocomplete>
+                <mat-icon matSuffix>arrow_drop_down</mat-icon>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="no-padding w-xs-100">
+                <mat-label>Select Environment</mat-label>
+                <input
+                    type="text"
+                    matInput
+                    [matAutocomplete]="matAutoCompleteEnvironment"
+                    formControlName="environments"
+                    placeholder="Select Environment"
+                    (keydown)="(false)"
+                    (paste)="(false)"
+                    style="caret-color: transparent"
+                    class="cursor-pointer"
+                />
+                <mat-autocomplete
+                    #matAutoCompleteEnvironment="matAutocomplete"
+                    (optionSelected)="selectEnvProject('environments')"
+                    [displayWith]="envProjectDisplayFunc"
+                    class="mat-autocomplete-panel"
+                >
+                    <proxy-cdk-scroll
+                        (fetchNextPage)="fetchNextPage('environments')"
+                        scrollableElementId="environments"
                     >
-                        <proxy-cdk-scroll (fetchNextPage)="fetchNextPage('projects')" scrollableElementId="projects">
-                            <mat-option [value]="''" class="mat-body-2">All</mat-option>
-                            @for (project of engProjectFormGroup.value?.environments?.projects ?? (projects$ |
-                            async)?.data; track project.id) {
-                            <mat-option [value]="project" class="mat-body-2">
-                                {{ project.name }}
-                            </mat-option>
-                            }
-                        </proxy-cdk-scroll>
-                    </mat-autocomplete>
-                    <mat-icon matSuffix>arrow_drop_down</mat-icon>
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="no-padding w-xs-100">
-                    <mat-label>Select Environment</mat-label>
-                    <input
-                        type="text"
-                        matInput
-                        [matAutocomplete]="matAutoCompleteEnvironment"
-                        formControlName="environments"
-                        placeholder="Select Environment"
-                        (keydown)="(false)"
-                        (paste)="(false)"
-                        style="caret-color: transparent"
-                        class="cursor-pointer"
-                    />
-                    <mat-autocomplete
-                        #matAutoCompleteEnvironment="matAutocomplete"
-                        (optionSelected)="selectEnvProject('environments')"
-                        [displayWith]="envProjectDisplayFunc"
-                        class="mat-autocomplete-panel"
-                    >
-                        <proxy-cdk-scroll
-                            (fetchNextPage)="fetchNextPage('environments')"
-                            scrollableElementId="environments"
-                        >
-                            <mat-option [value]="''" class="mat-body-2">All</mat-option>
-                            @for (environment of engProjectFormGroup.value?.projects?.environments ?? (environments$ |
-                            async)?.data; track environment.id) {
-                            <mat-option [value]="environment" class="mat-body-2">
-                                {{ environment.name }}
-                            </mat-option>
-                            }
-                        </proxy-cdk-scroll>
-                    </mat-autocomplete>
-                    <mat-icon matSuffix>arrow_drop_down</mat-icon>
-                </mat-form-field>
-            </form>
+                        <mat-option [value]="''" class="mat-body-2">All</mat-option>
+                        @for (environment of engProjectFormGroup.value?.projects?.environments ?? (environments$ |
+                        async)?.data; track environment.id) {
+                        <mat-option [value]="environment" class="mat-body-2">
+                            {{ environment.name }}
+                        </mat-option>
+                        }
+                    </proxy-cdk-scroll>
+                </mat-autocomplete>
+                <mat-icon matSuffix>arrow_drop_down</mat-icon>
+            </mat-form-field>
             <proxy-lib-search
                 [matFormFieldClass]="'unset-search-width width-md-600 w-md-100'"
                 [placeholder]="'Hit Enter to Search'"
@@ -78,8 +77,9 @@
                 [emitOnEnter]="true"
                 hint="To search in specific field use <b>field:</b> before anything (field => endpoint,request_body,response,headers)"
             ></proxy-lib-search>
-        </div>
-        <div class="flex items-center justify-between gap-4 ml-auto pt-1">
+        </form>
+        <!-- </div> -->
+        <div class="flex items-center justify-between gap-4 pt-1">
             <date-range-picker
                 (selectedRangeValueChange)="setDateRange($event)"
                 [(selectedRangeValue)]="selectedRangeValue"
@@ -91,7 +91,7 @@
             </button>
             <mat-menu #emailExportButtonMenu="matMenu" class="filter-menu" xPosition="before">
                 <div (click)="$event.stopPropagation(); (false)">
-                    <div class="pb-0 pt-6 px-6">
+                    <div class="p-2">
                         <div class="row" [formGroup]="logsFilterForm">
                             <div class="col-lg-12">
                                 <mat-form-field appearance="outline" floatLabel="always" class="w-full">
@@ -134,8 +134,8 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            @if (logsFilterForm.controls.range.value) {
-                            <div class="col-lg-6 pr-2 mb-2">
+                            <div class="gap-2 flex">
+                                @if (logsFilterForm.controls.range.value) {
                                 <mat-form-field appearance="outline" class="w-full" floatLabel="always">
                                     <mat-label>From</mat-label>
                                     <input
@@ -155,8 +155,6 @@
                                     <mat-error>Max {{ maxlengthError.requiredLength }} number are allowed</mat-error>
                                     } }
                                 </mat-form-field>
-                            </div>
-                            <div class="col-lg-6 pl-2">
                                 <mat-form-field appearance="outline" class="w-full" floatLabel="always">
                                     <mat-label>To</mat-label>
                                     <input
@@ -174,12 +172,12 @@
                                     <mat-error>Max {{ maxlengthError.requiredLength }} number are allowed</mat-error>
                                     } }
                                 </mat-form-field>
+                                }
                             </div>
-                            }
                         </div>
                     </div>
                     <mat-divider></mat-divider>
-                    <div class="flex items-center gap-x-4 action-button p-6">
+                    <div class="flex items-center gap-2 action-button p-2">
                         <button matButton="filled" (click)="applyFilter()" [disabled]="logsFilterForm.invalid">
                             Apply
                         </button>
@@ -190,12 +188,12 @@
             </mat-menu>
             <button
                 matButton="filled"
-                class="flat-icon-btn flat-default"
+                class="flat-icon-btn flat-default !min-w-0 !p-3"
                 (click)="getLogs()"
                 matTooltip="Refresh"
                 matTooltipPosition="above"
             >
-                <mat-icon class="mat-icon-18">refresh</mat-icon>
+                <mat-icon class="mat-icon-18 !m-0">refresh</mat-icon>
             </button>
         </div>
     </div>

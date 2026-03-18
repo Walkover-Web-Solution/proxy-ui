@@ -22,6 +22,9 @@
                 "polyfills": "apps/proxy/src/polyfills.ts",
                 "tsConfig": "apps/proxy/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
+                "stylePreprocessorOptions": {
+                    "includePaths": ["apps/shared/scss"]
+                },
                 "assets": ["apps/proxy/src/favicon.ico", "apps/proxy/src/assets"],
                 "styles": [
                     "apps/proxy/src/styles.scss",

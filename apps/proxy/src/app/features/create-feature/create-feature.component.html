@@ -1105,9 +1105,11 @@
         [class.mat-form-field-invalid]="fieldControl?.invalid && fieldControl?.touched"
         [class.full-width]="fieldConfig?.type === featureFieldType.TextArea"
     >
-        <mat-label
-            >{{ fieldConfig?.label }} @if (fieldConfig?.is_required) { <span class="text-danger">*</span> }
+        <mat-label>
+            {{ fieldConfig?.label }}
+            @if (fieldConfig?.is_required) { <span class="text-danger">*</span> }
         </mat-label>
+
         @if (fieldConfig?.type === featureFieldType.ChipList) { @if (fieldConfig?.label + '_' +
         this.selectedServiceIndex; as chipListKey) {
         <mat-chip-grid #chipList [formControl]="fieldControl" aria-label="{{ fieldConfig?.label }}">
@@ -1135,7 +1137,7 @@
                 (matChipInputTokenEnd)="updateChipListValues('add', chipListKey, fieldControl, $event.value)"
             />
         </mat-chip-grid>
-        } } @if (fieldConfig?.type === featureFieldType.Select) {
+        } } @else if (fieldConfig?.type === featureFieldType.Select) {
         <mat-select
             [formControl]="fieldControl"
             [placeholder]="fieldConfig?.placeholder || 'Select ' + fieldConfig?.label"
@@ -1149,14 +1151,14 @@
             <mat-option [value]="option.value">{{ option.label }}</mat-option>
             }
         </mat-select>
-        } @if (fieldConfig?.type === featureFieldType.TextArea) {
+        } @else if (fieldConfig?.type === featureFieldType.TextArea) {
         <textarea
             matInput
             [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
             [formControl]="fieldControl"
             rows="2"
         ></textarea>
-        } @if (fieldConfig?.type === featureFieldType.ReadFile) {
+        } @else if (fieldConfig?.type === featureFieldType.ReadFile) {
         <input
             matInput
             type="text"
@@ -1165,23 +1167,21 @@
             [formControl]="fieldControl"
             readonly
         />
-        } @if (fieldConfig?.type === featureFieldType.Password) {
+        } @else if (fieldConfig?.type === featureFieldType.Password) {
         <input
             matInput
             type="password"
-            placeholder="{{ fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label }}"
+            [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
             autocomplete="off"
             [formControl]="fieldControl"
         />
         @if (fieldConfig?.info) {
         <mat-icon matSuffix [matTooltip]="fieldConfig.info" matTooltipPosition="above" class="info-icon">info</mat-icon>
-        } } @if (fieldConfig?.type !== featureFieldType.ChipList && fieldConfig?.type !== featureFieldType.Select &&
-        fieldConfig?.type !== featureFieldType.TextArea && fieldConfig?.type !== featureFieldType.ReadFile &&
-        fieldConfig?.type !== featureFieldType.Password) {
+        } } @else {
         <input
             matInput
             type="text"
-            placeholder="{{ fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label }}"
+            [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
             autocomplete="off"
             [formControl]="fieldControl"
         />
@@ -1192,15 +1192,12 @@
             <ng-container
                 *ngTemplateOutlet="
                     matErrors;
-                    context: {
-                        fieldControl,
-                        label: fieldConfig.label,
-                        patternErrorText: fieldConfig?.patternErrorText
-                    }
+                    context: { fieldControl, label: fieldConfig.label, patternErrorText: fieldConfig?.patternErrorText }
                 "
             ></ng-container>
         </mat-error>
         }
+
         <div matSuffix>
             @if (fieldConfig?.type === featureFieldType.ReadFile) { @if (fieldConfig?.label + '_' +
             this.selectedServiceIndex; as fileKey) { @if (fieldControl?.value) {
@@ -1208,7 +1205,7 @@
                 matIconButton
                 (click)="fileInput.files = null; updateFileValue(fileKey, fieldConfig, fieldControl, null)"
             >
-                <mat-icon class="material-icons-outlined mat-icon-18"> close </mat-icon>
+                <mat-icon class="material-icons-outlined mat-icon-18">close</mat-icon>
             </button>
             <input
                 #fileInput
@@ -1219,19 +1216,21 @@
             />
             }
             <button matIconButton (click)="fileInput.click()">
-                <mat-icon class="material-icons-outlined mat-icon-18"> attach_file </mat-icon>
+                <mat-icon class="material-icons-outlined mat-icon-18">attach_file</mat-icon>
             </button>
             } }
         </div>
+
         @if (fieldConfig?.hint) {
-        <mat-hint class="flex items-center justify-between gap-1"
-            >{{ fieldConfig?.hint }}
+        <mat-hint class="flex items-center justify-between gap-1">
+            {{ fieldConfig?.hint }}
             @if (fieldConfig?.hintInfo) {
             <mat-icon matSuffix [matTooltip]="fieldConfig.hintInfo" matTooltipPosition="above">info</mat-icon>
             }
         </mat-hint>
         }
     </mat-form-field>
+
     @if (fieldConfig?.type === featureFieldType.ChipList) {
     <div class="mat-form-field-outside-error" [class.full-width-chip]="isMatchChipField">
         @if (fieldControl.touched) {
@@ -1239,11 +1238,7 @@
             <ng-container
                 *ngTemplateOutlet="
                     matErrors;
-                    context: {
-                        fieldControl,
-                        label: fieldConfig.label,
-                        patternErrorText: fieldConfig?.patternErrorText
-                    }
+                    context: { fieldControl, label: fieldConfig.label, patternErrorText: fieldConfig?.patternErrorText }
                 "
             ></ng-container>
         </mat-error>
@@ -1252,863 +1247,793 @@
     }
 
     <ng-template #matErrors let-label="label" let-fieldControl="fieldControl" let-patternErrorText="patternErrorText">
-        @if (fieldControl?.errors?.customError; as customError) { <mat-error>{{ customError }}</mat-error> } @if
-        (fieldControl.errors?.required) { <mat-error>{{ label }} is required.</mat-error> } @if
-        (fieldControl.errors?.minlengthWithSpace) { <mat-error>Min required length is 3</mat-error> } @if
-        (fieldControl.errors?.noStartEndSpaces) { <mat-error>Start and End spaces are not allowed</mat-error> } @if
-        (fieldControl.errors?.min; as minError) { <mat-error>Min value required is {{ minError?.min }}</mat-error> } @if
-        (fieldControl.errors?.max; as maxError) { <mat-error>Max value allowed is {{ maxError?.max }}</mat-error> } @if
-        (fieldControl.errors?.minlength; as minLengthError) {
-        <mat-error>Min required length is {{ minLengthError?.requiredLength }}</mat-error> } @if
-        (fieldControl.errors?.maxlength; as maxLengthError) {
-        <mat-error>Max allowed length is {{ maxLengthError?.requiredLength }}</mat-error> } @if
-        (fieldControl.errors?.pattern) { <mat-error>{{ patternErrorText ?? 'Enter valid ' + label }}</mat-error> } @if
-        (fieldControl?.errors?.atleastOneValueInChipList) { <mat-error>Atleast One Value is Required</mat-error> }
+        @if (fieldControl?.errors?.customError; as customError) {
+        <mat-error>{{ customError }}</mat-error>
+        } @if (fieldControl.errors?.required) {
+        <mat-error>{{ label }} is required.</mat-error>
+        } @if (fieldControl.errors?.minlengthWithSpace) {
+        <mat-error>Min required length is 3</mat-error>
+        } @if (fieldControl.errors?.noStartEndSpaces) {
+        <mat-error>Start and End spaces are not allowed</mat-error>
+        } @if (fieldControl.errors?.min; as minError) {
+        <mat-error>Min value required is {{ minError?.min }}</mat-error>
+        } @if (fieldControl.errors?.max; as maxError) {
+        <mat-error>Max value allowed is {{ maxError?.max }}</mat-error>
+        } @if (fieldControl.errors?.minlength; as minLengthError) {
+        <mat-error>Min required length is {{ minLengthError?.requiredLength }}</mat-error>
+        } @if (fieldControl.errors?.maxlength; as maxLengthError) {
+        <mat-error>Max allowed length is {{ maxLengthError?.requiredLength }}</mat-error>
+        } @if (fieldControl.errors?.pattern) {
+        <mat-error>{{ patternErrorText ?? 'Enter valid ' + label }}</mat-error>
+        } @if (fieldControl?.errors?.atleastOneValueInChipList) {
+        <mat-error>Atleast One Value is Required</mat-error>
+        }
     </ng-template>
+</ng-template>
 
-    <!-- New template definitions for conditional steps -->
-    <ng-template #integrationChoice>
+<ng-template #integrationChoice>
+    <div class="flex flex-col h-full">
+        <h5 class="mat-h5 mb-6">Integration Choice</h5>
+        <div class="grow">
+            <div class="features-layout">
+                @for (service of (selectedMethod | async)?.method_services; track service; let i = $index) {
+                <div
+                    class="border rounded-4 p-6 flex flex-col items-center justify-center feature-card bg-light-grey cursor-pointer"
+                    [class.active]="selectedServiceIndex === i"
+                    (click)="selectedServiceIndex = i"
+                >
+                    <p class="mat-body-2 fe-bold mb-1">{{ service.name }}</p>
+
+                    <!-- Validation/Error Icon -->
+                    @if (featureForm.get('serviceDetails')?.at(i); as serviceForm) { @if (i !== selectedServiceIndex &&
+                    serviceForm.dirty && serviceForm.touched && serviceForm.invalid) {
+                    <mat-icon class="material-icons-outlined mat-icon-18 text-danger mt-1">error</mat-icon>
+                    } }
+
+                    <!-- Hidden radio (for accessibility/consistency if needed) -->
+                    <input type="radio" name="serviceChoice" hidden [checked]="selectedServiceIndex === i" />
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #organizationDetails>
+    <div class="flex flex-col h-full w-3/4">
+        <h5 class="mat-h5 mb-6">Organization Details</h5>
+        <p class="mat-body-2 text-secondary"><strong>Note:</strong> These details will be shown on the invoice..</p>
+        <div class="width-md-700 w-md-100 px-6">
+            <div class="flex flex-col">
+                @if ((selectedMethod | async)?.method_services; as methodServices) { @if
+                (featureForm.get('serviceDetails')?.at(selectedServiceIndex); as serviceForm) {
+                <form class="organization-details-form" [formGroup]="serviceForm">
+                    @if (methodServices?.[selectedServiceIndex]?.configurations?.fields; as configurationsFields) { @for
+                    (controlKeyValue of (serviceForm.controls.configurations.controls | keyvalue: keepOrder); track
+                    controlKeyValue.key) {
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: controlKeyValue.value,
+                                fieldConfig: configurationsFields[controlKeyValue.key]
+                            }
+                        "
+                    ></ng-container>
+                    } } @if ((featureDetails$ | async)?.callback_url; as callbackUrl) {
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Callback URL</mat-label>
+                        <input matInput type="text" placeholder="Callback URL" [value]="callbackUrl" disabled />
+                        <proxy-copy-button matSuffix [copyData]="callbackUrl" tooltip="Copy URL"></proxy-copy-button>
+                    </mat-form-field>
+                    } @if (isEditMode) {
+                    <mat-slide-toggle class="w-full mat-body-2 mb-6" [formControl]="serviceForm.controls.is_enable">
+                        Enable Service
+                    </mat-slide-toggle>
+                    }
+                </form>
+                } }
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #billableMetrics>
+    <div class="flex flex-col h-full">
+        <h5 class="mat-h5 mb-6">Billable Metrics / Items</h5>
+        <div>
+            <button matButton="filled" (click)="addBillableMetric()">
+                <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Metric
+            </button>
+        </div>
+
+        <mat-card class="w-full outline-card responsive-card grow mt-6 overflow-table overflow-y p-0">
+            <mat-card-content>
+                <table mat-table [dataSource]="billableMetricstabledata" class="default-table responsive-table">
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
+                        <td mat-cell *matCellDef="let element" data-label="Name">
+                            <ng-container>
+                                {{ element.name }}
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- reference_id Column -->
+                    <ng-container matColumnDef="code">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Code</th>
+                        <td mat-cell *matCellDef="let element" data-label="Reference Id">
+                            <ng-container>
+                                {{ element.code }}
+                                <proxy-copy-button
+                                    [copyData]="element.code"
+                                    tooltip="Copy Reference Id"
+                                ></proxy-copy-button>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- Method Column -->
+                    <ng-container matColumnDef="type">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Type</th>
+                        <td mat-cell *matCellDef="let element" data-label="Type">
+                            <ng-container>{{ element.recurring ? 'Recurring' : 'Metered' }}</ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- Type Column -->
+                    <ng-container matColumnDef="aggregation">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Aggregation</th>
+                        <td mat-cell *matCellDef="let element" data-label="Aggregation">
+                            <ng-container>{{ getAggregationLabel(element?.aggregation_type) }}</ng-container>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Action</th>
+                        <td mat-cell *matCellDef="let element; let i = index" data-label="Action">
+                            <button matIconButton (click)="editMetric(element, i)" matTooltip="Edit Metric">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button matIconButton (click)="deleteMetric(i)" matTooltip="Delete Metric">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                    <tr
+                        mat-row
+                        *matRowDef="let row; columns: displayedColumns; let i = index"
+                        class="hover-action"
+                    ></tr>
+
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
+                            <div class="text-center w-full mat-subtitle-2 text-dark">No Record Found</div>
+                        </td>
+                    </tr>
+                </table>
+                <mat-paginator-goto></mat-paginator-goto>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</ng-template>
+
+<ng-template #paymentDetails>
+    <div class="flex flex-col h-full">
+        <h5 class="mat-h5 mb-6">Payment Details</h5>
         <div class="flex flex-col h-full">
-            <h5 class="mat-h5 mb-6">Integration Choice</h5>
-            <div class="grow">
-                <div class="features-layout">
-                    @for (service of (selectedMethod | async)?.method_services; track service; let i = $index) {
-                    <div
-                        class="border rounded-4 p-6 flex flex-col items-center justify-center feature-card bg-light-grey cursor-pointer"
-                        [class.active]="selectedServiceIndex === i"
-                        (click)="selectedServiceIndex = i"
-                    >
-                        <p class="mat-body-2 fe-bold mb-1">{{ service.name }}</p>
-
-                        <!-- Validation/Error Icon -->
-                        @if (featureForm.get('serviceDetails')?.at(i); as serviceForm) { @if (i !== selectedServiceIndex
-                        && serviceForm.dirty && serviceForm.touched && serviceForm.invalid) {
-                        <mat-icon class="material-icons-outlined mat-icon-18 text-danger mt-1">error</mat-icon>
-                        } }
-
-                        <!-- Hidden radio (for accessibility/consistency if needed) -->
-                        <input type="radio" name="serviceChoice" hidden [checked]="selectedServiceIndex === i" />
+            <p class="mat-body-2 text-secondary"><strong>Note:</strong> These details will be can be filled later.</p>
+            <div class="px-6">
+                <div class="flex flex-col w-3/4">
+                    @if (featureForm.get('paymentDetailsForm')?.at(0); as paymentDetailsForm) {
+                    <form [formGroup]="paymentDetailsForm">
+                        @for (controlKeyValue of (paymentDetailsForm.controls.stripe.controls | keyvalue); track
+                        controlKeyValue.key) {
+                        <ng-container
+                            *ngTemplateOutlet="
+                                inputField;
+                                context: {
+                                    fieldControl: controlKeyValue.value,
+                                    fieldConfig: paymentDetailsFormFields[controlKeyValue.key]
+                                }
+                            "
+                        ></ng-container>
+                        }
+                    </form>
+                    <div class="flex justify-start items-center">
+                        <button type="button" matButton="filled" (click)="savePaymentDetails()">
+                            {{ isEditMode ? 'Update' : 'Save' }}
+                        </button>
                     </div>
                     }
                 </div>
             </div>
         </div>
-    </ng-template>
+    </div>
+</ng-template>
 
-    <ng-template #organizationDetails>
-        <div class="flex flex-col h-full w-3/4">
-            <h5 class="mat-h5 mb-6">Organization Details</h5>
-            <p class="mat-body-2 text-secondary"><strong>Note:</strong> These details will be shown on the invoice..</p>
-            <div class="auth-credentials px-6" class="width-md-700 w-md-100">
+<ng-template #createPlan>
+    <div class="flex flex-col h-full">
+        <h5 class="mat-h5 mb-6">Create Plan</h5>
+        <div class="flex flex-col h-full">
+            <div class="width-md-800 w-md-100 px-6">
                 <div class="flex flex-col">
                     @if ((selectedMethod | async)?.method_services; as methodServices) { @if
-                    (featureForm.get('serviceDetails')?.at(selectedServiceIndex); as serviceForm) {
-                    <form class="organization-details-form" [formGroup]="serviceForm">
-                        @if (methodServices?.[selectedServiceIndex]?.configurations?.fields; as configurationsFields) {
-                        @for (controlKeyValue of (serviceForm.controls.configurations.controls | keyvalue: keepOrder);
-                        track controlKeyValue.key) {
-                        <div class="row">
-                            <div class="col-md-12 w-full">
+                    (featureForm.get('planDetails')?.at(selectedServiceIndex); as serviceForm) {
+                    <form class="single-form-layout flex flex-col gap-1" [formGroup]="serviceForm">
+                        <!-- Plan Details Section -->
+                        <div class="form-section flex flex-col gap-4">
+                            <p class="heading mb-0"><strong>Plan Details</strong></p>
+                            <div class="form-grid grid gap-4 items-start">
+                                @for (controlKeyValue of (serviceForm.controls.createPlanForm.controls | keyvalue:
+                                keepOrder); track controlKeyValue.key) {
                                 <ng-container
                                     *ngTemplateOutlet="
                                         inputField;
                                         context: {
                                             fieldControl: controlKeyValue.value,
-                                            fieldConfig: configurationsFields[controlKeyValue.key]
+                                            fieldConfig: createPlanForm[controlKeyValue.key],
+                                            isMatchChipField:
+                                                createPlanForm[controlKeyValue.key]?.type === featureFieldType.ChipList
                                         }
                                     "
                                 ></ng-container>
+                                }
                             </div>
                         </div>
-                        } } @if ((featureDetails$ | async)?.callback_url; as callbackUrl) {
-                        <mat-form-field appearance="outline" class="w-full">
-                            <mat-label>Callback URL</mat-label>
-                            <input matInput type="text" placeholder="Callback URL" [value]="callbackUrl" disabled />
-                            <proxy-copy-button
-                                matSuffix
-                                [copyData]="callbackUrl"
-                                tooltip="Copy URL"
-                            ></proxy-copy-button>
-                        </mat-form-field>
-                        } @if (isEditMode) {
-                        <mat-slide-toggle class="w-full mat-body-2 mb-6" [formControl]="serviceForm.controls.is_enable">
-                            Enable Service
-                        </mat-slide-toggle>
-                        }
-                    </form>
-                    } }
-                </div>
-            </div>
-        </div>
-    </ng-template>
 
-    <ng-template #billableMetrics>
-        <div class="flex flex-col h-full">
-            <h5 class="mat-h5 mb-6">Billable Metrics / Items</h5>
-            <div>
-                <button matButton="filled" (click)="addBillableMetric()">
-                    <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Metric
-                </button>
-            </div>
-
-            <mat-card class="w-full outline-card responsive-card grow mt-6 overflow-table overflow-y p-0">
-                <mat-card-content>
-                    <table mat-table [dataSource]="billableMetricstabledata" class="default-table responsive-table">
-                        <!-- Name Column -->
-                        <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
-                            <td mat-cell *matCellDef="let element" data-label="Name">
-                                <ng-container>
-                                    {{ element.name }}
-                                </ng-container>
-                            </td>
-                        </ng-container>
-
-                        <!-- reference_id Column -->
-                        <ng-container matColumnDef="code">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Code</th>
-                            <td mat-cell *matCellDef="let element" data-label="Reference Id">
-                                <ng-container>
-                                    {{ element.code }}
-                                    <proxy-copy-button
-                                        [copyData]="element.code"
-                                        tooltip="Copy Reference Id"
-                                    ></proxy-copy-button>
-                                </ng-container>
-                            </td>
-                        </ng-container>
-
-                        <!-- Method Column -->
-                        <ng-container matColumnDef="type">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Type</th>
-                            <td mat-cell *matCellDef="let element" data-label="Type">
-                                <ng-container>{{ element.recurring ? 'Recurring' : 'Metered' }}</ng-container>
-                            </td>
-                        </ng-container>
-
-                        <!-- Type Column -->
-                        <ng-container matColumnDef="aggregation">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Aggregation</th>
-                            <td mat-cell *matCellDef="let element" data-label="Aggregation">
-                                <ng-container>{{ getAggregationLabel(element?.aggregation_type) }}</ng-container>
-                            </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="action">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Action</th>
-                            <td mat-cell *matCellDef="let element; let i = index" data-label="Action">
-                                <button matIconButton (click)="editMetric(element, i)" matTooltip="Edit Metric">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                                <button matIconButton (click)="deleteMetric(i)" matTooltip="Delete Metric">
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                            </td>
-                        </ng-container>
-
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                        <tr
-                            mat-row
-                            *matRowDef="let row; columns: displayedColumns; let i = index"
-                            class="hover-action"
-                        ></tr>
-
-                        <tr class="mat-row" *matNoDataRow>
-                            <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
-                                <div class="text-center w-full mat-subtitle-2 text-dark">No Record Found</div>
-                            </td>
-                        </tr>
-                    </table>
-                    <mat-paginator-goto></mat-paginator-goto>
-                </mat-card-content>
-            </mat-card>
-        </div>
-    </ng-template>
-
-    <ng-template #paymentDetails>
-        <div class="flex flex-col h-full">
-            <h5 class="mat-h5 mb-6">Payment Details</h5>
-            <div class="flex flex-col h-full">
-                <p class="mat-body-2 text-secondary">
-                    <strong>Note:</strong> These details will be can be filled later.
-                </p>
-                <div class="auth-credentials px-6">
-                    <div class="flex flex-col w-3/4">
-                        @if (featureForm.get('paymentDetailsForm')?.at(0); as paymentDetailsForm) {
-                        <form [formGroup]="paymentDetailsForm">
-                            @for (controlKeyValue of (paymentDetailsForm.controls.stripe.controls | keyvalue); track
-                            controlKeyValue.key) {
-                            <div class="row">
-                                <div class="col-md-12 w-full">
-                                    <ng-container
-                                        *ngTemplateOutlet="
-                                            inputField;
-                                            context: {
-                                                fieldControl: controlKeyValue.value,
-                                                fieldConfig: paymentDetailsFormFields[controlKeyValue.key]
-                                            }
-                                        "
-                                    ></ng-container>
-                                </div>
-                            </div>
-                            }
-                        </form>
-                        <div class="flex justify-start items-center">
-                            <button type="button" matButton="filled" (click)="savePaymentDetails()">
-                                {{ isEditMode ? 'Update' : 'Save' }}
-                            </button>
-                        </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-    </ng-template>
-
-    <ng-template #createPlan>
-        <div class="flex flex-col h-full">
-            <h5 class="mat-h5 mb-6">Create Plan</h5>
-            <div class="flex flex-col h-full">
-                <div class="auth-credentials px-6" class="width-md-800 w-md-100">
-                    <div class="flex flex-col">
-                        @if ((selectedMethod | async)?.method_services; as methodServices) { @if
-                        (featureForm.get('planDetails')?.at(selectedServiceIndex); as serviceForm) {
-                        <form class="single-form-layout flex flex-col gap-1" [formGroup]="serviceForm">
-                            <!-- Plan Details Section -->
-                            <div class="form-section flex flex-col gap-4">
-                                <p class="heading mb-0"><strong>Plan Details</strong></p>
+                        <!-- Charges Section -->
+                        <mat-card class="charges-card">
+                            <mat-card-header>
+                                <mat-card-title class="heading"><strong>Charges</strong></mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
                                 <div class="form-grid grid gap-4 items-start">
-                                    @for (controlKeyValue of (serviceForm.controls.createPlanForm.controls | keyvalue:
+                                    @for (controlKeyValue of (serviceForm.controls.chargesForm.controls | keyvalue:
                                     keepOrder); track controlKeyValue.key) {
                                     <ng-container
                                         *ngTemplateOutlet="
                                             inputField;
                                             context: {
                                                 fieldControl: controlKeyValue.value,
-                                                fieldConfig: createPlanForm[controlKeyValue.key],
-                                                isMatchChipField:
-                                                    createPlanForm[controlKeyValue.key]?.type ===
-                                                    featureFieldType.ChipList
+                                                fieldConfig: createPlanForm[controlKeyValue.key]
                                             }
                                         "
                                     ></ng-container>
                                     }
+                                    <div>
+                                        <button matButton="filled" (click)="addCharge()">Add Charge</button>
+                                    </div>
                                 </div>
-                            </div>
+                                <!-- Charges Table -->
+                                @if (chargesList?.length) {
+                                <div class="charges-table-container">
+                                    <table mat-table [dataSource]="chargesList" class="charges-table">
+                                        <!-- Metric Column -->
+                                        <ng-container matColumnDef="metric">
+                                            <th mat-header-cell *matHeaderCellDef>Metric</th>
+                                            <td mat-cell *matCellDef="let charge">
+                                                {{
+                                                    getBillableMetricName(
+                                                        charge.billable_metric_id || charge.lago_billable_metric_code
+                                                    ) || 'N/A'
+                                                }}
+                                            </td>
+                                        </ng-container>
 
-                            <!-- Charges Section -->
-                            <mat-card class="charges-card">
-                                <mat-card-header>
-                                    <mat-card-title class="heading"><strong>Charges</strong></mat-card-title>
-                                </mat-card-header>
-                                <mat-card-content>
-                                    <div class="form-grid grid gap-4 items-start">
-                                        @for (controlKeyValue of (serviceForm.controls.chargesForm.controls | keyvalue:
-                                        keepOrder); track controlKeyValue.key) {
-                                        <ng-container
-                                            *ngTemplateOutlet="
-                                                inputField;
-                                                context: {
-                                                    fieldControl: controlKeyValue.value,
-                                                    fieldConfig: createPlanForm[controlKeyValue.key]
-                                                }
-                                            "
-                                        ></ng-container>
-                                        }
-                                        <div>
-                                            <button matButton="filled" (click)="addCharge()">Add Charge</button>
-                                        </div>
-                                    </div>
-                                    <!-- Charges Table -->
-                                    @if (chargesList && chargesList.length > 0) {
-                                    <div class="charges-table-container">
-                                        <table mat-table [dataSource]="chargesList" class="charges-table">
-                                            <!-- Metric Column -->
-                                            <ng-container matColumnDef="metric">
-                                                <th mat-header-cell *matHeaderCellDef>Metric</th>
-                                                <td mat-cell *matCellDef="let charge">
-                                                    {{
-                                                        getBillableMetricName(
-                                                            charge.billable_metric_id ||
-                                                                charge.lago_billable_metric_code
-                                                        ) || 'N/A'
-                                                    }}
-                                                </td>
-                                            </ng-container>
+                                        <!-- Min Amount Column -->
+                                        <ng-container matColumnDef="maxLimit">
+                                            <th mat-header-cell *matHeaderCellDef>Max Limit</th>
+                                            <td mat-cell *matCellDef="let charge">
+                                                {{ charge.max_limit || 'N/A' }}
+                                            </td>
+                                        </ng-container>
 
-                                            <!-- Min Amount Column -->
-                                            <ng-container matColumnDef="maxLimit">
-                                                <th mat-header-cell *matHeaderCellDef>Max Limit</th>
-                                                <td mat-cell *matCellDef="let charge">
-                                                    {{ charge.max_limit || 'N/A' }}
-                                                </td>
-                                            </ng-container>
+                                        <!-- Actions Column -->
+                                        <ng-container matColumnDef="actions">
+                                            <th mat-header-cell *matHeaderCellDef>Actions</th>
+                                            <td mat-cell *matCellDef="let charge; let i = index">
+                                                <button
+                                                    matIconButton
+                                                    (click)="removeCharge(i)"
+                                                    matTooltip="Remove Charge"
+                                                >
+                                                    <mat-icon>delete</mat-icon>
+                                                </button>
+                                            </td>
+                                        </ng-container>
 
-                                            <!-- Actions Column -->
-                                            <ng-container matColumnDef="actions">
-                                                <th mat-header-cell *matHeaderCellDef>Actions</th>
-                                                <td mat-cell *matCellDef="let charge; let i = index">
-                                                    <button
-                                                        matIconButton
-                                                        (click)="removeCharge(i)"
-                                                        matTooltip="Remove Charge"
-                                                    >
-                                                        <mat-icon>delete</mat-icon>
-                                                    </button>
-                                                </td>
-                                            </ng-container>
-
-                                            <tr mat-header-row *matHeaderRowDef="chargesDisplayedColumns"></tr>
-                                            <tr mat-row *matRowDef="let row; columns: chargesDisplayedColumns"></tr>
-                                        </table>
-                                    </div>
-                                    }
-                                </mat-card-content>
-                            </mat-card>
-                        </form>
-                        } }
-                    </div>
+                                        <tr mat-header-row *matHeaderRowDef="chargesDisplayedColumns"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: chargesDisplayedColumns"></tr>
+                                    </table>
+                                </div>
+                                }
+                            </mat-card-content>
+                        </mat-card>
+                    </form>
+                    } }
                 </div>
             </div>
-
-            <!-- Add your plan creation form here -->
         </div>
-    </ng-template>
 
-    <ng-template #plansOverview>
-        <div class="flex flex-col">
-            <h5 class="mat-h5 mb-6">Created Plans</h5>
-            <div>
-                @if (isEditMode && selectedSubscriptionServiceIndex === -1) {
-                <button matButton="filled" (click)="addPlan()">
-                    <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Plan
+        <!-- Add your plan creation form here -->
+    </div>
+</ng-template>
+
+<ng-template #plansOverview>
+    <div class="flex flex-col">
+        <h5 class="mat-h5 mb-6">Created Plans</h5>
+        <div>
+            @if (isEditMode && selectedSubscriptionServiceIndex === -1) {
+            <button matButton="filled" (click)="addPlan()">
+                <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Plan
+            </button>
+            }
+        </div>
+
+        <mat-card class="w-full outline-card responsive-card grow mt-6 add-plan-edit">
+            <mat-card-content>
+                <table mat-table [dataSource]="createdPlanData" class="default-table responsive-table">
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="planName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
+                        <td mat-cell *matCellDef="let element" data-label="Name">
+                            <ng-container>
+                                {{ element.name }}
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- reference_id Column -->
+                    <ng-container matColumnDef="code">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Code</th>
+                        <td mat-cell *matCellDef="let element" data-label="Reference Id">
+                            <ng-container>
+                                {{ element.code }}
+                                <proxy-copy-button
+                                    [copyData]="element.code"
+                                    tooltip="Copy Reference Id"
+                                ></proxy-copy-button>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- Method Column -->
+                    <ng-container matColumnDef="billingPeriod">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Billing Period</th>
+                        <td mat-cell *matCellDef="let element" data-label="Type">
+                            <ng-container>{{ element.interval }}</ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- Type Column -->
+                    <ng-container matColumnDef="price">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Price</th>
+                        <td mat-cell *matCellDef="let element" data-label="Aggregation">
+                            <ng-container>{{ element.amount_cents / 100 }}</ng-container>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="currency">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Currency</th>
+                        <td mat-cell *matCellDef="let element" data-label="Aggregation">
+                            <ng-container>{{ element.amount_currency }}</ng-container>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Status</th>
+                        <td mat-cell *matCellDef="let element" data-label="Aggregation">
+                            <ng-container>{{ getAggregationLabel(element?.aggregation_type) }}</ng-container>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Action</th>
+                        <td mat-cell *matCellDef="let element" data-label="Action">
+                            <button type="button" matIconButton (click)="editPlan(element)">
+                                <mat-icon class="material-icons-outlined mat-icon-18"> edit </mat-icon>
+                            </button>
+                            <button type="button" matIconButton (click)="deletePlan(element)">
+                                <mat-icon class="material-icons-outlined mat-icon-18"> delete </mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="plansOverviewColumns; sticky: true"></tr>
+                    <tr
+                        mat-row
+                        *matRowDef="let row; columns: plansOverviewColumns; let i = index"
+                        class="hover-action"
+                    ></tr>
+
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
+                            <div class="flex justify-center items-center w-full mat-subtitle-2 text-dark">
+                                No plans Found
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <mat-paginator-goto></mat-paginator-goto>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</ng-template>
+
+<ng-template #taxes>
+    <div class="flex flex-col">
+        <div>
+            <button matButton="filled" (click)="addNewOption()">
+                <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Tax
+            </button>
+        </div>
+
+        <table mat-table [dataSource]="taxesData" class="default-table responsive-table">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let tax">
+                    {{ tax.name }}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="code">
+                <th mat-header-cell *matHeaderCellDef>Code</th>
+                <td mat-cell *matCellDef="let tax">
+                    {{ tax.code }}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="rate">
+                <th mat-header-cell *matHeaderCellDef>Rate</th>
+                <td mat-cell *matCellDef="let tax">
+                    {{ tax.rate }}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let tax">
+                    <button type="button" matIconButton (click)="deleteTax(tax)">
+                        <mat-icon class="material-icons-outlined mat-icon-18"> delete </mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="taxesDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: taxesDisplayedColumns"></tr>
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell border-none" [attr.colspan]="taxesDisplayedColumns.length">
+                    <div class="flex justify-center items-center w-full mat-subtitle-2 text-dark">No taxes Found</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</ng-template>
+
+<ng-template #manageSubscription>
+    <div class="flex gap-4 my-6 grow" style="min-height: 400px">
+        <div class="flex flex-col gap-1 border-right pr-6 service-list">
+            <p class="mat-body-2 fw-bolder mt-0">Services</p>
+            <mat-list role="list" class="default-list pt-0">
+                <!-- Billable Metric item -->
+                <mat-list-item
+                    role="listitem"
+                    class="rounded-4"
+                    [class.active]="selectedSubscriptionServiceIndex === -2"
+                    (click)="selectedSubscriptionServiceIndex = -2"
+                >
+                    <div class="flex items-center grow">Billable Metric</div>
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
+                </mat-list-item>
+
+                <!-- Plans item -->
+                <mat-list-item
+                    role="listitem"
+                    class="rounded-4"
+                    [class.active]="selectedSubscriptionServiceIndex === -1"
+                    (click)="selectedSubscriptionServiceIndex = -1"
+                >
+                    <div class="flex items-center grow">Plans</div>
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
+                </mat-list-item>
+
+                <mat-list-item
+                    role="listitem"
+                    class="rounded-4"
+                    [class.active]="selectedSubscriptionServiceIndex === -3"
+                    (click)="updatePaymentDetails()"
+                >
+                    <div class="flex items-center grow">Payment Details</div>
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
+                </mat-list-item>
+                <mat-list-item
+                    role="listitem"
+                    class="rounded-4"
+                    [class.active]="selectedSubscriptionServiceIndex === -4"
+                    (click)="updateTaxes()"
+                >
+                    <div class="flex items-center grow">Taxes</div>
+                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
+                </mat-list-item>
+            </mat-list>
+        </div>
+
+        <!-- Right panel content -->
+        <div class="width-md-700 w-md-100 px-6">
+            <div class="flex flex-col">
+                @switch (selectedSubscriptionServiceIndex) { @case (-1) {
+                <h3>Plans</h3>
+                <ng-container *ngTemplateOutlet="plansOverview"></ng-container>
+                } @case (-2) {
+                <h3>Billable Metric</h3>
+                <ng-container *ngTemplateOutlet="billableMetrics"></ng-container>
+                } @case (-3) {
+                <h3>Payment Details</h3>
+                <ng-container *ngTemplateOutlet="paymentDetails"></ng-container>
+                } @case (-4) {
+                <h3>Taxes</h3>
+                <ng-container *ngTemplateOutlet="taxes"></ng-container>
+                } }
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #brandingStepContent>
+    <div class="flex gap-6 grow branding-step-content">
+        <!-- Left: Branding form -->
+        <div class="flex flex-col branding-form w-1/2">
+            <p class="mat-body-2 text-secondary fw-bold mb-20 mt-0">Customize your login UI</p>
+            <!-- Logo: choose URL or file upload, then show relevant input -->
+            <div class="flex items-center gap-4 font-12 mb-20 flex-wrap">
+                <!-- <span class="mat-body-2 text-secondary fw-bold mb-0">Logo</span> -->
+                <mat-radio-group
+                    [value]="logoInputMode"
+                    (change)="logoInputMode = $event.value"
+                    class="flex gap-4 branding-logo-radio radio-button-custom-style"
+                >
+                    <mat-radio-button value="url">Enter URL</mat-radio-button>
+                    <mat-radio-button value="file">
+                        Upload file
+                        <mat-icon
+                            class="material-icons-outlined mat-icon-14 text-secondary align-middle cursor-default"
+                            matTooltip="Maximum file size: 2 MB"
+                            matTooltipPosition="right"
+                            >info</mat-icon
+                        >
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+            @if (logoInputMode === 'url') {
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Logo URL</mat-label>
+                <input
+                    matInput
+                    type="text"
+                    placeholder="Enter logo URL"
+                    [formControl]="featureForm.get('brandingDetails.logo_url')"
+                />
+            </mat-form-field>
+            } @if (logoInputMode === 'file') {
+            <div class="flex items-center gap-2 mb-20">
+                <input
+                    #logoFileInput
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    (change)="onBrandingLogoFileSelected($event)"
+                />
+                <button type="button" matButton="outlined" (click)="logoFileInput.click()" [disabled]="isLogoUploading">
+                    <mat-icon class="material-icons-outlined mat-icon-18">
+                        {{ isLogoUploading ? 'hourglass_empty' : 'upload_file' }}
+                    </mat-icon>
+                    {{ isLogoUploading ? 'Uploading...' : 'Upload logo' }}
+                </button>
+                @if (logoUrl && !isLogoUploading) {
+                <span class="mat-body-2 text-secondary">{{ logoFileInput.files?.[0]?.name || 'Logo selected' }}</span>
+                <button type="button" matIconButton (click)="logoUrl = null; logoFileInput.value = ''">
+                    <mat-icon class="material-icons-outlined mat-icon-18 text-danger">close</mat-icon>
                 </button>
                 }
             </div>
-
-            <mat-card class="w-full outline-card responsive-card grow mt-6 add-plan-edit">
-                <mat-card-content>
-                    <table mat-table [dataSource]="createdPlanData" class="default-table responsive-table">
-                        <!-- Name Column -->
-                        <ng-container matColumnDef="planName">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
-                            <td mat-cell *matCellDef="let element" data-label="Name">
-                                <ng-container>
-                                    {{ element.name }}
-                                </ng-container>
-                            </td>
-                        </ng-container>
-
-                        <!-- reference_id Column -->
-                        <ng-container matColumnDef="code">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Code</th>
-                            <td mat-cell *matCellDef="let element" data-label="Reference Id">
-                                <ng-container>
-                                    {{ element.code }}
-                                    <proxy-copy-button
-                                        [copyData]="element.code"
-                                        tooltip="Copy Reference Id"
-                                    ></proxy-copy-button>
-                                </ng-container>
-                            </td>
-                        </ng-container>
-
-                        <!-- Method Column -->
-                        <ng-container matColumnDef="billingPeriod">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">
-                                Billing Period
-                            </th>
-                            <td mat-cell *matCellDef="let element" data-label="Type">
-                                <ng-container>{{ element.interval }}</ng-container>
-                            </td>
-                        </ng-container>
-
-                        <!-- Type Column -->
-                        <ng-container matColumnDef="price">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Price</th>
-                            <td mat-cell *matCellDef="let element" data-label="Aggregation">
-                                <ng-container>{{ element.amount_cents / 100 }}</ng-container>
-                            </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="currency">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Currency</th>
-                            <td mat-cell *matCellDef="let element" data-label="Aggregation">
-                                <ng-container>{{ element.amount_currency }}</ng-container>
-                            </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="status">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Status</th>
-                            <td mat-cell *matCellDef="let element" data-label="Aggregation">
-                                <ng-container>{{ getAggregationLabel(element?.aggregation_type) }}</ng-container>
-                            </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="action">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Action</th>
-                            <td mat-cell *matCellDef="let element" data-label="Action">
-                                <button type="button" matIconButton (click)="editPlan(element)">
-                                    <mat-icon class="material-icons-outlined mat-icon-18"> edit </mat-icon>
-                                </button>
-                                <button type="button" matIconButton (click)="deletePlan(element)">
-                                    <mat-icon class="material-icons-outlined mat-icon-18"> delete </mat-icon>
-                                </button>
-                            </td>
-                        </ng-container>
-
-                        <tr mat-header-row *matHeaderRowDef="plansOverviewColumns; sticky: true"></tr>
-                        <tr
-                            mat-row
-                            *matRowDef="let row; columns: plansOverviewColumns; let i = index"
-                            class="hover-action"
-                        ></tr>
-
-                        <tr class="mat-row" *matNoDataRow>
-                            <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
-                                <div class="flex justify-center items-center w-full mat-subtitle-2 text-dark">
-                                    No plans Found
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <mat-paginator-goto></mat-paginator-goto>
-                </mat-card-content>
-            </mat-card>
-        </div>
-    </ng-template>
-
-    <ng-template #taxes>
-        <div class="flex flex-col">
-            <div>
-                <button matButton="filled" (click)="addNewOption()">
-                    <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Tax
-                </button>
-            </div>
-
-            <table mat-table [dataSource]="taxesData" class="default-table responsive-table">
-                <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef>Name</th>
-                    <td mat-cell *matCellDef="let tax">
-                        {{ tax.name }}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="code">
-                    <th mat-header-cell *matHeaderCellDef>Code</th>
-                    <td mat-cell *matCellDef="let tax">
-                        {{ tax.code }}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="rate">
-                    <th mat-header-cell *matHeaderCellDef>Rate</th>
-                    <td mat-cell *matCellDef="let tax">
-                        {{ tax.rate }}
-                    </td>
-                </ng-container>
-                <ng-container matColumnDef="action">
-                    <th mat-header-cell *matHeaderCellDef>Action</th>
-                    <td mat-cell *matCellDef="let tax">
-                        <button type="button" matIconButton (click)="deleteTax(tax)">
-                            <mat-icon class="material-icons-outlined mat-icon-18"> delete </mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="taxesDisplayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: taxesDisplayedColumns"></tr>
-                <tr class="mat-row" *matNoDataRow>
-                    <td class="mat-cell border-none" [attr.colspan]="taxesDisplayedColumns.length">
-                        <div class="flex justify-center items-center w-full mat-subtitle-2 text-dark">
-                            No taxes Found
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </ng-template>
-
-    <ng-template #manageSubscription>
-        <div class="flex gap-4 my-6 grow" style="min-height: 400px">
-            <div class="flex flex-col gap-1 border-right pr-6 service-list">
-                <p class="mat-body-2 fw-bolder mt-0">Services</p>
-                <mat-list role="list" class="default-list pt-0">
-                    <!-- Billable Metric item -->
-                    <mat-list-item
-                        role="listitem"
-                        class="rounded-4"
-                        [class.active]="selectedSubscriptionServiceIndex === -2"
-                        (click)="selectedSubscriptionServiceIndex = -2"
-                    >
-                        <div class="flex items-center grow">Billable Metric</div>
-                        <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
-                    </mat-list-item>
-
-                    <!-- Plans item -->
-                    <mat-list-item
-                        role="listitem"
-                        class="rounded-4"
-                        [class.active]="selectedSubscriptionServiceIndex === -1"
-                        (click)="selectedSubscriptionServiceIndex = -1"
-                    >
-                        <div class="flex items-center grow">Plans</div>
-                        <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
-                    </mat-list-item>
-
-                    <mat-list-item
-                        role="listitem"
-                        class="rounded-4"
-                        [class.active]="selectedSubscriptionServiceIndex === -3"
-                        (click)="updatePaymentDetails()"
-                    >
-                        <div class="flex items-center grow">Payment Details</div>
-                        <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
-                    </mat-list-item>
-                    <mat-list-item
-                        role="listitem"
-                        class="rounded-4"
-                        [class.active]="selectedSubscriptionServiceIndex === -4"
-                        (click)="updateTaxes()"
-                    >
-                        <div class="flex items-center grow">Taxes</div>
-                        <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
-                    </mat-list-item>
-                </mat-list>
-            </div>
-
-            <!-- Right panel content -->
-            <div class="auth-credentials px-6" class="width-md-700 w-md-100">
-                <div class="flex flex-col">
-                    <!-- Plans content -->
-                    @if (selectedSubscriptionServiceIndex === -1) {
-                    <div>
-                        <h3>Plans</h3>
-                        <ng-container *ngTemplateOutlet="plansOverview"></ng-container>
-                    </div>
+            }
+            <!-- Title (after logo) -->
+            <ng-container
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: featureForm.get('brandingDetails.title'),
+                        fieldConfig: {
+                            label: 'Title'
+                        }
                     }
-                    <!-- Billable Metric content -->
-                    @if (selectedSubscriptionServiceIndex === -2) {
-                    <div>
-                        <h3>Billable Metric</h3>
-                        <ng-container *ngTemplateOutlet="billableMetrics"></ng-container>
-                    </div>
-                    } @if (selectedSubscriptionServiceIndex === -3) {
-                    <div>
-                        <h3>Payment Details</h3>
-                        <ng-container *ngTemplateOutlet="paymentDetails"></ng-container>
-                    </div>
-                    } @if (selectedSubscriptionServiceIndex === -4) {
-                    <div>
-                        <h3>Taxes</h3>
-                        <ng-container *ngTemplateOutlet="taxes"></ng-container>
-                    </div>
+                "
+            ></ng-container>
+            <!-- Sign up button text -->
+            <ng-container
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: featureForm.get('brandingDetails.sign_up_button_text'),
+                        fieldConfig: {
+                            label: 'Sign up button text'
+                        }
                     }
+                "
+            ></ng-container>
+            <!-- Input position / Border radius (after logo) -->
+            <ng-container
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: featureForm.get('brandingDetails.border_radius'),
+                        fieldConfig: {
+                            label: 'Border radius',
+                            type: featureFieldType.Select,
+                            source: ['none', 'small', 'medium', 'large']
+                        }
+                    }
+                "
+            ></ng-container>
+
+            <!-- Theme -->
+            @if (isEditMode) {
+            <ng-container
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: featureForm.get('brandingDetails.theme'),
+                        fieldConfig: {
+                            label: 'Theme',
+                            type: featureFieldType.Select,
+                            source: ['system', 'light', 'dark']
+                        }
+                    }
+                "
+            ></ng-container>
+            } @if (isEditMode) {
+            <ng-container
+                *ngTemplateOutlet="
+                    inputField;
+                    context: {
+                        fieldControl: featureForm.get('brandingDetails.version'),
+                        fieldConfig: {
+                            label: 'Version',
+                            type: featureFieldType.Select,
+                            source: ['v1', 'v2']
+                        }
+                    }
+                "
+            ></ng-container>
+            }
+            <!-- Show social login as icon (auth feature only) -->
+            <div class="flex flex-col gap-2 mb-2">
+                @if (featureForm.get('primaryDetails.feature_id')?.value === 1) {
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="mat-body-2 mb-0">Show the social login as a icon: </span>
+                    <mat-slide-toggle [formControl]="featureForm.get('brandingDetails.icons')" color="primary">
+                    </mat-slide-toggle>
+                </div>
+                }
+                <!-- Show Create Account For New User (edit mode only, auth feature only) -->
+                @if (isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1) {
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="mat-body-2 mb-0">Show Create Account For New User: </span>
+                    <mat-slide-toggle
+                        [formControl]="featureForm.get('brandingDetails.create_account_link')"
+                        color="primary"
+                    >
+                    </mat-slide-toggle>
+                </div>
+                }
+                <!-- Light theme primary color -->
+                <div class="flex items-center gap-2">
+                    <label class="mat-body-2 mb-0 min-w-[120px]">Primary color</label>
+                    <input
+                        type="color"
+                        class="w-[30px] h-[30px] cursor-pointer border border-[var(--color-common-border)] rounded"
+                        [value]="featureForm.get('brandingDetails.light_theme_primary_color')?.value || '#000000'"
+                        (input)="
+                            featureForm
+                                .get('brandingDetails.light_theme_primary_color')
+                                ?.setValue($any($event.target).value)
+                        "
+                    />
+                    <span class="mat-body-2 text-secondary">{{
+                        featureForm.get('brandingDetails.light_theme_primary_color')?.value || '#000000'
+                    }}</span>
+                    <span class="mat-body-2 text-secondary">(Light theme)</span>
+                </div>
+                <!-- Dark theme primary color -->
+                <div class="flex items-center gap-2">
+                    <label class="mat-body-2 mb-0 min-w-[120px]">Primary color</label>
+                    <input
+                        type="color"
+                        class="w-[30px] h-[30px] cursor-pointer border border-[var(--color-common-border)] rounded"
+                        [value]="featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff'"
+                        (input)="
+                            featureForm
+                                .get('brandingDetails.dark_theme_primary_color')
+                                ?.setValue($any($event.target).value)
+                        "
+                    />
+                    <span class="mat-body-2 text-secondary">{{
+                        featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff'
+                    }}</span>
+                    <span class="mat-body-2 text-secondary">(Dark theme)</span>
+                </div>
+                <!-- Button color -->
+                <div class="flex items-center gap-2">
+                    <label class="mat-body-2 mb-0 min-w-[120px]">Button color</label>
+                    <input
+                        type="color"
+                        class="w-[30px] h-[30px] cursor-pointer border border-[var(--color-common-border)] rounded"
+                        [value]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
+                        (input)="featureForm.get('brandingDetails.button_color')?.setValue($any($event.target).value)"
+                    />
+                    <span class="mat-body-2 text-secondary">{{
+                        featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'
+                    }}</span>
+                </div>
+                <!-- Button hover color -->
+                <div class="flex items-center gap-2">
+                    <label class="mat-body-2 mb-0 min-w-[120px]">Button hover color</label>
+                    <input
+                        type="color"
+                        class="w-[30px] h-[30px] cursor-pointer border border-[var(--color-common-border)] rounded"
+                        [value]="featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'"
+                        (input)="
+                            featureForm.get('brandingDetails.button_hover_color')?.setValue($any($event.target).value)
+                        "
+                    />
+                    <span class="mat-body-2 text-secondary">{{
+                        featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'
+                    }}</span>
+                </div>
+                <!-- Button text color -->
+                <div class="flex items-center gap-2">
+                    <label class="mat-body-2 mb-0 min-w-[120px]">Button text color</label>
+                    <input
+                        type="color"
+                        class="w-[30px] h-[30px] cursor-pointer border border-[var(--color-common-border)] rounded"
+                        [value]="featureForm.get('brandingDetails.button_text_color')?.value || '#000000'"
+                        (input)="
+                            featureForm.get('brandingDetails.button_text_color')?.setValue($any($event.target).value)
+                        "
+                    />
+                    <span class="mat-body-2 text-secondary">{{
+                        featureForm.get('brandingDetails.button_text_color')?.value || '#000000'
+                    }}</span>
                 </div>
             </div>
         </div>
-    </ng-template>
-
-    <ng-template #brandingStepContent>
-        <div class="flex gap-6 grow branding-step-content">
-            <!-- Left: Branding form -->
-            <div class="flex flex-col branding-form w-1/2">
-                <p class="mat-body-2 text-secondary fw-bold mb-20 mt-0">Customize your login UI</p>
-                <!-- Logo: choose URL or file upload, then show relevant input -->
-                <div class="flex items-center gap-4 font-12 mb-20 flex-wrap">
-                    <!-- <span class="mat-body-2 text-secondary fw-bold mb-0">Logo</span> -->
-                    <mat-radio-group
-                        [value]="logoInputMode"
-                        (change)="logoInputMode = $event.value"
-                        class="flex gap-4 branding-logo-radio radio-button-custom-style"
-                    >
-                        <mat-radio-button value="url">Enter URL</mat-radio-button>
-                        <mat-radio-button value="file">
-                            Upload file
-                            <mat-icon
-                                class="material-icons-outlined mat-icon-14 text-secondary"
-                                style="vertical-align: middle; cursor: default"
-                                matTooltip="Maximum file size: 2 MB"
-                                matTooltipPosition="right"
-                                >info</mat-icon
-                            >
-                        </mat-radio-button>
-                    </mat-radio-group>
-                </div>
-                @if (logoInputMode === 'url') {
-                <mat-form-field appearance="outline" class="w-full">
-                    <mat-label>Logo URL</mat-label>
-                    <input
-                        matInput
-                        type="text"
-                        placeholder="Enter logo URL"
-                        [formControl]="featureForm.get('brandingDetails.logo_url')"
-                    />
-                </mat-form-field>
-                } @if (logoInputMode === 'file') {
-                <div class="flex items-center gap-2 mb-20">
-                    <input
-                        #logoFileInput
-                        type="file"
-                        accept="image/*"
-                        hidden
-                        (change)="onBrandingLogoFileSelected($event)"
-                    />
+        <!-- Right: Preview (always show version 2 layout for branding) -->
+        <div class="branding-preview">
+            @if (isEditMode && featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
+            featureForm.get('brandingDetails.version')?.value === 'v2') {
+            <div class="flex items-center justify-center w-full mb-6">
+                <div class="custom-toggle-group">
                     <button
                         type="button"
-                        matButton="outlined"
-                        (click)="logoFileInput.click()"
-                        [disabled]="isLogoUploading"
+                        class="custom-toggle-btn"
+                        [class.active]="previewInputPosition !== 'bottom'"
+                        (click)="previewInputPosition = 'top'"
                     >
-                        <mat-icon class="material-icons-outlined mat-icon-18">
-                            {{ isLogoUploading ? 'hourglass_empty' : 'upload_file' }}
-                        </mat-icon>
-                        {{ isLogoUploading ? 'Uploading...' : 'Upload logo' }}
+                        Input on Top
                     </button>
-                    @if (logoUrl && !isLogoUploading) {
-                    <span
-                        class="mat-body-2 text-secondary"
-                        >{{ logoFileInput.files?.[0]?.name || 'Logo selected' }}</span
+                    <button
+                        type="button"
+                        class="custom-toggle-btn"
+                        [class.active]="previewInputPosition === 'bottom'"
+                        (click)="previewInputPosition = 'bottom'"
                     >
-                    <button type="button" matIconButton (click)="logoUrl = null; logoFileInput.value = ''">
-                        <mat-icon class="material-icons-outlined mat-icon-18 text-danger">close</mat-icon>
+                        Input on Bottom
                     </button>
-                    }
-                </div>
-                }
-                <!-- Title (after logo) -->
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('brandingDetails.title'),
-                            fieldConfig: {
-                                label: 'Title'
-                            }
-                        }
-                    "
-                ></ng-container>
-                <!-- Sign up button text -->
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('brandingDetails.sign_up_button_text'),
-                            fieldConfig: {
-                                label: 'Sign up button text'
-                            }
-                        }
-                    "
-                ></ng-container>
-                <!-- Input position / Border radius (after logo) -->
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('brandingDetails.border_radius'),
-                            fieldConfig: {
-                                label: 'Border radius',
-                                type: featureFieldType.Select,
-                                source: ['none', 'small', 'medium', 'large']
-                            }
-                        }
-                    "
-                ></ng-container>
-
-                <!-- Theme -->
-                @if (isEditMode) {
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('brandingDetails.theme'),
-                            fieldConfig: {
-                                label: 'Theme',
-                                type: featureFieldType.Select,
-                                source: ['system', 'light', 'dark']
-                            }
-                        }
-                    "
-                ></ng-container>
-                } @if (isEditMode) {
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('brandingDetails.version'),
-                            fieldConfig: {
-                                label: 'Version',
-                                type: featureFieldType.Select,
-                                source: ['v1', 'v2']
-                            }
-                        }
-                    "
-                ></ng-container>
-                }
-                <!-- Show social login as icon (auth feature only) -->
-                <div class="flex flex-col gap-2 mb-2">
-                    @if (featureForm.get('primaryDetails.feature_id')?.value === 1) {
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="mat-body-2 mb-0">Show the social login as a icon: </span>
-                        <mat-slide-toggle [formControl]="featureForm.get('brandingDetails.icons')" color="primary">
-                        </mat-slide-toggle>
-                    </div>
-                    }
-                    <!-- Show Create Account For New User (edit mode only, auth feature only) -->
-                    @if (isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1) {
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="mat-body-2 mb-0">Show Create Account For New User: </span>
-                        <mat-slide-toggle
-                            [formControl]="featureForm.get('brandingDetails.create_account_link')"
-                            color="primary"
-                        >
-                        </mat-slide-toggle>
-                    </div>
-                    }
-                    <!-- Light theme primary color -->
-                    <div class="flex items-center gap-2">
-                        <label class="mat-body-2 mb-0" style="min-width: 120px"> Primary color</label>
-                        <input
-                            type="color"
-                            [value]="featureForm.get('brandingDetails.light_theme_primary_color')?.value || '#000000'"
-                            (input)="
-                                featureForm
-                                    .get('brandingDetails.light_theme_primary_color')
-                                    ?.setValue($any($event.target).value)
-                            "
-                            style="
-                                width: 30px;
-                                height: 30px;
-                                cursor: pointer;
-                                border: 1px solid var(--color-common-border);
-                                border-radius: 4px;
-                            "
-                        />
-                        <span class="mat-body-2 text-secondary">{{
-                            featureForm.get('brandingDetails.light_theme_primary_color')?.value || '#000000'
-                        }}</span>
-                        <span class="mat-body-2 text-secondary">(Light theme)</span>
-                    </div>
-                    <!-- Dark theme primary color -->
-                    <div class="flex items-center gap-2">
-                        <label class="mat-body-2 mb-0" style="min-width: 120px"> Primary color</label>
-                        <input
-                            type="color"
-                            [value]="featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff'"
-                            (input)="
-                                featureForm
-                                    .get('brandingDetails.dark_theme_primary_color')
-                                    ?.setValue($any($event.target).value)
-                            "
-                            style="
-                                width: 30px;
-                                height: 30px;
-                                cursor: pointer;
-                                border: 1px solid var(--color-common-border);
-                                border-radius: 4px;
-                            "
-                        />
-                        <span class="mat-body-2 text-secondary">{{
-                            featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff'
-                        }}</span>
-                        <span class="mat-body-2 text-secondary">(Dark theme)</span>
-                    </div>
-                    <!-- Button color -->
-                    <div class="flex items-center gap-2">
-                        <label class="mat-body-2 mb-0" style="min-width: 120px">Button color</label>
-                        <input
-                            type="color"
-                            [value]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
-                            (input)="
-                                featureForm.get('brandingDetails.button_color')?.setValue($any($event.target).value)
-                            "
-                            style="
-                                width: 30px;
-                                height: 30px;
-                                cursor: pointer;
-                                border: 1px solid var(--color-common-border);
-                                border-radius: 4px;
-                            "
-                        />
-                        <span class="mat-body-2 text-secondary">{{
-                            featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'
-                        }}</span>
-                    </div>
-                    <!-- Button hover color -->
-                    <div class="flex items-center gap-2">
-                        <label class="mat-body-2 mb-0" style="min-width: 120px">Button hover color</label>
-                        <input
-                            type="color"
-                            [value]="featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'"
-                            (input)="
-                                featureForm
-                                    .get('brandingDetails.button_hover_color')
-                                    ?.setValue($any($event.target).value)
-                            "
-                            style="
-                                width: 30px;
-                                height: 30px;
-                                cursor: pointer;
-                                border: 1px solid var(--color-common-border);
-                                border-radius: 4px;
-                            "
-                        />
-                        <span class="mat-body-2 text-secondary">{{
-                            featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'
-                        }}</span>
-                    </div>
-                    <!-- Button text color -->
-                    <div class="flex items-center gap-2">
-                        <label class="mat-body-2 mb-0" style="min-width: 120px">Button text color</label>
-                        <input
-                            type="color"
-                            [value]="featureForm.get('brandingDetails.button_text_color')?.value || '#000000'"
-                            (input)="
-                                featureForm
-                                    .get('brandingDetails.button_text_color')
-                                    ?.setValue($any($event.target).value)
-                            "
-                            style="
-                                width: 30px;
-                                height: 30px;
-                                cursor: pointer;
-                                border: 1px solid var(--color-common-border);
-                                border-radius: 4px;
-                            "
-                        />
-                        <span class="mat-body-2 text-secondary">{{
-                            featureForm.get('brandingDetails.button_text_color')?.value || '#000000'
-                        }}</span>
-                    </div>
                 </div>
             </div>
-            <!-- Right: Preview (always show version 2 layout for branding) -->
-            <div class="branding-preview">
-                @if (isEditMode && featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
-                featureForm.get('brandingDetails.version')?.value === 'v2') {
-                <div class="flex items-center justify-center w-full mb-6">
-                    <div class="custom-toggle-group">
-                        <button
-                            type="button"
-                            class="custom-toggle-btn"
-                            [class.active]="previewInputPosition !== 'bottom'"
-                            (click)="previewInputPosition = 'top'"
-                        >
-                            Input on Top
-                        </button>
-                        <button
-                            type="button"
-                            class="custom-toggle-btn"
-                            [class.active]="previewInputPosition === 'bottom'"
-                            (click)="previewInputPosition = 'bottom'"
-                        >
-                            Input on Bottom
-                        </button>
-                    </div>
-                </div>
-                }
-                <ng-container
-                    *ngTemplateOutlet="previewAuthorization; context: { previewVersion: 'v2' }"
-                ></ng-container>
-            </div>
+            }
+            <ng-container *ngTemplateOutlet="previewAuthorization; context: { previewVersion: 'v2' }"></ng-container>
         </div>
-    </ng-template>
+    </div>
 </ng-template>
