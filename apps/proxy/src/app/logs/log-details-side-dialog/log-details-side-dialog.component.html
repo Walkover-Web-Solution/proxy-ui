@@ -1,7 +1,7 @@
-<div class="position-relative mat-right-dialog-container">
+<div class="relative mat-right-dialog-container">
     <proxy-loader *ngIf="data.isLoading$ | async"></proxy-loader>
     <!-- Top Fixed Header::START -->
-    <div class="mat-right-dialog-header d-flex align-items-center justify-content-between">
+    <div class="mat-right-dialog-header flex items-center justify-between">
         <h2 class="mat-title mat-subheading-2 mb-0 text-dark">Logs Details</h2>
         <button mat-icon-button mat-dialog-close (click)="onCloseDialog()" color="primary">
             <mat-icon>close</mat-icon>

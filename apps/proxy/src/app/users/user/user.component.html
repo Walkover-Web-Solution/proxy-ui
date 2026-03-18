@@ -1,9 +1,9 @@
-<div class="app-content d-flex flex-column h-100" *ngIf="loading$ | async as loading">
-    <mat-tab-group class="h-100">
+<div class="app-content flex flex-col h-full" *ngIf="loading$ | async as loading">
+    <mat-tab-group class="h-full">
         <!-- User Tab -->
         <mat-tab label="User">
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3 mt-4">
-                <div class="d-flex flex-wrap align-items-center flex-grow-1 gap-3">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6 mt-6">
+                <div class="flex flex-wrap items-center grow gap-4">
                     <proxy-lib-search
                         [matFormFieldClass]="'no-padding w-xs-100'"
                         [placeholder]="'Search'"
@@ -11,7 +11,7 @@
                         class="w-xs-100"
                     ></proxy-lib-search>
                 </div>
-                <div class="d-flex align-items-center justify-content-between gap-3 ml-auto">
+                <div class="flex items-center justify-between gap-4 ml-auto">
                     <date-range-picker
                         (selectedRangeValueChange)="setDateRange($event)"
                         [(selectedRangeValue)]="selectedRangeValue"
@@ -23,10 +23,10 @@
                     </button>
                     <mat-menu #userFilterMenu="matMenu" class="filter-menu" xPosition="before">
                         <div (click)="$event.stopPropagation(); (false)">
-                            <div class="pb-0 pt-3 px-3">
+                            <div class="pb-0 pt-6 px-6">
                                 <div class="row" [formGroup]="userFilterForm">
                                     <div class="col-lg-12">
-                                        <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                                        <mat-form-field appearance="outline" floatLabel="always" class="w-full">
                                             <mat-label>Search By Company Name</mat-label>
                                             <input
                                                 matInput
@@ -35,7 +35,7 @@
                                                 formControlName="company_name"
                                             />
                                         </mat-form-field>
-                                        <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                                        <mat-form-field appearance="outline" floatLabel="always" class="w-full">
                                             <mat-label>Block</mat-label>
                                             <mat-select placeholder="Select Block" formControlName="feature_id">
                                                 <mat-option [value]="null">None</mat-option>
@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                             <mat-divider></mat-divider>
-                            <div class="d-flex align-items-center col-gap-3 action-button p-3">
+                            <div class="flex items-center gap-x-4 action-button p-6">
                                 <button
                                     mat-flat-button
                                     color="primary"
@@ -76,7 +76,7 @@
                     </button>
                 </div>
             </div>
-            <mat-card class="p-0 outline-card responsive-card flex-grow-1">
+            <mat-card class="p-0 outline-card responsive-card grow">
                 <mat-card-content>
                     <div class="table-scroll">
                         <table

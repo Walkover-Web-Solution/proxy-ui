@@ -1,8 +1,8 @@
 <div class="datepicker">
-    <div class="custom-datepicker w-100">
+    <div class="custom-datepicker w-full">
         <button
             mat-stroked-button
-            class="date-input w-100 px-2 remove-mat-button-focus-overlay"
+            class="date-input w-full px-2 remove-mat-button-focus-overlay"
             [matMenuTriggerFor]="customDateRangePicker"
             #trigger="matMenuTrigger"
             (click)="setInputDate()"
@@ -10,13 +10,13 @@
             [class]="cssClass"
             [disableRipple]="true"
         >
-            <span class="rounded-4 position-absolute outline-position"></span>
+            <span class="rounded-4 absolute outline-position"></span>
             <!-- <span
-                class="rounded-4 position-absolute hide-border"
+                class="rounded-4 absolute hide-border"
                 [style.width]="flatLabelWidth.offsetWidth + 'px'"
             ></span> -->
             <span class="float-label text-dark" #flatLabelWidth>{{ placeholder }}</span>
-            <div class="d-flex justify-content-start align-items-center">
+            <div class="flex justify-start items-center">
                 <mat-icon class="today">date_range</mat-icon>
                 <span class="falex-grow-1">{{ selectedDateValue }}</span>
             </div>
@@ -27,7 +27,7 @@
                     <mat-list role="list" class="drp-range-list">
                         <button
                             mat-button
-                            class="px-3 btn-hide"
+                            class="px-6 btn-hide"
                             [class.selected]="monthSelected === null && quarterSelected === null"
                             (click)="toggleRangePicker()"
                         >
@@ -35,7 +35,7 @@
                         </button>
                         <button
                             mat-button
-                            class="px-3"
+                            class="px-6"
                             [class.selected]="monthSelected === 'current'"
                             (click)="selectThisMonth()"
                             [disabled]="!customOptionActive"
@@ -44,7 +44,7 @@
                         </button>
                         <button
                             mat-button
-                            class="px-3"
+                            class="px-6"
                             [class.selected]="monthSelected === 'last'"
                             (click)="selectLastMonth()"
                             [disabled]="!customOptionActive"
@@ -53,7 +53,7 @@
                         </button>
                         <button
                             mat-button
-                            class="px-3"
+                            class="px-6"
                             [class.selected]="quarterSelected === 'current'"
                             (click)="selectThisQuarter()"
                             [disabled]="!customOptionActive"
@@ -62,7 +62,7 @@
                         </button>
                         <button
                             mat-button
-                            class="px-3"
+                            class="px-6"
                             [class.selected]="quarterSelected === 'last'"
                             (click)="selectLastQuarter()"
                             [disabled]="!customOptionActive"
@@ -125,7 +125,7 @@
                         <button mat-stroked-button class="mw-auto px-2 btn-hide" (click)="toggleRangePicker()">
                             <mat-icon class="mat-icon-16">arrow_back</mat-icon> Back
                         </button>
-                        <div class="d-flex col-gap-3">
+                        <div class="flex gap-x-4">
                             <button mat-button (click)="closeDialog()">Cancel</button>
                             <button mat-flat-button class="flat-default" (click)="resetDate()">Reset</button>
                             <button

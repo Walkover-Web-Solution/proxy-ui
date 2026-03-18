@@ -1,6 +1,7 @@
 @use 'intl-tel-input/build/css/intlTelInput.css';
 @use '../../../intl' as *;
 @use '../../../otp-global' as *;
+@use '../../../shadow-dom-theme';
 
 .container {
     width: 100%;

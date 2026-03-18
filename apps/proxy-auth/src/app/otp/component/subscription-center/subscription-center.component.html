@@ -8,11 +8,11 @@
         </svg>
     </button>
 
-    <div class="subscription-plans-container d-flex flex-column align-items-center justify-content-center">
-        <div class="plans-grid d-flex flex-row gap-4 justify-content-start align-items-stretch w-100 py-3">
+    <div class="subscription-plans-container flex flex-col items-center justify-center">
+        <div class="plans-grid flex flex-row gap-6 justify-start items-stretch w-full py-6">
             <div
                 *ngFor="let plan of subscriptionPlans; let i = index"
-                class="plan-card d-flex flex-column justify-content-between position-relative"
+                class="plan-card flex flex-col justify-between relative"
                 [class.popular]="plan.isPopular"
                 [class.selected]="plan.isSelected"
                 [class.highlighted]="plan.isPopular"
@@ -24,8 +24,8 @@
                     <h1 class="plan-title mt-0">{{ plan.title }}</h1>
 
                     <!-- Plan Price -->
-                    <div class="plan-price mb-3">
-                        <div class="price-container d-block mb-3">
+                    <div class="plan-price mb-6">
+                        <div class="price-container block mb-6">
                             <span class="price-number">{{ plan.priceValue }}</span>
                             <span class="price-currency">{{ plan.currency }}</span>
                         </div>
@@ -44,11 +44,11 @@
                     </button>
 
                     <!-- Hidden Button State -->
-                    <div *ngIf="plan.subscribeButtonHidden" class="plan-button-hidden w-100 text-center">
+                    <div *ngIf="plan.subscribeButtonHidden" class="plan-button-hidden w-full text-center">
                         {{ plan.buttonText }}
                     </div>
 
-                    <div class="divider w-100 my-3"></div>
+                    <div class="divider w-full my-6"></div>
                 </div>
 
                 <!-- Included Resources -->
@@ -68,11 +68,11 @@
                     class="mb-2 text-left"
                 >
                     <h4 class="section-title text-left">Features</h4>
-                    <ul class="plan-features gap-4 m-0 p-0 text-left">
+                    <ul class="plan-features gap-6 m-0 p-0 text-left">
                         <!-- Included Features -->
                         <li
                             *ngFor="let feature of plan.features"
-                            class="feature-item included d-flex align-items-center position-relative p-0 gap-2 m-0"
+                            class="feature-item included flex items-center relative p-0 gap-2 m-0"
                         >
                             <span class="feature-icon included">
                                 <svg
@@ -90,7 +90,7 @@
                         <!-- Not Included Features -->
                         <li
                             *ngFor="let feature of plan.notIncludedFeatures"
-                            class="feature-item not-included d-flex align-items-center position-relative p-0 gap-2"
+                            class="feature-item not-included flex items-center relative p-0 gap-2"
                         >
                             <span class="feature-icon not-included">
                                 <svg
@@ -111,12 +111,12 @@
                 </div>
 
                 <!-- Extra Features Section -->
-                <div *ngIf="plan.extraFeatures && plan.extraFeatures.length > 0" class="mb-4 text-left">
+                <div *ngIf="plan.extraFeatures && plan.extraFeatures.length > 0" class="mb-6 text-left">
                     <h4 class="section-title text-left">Extra</h4>
-                    <ul class="plan-features gap-4 m-0 p-0 text-left">
+                    <ul class="plan-features gap-6 m-0 p-0 text-left">
                         <li
                             *ngFor="let extraFeature of plan.extraFeatures"
-                            class="feature-item extra d-flex align-items-center position-relative p-0 gap-2 m-0"
+                            class="feature-item extra flex items-center relative p-0 gap-2 m-0"
                         >
                             <span class="feature-icon extra">
                                 <svg

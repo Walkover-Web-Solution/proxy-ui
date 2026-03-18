@@ -1,6 +1,6 @@
 <div class="container" [class.dark-theme]="theme === 'dark'" [class.light-theme]="theme !== 'dark'">
     <!-- ── USER DETAILS CARD ── -->
-    <div class="profile-card mb-4">
+    <div class="profile-card mb-6">
         <div class="card-header">
             <div class="card-title-group">
                 <div class="card-icon blue">
@@ -202,7 +202,7 @@
             <span class="org-count-badge">{{ (userDetails$ | async)?.c_companies?.length || 0 }} total</span>
         </div>
 
-        <table mat-table [dataSource]="(userDetails$ | async)?.c_companies" class="org-table w-100">
+        <table mat-table [dataSource]="(userDetails$ | async)?.c_companies" class="org-table w-full">
             <ng-container matColumnDef="companyName">
                 <th mat-header-cell *matHeaderCellDef>Organization</th>
                 <td mat-cell *matCellDef="let element">

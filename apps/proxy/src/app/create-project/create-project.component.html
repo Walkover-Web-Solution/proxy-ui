@@ -1,8 +1,8 @@
-<div class="app-content d-flex justify-content-center project">
-    <div class="w-75 border rounded-8 bg-gray" labelPosition="bottom">
+<div class="app-content flex justify-center project">
+    <div class="w-3/4 border rounded-8 bg-gray" labelPosition="bottom">
         <div
             *ngIf="currentstep === 1"
-            class="d-flex flex-column h-100 pl-4 align-items-start"
+            class="flex flex-col h-full pl-6 items-start"
             [formGroup]="primaryDetailsForm"
             proxyMarkAllAsTouched
             [buttonRef]="createProjectBtn"
@@ -19,7 +19,7 @@
 
         <div
             *ngIf="currentstep == 2"
-            class="d-flex flex-column h-100 pl-4 align-items-start"
+            class="flex flex-col h-full pl-6 items-start"
             [formGroup]="gatewayUrlDetailsForm"
             proxyMarkAllAsTouched
             [buttonRef]="gatewayUrlBtn"
@@ -41,7 +41,7 @@
 
         <div
             *ngIf="currentstep == 3"
-            class="d-flex flex-column h-100 pl-4 align-items-start"
+            class="flex flex-col h-full pl-6 items-start"
             proxyMarkAllAsTouched
             [formGroup]="gatewayUrlDetailsForm"
             [buttonRef]="submitBtn"
@@ -54,7 +54,7 @@
             </p>
 
             <ng-container *ngTemplateOutlet="desnationUrl"></ng-container>
-            <div class="d-flex align-items-center gap-3">
+            <div class="flex items-center gap-4">
                 <button type="button" mat-flat-button class="flat-default" (click)="changeStep(2)">
                     <mat-icon matPrefix class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                         >navigate_before</mat-icon
@@ -67,7 +67,7 @@
 </div>
 
 <ng-template #createProject>
-    <div class="mb-3">
+    <div class="mb-6">
         <ng-container
             *ngTemplateOutlet="
                 inputField;
@@ -82,7 +82,7 @@
             "
         ></ng-container>
 
-        <mat-form-field appearance="outline" class="w-100">
+        <mat-form-field appearance="outline" class="w-full">
             <mat-select
                 multiple
                 [formControl]="primaryDetailsForm.get('selectedEnvironments')"
@@ -103,7 +103,7 @@
             </mat-error>
         </mat-form-field>
 
-        <div class="d-flex gap-2 mt-3 w-50">
+        <div class="flex gap-2 mt-6 w-1/2">
             <ng-container
                 *ngTemplateOutlet="
                     inputField;
@@ -119,7 +119,7 @@
                 "
             ></ng-container>
 
-            <p class="font-14 white-space-pre">Hits per</p>
+            <p class="font-14 whitespace-pre">Hits per</p>
 
             <ng-container
                 *ngTemplateOutlet="
@@ -141,7 +141,7 @@
     </div>
 </ng-template>
 <ng-template #gateWayUrl>
-    <div class="d-flex" [formGroup]="gatewayUrlDetailsForm">
+    <div class="flex" [formGroup]="gatewayUrlDetailsForm">
         <div class="w-40">
             <h5 class="fw-bold text-secondary mat-body-1">Provide your own</h5>
 
@@ -183,10 +183,10 @@
             </div>
         </div>
 
-        <div class="p-4">
-            <mat-divider [vertical]="true" style="height: 90px" class="mx-3"></mat-divider>
+        <div class="p-6">
+            <mat-divider [vertical]="true" style="height: 90px" class="mx-6"></mat-divider>
             <h5 class="fw-bold text-secondary mat-body-1 ml-1">OR</h5>
-            <mat-divider [vertical]="true" style="height: 90px" class="mx-3"></mat-divider>
+            <mat-divider [vertical]="true" style="height: 90px" class="mx-6"></mat-divider>
         </div>
         <div class="w-40">
             <h5 class="fw-bold text-secondary mat-body-1">Use Ours</h5>
@@ -196,7 +196,7 @@
                 <a class="link" target="_blank" [href]="slug.url">{{ slug.url }} </a>
                 <proxy-copy-button matSuffix [copyData]="slug.url" tooltip="Copy URL"></proxy-copy-button>
             </div>
-            <div class="font-12 mt-3">
+            <div class="font-12 mt-6">
                 <span class="fw-bolder">Note: </span>
                 please copy the provided Gateway URL and utilize it within your user interface to invoke the API by
                 specifying the desired endpoint for seamless request forwarding to the Proxy Server
@@ -205,9 +205,9 @@
     </div>
 </ng-template>
 <ng-template #desnationUrl>
-    <div class="my-3 w-40">
-        <form class="d-flex" *ngIf="showEndpoint">
-            <mat-form-field appearance="outline" class="w-100">
+    <div class="my-6 w-40">
+        <form class="flex" *ngIf="showEndpoint">
+            <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Endpoint</mat-label>
                 <input matInput [formControl]="destinationUrlForm.get('endpoint')" required />
                 <mat-icon
@@ -222,14 +222,14 @@
             </mat-form-field>
         </form>
 
-        <div class="d-flex" *ngFor="let control of forwardUrls.controls; let i = index">
-            <div class="width-md-200 d-flex forward-url">
+        <div class="flex" *ngFor="let control of forwardUrls.controls; let i = index">
+            <div class="width-md-200 flex forward-url">
                 <h5 class="m-0 font-14 fw-bold">{{ environments_with_slug[i]?.name }}</h5>
                 <mat-icon matSuffix>keyboard_arrow_right</mat-icon>
                 <p class="m-0 font-14 fw-bold">forward to</p>
             </div>
             <ng-container
-                class="w-100"
+                class="w-full"
                 *ngTemplateOutlet="
                     inputField;
                     context: {
@@ -246,7 +246,7 @@
 </ng-template>
 
 <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
-    <mat-form-field appearance="outline" class="w-100">
+    <mat-form-field appearance="outline" class="w-full">
         <mat-label
             >{{ fieldConfig?.label }} <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span>
         </mat-label>

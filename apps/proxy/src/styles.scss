@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 /* You can add global styles to this file, and also import other style files */
+@use 'tailwindcss';
 
 /* Plus imports for other components in your app.*/
 @use 'assets/scss/base/fonts';
@@ -9,15 +10,6 @@
 
 /* Reset*/
 @use 'assets/scss/base/reset';
-
-/* Layout*/
-@use 'assets/scss/layout/display';
-@use 'assets/scss/layout/flex';
-@use 'assets/scss/layout/sizing';
-@use 'assets/scss/layout/spacing';
-@use 'assets/scss/layout/grid';
-@use 'assets/scss/layout/text';
-@use 'assets/scss/layout/positions';
 
 /* Component*/
 @use 'assets/scss/component/modal';
