@@ -1,6 +1,6 @@
-<div class="audio-controls d-flex align-items-center justify-content-center">
+<div class="audio-controls flex items-center justify-center">
     <a
-        class="mr-1 d-flex text-primary"
+        class="mr-1 flex text-primary"
         href="javascript:void(0)"
         *ngIf="showPlay && !isLoading && !isPlaying"
         (click)="playAudio()"
@@ -8,14 +8,14 @@
         <i class="material-icons" aria-hidden="true">play_arrow</i></a
     >
     <a
-        class="mr-1 d-flex text-primary"
+        class="mr-1 flex text-primary"
         href="javascript:void(0)"
         *ngIf="showPlay && !isLoading && isPlaying"
         (click)="pauseAudio()"
     >
         <i class="material-icons" aria-hidden="true">pause</i></a
     >
-    <a class="mr-1 d-flex text-dark" href="javascript:void(0)" *ngIf="isLoading">
+    <a class="mr-1 flex text-dark" href="javascript:void(0)" *ngIf="isLoading">
         <mat-spinner diameter="24"></mat-spinner>
     </a>
     <audio (timeupdate)="updateDuration()" #audio></audio>

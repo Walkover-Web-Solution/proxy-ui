@@ -1,8 +1,8 @@
 <p-toast position="bottom-left" [baseZIndex]="5000" (onClose)="onReject($event)">
     <ng-template let-message pTemplate="message">
-        <div class="d-flex w-100">
+        <div class="flex w-full">
             <p
-                class="flex-grow-1 mat-body-2 fw-bolder m-0 d-flex justify-content-between"
+                class="grow mat-body-2 fw-bolder m-0 flex justify-between"
                 style="line-height: 28px; word-break: break-word"
             >
                 {{ message.detail?.customAction ? message.detail?.message : message.detail }}

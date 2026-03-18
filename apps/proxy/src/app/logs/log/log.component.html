@@ -1,8 +1,8 @@
-<div class="app-content d-flex flex-column">
+<div class="app-content flex flex-col">
     <proxy-loader *ngIf="isLoading$ | async"></proxy-loader>
-    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-3">
-        <div class="d-flex flex-wrap align-items-start flex-grow-1 gap-3">
-            <form [formGroup]="engProjectFormGroup" class="d-flex flex-wrap gap-3">
+    <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+        <div class="flex flex-wrap items-start grow gap-4">
+            <form [formGroup]="engProjectFormGroup" class="flex flex-wrap gap-4">
                 <mat-form-field appearance="outline" class="no-padding w-xs-100">
                     <mat-label>Select Project</mat-label>
                     <input
@@ -85,7 +85,7 @@
                 hint="To search in specific field use <b>field:</b> before anything (field => endpoint,request_body,response,headers)"
             ></proxy-lib-search>
         </div>
-        <div class="d-flex align-items-center justify-content-between gap-3 ml-auto pt-1">
+        <div class="flex items-center justify-between gap-4 ml-auto pt-1">
             <date-range-picker
                 (selectedRangeValueChange)="setDateRange($event)"
                 [(selectedRangeValue)]="selectedRangeValue"
@@ -97,10 +97,10 @@
             </button>
             <mat-menu #emailExportButtonMenu="matMenu" class="filter-menu" xPosition="before">
                 <div (click)="$event.stopPropagation(); (false)">
-                    <div class="pb-0 pt-3 px-3">
+                    <div class="pb-0 pt-6 px-6">
                         <div class="row" [formGroup]="logsFilterForm">
                             <div class="col-lg-12">
-                                <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                                <mat-form-field appearance="outline" floatLabel="always" class="w-full">
                                     <mat-label>Select request type</mat-label>
                                     <mat-select
                                         placeholder="Select request types"
@@ -108,7 +108,7 @@
                                         multiple
                                     >
                                         <mat-checkbox
-                                            class="mat-option full-width-clickable-checkbox w-100"
+                                            class="mat-option full-width-clickable-checkbox w-full"
                                             [disableRipple]="true"
                                             [indeterminate]="
                                                 logsFilterForm.controls.requestType.value.length > 0 &&
@@ -127,7 +127,7 @@
                                         }}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
-                                <mat-form-field appearance="outline" floatLabel="always" class="w-100">
+                                <mat-form-field appearance="outline" floatLabel="always" class="w-full">
                                     <mat-label>Select range type</mat-label>
                                     <mat-select
                                         placeholder="Select range type"
@@ -142,7 +142,7 @@
                             </div>
                             <ng-container *ngIf="logsFilterForm.controls.range.value">
                                 <div class="col-lg-6 pr-2 mb-2">
-                                    <mat-form-field appearance="outline" class="w-100" floatLabel="always">
+                                    <mat-form-field appearance="outline" class="w-full" floatLabel="always">
                                         <mat-label>From</mat-label>
                                         <input
                                             matInput
@@ -168,7 +168,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-lg-6 pl-2">
-                                    <mat-form-field appearance="outline" class="w-100" floatLabel="always">
+                                    <mat-form-field appearance="outline" class="w-full" floatLabel="always">
                                         <mat-label>To</mat-label>
                                         <input
                                             matInput
@@ -194,7 +194,7 @@
                         </div>
                     </div>
                     <mat-divider></mat-divider>
-                    <div class="d-flex align-items-center col-gap-3 action-button p-3">
+                    <div class="flex items-center gap-x-4 action-button p-6">
                         <button
                             mat-flat-button
                             color="primary"
@@ -219,7 +219,7 @@
             </button>
         </div>
     </div>
-    <mat-card class="p-0 outline-card responsive-card flex-grow-1">
+    <mat-card class="p-0 outline-card responsive-card grow">
         <mat-card-content>
             <div class="table-scroll" style="height: calc(100vh - 180px)">
                 <table

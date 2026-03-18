@@ -1,16 +1,12 @@
-<div class="app-content d-flex flex-column">
+<div class="app-content flex flex-col">
     <proxy-loader *ngIf="(isLoading$ | async) || (loadingScript | async)"></proxy-loader>
-    <div
-        class="d-flex justify-content-start gap-1 mb-3"
-        [class.align-items-start]="isEditMode"
-        [class.align-items-center]="!isEditMode"
-    >
+    <div class="flex justify-start gap-1 mb-6" [class.items-start]="isEditMode" [class.items-center]="!isEditMode">
         <button type="button" mat-icon-button color="primary" [routerLink]="['/app', 'features']">
             <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
         </button>
         <ng-container *ngIf="isEditMode">
-            <div class="d-flex align-items-center gap-1">
-                <div *ngIf="nameFieldEditMode" class="d-flex align-items-start gap-1">
+            <div class="flex items-center gap-1">
+                <div *ngIf="nameFieldEditMode" class="flex items-start gap-1">
                     <ng-container
                         *ngTemplateOutlet="
                             inputField;
@@ -42,7 +38,7 @@
     </div>
     <mat-stepper
         #stepper
-        class="rounded-8 border flex-grow-1 mat-stepper-starched"
+        class="rounded-8 border grow mat-stepper-starched"
         labelPosition="bottom"
         [animationDuration]="0"
         [linear]="true"
@@ -56,7 +52,7 @@
             [editable]="!(createUpdateObject$ | async)"
         >
             <ng-template matStepLabel>Select Block</ng-template>
-            <div class="d-flex flex-column h-100">
+            <div class="flex flex-col h-full">
                 <ng-container
                     *ngTemplateOutlet="
                         selectFeature;
@@ -66,7 +62,7 @@
                         }
                     "
                 ></ng-container>
-                <div class="d-flex align-items-center justify-content-end">
+                <div class="flex items-center justify-end">
                     <button type="button" mat-flat-button color="primary" matStepperNext>
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">
                             navigate_next
@@ -81,9 +77,9 @@
             [editable]="!(createUpdateObject$ | async)"
         >
             <ng-template matStepLabel>Block Name</ng-template>
-            <div #blockNameStepContent class="d-flex flex-column h-100">
+            <div #blockNameStepContent class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="blockCreationStepOne; context: { nameControl }"></ng-container>
-                <div class="d-flex align-items-center justify-content-end">
+                <div class="flex items-center justify-end">
                     <!-- <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
@@ -106,9 +102,9 @@
             [editable]="!(createUpdateObject$ | async)"
         >
             <ng-template matStepLabel>Configure Method</ng-template>
-            <div class="d-flex flex-column h-100">
+            <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="createBlockConfigureMethodTemplate"></ng-container>
-                <div class="d-flex align-items-center justify-content-between">
+                <div class="flex items-center justify-between">
                     <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
@@ -128,9 +124,9 @@
             [completed]="createUpdateObject$ | async"
         >
             <ng-template matStepLabel>Authorization Setup</ng-template>
-            <div #authorizationStepContent class="d-flex flex-column h-100">
+            <div #authorizationStepContent class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
-                <div class="d-flex align-items-center justify-content-between">
+                <div class="flex items-center justify-between">
                     <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
@@ -155,9 +151,9 @@
 
         <mat-step *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1">
             <ng-template matStepLabel>Branding</ng-template>
-            <div class="d-flex flex-column h-100">
+            <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="brandingStepContent"></ng-container>
-                <div class="d-flex align-items-center justify-content-between">
+                <div class="flex items-center justify-between">
                     <!-- <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >
@@ -178,9 +174,9 @@
         <ng-container *ngIf="featureForm.get('primaryDetails.feature_id')?.value !== 1">
             <mat-step [editable]="!(createUpdateObject$ | async)">
                 <ng-template matStepLabel>Integration Choice</ng-template>
-                <div class="d-flex flex-column justify-content-between h-100">
+                <div class="flex flex-col justify-between h-full">
                     <ng-container *ngTemplateOutlet="integrationChoice"></ng-container>
-                    <div class="d-flex align-items-center justify-content-between">
+                    <div class="flex items-center justify-between">
                         <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                             <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                                 >navigate_before</mat-icon
@@ -197,11 +193,11 @@
 
             <mat-step [editable]="!(createUpdateObject$ | async)" [completed]="isOrganizationDetailsValid">
                 <ng-template matStepLabel>Organization Details</ng-template>
-                <div class="d-flex flex-column justify-content-between h-100">
+                <div class="flex flex-col justify-between h-full">
                     <ng-container *ngTemplateOutlet="organizationDetails"></ng-container>
-                    <mat-divider class="w-100 mb-4"></mat-divider>
+                    <mat-divider class="w-full mb-6"></mat-divider>
 
-                    <div class="d-flex align-items-center justify-content-between">
+                    <div class="flex items-center justify-between">
                         <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
                             <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                                 >navigate_before</mat-icon
@@ -223,10 +219,10 @@
 
             <mat-step [editable]="!(createUpdateObject$ | async)">
                 <ng-template matStepLabel>Billable Metrics / Items</ng-template>
-                <div class="d-flex flex-column justify-content-between gap-3 h-100">
+                <div class="flex flex-col justify-between gap-4 h-full">
                     <ng-container *ngTemplateOutlet="billableMetrics"></ng-container>
 
-                    <div class="d-flex align-items-end justify-content-end">
+                    <div class="flex items-end justify-end">
                         <button
                             type="button"
                             mat-flat-button
@@ -243,10 +239,10 @@
             </mat-step>
             <mat-step [editable]="!(createUpdateObject$ | async)">
                 <ng-template matStepLabel>Payment Details</ng-template>
-                <div class="d-flex flex-column justify-content-between gap-3 h-100">
+                <div class="flex flex-col justify-between gap-4 h-full">
                     <ng-container *ngTemplateOutlet="paymentDetails"></ng-container>
 
-                    <div class="d-flex align-items-end justify-content-end">
+                    <div class="flex items-end justify-end">
                         <button
                             type="button"
                             mat-flat-button
@@ -264,9 +260,9 @@
 
             <mat-step [editable]="!(createUpdateObject$ | async)" [completed]="isCreatePlansFormControlsValid">
                 <ng-template matStepLabel>Create Plan</ng-template>
-                <div class="d-flex flex-column h-100">
+                <div class="flex flex-col h-full">
                     <ng-container *ngTemplateOutlet="createPlan"></ng-container>
-                    <div class="d-flex align-items-end justify-content-end">
+                    <div class="flex items-end justify-end">
                         <button type="button" mat-flat-button color="primary" (click)="createPlanAndGenerateSnippet()">
                             Create Plan & Generate Snippet
                         </button>
@@ -276,12 +272,12 @@
 
             <mat-step [completed]="(createPlan$ | async) && (planData$ | async)">
                 <ng-template matStepLabel>Plans Overview & Subscription Snippet</ng-template>
-                <div class="d-flex flex-column h-100">
+                <div class="flex flex-col h-full">
                     <form [formGroup]="featureForm.get('plansOverview')">
                         <ng-container *ngTemplateOutlet="plansOverview"></ng-container>
                     </form>
                     <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="flex justify-between items-center mt-6">
                         <ng-container *ngTemplateOutlet="preview"></ng-container>
                         <button
                             type="button"
@@ -301,9 +297,9 @@
 
         <mat-step *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1">
             <ng-template matStepLabel>Design & code</ng-template>
-            <div class="d-flex flex-column h-100">
+            <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
-                <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="flex justify-between items-center mt-6">
                     <ng-container *ngTemplateOutlet="preview"></ng-container>
                     <button
                         type="button"
@@ -320,10 +316,10 @@
             </div>
         </mat-step>
     </mat-stepper>
-    <mat-card class="outline-card p-0 flex-grow-1" *ngIf="isEditMode">
-        <mat-tab-group animationDuration="0ms" class="h-100 block-feature-tabs">
+    <mat-card class="outline-card p-0 grow" *ngIf="isEditMode">
+        <mat-tab-group animationDuration="0ms" class="h-full block-feature-tabs">
             <mat-tab label="Service">
-                <div class="d-flex flex-column h-100 p-4">
+                <div class="flex flex-col h-full p-6">
                     <ng-container *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1">
                         <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
                     </ng-container>
@@ -332,7 +328,7 @@
                     </ng-container>
                     <mat-divider></mat-divider>
                     <div
-                        class="d-flex align-items-center justify-content-start mt-3"
+                        class="flex items-center justify-start mt-6"
                         *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
                     >
                         <button type="button" mat-flat-button color="primary" (click)="updateFeature('service')">
@@ -342,9 +338,9 @@
                 </div>
             </mat-tab>
             <mat-tab label="Branding">
-                <div class="d-flex flex-column h-100 p-4 justify-content-between">
+                <div class="flex flex-col h-full p-6 justify-between">
                     <ng-container *ngTemplateOutlet="brandingStepContent"></ng-container>
-                    <div class="d-flex align-items-center justify-content-start mt-3">
+                    <div class="flex items-center justify-start mt-6">
                         <button type="button" mat-flat-button color="primary" (click)="updateFeature('branding')">
                             Update
                         </button>
@@ -352,10 +348,10 @@
                 </div>
             </mat-tab>
             <mat-tab label="Setting">
-                <div class="d-flex flex-column h-100 p-4">
+                <div class="flex flex-col h-full p-6">
                     <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
                     <mat-divider></mat-divider>
-                    <div class="d-flex align-items-center justify-content-start mt-3">
+                    <div class="flex items-center justify-start mt-6">
                         <button type="button" mat-flat-button color="primary" (click)="updateFeature('authorization')">
                             Update
                         </button>
@@ -363,18 +359,18 @@
                 </div>
             </mat-tab>
             <mat-tab label="Design & code">
-                <div class="p-3">
+                <div class="p-6">
                     <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
-                    <ng-container *ngTemplateOutlet="preview" class="mt-3"></ng-container>
+                    <ng-container *ngTemplateOutlet="preview" class="mt-6"></ng-container>
                 </div>
             </mat-tab>
 
             <mat-tab label="Webhook">
                 <mat-tab-group class="nested-tabs">
                     <mat-tab label="Configurations">
-                        <div class="d-flex flex-column h-100 p-4">
+                        <div class="flex flex-col h-full p-6">
                             <ng-container *ngTemplateOutlet="webhook"></ng-container>
-                            <div class="d-flex align-items-center justify-content-start mt-3">
+                            <div class="flex items-center justify-start mt-6">
                                 <button
                                     type="button"
                                     mat-flat-button
@@ -400,7 +396,7 @@
                                             </mat-panel-title>
                                         </mat-expansion-panel-header>
                                         <div class="sample-response-container">
-                                            <div class="d-flex align-items-center justify-content-between">
+                                            <div class="flex items-center justify-between">
                                                 <p class="response-label">Sample Response:</p>
                                                 <button
                                                     mat-flat-button
@@ -417,7 +413,7 @@
                                 </mat-accordion>
                             </ng-container>
                             <ng-template #noEvents>
-                                <div class="d-flex flex-column align-items-center justify-content-center h-100 py-5">
+                                <div class="flex flex-col items-center justify-center h-full py-12">
                                     <mat-icon
                                         class="text-secondary mb-2"
                                         style="font-size: 48px; width: 48px; height: 48px"
@@ -434,11 +430,11 @@
     </mat-card>
 </div>
 <ng-template #selectFeature let-featureType="featureType" let-featureTypeControl="featureTypeControl">
-    <div class="flex-grow-1">
+    <div class="grow">
         <div class="features-layout">
             <div
                 *ngFor="let type of featureType"
-                class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center feature-card bg-light-grey cursor-pointer"
+                class="border rounded-4 p-6 flex flex-col items-center justify-center feature-card bg-light-grey cursor-pointer"
                 (click)="radioInput.click()"
                 [class.active]="type.id === featureTypeControl.value"
             >
@@ -457,9 +453,9 @@
     </div>
 </ng-template>
 <ng-template #blockCreationStepOne let-nameControl="nameControl">
-    <div class="my-3 flex-grow-1">
+    <div class="my-6 grow">
         <p class="mat-body-2 text-secondary fw-bold">Give a name of your Block</p>
-        <form class="w-50 mb-4">
+        <form class="w-1/2 mb-6">
             <ng-container
                 *ngTemplateOutlet="
                     inputField;
@@ -586,8 +582,8 @@
     </div>
 </ng-template>
 <ng-template #configureMethodTemplate let-selectedIndex="selectedIndex">
-    <div class="d-flex gap-3 my-3 flex-grow-1" style="min-height: 400px">
-        <div class="d-flex flex-column gap-1 border-right pr-3 service-list">
+    <div class="flex gap-4 my-6 grow" style="min-height: 400px">
+        <div class="flex flex-col gap-1 border-right pr-6 service-list">
             <p class="mat-body-2 fw-bolder mt-0">Services</p>
             <mat-list role="list" class="default-list pt-0">
                 <mat-list-item
@@ -597,7 +593,7 @@
                     [class.active]="selectedServiceIndex === i"
                     (click)="selectedServiceIndex = i"
                 >
-                    <div class="d-flex align-items-center flex-grow-1" style="color: var(--color-dark-primary)">
+                    <div class="flex items-center grow" style="color: var(--color-dark-primary)">
                         {{ service.name }}
                         <ng-container *ngIf="featureForm.get('serviceDetails')?.at(i) as serviceForm">
                             <mat-icon
@@ -627,8 +623,8 @@
 </ng-template>
 
 <ng-template #configureMethodFormContent let-serviceForm="serviceForm">
-    <div class="auth-credentials px-3 w-100">
-        <div class="d-flex flex-column">
+    <div class="auth-credentials px-6 w-full">
+        <div class="flex flex-col">
             <ng-container *ngIf="(selectedMethod | async)?.method_services as methodServices">
                 <form
                     [formGroup]="formToUse"
@@ -662,7 +658,7 @@
                             *ngFor="let controlKeyValue of formToUse.controls.configurations.controls | keyvalue"
                         >
                             <div class="row">
-                                <div class="col-md-12 w-100">
+                                <div class="col-md-12 w-full">
                                     <ng-container
                                         *ngTemplateOutlet="
                                             inputField;
@@ -678,7 +674,7 @@
                     </ng-container>
                     <mat-form-field
                         appearance="outline"
-                        class="w-100"
+                        class="w-full"
                         *ngIf="(featureDetails$ | async)?.callback_url as callbackUrl"
                     >
                         <mat-label>Callback URL</mat-label>
@@ -687,7 +683,7 @@
                     </mat-form-field>
                     <mat-slide-toggle
                         *ngIf="isEditMode"
-                        class="w-100 mat-body-2 mb-4"
+                        class="w-full mat-body-2 mb-6"
                         [formControl]="formToUse.controls.is_enable"
                     >
                         Enable Service
@@ -710,7 +706,7 @@
 </ng-template>
 
 <ng-template #configureMethodDialogTemplate>
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="flex justify-between items-center">
         <h2 mat-dialog-title class="m-0">{{ getSelectedServiceName() }}</h2>
         <button mat-icon-button mat-dialog-close>
             <mat-icon>close</mat-icon>
@@ -728,14 +724,14 @@
 </ng-template>
 
 <ng-template #createBlockConfigureMethodTemplate>
-    <div class="d-flex flex-column gap-3 my-3 flex-grow-1" *ngIf="selectedMethod | async as method">
+    <div class="flex flex-col gap-4 my-6 grow" *ngIf="selectedMethod | async as method">
         <table
             mat-table
             [dataSource]="configureMethodsTableData"
-            class="default-table responsive-table w-100 configure-methods-table"
+            class="default-table responsive-table w-full configure-methods-table"
         >
             <ng-container matColumnDef="method">
-                <th mat-header-cell *matHeaderCellDef class="w-75">Method</th>
+                <th mat-header-cell *matHeaderCellDef class="w-3/4">Method</th>
                 <td mat-cell *matCellDef="let row">{{ row.name }}</td>
             </ng-container>
             <ng-container matColumnDef="toggle">
@@ -763,7 +759,7 @@
 
             <tr class="mat-row" *matNoDataRow>
                 <td class="mat-cell" [attr.colspan]="3">
-                    <div class="text-center w-100 mat-body-2 text-secondary py-3">No methods available</div>
+                    <div class="text-center w-full mat-body-2 text-secondary py-6">No methods available</div>
                 </td>
             </tr>
         </table>
@@ -777,7 +773,7 @@
 
 <ng-template #previewAuthorization let-authorizationDetails="authorizationDetails" let-previewVersion="previewVersion">
     <div
-        class="auth-credentials px-3 width-md-350 w-md-50 border rounded-8 ml-3"
+        class="auth-credentials px-6 width-md-350 w-md-50 border rounded-8 ml-6"
         [class.bg-dark]="featureForm.get('brandingDetails.theme')?.value === 'dark'"
         style="max-height: 650px"
         [style.--branding-primary-color]="getEffectivePrimaryColor()"
@@ -788,9 +784,9 @@
         "
         [style.--branding-border-radius]="getBrandingBorderRadiusValue()"
     >
-        <div class="d-flex flex-column gap-3 py-4">
+        <div class="flex flex-col gap-4 py-6">
             <ng-container *ngIf="featureForm.get('brandingDetails.version')?.value === 'v2'">
-                <div class="d-flex flex-column align-items-center gap-2">
+                <div class="flex flex-col items-center gap-2">
                     <img
                         *ngIf="
                             (logoInputMode === 'file' && logoUrl) ||
@@ -857,7 +853,7 @@
                 featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
                 featureForm.get('brandingDetails.version')?.value === 'v2'
             "
-            class="d-flex flex-column align-items-center gap-1 w-100"
+            class="flex flex-col items-center gap-1 w-full"
             [class.dark-theme-login]="featureForm.get('brandingDetails.theme')?.value === 'dark'"
             [class.preview-input-field]="featureForm.get('brandingDetails.theme')?.value === 'dark'"
         >
@@ -893,7 +889,7 @@
                     featureForm.get('serviceDetails')?.at(1)?.controls?.is_enable?.value ||
                     featureForm.get('serviceDetails')?.at(2)?.controls?.is_enable?.value)
             "
-            class="d-flex align-items-center gap-2"
+            class="flex items-center gap-2"
             style="width: 100%"
         >
             <hr style="flex: 1; border: none; border-top: 1px solid var(--color-common-border); margin: 0" />
@@ -909,7 +905,7 @@
         </div>
     </ng-template>
     <ng-template #socialLoginIconsSection>
-        <div class="d-flex align-items-center justify-content-center gap-4">
+        <div class="flex items-center justify-center gap-6">
             <div
                 *ngIf="featureForm.get('serviceDetails')?.at(0)?.controls?.is_enable?.value"
                 class="social-login-icon-box"
@@ -943,7 +939,7 @@
 
     <!-- Buttons Template -->
     <ng-template #buttonsSection>
-        <div class="d-flex flex-column align-items-center gap-4 w-100">
+        <div class="flex flex-col items-center gap-6 w-full">
             <button
                 *ngIf="featureForm.get('serviceDetails')?.at(0)?.controls?.is_enable?.value"
                 type="button"
@@ -1030,9 +1026,9 @@
 </ng-template>
 
 <ng-template #authorizationSetup>
-    <div class="d-flex gap-3">
-        <div class="d-flex flex-column gap-3 w-75 code-snippet-view">
-            <div class="d-flex flex-column w-50">
+    <div class="flex gap-4">
+        <div class="flex flex-col gap-4 w-3/4 code-snippet-view">
+            <div class="flex flex-col w-1/2">
                 <ng-container
                     *ngTemplateOutlet="
                         inputField;
@@ -1078,7 +1074,7 @@
                 ></ng-container>
 
                 <ng-container *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1">
-                    <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="flex items-center gap-2 mb-6">
                         <span class="mat-body-2">Block new user sign-ups: </span>
                         <mat-slide-toggle
                             [formControl]="featureForm.get('authorizationDetails.blockNewUserSignUps')"
@@ -1089,16 +1085,16 @@
                 </ng-container>
             </div>
 
-            <div class="d-flex flex-column w-75">
+            <div class="flex flex-col w-3/4">
                 <div
-                    class="overflow-auto code-snippet-view position-relative rounded-4"
+                    class="overflow-auto code-snippet-view relative rounded-4"
                     *ngIf="
                         ((isEditMode ? featureDetails$ : selectedMethod) | async)?.authorization_format?.format as code
                     "
                 >
                     <markdown [data]="code | json | language: 'javascript'"> </markdown>
                     <proxy-copy-button
-                        class="position-absolute"
+                        class="absolute"
                         style="top: 16px; right: 8px"
                         [copyData]="code | json"
                         tooltip="Copy JSON"
@@ -1117,10 +1113,10 @@
 </ng-template>
 
 <ng-template #designAndCode>
-    <div class="overflow-auto code-snippet-view position-relative rounded-4">
+    <div class="overflow-auto code-snippet-view relative rounded-4">
         <markdown [data]="proxyAuthScript | language: 'javascript'"> </markdown>
         <proxy-copy-button
-            class="position-absolute"
+            class="absolute"
             style="top: 16px; right: 8px"
             [copyData]="proxyAuthScript"
             tooltip="Copy Script"
@@ -1131,10 +1127,10 @@
         <strong>Note: </strong>The social login button will be displayed in a dialog/modal by default.<br />
         To integrate this button into your website or application UI, please add a div with the ID like this -
     </div>
-    <div class="overflow-auto code-snippet-view position-relative rounded-4">
+    <div class="overflow-auto code-snippet-view relative rounded-4">
         <markdown [data]="demoDiv$ | async | language: 'html'"> </markdown>
         <proxy-copy-button
-            class="position-absolute"
+            class="absolute"
             style="top: 16px; right: 8px"
             [copyData]="demoDiv$ | async"
             tooltip="Copy Code"
@@ -1144,17 +1140,14 @@
 </ng-template>
 
 <ng-template #preview>
-    <div
-        class="d-flex align-items-center justify-content-start"
-        *ngIf="(createUpdateObject$ | async) || (featureDetails$ | async)"
-    >
+    <div class="flex items-center justify-start" *ngIf="(createUpdateObject$ | async) || (featureDetails$ | async)">
         <button type="button" mat-flat-button color="primary" (click)="previewFeature()">Preview</button>
     </div>
 </ng-template>
 
 <ng-template #webhook>
-    <div class="d-flex flex-column gap-3 my-3 flex-grow-1">
-        <div class="d-flex flex-column w-50">
+    <div class="flex flex-col gap-4 my-6 grow">
+        <div class="flex flex-col w-1/2">
             <p class="mat-body-2 fw-bolder mt-0">Webhook URL</p>
             <ng-container
                 *ngTemplateOutlet="
@@ -1185,7 +1178,7 @@
 
             <p class="mat-body-2 fw-bolder mt-0">Trigger Events</p>
             <ng-container>
-                <mat-form-field appearance="outline" class="w-100 mb-0">
+                <mat-form-field appearance="outline" class="w-full mb-0">
                     <mat-label>Select Trigger Events</mat-label>
                     <mat-select [formControl]="featureForm.get('webhookDetails.triggerEvents')" multiple>
                         <mat-option *ngFor="let option of webhookEventsData" [value]="option.value">
@@ -1206,7 +1199,7 @@
 >
     <mat-form-field
         appearance="outline"
-        class="w-100 mb-0"
+        class="w-full mb-0"
         [ngSwitch]="fieldConfig?.type"
         [class.full-width-chip]="isMatchChipField"
         [class.no-padding]="fieldConfig?.type === featureFieldType.ChipList"
@@ -1350,7 +1343,7 @@
                 </button>
             </ng-container>
         </div>
-        <mat-hint *ngIf="fieldConfig?.hint" class="d-flex align-items-center justify-content-between gap-1"
+        <mat-hint *ngIf="fieldConfig?.hint" class="flex items-center justify-between gap-1"
             >{{ fieldConfig?.hint }}
             <ng-container *ngIf="fieldConfig?.hintInfo">
                 <mat-icon
@@ -1405,13 +1398,13 @@
 
 <!-- New template definitions for conditional steps -->
 <ng-template #integrationChoice>
-    <div class="d-flex flex-column h-100">
-        <h5 class="mat-h5 mb-3">Integration Choice</h5>
-        <div class="flex-grow-1">
+    <div class="flex flex-col h-full">
+        <h5 class="mat-h5 mb-6">Integration Choice</h5>
+        <div class="grow">
             <div class="features-layout">
                 <div
                     *ngFor="let service of (selectedMethod | async)?.method_services; let i = index"
-                    class="border rounded-4 p-3 d-flex flex-column align-items-center justify-content-center feature-card bg-light-grey cursor-pointer"
+                    class="border rounded-4 p-6 flex flex-col items-center justify-center feature-card bg-light-grey cursor-pointer"
                     [class.active]="selectedServiceIndex === i"
                     (click)="selectedServiceIndex = i"
                 >
@@ -1441,11 +1434,11 @@
 </ng-template>
 
 <ng-template #organizationDetails>
-    <div class="d-flex flex-column h-100 w-75">
-        <h5 class="mat-h5 mb-3">Organization Details</h5>
+    <div class="flex flex-col h-full w-3/4">
+        <h5 class="mat-h5 mb-6">Organization Details</h5>
         <p class="mat-body-2 text-secondary"><strong>Note:</strong> These details will be shown on the invoice..</p>
-        <div class="auth-credentials px-3" class="width-md-700 w-md-100">
-            <div class="d-flex flex-column">
+        <div class="auth-credentials px-6" class="width-md-700 w-md-100">
+            <div class="flex flex-col">
                 <ng-container *ngIf="(selectedMethod | async)?.method_services as methodServices">
                     <form
                         class="organization-details-form"
@@ -1462,7 +1455,7 @@
                                 "
                             >
                                 <div class="row">
-                                    <div class="col-md-12 w-100">
+                                    <div class="col-md-12 w-full">
                                         <ng-container
                                             *ngTemplateOutlet="
                                                 inputField;
@@ -1478,7 +1471,7 @@
                         </ng-container>
                         <mat-form-field
                             appearance="outline"
-                            class="w-100"
+                            class="w-full"
                             *ngIf="(featureDetails$ | async)?.callback_url as callbackUrl"
                         >
                             <mat-label>Callback URL</mat-label>
@@ -1491,7 +1484,7 @@
                         </mat-form-field>
                         <mat-slide-toggle
                             *ngIf="isEditMode"
-                            class="w-100 mat-body-2 mb-4"
+                            class="w-full mat-body-2 mb-6"
                             [formControl]="serviceForm.controls.is_enable"
                         >
                             Enable Service
@@ -1504,15 +1497,15 @@
 </ng-template>
 
 <ng-template #billableMetrics>
-    <div class="d-flex flex-column h-100">
-        <h5 class="mat-h5 mb-3">Billable Metrics / Items</h5>
+    <div class="flex flex-col h-full">
+        <h5 class="mat-h5 mb-6">Billable Metrics / Items</h5>
         <div>
             <button class="" mat-flat-button color="primary" (click)="addBillableMetric()">
                 <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Metric
             </button>
         </div>
 
-        <mat-card class="w-100 outline-card responsive-card flex-grow-1 mt-3 overflow-table overflow-y p-0">
+        <mat-card class="w-full outline-card responsive-card grow mt-6 overflow-table overflow-y p-0">
             <mat-card-content>
                 <table mat-table [dataSource]="billableMetricstabledata" class="default-table responsive-table">
                     <!-- Name Column -->
@@ -1581,7 +1574,7 @@
 
                     <tr class="mat-row" *matNoDataRow>
                         <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
-                            <div class="text-center w-100 mat-subtitle-2 text-dark">No Record Found</div>
+                            <div class="text-center w-full mat-subtitle-2 text-dark">No Record Found</div>
                         </td>
                     </tr>
                 </table>
@@ -1592,19 +1585,19 @@
 </ng-template>
 
 <ng-template #paymentDetails>
-    <div class="d-flex flex-column h-100">
-        <h5 class="mat-h5 mb-3">Payment Details</h5>
-        <div class="d-flex flex-column h-100">
+    <div class="flex flex-col h-full">
+        <h5 class="mat-h5 mb-6">Payment Details</h5>
+        <div class="flex flex-col h-full">
             <p class="mat-body-2 text-secondary"><strong>Note:</strong> These details will be can be filled later.</p>
-            <div class="auth-credentials px-3">
-                <div class="d-flex flex-column w-75">
+            <div class="auth-credentials px-6">
+                <div class="flex flex-col w-3/4">
                     <ng-container *ngIf="featureForm.get('paymentDetailsForm')?.at(0) as paymentDetailsForm">
                         <form [formGroup]="paymentDetailsForm">
                             <ng-container
                                 *ngFor="let controlKeyValue of paymentDetailsForm.controls.stripe.controls | keyvalue"
                             >
                                 <div class="row">
-                                    <div class="col-md-12 w-100">
+                                    <div class="col-md-12 w-full">
                                         <ng-container
                                             *ngTemplateOutlet="
                                                 inputField;
@@ -1618,7 +1611,7 @@
                                 </div>
                             </ng-container>
                         </form>
-                        <div class="d-flex justify-content-start align-items-center">
+                        <div class="flex justify-start items-center">
                             <button type="button" mat-flat-button color="primary" (click)="savePaymentDetails()">
                                 {{ isEditMode ? 'Update' : 'Save' }}
                             </button>
@@ -1631,21 +1624,21 @@
 </ng-template>
 
 <ng-template #createPlan>
-    <div class="d-flex flex-column h-100">
-        <h5 class="mat-h5 mb-3">Create Plan</h5>
-        <div class="d-flex flex-column h-100">
-            <div class="auth-credentials px-3" class="width-md-800 w-md-100">
-                <div class="d-flex flex-column">
+    <div class="flex flex-col h-full">
+        <h5 class="mat-h5 mb-6">Create Plan</h5>
+        <div class="flex flex-col h-full">
+            <div class="auth-credentials px-6" class="width-md-800 w-md-100">
+                <div class="flex flex-col">
                     <ng-container *ngIf="(selectedMethod | async)?.method_services as methodServices">
                         <form
-                            class="single-form-layout d-flex flex-column gap-1"
+                            class="single-form-layout flex flex-col gap-1"
                             [formGroup]="serviceForm"
                             *ngIf="featureForm.get('planDetails')?.at(selectedServiceIndex) as serviceForm"
                         >
                             <!-- Plan Details Section -->
-                            <div class="form-section d-flex flex-column gap-3">
+                            <div class="form-section flex flex-col gap-4">
                                 <p class="heading mb-0"><strong>Plan Details</strong></p>
-                                <div class="form-grid d-grid gap-3 align-items-start">
+                                <div class="form-grid grid gap-4 items-start">
                                     <ng-container
                                         *ngFor="
                                             let controlKeyValue of serviceForm.controls.createPlanForm.controls
@@ -1674,7 +1667,7 @@
                                     <mat-card-title class="heading"><strong>Charges</strong></mat-card-title>
                                 </mat-card-header>
                                 <mat-card-content>
-                                    <div class="form-grid d-grid gap-3 align-items-start">
+                                    <div class="form-grid grid gap-4 items-start">
                                         <ng-container
                                             *ngFor="
                                                 let controlKeyValue of serviceForm.controls.chargesForm.controls
@@ -1753,8 +1746,8 @@
 </ng-template>
 
 <ng-template #plansOverview>
-    <div class="d-flex flex-column">
-        <h5 class="mat-h5 mb-3">Created Plans</h5>
+    <div class="flex flex-col">
+        <h5 class="mat-h5 mb-6">Created Plans</h5>
         <div>
             <button
                 mat-flat-button
@@ -1766,7 +1759,7 @@
             </button>
         </div>
 
-        <mat-card class="w-100 outline-card responsive-card flex-grow-1 mt-3 add-plan-edit">
+        <mat-card class="w-full outline-card responsive-card grow mt-6 add-plan-edit">
             <mat-card-content>
                 <table mat-table [dataSource]="createdPlanData" class="default-table responsive-table">
                     <!-- Name Column -->
@@ -1844,7 +1837,7 @@
 
                     <tr class="mat-row" *matNoDataRow>
                         <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
-                            <div class="d-flex justify-content-center items-center w-100 mat-subtitle-2 text-dark">
+                            <div class="flex justify-center items-center w-full mat-subtitle-2 text-dark">
                                 No plans Found
                             </div>
                         </td>
@@ -1858,7 +1851,7 @@
 </ng-template>
 
 <ng-template #taxes>
-    <div class="d-flex flex-column">
+    <div class="flex flex-col">
         <div>
             <button mat-flat-button color="primary" (click)="addNewOption()">
                 <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Tax
@@ -1896,9 +1889,7 @@
             <tr mat-row *matRowDef="let row; columns: taxesDisplayedColumns"></tr>
             <tr class="mat-row" *matNoDataRow>
                 <td class="mat-cell border-none" [attr.colspan]="taxesDisplayedColumns.length">
-                    <div class="d-flex justify-content-center items-center w-100 mat-subtitle-2 text-dark">
-                        No taxes Found
-                    </div>
+                    <div class="flex justify-center items-center w-full mat-subtitle-2 text-dark">No taxes Found</div>
                 </td>
             </tr>
         </table>
@@ -1906,8 +1897,8 @@
 </ng-template>
 
 <ng-template #manageSubscription>
-    <div class="d-flex gap-3 my-3 flex-grow-1" style="min-height: 400px">
-        <div class="d-flex flex-column gap-1 border-right pr-3 service-list">
+    <div class="flex gap-4 my-6 grow" style="min-height: 400px">
+        <div class="flex flex-col gap-1 border-right pr-6 service-list">
             <p class="mat-body-2 fw-bolder mt-0">Services</p>
             <mat-list role="list" class="default-list pt-0">
                 <!-- Billable Metric item -->
@@ -1917,7 +1908,7 @@
                     [class.active]="selectedSubscriptionServiceIndex === -2"
                     (click)="selectedSubscriptionServiceIndex = -2"
                 >
-                    <div class="d-flex align-items-center flex-grow-1">Billable Metric</div>
+                    <div class="flex items-center grow">Billable Metric</div>
                     <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
                 </mat-list-item>
 
@@ -1928,7 +1919,7 @@
                     [class.active]="selectedSubscriptionServiceIndex === -1"
                     (click)="selectedSubscriptionServiceIndex = -1"
                 >
-                    <div class="d-flex align-items-center flex-grow-1">Plans</div>
+                    <div class="flex items-center grow">Plans</div>
                     <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
                 </mat-list-item>
 
@@ -1938,7 +1929,7 @@
                     [class.active]="selectedSubscriptionServiceIndex === -3"
                     (click)="updatePaymentDetails()"
                 >
-                    <div class="d-flex align-items-center flex-grow-1">Payment Details</div>
+                    <div class="flex items-center grow">Payment Details</div>
                     <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
                 </mat-list-item>
                 <mat-list-item
@@ -1947,15 +1938,15 @@
                     [class.active]="selectedSubscriptionServiceIndex === -4"
                     (click)="updateTaxes()"
                 >
-                    <div class="d-flex align-items-center flex-grow-1">Taxes</div>
+                    <div class="flex items-center grow">Taxes</div>
                     <mat-icon class="material-icons-outlined mat-icon-18 mt-1">navigate_next</mat-icon>
                 </mat-list-item>
             </mat-list>
         </div>
 
         <!-- Right panel content -->
-        <div class="auth-credentials px-3" class="width-md-700 w-md-100">
-            <div class="d-flex flex-column">
+        <div class="auth-credentials px-6" class="width-md-700 w-md-100">
+            <div class="flex flex-col">
                 <!-- Plans content -->
                 <div *ngIf="selectedSubscriptionServiceIndex === -1">
                     <h3>Plans</h3>
@@ -1981,17 +1972,17 @@
 </ng-template>
 
 <ng-template #brandingStepContent>
-    <div class="d-flex gap-4 flex-grow-1 branding-step-content">
+    <div class="flex gap-6 grow branding-step-content">
         <!-- Left: Branding form -->
-        <div class="d-flex flex-column branding-form w-50">
+        <div class="flex flex-col branding-form w-1/2">
             <p class="mat-body-2 text-secondary fw-bold mb-20 mt-0">Customize your login UI</p>
             <!-- Logo: choose URL or file upload, then show relevant input -->
-            <div class="d-flex align-items-center gap-3 font-12 mb-20 flex-wrap">
+            <div class="flex items-center gap-4 font-12 mb-20 flex-wrap">
                 <!-- <span class="mat-body-2 text-secondary fw-bold mb-0">Logo</span> -->
                 <mat-radio-group
                     [value]="logoInputMode"
                     (change)="logoInputMode = $event.value"
-                    class="d-flex gap-3 branding-logo-radio radio-button-custom-style"
+                    class="flex gap-4 branding-logo-radio radio-button-custom-style"
                 >
                     <mat-radio-button value="url">Enter URL</mat-radio-button>
                     <mat-radio-button value="file">
@@ -2006,7 +1997,7 @@
                     </mat-radio-button>
                 </mat-radio-group>
             </div>
-            <mat-form-field *ngIf="logoInputMode === 'url'" appearance="outline" class="w-100">
+            <mat-form-field *ngIf="logoInputMode === 'url'" appearance="outline" class="w-full">
                 <mat-label>Logo URL</mat-label>
                 <input
                     matInput
@@ -2015,7 +2006,7 @@
                     [formControl]="featureForm.get('brandingDetails.logo_url')"
                 />
             </mat-form-field>
-            <div *ngIf="logoInputMode === 'file'" class="d-flex align-items-center gap-2 mb-20">
+            <div *ngIf="logoInputMode === 'file'" class="flex items-center gap-2 mb-20">
                 <input
                     #logoFileInput
                     type="file"
@@ -2111,10 +2102,10 @@
                 ></ng-container>
             </ng-container>
             <!-- Show social login as icon (auth feature only) -->
-            <div class="d-flex flex-column gap-2 mb-2">
+            <div class="flex flex-col gap-2 mb-2">
                 <div
                     *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
-                    class="d-flex align-items-center gap-2 mb-2"
+                    class="flex items-center gap-2 mb-2"
                 >
                     <span class="mat-body-2 mb-0">Show the social login as a icon: </span>
                     <mat-slide-toggle [formControl]="featureForm.get('brandingDetails.icons')" color="primary">
@@ -2123,7 +2114,7 @@
                 <!-- Show Create Account For New User (edit mode only, auth feature only) -->
                 <div
                     *ngIf="isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1"
-                    class="d-flex align-items-center gap-2 mb-2"
+                    class="flex items-center gap-2 mb-2"
                 >
                     <span class="mat-body-2 mb-0">Show Create Account For New User: </span>
                     <mat-slide-toggle
@@ -2133,7 +2124,7 @@
                     </mat-slide-toggle>
                 </div>
                 <!-- Light theme primary color -->
-                <div class="d-flex align-items-center gap-2">
+                <div class="flex items-center gap-2">
                     <label class="mat-body-2 mb-0" style="min-width: 120px"> Primary color</label>
                     <input
                         type="color"
@@ -2157,7 +2148,7 @@
                     <span class="mat-body-2 text-secondary">(Light theme)</span>
                 </div>
                 <!-- Dark theme primary color -->
-                <div class="d-flex align-items-center gap-2">
+                <div class="flex items-center gap-2">
                     <label class="mat-body-2 mb-0" style="min-width: 120px"> Primary color</label>
                     <input
                         type="color"
@@ -2181,7 +2172,7 @@
                     <span class="mat-body-2 text-secondary">(Dark theme)</span>
                 </div>
                 <!-- Button color -->
-                <div class="d-flex align-items-center gap-2">
+                <div class="flex items-center gap-2">
                     <label class="mat-body-2 mb-0" style="min-width: 120px">Button color</label>
                     <input
                         type="color"
@@ -2200,7 +2191,7 @@
                     }}</span>
                 </div>
                 <!-- Button hover color -->
-                <div class="d-flex align-items-center gap-2">
+                <div class="flex items-center gap-2">
                     <label class="mat-body-2 mb-0" style="min-width: 120px">Button hover color</label>
                     <input
                         type="color"
@@ -2221,7 +2212,7 @@
                     }}</span>
                 </div>
                 <!-- Button text color -->
-                <div class="d-flex align-items-center gap-2">
+                <div class="flex items-center gap-2">
                     <label class="mat-body-2 mb-0" style="min-width: 120px">Button text color</label>
                     <input
                         type="color"
@@ -2251,7 +2242,7 @@
                     featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
                     featureForm.get('brandingDetails.version')?.value === 'v2'
                 "
-                class="d-flex align-items-center justify-content-center w-100 mb-3"
+                class="flex items-center justify-center w-full mb-6"
             >
                 <div class="custom-toggle-group">
                     <button

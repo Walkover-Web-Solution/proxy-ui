@@ -95,7 +95,7 @@
                     </span>
                 </div>
             </div>
-            <div *ngIf="isNumberChanged || isOtpVerified" class="one-line otp-verify-btn d-flex justify-content-end">
+            <div *ngIf="isNumberChanged || isOtpVerified" class="one-line otp-verify-btn flex justify-end">
                 <a href="javascript:void(0)" (click)="numberChanged()" class="verify-otp-link">Change Number</a>
             </div>
 
@@ -252,7 +252,7 @@
     let-formControl="formControl"
     let-patternError="patternError"
 >
-    <div class="register-user-details-formfield position-relative d-flex gap-3 w-100">
+    <div class="register-user-details-formfield relative flex gap-4 w-full">
         <mat-form-field appearance="outline" style="width: 100%">
             <mat-label>{{ label }} </mat-label>
             <ng-container *ngIf="type === 'password' || type === 'confirm password'; else normalField">
@@ -302,7 +302,7 @@
             <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
         </mat-form-field>
         <mat-icon
-            class="position-absolute toggle-icon"
+            class="absolute toggle-icon"
             *ngIf="type === 'password' || type === 'confirm password'"
             (click)="
                 type === 'password' ? (showPassword = !showPassword) : (showConfirmPassword = !showConfirmPassword)
