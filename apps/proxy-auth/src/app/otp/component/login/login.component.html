@@ -1,10 +1,10 @@
 <div class="dialog-header" [class.dark-theme]="theme === 'dark'">
-    <button mat-icon-button class="back-button close-dialog" (click)="changeStep(step - 1)">
+    <button matIconButton class="back-button close-dialog" (click)="changeStep(step - 1)">
         <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#5f6368">
             <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
         </svg>
     </button>
-    <button mat-icon-button class="close-dialog close-button" (click)="close(true)" type="button">
+    <button matIconButton class="close-dialog close-button" (click)="close(true)" type="button">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
@@ -42,7 +42,7 @@
             [formControl]="passwordControl"
         />
 
-        <button matSuffix mat-icon-button (click)="showPassword = !showPassword" class="resize-icon">
+        <button matSuffix matIconButton (click)="showPassword = !showPassword" class="resize-icon">
             <ng-container [ngTemplateOutlet]="visibilityIcon"></ng-container>
         </button>
 
@@ -84,7 +84,7 @@
     </div>
     <div class="login-btn">
         <p class="forgot-password"><a href="javascript:void(0)" (click)="changeStep(2)">Forgot Password?</a></p>
-        <button mat-flat-button color="primary" #loginBtn [disabled]="isLoading$ | async">
+        <button matButton="filled" #loginBtn [disabled]="isLoading$ | async">
             <div class="loader">
                 <mat-spinner matPrefix diameter="20" *ngIf="isLoading$ | async"></mat-spinner>Login
             </div>
@@ -116,7 +116,7 @@
         {{ apiError | async }}
     </div>
 
-    <button mat-flat-button color="primary" [disabled]="isLoading$ | async" #sendOtpBtn>
+    <button matButton="filled" [disabled]="isLoading$ | async" #sendOtpBtn>
         <div class="loader"><mat-spinner matPrefix diameter="20" *ngIf="isLoading$ | async"></mat-spinner>Send OTP</div>
     </button>
 </div>
@@ -134,7 +134,7 @@
     <p class="user-info">
         {{ sendOtpForm.get('userDetails').value }} <a href="javascript:void(0)" (click)="changeStep(2)">Change </a>
     </p>
-    <button mat-button color="primary" (click)="sendOtp()" [disabled]="remainingSeconds > 0">
+    <button matButton (click)="sendOtp()" [disabled]="remainingSeconds > 0">
         Resend OTP <span *ngIf="remainingSeconds > 0">{{ remainingSeconds }}</span>
     </button>
 
@@ -162,7 +162,7 @@
             [formControl]="passwordControl"
         />
 
-        <button matSuffix mat-icon-button (click)="showPassword = !showPassword" class="resize-icon">
+        <button matSuffix matIconButton (click)="showPassword = !showPassword" class="resize-icon">
             <ng-container [ngTemplateOutlet]="visibilityIcon"></ng-container>
         </button>
         <mat-error *ngIf="passwordControl.errors?.required"> password is required.</mat-error>
@@ -188,7 +188,7 @@
     <div class="error-message" *ngIf="apiError | async">
         {{ apiError | async }}
     </div>
-    <button mat-flat-button color="primary" #verifyOtpBtn [disabled]="isLoading$ | async">
+    <button matButton="filled" #verifyOtpBtn [disabled]="isLoading$ | async">
         <div class="loader"><mat-spinner matPrefix diameter="20" *ngIf="isLoading$ | async"></mat-spinner>Submit</div>
     </button>
 </div>

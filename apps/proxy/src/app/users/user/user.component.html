@@ -17,7 +17,7 @@
                         [(selectedRangeValue)]="selectedRangeValue"
                         [selectedDefaultDateRange]="selectedDefaultDateRange.CurrentMonth"
                     ></date-range-picker>
-                    <button mat-flat-button class="flat-default mat-btn-xs" [matMenuTriggerFor]="userFilterMenu">
+                    <button matButton="filled" class="flat-default mat-btn-xs" [matMenuTriggerFor]="userFilterMenu">
                         <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">filter_alt</mat-icon>
                         <span class="hide-xs">Filter</span>
                     </button>
@@ -52,21 +52,16 @@
                             </div>
                             <mat-divider></mat-divider>
                             <div class="flex items-center gap-x-4 action-button p-6">
-                                <button
-                                    mat-flat-button
-                                    color="primary"
-                                    (click)="applyFilter()"
-                                    [disabled]="userFilterForm.invalid"
-                                >
+                                <button matButton="filled" (click)="applyFilter()" [disabled]="userFilterForm.invalid">
                                     Apply
                                 </button>
-                                <button mat-flat-button class="flat-default" (click)="resetParam()">Reset</button>
-                                <button mat-button (click)="closeMyMenu()">Cancel</button>
+                                <button matButton="filled" class="flat-default" (click)="resetParam()">Reset</button>
+                                <button matButton (click)="closeMyMenu()">Cancel</button>
                             </div>
                         </div>
                     </mat-menu>
                     <button
-                        mat-flat-button
+                        matButton="filled"
                         class="flat-icon-btn flat-default"
                         (click)="getUsers()"
                         matTooltip="Refresh"

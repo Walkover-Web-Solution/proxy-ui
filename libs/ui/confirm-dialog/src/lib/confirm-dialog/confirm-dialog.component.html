@@ -9,7 +9,7 @@
         type="reset"
         [class]="cancelButtonClass"
         mat-dialog-close
-        mat-button
+        matButton
         [color]="cancelButtonColor"
         (click)="closeDialog('no')"
     >
@@ -18,7 +18,7 @@
     <button
         *ngIf="showConfirmButton"
         type="button"
-        mat-flat-button
+        matButton="filled"
         mat-dialog-close
         cdkFocusRegionEnd
         cdkFocusInitial

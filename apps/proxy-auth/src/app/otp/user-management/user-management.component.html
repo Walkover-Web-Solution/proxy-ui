@@ -27,7 +27,7 @@
                             </mat-form-field>
                         </div>
                         <div class="add-btn flex justify-end gap-6" *ngIf="canAddUser">
-                            <button mat-flat-button class="button-add" (click)="addUser()">Invite Member</button>
+                            <button matButton="filled" class="button-add" (click)="addUser()">Invite Member</button>
                         </div>
                     </div>
 
@@ -112,7 +112,7 @@
                                 <div class="user-actions">
                                     <button
                                         *ngIf="canEditUser"
-                                        mat-flat-button
+                                        matButton="filled"
                                         class="button-add"
                                         (click)="editUser(user, i)"
                                     >
@@ -120,7 +120,7 @@
                                     </button>
                                     <button
                                         *ngIf="canRemoveUser"
-                                        mat-stroked-button
+                                        matButton="outlined"
                                         class="button-remove"
                                         [class.button-add]="theme === 'dark'"
                                         [class.button-remove-light]="theme !== 'dark'"
@@ -173,7 +173,7 @@
                                         </mat-form-field>
                                     </div>
                                     <div class="flex justify-end gap-6 full-width">
-                                        <button mat-flat-button class="button-add" (click)="openAddRoleDialog()">
+                                        <button matButton="filled" class="button-add" (click)="openAddRoleDialog()">
                                             Add Role
                                         </button>
                                     </div>
@@ -233,8 +233,7 @@
                                                     </div>
                                                     <div class="permissions-actions hover-actions">
                                                         <button
-                                                            mat-flat-button
-                                                            color="primary"
+                                                            matButton="filled"
                                                             (click)="editRole(element, i)"
                                                             class="button-add"
                                                             [disabled]="element.is_default"
@@ -290,8 +289,7 @@
                                         </div>
                                         <div class="add-button-section">
                                             <button
-                                                mat-flat-button
-                                                color="primary"
+                                                matButton="filled"
                                                 (click)="openAddPermissionDialog()"
                                                 class="button-add"
                                             >
@@ -328,8 +326,7 @@
                                                         </div>
                                                         <div class="permission-actions hover-actions">
                                                             <button
-                                                                mat-flat-button
-                                                                color="primary"
+                                                                matButton="filled"
                                                                 (click)="editPermission(element, i)"
                                                                 class="button-add"
                                                             >
@@ -532,14 +529,8 @@
             </form>
         </mat-dialog-content>
         <mat-dialog-actions align="end">
-            <button mat-button (click)="closeDialog()">Cancel</button>
-            <button
-                mat-flat-button
-                color="primary"
-                (click)="getSaveAction()"
-                [disabled]="getFormInvalid()"
-                class="button-add"
-            >
+            <button matButton (click)="closeDialog()">Cancel</button>
+            <button matButton="filled" (click)="getSaveAction()" [disabled]="getFormInvalid()" class="button-add">
                 {{ getSaveButtonText() }}
             </button>
         </mat-dialog-actions>
@@ -559,13 +550,8 @@
             </form>
         </mat-dialog-content>
         <mat-dialog-actions align="end">
-            <button mat-button (click)="closeAddPermissionDialog()">Cancel</button>
-            <button
-                mat-flat-button
-                color="primary"
-                (click)="saveAddPermission()"
-                [disabled]="addPermissionForm.invalid"
-            >
+            <button matButton (click)="closeAddPermissionDialog()">Cancel</button>
+            <button matButton="filled" (click)="saveAddPermission()" [disabled]="addPermissionForm.invalid">
                 Add Permission
             </button>
         </mat-dialog-actions>
@@ -657,8 +643,8 @@
             </form>
         </mat-dialog-content>
         <mat-dialog-actions align="end">
-            <button mat-button (click)="closePermissionDialog()">Cancel</button>
-            <button mat-flat-button color="primary" (click)="savePermission()" [disabled]="editPermissionForm.invalid">
+            <button matButton (click)="closePermissionDialog()">Cancel</button>
+            <button matButton="filled" (click)="savePermission()" [disabled]="editPermissionForm.invalid">
                 {{ currentEditingPermission ? 'Update Permission' : 'Add Role' }}
             </button>
         </mat-dialog-actions>

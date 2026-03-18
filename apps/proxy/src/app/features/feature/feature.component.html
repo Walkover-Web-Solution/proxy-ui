@@ -10,12 +10,12 @@
             class="w-xs-100"
         ></proxy-lib-search>
         <div class="flex items-center gap-4 ml-auto">
-            <button mat-flat-button class="mat-btn-xs button-add" [routerLink]="['/app', 'features', 'create']">
+            <button matButton="filled" class="mat-btn-xs button-add" [routerLink]="['/app', 'features', 'create']">
                 <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
                 <span class="hide-xs">Add New Blocks</span>
             </button>
             <button
-                mat-flat-button
+                matButton="filled"
                 class="flat-icon-btn flat-default"
                 (click)="getFeatures()"
                 matTooltip="Refresh"
@@ -111,8 +111,7 @@
                             <ng-container *ngIf="!loading.dataLoading">
                                 <div class="actions">
                                     <button
-                                        mat-stroked-button
-                                        color="new-primary"
+                                        matButton="outlined"
                                         [routerLink]="['manage', element.id]"
                                         class="mat-btn-md"
                                     >

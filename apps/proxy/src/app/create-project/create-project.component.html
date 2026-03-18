@@ -11,7 +11,7 @@
             <h4 class="fw-bold text-secondary mat-body-1">Create Project</h4>
             <ng-container *ngTemplateOutlet="createProject"></ng-container>
 
-            <button mat-flat-button color="primary" #createProjectBtn>
+            <button matButton="filled" #createProjectBtn>
                 Next
                 <mat-icon matSuffix class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
             </button>
@@ -33,7 +33,7 @@
 
             <ng-container *ngTemplateOutlet="gateWayUrl"></ng-container>
 
-            <button mat-flat-button color="primary" #gatewayUrlBtn>
+            <button matButton="filled" #gatewayUrlBtn>
                 Next
                 <mat-icon matSuffix class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
             </button>
@@ -55,12 +55,12 @@
 
             <ng-container *ngTemplateOutlet="desnationUrl"></ng-container>
             <div class="flex items-center gap-4">
-                <button type="button" mat-flat-button class="flat-default" (click)="changeStep(2)">
+                <button type="button" matButton="filled" class="flat-default" (click)="changeStep(2)">
                     <mat-icon matPrefix class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                         >navigate_before</mat-icon
                     >Back
                 </button>
-                <button mat-flat-button matSuffix color="primary" #submitBtn>Submit</button>
+                <button matButton="filled" matSuffix #submitBtn>Submit</button>
             </div>
         </div>
     </div>

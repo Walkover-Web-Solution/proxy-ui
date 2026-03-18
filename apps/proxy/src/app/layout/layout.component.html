@@ -53,8 +53,7 @@
                 </div>
             </div>
             <button
-                mat-icon-button
-                color="primary"
+                matIconButton
                 class="mat-drawer-toggle-btn icon-btn-md mr-1"
                 (click)="toggleSideBarEvent()"
                 [matTooltip]="(isSideNavOpen | async) ? 'Collapse Menu' : 'Expand Menu'"
@@ -73,7 +72,7 @@
         ></proxy-main-left-side-nav>
         <!-- Proxy Sidenav::END -->
         <div class="mat-drawer-footer" *ngIf="logInData$ | async as user">
-            <button mat-button [matMenuTriggerFor]="menu">
+            <button matButton [matMenuTriggerFor]="menu">
                 <div class="flex items-center">
                     <img
                         *ngIf="user.photoURL"

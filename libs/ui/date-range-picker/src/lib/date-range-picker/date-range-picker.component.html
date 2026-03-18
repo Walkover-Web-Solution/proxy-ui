@@ -1,7 +1,7 @@
 <div class="datepicker">
     <div class="custom-datepicker w-full">
         <button
-            mat-stroked-button
+            matButton="outlined"
             class="date-input w-full px-2 remove-mat-button-focus-overlay"
             [matMenuTriggerFor]="customDateRangePicker"
             #trigger="matMenuTrigger"
@@ -26,7 +26,7 @@
                 <div class="drp-ranges" [class.hide-option]="showRangePicker">
                     <mat-list role="list" class="drp-range-list">
                         <button
-                            mat-button
+                            matButton
                             class="px-6 btn-hide"
                             [class.selected]="monthSelected === null && quarterSelected === null"
                             (click)="toggleRangePicker()"
@@ -34,7 +34,7 @@
                             Custom Date Range
                         </button>
                         <button
-                            mat-button
+                            matButton
                             class="px-6"
                             [class.selected]="monthSelected === 'current'"
                             (click)="selectThisMonth()"
@@ -43,7 +43,7 @@
                             This Month
                         </button>
                         <button
-                            mat-button
+                            matButton
                             class="px-6"
                             [class.selected]="monthSelected === 'last'"
                             (click)="selectLastMonth()"
@@ -52,7 +52,7 @@
                             Last Month
                         </button>
                         <button
-                            mat-button
+                            matButton
                             class="px-6"
                             [class.selected]="quarterSelected === 'current'"
                             (click)="selectThisQuarter()"
@@ -61,7 +61,7 @@
                             This Quarter to date
                         </button>
                         <button
-                            mat-button
+                            matButton
                             class="px-6"
                             [class.selected]="quarterSelected === 'last'"
                             (click)="selectLastQuarter()"
@@ -122,15 +122,14 @@
                         </p>
                     </div>
                     <div class="drp-calendar-actions px-2">
-                        <button mat-stroked-button class="mw-auto px-2 btn-hide" (click)="toggleRangePicker()">
+                        <button matButton="outlined" class="mw-auto px-2 btn-hide" (click)="toggleRangePicker()">
                             <mat-icon class="mat-icon-16">arrow_back</mat-icon> Back
                         </button>
                         <div class="flex gap-x-4">
-                            <button mat-button (click)="closeDialog()">Cancel</button>
-                            <button mat-flat-button class="flat-default" (click)="resetDate()">Reset</button>
+                            <button matButton (click)="closeDialog()">Cancel</button>
+                            <button matButton="filled" class="flat-default" (click)="resetDate()">Reset</button>
                             <button
-                                mat-flat-button
-                                color="primary"
+                                matButton="filled"
                                 [disabled]="
                                     range.invalid || selectedDateIsGreaterThenToday || selectedDateIsSmallerThenMinDate
                                 "

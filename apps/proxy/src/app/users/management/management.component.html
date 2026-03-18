@@ -28,7 +28,7 @@
                                     class="w-xs-100"
                                 ></proxy-lib-search>
                             </div>
-                            <button class="mb-6" mat-flat-button color="primary" (click)="addRole()">Add Role</button>
+                            <button class="mb-6" matButton="filled" (click)="addRole()">Add Role</button>
                         </div>
                         <table
                             mat-table
@@ -69,8 +69,7 @@
                                             matTooltipPosition="above"
                                         >
                                             <button
-                                                mat-stroked-button
-                                                color="primary"
+                                                matButton="outlined"
                                                 (click)="editRole(element)"
                                                 class="mat-btn-md"
                                                 [disabled]="!element.feature_configuration_id"
@@ -90,8 +89,7 @@
                                             matTooltipPosition="above"
                                         >
                                             <button
-                                                mat-stroked-button
-                                                color="primary"
+                                                matButton="outlined"
                                                 (click)="deleteRole(element)"
                                                 class="mat-btn-md"
                                                 [disabled]="!element.feature_configuration_id"
@@ -141,9 +139,7 @@
                                     class="w-xs-100"
                                 ></proxy-lib-search>
                             </div>
-                            <button class="mb-6" mat-flat-button color="primary" (click)="addPermission()">
-                                Add Permission
-                            </button>
+                            <button class="mb-6" matButton="filled" (click)="addPermission()">Add Permission</button>
                         </div>
                         <table
                             mat-table
@@ -165,8 +161,7 @@
                                 <td mat-cell *matCellDef="let element" data-label="Actions">
                                     <div class="actions">
                                         <button
-                                            mat-stroked-button
-                                            color="new-primary"
+                                            matButton="outlined"
                                             (click)="editPermission(element)"
                                             class="mat-btn-md"
                                             [disabled]="element.is_default"
@@ -177,8 +172,7 @@
                                             Edit
                                         </button>
                                         <button
-                                            mat-stroked-button
-                                            color="new-primary"
+                                            matButton="outlined"
                                             (click)="deletePermission(element)"
                                             class="mat-btn-md"
                                             [disabled]="element.is_default"
@@ -298,14 +292,13 @@
                             <!-- Action Buttons -->
                             <div class="flex gap-2 mt-6">
                                 <button
-                                    mat-flat-button
-                                    color="primary"
+                                    matButton="filled"
                                     (click)="saveDefaultRoles()"
                                     [disabled]="!defaultRolesForm.valid"
                                 >
                                     Save
                                 </button>
-                                <button mat-button (click)="cancelDefaultRoles()">Cancel</button>
+                                <button matButton (click)="cancelDefaultRoles()">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -319,7 +312,7 @@
 <ng-template #addRoleDialogTemplate>
     <div class="flex justify-between items-center mb-6">
         <h2 mat-dialog-title class="m-0">{{ isEditMode ? 'Edit Role' : 'Add Role' }}</h2>
-        <button mat-icon-button mat-dialog-close>
+        <button matIconButton mat-dialog-close>
             <mat-icon>close</mat-icon>
         </button>
     </div>
@@ -350,8 +343,8 @@
         </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end" class="mt-6">
-        <button mat-button (click)="closeDialog()">Cancel</button>
-        <button mat-flat-button color="primary" (click)="submitDialog()" [disabled]="!dialogRoleForm.valid">
+        <button matButton (click)="closeDialog()">Cancel</button>
+        <button matButton="filled" (click)="submitDialog()" [disabled]="!dialogRoleForm.valid">
             {{ isEditMode ? 'Update Role' : 'Add Role' }}
         </button>
     </mat-dialog-actions>
@@ -361,7 +354,7 @@
 <ng-template #addPermissionDialogTemplate>
     <div class="flex justify-between items-center mb-6">
         <h2 mat-dialog-title class="m-0">{{ isEditPermissionMode ? 'Edit Permission' : 'Add Permission' }}</h2>
-        <button mat-icon-button mat-dialog-close>
+        <button matIconButton mat-dialog-close>
             <mat-icon>close</mat-icon>
         </button>
     </div>
@@ -381,13 +374,8 @@
         </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end" class="mt-6">
-        <button mat-button (click)="closePermissionDialog()">Cancel</button>
-        <button
-            mat-flat-button
-            color="primary"
-            (click)="submitPermissionDialog()"
-            [disabled]="!dialogPermissionForm.valid"
-        >
+        <button matButton (click)="closePermissionDialog()">Cancel</button>
+        <button matButton="filled" (click)="submitPermissionDialog()" [disabled]="!dialogPermissionForm.valid">
             {{ isEditPermissionMode ? 'Update Permission' : 'Add Permission' }}
         </button>
     </mat-dialog-actions>

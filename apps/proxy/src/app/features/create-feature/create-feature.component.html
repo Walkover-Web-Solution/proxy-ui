@@ -1,7 +1,7 @@
 <div class="app-content flex flex-col">
     <proxy-loader *ngIf="(isLoading$ | async) || (loadingScript | async)"></proxy-loader>
     <div class="flex justify-start gap-1 mb-6" [class.items-start]="isEditMode" [class.items-center]="!isEditMode">
-        <button type="button" mat-icon-button color="primary" [routerLink]="['/app', 'features']">
+        <button type="button" matIconButton [routerLink]="['/app', 'features']">
             <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
         </button>
         <ng-container *ngIf="isEditMode">
@@ -20,13 +20,13 @@
                             }
                         "
                     ></ng-container>
-                    <button type="button" mat-icon-button color="success" (click)="updateFeature('name')" class="mt-1">
+                    <button type="button" matIconButton (click)="updateFeature('name')" class="mt-1">
                         <mat-icon class="material-icons-outlined mat-icon-18"> done </mat-icon>
                     </button>
                 </div>
                 <ng-container *ngIf="!nameFieldEditMode">
                     <h4 class="my-0 text-secondary mat-body-1 fw-bold">{{ (featureDetails$ | async)?.name }}</h4>
-                    <button type="button" mat-icon-button color="primary" (click)="nameFieldEditMode = true">
+                    <button type="button" matIconButton (click)="nameFieldEditMode = true">
                         <mat-icon class="material-icons-outlined mat-icon-18"> edit </mat-icon>
                     </button>
                 </ng-container>
@@ -63,7 +63,7 @@
                     "
                 ></ng-container>
                 <div class="flex items-center justify-end">
-                    <button type="button" mat-flat-button color="primary" matStepperNext>
+                    <button type="button" matButton="filled" matStepperNext>
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">
                             navigate_next
                         </mat-icon>
@@ -84,12 +84,7 @@
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
                     </button> -->
-                    <button
-                        type="button"
-                        mat-flat-button
-                        color="primary"
-                        (click)="validateFirstStepAndNext(nameControl)"
-                    >
+                    <button type="button" matButton="filled" (click)="validateFirstStepAndNext(nameControl)">
                         Next
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
                     </button>
@@ -105,11 +100,11 @@
             <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="createBlockConfigureMethodTemplate"></ng-container>
                 <div class="flex items-center justify-between">
-                    <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
+                    <button type="button" matButton="filled" class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
                     </button>
-                    <button type="button" mat-flat-button color="primary" matStepperNext>
+                    <button type="button" matButton="filled" matStepperNext>
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
                         >
@@ -127,14 +122,13 @@
             <div #authorizationStepContent class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
                 <div class="flex items-center justify-between">
-                    <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
+                    <button type="button" matButton="filled" class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
                     </button>
                     <button
                         type="button"
-                        mat-flat-button
-                        color="primary"
+                        matButton="filled"
                         (click)="
                             setRedirectUrlInServiceDetails();
                             featureForm.get('authorizationDetails').markAllAsTouched();
@@ -158,10 +152,8 @@
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >
                     </button> -->
-                    <button type="button" mat-flat-button color="primary" (click)="updateFeature('branding')">
-                        Update
-                    </button>
-                    <button type="button" mat-flat-button color="primary" matStepperNext>
+                    <button type="button" matButton="filled" (click)="updateFeature('branding')">Update</button>
+                    <button type="button" matButton="filled" matStepperNext>
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
                         >
@@ -177,12 +169,12 @@
                 <div class="flex flex-col justify-between h-full">
                     <ng-container *ngTemplateOutlet="integrationChoice"></ng-container>
                     <div class="flex items-center justify-between">
-                        <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
+                        <button type="button" matButton="filled" class="flat-default" matStepperPrevious>
                             <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                                 >navigate_before</mat-icon
                             >Back
                         </button>
-                        <button type="button" mat-flat-button color="primary" matStepperNext>
+                        <button type="button" matButton="filled" matStepperNext>
                             Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                                 >navigate_next</mat-icon
                             >
@@ -198,17 +190,12 @@
                     <mat-divider class="w-full mb-6"></mat-divider>
 
                     <div class="flex items-center justify-between">
-                        <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
+                        <button type="button" matButton="filled" class="flat-default" matStepperPrevious>
                             <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                                 >navigate_before</mat-icon
                             >Back
                         </button>
-                        <button
-                            type="button"
-                            mat-flat-button
-                            color="primary"
-                            (click)="markDirtyOrganizationDetailsFormTouched()"
-                        >
+                        <button type="button" matButton="filled" (click)="markDirtyOrganizationDetailsFormTouched()">
                             Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                                 >navigate_next</mat-icon
                             >
@@ -223,13 +210,7 @@
                     <ng-container *ngTemplateOutlet="billableMetrics"></ng-container>
 
                     <div class="flex items-end justify-end">
-                        <button
-                            type="button"
-                            mat-flat-button
-                            color="primary"
-                            (click)="getPaymentDetailsFormData()"
-                            matStepperNext
-                        >
+                        <button type="button" matButton="filled" (click)="getPaymentDetailsFormData()" matStepperNext>
                             Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                                 >navigate_next</mat-icon
                             >
@@ -243,13 +224,7 @@
                     <ng-container *ngTemplateOutlet="paymentDetails"></ng-container>
 
                     <div class="flex items-end justify-end">
-                        <button
-                            type="button"
-                            mat-flat-button
-                            color="primary"
-                            (click)="getCreatePlansFormData()"
-                            matStepperNext
-                        >
+                        <button type="button" matButton="filled" (click)="getCreatePlansFormData()" matStepperNext>
                             skip<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                                 >navigate_next</mat-icon
                             >
@@ -263,7 +238,7 @@
                 <div class="flex flex-col h-full">
                     <ng-container *ngTemplateOutlet="createPlan"></ng-container>
                     <div class="flex items-end justify-end">
-                        <button type="button" mat-flat-button color="primary" (click)="createPlanAndGenerateSnippet()">
+                        <button type="button" matButton="filled" (click)="createPlanAndGenerateSnippet()">
                             Create Plan & Generate Snippet
                         </button>
                     </div>
@@ -281,8 +256,7 @@
                         <ng-container *ngTemplateOutlet="preview"></ng-container>
                         <button
                             type="button"
-                            mat-flat-button
-                            color="primary"
+                            matButton="filled"
                             *ngIf="createUpdateObject$ | async as createUpdateObject"
                             [routerLink]="['/app/features/manage', createUpdateObject?.id]"
                         >
@@ -303,8 +277,7 @@
                     <ng-container *ngTemplateOutlet="preview"></ng-container>
                     <button
                         type="button"
-                        mat-flat-button
-                        color="primary"
+                        matButton="filled"
                         *ngIf="createUpdateObject$ | async as createUpdateObject"
                         [routerLink]="['/app/features/manage', createUpdateObject?.id]"
                     >
@@ -331,9 +304,7 @@
                         class="flex items-center justify-start mt-6"
                         *ngIf="featureForm.get('primaryDetails.feature_id')?.value === 1"
                     >
-                        <button type="button" mat-flat-button color="primary" (click)="updateFeature('service')">
-                            Update
-                        </button>
+                        <button type="button" matButton="filled" (click)="updateFeature('service')">Update</button>
                     </div>
                 </div>
             </mat-tab>
@@ -341,9 +312,7 @@
                 <div class="flex flex-col h-full p-6 justify-between">
                     <ng-container *ngTemplateOutlet="brandingStepContent"></ng-container>
                     <div class="flex items-center justify-start mt-6">
-                        <button type="button" mat-flat-button color="primary" (click)="updateFeature('branding')">
-                            Update
-                        </button>
+                        <button type="button" matButton="filled" (click)="updateFeature('branding')">Update</button>
                     </div>
                 </div>
             </mat-tab>
@@ -352,7 +321,7 @@
                     <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
                     <mat-divider></mat-divider>
                     <div class="flex items-center justify-start mt-6">
-                        <button type="button" mat-flat-button color="primary" (click)="updateFeature('authorization')">
+                        <button type="button" matButton="filled" (click)="updateFeature('authorization')">
                             Update
                         </button>
                     </div>
@@ -371,12 +340,7 @@
                         <div class="flex flex-col h-full p-6">
                             <ng-container *ngTemplateOutlet="webhook"></ng-container>
                             <div class="flex items-center justify-start mt-6">
-                                <button
-                                    type="button"
-                                    mat-flat-button
-                                    color="primary"
-                                    (click)="updateFeature('webhook')"
-                                >
+                                <button type="button" matButton="filled" (click)="updateFeature('webhook')">
                                     Update
                                 </button>
                             </div>
@@ -399,14 +363,12 @@
                                             <div class="flex items-center justify-between">
                                                 <p class="response-label">Sample Response:</p>
                                                 <button
-                                                    mat-flat-button
-                                                    color="primary"
+                                                    matButton="filled"
                                                     (click)="copySampleResponse(event.sampleResponse)"
                                                 >
                                                     Try it out
                                                 </button>
                                             </div>
-
                                             <pre class="code-block"><code>{{ event.sampleResponse | json }}</code></pre>
                                         </div>
                                     </mat-expansion-panel>
@@ -521,8 +483,7 @@
 
                 <button
                     type="button"
-                    mat-flat-button
-                    color="primary"
+                    matButton="filled"
                     class="template-card__button template-card__button--green"
                 >
                     <mat-icon>bolt</mat-icon>
@@ -570,8 +531,7 @@
 
                 <button
                     type="button"
-                    mat-stroked-button
-                    color="primary"
+                    matButton="outlined"
                     class="template-card__button template-card__button--outline"
                 >
                     <mat-icon>settings</mat-icon>
@@ -691,7 +651,7 @@
                     <button
                         *ngIf="isEditMode"
                         type="button"
-                        mat-flat-button
+                        matButton="filled"
                         class="flat-default"
                         (click)="
                             serviceForm ? resetConfigureDialogForm() : resetFormGroup(formToUse, selectedServiceIndex)
@@ -708,7 +668,7 @@
 <ng-template #configureMethodDialogTemplate>
     <div class="flex justify-between items-center">
         <h2 mat-dialog-title class="m-0">{{ getSelectedServiceName() }}</h2>
-        <button mat-icon-button mat-dialog-close>
+        <button matIconButton mat-dialog-close>
             <mat-icon>close</mat-icon>
         </button>
     </div>
@@ -718,8 +678,8 @@
         ></ng-container>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-        <button mat-flat-button color="primary" (click)="resetConfigureDialogForm()">Reset</button>
-        <button mat-flat-button color="primary" (click)="closeDialog()">Done</button>
+        <button matButton="filled" (click)="resetConfigureDialogForm()">Reset</button>
+        <button matButton="filled" (click)="closeDialog()">Done</button>
     </mat-dialog-actions>
 </ng-template>
 
@@ -748,7 +708,7 @@
             <ng-container matColumnDef="configure">
                 <th mat-header-cell *matHeaderCellDef>Configure</th>
                 <td mat-cell *matCellDef="let row">
-                    <button class="accent-color" mat-icon-button color="primary" (click)="editService(row.index)">
+                    <button class="accent-color" matIconButton (click)="editService(row.index)">
                         <mat-icon class="mat-icon-20">edit</mat-icon>
                     </button>
                 </td>
@@ -869,7 +829,7 @@
 
             <button
                 type="button"
-                mat-flat-button
+                matButton="filled"
                 class="w-85 custom-btn branding-preview-btn"
                 [style.background-color]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
                 [style.color]="featureForm.get('brandingDetails.button_text_color')?.value || '#000000'"
@@ -1141,7 +1101,7 @@
 
 <ng-template #preview>
     <div class="flex items-center justify-start" *ngIf="(createUpdateObject$ | async) || (featureDetails$ | async)">
-        <button type="button" mat-flat-button color="primary" (click)="previewFeature()">Preview</button>
+        <button type="button" matButton="filled" (click)="previewFeature()">Preview</button>
     </div>
 </ng-template>
 
@@ -1324,8 +1284,7 @@
                 "
             >
                 <button
-                    color="warn"
-                    mat-icon-button
+                    matIconButton
                     *ngIf="fieldControl?.value"
                     (click)="fileInput.files = null; updateFileValue(fileKey, fieldConfig, fieldControl, null)"
                 >
@@ -1338,7 +1297,7 @@
                     [accept]="fieldConfig?.allowed_types ?? ''"
                     (change)="updateFileValue(fileKey, fieldConfig, fieldControl, fileInput.files)"
                 />
-                <button color="primary" mat-icon-button (click)="fileInput.click()">
+                <button matIconButton (click)="fileInput.click()">
                     <mat-icon class="material-icons-outlined mat-icon-18"> attach_file </mat-icon>
                 </button>
             </ng-container>
@@ -1500,7 +1459,7 @@
     <div class="flex flex-col h-full">
         <h5 class="mat-h5 mb-6">Billable Metrics / Items</h5>
         <div>
-            <button class="" mat-flat-button color="primary" (click)="addBillableMetric()">
+            <button matButton="filled" (click)="addBillableMetric()">
                 <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Metric
             </button>
         </div>
@@ -1551,15 +1510,10 @@
                     <ng-container matColumnDef="action">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Action</th>
                         <td mat-cell *matCellDef="let element; let i = index" data-label="Action">
-                            <button
-                                mat-icon-button
-                                color="primary"
-                                (click)="editMetric(element, i)"
-                                matTooltip="Edit Metric"
-                            >
+                            <button matIconButton (click)="editMetric(element, i)" matTooltip="Edit Metric">
                                 <mat-icon>edit</mat-icon>
                             </button>
-                            <button mat-icon-button color="warn" (click)="deleteMetric(i)" matTooltip="Delete Metric">
+                            <button matIconButton (click)="deleteMetric(i)" matTooltip="Delete Metric">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </td>
@@ -1612,7 +1566,7 @@
                             </ng-container>
                         </form>
                         <div class="flex justify-start items-center">
-                            <button type="button" mat-flat-button color="primary" (click)="savePaymentDetails()">
+                            <button type="button" matButton="filled" (click)="savePaymentDetails()">
                                 {{ isEditMode ? 'Update' : 'Save' }}
                             </button>
                         </div>
@@ -1685,9 +1639,7 @@
                                             ></ng-container>
                                         </ng-container>
                                         <div>
-                                            <button mat-flat-button color="primary" (click)="addCharge()">
-                                                Add Charge
-                                            </button>
+                                            <button matButton="filled" (click)="addCharge()">Add Charge</button>
                                         </div>
                                     </div>
                                     <!-- Charges Table -->
@@ -1719,8 +1671,7 @@
                                                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                                                 <td mat-cell *matCellDef="let charge; let i = index">
                                                     <button
-                                                        mat-icon-button
-                                                        color="warn"
+                                                        matIconButton
                                                         (click)="removeCharge(i)"
                                                         matTooltip="Remove Charge"
                                                     >
@@ -1750,8 +1701,7 @@
         <h5 class="mat-h5 mb-6">Created Plans</h5>
         <div>
             <button
-                mat-flat-button
-                color="primary"
+                matButton="filled"
                 (click)="addPlan()"
                 *ngIf="isEditMode && selectedSubscriptionServiceIndex === -1"
             >
@@ -1819,10 +1769,10 @@
                     <ng-container matColumnDef="action" *ngIf="selectedSubscriptionServiceIndex === -1 && isEditMode">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Action</th>
                         <td mat-cell *matCellDef="let element" data-label="Action">
-                            <button type="button" mat-icon-button color="primary" (click)="editPlan(element)">
+                            <button type="button" matIconButton (click)="editPlan(element)">
                                 <mat-icon class="material-icons-outlined mat-icon-18"> edit </mat-icon>
                             </button>
-                            <button type="button" mat-icon-button color="warn" (click)="deletePlan(element)">
+                            <button type="button" matIconButton (click)="deletePlan(element)">
                                 <mat-icon class="material-icons-outlined mat-icon-18"> delete </mat-icon>
                             </button>
                         </td>
@@ -1853,7 +1803,7 @@
 <ng-template #taxes>
     <div class="flex flex-col">
         <div>
-            <button mat-flat-button color="primary" (click)="addNewOption()">
+            <button matButton="filled" (click)="addNewOption()">
                 <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Tax
             </button>
         </div>
@@ -1880,7 +1830,7 @@
             <ng-container matColumnDef="action">
                 <th mat-header-cell *matHeaderCellDef>Action</th>
                 <td mat-cell *matCellDef="let tax">
-                    <button type="button" mat-icon-button color="warn" (click)="deleteTax(tax)">
+                    <button type="button" matIconButton (click)="deleteTax(tax)">
                         <mat-icon class="material-icons-outlined mat-icon-18"> delete </mat-icon>
                     </button>
                 </td>
@@ -2014,7 +1964,7 @@
                     hidden
                     (change)="onBrandingLogoFileSelected($event)"
                 />
-                <button type="button" mat-stroked-button (click)="logoFileInput.click()" [disabled]="isLogoUploading">
+                <button type="button" matButton="outlined" (click)="logoFileInput.click()" [disabled]="isLogoUploading">
                     <mat-icon class="material-icons-outlined mat-icon-18">
                         {{ isLogoUploading ? 'hourglass_empty' : 'upload_file' }}
                     </mat-icon>
@@ -2025,7 +1975,7 @@
                         class="mat-body-2 text-secondary"
                         >{{ logoFileInput.files?.[0]?.name || 'Logo selected' }}</span
                     >
-                    <button type="button" mat-icon-button (click)="logoUrl = null; logoFileInput.value = ''">
+                    <button type="button" matIconButton (click)="logoUrl = null; logoFileInput.value = ''">
                         <mat-icon class="material-icons-outlined mat-icon-18 text-danger">close</mat-icon>
                     </button>
                 </ng-container>

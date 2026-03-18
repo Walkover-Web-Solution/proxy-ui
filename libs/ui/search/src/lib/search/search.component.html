@@ -33,9 +33,8 @@
     <button
         (click)="clearSearch()"
         class="icon-btn-md"
-        color="primary"
         *ngIf="searchFormControl.value?.length && !hideCloseIcon"
-        mat-icon-button
+        matIconButton
         matSuffix
     >
         <mat-icon>close</mat-icon>
