@@ -23,7 +23,7 @@
                     }}</mat-icon>
                     }
                     <mat-menu #clientsMenu="matMenu" class="profile-sub-dropdown" xPosition="before">
-                        @if (clients$ | async as clientList) {
+                        @if (clients$ | async; as clientList) {
                         <mat-list>
                             @if (clientList.totalEntityCount > 25) {
                             <proxy-cdk-scroll (fetchNextPage)="fetchClientsNextPage()">
@@ -80,7 +80,7 @@
             [isSideNavOpen]="!(isSideNavOpen | async)"
         ></proxy-main-left-side-nav>
         <!-- Proxy Sidenav::END -->
-        @if (logInData$ | async as user) {
+        @if (logInData$ | async; as user) {
         <div class="mat-drawer-footer">
             <button matButton [matMenuTriggerFor]="menu">
                 <div class="flex items-center">
