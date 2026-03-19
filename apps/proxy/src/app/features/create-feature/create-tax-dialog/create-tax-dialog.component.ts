@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { NgIf, NgFor } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,8 +19,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-create-tax-dialog',
     imports: [
-        NgIf,
-        NgFor,
+        NgTemplateOutlet,
         ReactiveFormsModule,
         MatButtonModule,
         MatIconModule,
@@ -47,17 +46,17 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
                 <form [formGroup]="taxForm" class="single-form-layout">
                     <div class="form-section">
                         <div class="form-grid">
-                            <ng-container *ngFor="let fieldKey of getTaxFormFields()">
-                                <ng-container
-                                    *ngTemplateOutlet="
-                                        inputField;
-                                        context: {
-                                            fieldControl: taxForm.get('taxesForm').get(fieldKey),
-                                            fieldConfig: getFieldConfig(fieldKey)
-                                        }
-                                    "
-                                ></ng-container>
-                            </ng-container>
+                            @for (fieldKey of getTaxFormFields(); track fieldKey) {
+                            <ng-container
+                                *ngTemplateOutlet="
+                                    inputField;
+                                    context: {
+                                        fieldControl: taxForm.get('taxesForm').get(fieldKey),
+                                        fieldConfig: getFieldConfig(fieldKey)
+                                    }
+                                "
+                            ></ng-container>
+                            }
                         </div>
                     </div>
                 </form>
@@ -72,98 +71,95 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
         </mat-dialog-actions>
 
         <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
-            <div class="mb-3" *ngIf="fieldConfig?.type === 'checkbox'">
+            @if (fieldConfig?.type === 'checkbox') {
+            <div class="mb-3">
                 <mat-slide-toggle [formControl]="fieldControl" [required]="fieldConfig?.is_required">
                     {{ fieldConfig?.label }}
                 </mat-slide-toggle>
-                <mat-hint *ngIf="fieldConfig?.hint" class="d-block">{{ fieldConfig?.hint }}</mat-hint>
-                <mat-error *ngIf="getFieldError(fieldControl, fieldConfig)" class="d-block">{{
-                    getFieldError(fieldControl, fieldConfig)
-                }}</mat-error>
+                @if(fieldConfig?.hint){
+                <mat-hint class="d-block">{{ fieldConfig?.hint }}</mat-hint>
+                } @if(getFieldError(fieldControl, fieldConfig)){
+                <mat-error class="d-block">{{ getFieldError(fieldControl, fieldConfig) }}</mat-error>
+                }
             </div>
-
-            <mat-form-field appearance="outline" class="w-100 mb-3" *ngIf="fieldConfig?.type !== 'checkbox'">
-                <mat-label
-                    >{{ fieldConfig?.label }}
-                    <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span></mat-label
-                >
+            } @if (fieldConfig?.type !== 'checkbox') {
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+                <mat-label>
+                    {{ fieldConfig?.label }}
+                    @if (fieldConfig?.is_required){<span class="text-danger">*</span>}
+                </mat-label>
 
                 <!-- Text Input -->
+                @if (fieldConfig?.type === 'text' || fieldConfig?.type === 'number') {
                 <input
-                    *ngIf="fieldConfig?.type === 'text' || fieldConfig?.type === 'number'"
                     matInput
                     [formControl]="fieldControl"
                     [type]="fieldConfig?.type === 'number' ? 'number' : 'text'"
                     [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
                     [required]="fieldConfig?.is_required"
                 />
+                }
 
                 <!-- Chip List -->
-                <ng-container *ngIf="fieldConfig?.type === 'chipList'">
-                    <ng-container *ngIf="fieldConfig?.label">
-                        <mat-chip-grid #chipList [formControl]="fieldControl" aria-label="{{ fieldConfig?.label }}">
-                            <mat-chip-row
-                                *ngFor="let item of getChipListArray(fieldConfig?.label + '_0')"
-                                (removed)="
-                                    updateChipListValues('delete', fieldConfig?.label + '_0', fieldControl, item)
-                                "
-                                [removable]="!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)"
-                                disableRipple
-                            >
-                                {{ item }}
-                                <button
-                                    type="button"
-                                    matChipRemove
-                                    *ngIf="!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)"
-                                >
-                                    <mat-icon>cancel</mat-icon>
-                                </button>
-                            </mat-chip-row>
-                            <input
-                                matChipInput
-                                type="text"
-                                [placeholder]="
-                                    (getChipListArray(fieldConfig?.label + '_0')?.length || 0) > 0
-                                        ? ''
-                                        : 'Enter ' + fieldConfig?.label
-                                "
-                                autocomplete="off"
-                                [matChipInputFor]="chipList"
-                                [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
-                                (matChipInputTokenEnd)="
-                                    updateChipListValues('add', fieldConfig?.label + '_0', fieldControl, $event.value)
-                                "
-                            />
-                        </mat-chip-grid>
-                    </ng-container>
-                </ng-container>
+                @if (fieldConfig?.type === 'chipList') { @if (fieldConfig?.label) {
+                <mat-chip-grid #chipList [formControl]="fieldControl" aria-label="{{ fieldConfig?.label }}">
+                    @for (item of getChipListArray(fieldConfig?.label + '_0'); track item) {
+                    <mat-chip-row
+                        (removed)="updateChipListValues('delete', fieldConfig?.label + '_0', fieldControl, item)"
+                        [removable]="!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)"
+                        disableRipple
+                    >
+                        {{ item }}
+                        @if (!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)) {
+                        <button type="button" matChipRemove>
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                        }
+                    </mat-chip-row>
+                    }
+                    <input
+                        matChipInput
+                        type="text"
+                        [placeholder]="
+                            (getChipListArray(fieldConfig?.label + '_0')?.length || 0) > 0
+                                ? ''
+                                : 'Enter ' + fieldConfig?.label
+                        "
+                        autocomplete="off"
+                        [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
+                        (matChipInputTokenEnd)="
+                            updateChipListValues('add', fieldConfig?.label + '_0', fieldControl, $event.value)
+                        "
+                    />
+                </mat-chip-grid>
+                } }
 
                 <!-- Textarea -->
+                @if (fieldConfig?.type === 'textarea') {
                 <textarea
-                    *ngIf="fieldConfig?.type === 'textarea'"
                     matInput
                     [formControl]="fieldControl"
                     [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
                     rows="3"
                     [required]="fieldConfig?.is_required"
                 ></textarea>
+                }
 
                 <!-- Select -->
-                <mat-select
-                    *ngIf="fieldConfig?.type === 'select'"
-                    [formControl]="fieldControl"
-                    [required]="fieldConfig?.is_required"
-                >
-                    <mat-option *ngFor="let option of getSelectOptions(fieldConfig)" [value]="option.value">
-                        {{ option.label }}
-                    </mat-option>
+                @if (fieldConfig?.type === 'select') {
+                <mat-select [formControl]="fieldControl" [required]="fieldConfig?.is_required">
+                    @for (option of getSelectOptions(fieldConfig); track option.value) {
+                    <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                    }
                 </mat-select>
-
-                <mat-hint *ngIf="fieldConfig?.hint">{{ fieldConfig?.hint }}</mat-hint>
-                <mat-error *ngIf="getFieldError(fieldControl, fieldConfig)">{{
-                    getFieldError(fieldControl, fieldConfig)
-                }}</mat-error>
+                } @if (fieldConfig?.hint) {
+                <mat-hint>{{ fieldConfig?.hint }}</mat-hint>
+                } @if (getFieldError(fieldControl, fieldConfig)) {
+                <mat-error>{{ getFieldError(fieldControl, fieldConfig) }}</mat-error>
+                }
             </mat-form-field>
+            }
         </ng-template>
     `,
     styles: [

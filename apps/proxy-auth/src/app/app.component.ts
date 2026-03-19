@@ -12,7 +12,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
-    public title = 'otp-provider';
+    public title = 'Public Scripts';
 
     constructor() {
         super();
@@ -32,12 +32,12 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         }
         if (!environment.production) {
             const sendOTPConfig = {
-                referenceId: '4512365e1772083784699fda48abd90',
-                type: 'user-management', // 'user-management', 'organization-details'
+                // referenceId: '4512365e1772083784699fda48abd90',
+                type: 'organization-details', // 'user-management', 'organization-details'
                 // loginRedirectUrl: 'https://www.google.com',
                 // showCompanyDetails: false,
                 authToken:
-                    'VWVJOXVmR0NEcXlmbUJpcjd6M0dnN1YvbEJxcTNSSWp1cFd0U01mQmpZMHdzRW82N0w3QzZid3Y0eFpDNkx6UU1OWEsxNDdMQ0JLb1JSZzV0Y2dBc0ExbWxHaFVGa3FmQnpXcEpRT2ZndGczditFL1hpWXZKdEJha25DcVhxR1hWSFQvQVlZZE1LNThxWk9sTERhMnVwUkVyNWxDdkhUdWF1TDFKc0JiMG91eXhRUndxQjRLclpWL21OVXNxL0RYK0ZiZ005MU1RUlByQmo3aGxGdFpDZz09',
+                    'dERVbGpiRy9WVTliV0M3L2NNYjdSQ21DZDdiVERvZ2xrU3ZSUFJ4T2JIZFBJT2hXZFdqNWRJVzZwemZLV3Q0bnkwSTF3Ui8vaGMrUEMwdjhYSFFYdHdEUnd1c2o0U1VhOXV5SExEV0Q3dEF3VEovRlZLeWRuWkV5ZFl6RDVHcnhlRnhtN2FYRm1jZ2ZhVWZHNGxDSTRDMWIxbXlkMkgyTUgxSS9sQlV0dVRxL01IdUFVTnlPUVE5b3NqczEyZ0dUcXFDenMyY3pGa3JnUHRVQlFWUndVQT09',
                 // type: 'user-management',
                 // isHidden: true,
                 // theme: 'dark',

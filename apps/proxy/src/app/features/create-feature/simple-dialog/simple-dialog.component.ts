@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,8 +17,6 @@ import { HttpClient } from '@angular/common/http';
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-simple-dialog',
     imports: [
-        NgFor,
-        NgIf,
         NgTemplateOutlet,
         ReactiveFormsModule,
         MatButtonModule,
@@ -38,19 +36,17 @@ import { HttpClient } from '@angular/common/http';
         </div>
         <mat-dialog-content>
             <form [formGroup]="metricForm" class="metric-form">
-                <ng-container *ngFor="let fieldKey of getFormFields()">
-                    <ng-container *ngIf="!isFieldHidden(fieldKey)">
-                        <ng-container
-                            *ngTemplateOutlet="
-                                inputField;
-                                context: {
-                                    fieldControl: metricForm.get(fieldKey),
-                                    fieldConfig: getFieldConfig(fieldKey)
-                                }
-                            "
-                        ></ng-container>
-                    </ng-container>
-                </ng-container>
+                @for (fieldKey of getFormFields(); track fieldKey) { @if (!isFieldHidden(fieldKey)) {
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: metricForm.get(fieldKey),
+                            fieldConfig: getFieldConfig(fieldKey)
+                        }
+                    "
+                ></ng-container>
+                } }
             </form>
         </mat-dialog-content>
 
@@ -62,58 +58,60 @@ import { HttpClient } from '@angular/common/http';
         </mat-dialog-actions>
 
         <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
-            <div class="mb-1" *ngIf="fieldConfig?.type === 'checkbox'">
+            @if (fieldConfig?.type === 'checkbox') {
+            <div class="mb-1">
                 <mat-slide-toggle [formControl]="fieldControl" [required]="fieldConfig?.is_required">
                     {{ fieldConfig?.label }}
                 </mat-slide-toggle>
-                <mat-hint *ngIf="fieldConfig?.hint" class="d-block">{{ fieldConfig?.hint }}</mat-hint>
-                <mat-error *ngIf="getFieldError(fieldControl, fieldConfig)" class="d-block">{{
-                    getFieldError(fieldControl, fieldConfig)
-                }}</mat-error>
+                @if (fieldConfig?.hint) {
+                <mat-hint class="d-block">{{ fieldConfig?.hint }}</mat-hint>
+                } @if (getFieldError(fieldControl, fieldConfig)) {
+                <mat-error class="d-block">{{ getFieldError(fieldControl, fieldConfig) }}</mat-error>
+                }
             </div>
-
-            <mat-form-field appearance="outline" class="w-100 mb-1" *ngIf="fieldConfig?.type !== 'checkbox'">
-                <mat-label
-                    >{{ fieldConfig?.label }}
-                    <span class="text-danger" *ngIf="fieldConfig?.is_required">*</span></mat-label
-                >
+            } @if (fieldConfig?.type !== 'checkbox') {
+            <mat-form-field appearance="outline" class="w-100 mb-1">
+                <mat-label>
+                    {{ fieldConfig?.label }}
+                    @if (fieldConfig?.is_required) {<span class="text-danger">*</span>}
+                </mat-label>
 
                 <!-- Text Input -->
+                @if (fieldConfig?.type === 'text' || fieldConfig?.type === 'number') {
                 <input
-                    *ngIf="fieldConfig?.type === 'text' || fieldConfig?.type === 'number'"
                     matInput
                     [formControl]="fieldControl"
                     [type]="fieldConfig?.type === 'number' ? 'number' : 'text'"
                     [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
                     [required]="fieldConfig?.is_required"
                 />
+                }
 
                 <!-- Textarea -->
+                @if (fieldConfig?.type === 'textarea') {
                 <textarea
-                    *ngIf="fieldConfig?.type === 'textarea'"
                     matInput
                     [formControl]="fieldControl"
                     [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
                     rows="3"
                     [required]="fieldConfig?.is_required"
                 ></textarea>
+                }
 
                 <!-- Select -->
-                <mat-select
-                    *ngIf="fieldConfig?.type === 'select'"
-                    [formControl]="fieldControl"
-                    [required]="fieldConfig?.is_required"
-                >
-                    <mat-option *ngFor="let option of getSelectOptions(fieldConfig)" [value]="option.value">
-                        {{ option.label }}
-                    </mat-option>
+                @if (fieldConfig?.type === 'select') {
+                <mat-select [formControl]="fieldControl" [required]="fieldConfig?.is_required">
+                    @for (option of getSelectOptions(fieldConfig); track option.value) {
+                    <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                    }
                 </mat-select>
-
-                <mat-hint *ngIf="fieldConfig?.hint">{{ fieldConfig?.hint }}</mat-hint>
-                <mat-error *ngIf="getFieldError(fieldControl, fieldConfig)">{{
-                    getFieldError(fieldControl, fieldConfig)
-                }}</mat-error>
+                } @if (fieldConfig?.hint) {
+                <mat-hint>{{ fieldConfig?.hint }}</mat-hint>
+                } @if (getFieldError(fieldControl, fieldConfig)) {
+                <mat-error>{{ getFieldError(fieldControl, fieldConfig) }}</mat-error>
+                }
             </mat-form-field>
+            }
         </ng-template>
     `,
 })
