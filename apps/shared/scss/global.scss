@@ -3,7 +3,7 @@
 @use './mixins/common-utils' as *;
 
 .service-list {
-    .mat-mdc-list {
+    .mat-mdc-list-base {
         .mat-mdc-list-item {
             .mdc-list-item__primary-text {
                 display: flex;

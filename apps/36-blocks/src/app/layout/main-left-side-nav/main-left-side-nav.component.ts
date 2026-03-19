@@ -27,4 +27,12 @@ import { BaseComponent } from '@proxy/ui/base-component';
 })
 export class MainLeftSideNavComponent extends BaseComponent {
     public isSideNavOpen = input<boolean>();
+
+    protected readonly navItems = [
+        { route: 'logs', icon: 'description', label: 'Logs' },
+        { route: 'dashboard', icon: 'dashboard', label: 'Dashboard' },
+        { route: 'features', icon: 'featured_play_list', label: 'Blocks' },
+        { route: 'users', icon: 'person', label: 'User' },
+        { route: 'chatbot', icon: 'face', label: 'Ask Ai' },
+    ];
 }

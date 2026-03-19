@@ -979,7 +979,7 @@
                 ></ng-container>
 
                 @if (isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1) {
-                <div class="flex items-center gap-2 mb-6">
+                <div class="flex items-center gap-2 mt-6">
                     <span class="mat-body-2">Block new user sign-ups: </span>
                     <mat-slide-toggle
                         [formControl]="featureForm.get('authorizationDetails.blockNewUserSignUps')"
@@ -1222,7 +1222,7 @@
             </button>
         </div>
         } } @if (fieldConfig?.hint) {
-        <mat-hint class="flex items-center justify-between gap-1">
+        <mat-hint class="flex items-center justify-between gap-1 font-10">
             {{ fieldConfig?.hint }}
             @if (fieldConfig?.hintInfo) {
             <mat-icon matSuffix [matTooltip]="fieldConfig.hintInfo" matTooltipPosition="above">info</mat-icon>

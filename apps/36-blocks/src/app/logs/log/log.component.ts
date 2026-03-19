@@ -86,7 +86,6 @@ type FilterTypes = 'environments' | 'projects';
         SearchComponent,
         RemoveCharacterDirective,
         CDKScrollComponent,
-        LogsDetailsSideDialogComponent,
     ],
     templateUrl: './log.component.html',
     styleUrls: ['./log.component.scss'],

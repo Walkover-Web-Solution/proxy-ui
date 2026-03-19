@@ -28,11 +28,9 @@ import { DateRangePickerComponent } from '@proxy/date-range-picker';
 import { NoRecordFoundComponent } from '@proxy/ui/no-record-found';
 import { MatPaginatorGotoComponent } from '@proxy/ui/mat-paginator-goto';
 import { SearchComponent } from '@proxy/ui/search';
-import { RemoveCharacterDirective } from '@proxy/directives/RemoveCharacterDirective';
 import { SkeletonDirective } from '@proxy/directives/skeleton';
 import { MarkdownModule } from 'ngx-markdown';
 import { CopyButtonComponent } from '@proxy/ui/copy-button';
-import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { ManagementComponent } from '../management/management.component';
 import { BaseComponent } from '@proxy/ui/base-component';
 import {
@@ -81,11 +79,9 @@ import { MatMenuTrigger } from '@angular/material/menu';
         NoRecordFoundComponent,
         MatPaginatorGotoComponent,
         SearchComponent,
-        RemoveCharacterDirective,
         SkeletonDirective,
         MarkdownModule,
         CopyButtonComponent,
-        ConfirmDialogComponent,
         ManagementComponent,
     ],
     templateUrl: './user.component.html',

@@ -17,7 +17,6 @@ import { SearchComponent } from '@proxy/ui/search';
 import { SkeletonDirective } from '@proxy/directives/skeleton';
 import { LoaderComponent } from '@proxy/ui/loader';
 import { CopyButtonComponent } from '@proxy/ui/copy-button';
-import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { PAGE_SIZE_OPTIONS } from '@proxy/constant';
 import { omit } from 'lodash-es';
@@ -49,7 +48,6 @@ import { IPaginatedResponse } from '@proxy/models/root-models';
         SkeletonDirective,
         LoaderComponent,
         CopyButtonComponent,
-        ConfirmDialogComponent,
     ],
     templateUrl: './feature.component.html',
     styleUrls: ['./feature.component.scss'],

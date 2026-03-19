@@ -1,64 +1,18 @@
 <!-- Menus::START -->
-<div class="default-drawer proxy-sidenav">
+<div class="service-list">
     <mat-nav-list>
+        @for (item of navItems; track item.route) {
         <a
             mat-list-item
-            [routerLink]="['logs']"
+            [routerLink]="[item.route]"
             routerLinkActive="active-list-item"
             [matTooltipPosition]="'right'"
-            [matTooltip]="isSideNavOpen() ? 'Logs' : ''"
+            [matTooltip]="isSideNavOpen() ? item.label : ''"
         >
-            <mat-icon matListIcon class="mat-icon-20 material-icons-outlined p-0" aria-hidden="false"
-                >description</mat-icon
-            >
-            <span matLine class="menu-list-span menu-label">Logs</span>
+            <mat-icon matListIcon aria-hidden="false">{{ item.icon }}</mat-icon>
+            <span matLine>{{ item.label }}</span>
         </a>
-
-        <a
-            mat-list-item
-            [routerLink]="['dashboard']"
-            routerLinkActive="active-list-item"
-            [matTooltipPosition]="'right'"
-            [matTooltip]="isSideNavOpen() ? 'Dashboard' : ''"
-        >
-            <mat-icon matListIcon class="mat-icon-20 material-icons-outlined p-0" aria-hidden="false"
-                >dashboard</mat-icon
-            >
-            <span matLine class="menu-list-span menu-label">Dashboard</span>
-        </a>
-
-        <a
-            mat-list-item
-            [routerLink]="['features']"
-            routerLinkActive="active-list-item"
-            [matTooltipPosition]="'right'"
-            [matTooltip]="isSideNavOpen() ? 'Features' : ''"
-        >
-            <mat-icon matListIcon class="mat-icon-20 material-icons-outlined p-0" aria-hidden="false"
-                >featured_play_list</mat-icon
-            >
-            <span matLine class="menu-list-span menu-label">Blocks</span>
-        </a>
-        <a
-            mat-list-item
-            [routerLink]="['users']"
-            routerLinkActive="active-list-item"
-            [matTooltipPosition]="'right'"
-            [matTooltip]="isSideNavOpen() ? 'Users' : ''"
-        >
-            <mat-icon matListIcon class="mat-icon-20 material-icons-outlined p-0" aria-hidden="false">person</mat-icon>
-            <span matLine class="menu-list-span menu-label">User</span>
-        </a>
-        <a
-            mat-list-item
-            [routerLink]="['chatbot']"
-            routerLinkActive="active-list-item"
-            [matTooltipPosition]="'right'"
-            [matTooltip]="isSideNavOpen() ? 'chatbot' : ''"
-        >
-            <mat-icon matListIcon class="mat-icon-20 material-icons-outlined p-0" aria-hidden="false">face</mat-icon>
-            <span matLine class="menu-list-span menu-label">Ask Ai</span>
-        </a>
+        }
     </mat-nav-list>
 </div>
 <!-- Menus::END -->
