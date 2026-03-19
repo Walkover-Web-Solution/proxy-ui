@@ -4,6 +4,7 @@ import * as dayjs from 'dayjs';
 
 @Pipe({
     name: 'dateadd',
+    standalone: true,
 })
 export class DateAddPipe implements PipeTransform {
     constructor() {}
@@ -13,9 +14,3 @@ export class DateAddPipe implements PipeTransform {
         return currentDate;
     }
 }
-
-@({
-    declarations: [DateAddPipe],
-    exports: [DateAddPipe],
-})
-export class PipesChartDateAddModule {}

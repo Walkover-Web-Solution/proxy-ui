@@ -1,1 +1,1 @@
-export * from './lib/pipes-replace.module';
+export { ReplacePipe } from './lib/pipes-replace.module';

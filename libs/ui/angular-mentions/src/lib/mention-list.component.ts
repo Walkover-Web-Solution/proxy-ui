@@ -93,12 +93,10 @@ import { getCaretCoordinates } from './caret-coords';
             [class.mention-menu]="!styleOff"
             [class.mention-dropdown]="!styleOff && dropUp"
         >
-            <span class="ml-4" *ngIf="items?.length === 0"> No Match Found </span>
-            <li
-                *ngFor="let item of items; let i = index"
-                [class.active]="activeIndex == i"
-                [class.mention-active]="!styleOff && activeIndex == i"
-            >
+            @if (items?.length === 0){
+            <span class="ml-4"> No Match Found </span>
+            } @for (item of items; track item; let i = $index) {
+            <li [class.active]="activeIndex == i" [class.mention-active]="!styleOff && activeIndex == i">
                 <a
                     class="dropdown-item overflow-dotted"
                     [class.mention-item]="!styleOff"
@@ -110,6 +108,7 @@ import { getCaretCoordinates } from './caret-coords';
                     ></ng-template>
                 </a>
             </li>
+            }
         </ul>
     `,
     host: {
