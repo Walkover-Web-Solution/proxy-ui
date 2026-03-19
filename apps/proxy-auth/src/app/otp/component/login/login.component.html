@@ -1,4 +1,4 @@
-<div class="dialog-header" [class.dark-theme]="theme() === 'dark'">
+<div class="dialog-header" [class.dark-theme]="theme() === PublicScriptTheme.Dark">
     <button matIconButton class="back-button close-dialog" (click)="changeStep(step - 1)">
         <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#5f6368">
             <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
@@ -19,7 +19,7 @@
     proxyMarkAllAsTouched
     [buttonRef]="loginBtn"
     (valid)="login()"
-    [class.dark-theme-login]="theme() === 'dark'"
+    [class.dark-theme-login]="theme() === PublicScriptTheme.Dark"
 >
     <div class="heading">Login</div>
     @if (loginForm.get('username'); as userNameControl) {
@@ -58,8 +58,8 @@
 
     <!-- hCaptcha Component -->
     <div class="hcaptcha-container">
-        <!-- hCaptcha is in 2.6 version but angular is in 14, due to this incompatibility, we are using ng-container to wrap the hCaptcha component instead of using [theme]="theme === 'dark' ? 'dark' : 'light'"-->
-        @if (theme() === 'dark') {
+        <!-- hCaptcha is in 2.6 version but angular is in 14, due to this incompatibility, we are using ng-container to wrap the hCaptcha component instead of using [theme]="theme() === 'dark' ? 'dark' : 'light'"-->
+        @if (theme() === PublicScriptTheme.Dark) {
         <ng-hcaptcha
             #hCaptcha
             (verify)="onHCaptchaVerify($event)"
@@ -69,7 +69,7 @@
             size="normal"
         >
         </ng-hcaptcha>
-        } @if (theme() === 'light') {
+        } @if (theme() === PublicScriptTheme.Light) {
         <ng-hcaptcha
             #hCaptcha
             (verify)="onHCaptchaVerify($event)"
@@ -101,7 +101,7 @@
     [buttonRef]="sendOtpBtn"
     (valid)="sendOtp()"
     proxyMarkAllAsTouched
-    [class.dark-theme-login]="theme() === 'dark'"
+    [class.dark-theme-login]="theme() === PublicScriptTheme.Dark"
 >
     <div class="heading">Reset Password</div>
     <ng-container
@@ -129,7 +129,7 @@
     proxyMarkAllAsTouched
     [buttonRef]="verifyOtpBtn"
     (valid)="verfiyOtp()"
-    [class.dark-theme-login]="theme() === 'dark'"
+    [class.dark-theme-login]="theme() === PublicScriptTheme.Dark"
 >
     <div class="heading">Change Password</div>
 

@@ -12,6 +12,7 @@ import {
     input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PublicScriptTheme } from '@proxy/constant';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -86,6 +87,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public userToken = input<string>();
     public pass = input<string>();
     public theme = input<string>();
+    protected readonly PublicScriptTheme = PublicScriptTheme;
     public exclude_role_ids = input<any[]>([]);
     public include_role_ids = input<any[]>([]);
     @Input() public isHidden: boolean = false;
@@ -468,12 +470,12 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
-            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === PublicScriptTheme.Dark ? ['dark-dialog'] : [],
             disableClose: false,
         });
 
         // Add body class for dark theme select panel styling
-        if (this.theme() === 'dark') {
+        if (this.theme() === PublicScriptTheme.Dark) {
             document.body.classList.add('dark-dialog-open');
             this.addUserDialogRef.afterClosed().subscribe(() => {
                 document.body.classList.remove('dark-dialog-open');
@@ -481,7 +483,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
 
         // Add body class for dark theme select panel styling
-        if (this.theme() === 'dark') {
+        if (this.theme() === PublicScriptTheme.Dark) {
             document.body.classList.add('dark-dialog-open');
             this.addUserDialogRef.afterClosed().subscribe(() => {
                 document.body.classList.remove('dark-dialog-open');
@@ -492,7 +494,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
     public deleteUser(user: any, index: number): void {
         const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
             width: '400px',
-            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === PublicScriptTheme.Dark ? ['dark-dialog'] : [],
         });
 
         dialogRef.componentRef.setInput('title', '<b>Remove User</b>');
@@ -645,12 +647,12 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
-            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === PublicScriptTheme.Dark ? ['dark-dialog'] : [],
             disableClose: false,
         });
 
         // Add body class for dark theme select panel styling
-        if (this.theme() === 'dark') {
+        if (this.theme() === PublicScriptTheme.Dark) {
             document.body.classList.add('dark-dialog-open');
             this.addUserDialogRef.afterClosed().subscribe(() => {
                 document.body.classList.remove('dark-dialog-open');
@@ -658,7 +660,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
 
         // Add body class for dark theme select panel styling
-        if (this.theme() === 'dark') {
+        if (this.theme() === PublicScriptTheme.Dark) {
             document.body.classList.add('dark-dialog-open');
             this.addUserDialogRef.afterClosed().subscribe(() => {
                 document.body.classList.remove('dark-dialog-open');
@@ -666,7 +668,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         }
 
         // Add body class for dark theme select panel styling
-        if (this.theme() === 'dark') {
+        if (this.theme() === PublicScriptTheme.Dark) {
             document.body.classList.add('dark-dialog-open');
             this.addUserDialogRef.afterClosed().subscribe(() => {
                 document.body.classList.remove('dark-dialog-open');
@@ -858,7 +860,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addRoleForm.reset();
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
-            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === PublicScriptTheme.Dark ? ['dark-dialog'] : [],
             disableClose: false,
         });
     }
@@ -1038,7 +1040,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         // Open the add user dialog (which contains the role form)
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
-            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === PublicScriptTheme.Dark ? ['dark-dialog'] : [],
             disableClose: false,
         });
 
@@ -1086,7 +1088,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
         this.addPermissionTabForm.reset();
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
-            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === PublicScriptTheme.Dark ? ['dark-dialog'] : [],
             disableClose: false,
         });
     }
@@ -1103,7 +1105,7 @@ export class UserManagementComponent extends BaseComponent implements OnInit, Af
 
         this.addUserDialogRef = this.dialog.open(this.addUserDialog, {
             width: '500px',
-            panelClass: this.theme() === 'dark' ? ['dark-dialog'] : [],
+            panelClass: this.theme() === PublicScriptTheme.Dark ? ['dark-dialog'] : [],
             disableClose: false,
         });
     }

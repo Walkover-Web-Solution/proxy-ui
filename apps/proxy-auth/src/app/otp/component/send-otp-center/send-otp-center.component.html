@@ -159,7 +159,7 @@
             <!-- hCaptcha Component -->
             <div class="hcaptcha-container">
                 <!-- hCaptcha is in 2.6 version but angular is in 14, due to this incompatibility, we are using ng-container to wrap the hCaptcha component instead of using [theme]="theme() === 'dark' ? 'dark' : 'light'"-->
-                @if (theme() === 'dark') {
+                @if (theme() === PublicScriptTheme.Dark) {
                 <ng-hcaptcha
                     #hCaptcha
                     (verify)="onHCaptchaVerify($event)"
@@ -168,7 +168,7 @@
                     theme="dark"
                     size="normal"
                 ></ng-hcaptcha>
-                } @if (theme() === 'light') {
+                } @if (theme() === PublicScriptTheme.Light) {
                 <ng-hcaptcha
                     #hCaptcha
                     (verify)="onHCaptchaVerify($event)"

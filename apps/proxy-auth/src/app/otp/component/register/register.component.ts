@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash-es';
+import { PublicScriptTheme } from '@proxy/constant';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,7 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
-import { RemoveCharacterDirective } from '@proxy/directives/RemoveCharacterDirective';
 import { OtpService } from './../../service/otp.service';
 import { environment } from './../../../../environments/environment';
 import {
@@ -59,7 +59,6 @@ import { IGetOtpRes } from '../../model/otp';
         MatProgressSpinnerModule,
         MatIconModule,
         MarkAllAsTouchedDirective,
-        RemoveCharacterDirective,
     ],
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
@@ -74,6 +73,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public showCompanyDetails = input<boolean>(true);
     public version = input<string>('v1');
     public theme = input<string>();
+    protected readonly PublicScriptTheme = PublicScriptTheme;
     public firstName = input<string>();
     public lastName = input<string>();
     public email = input<string>();
@@ -660,7 +660,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         if (this.version() !== 'v2') {
             return null;
         }
-        const isDark = this.theme() === 'dark';
+        const isDark = this.theme() === PublicScriptTheme.Dark;
         return isDark
             ? this.uiPreferences?.dark_theme_primary_color || null
             : this.uiPreferences?.light_theme_primary_color || null;
@@ -700,6 +700,6 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     public get isDarkTheme(): boolean {
-        return this.theme() === 'dark';
+        return this.theme() === PublicScriptTheme.Dark;
     }
 }

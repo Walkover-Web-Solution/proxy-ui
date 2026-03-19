@@ -8,7 +8,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
-import { RemoveCharacterDirective } from '@proxy/directives/RemoveCharacterDirective';
 import { LoginComponentStore } from './login.store';
 import { BehaviorSubject, filter, interval, Observable, Subscription, takeUntil } from 'rxjs';
 import { IAppState } from '../../store/app.state';
@@ -20,7 +19,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IlogInData, IOtpData, IResetPassword } from '../../model/otp';
 import { EMAIL_OR_MOBILE_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
-import { META_TAG_ID } from '@proxy/constant';
+import { META_TAG_ID, PublicScriptTheme } from '@proxy/constant';
 import { environment } from 'apps/proxy-auth/src/environments/environment';
 import { OtpUtilityService } from '../../service/otp-utility.service';
 import { NgHcaptchaComponent } from 'ng-hcaptcha';
@@ -37,7 +36,6 @@ import { NgHcaptchaComponent } from 'ng-hcaptcha';
         MatIconModule,
         MatRadioModule,
         MarkAllAsTouchedDirective,
-        RemoveCharacterDirective,
     ],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
@@ -47,6 +45,7 @@ import { NgHcaptchaComponent } from 'ng-hcaptcha';
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public loginServiceData = input<any>();
     public theme = input<string>();
+    protected readonly PublicScriptTheme = PublicScriptTheme;
     public togglePopUp = output<void>();
     public closePopUp = output<void>();
     public openPopUp = output<any>();

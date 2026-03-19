@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, inject } from '@angular/core';
+import { PublicScriptTheme } from '@proxy/constant';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -19,6 +20,7 @@ import { IAppState } from '../../store/app.state';
 export class ConfirmationDialogComponent {
     deleteCompany$: Observable<any>;
     theme: string;
+    protected readonly PublicScriptTheme = PublicScriptTheme;
 
     public dialogRef = inject<MatDialogRef<ConfirmationDialogComponent>>(MatDialogRef);
     public data = inject<{ companyId: any; authToken: string; theme: string }>(MAT_DIALOG_DATA);
@@ -27,7 +29,7 @@ export class ConfirmationDialogComponent {
     constructor() {
         this.deleteCompany$ = this.store.pipe(select(leaveCompanySuccess));
         this.theme = this.data.theme;
-        if (this.theme === 'dark') {
+        if (this.theme === PublicScriptTheme.Dark) {
             this.dialogRef.addPanelClass('confirm-dialog-dark');
         }
     }

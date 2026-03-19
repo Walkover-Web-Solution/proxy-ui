@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation, inject, input } from '@angular/core';
+import { PublicScriptTheme } from '@proxy/constant';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -38,6 +39,7 @@ import { EMAIL_REGEX } from '@proxy/regex';
 export class OrganizationDetailsComponent extends BaseComponent implements OnInit, OnDestroy {
     public authToken = input<string>();
     public theme = input<string>();
+    protected readonly PublicScriptTheme = PublicScriptTheme;
 
     public organizationForm = new FormGroup({
         companyName: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),

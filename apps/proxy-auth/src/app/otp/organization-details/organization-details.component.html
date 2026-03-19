@@ -1,4 +1,8 @@
-<div class="container" [class.dark-theme]="theme() === 'dark'" [class.light-theme]="theme() !== 'dark'">
+<div
+    class="container"
+    [class.dark-theme]="theme() === PublicScriptTheme.Dark"
+    [class.light-theme]="theme() !== PublicScriptTheme.Dark"
+>
     <div class="organization-details-container">
         <!-- ── Header ── -->
         <div class="page-header">
@@ -155,7 +159,9 @@
                 <mat-select
                     formControlName="timeZoneName"
                     placeholder="Select timezone"
-                    [panelClass]="theme() === 'dark' ? 'org-dark-select-panel' : 'org-light-select-panel'"
+                    [panelClass]="
+                        theme() === PublicScriptTheme.Dark ? 'org-dark-select-panel' : 'org-light-select-panel'
+                    "
                 >
                     @for (tz of timezones; track tz) {
                     <mat-option [value]="getTimezoneValue(tz)">

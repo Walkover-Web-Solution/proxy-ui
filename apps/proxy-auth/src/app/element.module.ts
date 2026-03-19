@@ -1,4 +1,5 @@
 import { ApplicationRef, DoBootstrap, Injector, NgModule, inject } from '@angular/core';
+import { PublicScriptType } from '@proxy/constant';
 import { createCustomElement, NgElement, WithProperties } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -96,9 +97,9 @@ window['initVerification'] = (config: any) => {
 
             // omitting keys which are not required in API payload; query params fill in missing values
             sendOtpElement.otherData = { ...paramsData, ...omit(config, RESERVED_KEYS) };
-            if (document.getElementById('proxyContainer') && config?.type !== 'user-management') {
+            if (document.getElementById('proxyContainer') && config?.type !== PublicScriptType.UserManagement) {
                 document.getElementById('proxyContainer').append(sendOtpElement);
-            } else if (config?.type === 'user-management') {
+            } else if (config?.type === PublicScriptType.UserManagement) {
                 // Master element always stays in body (hidden) for window events
                 sendOtpElement.style.display = 'none';
                 sendOtpElement.setAttribute('data-master', 'true');

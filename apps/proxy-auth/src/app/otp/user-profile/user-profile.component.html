@@ -1,4 +1,8 @@
-<div class="container" [class.dark-theme]="theme() === 'dark'" [class.light-theme]="theme() !== 'dark'">
+<div
+    class="container"
+    [class.dark-theme]="theme() === PublicScriptTheme.Dark"
+    [class.light-theme]="theme() !== PublicScriptTheme.Dark"
+>
     <!-- ── USER DETAILS CARD ── -->
     <div class="profile-card mb-6">
         <div class="card-header">

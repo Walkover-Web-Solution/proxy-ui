@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
+import { PublicScriptType, SendOtpConfig } from '@proxy/constant';
 
 @Component({
     selector: 'proxy-root',
@@ -13,6 +14,9 @@ import { BaseComponent } from '@proxy/ui/base-component';
 })
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     public title = 'Public Scripts';
+    protected readonly referenceId = '4512365e1772083784699fda48abd90';
+    protected readonly authToken =
+        'dERVbGpiRy9WVTliV0M3L2NNYjdSQ21DZDdiVERvZ2xrU3ZSUFJ4T2JIZFBJT2hXZFdqNWRJVzZwemZLV3Q0bnkwSTF3Ui8vaGMrUEMwdjhYSFFYdHdEUnd1c2o0U1VhOXV5SExEV0Q3dEF3VEovRlZLeWRuWkV5ZFl6RDVHcnhlRnhtN2FYRm1jZ2ZhVWZHNGxDSTRDMWIxbXlkMkgyTUgxSS9sQlV0dVRxL01IdUFVTnlPUVE5b3NqczEyZ0dUcXFDenMyY3pGa3JnUHRVQlFWUndVQT09';
 
     constructor() {
         super();
@@ -31,18 +35,16 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
             return;
         }
         if (!environment.production) {
-            const sendOTPConfig = {
-                // referenceId: '4512365e1772083784699fda48abd90',
-                type: 'organization-details', // 'user-management', 'organization-details'
-                // loginRedirectUrl: 'https://www.google.com',
-                // showCompanyDetails: false,
-                authToken:
-                    'dERVbGpiRy9WVTliV0M3L2NNYjdSQ21DZDdiVERvZ2xrU3ZSUFJ4T2JIZFBJT2hXZFdqNWRJVzZwemZLV3Q0bnkwSTF3Ui8vaGMrUEMwdjhYSFFYdHdEUnd1c2o0U1VhOXV5SExEV0Q3dEF3VEovRlZLeWRuWkV5ZFl6RDVHcnhlRnhtN2FYRm1jZ2ZhVWZHNGxDSTRDMWIxbXlkMkgyTUgxSS9sQlV0dVRxL01IdUFVTnlPUVE5b3NqczEyZ0dUcXFDenMyY3pGa3JnUHRVQlFWUndVQT09',
-                // type: 'user-management',
+            const sendOTPConfig: SendOtpConfig = {
+                referenceId: this.referenceId,
+                authToken: this.authToken,
+                type: PublicScriptType.UserDetails,
+                showCompanyDetails: false,
                 // isHidden: true,
                 // theme: 'dark',
-                // isPreview: true,
-                // isLogin: true,
+                isPreview: true,
+                isLogin: true,
+                // loginRedirectUrl: 'https://www.google.com',
                 target: '_self',
                 success: (data) => {
                     console.log('success response', data);

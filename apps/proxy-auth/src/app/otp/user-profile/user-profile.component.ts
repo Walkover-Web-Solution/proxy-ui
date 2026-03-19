@@ -10,13 +10,12 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
-import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation, inject, input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, of, takeUntil, take, filter } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil, take, filter } from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
-import { getUserDetails, leaveCompany, updateUserError } from '../store/actions/otp.action';
+import { getUserDetails } from '../store/actions/otp.action';
 import {
     error,
     getUserProfileData,
@@ -32,6 +31,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component';
 import { updateUser } from '../store/actions/otp.action';
 import { UPDATE_REGEX } from '@proxy/regex';
+import { PublicScriptTheme } from '@proxy/constant';
 @Component({
     selector: 'proxy-user-profile',
     imports: [
@@ -47,7 +47,6 @@ import { UPDATE_REGEX } from '@proxy/regex';
         MatProgressSpinnerModule,
         MatDialogModule,
         MatTableModule,
-        MarkAllAsTouchedDirective,
     ],
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.scss'],
@@ -59,6 +58,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     public target = input<string>();
     public showCard = input<boolean>();
     public theme = input<string>();
+    protected readonly PublicScriptTheme = PublicScriptTheme;
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
@@ -155,7 +155,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '400px',
             data: { companyId: companyId, authToken: this.authToken(), theme: this.theme() },
-            panelClass: this.theme() === 'dark' ? 'confirm-dialog-dark' : 'confirm-dialog-light',
+            panelClass: this.theme() === PublicScriptTheme.Dark ? 'confirm-dialog-dark' : 'confirm-dialog-light',
             // Prevent CDK BlockScrollStrategy from applying left/top on <html> when dialog opens
             scrollStrategy: this.overlay.scrollStrategies.noop(),
         });

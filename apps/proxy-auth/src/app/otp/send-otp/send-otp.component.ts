@@ -16,7 +16,7 @@ import {
     ViewEncapsulation,
     inject,
 } from '@angular/core';
-import { META_TAG_ID } from '@proxy/constant';
+import { META_TAG_ID, PublicScriptTheme, PublicScriptType } from '@proxy/constant';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
@@ -42,11 +42,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionCenterComponent } from '../component/subscription-center/subscription-center.component';
 import { environment } from 'apps/proxy-auth/src/environments/environment';
 
-export enum Theme {
-    LIGHT = 'light',
-    DARK = 'dark',
-    SYSTEM = 'system',
-}
 export enum SendOtpCenterVersion {
     V1 = 'v1',
     V2 = 'v2',
@@ -84,6 +79,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     @Input() public isLogin: boolean;
     @Input() public loginRedirectUrl: string;
     @Input() public theme: string;
+    protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected readonly PublicScriptType = PublicScriptType;
     @Input() public version: string = SendOtpCenterVersion.V1;
     @Input() public exclude_role_ids: any[] = [];
     @Input() public include_role_ids: any[] = [];
@@ -176,13 +173,13 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     ngOnInit() {
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
         prefersDark.addEventListener('change', (event) => {
-            this.theme = event?.matches ? Theme.DARK : Theme.LIGHT;
+            this.theme = event?.matches ? PublicScriptTheme.Dark : PublicScriptTheme.Light;
         });
         if (!this.theme) {
-            this.theme = prefersDark.matches ? Theme.DARK : Theme.LIGHT;
+            this.theme = prefersDark.matches ? PublicScriptTheme.Dark : PublicScriptTheme.Light;
         }
         this.selectWidgetTheme$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((theme) => {
-            if (theme?.ui_preferences?.theme !== Theme.SYSTEM) {
+            if (theme?.ui_preferences?.theme !== PublicScriptTheme.System) {
                 this.theme = theme?.ui_preferences.theme || theme;
             }
             this.loginWidgetData = theme?.registerState;
@@ -192,7 +189,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.isCreateAccountTextAppended = theme?.ui_preferences?.create_account_link || false;
             this.dialogBorderRadius = this.getBorderRadiusCssValue(theme?.ui_preferences?.border_radius);
         });
-        if (this.type === 'subscription') {
+        if (this.type === PublicScriptType.Subscription) {
             // Load subscription plans first
             this.store.dispatch(getSubscriptionPlans({ referenceId: this.referenceId, authToken: this.authToken }));
             this.store.pipe(select(subscriptionPlansData), takeUntil(this.destroy$)).subscribe((subscriptionPlans) => {
@@ -295,7 +292,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             this.createAccountTextAppended = false;
 
             if (intial) {
-                if (this.type === 'subscription') {
+                if (this.type === PublicScriptType.Subscription) {
                     if (!this.isPreview && this.referenceElement) {
                         this.appendSubscriptionButton(this.referenceElement);
                     }
@@ -457,7 +454,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                         <li class="feature-item included d-flex align-items-center position-relative p-0 gap-2 m-0">
                             <span class="feature-icon included">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="${
-                                    this.theme === 'dark' ? '#ffffff' : '#4d4d4d'
+                                    this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#4d4d4d'
                                 }">
                                     <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
                                 </svg>
@@ -504,7 +501,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                         <li class="feature-item extra d-flex align-items-center position-relative p-0 gap-2 m-0">
                             <span class="feature-icon extra">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="${
-                                    this.theme === 'dark' ? '#ffffff' : '#4d4d4d'
+                                    this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#4d4d4d'
                                 }">
                                     <path d="m354-287 126-76 126 77-33-144 111-96-146-13-58-136-58 135-146 13 111 97-33 143ZM233-120l65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-350Z" />
                                 </svg>
@@ -665,8 +662,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
             /* Plan Card Styles */
 .plan-card {
-                background: ${this.theme === Theme.DARK ? 'transparent' : '#ffffff'};
-                border: ${this.theme === Theme.DARK ? '1px solid #e6e6e6' : '2px solid #e6e6e6'};
+                background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : '#ffffff'};
+                border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #e6e6e6' : '2px solid #e6e6e6'};
                 border-radius: 4px;
                 padding: 26px 24px;
                 box-shadow: none;
@@ -686,7 +683,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             }
 
             .plan-card.highlighted {
-                border: ${this.theme === Theme.DARK ? '2px solid #ffffff' : '2px solid #000000'};
+                border: ${this.theme === PublicScriptTheme.Dark ? '2px solid #ffffff' : '2px solid #000000'};
                 box-shadow: 0 0 0 0px #000000 !important;
             }
 
@@ -909,7 +906,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 box-sizing: border-box;
                 font-family: 'Inter', sans-serif;
                  -webkit-font-smoothing: antialiased;
-                 color: ${this.theme === 'dark' ? '#ffffff' : ''}!important;
+                 color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : ''}!important;
               }
 
             /* Divider */
@@ -1117,8 +1114,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         dark_theme_primary_color?: string;
     }): string {
         const isDark =
-            this.theme === Theme.DARK ||
-            (this.theme === Theme.SYSTEM &&
+            this.theme === PublicScriptTheme.Dark ||
+            (this.theme === PublicScriptTheme.System &&
                 typeof window !== 'undefined' &&
                 window.matchMedia('(prefers-color-scheme: dark)').matches);
         if (this.version !== SendOtpCenterVersion.V2) {
@@ -1199,7 +1196,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         usernameLabel.style.cssText = `
             font-size: 14px;
             font-weight: 500;
-            color: ${this.theme === 'dark' ? '#e5e7eb' : '#5d6164'};
+            color: ${this.theme === PublicScriptTheme.Dark ? '#e5e7eb' : '#5d6164'};
         `;
 
         const usernameInput: HTMLInputElement = this.renderer.createElement('input');
@@ -1210,10 +1207,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             width: 100%;
             height: 44px;
             padding: 0 16px;
-            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #ffffff' : '1px solid #cbd5e1'};
             border-radius: ${borderRadius};
-            background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
-            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : '#ffffff'};
+            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
             font-size: 14px;
             outline: none;
             box-sizing: border-box;
@@ -1221,7 +1218,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
         const usernameNote: HTMLElement = this.renderer.createElement('p');
         usernameNote.textContent = 'Note: Please enter your Mobile number with the country code (e.g. 91)';
-        const noteColor = this.version === 'v2' ? primaryColor : this.theme === 'dark' ? '#e5e7eb' : '#5d6164';
+        const noteColor =
+            this.version === 'v2' ? primaryColor : this.theme === PublicScriptTheme.Dark ? '#e5e7eb' : '#5d6164';
         usernameNote.style.cssText = `
             font-size: 12px;
             line-height: 18px;
@@ -1256,10 +1254,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             width: 100%;
             height: 44px;
             padding: 0 44px 0 16px;
-            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #ffffff' : '1px solid #cbd5e1'};
             border-radius: ${borderRadius};
-            background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
-            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : '#ffffff'};
+            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
             font-size: 14px;
             outline: none;
             box-sizing: border-box;
@@ -1274,12 +1272,12 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             justify-content: center;
             padding: 8px 0;
             box-sizing: border-box;
-            background: ${this.theme === 'dark' ? 'transparent' : 'transparent'};
+            background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : 'transparent'};
         `;
         const hcaptchaPlaceholder: HTMLElement = this.renderer.createElement('div');
         hcaptchaPlaceholder.style.cssText = `
             display: inline-block;
-            background: ${this.theme === 'dark' ? 'transparent' : 'transparent'};
+            background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : 'transparent'};
             border-radius: ${borderRadius};
         `;
         this.renderer.appendChild(hcaptchaWrapper, hcaptchaPlaceholder);
@@ -1364,7 +1362,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             hcaptchaPlaceholder.innerHTML = '';
             hCaptchaWidgetId = instance.render(hcaptchaPlaceholder, {
                 sitekey: environment.hCaptchaSiteKey,
-                theme: this.theme === 'dark' ? 'dark' : 'light',
+                theme: this.theme === PublicScriptTheme.Dark ? PublicScriptTheme.Dark : PublicScriptTheme.Light,
                 callback: (token: string) => {
                     hCaptchaToken = token;
                     this.setInlineLoginError(errorText, '');
@@ -1596,10 +1594,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         `;
 
         const hiddenIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="${
-            this.theme === 'dark' ? '#e5e7eb' : '#5d6164'
+            this.theme === PublicScriptTheme.Dark ? '#e5e7eb' : '#5d6164'
         }" xmlns="http://www.w3.org/2000/svg" style="display: block;"><path d="M12.01 20c-5.065 0-9.586-4.211-12.01-8.424 2.418-4.103 6.943-7.576 12.01-7.576 5.135 0 9.635 3.453 11.999 7.564-2.241 4.43-6.726 8.436-11.999 8.436zm-10.842-8.416c.843 1.331 5.018 7.416 10.842 7.416 6.305 0 10.112-6.103 10.851-7.405-.772-1.198-4.606-6.595-10.851-6.595-6.116 0-10.025 5.355-10.842 6.584zm10.832-4.584c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5zm0 1c-2.208 0-4 1.792-4 4s1.792 4 4 4 4-1.792 4-4-1.792-4-4-4z"/></svg>`;
         const visibleIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="${
-            this.theme === 'dark' ? '#e5e7eb' : '#5d6164'
+            this.theme === PublicScriptTheme.Dark ? '#e5e7eb' : '#5d6164'
         }" xmlns="http://www.w3.org/2000/svg" style="display: block;"><path d="M8.137 15.147c-.71-.857-1.146-1.947-1.146-3.147 0-2.76 2.241-5 5-5 1.201 0 2.291.435 3.148 1.145l1.897-1.897c-1.441-.738-3.122-1.248-5.035-1.248-6.115 0-10.025 5.355-10.842 6.584.529.834 2.379 3.527 5.113 5.428l1.865-1.865zm6.294-6.294c-.673-.53-1.515-.853-2.44-.853-2.207 0-4 1.792-4 4 0 .923.324 1.765.854 2.439l5.586-5.586zm7.56-6.146l-19.292 19.293-.708-.707 3.548-3.548c-2.298-1.612-4.234-3.885-5.548-6.169 2.418-4.103 6.943-7.576 12.01-7.576 2.065 0 4.021.566 5.782 1.501l3.501-3.501.707.707zm-2.465 3.879l-.734.734c2.236 1.619 3.628 3.604 4.061 4.274-.739 1.303-4.546 7.406-10.852 7.406-1.425 0-2.749-.368-3.951-.938l-.748.748c1.475.742 3.057 1.19 4.699 1.19 5.274 0 9.758-4.006 11.999-8.436-1.087-1.891-2.63-3.637-4.474-4.978zm-3.535 5.414c0-.554-.113-1.082-.317-1.562l.734-.734c.361.69.583 1.464.583 2.296 0 2.759-2.24 5-5 5-.832 0-1.604-.223-2.295-.583l.734-.735c.48.204 1.007.318 1.561.318 2.208 0 4-1.792 4-4z"/></svg>`;
 
         const renderIcon = () => {
@@ -1666,7 +1664,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             font-size: 16px;
             line-height: 20px;
             font-weight: 600;
-            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
             margin-bottom: 16px;
         `;
 
@@ -1688,10 +1686,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             width: 100%;
             height: 44px;
             padding: 0 16px;
-            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #ffffff' : '1px solid #cbd5e1'};
             border-radius: ${borderRadius};
-            background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
-            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : '#ffffff'};
+            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
             font-size: 14px;
             outline: none;
             box-sizing: border-box;
@@ -1828,7 +1826,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             font-size: 16px;
             line-height: 20px;
             font-weight: 600;
-            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
             margin-bottom: 8px;
         `;
 
@@ -1836,7 +1834,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
         const userInfo: HTMLElement = this.renderer.createElement('p');
         userInfo.style.cssText = `
             font-size: 14px;
-            color: ${this.theme === 'dark' ? '#e5e7eb' : '#5d6164'};
+            color: ${this.theme === PublicScriptTheme.Dark ? '#e5e7eb' : '#5d6164'};
             margin: 0 0 8px 0;
         `;
         userInfo.innerHTML = `${userDetails} <a href="javascript:void(0)" style="color: #1976d2; text-decoration: none;">Change</a>`;
@@ -1921,10 +1919,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             width: 100%;
             height: 44px;
             padding: 0 16px;
-            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #ffffff' : '1px solid #cbd5e1'};
             border-radius: ${borderRadius};
-            background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
-            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : '#ffffff'};
+            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
             font-size: 14px;
             outline: none;
             box-sizing: border-box;
@@ -1951,7 +1949,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             'Password should contain at least one Capital Letter, one Small Letter, one Digit and one Symbol (min 8 characters)';
         passwordHint.style.cssText = `
             font-size: 12px;
-            color: ${this.theme === 'dark' ? '#9ca3af' : '#6b7280'};
+            color: ${this.theme === PublicScriptTheme.Dark ? '#9ca3af' : '#6b7280'};
             margin: -8px 0 12px 0;
         `;
 
@@ -2094,7 +2092,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             font-size: 16px;
             line-height: 20px;
             font-weight: 600;
-            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
             margin-bottom: 0px;
             text-align: center;
         `;
@@ -2114,10 +2112,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             width: 100%;
             height: 44px;
             padding: 0 16px;
-            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #ffffff' : '1px solid #cbd5e1'};
             border-radius: ${borderRadius};
-            background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
-            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : '#ffffff'};
+            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
             font-size: 14px;
             outline: none;
             box-sizing: border-box;
@@ -2125,7 +2123,8 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
 
         const usernameNote: HTMLElement = this.renderer.createElement('p');
         usernameNote.textContent = 'Note: Please enter your Mobile number with the country code (e.g. 91)';
-        const noteColor = this.version === 'v2' ? primaryColor : this.theme === 'dark' ? '#e5e7eb' : '#5d6164';
+        const noteColor =
+            this.version === 'v2' ? primaryColor : this.theme === PublicScriptTheme.Dark ? '#e5e7eb' : '#5d6164';
         usernameNote.style.cssText = `
             font-size: 12px;
             line-height: 18px;
@@ -2156,10 +2155,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             width: 100%;
             height: 44px;
             padding: 0 44px 0 16px;
-            border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #ffffff' : '1px solid #cbd5e1'};
             border-radius: ${borderRadius};
-            background: ${this.theme === 'dark' ? 'transparent' : '#ffffff'};
-            color: ${this.theme === 'dark' ? '#ffffff' : '#1f2937'};
+            background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : '#ffffff'};
+            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
             font-size: 14px;
             outline: none;
             box-sizing: border-box;
@@ -2174,12 +2173,12 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             justify-content: center;
             padding: 8px 0;
             box-sizing: border-box;
-            background: ${this.theme === 'dark' ? 'transparent' : 'transparent'};
+            background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : 'transparent'};
         `;
         const hcaptchaPlaceholder: HTMLElement = this.renderer.createElement('div');
         hcaptchaPlaceholder.style.cssText = `
             display: inline-block;
-            background: ${this.theme === 'dark' ? 'transparent' : 'transparent'};
+            background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : 'transparent'};
             border-radius: ${borderRadius};
         `;
         this.renderer.appendChild(hcaptchaWrapper, hcaptchaPlaceholder);
@@ -2252,7 +2251,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
             hcaptchaPlaceholder.innerHTML = '';
             hCaptchaWidgetId = instance.render(hcaptchaPlaceholder, {
                 sitekey: environment.hCaptchaSiteKey,
-                theme: this.theme === 'dark' ? 'dark' : 'light',
+                theme: this.theme === PublicScriptTheme.Dark ? PublicScriptTheme.Dark : PublicScriptTheme.Light,
                 callback: (token: string) => {
                     hCaptchaToken = token;
                     this.setInlineLoginError(errorText, '');
@@ -2443,7 +2442,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 justify-content: center;
                 font-size: 14px;
                 background-color: transparent;
-                border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #d1d5db'};
+                border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #ffffff' : '1px solid #d1d5db'};
                 border-radius: ${borderRadius};
                 cursor: pointer;
                 visibility: ${isOtpButton ? 'hidden' : 'visible'};
@@ -2485,10 +2484,10 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 ${useDiv ? '' : 'gap: 12px;'}
                 font-size: 14px;
                 background-color: transparent;
-                border: ${this.theme === 'dark' ? '1px solid #ffffff' : '1px solid #000000'};
+                border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #ffffff' : '1px solid #000000'};
                 border-radius: ${borderRadius};
                 height: 44px;
-                color: ${this.theme === 'dark' ? '#ffffff' : '#111827'};
+                color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#111827'};
                 margin: 8px 8px 16px 8px;
                 cursor: pointer;
                 width: ${useDiv ? '316px' : '260px'};
@@ -2501,7 +2500,7 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
                 ${invertIcon ? 'filter: invert(1);' : ''}
             `;
             span.style.cssText = `
-                color: ${this.theme === 'dark' ? '#ffffff' : '#111827'};
+                color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#111827'};
                 font-weight: 600;
             `;
             image.src = buttonsData.icon;
@@ -2874,6 +2873,6 @@ export class SendOtpComponent extends BaseComponent implements OnInit, OnDestroy
     private shouldInvertIcon(buttonsData: any): boolean {
         const isApple = buttonsData?.text?.toLowerCase()?.includes('apple');
         const isPassword = buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication;
-        return this.theme === Theme.DARK && (isApple || isPassword);
+        return this.theme === PublicScriptTheme.Dark && (isApple || isPassword);
     }
 }

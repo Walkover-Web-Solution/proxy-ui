@@ -8,10 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { NgHcaptchaModule } from 'ng-hcaptcha';
-import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
-import { RemoveCharacterDirective } from '@proxy/directives/RemoveCharacterDirective';
-import { RegisterComponent } from '../register/register.component';
-import { LoginComponent } from '../login/login.component';
 import {
     AfterViewInit,
     ChangeDetectionStrategy,
@@ -60,7 +56,7 @@ import { debounceTime, distinctUntilChanged, skip, take, takeUntil } from 'rxjs/
 import { EMAIL_REGEX, EMAIL_OR_MOBILE_REGEX, ONLY_INTEGER_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { IGetOtpRes, IlogInData, IOtpData, IResetPassword, IWidgetResponse } from '../../model/otp';
 import { IntlPhoneLib } from '@proxy/utils';
-import { META_TAG_ID } from '@proxy/constant';
+import { META_TAG_ID, PublicScriptTheme } from '@proxy/constant';
 import { environment } from 'apps/proxy-auth/src/environments/environment';
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { LoginComponentStore } from '../login/login.store';
@@ -92,8 +88,6 @@ export enum InputFields {
         MatProgressSpinnerModule,
         MatRadioModule,
         NgHcaptchaModule,
-        MarkAllAsTouchedDirective,
-        RemoveCharacterDirective,
     ],
     templateUrl: './send-otp-center.component.html',
     styleUrls: ['./send-otp-center.component.scss'],
@@ -112,6 +106,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public show_social_login_icons = input<boolean>(false);
     public isCreateAccountLink = input<boolean>();
     public theme = input<string>();
+    protected readonly PublicScriptTheme = PublicScriptTheme;
     public isUserProxyContainer = input<boolean>(true);
     public togglePopUp = output<void>();
     public successReturn = output<any>();
@@ -677,7 +672,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         if (this.version() !== SendOtpCenterVersion.V2) {
             return null;
         }
-        const isDark = this.theme() === 'dark';
+        const isDark = this.theme() === PublicScriptTheme.Dark;
         return isDark
             ? this.uiPreferences?.dark_theme_primary_color || null
             : this.uiPreferences?.light_theme_primary_color || null;
@@ -717,7 +712,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     }
 
     public get isDarkTheme(): boolean {
-        return this.theme() === 'dark';
+        return this.theme() === PublicScriptTheme.Dark;
     }
 
     public get signUpButtonText(): string {

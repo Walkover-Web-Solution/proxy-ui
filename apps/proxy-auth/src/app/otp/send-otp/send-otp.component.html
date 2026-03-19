@@ -4,19 +4,23 @@
     [class.with-reference-id]="referenceId"
     [class.without-reference-id]="authToken"
     [class.dark-theme]="
-        (theme === 'dark' && (type === 'user-management' || authToken)) || type === 'organization-details'
+        (theme === PublicScriptTheme.Dark && (type === PublicScriptType.UserManagement || authToken)) ||
+        type === PublicScriptType.OrganizationDetails
     "
     [class.user-profile-mode]="
-        authToken && type !== 'user-management' && type !== 'subscription' && type !== 'organization-details'
+        authToken &&
+        type !== PublicScriptType.UserManagement &&
+        type !== PublicScriptType.Subscription &&
+        type !== PublicScriptType.OrganizationDetails
     "
-    [class.user-management]="authToken && type === 'user-management'"
+    [class.user-management]="authToken && type === PublicScriptType.UserManagement"
 >
-    @if (!authToken && type !== 'subscription' && type !== 'user-management') {
+    @if (!authToken && type !== PublicScriptType.Subscription && type !== PublicScriptType.UserManagement) {
     <div
         class="otp-verification-dialog"
         [class.animation-complete]="animate"
         [class.register-user]="showRegistration | async"
-        [class.dark-theme]="theme === 'dark'"
+        [class.dark-theme]="theme === PublicScriptTheme.Dark"
         [style.border-radius]="dialogBorderRadius || null"
     >
         @if ((selectGetOtpInProcess$ | async) || (selectResendOtpInProcess$ | async) || (selectVerifyOtpInProcess$ |
@@ -69,7 +73,7 @@
         </proxy-login>
         }
     </div>
-    } @if (authToken && type === 'user-management') {
+    } @if (authToken && type === PublicScriptType.UserManagement) {
     <proxy-user-management
         [userToken]="authToken"
         [pass]="isRolePermission"
@@ -78,8 +82,8 @@
         [exclude_role_ids]="exclude_role_ids"
         [include_role_ids]="include_role_ids"
     ></proxy-user-management>
-    } @if (type === 'subscription') {
-    <div [class.subscription-dialog]="type === 'subscription' && isPreview">
+    } @if (type === PublicScriptType.Subscription) {
+    <div [class.subscription-dialog]="type === PublicScriptType.Subscription && isPreview">
         <proxy-subscription-center
             [referenceId]="referenceId"
             (togglePopUp)="handleSubscriptionToggle($event)"
@@ -88,11 +92,13 @@
             [loginRedirectUrl]="loginRedirectUrl"
         ></proxy-subscription-center>
     </div>
-    } @if (authToken && type !== 'user-management' && type !== 'subscription' && type !== 'organization-details') {
+    } @if (authToken && type !== PublicScriptType.UserManagement && type !== PublicScriptType.Subscription && type !==
+    PublicScriptType.OrganizationDetails) {
     <proxy-user-profile [authToken]="authToken" [theme]="theme"></proxy-user-profile>
-    } @if (authToken && type === 'organization-details') {
+    } @if (authToken && type === PublicScriptType.OrganizationDetails) {
     <organization-details [authToken]="authToken" [theme]="theme"></organization-details>
-    } @if (!authToken && !type === 'user-management' && !type === 'subscription' && referenceId) {
+    } @if (!authToken && !type === PublicScriptType.UserManagement && !type === PublicScriptType.Subscription &&
+    referenceId) {
     <div class="otp-verification-footer">
         <span>Secured by</span>
         <svg
