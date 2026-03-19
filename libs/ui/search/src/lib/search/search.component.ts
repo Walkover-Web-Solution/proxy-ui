@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule, TooltipPosition } from '@angular/material/tooltip';
-import { KeyValuePipe } from '@angular/common';
+import { KeyValuePipe, NgTemplateOutlet } from '@angular/common';
 import { RemoveCharacterDirective } from '@proxy/directives/RemoveCharacterDirective';
 import { DEBOUNCE_TIME } from '@proxy/constant';
 import { debounceTime } from 'rxjs/operators';
@@ -29,6 +29,7 @@ import { debounceTime } from 'rxjs/operators';
         MatButtonModule,
         MatTooltipModule,
         KeyValuePipe,
+        NgTemplateOutlet,
         RemoveCharacterDirective,
     ],
     templateUrl: './search.component.html',
