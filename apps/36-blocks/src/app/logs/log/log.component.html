@@ -102,7 +102,7 @@
                                         multiple
                                     >
                                         <mat-checkbox
-                                            class="mat-option full-width-clickable-checkbox w-full"
+                                            class="mat-option w-full"
                                             [disableRipple]="true"
                                             [indeterminate]="
                                                 logsFilterForm.controls.requestType.value.length > 0 &&
@@ -272,7 +272,7 @@
                     ></tr>
 
                     <tr *matNoDataRow>
-                        <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
+                        <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
                             <proxy-no-record-found [title]="'logs'" [showBtn]="false"></proxy-no-record-found>
                         </td>
                     </tr>

@@ -1,46 +1,46 @@
-<mat-form-field class="search-form-field w-100" [class]="matFormFieldClass?.length ? matFormFieldClass : ''">
-    @if (!isRemoveChar) {
+<mat-form-field class="search-form-field w-full" [class]="matFormFieldClass()?.length ? matFormFieldClass() : ''">
+    @if (!isRemoveChar()) {
     <input
-        [attr.type]="type"
+        [attr.type]="type()"
         matInput
-        [placeholder]="placeholder"
+        [placeholder]="placeholder()"
         autocomplete="off"
-        [matTooltip]="toolTipString"
+        [matTooltip]="toolTipString()"
         #tooltip="matTooltip"
-        [matTooltipPosition]="toolTipPosition"
-        [matTooltipDisabled]="toolTipString.length > 0 ? toolTipDisable : true"
+        [matTooltipPosition]="toolTipPosition()"
+        [matTooltipDisabled]="toolTipString().length > 0 ? toolTipDisable() : true"
         [formControl]="searchFormControl"
-        (keydown.enter)="emitOnEnter ? emitInputChanges(searchFormControl.value) : null"
+        (keydown.enter)="emitOnEnter() ? emitInputChanges(searchFormControl.value) : null"
     />
     } @else {
     <input
-        [attr.type]="type"
+        [attr.type]="type()"
         matInput
-        [placeholder]="placeholder"
+        [placeholder]="placeholder()"
         autocomplete="off"
-        [matTooltip]="toolTipString"
+        [matTooltip]="toolTipString()"
         #tooltip="matTooltip"
-        [matTooltipPosition]="toolTipPosition"
-        [matTooltipDisabled]="toolTipString.length > 0 ? toolTipDisable : true"
+        [matTooltipPosition]="toolTipPosition()"
+        [matTooltipDisabled]="toolTipString().length > 0 ? toolTipDisable() : true"
         [formControl]="searchFormControl"
         proxyRemoveCharacter
-        [charactersToRemove]="charactersToRemove?.length ? charactersToRemove : ['e', '+', '-']"
-        (keydown.enter)="emitOnEnter ? emitInputChanges(searchFormControl.value) : null"
+        [charactersToRemove]="charactersToRemove()?.length ? charactersToRemove() : ['e', '+', '-']"
+        (keydown.enter)="emitOnEnter() ? emitInputChanges(searchFormControl.value) : null"
     />
     }
     <mat-icon matPrefix>search</mat-icon>
-    @if (searchFormControl.value?.length && !hideCloseIcon) {
+    @if (searchFormControl.value?.length && !hideCloseIcon()) {
     <button (click)="clearSearch()" class="icon-btn-md" matIconButton matSuffix>
         <mat-icon>close</mat-icon>
     </button>
-    } @if (hint) {
-    <mat-hint [innerHTML]="hint"></mat-hint>
+    } @if (hint()) {
+    <mat-hint [innerHTML]="hint()"></mat-hint>
     }
 </mat-form-field>
 <ng-container *ngTemplateOutlet="error"></ng-container>
 
 <ng-template #error>
-    @if (searchFormControl.dirty) { @for (error of formErrors || {} | keyvalue; track error.key) { @if
+    @if (searchFormControl.dirty) { @for (error of formErrors() || {} | keyvalue; track error.key) { @if
     (searchFormControl.errors?.[error.key]) {
     <mat-error>{{ error.value }}</mat-error>
     } } }

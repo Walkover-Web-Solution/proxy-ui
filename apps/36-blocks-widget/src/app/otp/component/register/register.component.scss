@@ -37,11 +37,11 @@
 
 .error-message {
     font-size: 14px;
-    color: #f44336;
+    color: var(--proxy-error-40);
 }
 
 .success-message {
-    color: #4caf50 !important;
+    color: var(--color-common-green) !important;
     font-size: 12px;
     display: flex;
     gap: 4px;
@@ -60,7 +60,7 @@
     left: 0;
     right: 0;
     font-size: 12px;
-    color: #f44336;
+    color: var(--proxy-error-40);
     text-align: left;
 }
 
@@ -79,10 +79,9 @@ input[matinput]::-webkit-inner-spin-button {
 
 #country-code-number-info {
     margin: 0;
-    // padding: 4px 8px;
     font-size: 12px;
     text-align: left;
-    color: #5d6164;
+    color: var(--color-common-rock);
     height: 14px;
     margin-top: 24px;
 }
@@ -155,7 +154,7 @@ input[matinput]::-webkit-inner-spin-button {
         border: 0px !important;
     }
     .invalid-input {
-        outline: 2px solid #f44336;
+        outline: 2px solid var(--proxy-error-40);
     }
 }
 .otp-verification-content {
@@ -173,16 +172,16 @@ input[matinput]::-webkit-inner-spin-button {
         border: 0px !important;
     }
     .invalid-input {
-        outline: 2px solid #f44336;
+        outline: 2px solid var(--proxy-error-40);
     }
 }
 
 .otp-section {
     margin-top: 16px;
     padding: 16px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--color-common-border);
     border-radius: 8px;
-    background-color: #fafafa;
+    background-color: var(--color-common-app-bg);
 
     .otp-actions {
         display: flex;
@@ -208,7 +207,7 @@ input[matinput]::-webkit-inner-spin-button {
     .otp-input {
         width: 30px;
         height: 30px;
-        border: 1px solid #e0e0e0;
+        border: 1px solid var(--color-common-border);
         border-radius: 4px;
         text-align: center;
         font-size: 16px;
@@ -217,7 +216,7 @@ input[matinput]::-webkit-inner-spin-button {
 }
 
 .otp-error-message {
-    color: #f44336;
+    color: var(--proxy-error-40);
     font-size: 12px;
     margin-top: 8px;
     text-align: center;
@@ -228,19 +227,19 @@ input[matinput]::-webkit-inner-spin-button {
     text-align: center;
 
     .resend-otp-link {
-        color: #1976d2;
+        color: var(--color-common-primary);
         text-decoration: none;
         font-size: 14px;
         cursor: pointer;
         transition: color 0.3s ease;
 
         &:hover:not(.disabled) {
-            color: #1565c0;
+            color: var(--color-common-primary-dark);
             text-decoration: underline;
         }
 
         &.disabled {
-            color: #9e9e9e;
+            color: var(--color-common-grey);
             cursor: not-allowed;
             text-decoration: none;
         }
@@ -264,66 +263,10 @@ input[matinput]::-webkit-inner-spin-button {
     font-size: 12px;
 }
 
-// .form-wrapper.custom-radius {
-//     --mdc-outlined-text-field-container-shape: var(--field-border-radius, 4px);
-//     --mdc-filled-text-field-container-shape: var(--field-border-radius, 4px);
-//     --mat-form-field-container-shape: var(--field-border-radius, 4px);
-//     --mdc-shape-small: var(--field-border-radius, 4px);
-// }
-
-// :host ::ng-deep .form-wrapper.custom-radius {
-//     .mat-mdc-text-field-wrapper,
-//     .mdc-text-field--outlined {
-//         border-radius: var(--field-border-radius, 4px) !important;
-//     }
-
-//     .mdc-notched-outline__leading {
-//         border-radius: var(--field-border-radius, 4px) 0 0 var(--field-border-radius, 4px) !important;
-//         width: var(--field-border-radius, 4px) !important;
-//     }
-
-//     .mdc-notched-outline__trailing {
-//         border-radius: 0 var(--field-border-radius, 4px) var(--field-border-radius, 4px) 0 !important;
-//     }
-
-//     .mat-form-field-outline-start {
-//         border-radius: var(--field-border-radius, 4px) 0 0 var(--field-border-radius, 4px) !important;
-//         width: var(--field-border-radius, 4px) !important;
-//     }
-
-//     .mat-form-field-outline-end {
-//         border-radius: 0 var(--field-border-radius, 4px) var(--field-border-radius, 4px) 0 !important;
-//     }
-
-//     .mat-form-field-wrapper,
-//     .mat-form-field-flex,
-//     .mat-mdc-form-field-flex {
-//         border-radius: var(--field-border-radius, 4px) !important;
-//     }
-
-//     .mat-mdc-raised-button,
-//     .mat-mdc-flat-button,
-//     .mat-mdc-unelevated-button,
-//     .mat-raised-button,
-//     .mat-flat-button {
-//         border-radius: var(--field-border-radius, 4px) !important;
-//     }
-
-//     .register-user-details {
-//         .iti {
-//             border-radius: var(--field-border-radius, 4px) !important;
-//         }
-
-//         input[type='tel'] {
-//             border-radius: var(--field-border-radius, 4px) !important;
-//         }
-//     }
-// }
 .register-user-details {
     border-radius: var(--field-border-radius, 4px) !important;
 }
 
-// Dark theme styles
 .dark-text {
     color: #ffffff !important;
 
@@ -335,125 +278,3 @@ input[matinput]::-webkit-inner-spin-button {
 .dark-divider {
     border-top-color: #ffffff !important;
 }
-
-// :host ::ng-deep .form-wrapper.dark-theme-login {
-//     .mat-mdc-text-field-wrapper,
-//     .mdc-text-field--outlined {
-//         background-color: transparent !important;
-//     }
-
-//     .mdc-notched-outline__leading,
-//     .mdc-notched-outline__notch,
-//     .mdc-notched-outline__trailing {
-//         border-color: #ffffff !important;
-//     }
-
-//     .mat-mdc-form-field-flex {
-//         background-color: transparent !important;
-//     }
-
-//     .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-floating-label,
-//     .mat-mdc-form-field .mdc-floating-label {
-//         color: #ffffff !important;
-//     }
-
-//     .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input,
-//     .mat-mdc-input-element {
-//         color: #ffffff !important;
-//     }
-
-//     // Legacy Material — use `color` on outline containers so children
-//     // inherit via `currentColor`, preserving the gap's transparent top border
-//     .mat-form-field-appearance-outline {
-//         .mat-form-field-outline,
-//         .mat-form-field-outline-thick {
-//             color: #ffffff !important;
-//         }
-
-//         &.mat-form-field-invalid {
-//             .mat-form-field-outline,
-//             .mat-form-field-outline-thick {
-//                 color: red !important;
-//             }
-//         }
-//     }
-
-//     .mat-form-field-flex {
-//         background-color: transparent !important;
-//     }
-
-//     .mat-input-element {
-//         color: #ffffff !important;
-//     }
-
-//     .mat-form-field-label {
-//         color: #ffffff !important;
-//     }
-
-//     .register-user-details {
-//         input[type='tel'],
-//         [id^='init-contact'] {
-//             border-color: #ffffff !important;
-//             color: #ffffff !important;
-//             background-color: #616161 !important;
-
-//             &::placeholder {
-//                 color: rgba(255, 255, 255, 0.7) !important;
-//             }
-//         }
-
-//         .iti__selected-flag {
-//             background-color: #616161 !important;
-//         }
-
-//         .iti__arrow {
-//             border-top-color: #ffffff;
-//         }
-
-//         .iti__dial-code {
-//             color: #ffffff !important;
-//         }
-
-//         .iti--allow-dropdown {
-//             .iti__flag-container {
-//                 .iti__country-list {
-//                     background-color: #616161 !important;
-
-//                     .iti__country:hover,
-//                     .iti__country.iti__highlight {
-//                         background-color: #757575 !important;
-//                     }
-
-//                     .iti__country {
-//                         .iti__country-name {
-//                             color: #ffffff !important;
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
-// :host ::ng-deep .form-wrapper {
-//     .register-user-details {
-//         .iti--allow-dropdown {
-//             .iti__flag-container {
-//                 .iti__selected-flag {
-//                     border-top-left-radius: var(--field-border-radius, 4px) !important;
-//                     border-bottom-left-radius: var(--field-border-radius, 4px) !important;
-//                 }
-//             }
-//         }
-//     }
-// }
-
-// Custom button hover color applied via --btn-hover-color CSS property.
-// .has-hover-color is only added when buttonHoverColor is truthy.
-// .has-hover-color:hover:not([disabled]) {
-//     background-color: var(--btn-hover-color) !important;
-
-//     .mdc-button__ripple::before,
-//     .mat-mdc-button-ripple::before {
-//         opacity: 0 !important;
-//     }
-// }

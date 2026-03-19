@@ -39,12 +39,13 @@
     left: 0;
     right: 0;
     font-size: 12px;
-    color: #f44336;
+    color: var(--proxy-error-40);
     text-align: left;
 }
 
 /* Firefox hide */
 input[matinput][type='number'] {
+    appearance: textfield;
     -moz-appearance: textfield;
 }
 /* Chrome, Safari, Edge, Opera */
@@ -56,10 +57,9 @@ input[matinput]::-webkit-inner-spin-button {
 
 #country-code-number-info {
     margin: 0;
-    // padding: 4px 8px;
     font-size: 12px;
     text-align: left;
-    color: #5d6164;
+    color: var(--color-common-rock);
     height: 14px;
     margin-top: 24px;
 }
@@ -69,56 +69,9 @@ input[matinput]::-webkit-inner-spin-button {
     margin-top: 16px;
 }
 
-// Login section styles
 .login-section {
     width: 100%;
 }
-
-// .login-section.custom-radius {
-//     --mdc-outlined-text-field-container-shape: var(--field-border-radius, 8px);
-//     --mdc-filled-text-field-container-shape: var(--field-border-radius, 8px);
-//     --mat-form-field-container-shape: var(--field-border-radius, 8px);
-//     --mdc-shape-small: var(--field-border-radius, 8px);
-
-//     ::ng-deep {
-//         .mat-mdc-text-field-wrapper,
-//         .mdc-text-field--outlined {
-//             border-radius: var(--field-border-radius, 8px) !important;
-//         }
-
-//         .mdc-notched-outline__leading {
-//             border-radius: var(--field-border-radius, 8px) 0 0 var(--field-border-radius, 8px) !important;
-//             width: var(--field-border-radius, 8px) !important;
-//         }
-
-//         .mdc-notched-outline__trailing {
-//             border-radius: 0 var(--field-border-radius, 8px) var(--field-border-radius, 8px) 0 !important;
-//         }
-
-//         // Legacy Material
-//         .mat-form-field-outline-start {
-//             border-radius: var(--field-border-radius, 8px) 0 0 var(--field-border-radius, 8px) !important;
-//             width: var(--field-border-radius, 8px) !important;
-//         }
-
-//         .mat-form-field-outline-end {
-//             border-radius: 0 var(--field-border-radius, 8px) var(--field-border-radius, 8px) 0 !important;
-//         }
-
-//         .mat-form-field-wrapper,
-//         .mat-form-field-flex {
-//             border-radius: var(--field-border-radius, 8px) !important;
-//         }
-
-//         .mat-mdc-raised-button,
-//         .mat-mdc-flat-button,
-//         .mat-mdc-unelevated-button,
-//         .mat-raised-button,
-//         .mat-flat-button {
-//             border-radius: var(--field-border-radius, 8px) !important;
-//         }
-//     }
-// }
 
 .logo-container {
     width: 100%;
@@ -147,12 +100,6 @@ input[matinput]::-webkit-inner-spin-button {
 .login-field {
     width: 100%;
     margin-top: 16px;
-
-    .mat-icon-button {
-        height: 40px;
-        width: 40px;
-        line-height: 40px;
-    }
 }
 
 .login-btn {
@@ -166,7 +113,7 @@ input[matinput]::-webkit-inner-spin-button {
 
 .error-message {
     font-size: 14px;
-    color: #f44336;
+    color: var(--proxy-error-40);
     margin-bottom: 16px;
 }
 
@@ -211,13 +158,13 @@ input[matinput]::-webkit-inner-spin-button {
 .divider-line {
     flex: 1;
     height: 1px;
-    background-color: #e0e0e0;
+    background-color: var(--color-common-border);
 }
 
 .divider-text {
     padding: 0 16px;
     font-size: 12px;
-    color: #5d6164;
+    color: var(--color-common-rock);
     font-weight: 500;
 }
 
@@ -256,12 +203,12 @@ p {
 
 .user-info {
     font-size: 14px;
-    color: #333;
+    color: var(--color-common-text);
     margin-bottom: 8px;
 
     a {
         margin-left: 8px;
-        color: #1976d2;
+        color: var(--color-common-primary);
         cursor: pointer;
         &:hover {
             text-decoration: underline;
@@ -273,11 +220,11 @@ p {
 .auth-option-btn {
     width: 100%;
     height: 44px;
-    border: 1px solid #7d7c7c !important;
+    border: 1px solid var(--color-common-border) !important;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
-    background-color: #fff !important;
+    background-color: var(--color-common-white) !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -317,9 +264,9 @@ p {
     min-width: 56px !important;
     width: 56px !important;
     height: 56px !important;
-    border: 1px solid #d1d5db !important;
+    border: 1px solid var(--color-common-border) !important;
     border-radius: 8px;
-    background-color: #fff !important;
+    background-color: var(--color-common-white) !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -327,7 +274,7 @@ p {
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
     &:hover {
-        border-color: #9ca3af !important;
+        border-color: var(--color-common-grey) !important;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 }
@@ -338,7 +285,6 @@ p {
     object-fit: contain;
 }
 
-// Dark theme styles
 .dark-text {
     color: #ffffff !important;
 
@@ -346,65 +292,6 @@ p {
         color: #ffffff !important;
     }
 }
-
-// .dark-theme-login {
-//     ::ng-deep {
-//         .mat-mdc-text-field-wrapper,
-//         .mdc-text-field--outlined {
-//             background-color: transparent !important;
-//         }
-
-//         .mdc-notched-outline__leading,
-//         .mdc-notched-outline__notch,
-//         .mdc-notched-outline__trailing {
-//             border-color: #ffffff !important;
-//         }
-
-//         .mat-mdc-form-field-flex {
-//             background-color: transparent !important;
-//         }
-
-//         .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-floating-label,
-//         .mat-mdc-form-field .mdc-floating-label {
-//             color: #ffffff !important;
-//         }
-
-//         .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input,
-//         .mat-mdc-input-element {
-//             color: #ffffff !important;
-//         }
-
-//         // Legacy Material — set `color` on outline containers so children
-//         // inherit it via `border-color: currentColor`. Angular Material's own
-//         // `border-top-color: transparent` on the gap when the label floats
-//         // has higher specificity and remains unaffected.
-//         .mat-form-field-appearance-outline {
-//             .mat-form-field-outline,
-//             .mat-form-field-outline-thick {
-//                 color: #ffffff !important;
-//             }
-
-//             &.mat-form-field-invalid {
-//                 .mat-form-field-outline,
-//                 .mat-form-field-outline-thick {
-//                     color: red !important;
-//                 }
-//             }
-//         }
-
-//         .mat-form-field-flex {
-//             background-color: transparent !important;
-//         }
-
-//         .mat-input-element {
-//             color: #ffffff !important;
-//         }
-
-//         .mat-form-field-label {
-//             color: #ffffff !important;
-//         }
-//     }
-// }
 
 .auth-option-btn.dark-theme {
     background-color: transparent !important;
@@ -419,21 +306,3 @@ p {
 .auth-option-text.dark-theme {
     color: #ffffff;
 }
-
-// .auth-icon-btn.dark-theme {
-//     background-color: transparent !important;
-//     border-color: #ffffff !important;
-// }
-
-// Custom button hover color applied via --btn-hover-color CSS property.
-// The .has-hover-color class is only added when buttonHoverColor is truthy,
-// so this rule is a no-op when the preference is not configured.
-// .has-hover-color:hover:not([disabled]) {
-//     background-color: var(--btn-hover-color) !important;
-
-//     // Suppress Material's default state-layer ripple so it doesn't wash over the custom color
-//     .mdc-button__ripple::before,
-//     .mat-mdc-button-ripple::before {
-//         opacity: 0 !important;
-//     }
-// }

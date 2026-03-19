@@ -1,24 +1,12 @@
-/* You can add global styles to this file, and also import other style files */
-/* You can add global styles to this file, and also import other style files */
-@use 'tailwindcss';
-
 /* Plus imports for other components in your app.*/
-@use 'assets/scss/base/fonts';
 @use 'assets/scss/base/default-variables';
 @use 'assets/scss/base/light-theme';
 @use 'assets/scss/base/dark-theme';
 
 /* Reset*/
 @use 'assets/scss/base/reset';
-
 /* Component*/
 @use 'assets/scss/component/modal';
-
-/* Common Class Name*/
-@use 'assets/scss/utils/common-classes';
-
-/* Backgound Colors*/
-@use 'assets/scss/utils/bg-colors';
 
 /* Theme*/
 @use 'assets/scss/theme/default-theme';
@@ -38,15 +26,13 @@
 @use 'assets/scss/component/text-style';
 @use 'assets/scss/component/side-dialog';
 @use 'assets/scss/component/menu';
-@use 'assets/scss/component/checkbox';
 @use 'assets/scss/component/sidenav';
 @use 'assets/scss/component/select-option';
 @use 'assets/scss/component/chart';
 @use 'assets/scss/component/mat-list';
 @use 'assets/scss/component/stepper';
 @use 'assets/scss/component/animation';
-@use '../../shared/scss/component/mat-form-field';
-@use '../../shared/scss/component/global';
+@use '../../shared/scss/global';
 
 /*Main*/
 .app-content {
@@ -59,30 +45,7 @@
         overflow-x: auto;
     }
 }
-canvas {
-    width: 100% !important;
-}
 
-.no-data-placeholder {
-    font-weight: 500;
-    font-size: 15px;
-    line-height: 18px;
-    text-align: center;
-    color: var(--color-common-grey) !important;
-    align-items: center;
-    img {
-        margin-bottom: 25px;
-    }
-}
-
-// Sort Button
-
-.bottom-sort-btn {
-    display: none !important;
-    @media only screen and (max-width: 768px) {
-        display: block !important;
-    }
-}
 .register-user-details {
     margin-top: 5px;
     #init-contact-user {
