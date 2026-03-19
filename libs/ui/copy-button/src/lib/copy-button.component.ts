@@ -19,7 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
             [cdkCopyToClipboard]="copyData()"
             onclick="this.blur()"
             (click)="onCopy()"
-            [class.pointer-none]="copied | async"
+            [class.pointer-events-none]="copied | async"
             [matTooltip]="tooltip()"
         >
             <mat-icon

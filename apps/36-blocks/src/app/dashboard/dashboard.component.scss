@@ -12,7 +12,12 @@
     width: 100%;
     min-height: calc(100vh - 64px);
     padding: 40px 20px;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+    background: linear-gradient(
+        135deg,
+        var(--color-common-app-bg) 0%,
+        var(--color-common-border) 50%,
+        var(--color-common-bg-light) 100%
+    );
     margin: 0;
 }
 
@@ -29,7 +34,7 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-dark-accent) 0%, #15b8a0 100%);
+    background: linear-gradient(135deg, var(--color-dark-accent) 0%, var(--color-dark-accent) 100%);
     margin-bottom: 32px;
     animation: pulse 2s infinite;
 }
@@ -38,7 +43,7 @@
     font-size: 56px !important;
     width: 56px !important;
     height: 56px !important;
-    color: #ffffff;
+    color: var(--color-common-white);
 }
 
 .coming-soon-title {
@@ -51,14 +56,14 @@
 
 .coming-soon-subtitle {
     font-size: 20px;
-    color: #0d9b89;
+    color: var(--color-dark-accent);
     margin: 0 0 12px 0;
     font-weight: 500;
 }
 
 .coming-soon-description {
     font-size: 16px;
-    color: #64748b;
+    color: var(--color-common-secondary-text);
     margin: 0 0 40px 0;
     line-height: 1.6;
 }
@@ -76,14 +81,14 @@
     align-items: center;
     gap: 8px;
     padding: 20px 24px;
-    background: #ffffff;
+    background: var(--color-common-bg);
     border-radius: 12px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--color-common-border);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
 
     &:hover {
-        background: rgba(25, 230, 206, 0.08);
+        background: var(--color-dark-accent-light);
         border-color: var(--color-dark-accent);
         transform: translateY(-4px);
         box-shadow: 0 10px 20px -5px rgba(25, 230, 206, 0.2);

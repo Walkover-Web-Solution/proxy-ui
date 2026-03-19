@@ -37,8 +37,8 @@
 </div>
 
 <ng-template #jsonCard let-title="title" let-jsonData="jsonData">
-    <span class="mb-2 mt-1 mat-body-2 fw-bold">{{ title }}</span>
-    <mat-card class="outline-card overflow-y w-break">
+    <span class="mb-2 mt-1 mat-body-2 font-medium">{{ title }}</span>
+    <mat-card class="outline-card overflow-y-auto w-break">
         <mat-card-content>
             <pre [innerHtml]="jsonData | json"></pre>
         </mat-card-content>

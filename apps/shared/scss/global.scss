@@ -1,0 +1,151 @@
+@use 'tailwindcss';
+@use './imports';
+@use './mixins/common-utils' as *;
+
+.service-list {
+    .mat-mdc-list {
+        .mat-mdc-list-item {
+            .mdc-list-item__primary-text {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+        }
+    }
+}
+
+/*// Mat Divider
+//====================================================*/
+.mat-divider {
+    border-top-color: var(--color-common-border) !important;
+}
+
+/*// Text Class
+//====================================================*/
+.text-success {
+    color: var(--color-common-green) !important;
+}
+.text-danger {
+    color: var(--mat-sys-error) !important;
+}
+.text-primary {
+    color: var(--mat-sys-primary) !important;
+}
+/* Text Color */
+.text-dark {
+    color: var(--color-common-text) !important;
+}
+.text-secondary {
+    color: var(--color-common-dark) !important;
+}
+.text-pending {
+    color: var(--color-short-url-primary);
+}
+.text-grey {
+    color: var(--color-common-grey) !important;
+}
+
+// Background Colors
+.bg-gray {
+    background-color: var(--color-common-bg);
+}
+.bg-light-grey {
+    background-color: var(--color-common-graph-bg) !important;
+}
+
+.w-break {
+    word-break: break-word;
+}
+
+pre {
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+    a {
+        &:link {
+            color: var(--color-link-color) !important;
+        }
+        &:visited {
+            color: var(--color-link-color) !important;
+        }
+        &:hover {
+            color: var(--color-link-color) !important;
+        }
+        &:active {
+            color: var(--color-link-color) !important;
+        }
+    }
+}
+// Text size
+.font-10 {
+    font-size: 10px !important;
+}
+.font-11 {
+    font-size: 11px !important;
+}
+.font-12 {
+    font-size: 12px !important;
+}
+.font-14 {
+    font-size: var(--font-size-common-14) !important;
+}
+.font-20 {
+    font-size: var(--font-size-common-20) !important;
+}
+
+.w-b-hyphens {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    word-break: break-all;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+.overflow-dotted {
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+.box-shadow-none {
+    box-shadow: none !important;
+}
+
+.dark-theme {
+    .custom-datepicker {
+        .date-input {
+            .float-label {
+                background: transparent !important;
+            }
+        }
+    }
+}
+
+.border {
+    border: 1px solid var(--color-common-border);
+}
+.border-right {
+    border-right: 1px solid var(--color-common-border);
+}
+// border radius
+.rounded-4 {
+    border-radius: var(--border-common-radius-4);
+}
+.rounded-8 {
+    border-radius: var(--border-common-radius);
+}
+
+// Add Scrollbar in Markdown with custom color
+markdown pre {
+    overflow: auto;
+    @include custom-scroll-bar(
+        $scrollbarThumbColor: rgba(255, 255, 255, 0.2),
+        $scrollbarTrackColor: rgba(255, 255, 255, 0.4),
+        $scrollbarWidth: 8px,
+        $scrollbarTrackRadius: 4px
+    );
+}

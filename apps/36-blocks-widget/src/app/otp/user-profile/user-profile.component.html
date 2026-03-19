@@ -226,7 +226,9 @@
                         </div>
                         <span
                             class="org-name"
-                            [class.fw-bold]="companyDetails?.currentCompany?.company_uname === element.company_uname"
+                            [class.font-medium]="
+                                companyDetails?.currentCompany?.company_uname === element.company_uname
+                            "
                             [class.current-org]="
                                 companyDetails?.currentCompany?.company_uname === element.company_uname
                             "

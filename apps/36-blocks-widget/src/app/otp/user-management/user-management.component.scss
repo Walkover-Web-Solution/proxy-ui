@@ -1,41 +1,13 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background: #f9f9f9;
-    padding: 20px;
-}
-// * {
-//     font-family: 'DM Sans', sans-serif;
-// }
-
-// Danger button styling for confirmation dialog
 ::ng-deep .btn-danger {
-    background-color: #dc3545 !important;
+    background-color: var(--proxy-error-40) !important;
     color: #ffffff !important;
 
-    &:hover {
-        background-color: #c82333 !important;
-    }
-
+    &:hover,
     &:focus {
-        background-color: #c82333 !important;
+        background-color: var(--proxy-error-40) !important;
+        filter: brightness(0.85);
     }
 }
-
-// ::ng-deep {
-//     proxy-confirm-dialog {
-//         .mat-dialog-actions,
-//         div[mat-dialog-actions],
-//         div.d-flex {
-//             display: flex !important;
-//             justify-content: flex-end !important;
-//         }
-
-//         .justify-content-end {
-//             justify-content: flex-end !important;
-//         }
-//     }
-// }
 .w-35 {
     width: 35%;
 }
@@ -64,12 +36,8 @@ body {
 
 .email-container {
     .email-text {
-        color: #666;
+        color: var(--color-common-grey);
         transition: color 0.2s ease;
-
-        &:hover {
-            color: #666;
-        }
     }
 }
 
@@ -96,13 +64,13 @@ body {
 .role-info {
     .role-name {
         font-weight: 600;
-        color: #666;
+        color: var(--color-common-grey);
         font-size: 14px;
     }
 
     .role-default {
         font-size: 11px;
-        color: #666;
+        color: var(--color-common-grey);
         font-style: italic;
     }
 }
@@ -110,13 +78,13 @@ body {
 .permission-info {
     .permission-name {
         font-weight: 600;
-        color: #666;
+        color: var(--color-common-grey);
         font-size: 14px;
     }
 
     .permission-default {
         font-size: 12px;
-        color: #666;
+        color: var(--color-common-grey);
         font-style: italic;
     }
 }
@@ -130,7 +98,7 @@ body {
     .permission-bullet {
         margin-bottom: 4px;
         font-size: 12px;
-        color: #555;
+        color: var(--color-common-secondary-text);
         line-height: 1.4;
 
         &:last-child {
@@ -153,7 +121,7 @@ body {
     top: 6px;
     right: 12px;
     z-index: 10;
-    background: #ffffff;
+    background: var(--color-common-bg);
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -173,314 +141,6 @@ body {
     max-width: 2000px;
 }
 
-// .dark-theme {
-//     background: transparent;
-//     color: #ffffff !important;
-
-//     ::ng-deep {
-//         body {
-//             background: transparent !important;
-//         }
-//     }
-
-//     .button-add {
-//         background-color: transparent !important;
-//         border: 1px solid #ffffff !important;
-//         color: #ffffff !important;
-//     }
-
-//     table {
-//         border: 1px solid #ffffff;
-
-//         th,
-//         td {
-//             border: 1px solid #ffffff !important;
-//             color: #ffffff !important;
-//         }
-
-//         th {
-//             color: #ffffff !important;
-//             background-color: transparent !important;
-//         }
-
-//         td {
-//             background-color: transparent !important;
-//         }
-//     }
-
-//     // .default-table {
-//     //     border: 1px solid #ffffff !important;
-//     //     background-color: transparent !important;
-
-//     //     .mat-table {
-//     //         background-color: transparent !important;
-//     //     }
-
-//     //     .mat-header-row {
-//     //         background-color: transparent !important;
-//     //     }
-
-//     //     .mat-row {
-//     //         background-color: transparent !important;
-//     //     }
-
-//     //     .mat-header-cell {
-//     //         background-color: transparent !important;
-//     //         color: #ffffff !important;
-//     //         border-right: 1px solid #ffffff !important;
-//     //         border-bottom: 1px solid #ffffff !important;
-//     //         border-left: 1px solid #ffffff !important;
-//     //         border-top: 1px solid #ffffff !important;
-//     //     }
-
-//     //     .mat-cell {
-//     //         background-color: transparent !important;
-//     //         color: #ffffff !important;
-//     //         border-right: 1px solid #ffffff !important;
-//     //         border-bottom: 1px solid #ffffff !important;
-//     //         border-left: 1px solid #ffffff !important;
-//     //     }
-
-//     //     .table-header {
-//     //         background-color: transparent !important;
-//     //     }
-
-//     //     .table-row {
-//     //         background-color: transparent !important;
-
-//     //         &:nth-child(even) {
-//     //             background-color: transparent !important;
-//     //         }
-
-//     //         &:hover {
-//     //             background-color: transparent !important;
-//     //             transform: none !important;
-//     //             box-shadow: none !important;
-//     //         }
-//     //     }
-
-//     //     .table-row:hover .mat-cell {
-//     //         background-color: transparent !important;
-//     //         border-right: 1px solid #ffffff !important;
-//     //         border-bottom: 1px solid #ffffff !important;
-//     //         border-left: 1px solid #ffffff !important;
-//     //         border-top: 1px solid #ffffff !important;
-//     //     }
-
-//     //     .table-row:hover td {
-//     //         border-right: 1px solid #ffffff !important;
-//     //         border-bottom: 1px solid #ffffff !important;
-//     //         border-left: 1px solid #ffffff !important;
-//     //         border-top: 1px solid #ffffff !important;
-//     //     }
-//     // }
-
-//     // ::ng-deep {
-//     //     .mat-elevation-z8 {
-//     //         background-color: transparent !important;
-//     //         box-shadow: none !important;
-//     //     }
-
-//     //     .mat-table {
-//     //         background-color: transparent !important;
-//     //     }
-
-//     //     .mat-header-row {
-//     //         background-color: transparent !important;
-//     //     }
-
-//     //     .mat-row {
-//     //         background-color: transparent !important;
-
-//     //         &:nth-child(even) {
-//     //             background-color: transparent !important;
-//     //         }
-//     //     }
-//     // }
-
-//     .hover-actions {
-//         background: transparent !important;
-//         box-shadow: none !important;
-//     }
-
-//     .no-data {
-//         color: #ffffff !important;
-//     }
-
-//     .role-info {
-//         .role-name {
-//             color: #ffffff !important;
-//         }
-
-//         .role-default {
-//             color: #ffffff !important;
-//         }
-//     }
-
-//     .permission-info {
-//         .permission-name {
-//             color: #ffffff !important;
-//         }
-
-//         .permission-default {
-//             color: #ffffff !important;
-//         }
-//     }
-
-//     .permission-bullets {
-//         .permission-bullet {
-//             color: #ffffff !important;
-//         }
-//     }
-
-//     .email-text {
-//         color: #ffffff !important;
-//     }
-
-//     .no-permissions-text {
-//         color: #ffffff !important;
-//     }
-
-//     .cell-content {
-//         color: #ffffff !important;
-//     }
-
-//     ::ng-deep {
-//         .mat-tab-label {
-//             color: #ffffff !important;
-
-//             &.mat-tab-label-active {
-//                 color: #ffffff !important;
-//             }
-//         }
-
-//         .mat-tab-label-content {
-//             color: #ffffff !important;
-//         }
-
-//         .mat-tab-group {
-//             .mat-ink-bar {
-//                 background-color: #ffffff !important;
-//             }
-//         }
-
-//         .mat-ink-bar {
-//             background-color: #ffffff !important;
-//         }
-
-//         .mat-form-field {
-//             .mat-form-field-outline {
-//                 color: #ffffff !important;
-//             }
-
-//             .mat-form-field-outline-thick {
-//                 color: #ffffff !important;
-//             }
-
-//             .mat-form-field-label {
-//                 color: #ffffff !important;
-//             }
-
-//             .mat-input-element {
-//                 color: #ffffff !important;
-
-//                 &::placeholder {
-//                     color: rgba(255, 255, 255, 0.6) !important;
-//                 }
-//             }
-
-//             input.mat-input-element,
-//             textarea.mat-input-element {
-//                 color: #ffffff !important;
-//             }
-//         }
-
-//         .mat-flat-button {
-//             background-color: #1e1e1e !important;
-//             border: 1px solid #ffffff !important;
-//             color: #ffffff !important;
-//         }
-
-//         .mat-select-value {
-//             color: #ffffff !important;
-//         }
-
-//         .mat-select-arrow {
-//             color: #ffffff !important;
-//         }
-
-//         .mat-option {
-//             color: #ffffff !important;
-//         }
-
-//         .mat-paginator {
-//             background-color: transparent !important;
-//             color: #ffffff !important;
-
-//             .mat-paginator-container {
-//                 background-color: transparent !important;
-//             }
-
-//             .mat-paginator-page-size-label,
-//             .mat-paginator-range-label {
-//                 color: #ffffff !important;
-//             }
-
-//             .mat-paginator-navigation-previous,
-//             .mat-paginator-navigation-next,
-//             .mat-paginator-navigation-first,
-//             .mat-paginator-navigation-last {
-//                 color: #ffffff !important;
-
-//                 &:disabled {
-//                     color: rgba(255, 255, 255, 0.3) !important;
-//                 }
-//             }
-
-//             .mat-icon-button {
-//                 color: #ffffff !important;
-
-//                 &:disabled {
-//                     color: rgba(255, 255, 255, 0.3) !important;
-//                 }
-//             }
-
-//             .mat-select-value {
-//                 color: #ffffff !important;
-//             }
-
-//             .mat-select-arrow {
-//                 color: #ffffff !important;
-//             }
-
-//             .mat-form-field-appearance-legacy .mat-form-field-label {
-//                 color: #ffffff !important;
-//             }
-//         }
-
-//         .mat-paginator .mat-select-panel {
-//             background-color: #1e1e1e !important;
-//             border: 1px solid #ffffff !important;
-
-//             .mat-option {
-//                 background-color: transparent !important;
-//                 color: #ffffff !important;
-
-//                 &:hover {
-//                     background-color: transparent !important;
-//                 }
-
-//                 &.mat-selected {
-//                     background-color: transparent !important;
-//                 }
-//             }
-//         }
-//     }
-// }
-// .light-theme {
-//     background: #ffffff !important;
-// }
-
 // Users list container styling
 .users-list-container {
     display: flex;
@@ -494,7 +154,6 @@ body {
         justify-content: space-between;
         gap: 12px;
         padding: 12px 16px;
-        // border-radius: 8px;
         transition: all 0.2s ease;
         cursor: pointer;
 
@@ -526,7 +185,7 @@ body {
             display: flex;
             flex-direction: column;
             min-width: 0;
-            font-family: 'DM Sans', sans-serif;
+            font-family: var(--font-family);
 
             .user-name {
                 font-weight: 500;
@@ -553,7 +212,7 @@ body {
             min-width: 100px;
             max-width: 150px;
             flex-shrink: 0;
-            font-family: 'DM Sans', sans-serif;
+            font-family: var(--font-family);
 
             .user-role {
                 font-size: 13px;
@@ -610,172 +269,12 @@ body {
         }
     }
 
-    // border-bottom: 1px solid #e0e0e0;
-
-    // Light theme styles - Clean list view
-    // &.light-theme {
-    //     .user-item {
-    //         background-color: #ffffff;
-    //         border: none;
-    //         border-bottom: 1px solid #e0e0e0;
-    //         border-radius: 0;
-    //         padding: 16px;
-
-    //         &:hover {
-    //             background-color: #f5f5f5;
-    //         }
-
-    //         &:last-child {
-    //             border-bottom: none;
-    //         }
-
-    //         .user-avatar {
-    //             background-color: #f5f5f5;
-    //             color: #757575;
-    //             width: 48px;
-    //             height: 48px;
-    //         }
-
-    //         .user-info {
-    //             font-family: 'DM Sans', sans-serif;
-
-    //             .user-name {
-    //                 color: #212528;
-    //                 font-weight: 500;
-    //                 font-size: 16px;
-    //             }
-
-    //             .user-email {
-    //                 color: #666666;
-    //                 font-size: 14px;
-    //             }
-    //         }
-
-    //         .user-role-row {
-    //             font-family: 'DM Sans', sans-serif;
-
-    //             .user-role {
-    //                 color: #888888;
-    //                 font-size: 13px;
-    //             }
-    //         }
-
-    //         .user-actions {
-    //             .edit-btn {
-    //                 color: #1976d2;
-
-    //                 .edit-icon {
-    //                     color: #1976d2;
-    //                 }
-
-    //                 &:hover {
-    //                     background-color: rgba(25, 118, 210, 0.1);
-    //                 }
-    //             }
-
-    //             .delete-btn {
-    //                 color: #d32f2f;
-
-    //                 .delete-icon {
-    //                     color: #d32f2f;
-    //                 }
-
-    //                 &:hover {
-    //                     background-color: rgba(211, 47, 47, 0.1);
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
-    // Dark theme styles - Chip/Card view
-    // &.dark-theme {
-    //     .user-item {
-    //         background-color: #3f4346;
-    //         // border-radius: 12px;
-    //         padding: 18px 16px;
-    //         margin: 0;
-    //         border-bottom: 1px solid gray;
-    //         // border-bottom: 1px solid #e0e0e0; // subtle bottom divider
-    //         transition: background-color 0.2s ease;
-
-    //         &:hover {
-    //             background-color: #000000 !important;
-    //             border-color: #8f9396;
-
-    //             // Ensure all child elements maintain visibility on black background
-    //             .user-avatar,
-    //             .user-info,
-    //             .user-role-row,
-    //             .user-actions {
-    //                 background-color: transparent;
-    //             }
-    //         }
-
-    //         .user-avatar {
-    //             background-color: #212528;
-    //             color: #c1c5c8;
-    //             width: 40px;
-    //             height: 40px;
-    //         }
-
-    //         .user-info {
-    //             font-family: 'DM Sans', sans-serif;
-
-    //             .user-name {
-    //                 color: #d5d9dc;
-    //                 font-weight: 500;
-    //                 font-size: 16px;
-    //             }
-
-    //             .user-email {
-    //                 color: #c1c5c8;
-    //                 font-size: 14px;
-    //             }
-    //         }
-
-    //         .user-role-row {
-    //             font-family: 'DM Sans', sans-serif;
-
-    //             .user-role {
-    //                 color: #a0a4a8;
-    //                 font-size: 13px;
-    //             }
-    //         }
-
-    //         .user-actions {
-    //             .edit-btn {
-    //                 color: #64b5f6;
-
-    //                 .edit-icon {
-    //                     color: #64b5f6;
-    //                 }
-
-    //                 &:hover {
-    //                     background-color: rgba(100, 181, 246, 0.2);
-    //                 }
-    //             }
-
-    //             .delete-btn {
-    //                 color: #ff6b6b;
-
-    //                 .delete-icon {
-    //                     color: #ff6b6b;
-    //                 }
-
-    //                 &:hover {
-    //                     background-color: rgba(255, 107, 107, 0.2);
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
     .no-data {
         padding: 40px 16px;
         text-align: center;
     }
 }
+
 .form {
     display: flex;
     flex-direction: column;
@@ -786,27 +285,31 @@ table {
     margin-top: 10px;
     box-shadow: none !important;
 }
+
 th,
 td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
+    border: 1px solid var(--color-common-border);
     padding: 14px;
+    text-align: left;
 }
+
 td.mat-cell {
     padding: 10px;
 }
+
 th {
-    color: #000000;
+    color: var(--color-common-text);
     font-weight: 600;
     height: 22px;
     padding-left: 12px !important;
 }
+
 td {
     font-size: 12px;
     height: 22px;
-    color: #434242;
+    color: var(--color-common-text);
 }
+
 .no-data {
     text-align: center;
     font-size: medium;
@@ -885,9 +388,10 @@ td {
         padding: 6px;
     }
 }
+
 .button-add {
-    background-color: #000000;
-    color: #ffffff;
+    background-color: var(--color-common-dark);
+    color: var(--color-common-white);
 }
 
 // Edit button styles
@@ -896,11 +400,11 @@ td {
 }
 
 .button-edit-light {
-    border: 1px solid #000000 !important;
-    color: #000000 !important;
+    border: 1px solid var(--color-common-text) !important;
+    color: var(--color-common-text) !important;
 
     &:hover {
-        background-color: rgba(0, 0, 0, 0.04) !important;
+        background-color: var(--color-common-flat-btn-bg) !important;
     }
 }
 
@@ -910,11 +414,11 @@ td {
 }
 
 .button-remove-light {
-    border: 1px solid #dc3545 !important;
-    color: #dc3545 !important;
+    border: 1px solid var(--proxy-error-40) !important;
+    color: var(--proxy-error-40) !important;
 
     &:hover {
-        background-color: rgba(220, 53, 69, 0.04) !important;
+        background-color: rgba(0, 0, 0, 0.04) !important;
     }
 }
 
@@ -950,9 +454,9 @@ td {
     .mat-header-cell {
         font-weight: 600;
         font-size: 14px;
-        color: var(--color-table-head, #374151);
-        background-color: var(--color-table-head-bg, #f9fafb);
-        border-bottom: 2px solid var(--color-table-head-border, #e5e7eb);
+        color: var(--color-table-head);
+        background-color: var(--color-common-app-bg);
+        border-bottom: 2px solid var(--color-table-head-border);
         padding: 16px 12px;
         text-align: left;
         vertical-align: middle;
@@ -960,53 +464,15 @@ td {
 
     .mat-cell {
         padding: 8px 12px;
-        border-bottom: 1px solid var(--color-table-cell-border, #e5e7eb);
-        color: var(--color-table-cell, #374151);
+        border-bottom: 1px solid var(--color-table-cell-border);
+        color: var(--color-table-cell);
         font-size: 14px;
         vertical-align: middle;
         text-align: left;
     }
 
-    // .table-row {
-    //     transition: all 0.2s ease-in-out;
-    //     cursor: pointer;
-
-    //     .cell-content {
-    //         .actions {
-    //             opacity: 0;
-    //             transition: opacity 0.2s ease-in-out;
-
-    //             .edit-btn {
-    //                 font-size: 12px;
-    //                 padding: 4px 12px;
-    //                 min-width: auto;
-    //                 height: 28px;
-    //                 line-height: 20px;
-    //             }
-    //         }
-    //     }
-
-    //     &:hover {
-    //         background-color: var(--color-table-hover, #f3f4f6);
-    //         transform: translateY(-1px);
-    //         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-    //         .cell-content .actions {
-    //             opacity: 1;
-    //         }
-    //     }
-
-    //     &:nth-child(even) {
-    //         background-color: var(--color-table-even, #ffffff);
-    //     }
-
-    //     &:nth-child(even):hover {
-    //         background-color: var(--color-table-hover, #f3f4f6);
-    //     }
-    // }
-
     .table-header {
-        background-color: var(--color-table-head-bg, #f9fafb);
+        background-color: var(--color-common-app-bg);
     }
 }
 
@@ -1048,19 +514,18 @@ td {
     text-align: right !important;
 }
 
-// Role text and tooltip styling
 .role-text {
-    // cursor: help;
     text-decoration: underline;
     text-decoration-style: dotted;
-    text-decoration-color: #666;
+    text-decoration-color: var(--color-common-grey);
 
     &:hover {
-        color: var(--color-primary, #1976d2);
+        color: var(--color-common-primary);
     }
 }
+
 .color-white {
-    color: #ffffff !important;
+    color: var(--color-common-white) !important;
 }
 
 // Custom tooltip styling
@@ -1068,9 +533,8 @@ td {
     .permissions-tooltip,
     .email-tooltip {
         background-color: rgba(0, 0, 0, 0.9) !important;
-        color: #ffffff !important;
+        color: var(--color-common-white) !important;
         font-size: 12px !important;
-        // max-width: 250px !important;
         white-space: pre-line !important;
         border-radius: 4px !important;
         padding: 10px !important;
@@ -1087,76 +551,9 @@ td {
     position: relative;
 }
 
-// Role option styling in dropdown
-// ::ng-deep {
-//     .role-select-panel {
-//         min-width: 350px !important;
-//         max-width: 500px !important;
-//         width: auto !important;
-//     }
-
-//     .mat-select-panel.role-select-panel {
-//         min-width: 350px !important;
-//         max-width: 500px !important;
-//         width: auto !important;
-//     }
-
-//     .role-select-panel .mat-option {
-//         min-height: auto !important;
-//         height: auto !important;
-//         padding: 12px 16px !important;
-//         white-space: normal !important;
-//         overflow: visible !important;
-//         line-height: 1.5 !important;
-//     }
-
-//     .role-select-panel .mat-option-text {
-//         overflow: visible !important;
-//         text-overflow: clip !important;
-//         white-space: normal !important;
-//     }
-
-//     .cdk-overlay-pane.permission-select-panel {
-//         height: auto !important; // Ensure proper z-index stacking
-//     }
-
-//     // Apply height: auto only to permission selects (for dialogs)
-//     .cdk-overlay-connected-position-bounding-box.permission-select-bounding-box,
-//     .cdk-overlay-connected-position-bounding-box:has(.mat-select-panel.permission-select-panel) {
-//         height: auto !important;
-//     }
-
-//     // Explicitly ensure paginator selects never get height: auto
-//     .cdk-overlay-connected-position-bounding-box.paginator-select-bounding-box {
-//         height: unset !important;
-//         min-height: unset !important;
-//         max-height: unset !important;
-//     }
-//     // Fallback for all mat-select panels
-//     .mat-select-panel {
-//         min-width: 350px !important;
-//     }
-
-//     .mat-option {
-//         min-height: auto !important;
-//         height: auto !important;
-//         padding: 12px 16px !important;
-//         white-space: normal !important;
-//         overflow: visible !important;
-//         line-height: 1.5 !important;
-//     }
-
-//     .mat-option-text {
-//         overflow: visible !important;
-//         text-overflow: clip !important;
-//         white-space: normal !important;
-//     }
-// }
-
 .role-option-content {
     display: flex;
     flex-direction: column;
-    // gap: 2px;
     padding: 4px 0;
     width: 100%;
     max-width: 100%;
@@ -1165,7 +562,7 @@ td {
     .role-name {
         font-weight: 600;
         font-size: 14px;
-        color: #333;
+        color: var(--color-common-text);
         word-break: break-word;
     }
 
@@ -1183,10 +580,10 @@ td {
             display: inline-flex;
             align-items: center;
             padding: 4px 10px;
-            background-color: #f0f0f0;
+            background-color: var(--color-common-chip-bg);
             border-radius: 12px;
             font-size: 11px;
-            color: #666;
+            color: var(--color-common-grey);
             white-space: nowrap;
             max-width: 180px;
             overflow: hidden;
@@ -1200,10 +597,10 @@ td {
             display: inline-flex;
             align-items: center;
             padding: 4px 10px;
-            background-color: #e3f2fd;
+            background-color: var(--color-common-primary-light);
             border-radius: 12px;
             font-size: 11px;
-            color: #1976d2;
+            color: var(--color-common-primary);
             font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
@@ -1212,199 +609,21 @@ td {
             box-sizing: border-box;
 
             &:hover {
-                background-color: #bbdefb;
+                background-color: var(--color-common-primary-light-hover);
             }
 
             &.view-less-btn {
-                background-color: #fff3e0;
-                color: #f57c00;
+                background-color: var(--color-common-bg-light);
+                color: var(--color-common-rock);
 
                 &:hover {
-                    background-color: #ffe0b2;
+                    background-color: var(--color-common-bg-lighter);
                 }
             }
         }
     }
 }
 
-// Dark theme styles for role options
-// .dark-theme {
-//     .role-option-content {
-//         .role-name {
-//             color: #ffffff !important;
-//         }
-
-//         .role-permissions {
-//             .permission-tag {
-//                 background-color: rgba(255, 255, 255, 0.1) !important;
-//                 color: #ffffff !important;
-//                 border: 1px solid rgba(255, 255, 255, 0.3) !important;
-//             }
-
-//             .expand-permissions-btn {
-//                 background-color: rgba(255, 255, 255, 0.15) !important;
-//                 color: #ffffff !important;
-//                 border: 1px solid rgba(255, 255, 255, 0.3) !important;
-
-//                 &:hover {
-//                     background-color: rgba(255, 255, 255, 0.25) !important;
-//                 }
-
-//                 &.view-less-btn {
-//                     background-color: rgba(255, 152, 0, 0.2) !important;
-//                     color: #ff9800 !important;
-//                     border: 1px solid rgba(255, 152, 0, 0.4) !important;
-
-//                     &:hover {
-//                         background-color: rgba(255, 152, 0, 0.3) !important;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-
-//     ::ng-deep {
-//         .mat-option {
-//             color: #ffffff !important;
-
-//             &.mat-active {
-//                 background-color: rgba(255, 255, 255, 0.1) !important;
-//             }
-
-//             &:hover {
-//                 background-color: rgba(255, 255, 255, 0.1) !important;
-//             }
-//         }
-//     }
-// }
-
-// ::ng-deep {
-//     .dark-dialog {
-//         .mat-dialog-container {
-//             background-color: #1e1e1e !important;
-//             color: #ffffff !important;
-//             // border: 1px solid #ffffff !important;
-//         }
-//         .input-field {
-//             border: 1px solid #ffffff !important;
-//         }
-//         .mat-form-field {
-//             .mat-form-field-outline {
-//                 color: #ffffff !important;
-//             }
-
-//             .mat-form-field-outline-thick {
-//                 color: #ffffff !important;
-//             }
-
-//             .mat-form-field-label {
-//                 color: #ffffff !important;
-//             }
-
-//             .mat-input-element {
-//                 color: #ffffff !important;
-
-//                 &::placeholder {
-//                     color: rgba(255, 255, 255, 0.6) !important;
-//                 }
-//             }
-
-//             input.mat-input-element,
-//             textarea.mat-input-element {
-//                 color: #ffffff !important;
-//             }
-
-//             .mat-hint {
-//                 color: #ffffff !important;
-//             }
-//         }
-
-//         .mat-flat-button {
-//             background-color: #1e1e1e !important;
-//             border: 1px solid #ffffff !important;
-//             color: #ffffff !important;
-//         }
-
-//         .mat-select-value {
-//             color: #ffffff !important;
-//         }
-
-//         .mat-select-arrow {
-//             color: #ffffff !important;
-//         }
-//     }
-// }
-
-// Select panel styles for dark dialog - using body class for reliable targeting
-// ::ng-deep {
-// When dark-dialog-open class exists on body, style select panels in overlay
-// body.dark-dialog-open {
-//     .cdk-overlay-container {
-//         .cdk-overlay-pane {
-//             .mat-select-panel.permission-select-panel,
-//             .mat-select-panel.role-select-panel {
-//                 background-color: #1e1e1e !important;
-//                 background: #1e1e1e !important;
-
-//                 .mat-option {
-//                     background-color: #1e1e1e !important;
-//                     background: #1e1e1e !important;
-//                     color: #ffffff !important;
-
-//                     .mat-option-text,
-//                     span,
-//                     * {
-//                         color: #ffffff !important;
-//                     }
-
-//                     &:hover,
-//                     &.mat-active {
-//                         background-color: rgba(255, 255, 255, 0.1) !important;
-//                         background: rgba(255, 255, 255, 0.1) !important;
-//                     }
-
-//                     &.mat-selected {
-//                         background-color: rgba(255, 255, 255, 0.15) !important;
-//                         background: rgba(255, 255, 255, 0.15) !important;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
-
-// More specific targeting - directly target the overlay pane
-// body.dark-dialog-open .cdk-overlay-container .cdk-overlay-pane {
-//     .mat-select-panel.permission-select-panel,
-//     .mat-select-panel.role-select-panel {
-//         background-color: #1e1e1e !important;
-//         background: #1e1e1e !important;
-
-//         .mat-option {
-//             background-color: #1e1e1e !important;
-//             background: #1e1e1e !important;
-//             color: #ffffff !important;
-
-//             .mat-option-text,
-//             span,
-//             * {
-//                 color: #ffffff !important;
-//             }
-
-//             &:hover,
-//             &.mat-active {
-//                 background-color: rgba(255, 255, 255, 0.1) !important;
-//                 background: rgba(255, 255, 255, 0.1) !important;
-//             }
-
-//             &.mat-selected {
-//                 background-color: rgba(255, 255, 255, 0.15) !important;
-//                 background: rgba(255, 255, 255, 0.15) !important;
-//             }
-//         }
-//     }
-// }
-// }
 .w-45 {
     width: 45%;
 }
@@ -1418,14 +637,24 @@ td {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+    background: linear-gradient(
+        90deg,
+        var(--color-common-border) 25%,
+        var(--color-common-bg-light) 50%,
+        var(--color-common-border) 75%
+    );
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
 }
 
 .skeleton-text {
     border-radius: 4px;
-    background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+    background: linear-gradient(
+        90deg,
+        var(--color-common-border) 25%,
+        var(--color-common-bg-light) 50%,
+        var(--color-common-border) 75%
+    );
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
 }
@@ -1450,7 +679,12 @@ td {
     width: 60px;
     height: 32px;
     border-radius: 4px;
-    background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+    background: linear-gradient(
+        90deg,
+        var(--color-common-border) 25%,
+        var(--color-common-bg-light) 50%,
+        var(--color-common-border) 75%
+    );
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
 }
@@ -1464,12 +698,16 @@ td {
     }
 }
 
-// Dark theme skeleton styles
 .dark-theme {
     .skeleton-avatar,
     .skeleton-text,
     .skeleton-button {
-        background: linear-gradient(90deg, #3a3a3a 25%, #4a4a4a 50%, #3a3a3a 75%);
+        background: linear-gradient(
+            90deg,
+            var(--color-common-slate) 25%,
+            var(--color-common-rock) 50%,
+            var(--color-common-slate) 75%
+        );
         background-size: 200% 100%;
         animation: shimmer 1.5s infinite;
     }

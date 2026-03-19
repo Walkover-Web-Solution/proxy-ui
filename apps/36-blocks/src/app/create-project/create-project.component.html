@@ -8,7 +8,7 @@
             [buttonRef]="createProjectBtn"
             (valid)="onNextClick()"
         >
-            <h4 class="fw-bold text-secondary mat-body-1">Create Project</h4>
+            <h4 class="font-medium text-secondary mat-body-1">Create Project</h4>
             <ng-container *ngTemplateOutlet="createProject"></ng-container>
 
             <button matButton="filled" #createProjectBtn>
@@ -24,7 +24,7 @@
             [buttonRef]="gatewayUrlBtn"
             (valid)="changeStep(3)"
         >
-            <h4 class="fw-bold text-secondary mat-body-1 mb-1">Add Gateway URL</h4>
+            <h4 class="font-medium text-secondary mat-body-1 mb-1">Add Gateway URL</h4>
             <p class="font-14 m-0">
                 The Gateway URL is the entry point through which incoming requests are received and forwarded to the
                 Proxy Server for processing
@@ -45,7 +45,7 @@
             [buttonRef]="submitBtn"
             (valid)="submit()"
         >
-            <h4 class="fw-bold text-secondary mat-body-1 mb-1">Add Destination Url</h4>
+            <h4 class="font-medium text-secondary mat-body-1 mb-1">Add Destination Url</h4>
             <p class="font-14 m-0">
                 The destination URL refers to the targeted URL or endpoint where the request will be forwarded by the
                 proxy Server.
@@ -139,7 +139,7 @@
 <ng-template #gateWayUrl>
     <div class="flex" [formGroup]="gatewayUrlDetailsForm">
         <div class="w-40">
-            <h5 class="fw-bold text-secondary mat-body-1">Provide your own</h5>
+            <h5 class="font-medium text-secondary mat-body-1">Provide your own</h5>
 
             <mat-checkbox formControlName="useSameUrlForAll" (change)="onChange($event)"
                 >Same for all environments</mat-checkbox
@@ -177,21 +177,21 @@
 
         <div class="p-6">
             <mat-divider [vertical]="true" style="height: 90px" class="mx-6"></mat-divider>
-            <h5 class="fw-bold text-secondary mat-body-1 ml-1">OR</h5>
+            <h5 class="font-medium text-secondary mat-body-1 ml-1">OR</h5>
             <mat-divider [vertical]="true" style="height: 90px" class="mx-6"></mat-divider>
         </div>
         <div class="w-40">
-            <h5 class="fw-bold text-secondary mat-body-1">Use Ours</h5>
+            <h5 class="font-medium text-secondary mat-body-1">Use Ours</h5>
 
             @for (slug of environments_with_slug; track slug.name) {
             <div>
-                <h5 class="fw-bold text-secondary mat-body-1 mb-1">{{ slug.name }}</h5>
+                <h5 class="font-medium text-secondary mat-body-1 mb-1">{{ slug.name }}</h5>
                 <a class="link" target="_blank" [href]="slug.url">{{ slug.url }} </a>
                 <proxy-copy-button matSuffix [copyData]="slug.url" tooltip="Copy URL"></proxy-copy-button>
             </div>
             }
             <div class="font-12 mt-6">
-                <span class="fw-bolder">Note: </span>
+                <span class="font-semibold">Note: </span>
                 please copy the provided Gateway URL and utilize it within your user interface to invoke the API by
                 specifying the desired endpoint for seamless request forwarding to the Proxy Server
             </div>
@@ -219,9 +219,9 @@
         } @for (control of forwardUrls.controls; track i; let i = $index) {
         <div class="flex">
             <div class="width-md-200 flex forward-url">
-                <h5 class="m-0 font-14 fw-bold">{{ environments_with_slug[i]?.name }}</h5>
+                <h5 class="m-0 font-14 font-medium">{{ environments_with_slug[i]?.name }}</h5>
                 <mat-icon matSuffix>keyboard_arrow_right</mat-icon>
-                <p class="m-0 font-14 fw-bold">forward to</p>
+                <p class="m-0 font-14 font-medium">forward to</p>
             </div>
             <ng-container
                 class="w-full"

@@ -83,7 +83,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
                 }
             </div>
             } @if (fieldConfig?.type !== 'checkbox') {
-            <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-form-field appearance="outline" class="w-full mb-3">
                 <mat-label>
                     {{ fieldConfig?.label }}
                     @if (fieldConfig?.is_required){<span class="text-danger">*</span>}

@@ -1,6 +1,6 @@
 <div class="h-full">
     <div class="flex flex-col h-full">
-        <h5 class="mat-body-2 text-secondary fw-bold mb-6">Select Block</h5>
+        <h5 class="mat-body-2 text-secondary font-medium mb-6">Select Block</h5>
         <div>
             <mat-form-field appearance="outline" class="w-1/2">
                 <mat-label>Select Block</mat-label>
@@ -17,7 +17,7 @@
 
         @if (roleForm.get('feature_id')?.value) {
         <div class="mt-2">
-            <h5 class="mat-body-2 text-secondary fw-bold">Create Roles & Permissions</h5>
+            <h5 class="mat-body-2 text-secondary font-medium">Create Roles & Permissions</h5>
 
             <mat-tab-group>
                 <mat-tab label="Roles">
@@ -111,7 +111,7 @@
                             <tr mat-row *matRowDef="let row; columns: rolesDisplayedColumns" class="hover-action"></tr>
 
                             <tr *matNoDataRow>
-                                <td class="mat-cell border-none" [attr.colspan]="rolesDisplayedColumns.length">
+                                <td class="mat-cell border-0" [attr.colspan]="rolesDisplayedColumns.length">
                                     <div class="text-center w-full mat-subtitle-2 text-dark">No Record Found</div>
                                 </td>
                             </tr>
@@ -197,7 +197,7 @@
                             ></tr>
 
                             <tr *matNoDataRow>
-                                <td class="mat-cell border-none" [attr.colspan]="permissionsDisplayedColumns.length">
+                                <td class="mat-cell border-0" [attr.colspan]="permissionsDisplayedColumns.length">
                                     <div class="text-center w-full mat-subtitle-2 text-dark">No Record Found</div>
                                 </td>
                             </tr>
@@ -225,7 +225,6 @@
                                 style="top: 16px; right: 8px"
                                 [copyData]="userManagementScript"
                                 tooltip="Copy Script"
-                                iconClass="text-white"
                             ></proxy-copy-button>
                         </div>
                         <div class="mat-body-2 mt-2">
@@ -239,7 +238,6 @@
                                 style="top: 16px; right: 8px"
                                 [copyData]="userProxyContainerHtml"
                                 tooltip="Copy Code"
-                                iconClass="text-white"
                             ></proxy-copy-button>
                         </div>
                     </div>
@@ -248,12 +246,12 @@
 
                 <mat-tab label="Settings">
                     <div class="">
-                        <p class="mat-body-2 text-secondary fw-bold p-0">Default Roles</p>
+                        <p class="mat-body-2 text-secondary font-medium p-0">Default Roles</p>
 
                         <form [formGroup]="defaultRolesForm" class="flex flex-col">
                             <!-- Default role for creator -->
                             <div class="">
-                                <p class="mat-body-2 fw-bold">Default role for creator</p>
+                                <p class="mat-body-2 font-medium">Default role for creator</p>
                                 <p class="text-grey mb-6">
                                     The role that users are assigned after creating an organization.
                                 </p>
@@ -269,7 +267,7 @@
 
                             <!-- Default role for member -->
                             <div>
-                                <p class="mat-body-2 fw-bold">Default role for member</p>
+                                <p class="mat-body-2 font-medium">Default role for member</p>
                                 <p class="text-grey">The role that users are assigned as a new organization member.</p>
                                 <mat-form-field appearance="outline" class="w-1/2">
                                     <mat-label>Select default role for member</mat-label>
@@ -282,7 +280,7 @@
                             </div>
 
                             <div>
-                                <p class="mat-body-2 fw-bold">Hidden roles</p>
+                                <p class="mat-body-2 font-medium">Hidden roles</p>
                                 <p class="text-grey">Select the default roles you want to hide from users.</p>
                                 <mat-form-field appearance="outline" class="w-1/2">
                                     <mat-label>Select roles to hide</mat-label>
