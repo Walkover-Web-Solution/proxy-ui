@@ -57,7 +57,7 @@
         }
 
         <!-- Create Account - Always at bottom -->
-        @if (loginStep === 1 && widgetDataArray?.length && isCreateAccountLink) {
+        @if (loginStep === 1 && widgetDataArray?.length && isCreateAccountLink()) {
         <p class="create-account" [style.color]="primaryColor || null">
             Are you a new User?
             <a href="javascript:void(0)" (click)="showRegistration()">{{ signUpButtonText }}</a>
@@ -216,7 +216,7 @@
             [style.--field-border-radius]="borderRadiusValue || '8px'"
             [class.dark-theme-login]="isDarkTheme"
         >
-            @if (isUserProxyContainer) {
+            @if (isUserProxyContainer()) {
             <button matIconButton class="back-button" (click)="changeLoginStep(1)" type="button">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -376,7 +376,7 @@
     <ng-template #socialButtonsOnlyTemplate let-widgetDataArray="widgetDataArray">
         @if (loginStep === 1) {
         <!-- Icons only mode (show_social_login_icons = true) -->
-        @if (show_social_login_icons) {
+        @if (show_social_login_icons()) {
         <div class="social-icons-row">
             @for (widgetData of widgetDataArray; track widgetData.service_id) { @if (widgetData?.service_id !==
             featureServiceIds.PasswordAuthentication || (widgetData?.service_id ===
@@ -402,7 +402,7 @@
         }
 
         <!-- Full buttons mode (show_social_login_icons = false) -->
-        @if (!show_social_login_icons) { @for (widgetData of widgetDataArray; track widgetData.service_id) { @if
+        @if (!show_social_login_icons()) { @for (widgetData of widgetDataArray; track widgetData.service_id) { @if
         (widgetData?.service_id !== featureServiceIds.PasswordAuthentication || (widgetData?.service_id ===
         featureServiceIds.PasswordAuthentication && version() === 'v1')) { @if (widgetData?.service_id !==
         featureServiceIds.Msg91OtpService || !(otpScriptLoading | async)) {

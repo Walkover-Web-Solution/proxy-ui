@@ -9,7 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         <div class="h-100 content-loader">
             <div class="loading-box">
                 <mat-spinner></mat-spinner>
-                <span>{{ message }}</span>
+                <span>{{ message() }}</span>
             </div>
         </div>
     `,

@@ -26,14 +26,14 @@
                 </button>
             </div>
             } @if (!nameFieldEditMode) {
-            <h4 class="my-0 text-secondary mat-body-1 fw-bold">{{ (featureDetails$ | async)?.name }}</h4>
+            <h4 class="my-0 text-secondary mat-body-1 font-medium">{{ (featureDetails$ | async)?.name }}</h4>
             <button type="button" matIconButton (click)="nameFieldEditMode = true">
                 <mat-icon class="material-icons-outlined mat-icon-18"> edit </mat-icon>
             </button>
             }
         </div>
         } @if (!isEditMode) {
-        <h4 class="my-0 text-secondary mat-body-1 fw-bold">Add New Blocks</h4>
+        <h4 class="my-0 text-secondary mat-body-1 font-medium">Add New Blocks</h4>
         }
     </div>
     @if (!isEditMode) {
@@ -407,7 +407,7 @@
 </ng-template>
 <ng-template #blockCreationStepOne let-nameControl="nameControl">
     <div class="my-6 grow">
-        <p class="mat-body-2 text-secondary fw-bold">Give a name of your Block</p>
+        <p class="mat-body-2 text-secondary font-medium">Give a name of your Block</p>
         <form class="w-1/2 mb-6">
             <ng-container
                 *ngTemplateOutlet="
@@ -535,7 +535,7 @@
 <ng-template #configureMethodTemplate let-selectedIndex="selectedIndex">
     <div class="flex gap-4 my-6 grow" style="min-height: 400px">
         <div class="flex flex-col gap-1 border-right pr-6 service-list">
-            <p class="mat-body-2 fw-bolder mt-0">Services</p>
+            <p class="mat-body-2 font-semibold mt-0">Services</p>
             <mat-list role="list" class="pt-0">
                 @for (service of (selectedMethod | async)?.method_services; track service; let i = $index) {
                 <mat-list-item
@@ -574,7 +574,7 @@
             featureForm.get('serviceDetails')?.at(selectedServiceIndex); as formToUse) {
             <form [formGroup]="formToUse">
                 @if (methodServices?.[selectedServiceIndex]?.requirements; as requirements) {
-                <p class="mat-body-2 fw-bolder mb-2">Credentials</p>
+                <p class="mat-body-2 font-semibold mb-2">Credentials</p>
                 @for (controlKeyValue of (formToUse.controls.requirements.controls | keyvalue); track
                 controlKeyValue.key) {
                 <div class="row">
@@ -591,7 +591,7 @@
                     </div>
                 </div>
                 } } @if (methodServices?.[selectedServiceIndex]?.configurations?.fields; as configurationsFields) {
-                <p class="mat-body-2 fw-bolder mb-2">Configurations</p>
+                <p class="mat-body-2 font-semibold mb-2">Configurations</p>
                 @for (controlKeyValue of (formToUse.controls.configurations.controls | keyvalue); track
                 controlKeyValue.key) {
                 <div class="row">
@@ -725,7 +725,7 @@
                     class="branding-preview-logo mb-2"
                 />
                 }
-                <h2 class="mat-h2 fw-bolder text-light-gray mb-0" [style.color]="getEffectivePrimaryColor()">
+                <h2 class="mat-h2 font-semibold text-light-gray mb-0" [style.color]="getEffectivePrimaryColor()">
                     {{ featureForm.get('brandingDetails.title')?.value }}
                 </h2>
             </div>
@@ -999,7 +999,6 @@
                         style="top: 16px; right: 8px"
                         [copyData]="code | json"
                         tooltip="Copy JSON"
-                        iconClass="text-white"
                     ></proxy-copy-button>
                 </div>
                 }
@@ -1024,7 +1023,6 @@
             style="top: 16px; right: 8px"
             [copyData]="proxyAuthScript"
             tooltip="Copy Script"
-            iconClass="text-white"
         ></proxy-copy-button>
     </div>
     <div class="mat-body-2 mt-2">
@@ -1038,7 +1036,6 @@
             style="top: 16px; right: 8px"
             [copyData]="demoDiv$ | async"
             tooltip="Copy Code"
-            iconClass="text-white"
         ></proxy-copy-button>
     </div>
 </ng-template>
@@ -1054,7 +1051,7 @@
 <ng-template #webhook>
     <div class="flex flex-col gap-4 my-6 grow">
         <div class="flex flex-col w-1/2">
-            <p class="mat-body-2 fw-bolder mt-0">Webhook URL</p>
+            <p class="mat-body-2 font-semibold mt-0">Webhook URL</p>
             <ng-container
                 *ngTemplateOutlet="
                     inputField;
@@ -1067,7 +1064,7 @@
                     }
                 "
             ></ng-container>
-            <p class="mat-body-2 fw-bolder mt-0">Method</p>
+            <p class="mat-body-2 font-semibold mt-0">Method</p>
             <ng-container
                 *ngTemplateOutlet="
                     inputField;
@@ -1082,7 +1079,7 @@
                 "
             ></ng-container>
 
-            <p class="mat-body-2 fw-bolder mt-0">Trigger Events</p>
+            <p class="mat-body-2 font-semibold mt-0">Trigger Events</p>
             <ng-container>
                 <mat-form-field appearance="outline" class="w-full mb-0">
                     <mat-label>Select Trigger Events</mat-label>
@@ -1350,7 +1347,7 @@
             </button>
         </div>
 
-        <mat-card class="w-full outline-card responsive-card grow mt-6 overflow-table overflow-y p-0">
+        <mat-card class="w-full outline-card responsive-card grow mt-6 overflow-table overflow-y-auto p-0">
             <mat-card-content>
                 <table mat-table [dataSource]="billableMetricstabledata" class="default-table responsive-table">
                     <!-- Name Column -->
@@ -1413,7 +1410,7 @@
                     ></tr>
 
                     <tr class="mat-row" *matNoDataRow>
-                        <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
+                        <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
                             <div class="text-center w-full mat-subtitle-2 text-dark">No Record Found</div>
                         </td>
                     </tr>
@@ -1654,7 +1651,7 @@
                     ></tr>
 
                     <tr class="mat-row" *matNoDataRow>
-                        <td class="mat-cell border-none" [attr.colspan]="displayedColumns.length">
+                        <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
                             <div class="flex justify-center items-center w-full mat-subtitle-2 text-dark">
                                 No plans Found
                             </div>
@@ -1706,7 +1703,7 @@
             <tr mat-header-row *matHeaderRowDef="taxesDisplayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: taxesDisplayedColumns"></tr>
             <tr class="mat-row" *matNoDataRow>
-                <td class="mat-cell border-none" [attr.colspan]="taxesDisplayedColumns.length">
+                <td class="mat-cell border-0" [attr.colspan]="taxesDisplayedColumns.length">
                     <div class="flex justify-center items-center w-full mat-subtitle-2 text-dark">No taxes Found</div>
                 </td>
             </tr>
@@ -1717,7 +1714,7 @@
 <ng-template #manageSubscription>
     <div class="flex gap-4 my-6 grow" style="min-height: 400px">
         <div class="flex flex-col gap-1 border-right pr-6 service-list">
-            <p class="mat-body-2 fw-bolder mt-0">Services</p>
+            <p class="mat-body-2 font-semibold mt-0">Services</p>
             <mat-list role="list" class="default-list pt-0">
                 <!-- Billable Metric item -->
                 <mat-list-item
@@ -1787,10 +1784,10 @@
     <div class="flex gap-6 grow branding-step-content">
         <!-- Left: Branding form -->
         <div class="flex flex-col branding-form w-1/2">
-            <p class="mat-body-2 text-secondary fw-bold mb-3">Customize your login UI</p>
+            <p class="mat-body-2 text-secondary font-medium mb-3">Customize your login UI</p>
             <!-- Logo: choose URL or file upload, then show relevant input -->
             <div class="flex items-center gap-4 font-12 mb-3 flex-wrap">
-                <!-- <span class="mat-body-2 text-secondary fw-bold mb-0">Logo</span> -->
+                <!-- <span class="mat-body-2 text-secondary font-medium mb-0">Logo</span> -->
                 <mat-radio-group
                     [value]="logoInputMode"
                     (change)="logoInputMode = $event.value"

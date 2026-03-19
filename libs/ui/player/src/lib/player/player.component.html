@@ -1,9 +1,9 @@
 <div class="audio-controls flex items-center justify-center">
-    @if (showPlay && !isLoading && !isPlaying) {
+    @if (showPlay() && !isLoading && !isPlaying) {
     <a class="mr-1 flex text-primary" href="javascript:void(0)" (click)="playAudio()">
         <i class="material-icons" aria-hidden="true">play_arrow</i>
     </a>
-    } @if (showPlay && !isLoading && isPlaying) {
+    } @if (showPlay() && !isLoading && isPlaying) {
     <a class="mr-1 flex text-primary" href="javascript:void(0)" (click)="pauseAudio()">
         <i class="material-icons" aria-hidden="true">pause</i>
     </a>
@@ -24,9 +24,9 @@
         (change)="seekAudio($event.target.value)"
         [disabled]="isLoading"
     />
-    @if (showTime) {
+    @if (showTime()) {
     <span class="mx-2 mat-body-2 text-dark" style="font-size: 12px">{{ duration }}/{{ totalDuration }}</span>
-    } @if (showDelete) {
+    } @if (showDelete()) {
     <button
         matIconButton
         class="icon-btn-md"
@@ -36,7 +36,7 @@
     >
         <mat-icon class="material-icons-outlined mat-icon-16" aria-hidden="true">delete</mat-icon>
     </button>
-    } @if (showDownload && blobUrl) {
+    } @if (showDownload() && blobUrl) {
     <a class="download" download="recording" [href]="blobUrl"> </a>
     }
 </div>

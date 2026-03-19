@@ -1,16 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
-@use 'tailwindcss';
-
 /* Layout*/
-@use 'assets/scss/layout/positions';
 @use 'assets/scss/layout/spacing';
 @use 'assets/scss/layout/display';
 
 /* Components*/
 @use 'assets/scss/component/form-field';
 @use 'assets/scss/component/tabs';
-@use '../../shared/scss/component/mat-form-field';
-@use '../../shared/scss/component/global';
+@use '../../shared/scss/global';
 
 :root {
     --color-common-dark: #000000;

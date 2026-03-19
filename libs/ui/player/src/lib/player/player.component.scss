@@ -3,7 +3,7 @@
         padding: 0;
         overflow: hidden;
         overflow-y: auto;
-        background-color: #fff;
+        background-color: var(--color-common-bg);
     }
 
     .drop-box {
@@ -13,9 +13,9 @@
     }
 
     .drop-box {
-        background: #fff;
-        border: 2px dashed #e6e6e6;
-        color: #b5b5b5;
+        background: var(--color-common-bg);
+        border: 2px dashed var(--color-common-border);
+        color: var(--color-common-grey);
         text-align: center;
     }
 
@@ -31,7 +31,7 @@
 .loader,
 .loader:before,
 .loader:after {
-    background: #87ee07;
+    background: var(--color-dark-accent);
     -webkit-animation: load1 1s infinite ease-in-out;
     animation: load1 1s infinite ease-in-out;
     width: 5px;
@@ -39,7 +39,7 @@
 }
 
 .loader {
-    color: #87ee07;
+    color: var(--color-dark-accent);
     text-indent: -9999em;
     margin: 10px auto;
     position: relative;
@@ -95,35 +95,16 @@
 }
 
 .control-btn a {
-    color: #333333;
+    color: var(--color-common-text);
     margin: 0 5px;
 }
-
-// .search-containt {
-//     i {
-//         position: absolute;
-//         left: 7%;
-//         top: 30%;
-//         color: #aeaeaa;
-//     }
-
-//     input {
-//         height: 30px;
-//         padding-left: 30px;
-//         font-size: 12px;
-//         border-radius: 2px;
-//         border-color: #c4c0c0;
-//     }
-
-//     position: relative;
-// }
 
 .browser-recording {
     i {
         font-size: 16px;
-        color: #b5b5b5;
+        color: var(--color-common-grey);
         border-radius: 5px;
-        border: 1px solid #b5b5b5;
+        border: 1px solid var(--color-common-grey);
         align-self: center;
         margin-right: 5px;
     }
@@ -133,7 +114,7 @@
     }
 
     a {
-        color: #434343;
+        color: var(--color-common-text);
         font-size: 12px;
         display: flex;
     }
@@ -143,10 +124,10 @@
     div.audio-controls {
         display: flex;
         align-items: center;
-        color: #666666;
+        color: var(--color-common-text);
 
         i {
-            color: #b5b5b5;
+            color: var(--color-common-grey);
             font-size: 18px;
         }
 
@@ -155,7 +136,7 @@
         }
     }
     .nav-tabs {
-        border-bottom: 1px solid #d6d7d6;
+        border-bottom: 1px solid var(--color-common-border);
     }
 
     .p-25 {
@@ -163,7 +144,7 @@
     }
 
     .file-list {
-        background-color: #fafafa;
+        background-color: var(--color-common-app-bg);
         padding: 0px 10px;
 
         ul {
@@ -172,7 +153,7 @@
         }
 
         li.list-group-item {
-            background-color: #fafafa;
+            background-color: var(--color-common-app-bg);
             margin-bottom: 0;
             border: 0;
             border-bottom: 1px solid rgba(0, 0, 0, 0.125);
@@ -187,23 +168,24 @@
     .nav-link {
         padding: 0.5rem 0.5rem;
         margin: 0 1rem;
-        color: #313c46;
+        color: var(--color-common-text);
 
         &.active {
-            color: #166ab3;
+            color: var(--color-common-primary);
             font-weight: bold;
             background-color: initial;
-            border-color: #fff;
-            border-bottom: 2px solid #166ab3;
+            border-color: var(--color-common-bg);
+            border-bottom: 2px solid var(--color-common-primary);
         }
     }
 }
 
 .slider {
     -webkit-appearance: none;
+    appearance: none;
     height: 3px;
     border-radius: 5px;
-    background: #d3d3d3;
+    background: var(--color-common-border);
     outline: none;
     opacity: 0.7;
     -webkit-transition: 0.2s;
@@ -228,7 +210,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: #005485;
+    background: var(--color-common-primary);
     cursor: pointer;
 }
 
@@ -236,11 +218,8 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: #005485;
+    background: var(--color-common-primary);
     cursor: pointer;
-}
-div.audio-controls {
-    // margin-top: 5px;
 }
 .message-main-sender {
     span.mr-2 {
@@ -259,10 +238,4 @@ div.audio-controls {
 
 input.slider::before {
     display: none;
-}
-.text-success {
-    color: #166ab3 !important;
-    &:hover {
-        color: #166ab3 !important;
-    }
 }
