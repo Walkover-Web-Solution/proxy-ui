@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { LoaderComponent } from '@proxy/ui/loader';
-import { CopyButtonComponent } from '@proxy/ui/copy-button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ILogDetailRes } from '@proxy/models/logs-models';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -13,15 +12,7 @@ import { Observable } from 'rxjs';
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-log-details-side-dialog',
-    imports: [
-        AsyncPipe,
-        NgTemplateOutlet,
-        MatButtonModule,
-        MatIconModule,
-        MatDialogModule,
-        LoaderComponent,
-        CopyButtonComponent,
-    ],
+    imports: [AsyncPipe, NgTemplateOutlet, MatButtonModule, MatIconModule, MatDialogModule, LoaderComponent],
     templateUrl: './log-details-side-dialog.component.html',
     styleUrls: ['./log-details-side-dialog.component.scss'],
 })

@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { LoaderComponent } from '@proxy/ui/loader';
 import { Router } from '@angular/router';
 import { IFirebaseUserModel } from '@proxy/models/root-models';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -24,7 +23,7 @@ import * as logInActions from './ngrx/actions/login.action';
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-auth',
-    imports: [RouterModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, LoaderComponent],
+    imports: [RouterModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule],
     templateUrl: './auth.component.html',
     styleUrls: ['./auth.component.scss'],
 })

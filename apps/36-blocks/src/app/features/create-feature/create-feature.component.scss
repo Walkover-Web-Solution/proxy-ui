@@ -427,13 +427,12 @@
 
 // Info icon styling
 .info-icon {
-    color: var(--color-common-primary, #1976d2);
-    font-size: 17px;
+    // font-size: 17px;
     opacity: 0.7;
     transition: opacity 0.2s ease-in-out;
     position: absolute;
     right: 4px;
-    top: 4px;
+    // top: 4px;
     z-index: 1;
 
     &:hover {

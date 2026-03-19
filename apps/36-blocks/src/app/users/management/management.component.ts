@@ -22,9 +22,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTabsModule } from '@angular/material/tabs';
-import { SkeletonDirective } from '@proxy/directives/skeleton';
-import { CopyButtonComponent } from '@proxy/ui/copy-button';
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
+import { CopyButtonComponent } from '@proxy/ui/copy-button';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -63,9 +62,7 @@ interface IRole {
         MatSlideToggleModule,
         MatDividerModule,
         MatTabsModule,
-        SkeletonDirective,
         CopyButtonComponent,
-        ConfirmDialogComponent,
     ],
     templateUrl: './management.component.html',
     styleUrls: ['./management.component.scss'],
