@@ -5,6 +5,7 @@ type valueType = string | number | boolean | keyValuePair<any> | any[];
 
 @Pipe({
     name: 'typeof',
+    standalone: true,
 })
 export class TypeOf implements PipeTransform {
     public transform(value: valueType): string {

@@ -4,7 +4,7 @@ type KeyValue = { [key: string]: any };
 type ReturnValue = string | KeyValue;
 type DataType = KeyValue | Array<KeyValue>;
 
-@Pipe({ name: 'fieldValuePipe' })
+@Pipe({ name: 'fieldValuePipe', standalone: true })
 export class FieldValuePipe implements PipeTransform {
     /**
      *
@@ -36,9 +36,3 @@ export class FieldValuePipe implements PipeTransform {
         }, item);
     }
 }
-
-@({
-    declarations: [FieldValuePipe],
-    exports: [FieldValuePipe],
-})
-export class PipesFieldValuePipeModule {}

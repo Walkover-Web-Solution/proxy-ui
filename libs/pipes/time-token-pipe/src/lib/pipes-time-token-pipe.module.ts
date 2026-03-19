@@ -4,7 +4,7 @@ import * as objectSupport from 'dayjs/plugin/objectSupport';
 import { ConvertToDigitTimeToken } from '@proxy/utils';
 
 dayjs.extend(objectSupport);
-@Pipe({ name: 'timeToken' })
+@Pipe({ name: 'timeToken', standalone: true })
 export class TimeTokenPipe implements PipeTransform {
     constructor() {}
 
@@ -38,9 +38,3 @@ export class TimeTokenPipe implements PipeTransform {
         return null;
     }
 }
-
-@({
-    declarations: [TimeTokenPipe],
-    exports: [TimeTokenPipe],
-})
-export class PipesTimeTokenPipeModule {}

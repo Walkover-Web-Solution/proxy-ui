@@ -1,1 +1,1 @@
-export * from './lib/pipes-safe-urlpipe.module';
+export { SafeURLPipe } from './lib/pipes-safe-urlpipe.module';

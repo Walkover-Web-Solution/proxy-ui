@@ -1,0 +1,14 @@
+<div
+    [class]="
+        'confirm-dialog-wrap ' + (theme === PublicScriptTheme.Dark ? PublicScriptTheme.Dark : PublicScriptTheme.Light)
+    "
+>
+    <h2 mat-dialog-title>Confirm Action</h2>
+    <div mat-dialog-content>
+        <p>Are you sure you want to leave this company?</p>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button matButton="outlined" class="btn-dlg-cancel" (click)="closeDialog('cancel')">Cancel</button>
+        <button matButton="filled" class="btn-dlg-leave" (click)="confirmleave()">Leave</button>
+    </div>
+</div>

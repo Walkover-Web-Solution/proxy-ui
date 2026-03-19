@@ -3,12 +3,12 @@
 //
 // Color tokens reference CSS custom properties emitted by the
 // `emit-design-tokens` mixin in:
-//   apps/proxy/src/assets/scss/theme/_custom-palette.scss
+//   apps/36-blocks/src/assets/scss/theme/_custom-palette.scss
 //
 // To change any color, update ONLY _custom-palette.scss.
 // Changes propagate automatically to:
 //   1. Angular Material themes  (_default-theme.scss)
-//   2. Shadow DOM themes        (apps/proxy-auth/src/shadow-dom-theme.scss)
+//   2. Shadow DOM themes        (apps/36-blocks-widget/src/shadow-dom-theme.scss)
 //   3. Tailwind utilities       (this file, via CSS var() references)
 // ─────────────────────────────────────────────────────────────────────────────
 
