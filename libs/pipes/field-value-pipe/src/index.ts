@@ -1,1 +1,1 @@
-export * from './lib/pipes-field-value-pipe.module';
+export { FieldValuePipe } from './lib/pipes-field-value-pipe.module';
