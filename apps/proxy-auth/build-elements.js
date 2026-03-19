@@ -23,9 +23,8 @@ const path = require('path');
 
     console.info('Concatenating:', files);
 
-    await fs.ensureDir('./dist/apps/proxy/assets/proxy-auth');
-
-    await concat(files, './dist/apps/proxy/assets/proxy-auth/proxy-auth.js');
+    await fs.ensureDir('./apps/proxy/src/assets/proxy-auth');
+    await concat(files, './apps/proxy/src/assets/proxy-auth/proxy-auth.js');
 
     console.info('Elements created successfully!');
 })();
