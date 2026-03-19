@@ -1,4 +1,16 @@
-import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { NgIf, NgFor } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatRadioModule } from '@angular/material/radio';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { CustomValidators } from '@proxy/custom-validator';
@@ -6,8 +18,23 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-create-plan-dialog',
+    imports: [
+        NgIf,
+        NgFor,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatCardModule,
+        MatIconModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatChipsModule,
+        MatSlideToggleModule,
+        MatRadioModule,
+    ],
     template: `
         <div class="d-flex justify-content-between align-items-center">
             <h2 mat-dialog-title>{{ dialogTitle }}</h2>
@@ -325,32 +352,31 @@ export class CreatePlanDialogComponent extends BaseComponent implements OnInit, 
     // Cache for select options to prevent infinite calls
     private optionsCache: { [key: string]: any[] } = {};
 
-    constructor(
-        private fb: FormBuilder,
-        private dialog: MatDialog,
-        public dialogRef: MatDialogRef<CreatePlanDialogComponent>,
-        @Inject(MAT_DIALOG_DATA)
-        public data: {
-            formConfig: any;
-            dialogTitle?: string;
-            submitButtonText?: string;
-            editData?: any;
-            metaData?: any;
-            chipListValues?: { [key: string]: Set<string> };
-            chargesList?: any[];
-            optionsData?: {
-                taxes: any[];
-                billableMetrics: any[];
-            };
-        }
-    ) {
+    private fb = inject(FormBuilder);
+    private dialog = inject(MatDialog);
+    public dialogRef = inject<MatDialogRef<CreatePlanDialogComponent>>(MatDialogRef);
+    public data = inject<{
+        formConfig: any;
+        dialogTitle?: string;
+        submitButtonText?: string;
+        editData?: any;
+        metaData?: any;
+        chipListValues?: { [key: string]: Set<string> };
+        chargesList?: any[];
+        optionsData?: {
+            taxes: any[];
+            billableMetrics: any[];
+        };
+    }>(MAT_DIALOG_DATA);
+
+    constructor() {
         super();
-        this.formConfig = data.formConfig;
-        this.dialogTitle = data.dialogTitle || 'Create Plan';
-        this.submitButtonText = data.submitButtonText || 'Create Plan';
-        this.chargesList = data.chargesList || [];
-        this.chipListValues = data.chipListValues || {};
-        this.metaData = data.metaData || {};
+        this.formConfig = this.data.formConfig;
+        this.dialogTitle = this.data.dialogTitle || 'Create Plan';
+        this.submitButtonText = this.data.submitButtonText || 'Create Plan';
+        this.chargesList = this.data.chargesList || [];
+        this.chipListValues = this.data.chipListValues || {};
+        this.metaData = this.data.metaData || {};
     }
 
     ngOnInit(): void {

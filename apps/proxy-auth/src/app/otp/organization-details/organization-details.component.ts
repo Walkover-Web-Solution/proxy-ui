@@ -1,6 +1,14 @@
-import { Input, OnDestroy, OnInit } from '@angular/core';
-
-import { Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation, inject, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from 'libs/ui/base-component/src/lib/base-component/base.component';
 import { OtpService } from '../service/otp.service';
@@ -9,15 +17,27 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { EMAIL_REGEX } from '@proxy/regex';
 
 @Component({
-    standalone: false,
     selector: 'organization-details',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatSelectModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule,
+        MarkAllAsTouchedDirective,
+    ],
     templateUrl: './organization-details.component.html',
     encapsulation: ViewEncapsulation.ShadowDom,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['../../../styles.scss', './organization-details.component.scss'],
 })
 export class OrganizationDetailsComponent extends BaseComponent implements OnInit, OnDestroy {
-    @Input() public authToken: string;
-    @Input() public theme: string;
+    public authToken = input<string>();
+    public theme = input<string>();
 
     public organizationForm = new FormGroup({
         companyName: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
@@ -47,16 +67,19 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     // Snapshot taken when the user clicks Edit, so Cancel can restore it
     private editSnapshot: typeof this.initialFormValue = null;
 
-    constructor(private otpService: OtpService, private snackBar: MatSnackBar) {
+    private otpService = inject(OtpService);
+    private snackBar = inject(MatSnackBar);
+
+    constructor() {
         super();
     }
 
     public allowedUpdatePermissions: boolean = false;
 
     ngOnInit(): void {
-        if (this.authToken) {
+        if (this.authToken()) {
             this.otpService
-                .getOrganizationDetails(this.authToken)
+                .getOrganizationDetails(this.authToken())
                 .pipe(takeUntil(this.destroy$))
                 .subscribe({
                     next: (res) => {
@@ -83,7 +106,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
                 });
 
             this.otpService
-                .getTimezones(this.authToken)
+                .getTimezones(this.authToken())
                 .pipe(takeUntil(this.destroy$))
                 .subscribe({
                     next: (res) => {
@@ -135,7 +158,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     }
 
     public onSubmit(): void {
-        if (!this.organizationForm.valid || !this.authToken || this.updateInProgress) {
+        if (!this.organizationForm.valid || !this.authToken() || this.updateInProgress) {
             this.organizationForm.markAllAsTouched();
             return;
         }
@@ -164,7 +187,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
 
         this.updateInProgress = true;
         this.otpService
-            .updateCompany(this.authToken, {
+            .updateCompany(this.authToken(), {
                 name: organizationDetails.companyName ?? '',
                 email: organizationDetails.email ?? '',
                 mobile: organizationDetails.phoneNumber ?? '',

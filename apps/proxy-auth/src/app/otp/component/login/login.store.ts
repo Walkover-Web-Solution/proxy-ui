@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
 import { tapResponse } from '@ngrx/operators';
 import { Observable, switchMap } from 'rxjs';
@@ -19,7 +19,10 @@ export interface ILoginInitialState {
 
 @Injectable()
 export class LoginComponentStore extends ComponentStore<ILoginInitialState> {
-    constructor(private service: OtpService, private toast: PrimeNgToastService) {
+    private service = inject(OtpService);
+    private toast = inject(PrimeNgToastService);
+
+    constructor() {
         super({
             isLoading: false,
             logInData: null,

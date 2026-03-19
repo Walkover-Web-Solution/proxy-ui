@@ -1,12 +1,34 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CustomValidators } from '@proxy/custom-validator';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-simple-dialog',
+    imports: [
+        NgFor,
+        NgIf,
+        NgTemplateOutlet,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatSlideToggleModule,
+    ],
     template: `
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 mat-dialog-title class="m-0">{{ dialogTitle }}</h2>
@@ -102,22 +124,21 @@ export class SimpleDialogComponent implements OnInit {
     public submitButtonText: string;
     private optionsCache: { [key: string]: any[] } = {};
 
-    constructor(
-        private fb: FormBuilder,
-        private http: HttpClient,
-        public dialogRef: MatDialogRef<SimpleDialogComponent>,
-        @Inject(MAT_DIALOG_DATA)
-        public data: {
-            message: string;
-            formConfig: any;
-            dialogTitle?: string;
-            submitButtonText?: string;
-            editData?: any;
-        }
-    ) {
-        this.formConfig = data.formConfig;
-        this.dialogTitle = data.dialogTitle || 'Add New Item';
-        this.submitButtonText = data.submitButtonText || 'Submit';
+    private fb = inject(FormBuilder);
+    private http = inject(HttpClient);
+    public dialogRef = inject<MatDialogRef<SimpleDialogComponent>>(MatDialogRef);
+    public data = inject<{
+        message: string;
+        formConfig: any;
+        dialogTitle?: string;
+        submitButtonText?: string;
+        editData?: any;
+    }>(MAT_DIALOG_DATA);
+
+    constructor() {
+        this.formConfig = this.data.formConfig;
+        this.dialogTitle = this.data.dialogTitle || 'Add New Item';
+        this.submitButtonText = this.data.submitButtonText || 'Submit';
     }
 
     ngOnInit(): void {

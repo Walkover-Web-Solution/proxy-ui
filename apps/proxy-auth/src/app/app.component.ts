@@ -1,13 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
 
 @Component({
-    standalone: false,
     selector: 'proxy-root',
+    imports: [CommonModule],
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     host: { '(window:beforeunload)': 'ngOnDestroy()' },
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     public title = 'otp-provider';

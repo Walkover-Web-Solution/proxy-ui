@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgZone, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { ProxyAuthScriptUrl } from '@proxy/models/features-model';
@@ -6,15 +6,18 @@ import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { environment } from '../../environments/environment';
 
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-registration',
+    imports: [],
     template: '',
 })
 export class RegistrationComponent implements OnInit {
     private scriptLoaded = new BehaviorSubject<boolean>(false);
     public loadingScript = new BehaviorSubject<boolean>(false);
 
-    constructor(private route: ActivatedRoute, private ngZone: NgZone, private toast: PrimeNgToastService) {}
+    private route = inject(ActivatedRoute);
+    private ngZone = inject(NgZone);
+    private toast = inject(PrimeNgToastService);
 
     ngOnInit(): void {
         const params = this.route.snapshot.queryParamMap;

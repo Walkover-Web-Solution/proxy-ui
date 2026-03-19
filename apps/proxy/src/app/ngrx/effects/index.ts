@@ -1,1 +1,1 @@
-export * from './effects.module';
+export * from './root';

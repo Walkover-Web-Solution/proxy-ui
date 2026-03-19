@@ -1,18 +1,32 @@
 import { OtpWidgetService } from './../../service/otp-widget.service';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
+import { NgHcaptchaModule } from 'ng-hcaptcha';
+import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
+import { RemoveCharacterDirective } from '@proxy/directives/RemoveCharacterDirective';
+import { RegisterComponent } from '../register/register.component';
+import { LoginComponent } from '../login/login.component';
 import {
     AfterViewInit,
+    ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
     ElementRef,
-    EventEmitter,
-    Input,
     OnDestroy,
     OnInit,
-    Output,
     ViewChild,
+    inject,
+    input,
+    output,
 } from '@angular/core';
 import { NgHcaptchaComponent } from 'ng-hcaptcha';
-import { FormControl, FormGroup, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { CustomValidators } from '@proxy/custom-validator';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -67,40 +81,53 @@ export enum InputFields {
     BOTTOM = 'bottom',
 }
 @Component({
-    standalone: false,
     selector: 'proxy-send-otp-center',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        MatRadioModule,
+        NgHcaptchaModule,
+        MarkAllAsTouchedDirective,
+        RemoveCharacterDirective,
+    ],
     templateUrl: './send-otp-center.component.html',
     styleUrls: ['./send-otp-center.component.scss'],
     providers: [LoginComponentStore],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('initContact') initContact: ElementRef;
     @ViewChild(NgHcaptchaComponent) hCaptchaComponent: NgHcaptchaComponent;
-    @Input() public referenceId: string;
-    @Input() public serviceData: any;
-    @Input() public tokenAuth: string;
-    @Input() public target: string;
-    @Input() public version: SendOtpCenterVersion = SendOtpCenterVersion.V1;
-    @Input() public input_fields: string = InputFields.TOP;
-    @Input() public show_social_login_icons: boolean = false;
-    @Input() public isCreateAccountLink: boolean;
-    @Input() public theme: string;
-    @Input() public isUserProxyContainer: boolean = true;
-    @Output() public togglePopUp: EventEmitter<any> = new EventEmitter();
-    @Output() public successReturn: EventEmitter<any> = new EventEmitter();
-    @Output() public failureReturn: EventEmitter<any> = new EventEmitter();
-    @Output() public openPopUp: EventEmitter<any> = new EventEmitter();
-    @Output() public closePopUp: EventEmitter<any> = new EventEmitter();
+    public referenceId = input<string>();
+    public serviceData = input<any>();
+    public tokenAuth = input<string>();
+    public target = input<string>();
+    public version = input<SendOtpCenterVersion>(SendOtpCenterVersion.V1);
+    public input_fields = input<string>(InputFields.TOP);
+    public show_social_login_icons = input<boolean>(false);
+    public isCreateAccountLink = input<boolean>();
+    public theme = input<string>();
+    public isUserProxyContainer = input<boolean>(true);
+    public togglePopUp = output<void>();
+    public successReturn = output<any>();
+    public failureReturn = output<any>();
+    public openPopUp = output<any>();
+    public closePopUp = output<void>();
 
     public steps = 1;
-    public phoneForm = new UntypedFormGroup({
-        phone: new UntypedFormControl('', [Validators.required]),
+    public phoneForm = new FormGroup({
+        phone: new FormControl<string>('', [Validators.required]),
     });
-    public otpControl = new UntypedFormControl(undefined, [
+    public otpControl = new FormControl<number | undefined>(undefined, [
         Validators.required,
         Validators.pattern(ONLY_INTEGER_REGEX),
     ]);
-    public emailControl = new UntypedFormControl('', [Validators.required, Validators.pattern(EMAIL_REGEX)]);
+    public emailControl = new FormControl<string>('', [Validators.required, Validators.pattern(EMAIL_REGEX)]);
     public errors$: Observable<string[]>;
 
     public selectGetOtpInProcess$: Observable<boolean>;
@@ -117,6 +144,8 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public selectResendCount$: Observable<number>;
     public selectApiErrorResponse$: Observable<any>;
     public closeWidgetApiFailed$: Observable<boolean>;
+
+    private otpWidgetService = inject(OtpWidgetService);
 
     public otpScriptLoading: BehaviorSubject<boolean> = this.otpWidgetService.scriptLoading;
 
@@ -182,14 +211,13 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
 
     public uiPreferences: any = {};
 
-    constructor(
-        private store: Store<IAppState>,
-        private cdr: ChangeDetectorRef,
-        private _elemRef: ElementRef,
-        private otpWidgetService: OtpWidgetService,
-        private loginComponentStore: LoginComponentStore,
-        private otpUtilityService: OtpUtilityService
-    ) {
+    private store = inject<Store<IAppState>>(Store);
+    private cdr = inject(ChangeDetectorRef);
+    private _elemRef = inject(ElementRef);
+    private loginComponentStore = inject(LoginComponentStore);
+    private otpUtilityService = inject(OtpUtilityService);
+
+    constructor() {
         super();
         this.errors$ = this.store.pipe(select(errors), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
         this.selectGetOtpInProcess$ = this.store.pipe(
@@ -404,7 +432,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
             sendOtpAction({
                 request: {
                     // variables: {},
-                    referenceId: this.referenceId,
+                    referenceId: this.referenceId(),
                     mobile: this.mobileNumber,
                 },
             })
@@ -428,8 +456,8 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
             this.store.dispatch(
                 getOtpResendAction({
                     request: {
-                        tokenAuth: this.tokenAuth,
-                        referenceId: this.referenceId,
+                        tokenAuth: this.tokenAuth(),
+                        referenceId: this.referenceId(),
                         reqId: this.otpRes.reqId,
                         retryChannel: channel,
                     },
@@ -442,9 +470,9 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         this.store.dispatch(
             getOtpVerifyAction({
                 request: {
-                    tokenAuth: this.tokenAuth,
+                    tokenAuth: this.tokenAuth(),
                     otp: this.otpControl.value,
-                    referenceId: this.referenceId,
+                    referenceId: this.referenceId(),
                     reqId: this.otpRes.reqId,
                     // identifier: this.sendOTPMode === '1' ? this.mobileNumber : this.emailControl.value,
                 },
@@ -460,7 +488,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
 
     public close(closeByUser: boolean = false) {
         document.getElementById(META_TAG_ID)?.remove();
-        if (this.isUserProxyContainer) {
+        if (this.isUserProxyContainer()) {
             this.resetStore();
         }
         this.togglePopUp.emit();
@@ -515,7 +543,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     }
 
     private openLink(link: string): void {
-        window.open(link, this.target);
+        window.open(link, this.target());
     }
 
     public onVerificationBtnClick(widgetData: any): void {
@@ -524,7 +552,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         } else if (widgetData?.service_id === FeatureServiceIds.Msg91OtpService) {
             this.otpWidgetService.openWidget();
         } else if (widgetData?.service_id === FeatureServiceIds.PasswordAuthentication) {
-            if (this.version === SendOtpCenterVersion.V2) {
+            if (this.version() === SendOtpCenterVersion.V2) {
                 this.login();
             } else {
                 this.otpWidgetService.openLogin(true);
@@ -639,24 +667,24 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     }
 
     public get titleText(): string {
-        if (this.version === SendOtpCenterVersion.V2 && this.uiPreferences?.title) {
+        if (this.version() === SendOtpCenterVersion.V2 && this.uiPreferences?.title) {
             return this.uiPreferences.title;
         }
         return 'Login';
     }
 
     public get primaryColor(): string | null {
-        if (this.version !== SendOtpCenterVersion.V2) {
+        if (this.version() !== SendOtpCenterVersion.V2) {
             return null;
         }
-        const isDark = this.theme === 'dark';
+        const isDark = this.theme() === 'dark';
         return isDark
             ? this.uiPreferences?.dark_theme_primary_color || null
             : this.uiPreferences?.light_theme_primary_color || null;
     }
 
     public get borderRadiusValue(): string | null {
-        if (this.version !== SendOtpCenterVersion.V2) {
+        if (this.version() !== SendOtpCenterVersion.V2) {
             return null;
         }
         switch (this.uiPreferences?.border_radius) {
@@ -674,22 +702,22 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     }
 
     public get buttonColor(): string | null {
-        if (this.version !== SendOtpCenterVersion.V2) return null;
+        if (this.version() !== SendOtpCenterVersion.V2) return null;
         return this.uiPreferences?.button_color || null;
     }
 
     public get buttonHoverColor(): string | null {
-        if (this.version !== SendOtpCenterVersion.V2) return null;
+        if (this.version() !== SendOtpCenterVersion.V2) return null;
         return this.uiPreferences?.button_hover_color || null;
     }
 
     public get buttonTextColor(): string | null {
-        if (this.version !== SendOtpCenterVersion.V2) return null;
+        if (this.version() !== SendOtpCenterVersion.V2) return null;
         return this.uiPreferences?.button_text_color || null;
     }
 
     public get isDarkTheme(): boolean {
-        return this.theme === 'dark';
+        return this.theme() === 'dark';
     }
 
     public get signUpButtonText(): string {

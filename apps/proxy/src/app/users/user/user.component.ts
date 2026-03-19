@@ -1,4 +1,39 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    inject,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { DateRangePickerComponent } from '@proxy/date-range-picker';
+import { NoRecordFoundComponent } from '@proxy/ui/no-record-found';
+import { MatPaginatorGotoComponent } from '@proxy/ui/mat-paginator-goto';
+import { SearchComponent } from '@proxy/ui/search';
+import { RemoveCharacterDirective } from '@proxy/directives/RemoveCharacterDirective';
+import { SkeletonDirective } from '@proxy/directives/skeleton';
+import { MarkdownModule } from 'ngx-markdown';
+import { CopyButtonComponent } from '@proxy/ui/copy-button';
+import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
+import { ManagementComponent } from '../management/management.component';
 import { BaseComponent } from '@proxy/ui/base-component';
 import {
     DEFAULT_END_DATE,
@@ -21,14 +56,48 @@ import { takeUntil } from 'rxjs/operators';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-users',
+    imports: [
+        CommonModule,
+        RouterModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatCardModule,
+        MatButtonModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatTooltipModule,
+        MatTabsModule,
+        MatSelectModule,
+        MatDialogModule,
+        MatMenuModule,
+        MatDividerModule,
+        MatSlideToggleModule,
+        MatIconModule,
+        MatTableModule,
+        MatPaginatorModule,
+        DateRangePickerComponent,
+        NoRecordFoundComponent,
+        MatPaginatorGotoComponent,
+        SearchComponent,
+        RemoveCharacterDirective,
+        SkeletonDirective,
+        MarkdownModule,
+        CopyButtonComponent,
+        ConfirmDialogComponent,
+        ManagementComponent,
+    ],
     templateUrl: './user.component.html',
     styleUrls: ['./user.component.scss'],
     providers: [UserComponentStore, FeatureComponentStore],
 })
 export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+
+    private componentStore = inject(UserComponentStore);
+    private featureComponentStore = inject(FeatureComponentStore);
+    private cdr = inject(ChangeDetectorRef);
 
     /** Store current API inprogress state */
     public loading$: Observable<{ [key: string]: boolean }> = this.componentStore.loading$;
@@ -71,7 +140,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     //     endDate: DEFAULT_END_DATE,
     // };
 
-    constructor(private componentStore: UserComponentStore, private featureComponentStore: FeatureComponentStore) {
+    constructor() {
         super();
     }
     ngOnInit(): void {
@@ -85,6 +154,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
         this.features$.pipe(takeUntil(this.destroy$)).subscribe((features) => {
             if (features) {
                 this.filterFeatures(features.data);
+                this.cdr.markForCheck();
             }
         });
 

@@ -1,14 +1,6 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ModuleWithProviders } from '@angular/core';
 
-@NgModule({
+@({
     imports: [CommonModule],
 })
-export class ServiceModule {
-    public static forRoot(): ModuleWithProviders<ServiceModule> {
-        return {
-            ngModule: ServiceModule,
-            providers: [],
-        };
-    }
-}
+export class ServiceModule {}

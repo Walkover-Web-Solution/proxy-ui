@@ -1,1 +1,1 @@
-export * from './lib/ui-no-record-found.module';
+export * from './lib/no-record-found.component';

@@ -1,5 +1,17 @@
-import { NgStyle } from '@angular/common';
-import { Component, Input, OnInit, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { CommonModule, NgStyle } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatCardModule } from '@angular/material/card';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
+import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation, inject, input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, of, takeUntil, take, filter } from 'rxjs';
 import { IAppState } from '../store/app.state';
@@ -21,17 +33,32 @@ import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component
 import { updateUser } from '../store/actions/otp.action';
 import { UPDATE_REGEX } from '@proxy/regex';
 @Component({
-    standalone: false,
     selector: 'proxy-user-profile',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatTabsModule,
+        MatCardModule,
+        MatSnackBarModule,
+        MatProgressSpinnerModule,
+        MatDialogModule,
+        MatTableModule,
+        MarkAllAsTouchedDirective,
+    ],
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserProfileComponent extends BaseComponent implements OnInit {
-    @Input() public authToken: string;
-    @Input() public target: string;
-    @Input() public showCard: boolean;
-    @Input() public theme: string;
+    public authToken = input<string>();
+    public target = input<string>();
+    public showCard = input<boolean>();
+    public theme = input<string>();
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
@@ -52,9 +79,9 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
                 : type
         )
     );
-    @Input() public successReturn: (arg: any) => any;
-    @Input() public failureReturn: (arg: any) => any;
-    @Input() public otherData: { [key: string]: any } = {};
+    public successReturn = input<(arg: any) => any>();
+    public failureReturn = input<(arg: any) => any>();
+    public otherData = input<{ [key: string]: any }>({});
     public userDetails$: Observable<any>;
     public userInProcess$: Observable<boolean>;
     public deleteCompany$: Observable<any>;
@@ -73,12 +100,13 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
 
     displayedColumns: string[] = ['companyName', 'action'];
     public isEditing = false;
-    constructor(
-        private store: Store<IAppState>,
-        public dialog: MatDialog,
-        private snackBar: MatSnackBar,
-        private overlay: Overlay
-    ) {
+
+    private store = inject<Store<IAppState>>(Store);
+    public dialog = inject(MatDialog);
+    private snackBar = inject(MatSnackBar);
+    private overlay = inject(Overlay);
+
+    constructor() {
         super();
         this.userDetails$ = this.store.pipe(
             select(getUserProfileData),
@@ -118,7 +146,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
 
         this.store.dispatch(
             getUserDetails({
-                request: this.authToken,
+                request: this.authToken(),
             })
         );
     }
@@ -126,8 +154,8 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     openModal(companyId: number): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '400px',
-            data: { companyId: companyId, authToken: this.authToken, theme: this.theme },
-            panelClass: this.theme === 'dark' ? 'confirm-dialog-dark' : 'confirm-dialog-light',
+            data: { companyId: companyId, authToken: this.authToken(), theme: this.theme() },
+            panelClass: this.theme() === 'dark' ? 'confirm-dialog-dark' : 'confirm-dialog-light',
             // Prevent CDK BlockScrollStrategy from applying left/top on <html> when dialog opens
             scrollStrategy: this.overlay.scrollStrategies.noop(),
         });
@@ -136,7 +164,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
             if (result === 'confirmed') {
                 this.store.dispatch(
                     getUserDetails({
-                        request: this.authToken,
+                        request: this.authToken(),
                     })
                 );
             }
@@ -166,7 +194,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
             return;
         }
 
-        this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken }));
+        this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken() }));
 
         this.update$.pipe(filter(Boolean), take(1)).subscribe((res) => {
             if (res) {

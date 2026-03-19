@@ -1,4 +1,30 @@
-import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    OnDestroy,
+    ViewChild,
+    TemplateRef,
+    inject,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTabsModule } from '@angular/material/tabs';
+import { SkeletonDirective } from '@proxy/directives/skeleton';
+import { CopyButtonComponent } from '@proxy/ui/copy-button';
+import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -10,7 +36,6 @@ import { environment } from '../../../environments/environment';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import { UserComponentStore } from '../user/user.store';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 
 interface IRole {
     id: number;
@@ -21,13 +46,37 @@ interface IRole {
 }
 
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-management',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDialogModule,
+        MatTooltipModule,
+        MatSlideToggleModule,
+        MatDividerModule,
+        MatTabsModule,
+        SkeletonDirective,
+        CopyButtonComponent,
+        ConfirmDialogComponent,
+    ],
     templateUrl: './management.component.html',
     styleUrls: ['./management.component.scss'],
     providers: [FeatureComponentStore, UserComponentStore],
 })
 export class ManagementComponent implements OnInit, OnDestroy {
+    private featureComponentStore = inject(FeatureComponentStore);
+    private userComponentStore = inject(UserComponentStore);
+    private dialog = inject(MatDialog);
+    private cdr = inject(ChangeDetectorRef);
+
     public roleForm = new FormGroup({
         feature_id: new FormControl<string>(null, [Validators.required]),
         id: new FormControl<number>(null),
@@ -86,11 +135,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     @ViewChild('rolesPaginator') rolesPaginator!: MatPaginator;
     @ViewChild('permissionsPaginator') permissionsPaginator!: MatPaginator;
 
-    constructor(
-        private featureComponentStore: FeatureComponentStore,
-        private userComponentStore: UserComponentStore,
-        private dialog: MatDialog
-    ) {
+    constructor() {
         this.dialogRoleForm = new FormGroup({
             roleName: new FormControl('', [Validators.required]),
             permissions: new FormControl([], []),
@@ -113,6 +158,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         this.features$.subscribe((features) => {
             if (features) {
                 this.filterFeatures(features.data);
+                this.cdr.markForCheck();
             }
         });
 
@@ -138,6 +184,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
                 this.rolesDataSource.data = [];
                 this.rolesTotalCount = 0;
             }
+            this.cdr.markForCheck();
         });
         this.permissions$.pipe(takeUntil(this.destroy$)).subscribe((permissions: any) => {
             if (permissions?.data) {
@@ -149,6 +196,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
                 this.permissionsDataSource.data = [];
                 this.permissionsTotalCount = 0;
             }
+            this.cdr.markForCheck();
         });
         this.createPermission$.pipe(takeUntil(this.destroy$)).subscribe((createPermission) => {
             if (createPermission) {
@@ -182,6 +230,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
                     defaultRoleForMember: cRoles.default_member_role,
                     hiddenDefaultRoles: hiddenRoles,
                 });
+                this.cdr.markForCheck();
             }
         });
         // Subscribe to feature selection changes
@@ -392,10 +441,12 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
     public deleteRole(role: IRole): void {
         const confirmDialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
-        const componentInstance = confirmDialogRef.componentInstance;
-        componentInstance.confirmationMessage = `Are you sure you want to delete the role "${role.role}"?`;
-        componentInstance.confirmButtonText = 'Delete';
-        componentInstance.confirmButtonColor = 'warn';
+        confirmDialogRef.componentRef.setInput(
+            'confirmationMessage',
+            `Are you sure you want to delete the role "${role.role}"?`
+        );
+        confirmDialogRef.componentRef.setInput('confirmButtonText', 'Delete');
+        confirmDialogRef.componentRef.setInput('confirmButtonColor', 'warn');
 
         confirmDialogRef.afterClosed().subscribe((action) => {
             if (action === 'yes') {
@@ -483,10 +534,12 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
     public deletePermission(permission: any): void {
         const confirmDialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
-        const componentInstance = confirmDialogRef.componentInstance;
-        componentInstance.confirmationMessage = `Are you sure you want to delete the permission "${permission.name}"?`;
-        componentInstance.confirmButtonText = 'Delete';
-        componentInstance.confirmButtonColor = 'warn';
+        confirmDialogRef.componentRef.setInput(
+            'confirmationMessage',
+            `Are you sure you want to delete the permission "${permission.name}"?`
+        );
+        confirmDialogRef.componentRef.setInput('confirmButtonText', 'Delete');
+        confirmDialogRef.componentRef.setInput('confirmButtonColor', 'warn');
 
         confirmDialogRef.afterClosed().subscribe((action) => {
             if (action === 'yes') {

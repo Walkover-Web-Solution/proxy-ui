@@ -1,5 +1,4 @@
-import { NgModule, Pipe, PipeTransform } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Pipe, PipeTransform } from '@angular/core';
 import { keyValuePair } from '@proxy/models/root-models';
 
 type valueType = string | number | boolean | keyValuePair<any> | any[];
@@ -15,10 +14,3 @@ export class TypeOf implements PipeTransform {
         return typeof value;
     }
 }
-
-@NgModule({
-    imports: [CommonModule],
-    declarations: [TypeOf],
-    exports: [TypeOf],
-})
-export class PipesTypeofModule {}

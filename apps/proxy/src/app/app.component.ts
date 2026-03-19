@@ -1,4 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { PrimeNgToastComponent } from '@proxy/ui/prime-ng-toast';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { VersionCheckService } from '@proxy/service';
 import { select, Store } from '@ngrx/store';
@@ -15,8 +17,9 @@ import * as logInActions from './auth/ngrx/actions/login.action';
 import { IClientSettings, IFirebaseUserModel } from '@proxy/models/root-models';
 
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-root',
+    imports: [RouterModule, PrimeNgToastComponent],
     templateUrl: './app.component.html',
 })
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
@@ -29,13 +32,13 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     /** True, if new build is deployed */
     private newVersionAvailableForWebApp: boolean = false;
 
-    constructor(
-        private _store: Store<ILogInFeatureStateWithRootState>,
-        private router: Router,
-        private actRoute: ActivatedRoute,
-        private store: Store<IAppState>,
-        private versionCheckService: VersionCheckService
-    ) {
+    private _store = inject<Store<ILogInFeatureStateWithRootState>>(Store);
+    private router = inject(Router);
+    private actRoute = inject(ActivatedRoute);
+    private store = inject<Store<IAppState>>(Store);
+    private versionCheckService = inject(VersionCheckService);
+
+    constructor() {
         super();
 
         this._store.dispatch(logInActions.getUserAction());

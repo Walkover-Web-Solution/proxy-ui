@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { LoaderComponent } from '@proxy/ui/loader';
 import { Router } from '@angular/router';
 import { IFirebaseUserModel } from '@proxy/models/root-models';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -16,8 +22,9 @@ import { ILogInFeatureStateWithRootState } from './ngrx/store/login.state';
 import * as logInActions from './ngrx/actions/login.action';
 
 @Component({
-    standalone: false,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-auth',
+    imports: [RouterModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, LoaderComponent],
     templateUrl: './auth.component.html',
     styleUrls: ['./auth.component.scss'],
 })
@@ -26,6 +33,11 @@ export class AuthComponent extends BaseComponent implements OnInit {
     public logInData$: Observable<IFirebaseUserModel>;
     public logInDataInProcess$: Observable<boolean>;
     public logInDataSuccess$: Observable<boolean>;
+
+    private toast = inject(PrimeNgToastService);
+    private _store = inject<Store<ILogInFeatureStateWithRootState>>(Store);
+    private router = inject(Router);
+    private cdr = inject(ChangeDetectorRef);
 
     public currentlyBuilding: string = '';
     private buildingTexts = [
@@ -36,11 +48,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
     private isDeleting = false;
     private typewriterInterval: any;
 
-    constructor(
-        private toast: PrimeNgToastService,
-        private _store: Store<ILogInFeatureStateWithRootState>,
-        private router: Router
-    ) {
+    constructor() {
         super();
 
         this.selectLogInErrors$ = this._store.pipe(
@@ -111,6 +119,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
                         this.currentTextIndex = (this.currentTextIndex + 1) % this.buildingTexts.length;
                     }
                 }
+                this.cdr.markForCheck();
             },
             this.isDeleting ? 50 : 100
         );

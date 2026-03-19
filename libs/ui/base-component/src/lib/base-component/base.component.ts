@@ -1,6 +1,6 @@
 import { Component, inject, OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { ONLY_INTEGER_REGEX } from '@proxy/regex';
 import { take } from 'rxjs';
 import { Location } from '@angular/common';
@@ -35,19 +35,19 @@ export abstract class BaseComponent implements OnDestroy {
         }
     }
 
-    public makeFormDirty(form: UntypedFormGroup | UntypedFormArray): void {
-        if (form instanceof UntypedFormGroup) {
+    public makeFormDirty(form: FormGroup | FormArray): void {
+        if (form instanceof FormGroup) {
             // tslint:disable-next-line:forin
             for (const controlsKey in form.controls) {
                 const control = form.get(controlsKey);
-                if (control instanceof UntypedFormArray || control instanceof UntypedFormGroup) {
+                if (control instanceof FormArray || control instanceof FormGroup) {
                     this.makeFormDirty(control);
                 }
                 control.markAsTouched();
             }
         } else {
             form.controls.forEach((c) => {
-                if (c instanceof UntypedFormArray || c instanceof UntypedFormGroup) {
+                if (c instanceof FormArray || c instanceof FormGroup) {
                     this.makeFormDirty(c);
                 }
                 c.markAsTouched();

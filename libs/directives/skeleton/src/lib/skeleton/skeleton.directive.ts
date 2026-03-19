@@ -1,10 +1,9 @@
-import { Directive, Input, OnChanges, SimpleChanges, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, Input, OnChanges, SimpleChanges, TemplateRef, ViewContainerRef, inject } from '@angular/core';
 import { random } from 'lodash-es';
 import { Subject } from 'rxjs';
 import { SkeletonComponent } from './skeleton.component';
 
 @Directive({
-    standalone: false,
     selector: '[skeleton]',
 })
 export class SkeletonDirective implements OnChanges {
@@ -22,7 +21,8 @@ export class SkeletonDirective implements OnChanges {
     /** Subject to unsubscribe from the listeners */
     private destroy$: Subject<boolean> = new Subject();
 
-    constructor(private templateRef: TemplateRef<any>, private viewContainerRef: ViewContainerRef) {}
+    private templateRef = inject(TemplateRef);
+    private viewContainerRef = inject(ViewContainerRef);
 
     ngOnChanges(changes: SimpleChanges) {
         // check isLoading is passed as directive input param.

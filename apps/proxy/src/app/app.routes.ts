@@ -7,26 +7,26 @@ export const appRoutes: Route[] = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     {
         path: 'login',
-        loadChildren: () => import('./auth/auth.module').then((p) => p.AuthModule),
+        loadComponent: () => import('./auth/auth.component').then((c) => c.AuthComponent),
     },
     {
         path: 'app',
-        loadChildren: () => import('./layout/layout.module').then((p) => p.LayoutModule),
+        loadChildren: () => import('./layout/layout.routes').then((r) => r.layoutRoutes),
         data: { authGuardPipe: redirectUnauthorizedToLogin },
         canActivate: [AngularFireAuthGuard],
     },
     {
         path: 'project',
-        loadChildren: () => import('../app/create-project/create-project.module').then((p) => p.CreateProjectModule),
+        loadComponent: () => import('./create-project/create-project.component').then((c) => c.CreateProjectComponent),
         data: { authGuardPipe: redirectUnauthorizedToLogin },
         canActivate: [AngularFireAuthGuard],
     },
     {
         path: 'p',
-        loadChildren: () => import('./public.module').then((p) => p.PublicModule),
+        loadChildren: () => import('./public.routes').then((r) => r.publicRoutes),
     },
     {
         path: 'client',
-        loadChildren: () => import('./client.module').then((p) => p.ClientModule),
+        loadChildren: () => import('./client.routes').then((r) => r.clientRoutes),
     },
 ];
