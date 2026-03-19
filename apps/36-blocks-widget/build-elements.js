@@ -23,8 +23,8 @@ const path = require('path');
 
     console.info('Concatenating:', files);
 
-    await fs.ensureDir('./apps/36-blocks/src/assets/36-blocks-widget');
-    await concat(files, './apps/36-blocks/src/assets/36-blocks-widget/36-blocks-widget.js');
+    await fs.ensureDir('./apps/36-blocks/src/assets/proxy-auth');
+    await concat(files, './apps/36-blocks/src/assets/proxy-auth/proxy-auth.js');
 
     console.info('Elements created successfully!');
 })();
