@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { PublicScriptType, SendOtpConfig } from '@proxy/constant';
+import { PublicScriptType, WidgetConfig } from '@proxy/constant';
 
 @Component({
     selector: 'proxy-root',
@@ -34,7 +34,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
             return;
         }
         if (!environment.production) {
-            const sendOTPConfig: SendOtpConfig = {
+            const widgetConfig: WidgetConfig = {
                 referenceId: this.referenceId,
                 authToken: this.authToken,
                 type: PublicScriptType.UserManagement,
@@ -52,7 +52,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                     console.log('failure reason', error);
                 },
             };
-            window.initVerification(sendOTPConfig);
+            window.initVerification(widgetConfig);
         }
     }
 }

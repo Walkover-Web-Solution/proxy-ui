@@ -12,7 +12,7 @@ export enum PublicScriptTheme {
     Dark = 'dark',
 }
 
-export type SendOtpConfig = {
+export type WidgetConfig = {
     referenceId: string;
     authToken: string;
     type: PublicScriptType;
