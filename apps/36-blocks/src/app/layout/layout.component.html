@@ -5,7 +5,7 @@
     >
         <div class="flex items-center mat-drawer-header">
             <div
-                class="flex items-center grow gap-2 mat-drawer-header-title"
+                class="flex items-center grow gap-2 mat-drawer-header-title px-4"
                 [style.padding-right]="(isSideNavOpen | async) ? '0px' : '12px'"
             >
                 <mat-icon class="mat-icon-22">apps</mat-icon>
@@ -81,11 +81,11 @@
         ></proxy-main-left-side-nav>
         <!-- Proxy Sidenav::END -->
         @if (logInData$ | async; as user) {
-        <div class="mat-drawer-footer">
+        <div class="mat-drawer-footer mt-auto">
             <button matButton [matMenuTriggerFor]="menu">
                 <div class="flex items-center">
                     @if (user.photoURL) {
-                    <img [src]="user.photoURL" alt="No Image" class="profile-avatar" loading="lazy" />
+                    <img [src]="user.photoURL" alt="No Image" class="w-7 h-7 rounded-full" loading="lazy" />
                     } @else {
                     <mat-icon aria-hidden="false" class="mr-6 text-grey material-icons-outlined">
                         account_circle</mat-icon
