@@ -232,7 +232,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly getFeatureDetalis = this.effect((data: Observable<number>) => {
         return data.pipe(
             switchMap((id) => {
-                this.patchState({ isLoading: true });
+                this.patchState({ isLoading: true, featureDetails: null });
                 return this.service.getFeatureDetails(id).pipe(
                     tapResponse(
                         (res: BaseResponse<IFeatureDetails, void>) => {

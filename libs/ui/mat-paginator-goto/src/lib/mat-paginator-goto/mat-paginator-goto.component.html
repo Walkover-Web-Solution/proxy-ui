@@ -28,7 +28,7 @@
         [pageIndex]="pageIndex"
         [pageSize]="pageSize"
         [hidePageSize]="hidePageSize"
-        [pageSizeOptions]="pageSizeOptions"
+        [pageSizeOptions]="pageSizeOptions()"
         (page)="paginationChange($event)"
         class="default-mat-paginator w-full"
     >

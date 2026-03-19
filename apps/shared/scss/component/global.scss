@@ -1,0 +1,11 @@
+.service-list {
+    .mat-mdc-list {
+        .mat-mdc-list-item {
+            .mdc-list-item__primary-text {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+        }
+    }
+}

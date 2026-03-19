@@ -36,6 +36,7 @@
         <h4 class="my-0 text-secondary mat-body-1 fw-bold">Add New Blocks</h4>
         }
     </div>
+    @if (!isEditMode) {
     <mat-stepper
         #stepper
         class="rounded-8 border grow mat-stepper-starched"
@@ -45,7 +46,6 @@
         [formGroup]="featureForm"
         (selectionChange)="stepChange($event)"
     >
-        @if (!isEditMode) {
         <!-- <mat-step
             *ngIf="featureForm.get('primaryDetails.feature_id') as featureTypeControl"
             [stepControl]="featureTypeControl"
@@ -278,9 +278,9 @@
                 </div>
             </div>
         </mat-step>
-        } }
+        }
     </mat-stepper>
-    @if (isEditMode) {
+    } @if (isEditMode) {
     <mat-card class="outline-card p-0 grow">
         <mat-tab-group animationDuration="0ms" class="h-full block-feature-tabs">
             <mat-tab label="Service">
@@ -536,7 +536,7 @@
     <div class="flex gap-4 my-6 grow" style="min-height: 400px">
         <div class="flex flex-col gap-1 border-right pr-6 service-list">
             <p class="mat-body-2 fw-bolder mt-0">Services</p>
-            <mat-list role="list" class="default-list pt-0">
+            <mat-list role="list" class="pt-0">
                 @for (service of (selectedMethod | async)?.method_services; track service; let i = $index) {
                 <mat-list-item
                     role="listitem"
@@ -545,13 +545,13 @@
                     (click)="selectedServiceIndex = i"
                 >
                     <div class="flex items-center grow" style="color: var(--color-dark-primary)">
-                        {{ service.name }}
+                        <span class="font-14">{{ service.name }}</span>
                         @if (featureForm.get('serviceDetails')?.at(i); as serviceForm) { @if (i !== selectedServiceIndex
                         && serviceForm.dirty && serviceForm.touched && serviceForm.invalid) {
                         <mat-icon class="material-icons-outlined mat-icon-18 text-danger ml-1 mt-1">error</mat-icon>
                         } }
                     </div>
-                    <mat-icon class="material-icons-outlined mat-icon-18 mt-1" style="color: var(--color-dark-primary)"
+                    <mat-icon class="material-icons-outlined mat-icon-18" style="color: var(--color-dark-primary)"
                         >navigate_next</mat-icon
                     >
                 </mat-list-item>
@@ -574,7 +574,7 @@
             featureForm.get('serviceDetails')?.at(selectedServiceIndex); as formToUse) {
             <form [formGroup]="formToUse">
                 @if (methodServices?.[selectedServiceIndex]?.requirements; as requirements) {
-                <p class="mat-body-2 fw-bolder mt-0">Credentials</p>
+                <p class="mat-body-2 fw-bolder mb-2">Credentials</p>
                 @for (controlKeyValue of (formToUse.controls.requirements.controls | keyvalue); track
                 controlKeyValue.key) {
                 <div class="row">
@@ -591,7 +591,7 @@
                     </div>
                 </div>
                 } } @if (methodServices?.[selectedServiceIndex]?.configurations?.fields; as configurationsFields) {
-                <p class="mat-body-2 fw-bolder mt-0">Configurations</p>
+                <p class="mat-body-2 fw-bolder mb-2">Configurations</p>
                 @for (controlKeyValue of (formToUse.controls.configurations.controls | keyvalue); track
                 controlKeyValue.key) {
                 <div class="row">
@@ -703,7 +703,7 @@
 
 <ng-template #previewAuthorization let-authorizationDetails="authorizationDetails" let-previewVersion="previewVersion">
     <div
-        class="auth-credentials px-6 width-md-350 w-md-50 border rounded-8 ml-6"
+        class="auth-credentials px-6 w-[350px] border rounded-8 ml-6"
         [class.bg-dark]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
         style="max-height: 650px"
         [style.--branding-primary-color]="getEffectivePrimaryColor()"
@@ -761,7 +761,7 @@
 
             <!-- Are you a new user - always at bottom -->
             @if (featureForm.get('brandingDetails.create_account_link').value) {
-            <p class="mat-body-2 text-center" [style.color]="getEffectivePrimaryColor()">
+            <p class="mat-body-2 text-center font-14" [style.color]="getEffectivePrimaryColor()">
                 Are you a new user?
                 <a class="text-link" href="#">{{ featureForm.get('brandingDetails.sign_up_button_text')?.value }}</a>
             </p>
@@ -1202,11 +1202,10 @@
                 "
             ></ng-container>
         </mat-error>
-        }
-
+        } @if (fieldConfig?.type === featureFieldType.ReadFile) { @if (fieldConfig?.label + '_' +
+        this.selectedServiceIndex; as fileKey) {
         <div matSuffix>
-            @if (fieldConfig?.type === featureFieldType.ReadFile) { @if (fieldConfig?.label + '_' +
-            this.selectedServiceIndex; as fileKey) { @if (fieldControl?.value) {
+            @if (fieldControl?.value) {
             <button
                 matIconButton
                 (click)="fileInput.files = null; updateFileValue(fileKey, fieldConfig, fieldControl, null)"
@@ -1224,10 +1223,8 @@
             <button matIconButton (click)="fileInput.click()">
                 <mat-icon class="material-icons-outlined mat-icon-18">attach_file</mat-icon>
             </button>
-            } }
         </div>
-
-        @if (fieldConfig?.hint) {
+        } } @if (fieldConfig?.hint) {
         <mat-hint class="flex items-center justify-between gap-1">
             {{ fieldConfig?.hint }}
             @if (fieldConfig?.hintInfo) {
@@ -1790,9 +1787,9 @@
     <div class="flex gap-6 grow branding-step-content">
         <!-- Left: Branding form -->
         <div class="flex flex-col branding-form w-1/2">
-            <p class="mat-body-2 text-secondary fw-bold mb-20 mt-0">Customize your login UI</p>
+            <p class="mat-body-2 text-secondary fw-bold mb-3">Customize your login UI</p>
             <!-- Logo: choose URL or file upload, then show relevant input -->
-            <div class="flex items-center gap-4 font-12 mb-20 flex-wrap">
+            <div class="flex items-center gap-4 font-12 mb-3 flex-wrap">
                 <!-- <span class="mat-body-2 text-secondary fw-bold mb-0">Logo</span> -->
                 <mat-radio-group
                     [value]="logoInputMode"
