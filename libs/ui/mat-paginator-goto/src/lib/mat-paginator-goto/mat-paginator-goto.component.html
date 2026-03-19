@@ -1,5 +1,5 @@
 @if (length > showPaginatorLength) {
-<div [class.hide-pagination-arrows]="hidePaginationArrows" class="flex justify-end items-center go-to-pagination">
+<div [class.hide-pagination-arrows]="hidePaginationArrows()" class="flex justify-end items-center go-to-pagination">
     <!-- <div class="go-to-container" [hidden]="pageNumbers?.length < 1">
         <div class="go-to-label">Go To:</div>
         <mat-form-field class="goto-dropdown" [style.width.px]="minWidth">
@@ -27,7 +27,7 @@
         [length]="length"
         [pageIndex]="pageIndex"
         [pageSize]="pageSize"
-        [hidePageSize]="hidePageSize"
+        [hidePageSize]="hidePageSize()"
         [pageSizeOptions]="pageSizeOptions()"
         (page)="paginationChange($event)"
         class="default-mat-paginator w-full"

@@ -150,7 +150,7 @@
             </mat-tab>
 
             <!-- Roles and Permission Tab -->
-            @if (pass) {
+            @if (pass()) {
             <mat-tab label="Roles">
                 <div class="tab-content">
                     <!-- Nested tabs for Roles and Permissions -->
@@ -265,7 +265,7 @@
                         </mat-tab>
 
                         <!-- Permissions Tab -->
-                        @if (pass) {
+                        @if (pass()) {
                         <mat-tab label="Permissions">
                             <div class="nested-tab-content">
                                 <!-- Permissions Table Section -->

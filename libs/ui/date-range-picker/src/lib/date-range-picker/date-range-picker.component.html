@@ -15,7 +15,7 @@
                 class="rounded-4 absolute hide-border"
                 [style.width]="flatLabelWidth.offsetWidth + 'px'"
             ></span> -->
-            <span class="float-label text-dark" #flatLabelWidth>{{ placeholder }}</span>
+            <span class="float-label text-dark" #flatLabelWidth>{{ placeholder() }}</span>
             <div class="flex justify-start items-center">
                 <mat-icon class="today">date_range</mat-icon>
                 <span class="falex-grow-1">{{ selectedDateValue }}</span>
@@ -38,7 +38,7 @@
                             class="px-6"
                             [class.selected]="monthSelected === 'current'"
                             (click)="selectThisMonth()"
-                            [disabled]="!customOptionActive"
+                            [disabled]="!customOptionActive()"
                         >
                             This Month
                         </button>
@@ -47,7 +47,7 @@
                             class="px-6"
                             [class.selected]="monthSelected === 'last'"
                             (click)="selectLastMonth()"
-                            [disabled]="!customOptionActive"
+                            [disabled]="!customOptionActive()"
                         >
                             Last Month
                         </button>
@@ -56,7 +56,7 @@
                             class="px-6"
                             [class.selected]="quarterSelected === 'current'"
                             (click)="selectThisQuarter()"
-                            [disabled]="!customOptionActive"
+                            [disabled]="!customOptionActive()"
                         >
                             This Quarter to date
                         </button>
@@ -65,7 +65,7 @@
                             class="px-6"
                             [class.selected]="quarterSelected === 'last'"
                             (click)="selectLastQuarter()"
-                            [disabled]="!customOptionActive"
+                            [disabled]="!customOptionActive()"
                         >
                             Last Quarter
                         </button>
@@ -110,7 +110,7 @@
                             [selected]="calenderDateRange"
                             (selectedChange)="selectedChange($event)"
                             [maxDate]="today"
-                            [minDate]="minDate"
+                            [minDate]="minDate()"
                         ></mat-calendar>
                     </div>
                     <div class="drp-calendar-content">

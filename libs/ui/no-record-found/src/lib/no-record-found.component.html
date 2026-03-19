@@ -11,9 +11,9 @@
             <p class="card-title">Nothing Here</p>
             <div class="flex items-center">
                 <p class="card-subtitle my-0">
-                    There are no <span>{{ title }}</span> to show.
+                    There are no <span>{{ title() }}</span> to show.
                 </p>
-                @if (showBtn) {
+                @if (showBtn()) {
                 <button matButton class="font-semibold px-1">Create a new Chat</button>
                 }
             </div>
