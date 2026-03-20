@@ -66,6 +66,7 @@ import { SimpleDialogComponent } from './simple-dialog/simple-dialog.component';
 import { CreatePlanDialogComponent } from './create-plan-dialog/create-plan-dialog.component';
 import { CreateTaxDialogComponent } from './create-tax-dialog/create-tax-dialog.component';
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
+import { ServiceListComponent } from '@proxy/ui/service-list';
 type ServiceFormGroup = FormGroup<{
     requirements: FormGroup<{
         [key: string]: FormControl<any>;
@@ -131,6 +132,7 @@ export interface PeriodicElement {
         MatTooltipModule,
         MatExpansionModule,
         MatRadioModule,
+        ServiceListComponent,
     ],
     templateUrl: './create-feature.component.html',
     styleUrls: ['./create-feature.component.scss'],
@@ -1032,6 +1034,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             return null;
         }
     }
+
+    public getServiceFormAt = (index: number): AbstractControl | null =>
+        (this.featureForm.get('serviceDetails') as FormArray)?.at(index) ?? null;
 
     public get isConfigureMethodValid(): boolean {
         let isValid = true;

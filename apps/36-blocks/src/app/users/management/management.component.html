@@ -16,295 +16,295 @@
         </div>
 
         @if (roleForm.get('feature_id')?.value) {
-        <div class="mt-2">
-            <h5 class="mat-body-2 text-secondary font-medium">Create Roles & Permissions</h5>
+        <div class="mt-2 flex gap-4 grow" style="min-height: 400px">
+            <div class="flex flex-col gap-1 border-right pr-6 w-[200px]">
+                <p class="mat-body-2 font-semibold mt-0">Settings</p>
+                <proxy-service-list
+                    [services]="managementSections"
+                    [selectedIndex]="selectedSectionIndex"
+                    (serviceSelect)="selectedSectionIndex = $event"
+                ></proxy-service-list>
+            </div>
 
-            <mat-tab-group>
-                <mat-tab label="Roles">
-                    <div class="mt-6">
-                        <div class="flex justify-between roles-table">
-                            <div class="flex flex-wrap items-center grow gap-4 mb-6">
-                                <proxy-lib-search
-                                    [matFormFieldClass]="'no-padding w-xs-100'"
-                                    [placeholder]="'Search Roles'"
-                                    (inputChanges)="search($event)"
-                                    class="w-xs-100"
-                                ></proxy-lib-search>
-                            </div>
-                            <button class="mb-6" matButton="filled" (click)="addRole()">Add Role</button>
+            <div class="grow overflow-auto">
+                @if (selectedSectionIndex === 0) {
+                <div class="mt-2">
+                    <div class="flex justify-between min-w-[500px] max-w-[900px]">
+                        <div class="flex flex-wrap items-center grow gap-4 mb-6">
+                            <proxy-lib-search
+                                [matFormFieldClass]="'no-padding w-xs-100'"
+                                [placeholder]="'Search Roles'"
+                                (inputChanges)="search($event)"
+                                class="w-xs-100"
+                            ></proxy-lib-search>
                         </div>
-                        <table
-                            mat-table
-                            [dataSource]="rolesDataSource"
-                            class="default-table responsive-table roles-table table-border"
-                        >
-                            <!-- Roles Column -->
-                            <ng-container matColumnDef="role">
-                                <th mat-header-cell *matHeaderCellDef>Roles</th>
-                                <td mat-cell *matCellDef="let element" data-label="Roles">
-                                    <div class="flex items-center justify-between">
-                                        <span class="role-name">{{ element.role }}</span>
-                                    </div>
-                                </td>
-                            </ng-container>
-
-                            <!-- Permissions Column -->
-                            <ng-container matColumnDef="permissions">
-                                <th mat-header-cell *matHeaderCellDef>Permissions</th>
-                                <td mat-cell *matCellDef="let element" data-label="Permissions">
-                                    <ul class="permissions-list mb-0">
-                                        @for (permission of element.permissionsList; track permission.name) {
-                                        <li>{{ permission.name }}</li>
-                                        }
-                                    </ul>
-                                </td>
-                            </ng-container>
-
-                            <!-- Actions Column -->
-                            <ng-container matColumnDef="actions">
-                                <th mat-header-cell *matHeaderCellDef></th>
-                                <td mat-cell *matCellDef="let element" data-label="Actions">
-                                    <div class="actions">
-                                        <span
-                                            [matTooltip]="
-                                                !element.feature_configuration_id ? 'Default Role is not editable' : ''
-                                            "
-                                            matTooltipPosition="above"
-                                        >
-                                            <button
-                                                matButton="outlined"
-                                                (click)="editRole(element)"
-                                                class="mat-btn-md"
-                                                [disabled]="!element.feature_configuration_id"
-                                            >
-                                                <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
-                                                    >edit</mat-icon
-                                                >
-                                                Edit
-                                            </button>
-                                        </span>
-                                        <span
-                                            [matTooltip]="
-                                                !element.feature_configuration_id
-                                                    ? 'Default role are not deletable'
-                                                    : ''
-                                            "
-                                            matTooltipPosition="above"
-                                        >
-                                            <button
-                                                matButton="outlined"
-                                                (click)="deleteRole(element)"
-                                                class="mat-btn-md"
-                                                [disabled]="!element.feature_configuration_id"
-                                            >
-                                                <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
-                                                    >delete</mat-icon
-                                                >
-                                                Delete
-                                            </button>
-                                        </span>
-                                    </div>
-                                </td>
-                            </ng-container>
-
-                            <tr mat-header-row *matHeaderRowDef="rolesDisplayedColumns; sticky: true"></tr>
-                            <tr mat-row *matRowDef="let row; columns: rolesDisplayedColumns" class="hover-action"></tr>
-
-                            <tr *matNoDataRow>
-                                <td class="mat-cell border-0" [attr.colspan]="rolesDisplayedColumns.length">
-                                    <div class="text-center w-full mat-subtitle-2 text-dark">No Record Found</div>
-                                </td>
-                            </tr>
-                        </table>
-                        <mat-paginator
-                            #rolesPaginator
-                            [pageSizeOptions]="pageSizeOptions"
-                            [pageSize]="rolesPageSize"
-                            [pageIndex]="rolesPageIndex"
-                            [length]="rolesTotalCount"
-                            showFirstLastButtons
-                            aria-label="Select page of roles"
-                            (page)="onRolesPageChange($event)"
-                            class="roles-table"
-                        >
-                        </mat-paginator>
+                        <button class="mb-6" matButton="filled" (click)="addRole()">Add Role</button>
                     </div>
-                </mat-tab>
+                    <table
+                        mat-table
+                        [dataSource]="rolesDataSource"
+                        class="default-table responsive-table min-w-[500px] max-w-[900px] border [border-color:var(--color-common-border)]"
+                    >
+                        <!-- Roles Column -->
+                        <ng-container matColumnDef="role">
+                            <th mat-header-cell *matHeaderCellDef>Roles</th>
+                            <td mat-cell *matCellDef="let element" data-label="Roles">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm [color:var(--color-common-text)]">{{
+                                        element.role
+                                    }}</span>
+                                </div>
+                            </td>
+                        </ng-container>
 
-                <mat-tab label="Permissions">
-                    <div class="mt-6">
-                        <div class="flex justify-between roles-table">
-                            <div class="flex flex-wrap items-center grow gap-4 mb-6">
-                                <proxy-lib-search
-                                    [matFormFieldClass]="'no-padding w-xs-100'"
-                                    [placeholder]="'Search Permissions'"
-                                    (inputChanges)="searchPermission($event)"
-                                    class="w-xs-100"
-                                ></proxy-lib-search>
-                            </div>
-                            <button class="mb-6" matButton="filled" (click)="addPermission()">Add Permission</button>
-                        </div>
-                        <table
-                            mat-table
-                            [dataSource]="permissionsDataSource"
-                            class="default-table responsive-table roles-table table-border"
-                        >
-                            <!-- Permission Column -->
-                            <ng-container matColumnDef="permission">
-                                <th mat-header-cell *matHeaderCellDef>Permissions</th>
-                                <td mat-cell *matCellDef="let element" data-label="Permissions">
-                                    <span class="role-name">{{ element.name }}</span>
-                                    <div class="role-description">{{ element.description }}</div>
-                                </td>
-                            </ng-container>
+                        <!-- Permissions Column -->
+                        <ng-container matColumnDef="permissions">
+                            <th mat-header-cell *matHeaderCellDef>Permissions</th>
+                            <td mat-cell *matCellDef="let element" data-label="Permissions">
+                                <ul class="list-disc pl-5 m-0 mb-0">
+                                    @for (permission of element.permissionsList; track permission.name) {
+                                    <li>{{ permission.name }}</li>
+                                    }
+                                </ul>
+                            </td>
+                        </ng-container>
 
-                            <!-- Actions Column -->
-                            <ng-container matColumnDef="actions">
-                                <th mat-header-cell *matHeaderCellDef></th>
-                                <td mat-cell *matCellDef="let element" data-label="Actions">
-                                    <div class="actions">
+                        <!-- Actions Column -->
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let element" data-label="Actions">
+                                <div class="flex gap-3 justify-end ml-auto">
+                                    <span
+                                        [matTooltip]="
+                                            !element.feature_configuration_id ? 'Default Role is not editable' : ''
+                                        "
+                                        matTooltipPosition="above"
+                                    >
                                         <button
                                             matButton="outlined"
-                                            (click)="editPermission(element)"
+                                            (click)="editRole(element)"
                                             class="mat-btn-md"
-                                            [disabled]="element.is_default"
+                                            [disabled]="!element.feature_configuration_id"
                                         >
                                             <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                                                 >edit</mat-icon
                                             >
                                             Edit
                                         </button>
+                                    </span>
+                                    <span
+                                        [matTooltip]="
+                                            !element.feature_configuration_id ? 'Default role are not deletable' : ''
+                                        "
+                                        matTooltipPosition="above"
+                                    >
                                         <button
                                             matButton="outlined"
-                                            (click)="deletePermission(element)"
+                                            (click)="deleteRole(element)"
                                             class="mat-btn-md"
-                                            [disabled]="element.is_default"
+                                            [disabled]="!element.feature_configuration_id"
                                         >
                                             <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
                                                 >delete</mat-icon
                                             >
                                             Delete
                                         </button>
-                                    </div>
-                                </td>
-                            </ng-container>
+                                    </span>
+                                </div>
+                            </td>
+                        </ng-container>
 
-                            <tr mat-header-row *matHeaderRowDef="permissionsDisplayedColumns; sticky: true"></tr>
-                            <tr
-                                mat-row
-                                *matRowDef="let row; columns: permissionsDisplayedColumns"
-                                class="hover-action"
-                            ></tr>
+                        <tr mat-header-row *matHeaderRowDef="rolesDisplayedColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: rolesDisplayedColumns" class="group"></tr>
 
-                            <tr *matNoDataRow>
-                                <td class="mat-cell border-0" [attr.colspan]="permissionsDisplayedColumns.length">
-                                    <div class="text-center w-full mat-subtitle-2 text-dark">No Record Found</div>
-                                </td>
-                            </tr>
-                        </table>
-                        <mat-paginator
-                            #permissionsPaginator
-                            [pageSizeOptions]="pageSizeOptions"
-                            [pageSize]="permissionsPageSize"
-                            [pageIndex]="permissionsPageIndex"
-                            [length]="permissionsTotalCount"
-                            showFirstLastButtons
-                            aria-label="Select page of permissions"
-                            (page)="onPermissionsPageChange($event)"
-                            class="roles-table"
-                        >
-                        </mat-paginator>
+                        <tr *matNoDataRow>
+                            <td class="mat-cell border-0" [attr.colspan]="rolesDisplayedColumns.length">
+                                <div class="text-center w-full mat-subtitle-2 text-dark">No Record Found</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <mat-paginator
+                        #rolesPaginator
+                        [pageSizeOptions]="pageSizeOptions"
+                        [pageSize]="rolesPageSize"
+                        [pageIndex]="rolesPageIndex"
+                        [length]="rolesTotalCount"
+                        showFirstLastButtons
+                        aria-label="Select page of roles"
+                        (page)="onRolesPageChange($event)"
+                        class="min-w-[500px] max-w-[900px]"
+                    >
+                    </mat-paginator>
+                </div>
+                } @if (selectedSectionIndex === 1) {
+                <div class="mt-2">
+                    <div class="flex justify-between min-w-[500px] max-w-[900px]">
+                        <div class="flex flex-wrap items-center grow gap-4 mb-6">
+                            <proxy-lib-search
+                                [matFormFieldClass]="'no-padding w-xs-100'"
+                                [placeholder]="'Search Permissions'"
+                                (inputChanges)="searchPermission($event)"
+                                class="w-xs-100"
+                            ></proxy-lib-search>
+                        </div>
+                        <button class="mb-6" matButton="filled" (click)="addPermission()">Add Permission</button>
                     </div>
-                </mat-tab>
-                <mat-tab label="Snippet">
-                    <div class="p-6">
-                        <div class="overflow-auto code-snippet-view relative rounded-4 w-1/2">
-                            <markdown [data]="userManagementScript | language: 'javascript'"> </markdown>
-                            <proxy-copy-button
-                                class="absolute"
-                                style="top: 16px; right: 8px"
-                                [copyData]="userManagementScript"
-                                tooltip="Copy Script"
-                            ></proxy-copy-button>
-                        </div>
-                        <div class="mat-body-2 mt-2">
-                            <strong>Note: </strong> To integrate the user management component into your website or
-                            application, simply add the script to your page. <br />
-                        </div>
-                        <div class="overflow-auto code-snippet-view relative rounded-4 w-1/2 mt-6">
-                            <markdown [data]="userProxyContainerHtml | language: 'html'"> </markdown>
-                            <proxy-copy-button
-                                class="absolute"
-                                style="top: 16px; right: 8px"
-                                [copyData]="userProxyContainerHtml"
-                                tooltip="Copy Code"
-                            ></proxy-copy-button>
-                        </div>
+                    <table
+                        mat-table
+                        [dataSource]="permissionsDataSource"
+                        class="default-table responsive-table min-w-[500px] max-w-[900px] border [border-color:var(--color-common-border)]"
+                    >
+                        <!-- Permission Column -->
+                        <ng-container matColumnDef="permission">
+                            <th mat-header-cell *matHeaderCellDef>Permissions</th>
+                            <td mat-cell *matCellDef="let element" data-label="Permissions">
+                                <span class="font-semibold text-sm [color:var(--color-common-text)]">{{
+                                    element.name
+                                }}</span>
+                                <div class="role-description">{{ element.description }}</div>
+                            </td>
+                        </ng-container>
+
+                        <!-- Actions Column -->
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let element" data-label="Actions">
+                                <div class="flex gap-3 justify-end ml-auto">
+                                    <button
+                                        matButton="outlined"
+                                        (click)="editPermission(element)"
+                                        class="mat-btn-md"
+                                        [disabled]="element.is_default"
+                                    >
+                                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
+                                            >edit</mat-icon
+                                        >
+                                        Edit
+                                    </button>
+                                    <button
+                                        matButton="outlined"
+                                        (click)="deletePermission(element)"
+                                        class="mat-btn-md"
+                                        [disabled]="element.is_default"
+                                    >
+                                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
+                                            >delete</mat-icon
+                                        >
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="permissionsDisplayedColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: permissionsDisplayedColumns" class="group"></tr>
+
+                        <tr *matNoDataRow>
+                            <td class="mat-cell border-0" [attr.colspan]="permissionsDisplayedColumns.length">
+                                <div class="text-center w-full mat-subtitle-2 text-dark">No Record Found</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <mat-paginator
+                        #permissionsPaginator
+                        [pageSizeOptions]="pageSizeOptions"
+                        [pageSize]="permissionsPageSize"
+                        [pageIndex]="permissionsPageIndex"
+                        [length]="permissionsTotalCount"
+                        showFirstLastButtons
+                        aria-label="Select page of permissions"
+                        (page)="onPermissionsPageChange($event)"
+                        class="min-w-[500px] max-w-[900px]"
+                    >
+                    </mat-paginator>
+                </div>
+                } @if (selectedSectionIndex === 2) {
+                <div class="p-6">
+                    <div class="overflow-auto code-snippet-view relative rounded-4 w-1/2">
+                        <markdown [data]="userManagementScript | language: 'javascript'"> </markdown>
+                        <proxy-copy-button
+                            class="absolute"
+                            style="top: 16px; right: 8px"
+                            [copyData]="userManagementScript"
+                            tooltip="Copy Script"
+                        ></proxy-copy-button>
+                    </div>
+                    <div class="mat-body-2 mt-2">
+                        <strong>Note: </strong> To integrate the user management component into your website or
+                        application, simply add the script to your page. <br />
+                    </div>
+                    <div class="overflow-auto code-snippet-view relative rounded-4 w-1/2 mt-6">
+                        <markdown [data]="userProxyContainerHtml | language: 'html'"> </markdown>
+                        <proxy-copy-button
+                            class="absolute"
+                            style="top: 16px; right: 8px"
+                            [copyData]="userProxyContainerHtml"
+                            tooltip="Copy Code"
+                        ></proxy-copy-button>
                     </div>
                     <div id="userProxyContainer"></div>
-                </mat-tab>
+                </div>
+                } @if (selectedSectionIndex === 3) {
+                <div class="">
+                    <p class="mat-body-2 text-secondary font-medium p-0">Default Roles</p>
 
-                <mat-tab label="Settings">
-                    <div class="">
-                        <p class="mat-body-2 text-secondary font-medium p-0">Default Roles</p>
+                    <form [formGroup]="defaultRolesForm" class="flex flex-col">
+                        <!-- Default role for creator -->
+                        <div class="">
+                            <p class="mat-body-2 font-medium">Default role for creator</p>
+                            <p class="text-grey mb-6">
+                                The role that users are assigned after creating an organization.
+                            </p>
+                            <mat-form-field appearance="outline" class="w-1/2">
+                                <mat-label>Select default role for creator</mat-label>
+                                <mat-select formControlName="defaultRoleForCreator">
+                                    @for (role of rolesDataSource.data; track role.id) {
+                                    <mat-option [value]="role.id">{{ role.role }}</mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
 
-                        <form [formGroup]="defaultRolesForm" class="flex flex-col">
-                            <!-- Default role for creator -->
-                            <div class="">
-                                <p class="mat-body-2 font-medium">Default role for creator</p>
-                                <p class="text-grey mb-6">
-                                    The role that users are assigned after creating an organization.
-                                </p>
-                                <mat-form-field appearance="outline" class="w-1/2">
-                                    <mat-label>Select default role for creator</mat-label>
-                                    <mat-select formControlName="defaultRoleForCreator">
-                                        @for (role of rolesDataSource.data; track role.id) {
-                                        <mat-option [value]="role.id">{{ role.role }}</mat-option>
-                                        }
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
+                        <!-- Default role for member -->
+                        <div>
+                            <p class="mat-body-2 font-medium">Default role for member</p>
+                            <p class="text-grey">The role that users are assigned as a new organization member.</p>
+                            <mat-form-field appearance="outline" class="w-1/2">
+                                <mat-label>Select default role for member</mat-label>
+                                <mat-select formControlName="defaultRoleForMember">
+                                    @for (role of rolesDataSource.data; track role.id) {
+                                    <mat-option [value]="role.id">{{ role.role }}</mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
 
-                            <!-- Default role for member -->
-                            <div>
-                                <p class="mat-body-2 font-medium">Default role for member</p>
-                                <p class="text-grey">The role that users are assigned as a new organization member.</p>
-                                <mat-form-field appearance="outline" class="w-1/2">
-                                    <mat-label>Select default role for member</mat-label>
-                                    <mat-select formControlName="defaultRoleForMember">
-                                        @for (role of rolesDataSource.data; track role.id) {
-                                        <mat-option [value]="role.id">{{ role.role }}</mat-option>
-                                        }
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-
-                            <div>
-                                <p class="mat-body-2 font-medium">Hidden roles</p>
-                                <p class="text-grey">Select the default roles you want to hide from users.</p>
-                                <mat-form-field appearance="outline" class="w-1/2">
-                                    <mat-label>Select roles to hide</mat-label>
-                                    <mat-select formControlName="hiddenDefaultRoles" multiple>
-                                        <mat-option value="owner">Owner</mat-option>
-                                        <mat-option value="user">User</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                            <!-- Action Buttons -->
-                            <div class="flex gap-2 mt-6">
-                                <button
-                                    matButton="filled"
-                                    (click)="saveDefaultRoles()"
-                                    [disabled]="!defaultRolesForm.valid"
-                                >
-                                    Save
-                                </button>
-                                <button matButton (click)="cancelDefaultRoles()">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
+                        <div>
+                            <p class="mat-body-2 font-medium">Hidden roles</p>
+                            <p class="text-grey">Select the default roles you want to hide from users.</p>
+                            <mat-form-field appearance="outline" class="w-1/2">
+                                <mat-label>Select roles to hide</mat-label>
+                                <mat-select formControlName="hiddenDefaultRoles" multiple>
+                                    <mat-option value="owner">Owner</mat-option>
+                                    <mat-option value="user">User</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <!-- Action Buttons -->
+                        <div class="flex gap-2 mt-6">
+                            <button
+                                matButton="filled"
+                                (click)="saveDefaultRoles()"
+                                [disabled]="!defaultRolesForm.valid"
+                            >
+                                Save
+                            </button>
+                            <button matButton (click)="cancelDefaultRoles()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                }
+            </div>
         </div>
         }
     </div>

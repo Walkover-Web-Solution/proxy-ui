@@ -1,5 +1,5 @@
 <div class="app-content flex justify-center items-center">
-    <mat-card class="outline-card reg-form">
+    <mat-card class="outline-card min-w-[720px] max-tablet:min-w-[80%]">
         <h2 class="flex justify-center">Register</h2>
         <div>
             <div [formGroup]="registrationForm" proxyMarkAllAsTouched (valid)="submit()">
@@ -12,7 +12,7 @@
                         formControl: registrationForm.get('user.username')
                     }"
                 ></ng-container>
-                <div class="input-wrapper flex gap-4">
+                <div class="flex gap-4">
                     <ng-container
                         [ngTemplateOutlet]="formField"
                         [ngTemplateOutletContext]="{
@@ -30,7 +30,7 @@
                         }"
                     ></ng-container>
                 </div>
-                <div class="input-wrapper flex gap-4">
+                <div class="flex gap-4">
                     <ng-container
                         [ngTemplateOutlet]="intlFormField"
                         [ngTemplateOutletContext]="{
@@ -49,7 +49,7 @@
                     ></ng-container>
                 </div>
 
-                <div class="input-wrapper flex gap-4">
+                <div class="flex gap-4">
                     <ng-container
                         [ngTemplateOutlet]="formField"
                         [ngTemplateOutletContext]="{
@@ -75,7 +75,7 @@
                 </div>
 
                 <div class="mt-6 flex justify-center items-center">
-                    <button matButton="filled" (click)="submit()">Submit</button>
+                    <button matButton="filled" class="text-base w-[250px]" (click)="submit()">Submit</button>
                 </div>
             </div>
         </div>
@@ -127,7 +127,7 @@
         @if (type === 'password' || type === 'confirm password') {
         <mat-icon
             matSuffix
-            class="absolute toggle-icon"
+            class="absolute top-3 right-2.5"
             (click)="
                 type === 'password' ? (showPassword = !showPassword) : (showConfirmPassword = !showConfirmPassword)
             "
