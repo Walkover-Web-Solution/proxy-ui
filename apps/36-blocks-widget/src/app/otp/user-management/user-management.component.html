@@ -24,7 +24,7 @@
     <div class="flex flex-1 overflow-hidden mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex flex-1 overflow-hidden gap-x-8 py-8">
             <!-- ── Sidebar nav ──────────────────────────────────────────── -->
-            @if (pass() || true) {
+            @if (pass()) {
             <aside class="w-48 shrink-0 overflow-y-auto">
                 <nav class="flex flex-col gap-1" aria-label="Settings sections">
                     <button
@@ -327,7 +327,7 @@
                 }
 
                 <!-- ══ ROLES ══════════════════════════════════════════ -->
-                @if (activeTab === 'roles' && (pass() || true)) {
+                @if (activeTab === 'roles' && pass()) {
                 <div>
                     <!-- Header -->
                     <div class="flex items-start justify-between mb-4">
@@ -451,7 +451,7 @@
                 }
 
                 <!-- ══ PERMISSIONS ═══════════════════════════════════════ -->
-                @if (activeTab === 'permissions' && (pass() || true)) {
+                @if (activeTab === 'permissions' && pass()) {
                 <div>
                     <!-- Header -->
                     <div class="flex items-start justify-between mb-4">
