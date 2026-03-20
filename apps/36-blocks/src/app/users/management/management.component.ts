@@ -21,9 +21,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatTabsModule } from '@angular/material/tabs';
+import { ServiceListComponent } from '@proxy/ui/service-list';
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { CopyButtonComponent } from '@proxy/ui/copy-button';
+import { MarkdownModule } from 'ngx-markdown';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -61,8 +62,9 @@ interface IRole {
         MatTooltipModule,
         MatSlideToggleModule,
         MatDividerModule,
-        MatTabsModule,
+        ServiceListComponent,
         CopyButtonComponent,
+        MarkdownModule,
     ],
     templateUrl: './management.component.html',
     styleUrls: ['./management.component.scss'],
@@ -107,6 +109,13 @@ export class ManagementComponent implements OnInit, OnDestroy {
     public editingRole: IRole | null = null;
     public isEditPermissionMode: boolean = false;
     public editingPermission: any | null = null;
+    public selectedSectionIndex: number = 0;
+    public readonly managementSections = [
+        { name: 'Roles' },
+        { name: 'Permissions' },
+        { name: 'Snippet' },
+        { name: 'Settings' },
+    ];
     public features$: Observable<IPaginatedResponse<IFeature[]>> = this.featureComponentStore.feature$;
     public roles$: Observable<IPaginatedResponse<any[]>> = this.userComponentStore.roles$;
     public createRole$: Observable<any> = this.userComponentStore.createRole$;

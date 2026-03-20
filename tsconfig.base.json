@@ -62,6 +62,7 @@
             "@proxy/ui/player": ["libs/ui/player/src/index.ts"],
             "@proxy/ui/prime-ng-toast": ["libs/ui/prime-ng-toast/src/index.ts"],
             "@proxy/ui/search": ["libs/ui/search/src/index.ts"],
+            "@proxy/ui/service-list": ["libs/ui/service-list/src/index.ts"],
             "@proxy/ui/virtual-scroll": ["libs/ui/virtual-scroll/src/index.ts"],
             "@proxy/urls/create-project-urls": ["libs/urls/create-project-urls/src/index.ts"],
             "@proxy/urls/features-url": ["libs/urls/features-url/src/index.ts"],

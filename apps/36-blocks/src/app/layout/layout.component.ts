@@ -46,8 +46,8 @@ import { AuthService } from '@proxy/services/proxy/auth';
         ScrollingModule,
         MainLeftSideNavComponent,
     ],
+    host: { class: 'flex w-full h-screen' },
     templateUrl: './layout.component.html',
-    styleUrls: ['./layout.component.scss'],
 })
 export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy {
     public logInData$: Observable<IFirebaseUserModel>;

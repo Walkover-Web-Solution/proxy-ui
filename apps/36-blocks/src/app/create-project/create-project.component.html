@@ -1,4 +1,4 @@
-<div class="app-content flex justify-center project">
+<div class="app-content flex justify-center h-screen">
     <div class="w-3/4 border rounded-8 bg-gray" labelPosition="bottom">
         @if (currentstep === 1) {
         <div
@@ -186,7 +186,7 @@
             @for (slug of environments_with_slug; track slug.name) {
             <div>
                 <h5 class="font-medium text-secondary mat-body-1 mb-1">{{ slug.name }}</h5>
-                <a class="link" target="_blank" [href]="slug.url">{{ slug.url }} </a>
+                <a class="[color:var(--color-link-color)]" target="_blank" [href]="slug.url">{{ slug.url }} </a>
                 <proxy-copy-button matSuffix [copyData]="slug.url" tooltip="Copy URL"></proxy-copy-button>
             </div>
             }
@@ -218,7 +218,7 @@
         </form>
         } @for (control of forwardUrls.controls; track i; let i = $index) {
         <div class="flex">
-            <div class="width-md-200 flex forward-url">
+            <div class="width-md-200 flex mt-3">
                 <h5 class="m-0 font-14 font-medium">{{ environments_with_slug[i]?.name }}</h5>
                 <mat-icon matSuffix>keyboard_arrow_right</mat-icon>
                 <p class="m-0 font-14 font-medium">forward to</p>

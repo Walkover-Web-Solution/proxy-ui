@@ -337,7 +337,7 @@
                         </div>
                     </mat-tab>
                     <mat-tab label="Event Catalog">
-                        <div class="event-catalog-container">
+                        <div class="p-4 overflow-y-auto">
                             @if (webhookEventsData?.length) {
                             <mat-accordion class="webhook-events-accordion">
                                 @for (event of webhookEventsData; track event) {
@@ -383,7 +383,7 @@
 </div>
 <ng-template #selectFeature let-featureType="featureType" let-featureTypeControl="featureTypeControl">
     <div class="grow">
-        <div class="features-layout">
+        <div class="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(168px,1fr))]">
             @for (type of featureType; track type.id) {
             <div
                 class="border rounded-4 p-6 flex flex-col items-center justify-center feature-card bg-light-grey cursor-pointer"
@@ -534,29 +534,14 @@
 </ng-template>
 <ng-template #configureMethodTemplate let-selectedIndex="selectedIndex">
     <div class="flex gap-4 my-6 grow" style="min-height: 400px">
-        <div class="flex flex-col gap-1 border-right pr-6 service-list">
+        <div class="flex flex-col gap-1 border-right pr-6 w-[250px] service-list">
             <p class="mat-body-2 font-semibold mt-0">Services</p>
-            <mat-list role="list" class="pt-0">
-                @for (service of (selectedMethod | async)?.method_services; track service; let i = $index) {
-                <mat-list-item
-                    role="listitem"
-                    class="rounded-4"
-                    [class.active]="selectedServiceIndex === i"
-                    (click)="selectedServiceIndex = i"
-                >
-                    <div class="flex items-center grow" style="color: var(--color-dark-primary)">
-                        <span class="font-14">{{ service.name }}</span>
-                        @if (featureForm.get('serviceDetails')?.at(i); as serviceForm) { @if (i !== selectedServiceIndex
-                        && serviceForm.dirty && serviceForm.touched && serviceForm.invalid) {
-                        <mat-icon class="material-icons-outlined mat-icon-18 text-danger ml-1 mt-1">error</mat-icon>
-                        } }
-                    </div>
-                    <mat-icon class="material-icons-outlined mat-icon-18" style="color: var(--color-dark-primary)"
-                        >navigate_next</mat-icon
-                    >
-                </mat-list-item>
-                }
-            </mat-list>
+            <proxy-service-list
+                [services]="(selectedMethod | async)?.method_services ?? []"
+                [selectedIndex]="selectedServiceIndex"
+                [getFormAt]="getServiceFormAt"
+                (serviceSelect)="selectedServiceIndex = $event"
+            ></proxy-service-list>
         </div>
         <ng-container *ngTemplateOutlet="configureMethodFormContent"></ng-container>
         @if (isEditMode) {
@@ -640,7 +625,7 @@
             <mat-icon>close</mat-icon>
         </button>
     </div>
-    <mat-dialog-content class="configure-method-dialog-content">
+    <mat-dialog-content class="max-h-[65vh] overflow-y-auto">
         <ng-container
             *ngTemplateOutlet="configureMethodFormContent; context: { serviceForm: configureMethodDialogForm }"
         ></ng-container>
@@ -704,7 +689,7 @@
 <ng-template #previewAuthorization let-authorizationDetails="authorizationDetails" let-previewVersion="previewVersion">
     <div
         class="auth-credentials px-6 w-[350px] border rounded-8 ml-6"
-        [class.bg-dark]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+        [class.dark]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
         style="max-height: 650px"
         [style.--branding-primary-color]="getEffectivePrimaryColor()"
         [style.--branding-button-color]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
@@ -1275,7 +1260,7 @@
     <div class="flex flex-col h-full">
         <h5 class="mat-h5 mb-6">Integration Choice</h5>
         <div class="grow">
-            <div class="features-layout">
+            <div class="flex flex-wrap gap-4 justify-center">
                 @for (service of (selectedMethod | async)?.method_services; track service; let i = $index) {
                 <div
                     class="border rounded-4 p-6 flex flex-col items-center justify-center feature-card bg-light-grey cursor-pointer"
@@ -1713,7 +1698,7 @@
 
 <ng-template #manageSubscription>
     <div class="flex gap-4 my-6 grow" style="min-height: 400px">
-        <div class="flex flex-col gap-1 border-right pr-6 service-list">
+        <div class="flex flex-col gap-1 border-r pr-6 w-[250px] service-list">
             <p class="mat-body-2 font-semibold mt-0">Services</p>
             <mat-list role="list" class="default-list pt-0">
                 <!-- Billable Metric item -->
@@ -1781,7 +1766,7 @@
 </ng-template>
 
 <ng-template #brandingStepContent>
-    <div class="flex gap-6 grow branding-step-content">
+    <div class="flex gap-6 grow min-h-[400px] branding-step-content">
         <!-- Left: Branding form -->
         <div class="flex flex-col branding-form w-1/2">
             <p class="mat-body-2 text-secondary font-medium mb-3">Customize your login UI</p>

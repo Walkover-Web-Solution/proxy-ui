@@ -1,11 +1,3 @@
-.features-layout {
-    display: grid;
-    grid-gap: 16px;
-    grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
-    .feature-card {
-        height: 160px;
-    }
-}
 .code-snippet-view {
     transition: min-height 0.2s linear;
     min-width: 500px;
@@ -15,15 +7,6 @@
 .active {
     background-color: var(--color-dark-accent-light) !important;
     border-color: var(--color-dark-accent) !important;
-}
-
-.service-list {
-    width: 250px;
-}
-
-.configure-method-dialog-content {
-    max-height: 65vh;
-    overflow-y: auto;
 }
 
 // Show Configure column edit button only on row hover
@@ -177,15 +160,6 @@
     }
 }
 
-.full-width-chip {
-    grid-column: 1 / -1;
-}
-
-.event-catalog-container {
-    padding: 16px;
-    overflow-y: auto;
-}
-
 .webhook-events-accordion {
     .mat-expansion-panel {
         margin-bottom: 8px;
@@ -294,10 +268,6 @@
     }
 }
 
-.width-md-400 {
-    width: 350px !important;
-}
-
 .social-login-icon-box {
     border: 1px solid var(--color-common-border);
     border-radius: 8px;
@@ -380,8 +350,4 @@
     max-height: 48px;
     max-width: 160px;
     object-fit: contain;
-}
-
-.branding-step-content {
-    min-height: 400px;
 }
