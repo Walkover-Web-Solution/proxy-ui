@@ -1,11 +1,6 @@
 @use 'tailwindcss';
 @use './imports';
 @use './mixins/common-utils' as *;
-
-@theme {
-    --breakpoint-desktop: 991.98px;
-}
-
 .service-list {
     .mat-mdc-list-base {
         .mat-mdc-list-item {
