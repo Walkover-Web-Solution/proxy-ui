@@ -1,6 +1,10 @@
 ---
-trigger: always_on
+trigger: manual
 ---
+
+> ⚠️ **SCOPE: `apps/36-blocks` only.**
+> This rule does **NOT** apply to `apps/36-blocks-widget`.
+> For the widget (proxy-auth custom element), use `.windsurf/rules/widget-design.md` instead.
 
 You are an expert in TypeScript, Angular, Nx monorepos, and scalable web application development. You write functional, maintainable, performant, and accessible code following Angular v21 and Nx best practices.
 
@@ -29,14 +33,14 @@ You are an expert in TypeScript, Angular, Nx monorepos, and scalable web applica
 ## Design Tokens — Single Source of Truth
 
 **The ONLY file you ever edit to change colors or palette values is:**
-`apps/proxy/src/assets/scss/theme/_custom-palette.scss`
+`apps/36-blocks/src/assets/scss/theme/_custom-palette.scss`
 
 This file defines the Material color palettes and exposes an `emit-design-tokens()` Sass mixin. A single palette change there propagates automatically to all three consumers:
 
 | Consumer | File | How it consumes |
 |---|---|---|
-| Global Material theme | `apps/proxy/src/assets/scss/theme/_default-theme.scss` | `@include theme.emit-design-tokens()` in `html {}` |
-| Shadow DOM Material theme | `apps/proxy-auth/src/shadow-dom-theme.scss` | `@include theme.emit-design-tokens()` in `:host {}` |
+| Global Material theme | `apps/36-blocks/src/assets/scss/theme/_default-theme.scss` | `@include theme.emit-design-tokens()` in `html {}` |
+| Shadow DOM Material theme | `apps/36-blocks-widget/src/shadow-dom-theme.scss` | `@include theme.emit-design-tokens()` in `:host {}` |
 | Tailwind utilities | `tailwind.config.js` (root) | `theme.extend.colors` references `var(--proxy-*)` CSS vars |
 
 **Rules:**

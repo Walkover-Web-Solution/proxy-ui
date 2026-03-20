@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { PublicScriptType, WidgetConfig } from '@proxy/constant';
+import { PublicScriptTheme, PublicScriptType, WidgetConfig } from '@proxy/constant';
 
 @Component({
     selector: 'proxy-root',
@@ -15,7 +15,7 @@ import { PublicScriptType, WidgetConfig } from '@proxy/constant';
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     protected readonly referenceId = '4512365e1772083784699fda48abd90';
     protected readonly authToken =
-        'dERVbGpiRy9WVTliV0M3L2NNYjdSQ21DZDdiVERvZ2xrU3ZSUFJ4T2JIZFBJT2hXZFdqNWRJVzZwemZLV3Q0bnkwSTF3Ui8vaGMrUEMwdjhYSFFYdHdEUnd1c2o0U1VhOXV5SExEV0Q3dEF3VEovRlZLeWRuWkV5ZFl6RDVHcnhlRnhtN2FYRm1jZ2ZhVWZHNGxDSTRDMWIxbXlkMkgyTUgxSS9sQlV0dVRxL01IdUFVTnlPUVE5b3NqczEyZ0dUcXFDenMyY3pGa3JnUHRVQlFWUndVQT09';
+        'elpmRGYrZFh6TlRwbWJtU2psYU1nUUFta0hEN2FPZ3JUemVzTkphOVMvZjhLT2RCTUswR3AvN01nb3dsaHpRUmlNM1o3YTNpc3N0dTF1akdET2lhVG9MTEgvRVdUOWhDTElzMlhCajRZUnIyYTZiZ01yOUNxWWZ3TmpEZ0xxMGFwbTk0WEtXVnd3cXVSUmZkdEl4ekJIWWFkamt4RGdmL3Jza05STG5DMk8vRURKTkhITEdiM0NGdnJPcjZBNGNUWUhCZDZmaVVoaXUxc3JBRW5OQUhjZz09';
 
     constructor() {
         super();
@@ -30,19 +30,20 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     public initOtpProvider() {
-        if (customElements.get('h-captcha')) {
+        if (customElements.get('h-captcha') || (window as any).__proxyWidgetInitialized) {
             return;
         }
+        (window as any).__proxyWidgetInitialized = true;
         if (!environment.production) {
             const widgetConfig: WidgetConfig = {
                 referenceId: this.referenceId,
                 authToken: this.authToken,
                 type: PublicScriptType.UserManagement,
-                showCompanyDetails: false,
+                // showCompanyDetails: false,
                 // isHidden: true,
-                // theme: 'dark',
-                isPreview: true,
-                isLogin: true,
+                theme: PublicScriptTheme.Light,
+                // isPreview: true,
+                // isLogin: true,
                 // loginRedirectUrl: 'https://www.google.com',
                 target: '_self',
                 success: (data) => {

@@ -15,7 +15,7 @@ export enum PublicScriptTheme {
 export type WidgetConfig = {
     referenceId: string;
     authToken: string;
-    type: PublicScriptType;
+    type?: PublicScriptType;
     showCompanyDetails?: boolean;
     isHidden?: boolean;
     theme?: PublicScriptTheme;

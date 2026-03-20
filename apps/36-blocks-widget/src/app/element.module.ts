@@ -21,7 +21,7 @@ import { OtpWidgetService } from './otp/service/otp-widget.service';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
 import { environment } from '../environments/environment';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { ShadowDomOverlayContainer } from './shadow-dom-overlay-container';
+// import { ShadowDomOverlayContainer } from './shadow-dom-overlay-container';
 
 export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure'];
 
@@ -187,7 +187,7 @@ window['initVerification'] = (config: any) => {
         OtpService,
         OtpUtilityService,
         OtpWidgetService,
-        { provide: OverlayContainer, useClass: ShadowDomOverlayContainer },
+        // { provide: OverlayContainer, useClass: ShadowDomOverlayContainer },
         { provide: ProxyBaseUrls.Env, useValue: environment.env },
         { provide: ProxyBaseUrls.BaseURL, useValue: environment.apiUrl + environment.msgMidProxy },
         { provide: ProxyBaseUrls.ClientURL, useValue: environment.apiUrl + environment.msgMidProxy },

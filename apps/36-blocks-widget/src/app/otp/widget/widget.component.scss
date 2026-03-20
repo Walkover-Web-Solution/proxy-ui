@@ -1,7 +1,10 @@
 @use 'intl-tel-input/build/css/intlTelInput.css';
 @use '../../../intl' as *;
 @use '../../../otp-global' as *;
-@use '../../../shadow-dom-theme';
+// @use '../../../shadow-dom-theme';
+
+@import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 
 .with-reference-id {
     display: flex;
