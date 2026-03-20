@@ -1,24 +1,28 @@
 <div class="flex w-full h-full" [class.collapsed-sidebar]="!(isSideNavOpen | async)">
     <div
-        class="flex flex-col mat-drawer mat-drawer-content"
+        class="flex flex-col transition-all duration-200 mat-drawer-content max-desktop:fixed max-desktop:z-[999] max-desktop:top-0 max-desktop:bottom-0 max-desktop:bg-white"
         [class.mat-drawer-toggle-btn-hover]="isSideNavOpen | async"
+        [class]="!(isSideNavOpen | async) ? 'overflow-hidden !w-[56px]' : 'w-[246px]'"
     >
-        <div class="flex items-center mat-drawer-header">
+        <div
+            class="flex items-center mat-drawer-header"
+            [class]="!(isSideNavOpen | async) ? 'flex-col gap-2 mt-3' : ''"
+        >
             <div
                 class="flex items-center grow gap-2 mat-drawer-header-title px-4"
-                [style.padding-right]="(isSideNavOpen | async) ? '0px' : '12px'"
+                #clientsMenuTrigger="matMenuTrigger"
+                [matMenuTriggerFor]="clientsMenu"
             >
                 <mat-icon class="mat-icon-22">apps</mat-icon>
                 <div
                     class="flex items-center gap-x-1 mat-drawer-header-subtitle cursor-pointer"
-                    [matMenuTriggerFor]="clientsMenu"
-                    #clientsMenuTrigger="matMenuTrigger"
+                    [class.hidden]="!(isSideNavOpen | async)"
                 >
                     <span class="font-16 font-semibold overflow-dotted" style="max-width: 145px">
                         {{ (clientSettings$ | async)?.client?.name }}
                     </span>
                     @if (isSideNavOpen | async) {
-                    <mat-icon class="mat-icon-18">{{
+                    <mat-icon>{{
                         clientsMenuTrigger?.menuOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
                     }}</mat-icon>
                     }
@@ -69,7 +73,7 @@
                 matTooltipPosition="right"
                 type="button"
             >
-                <mat-icon class="mat-icon-18">{{
+                <mat-icon>{{
                     (isSideNavOpen | async) ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
                 }}</mat-icon>
             </button>
@@ -92,7 +96,7 @@
                     >
                     }
                     <div class="flex flex-col" style="width: 140px">
-                        <h6 class="username m-0">{{ user.displayName }}</h6>
+                        <h6 [class.hidden]="!(isSideNavOpen | async)" class="username m-0">{{ user.displayName }}</h6>
                     </div>
                     <mat-icon class="mx-1 text-secondary material-icons-outlined">keyboard_arrow_up</mat-icon>
                 </div>
@@ -106,15 +110,15 @@
         </div>
         }
     </div>
-    <div class="app-main-container">
+    <div class="flex-1 flex flex-col overflow-hidden">
         <!-- Content::START -->
 
-        <div class="component-render-container">
-            <div class="component-render-container-inner">
+        <div>
+            <div class="h-screen">
                 <router-outlet></router-outlet>
             </div>
 
-            <div id="ChatbotContainer"></div>
+            <div id="ChatbotContainer" class="h-screen w-full"></div>
         </div>
 
         <!-- Content::END -->

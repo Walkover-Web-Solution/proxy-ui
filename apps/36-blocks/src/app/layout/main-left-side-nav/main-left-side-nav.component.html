@@ -10,7 +10,7 @@
             [matTooltip]="isSideNavOpen() ? item.label : ''"
         >
             <mat-icon matListIcon aria-hidden="false">{{ item.icon }}</mat-icon>
-            <span matLine>{{ item.label }}</span>
+            <span [class.hidden]="isSideNavOpen()" matLine>{{ item.label }}</span>
         </a>
         }
     </mat-nav-list>

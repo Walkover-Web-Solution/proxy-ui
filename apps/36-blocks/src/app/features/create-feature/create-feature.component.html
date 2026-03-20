@@ -2,7 +2,7 @@
     @if ((isLoading$ | async) || (loadingScript | async)) { <proxy-loader></proxy-loader> }
     <div class="flex justify-start gap-1 mb-6" [class.items-start]="isEditMode" [class.items-center]="!isEditMode">
         <button type="button" matIconButton [routerLink]="['/app', 'features']">
-            <mat-icon class="mat-icon-16">arrow_back_ios_new</mat-icon>
+            <mat-icon>arrow_back_ios_new</mat-icon>
         </button>
         @if (isEditMode) {
         <div class="flex items-center gap-1">
@@ -22,13 +22,13 @@
                     "
                 ></ng-container>
                 <button type="button" matIconButton (click)="updateFeature('name')" class="mt-1">
-                    <mat-icon class="material-icons-outlined mat-icon-18"> done </mat-icon>
+                    <mat-icon class="material-icons-outlined"> done </mat-icon>
                 </button>
             </div>
             } @if (!nameFieldEditMode) {
             <h4 class="my-0 text-secondary mat-body-1 font-medium">{{ (featureDetails$ | async)?.name }}</h4>
             <button type="button" matIconButton (click)="nameFieldEditMode = true">
-                <mat-icon class="material-icons-outlined mat-icon-18"> edit </mat-icon>
+                <mat-icon class="material-icons-outlined"> edit </mat-icon>
             </button>
             }
         </div>
@@ -407,7 +407,7 @@
 </ng-template>
 <ng-template #blockCreationStepOne let-nameControl="nameControl">
     <div class="my-6 grow">
-        <p class="mat-body-2 text-secondary font-medium">Give a name of your Block</p>
+        <p class="mat-body-2 text-secondary font-medium mb-3">Give a name of your Block</p>
         <form class="w-1/2 mb-6">
             <ng-container
                 *ngTemplateOutlet="
