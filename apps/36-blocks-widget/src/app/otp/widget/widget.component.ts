@@ -80,7 +80,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     @Input() public target: string;
     @Input() public showCompanyDetails: boolean;
     @Input() public userToken: string;
-    @Input() public isRolePermission: string;
+    @Input() public isRolePermission: boolean;
     @Input() public loginRedirectUrl: string;
     @Input() public authToken: string;
     @Input() public type: string;

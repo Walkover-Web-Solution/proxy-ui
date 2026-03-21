@@ -69,41 +69,41 @@ window['initVerification'] = (config: any) => {
             if (findOtpProvider) {
                 document.body.removeChild(findOtpProvider);
             }
-            const sendOtpElement = document.createElement('proxy-auth') as NgElement &
+            const widgetElement = document.createElement('proxy-auth') as NgElement &
                 WithProperties<ProxyAuthWidgetComponent>;
-            sendOtpElement.referenceId = config?.referenceId;
-            sendOtpElement.type = config?.type;
-            sendOtpElement.authToken = config?.authToken;
-            sendOtpElement.showCompanyDetails = config?.showCompanyDetails;
-            sendOtpElement.userToken = config?.userToken;
-            sendOtpElement.isRolePermission = config?.isRolePermission;
-            sendOtpElement.isPreview = config?.isPreview;
-            sendOtpElement.isLogin = config?.isLogin;
-            sendOtpElement.loginRedirectUrl = config?.loginRedirectUrl;
-            sendOtpElement.theme = config?.theme;
-            sendOtpElement.version = config?.version;
-            sendOtpElement.input_fields = config?.input_fields;
-            sendOtpElement.show_social_login_icons = config?.show_social_login_icons;
-            sendOtpElement.exclude_role_ids = config?.exclude_role_ids;
-            sendOtpElement.include_role_ids = config?.include_role_ids;
-            sendOtpElement.isHidden = config?.isHidden;
-            sendOtpElement.isRegisterFormOnly = config?.isRegisterFormOnly || isRegisterFormOnlyFromParams;
-            sendOtpElement.target = config?.target ?? '_self';
+            widgetElement.referenceId = config?.referenceId;
+            widgetElement.type = config?.type;
+            widgetElement.authToken = config?.authToken;
+            widgetElement.showCompanyDetails = config?.showCompanyDetails;
+            widgetElement.userToken = config?.userToken;
+            widgetElement.isRolePermission = config?.isRolePermission;
+            widgetElement.isPreview = config?.isPreview;
+            widgetElement.isLogin = config?.isLogin;
+            widgetElement.loginRedirectUrl = config?.loginRedirectUrl;
+            widgetElement.theme = config?.theme;
+            widgetElement.version = config?.version;
+            widgetElement.input_fields = config?.input_fields;
+            widgetElement.show_social_login_icons = config?.show_social_login_icons;
+            widgetElement.exclude_role_ids = config?.exclude_role_ids;
+            widgetElement.include_role_ids = config?.include_role_ids;
+            widgetElement.isHidden = config?.isHidden;
+            widgetElement.isRegisterFormOnly = config?.isRegisterFormOnly || isRegisterFormOnlyFromParams;
+            widgetElement.target = config?.target ?? '_self';
             if (!config.success || typeof config.success !== 'function') {
                 throw Error('success callback function missing !');
             }
-            sendOtpElement.successReturn = config.success;
-            sendOtpElement.failureReturn = config.failure;
+            widgetElement.successReturn = config.success;
+            widgetElement.failureReturn = config.failure;
 
             // omitting keys which are not required in API payload; query params fill in missing values
-            sendOtpElement.otherData = { ...paramsData, ...omit(config, RESERVED_KEYS) };
+            widgetElement.otherData = { ...paramsData, ...omit(config, RESERVED_KEYS) };
             if (document.getElementById('proxyContainer') && config?.type !== PublicScriptType.UserManagement) {
-                document.getElementById('proxyContainer').append(sendOtpElement);
+                document.getElementById('proxyContainer').append(widgetElement);
             } else if (config?.type === PublicScriptType.UserManagement) {
                 // Master element always stays in body (hidden) for window events
-                sendOtpElement.style.display = 'none';
-                sendOtpElement.setAttribute('data-master', 'true');
-                document.body.append(sendOtpElement);
+                widgetElement.style.display = 'none';
+                widgetElement.setAttribute('data-master', 'true');
+                document.body.append(widgetElement);
 
                 // Helper to create a fresh configured element for the container
                 const createContainerElement = () => {
@@ -151,9 +151,9 @@ window['initVerification'] = (config: any) => {
                     }
                 });
             } else if (document.getElementById('userProxyContainer')) {
-                document.getElementById('userProxyContainer').append(sendOtpElement);
+                document.getElementById('userProxyContainer').append(widgetElement);
             } else {
-                document.getElementsByTagName('body')[0].append(sendOtpElement);
+                document.getElementsByTagName('body')[0].append(widgetElement);
             }
 
             window['libLoaded'] = true;

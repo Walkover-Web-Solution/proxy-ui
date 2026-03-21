@@ -18,6 +18,7 @@ export type WidgetConfig = {
     type?: PublicScriptType;
     showCompanyDetails?: boolean;
     isHidden?: boolean;
+    isRolePermission?: boolean;
     theme?: PublicScriptTheme;
     isPreview?: boolean;
     isLogin?: boolean;

@@ -1,3 +1,9 @@
+export enum UserManagementTab {
+    Members = 'members',
+    Roles = 'roles',
+    Permissions = 'permissions',
+}
+
 export type CreateMutable<Type> = {
     -readonly [Property in keyof Type]?: Type[Property];
 };

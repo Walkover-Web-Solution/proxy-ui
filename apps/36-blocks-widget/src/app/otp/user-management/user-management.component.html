@@ -29,15 +29,13 @@
                 <nav class="flex flex-col gap-1" aria-label="Settings sections">
                     <button
                         type="button"
-                        (click)="activeTab = 'members'"
-                        [class.bg-gray-50]="activeTab === 'members'"
-                        [class.dark:bg-gray-800]="activeTab === 'members'"
-                        [class.text-indigo-600]="activeTab === 'members'"
-                        [class.dark:text-indigo-400]="activeTab === 'members'"
-                        [class.font-semibold]="activeTab === 'members'"
-                        [class.text-gray-700]="activeTab !== 'members'"
-                        [class.dark:text-gray-300]="activeTab !== 'members'"
-                        [attr.aria-current]="activeTab === 'members' ? 'page' : null"
+                        (click)="tabChange(UserManagementTab.Members)"
+                        [ngClass]="
+                            activeTab === UserManagementTab.Members
+                                ? 'bg-gray-50 dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-semibold'
+                                : 'text-gray-700 dark:text-gray-300'
+                        "
+                        [attr.aria-current]="activeTab === UserManagementTab.Members ? 'page' : null"
                         class="group flex items-center gap-x-3 rounded-md px-3 py-2 text-sm leading-6 text-left w-full cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-150"
                     >
                         <svg
@@ -58,15 +56,13 @@
                     </button>
                     <button
                         type="button"
-                        (click)="activeTab = 'roles'"
-                        [class.bg-gray-50]="activeTab === 'roles'"
-                        [class.dark:bg-gray-800]="activeTab === 'roles'"
-                        [class.text-indigo-600]="activeTab === 'roles'"
-                        [class.dark:text-indigo-400]="activeTab === 'roles'"
-                        [class.font-semibold]="activeTab === 'roles'"
-                        [class.text-gray-700]="activeTab !== 'roles'"
-                        [class.dark:text-gray-300]="activeTab !== 'roles'"
-                        [attr.aria-current]="activeTab === 'roles' ? 'page' : null"
+                        (click)="tabChange(UserManagementTab.Roles)"
+                        [ngClass]="
+                            activeTab === UserManagementTab.Roles
+                                ? 'bg-gray-50 dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-semibold'
+                                : 'text-gray-700 dark:text-gray-300'
+                        "
+                        [attr.aria-current]="activeTab === UserManagementTab.Roles ? 'page' : null"
                         class="group flex items-center gap-x-3 rounded-md px-3 py-2 text-sm leading-6 text-left w-full cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-150"
                     >
                         <svg
@@ -87,15 +83,13 @@
                     </button>
                     <button
                         type="button"
-                        (click)="activeTab = 'permissions'"
-                        [class.bg-gray-50]="activeTab === 'permissions'"
-                        [class.dark:bg-gray-800]="activeTab === 'permissions'"
-                        [class.text-indigo-600]="activeTab === 'permissions'"
-                        [class.dark:text-indigo-400]="activeTab === 'permissions'"
-                        [class.font-semibold]="activeTab === 'permissions'"
-                        [class.text-gray-700]="activeTab !== 'permissions'"
-                        [class.dark:text-gray-300]="activeTab !== 'permissions'"
-                        [attr.aria-current]="activeTab === 'permissions' ? 'page' : null"
+                        (click)="tabChange(UserManagementTab.Permissions)"
+                        [ngClass]="
+                            activeTab === UserManagementTab.Permissions
+                                ? 'bg-gray-50 dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-semibold'
+                                : 'text-gray-700 dark:text-gray-300'
+                        "
+                        [attr.aria-current]="activeTab === UserManagementTab.Permissions ? 'page' : null"
                         class="group flex items-center gap-x-3 rounded-md px-3 py-2 text-sm leading-6 text-left w-full cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-150"
                     >
                         <svg
@@ -121,7 +115,7 @@
             <!-- ── Main content ─────────────────────────────────────────── -->
             <main class="flex-1 min-w-0 overflow-y-auto px-4">
                 <!-- ══ MEMBERS ══════════════════════════════════════════ -->
-                @if (activeTab === 'members') {
+                @if (activeTab === UserManagementTab.Members) {
                 <div>
                     <!-- Header -->
                     <div class="flex items-start justify-between mb-4">
@@ -327,7 +321,7 @@
                 }
 
                 <!-- ══ ROLES ══════════════════════════════════════════ -->
-                @if (activeTab === 'roles' && pass()) {
+                @if (activeTab === UserManagementTab.Roles && pass()) {
                 <div>
                     <!-- Header -->
                     <div class="flex items-start justify-between mb-4">
@@ -451,7 +445,7 @@
                 }
 
                 <!-- ══ PERMISSIONS ═══════════════════════════════════════ -->
-                @if (activeTab === 'permissions' && pass()) {
+                @if (activeTab === UserManagementTab.Permissions && pass()) {
                 <div>
                     <!-- Header -->
                     <div class="flex items-start justify-between mb-4">

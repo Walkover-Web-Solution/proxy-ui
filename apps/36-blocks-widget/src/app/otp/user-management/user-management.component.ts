@@ -33,7 +33,7 @@ import {
     updateUserRoleData,
 } from '../store/selectors';
 import { isEqual } from 'lodash-es';
-import { UserData, Role } from '../model/otp';
+import { UserData, Role, UserManagementTab } from '../model/otp';
 
 @Component({
     selector: 'proxy-user-management',
@@ -44,9 +44,10 @@ import { UserData, Role } from '../model/otp';
 })
 export class UserManagementComponent implements OnInit {
     readonly userToken = input<string>();
-    readonly pass = input<string>();
+    readonly pass = input<boolean>(false);
     readonly theme = input<string>();
     protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected readonly UserManagementTab = UserManagementTab;
     readonly exclude_role_ids = input<any[]>([]);
     readonly include_role_ids = input<any[]>([]);
     readonly isHidden = signal(false);
@@ -93,7 +94,7 @@ export class UserManagementComponent implements OnInit {
     public currentPageSize: number = 50;
     public isUsersLoading: boolean = true;
     public skipSkeletonLoading: boolean = false;
-    public activeTab: 'members' | 'roles' | 'permissions' = 'members';
+    public activeTab: UserManagementTab = UserManagementTab.Members;
     private readonly destroyRef = inject(DestroyRef);
     private readonly fb = inject(FormBuilder);
     private readonly cdr = inject(ChangeDetectorRef);
@@ -288,8 +289,17 @@ export class UserManagementComponent implements OnInit {
 
     ngOnInit(): void {
         this.getCompanyUsers();
-        this.getRoles();
-        this.getPermissions();
+    }
+
+    public tabChange(tab: UserManagementTab): void {
+        this.activeTab = tab;
+        if (tab === UserManagementTab.Roles) {
+            this.getRoles();
+        } else if (tab === UserManagementTab.Permissions) {
+            this.getPermissions();
+        } else if (tab === UserManagementTab.Members) {
+            this.getCompanyUsers();
+        }
     }
 
     public deleteUser(user: any, index: number): void {
@@ -312,6 +322,26 @@ export class UserManagementComponent implements OnInit {
         this.pendingDeleteUser = null;
         this.pendingDeleteIndex = -1;
         this.showConfirmDialog.set(false);
+    }
+
+    public editUser(user: UserData, index: number): void {
+        this.skipSkeletonLoading = true;
+        this.isEditUser = true;
+        this.isEditRole = false;
+        this.isEditPermission = false;
+        this.currentEditingUser = user;
+        const roleId = this.getRoleIdByName(user.role);
+        const userPermissionIds = this.getPermissionIdsByName(user.additionalpermissions || []);
+
+        this.addUserForm.patchValue({
+            name: user.name,
+            email: user.email,
+            mobileNumber: (user as any).mobile || '',
+            role: roleId || user.role,
+            permission: userPermissionIds,
+        });
+
+        this.openDialog();
     }
 
     public getPermissionsTooltip(user: UserData): string {
@@ -384,6 +414,13 @@ export class UserManagementComponent implements OnInit {
             .filter((name) => name !== undefined) as string[];
     }
 
+    private openDialog(): void {
+        if (this.theme() === PublicScriptTheme.Dark) {
+            document.body.classList.add('dark-dialog-open');
+        }
+        this.showDialog.set(true);
+    }
+
     public addUser(): void {
         this.isEditUser = false;
         this.isEditRole = false;
@@ -395,7 +432,7 @@ export class UserManagementComponent implements OnInit {
             this.addUserForm.patchValue({ role: this.defaultRoles.default_member_role });
         }
 
-        this.showDialog.set(true);
+        this.openDialog();
     }
 
     public closeDialog(): void {
@@ -405,6 +442,7 @@ export class UserManagementComponent implements OnInit {
         this.isEditPermission = false;
         this.currentEditingUser = null;
         this.currentEditingPermission = null;
+        document.body.classList.remove('dark-dialog-open');
     }
 
     public saveUser(): void {
@@ -502,7 +540,7 @@ export class UserManagementComponent implements OnInit {
         this.isEditPermission = false;
         this.currentEditingUser = null;
         this.addRoleForm.reset();
-        this.showDialog.set(true);
+        this.openDialog();
     }
 
     public saveAddRole(): void {
@@ -636,7 +674,7 @@ export class UserManagementComponent implements OnInit {
             });
         };
 
-        this.showDialog.set(true);
+        this.openDialog();
         if (this.permissions?.length > 0) {
             patchFn();
         } else {
@@ -657,7 +695,7 @@ export class UserManagementComponent implements OnInit {
         this.isEditRole = false;
         this.currentEditingPermission = null;
         this.addPermissionTabForm.reset();
-        this.showDialog.set(true);
+        this.openDialog();
     }
 
     public editPermission(permission: any, index: number): void {
@@ -670,7 +708,7 @@ export class UserManagementComponent implements OnInit {
             description: `Description for ${permission.name} permission`,
         });
 
-        this.showDialog.set(true);
+        this.openDialog();
     }
 
     // Dialog helper methods
