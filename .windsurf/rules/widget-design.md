@@ -25,7 +25,6 @@ These rules govern ALL styling, layout, and component decisions inside
 The widget runs inside `ViewEncapsulation.ShadowDom`. This creates special requirements:
 
 - **Tailwind classes ARE available** — `styles.scss` injects Tailwind into the shadow root via the `styleUrls` array
-- **Global Angular Material theme is NOT available** — `shadow-dom-theme.scss` re-emits tokens on `:host`
 - **`dark:` Tailwind variant** — controlled by adding/removing `class="dark"` on the `:host` element, driven by the `isDarkTheme()` signal
 - **No `document.head` style injection** — styles injected into `document.head` do NOT penetrate the Shadow DOM; all styles must be in `styleUrls` or inline in the shadow root
 

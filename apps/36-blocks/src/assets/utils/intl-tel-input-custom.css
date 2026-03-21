@@ -1559,13 +1559,13 @@
 #phone,
 [id^=init-contact] {
     height: 38.73px;
-    border: 1px solid #d5d9dc;
-    border-radius: 4px;
-    font-weight: 400;
+    /* border: 1px solid #d5d9dc; */
+    /* border-radius: 4px; */
+    /* font-weight: 400;
     font-size: 14px;
     line-height: 16px;
     color: #3f4346;
-    background-color: #ffffff;
+    background-color: #ffffff; */
     /* // padding-left: 12px !important;
     // z-index: 9; */
 }

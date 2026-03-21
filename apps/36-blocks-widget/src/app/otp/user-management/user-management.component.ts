@@ -36,7 +36,7 @@ import { isEqual } from 'lodash-es';
 import { UserData, Role, UserManagementTab } from '../model/otp';
 
 @Component({
-    selector: 'proxy-user-management',
+    selector: 'user-management',
     imports: [CommonModule, FormsModule, ReactiveFormsModule],
     templateUrl: './user-management.component.html',
     styleUrls: ['./user-management.component.scss'],
@@ -62,6 +62,14 @@ export class UserManagementComponent implements OnInit {
         if (t === PublicScriptTheme.Light) return false;
         return this._systemDark();
     });
+    readonly availableTabs = computed(() => {
+        const tabs = [UserManagementTab.Members];
+        if (this.pass()) {
+            tabs.push(UserManagementTab.Roles, UserManagementTab.Permissions);
+        }
+        return tabs;
+    });
+    readonly hasMultipleTabs = computed(() => this.availableTabs().length > 1);
     public pendingDeleteUser: any = null;
     private pendingDeleteIndex: number = -1;
     public roles: any[] = [];
@@ -93,6 +101,8 @@ export class UserManagementComponent implements OnInit {
     public currentPageIndex: number = 0;
     public currentPageSize: number = 50;
     public isUsersLoading: boolean = true;
+    public isRolesLoading: boolean = false;
+    public isPermissionsLoading: boolean = false;
     public skipSkeletonLoading: boolean = false;
     public activeTab: UserManagementTab = UserManagementTab.Members;
     private readonly destroyRef = inject(DestroyRef);
@@ -108,6 +118,7 @@ export class UserManagementComponent implements OnInit {
                     this.roles = res.data?.data;
                     this.defaultRoles = res.data?.default_roles;
                     this.filteredRolesData = [...this.roles];
+                    this.isRolesLoading = false;
                     this.cdr.markForCheck();
                 }
             });
@@ -118,6 +129,7 @@ export class UserManagementComponent implements OnInit {
                 if (res) {
                     this.permissions = res.data.data;
                     this.filteredPermissionsData = [...this.permissions];
+                    this.isPermissionsLoading = false;
                     this.cdr.markForCheck();
                 }
             });
@@ -294,8 +306,10 @@ export class UserManagementComponent implements OnInit {
     public tabChange(tab: UserManagementTab): void {
         this.activeTab = tab;
         if (tab === UserManagementTab.Roles) {
+            this.isRolesLoading = true;
             this.getRoles();
         } else if (tab === UserManagementTab.Permissions) {
+            this.isPermissionsLoading = true;
             this.getPermissions();
         } else if (tab === UserManagementTab.Members) {
             this.getCompanyUsers();

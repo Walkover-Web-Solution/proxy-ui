@@ -2,41 +2,143 @@
     #container
     [style.display]="isHidden() ? 'none' : 'flex'"
     [class.dark]="isDark()"
-    class="h-screen flex-col bg-gray-50 dark:bg-gray-950 overflow-hidden"
+    class="h-full flex-col bg-transparent overflow-y-auto"
 >
-    <!-- ── Top header bar ───────────────────────────────────────────────── -->
+    <!-- ── Top header bar (hidden when only Members tab is available) ───── -->
+    @if (hasMultipleTabs()) {
     <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="flex h-16 items-center gap-3">
-                <div class="flex size-8 items-center justify-center rounded-lg bg-indigo-600">
-                    <svg class="size-4 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <div class="flex h-12 items-center gap-3">
+                <div class="flex size-7 items-center justify-center rounded-md bg-indigo-600">
+                    <svg class="size-3.5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path
                             d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625a3.375 3.375 0 1 1 6.75 0 3.375 3.375 0 0 1-6.75 0ZM1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM17.25 19.128l-.001.144a2.25 2.25 0 0 1-.233.96 10.088 10.088 0 0 0 5.06-1.01.75.75 0 0 0 .42-.643 4.875 4.875 0 0 0-6.957-4.611 8.586 8.586 0 0 1 1.71 5.157v.003Z"
                         />
                     </svg>
                 </div>
-                <h1 class="text-sm font-semibold text-gray-900 dark:text-white">Team Settings</h1>
+                <h1 class="text-xs font-semibold text-gray-900 dark:text-white">Team Settings</h1>
             </div>
         </div>
     </header>
+    }
 
     <!-- ── Main layout: sidebar + content ───────────────────────────────── -->
-    <div class="flex flex-1 overflow-hidden mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-1 overflow-hidden gap-x-8 py-8">
-            <!-- ── Sidebar nav ──────────────────────────────────────────── -->
-            @if (pass()) {
-            <aside class="w-48 shrink-0 overflow-y-auto">
-                <nav class="flex flex-col gap-1" aria-label="Settings sections">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row gap-x-6 py-5">
+            <!-- ── Nav: only rendered when multiple tabs exist ── -->
+            @if (hasMultipleTabs()) {
+
+            <!-- Mobile: underline tab bar (hidden on lg) -->
+            <div class="lg:hidden border-b border-gray-200 dark:border-gray-700 mb-4">
+                <nav aria-label="Tabs" class="-mb-px flex space-x-1 overflow-x-auto">
+                    <!-- Members -->
                     <button
                         type="button"
                         (click)="tabChange(UserManagementTab.Members)"
+                        [attr.aria-current]="activeTab === UserManagementTab.Members ? 'page' : null"
                         [ngClass]="
                             activeTab === UserManagementTab.Members
-                                ? 'bg-gray-50 dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-semibold'
-                                : 'text-gray-700 dark:text-gray-300'
+                                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
+                                : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200'
                         "
+                        class="group inline-flex shrink-0 items-center gap-2 border-b-2 px-3 py-3 text-sm font-medium cursor-pointer whitespace-nowrap transition-colors duration-150"
+                    >
+                        <svg
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                            [ngClass]="
+                                activeTab === UserManagementTab.Members
+                                    ? 'text-indigo-500 dark:text-indigo-400'
+                                    : 'text-gray-400 group-hover:text-gray-500'
+                            "
+                            class="-ml-0.5 size-4"
+                        >
+                            <path
+                                d="M7 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM14.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM1.615 16.428a1.224 1.224 0 0 1-.569-1.175 6.002 6.002 0 0 1 11.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 0 1 7 18a9.953 9.953 0 0 1-5.385-1.572ZM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 0 0-1.588-3.755 4.502 4.502 0 0 1 5.874 2.636.818.818 0 0 1-.36.98A7.465 7.465 0 0 1 14.5 16Z"
+                            />
+                        </svg>
+                        Members
+                    </button>
+                    <!-- Roles -->
+                    <button
+                        type="button"
+                        (click)="tabChange(UserManagementTab.Roles)"
+                        [attr.aria-current]="activeTab === UserManagementTab.Roles ? 'page' : null"
+                        [ngClass]="
+                            activeTab === UserManagementTab.Roles
+                                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
+                                : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200'
+                        "
+                        class="group inline-flex shrink-0 items-center gap-2 border-b-2 px-3 py-3 text-sm font-medium cursor-pointer whitespace-nowrap transition-colors duration-150"
+                    >
+                        <svg
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                            [ngClass]="
+                                activeTab === UserManagementTab.Roles
+                                    ? 'text-indigo-500 dark:text-indigo-400'
+                                    : 'text-gray-400 group-hover:text-gray-500'
+                            "
+                            class="-ml-0.5 size-4"
+                        >
+                            <path
+                                d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
+                            />
+                        </svg>
+                        Roles
+                    </button>
+                    <!-- Permissions -->
+                    <button
+                        type="button"
+                        (click)="tabChange(UserManagementTab.Permissions)"
+                        [attr.aria-current]="activeTab === UserManagementTab.Permissions ? 'page' : null"
+                        [ngClass]="
+                            activeTab === UserManagementTab.Permissions
+                                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
+                                : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200'
+                        "
+                        class="group inline-flex shrink-0 items-center gap-2 border-b-2 px-3 py-3 text-sm font-medium cursor-pointer whitespace-nowrap transition-colors duration-150"
+                    >
+                        <svg
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                            [ngClass]="
+                                activeTab === UserManagementTab.Permissions
+                                    ? 'text-indigo-500 dark:text-indigo-400'
+                                    : 'text-gray-400 group-hover:text-gray-500'
+                            "
+                            class="-ml-0.5 size-4"
+                        >
+                            <path
+                                d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
+                                clip-rule="evenodd"
+                                fill-rule="evenodd"
+                            />
+                        </svg>
+                        Permissions
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Desktop: vertical sidebar (hidden below lg) -->
+            <aside
+                class="hidden lg:block w-44 shrink-0 self-start bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-2"
+            >
+                <nav class="flex flex-col gap-1" aria-label="Settings sections">
+                    <!-- Members -->
+                    <button
+                        type="button"
+                        (click)="tabChange(UserManagementTab.Members)"
                         [attr.aria-current]="activeTab === UserManagementTab.Members ? 'page' : null"
-                        class="group flex items-center gap-x-3 rounded-md px-3 py-2 text-sm leading-6 text-left w-full cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-150"
+                        [ngClass]="
+                            activeTab === UserManagementTab.Members
+                                ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
+                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400'
+                        "
+                        class="group flex w-full items-center gap-x-3 rounded-md px-3 py-2 text-sm leading-6 text-left cursor-pointer transition-colors duration-150"
                     >
                         <svg
                             class="size-5 shrink-0"
@@ -54,16 +156,17 @@
                         </svg>
                         Members
                     </button>
+                    <!-- Roles -->
                     <button
                         type="button"
                         (click)="tabChange(UserManagementTab.Roles)"
+                        [attr.aria-current]="activeTab === UserManagementTab.Roles ? 'page' : null"
                         [ngClass]="
                             activeTab === UserManagementTab.Roles
-                                ? 'bg-gray-50 dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-semibold'
-                                : 'text-gray-700 dark:text-gray-300'
+                                ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
+                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400'
                         "
-                        [attr.aria-current]="activeTab === UserManagementTab.Roles ? 'page' : null"
-                        class="group flex items-center gap-x-3 rounded-md px-3 py-2 text-sm leading-6 text-left w-full cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-150"
+                        class="group flex w-full items-center gap-x-3 rounded-md px-3 py-2 text-sm leading-6 text-left cursor-pointer transition-colors duration-150"
                     >
                         <svg
                             class="size-5 shrink-0"
@@ -81,16 +184,17 @@
                         </svg>
                         Roles
                     </button>
+                    <!-- Permissions -->
                     <button
                         type="button"
                         (click)="tabChange(UserManagementTab.Permissions)"
+                        [attr.aria-current]="activeTab === UserManagementTab.Permissions ? 'page' : null"
                         [ngClass]="
                             activeTab === UserManagementTab.Permissions
-                                ? 'bg-gray-50 dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-semibold'
-                                : 'text-gray-700 dark:text-gray-300'
+                                ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
+                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400'
                         "
-                        [attr.aria-current]="activeTab === UserManagementTab.Permissions ? 'page' : null"
-                        class="group flex items-center gap-x-3 rounded-md px-3 py-2 text-sm leading-6 text-left w-full cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-150"
+                        class="group flex w-full items-center gap-x-3 rounded-md px-3 py-2 text-sm leading-6 text-left cursor-pointer transition-colors duration-150"
                     >
                         <svg
                             class="size-5 shrink-0"
@@ -110,17 +214,18 @@
                     </button>
                 </nav>
             </aside>
+
             }
 
             <!-- ── Main content ─────────────────────────────────────────── -->
-            <main class="flex-1 min-w-0 overflow-y-auto px-4">
+            <main class="flex-1 min-w-0 overflow-y-auto lg:px-4 pt-3 lg:pt-0">
                 <!-- ══ MEMBERS ══════════════════════════════════════════ -->
                 @if (activeTab === UserManagementTab.Members) {
                 <div>
                     <!-- Header -->
-                    <div class="flex items-start justify-between mb-4">
+                    <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
                         <div>
-                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Team members</h2>
+                            <h2 class="text-sm font-bold text-gray-900 dark:text-white">Team members</h2>
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                                 Manage who has access to this workspace.
                             </p>
@@ -129,9 +234,9 @@
                         <button
                             type="button"
                             (click)="addUser()"
-                            class="ml-4 inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm cursor-pointer hover:bg-indigo-500 active:bg-indigo-700 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            class="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm cursor-pointer hover:bg-indigo-500 active:bg-indigo-700 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                            <svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path
                                     d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
                                 />
@@ -214,15 +319,15 @@
                     <div class="flex flex-col gap-3">
                         @for (user of userData; track user; let i = $index) {
                         <div
-                            class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-4 flex items-center justify-between gap-4"
+                            class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3"
                         >
-                            <div class="flex min-w-0 items-center gap-x-4">
+                            <div class="flex min-w-0 items-center gap-x-3">
                                 <div
-                                    class="size-10 flex-none rounded-full bg-indigo-100 dark:bg-indigo-900/60 flex items-center justify-center text-sm font-semibold text-indigo-700 dark:text-indigo-300 select-none"
+                                    class="size-9 flex-none rounded-full bg-indigo-100 dark:bg-indigo-900/60 flex items-center justify-center text-sm font-semibold text-indigo-700 dark:text-indigo-300 select-none"
                                 >
                                     {{ (user.name || user.email || '?').charAt(0).toUpperCase() }}
                                 </div>
-                                <div class="min-w-0 flex-auto">
+                                <div class="min-w-0 flex-auto overflow-hidden">
                                     <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
                                         {{ user.name || '—' }}
                                     </p>
@@ -241,9 +346,9 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="flex shrink-0 items-center gap-x-3">
+                            <div class="flex shrink-0 items-center gap-x-2 pl-12 sm:pl-0">
                                 <span
-                                    class="hidden sm:inline-flex items-center rounded-md bg-green-50 dark:bg-green-900/30 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400"
+                                    class="inline-flex items-center rounded-md bg-green-50 dark:bg-green-900/30 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400"
                                 >
                                     {{ user.role || 'Member' }}
                                 </span>
@@ -251,7 +356,7 @@
                                 <button
                                     type="button"
                                     (click)="editUser(user, i)"
-                                    class="shrink-0 rounded-md bg-white dark:bg-gray-800 px-3 py-1.5 text-xs font-semibold text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                                    class="shrink-0 rounded-md bg-white dark:bg-gray-800 px-2.5 py-1 text-xs font-semibold text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
                                 >
                                     Edit<span class="sr-only">, {{ user.name }}</span>
                                 </button>
@@ -259,7 +364,7 @@
                                 <button
                                     type="button"
                                     (click)="deleteUser(user, i)"
-                                    class="shrink-0 rounded-md bg-white dark:bg-gray-800 px-3 py-1.5 text-xs font-semibold text-red-600 dark:text-red-400 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150"
+                                    class="shrink-0 rounded-md bg-white dark:bg-gray-800 px-2.5 py-1 text-xs font-semibold text-red-600 dark:text-red-400 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150"
                                 >
                                     Remove<span class="sr-only">, {{ user.name }}</span>
                                 </button>
@@ -273,10 +378,10 @@
                     <!-- Pagination -->
                     @if (totalUsers > currentPageSize) {
                     <nav
-                        class="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4 mt-2"
+                        class="flex flex-col lg:flex-row items-center justify-between gap-3 border-t border-gray-200 dark:border-gray-700 pt-4 mt-2"
                         aria-label="Pagination"
                     >
-                        <p class="text-sm text-gray-700 dark:text-gray-300">
+                        <p class="text-xs text-gray-700 dark:text-gray-300 text-center lg:text-left">
                             Showing <span class="font-medium">{{ currentPageIndex * currentPageSize + 1 }}</span
                             >–<span class="font-medium">{{
                                 (currentPageIndex + 1) * currentPageSize > totalUsers
@@ -324,9 +429,9 @@
                 @if (activeTab === UserManagementTab.Roles && pass()) {
                 <div>
                     <!-- Header -->
-                    <div class="flex items-start justify-between mb-4">
+                    <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
                         <div>
-                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Roles</h2>
+                            <h2 class="text-sm font-bold text-gray-900 dark:text-white">Roles</h2>
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                                 Define roles and their associated permissions.
                             </p>
@@ -334,9 +439,9 @@
                         <button
                             type="button"
                             (click)="openAddRoleDialog()"
-                            class="ml-4 inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm cursor-pointer hover:bg-indigo-500 active:bg-indigo-700 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            class="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm cursor-pointer hover:bg-indigo-500 active:bg-indigo-700 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                            <svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path
                                     d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
                                 />
@@ -369,8 +474,35 @@
                         />
                     </div>
 
+                    <!-- Skeletons -->
+                    @if (isRolesLoading) {
+                    <div class="flex flex-col gap-3">
+                        @for (s of [1,2,3]; track s) {
+                        <div
+                            class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-4 animate-pulse"
+                        >
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center gap-2">
+                                    <div class="h-3.5 w-24 rounded bg-gray-200 dark:bg-gray-700"></div>
+                                    <div class="h-5 w-14 rounded-md bg-gray-200 dark:bg-gray-700"></div>
+                                </div>
+                                <div class="h-7 w-12 rounded-md bg-gray-200 dark:bg-gray-700"></div>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5">
+                                @for (t of [1,2,3,4,5]; track t) {
+                                <div
+                                    class="h-5 rounded-full bg-gray-200 dark:bg-gray-700"
+                                    [style.width.px]="50 + t * 8"
+                                ></div>
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    }
+
                     <!-- Role cards -->
-                    @if (filteredRolesData.length === 0) {
+                    @if (!isRolesLoading) { @if (filteredRolesData.length === 0) {
                     <div class="py-12 text-center text-sm text-gray-500 dark:text-gray-400">No roles found</div>
                     }
                     <div class="flex flex-col gap-3">
@@ -380,7 +512,7 @@
                         >
                             <div class="flex items-center justify-between mb-3">
                                 <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="text-base font-bold text-gray-900 dark:text-white">{{
+                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">{{
                                         role.name
                                     }}</span>
                                     @if (role.is_default) {
@@ -441,6 +573,7 @@
                         </div>
                         }
                     </div>
+                    }
                 </div>
                 }
 
@@ -448,9 +581,9 @@
                 @if (activeTab === UserManagementTab.Permissions && pass()) {
                 <div>
                     <!-- Header -->
-                    <div class="flex items-start justify-between mb-4">
+                    <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
                         <div>
-                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Permissions</h2>
+                            <h2 class="text-sm font-bold text-gray-900 dark:text-white">Permissions</h2>
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                                 Granular access controls that can be assigned to roles.
                             </p>
@@ -458,9 +591,9 @@
                         <button
                             type="button"
                             (click)="openAddPermissionDialog()"
-                            class="ml-4 inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm cursor-pointer hover:bg-indigo-500 active:bg-indigo-700 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            class="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm cursor-pointer hover:bg-indigo-500 active:bg-indigo-700 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                            <svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path
                                     d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
                                 />
@@ -493,8 +626,25 @@
                         />
                     </div>
 
+                    <!-- Skeletons -->
+                    @if (isPermissionsLoading) {
+                    <div class="flex flex-col gap-3">
+                        @for (s of [1,2,3,4,5]; track s) {
+                        <div
+                            class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-4 flex items-center justify-between gap-4 animate-pulse"
+                        >
+                            <div class="flex min-w-0 items-center gap-3">
+                                <div class="size-8 flex-none rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+                                <div class="h-3 w-36 rounded bg-gray-200 dark:bg-gray-700"></div>
+                            </div>
+                            <div class="h-7 w-12 rounded-md bg-gray-200 dark:bg-gray-700"></div>
+                        </div>
+                        }
+                    </div>
+                    }
+
                     <!-- Permission cards -->
-                    @if (filteredPermissionsData.length === 0) {
+                    @if (!isPermissionsLoading) { @if (filteredPermissionsData.length === 0) {
                     <div class="py-12 text-center text-sm text-gray-500 dark:text-gray-400">No permissions found</div>
                     }
                     <div class="flex flex-col gap-3">
@@ -532,6 +682,7 @@
                         </div>
                         }
                     </div>
+                    }
                 </div>
                 }
             </main>
@@ -585,7 +736,7 @@
                         type="text"
                         placeholder="e.g. Editor, Viewer"
                         aria-describedby="role-name-error"
-                        class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                        class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none"
                     />
                     @if (addRoleForm.get('roleName')?.touched && addRoleForm.get('roleName')?.hasError('required')) {
                     <p id="role-name-error" role="alert" class="mt-1.5 text-xs text-red-600 dark:text-red-400">
@@ -638,7 +789,7 @@
                         formControlName="description"
                         placeholder="Describe this role…"
                         rows="3"
-                        class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 resize-none"
+                        class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none resize-none"
                     ></textarea>
                 </div>
             </form>
@@ -657,7 +808,7 @@
                         type="text"
                         placeholder="e.g. create:reports"
                         aria-describedby="permission-name-error"
-                        class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                        class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none"
                     />
                     @if (addPermissionTabForm.get('permission')?.touched &&
                     addPermissionTabForm.get('permission')?.hasError('required')) {
@@ -674,7 +825,7 @@
                         formControlName="description"
                         placeholder="Describe this permission…"
                         rows="3"
-                        class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 resize-none"
+                        class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none resize-none"
                     ></textarea>
                 </div>
             </form>
@@ -696,7 +847,7 @@
                             [attr.readonly]="isEditUser ? '' : null"
                             [attr.aria-readonly]="isEditUser ? 'true' : null"
                             aria-describedby="user-name-error"
-                            class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 read-only:cursor-default read-only:opacity-60"
+                            class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none read-only:cursor-default read-only:opacity-60"
                         />
                         @if (addUserForm.get('name')?.touched && addUserForm.get('name')?.hasError('required')) {
                         <p id="user-name-error" role="alert" class="mt-1.5 text-xs text-red-600 dark:text-red-400">
@@ -712,7 +863,7 @@
                             <select
                                 id="user-role"
                                 formControlName="role"
-                                class="block w-full appearance-none rounded-lg border-0 bg-gray-50 dark:bg-gray-800 pl-3.5 pr-9 py-2 text-sm text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                class="block w-full appearance-none rounded-lg border-0 bg-gray-50 dark:bg-gray-800 pl-3.5 pr-9 py-2 text-sm text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none"
                             >
                                 <option value="">Select role</option>
                                 @for (role of roles; track role.id) {

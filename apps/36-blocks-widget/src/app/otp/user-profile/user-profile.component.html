@@ -1,264 +1,365 @@
-<div
-    class="container"
-    [class.dark-theme]="theme() === PublicScriptTheme.Dark"
-    [class.light-theme]="theme() !== PublicScriptTheme.Dark"
->
-    <!-- ── USER DETAILS CARD ── -->
-    <div class="profile-card mb-6">
-        <div class="card-header">
-            <div class="card-title-group">
-                <div class="card-icon blue">
+<div class="h-full flex-col bg-transparent overflow-y-auto" [class.dark]="theme() === PublicScriptTheme.Dark">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
+        <!-- ── USER DETAILS CARD ── -->
+        <div
+            class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden shadow-sm"
+        >
+            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-3">
+                    <div class="flex size-8 items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/50">
+                        <svg
+                            class="size-4 text-indigo-600 dark:text-indigo-400"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            aria-hidden="true"
+                        >
+                            <circle cx="8" cy="5.5" r="3" />
+                            <path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-gray-900 dark:text-white">User Details</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Manage your personal information</p>
+                    </div>
+                </div>
+                @if (!isEditing) {
+                <button
+                    type="button"
+                    (click)="isEditing = true"
+                    class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 bg-white dark:bg-gray-800 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
+                >
                     <svg
-                        width="16"
-                        height="16"
+                        class="size-3"
                         viewBox="0 0 16 16"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="1.8"
+                        stroke-width="2"
+                        aria-hidden="true"
                     >
-                        <circle cx="8" cy="5.5" r="3" />
-                        <path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+                        <path d="M11 2l3 3-8 8H3v-3l8-8z" />
                     </svg>
+                    Edit
+                </button>
+                }
+            </div>
+
+            <!-- Profile banner -->
+            <div class="flex items-center gap-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-900/20">
+                <div
+                    class="size-14 flex-none rounded-full bg-indigo-100 dark:bg-indigo-900/60 flex items-center justify-center text-lg font-bold text-indigo-700 dark:text-indigo-300 select-none"
+                >
+                    {{ previousName || 'U' | slice: 0:2 | uppercase }}
                 </div>
-                <div>
-                    <div class="card-title">User Details</div>
-                    <div class="card-subtitle">Manage your personal information</div>
+                <div class="min-w-0">
+                    <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                        {{ previousName || 'User' }}
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        {{ clientForm.get('email')?.value }}
+                    </p>
+                    <span
+                        class="mt-1 inline-flex items-center gap-1 rounded-full bg-indigo-100 dark:bg-indigo-900/50 px-2 py-0.5 text-xs font-medium text-indigo-700 dark:text-indigo-300"
+                    >
+                        <svg
+                            class="size-3"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            aria-hidden="true"
+                        >
+                            <rect x="2" y="6" width="12" height="8" rx="1" />
+                            <path d="M5 6V4a3 3 0 016 0v2" />
+                        </svg>
+                        {{ (userDetails$ | async)?.c_companies?.length || 0 }} Organizations
+                    </span>
                 </div>
             </div>
-            <!-- Edit button — only shown in view mode -->
+
+            <!-- View mode — stacks to 1-col on mobile, 3-col on sm+ -->
             @if (!isEditing) {
-            <button type="button" matButton="outlined" class="btn-edit" (click)="isEditing = true">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M11 2l3 3-8 8H3v-3l8-8z" />
-                </svg>
-                Edit
-            </button>
-            }
-        </div>
-
-        <!-- Profile Banner -->
-        <div class="profile-banner">
-            <div class="avatar-stack">
-                <div class="avatar">{{ previousName || 'U' | slice: 0:2 | uppercase }}</div>
-                <!-- <div class="avatar-status"></div> -->
-            </div>
-            <div class="profile-text">
-                <div class="profile-name">{{ previousName || 'User' }}</div>
-                <div class="profile-email">{{ clientForm.get('email')?.value }}</div>
-                <div class="org-stat-chip">
-                    <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2" y="6" width="12" height="8" rx="1" />
-                        <path d="M5 6V4a3 3 0 016 0v2" />
-                    </svg>
-                    {{ (userDetails$ | async)?.c_companies?.length || 0 }} Organizations
-                </div>
-            </div>
-        </div>
-
-        <!-- ── VIEW MODE ── -->
-        @if (!isEditing) {
-        <div class="view-fields">
-            <div class="view-row">
-                <div class="view-field-icon">
+            <div
+                class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-gray-800 border-t border-gray-200 dark:border-gray-700"
+            >
+                <div class="flex items-start gap-2.5 px-5 py-4">
                     <svg
-                        width="15"
-                        height="15"
+                        class="mt-0.5 size-4 shrink-0 text-gray-400 dark:text-gray-500"
                         viewBox="0 0 16 16"
                         fill="none"
                         stroke="currentColor"
                         stroke-width="1.8"
+                        aria-hidden="true"
                     >
                         <circle cx="8" cy="5" r="3" />
                         <path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" />
                     </svg>
+                    <div class="min-w-0">
+                        <p
+                            class="text-[10px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-0.5"
+                        >
+                            Full Name
+                        </p>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white break-all">
+                            {{ previousName || '—' }}
+                        </p>
+                    </div>
                 </div>
-                <div class="view-field-body">
-                    <div class="view-label">Full Name</div>
-                    <div class="view-value">{{ previousName }}</div>
-                </div>
-            </div>
-            <div class="view-row">
-                <div class="view-field-icon">
+                <div class="flex items-start gap-2.5 px-5 py-4">
                     <svg
-                        width="15"
-                        height="15"
+                        class="mt-0.5 size-4 shrink-0 text-gray-400 dark:text-gray-500"
                         viewBox="0 0 16 16"
                         fill="none"
                         stroke="currentColor"
                         stroke-width="1.8"
+                        aria-hidden="true"
                     >
                         <rect x="2" y="3" width="12" height="10" rx="1.5" />
                         <path d="M5 7h6M5 10h4" />
                     </svg>
-                </div>
-                <div class="view-field-body">
-                    <div class="view-label">Mobile</div>
-                    <div
-                        class="view-value"
-                        [class.view-value-empty]="
-                            !clientForm.get('mobile')?.value || clientForm.get('mobile')?.value === '--Not Provided--'
-                        "
-                    >
-                        {{
-                            clientForm.get('mobile')?.value === '--Not Provided--'
-                                ? 'Not provided'
-                                : clientForm.get('mobile')?.value || 'Not provided'
-                        }}
+                    <div class="min-w-0">
+                        <p
+                            class="text-[10px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-0.5"
+                        >
+                            Mobile
+                        </p>
+                        <p
+                            class="text-sm font-medium"
+                            [class.text-gray-400]="
+                                !clientForm.get('mobile')?.value ||
+                                clientForm.get('mobile')?.value === '--Not Provided--'
+                            "
+                            [class.italic]="
+                                !clientForm.get('mobile')?.value ||
+                                clientForm.get('mobile')?.value === '--Not Provided--'
+                            "
+                            [class.text-gray-900]="
+                                clientForm.get('mobile')?.value &&
+                                clientForm.get('mobile')?.value !== '--Not Provided--'
+                            "
+                            [class.dark:text-white]="
+                                clientForm.get('mobile')?.value &&
+                                clientForm.get('mobile')?.value !== '--Not Provided--'
+                            "
+                        >
+                            {{
+                                clientForm.get('mobile')?.value === '--Not Provided--'
+                                    ? 'Not provided'
+                                    : clientForm.get('mobile')?.value || 'Not provided'
+                            }}
+                        </p>
                     </div>
                 </div>
-            </div>
-            <div class="view-row">
-                <div class="view-field-icon">
+                <div class="flex items-start gap-2.5 px-5 py-4">
                     <svg
-                        width="15"
-                        height="15"
+                        class="mt-0.5 size-4 shrink-0 text-gray-400 dark:text-gray-500"
                         viewBox="0 0 16 16"
                         fill="none"
                         stroke="currentColor"
                         stroke-width="1.8"
+                        aria-hidden="true"
                     >
                         <rect x="2" y="4" width="12" height="9" rx="1" />
                         <path d="M2 5l6 5 6-5" />
                     </svg>
-                </div>
-                <div class="view-field-body">
-                    <div class="view-label">Email Address</div>
-                    <div class="view-value">{{ clientForm.get('email')?.value }}</div>
+                    <div class="min-w-0">
+                        <p
+                            class="text-[10px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-0.5"
+                        >
+                            Email Address
+                        </p>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white break-all">
+                            {{ clientForm.get('email')?.value }}
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-        }
+            }
 
-        <!-- ── EDIT MODE ── -->
-        @if (isEditing) {
-        <form [formGroup]="clientForm" class="profile-form">
-            <div class="fields-row">
-                <div class="form-field-wrap">
-                    <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Full Name</mat-label>
-                        <input matInput formControlName="name" placeholder="Enter your name" class="input-field" />
-                        @if (clientForm.get('name')?.hasError('required')) { <mat-error>Name is required.</mat-error> }
-                        @if (clientForm.get('name')?.hasError('pattern')) {
-                        <mat-error>Invalid name format.</mat-error> }
-                    </mat-form-field>
-                </div>
-
-                <div class="form-field-wrap">
-                    <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Mobile</mat-label>
+            <!-- Edit mode -->
+            @if (isEditing) {
+            <form [formGroup]="clientForm" class="px-5 py-4 flex flex-col gap-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label for="profile-name" class="block text-sm font-medium text-gray-900 dark:text-white mb-1.5"
+                            >Full Name</label
+                        >
                         <input
-                            matInput
-                            formControlName="mobile"
-                            placeholder="Enter your mobile number"
-                            class="input-field"
+                            id="profile-name"
+                            type="text"
+                            formControlName="name"
+                            placeholder="Enter your name"
+                            class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none"
                         />
-                        <!-- <mat-hint>Contact support to update</mat-hint> -->
-                    </mat-form-field>
+                        @if (clientForm.get('name')?.touched && clientForm.get('name')?.hasError('required')) {
+                        <p role="alert" class="mt-1.5 text-xs text-red-600 dark:text-red-400">Name is required.</p>
+                        } @else if (clientForm.get('name')?.touched && clientForm.get('name')?.hasError('pattern')) {
+                        <p role="alert" class="mt-1.5 text-xs text-red-600 dark:text-red-400">Invalid name format.</p>
+                        }
+                    </div>
+                    <div>
+                        <label
+                            for="profile-mobile"
+                            class="block text-sm font-medium text-gray-900 dark:text-white mb-1.5"
+                            >Mobile</label
+                        >
+                        <input
+                            id="profile-mobile"
+                            type="text"
+                            formControlName="mobile"
+                            placeholder="Not provided"
+                            class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-500 dark:text-gray-400 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-not-allowed"
+                        />
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label
+                            for="profile-email"
+                            class="block text-sm font-medium text-gray-900 dark:text-white mb-1.5"
+                            >Email Address</label
+                        >
+                        <input
+                            id="profile-email"
+                            type="email"
+                            formControlName="email"
+                            placeholder="Enter your email"
+                            class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3.5 py-2 text-sm text-gray-500 dark:text-gray-400 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-not-allowed"
+                        />
+                    </div>
                 </div>
-
-                <div class="form-field-wrap">
-                    <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Email</mat-label>
-                        <input matInput formControlName="email" placeholder="Enter your email" class="input-field" />
-                        <!-- <mat-hint>Contact support to update</mat-hint> -->
-                    </mat-form-field>
-                </div>
-            </div>
-
-            <div class="form-footer">
-                <!-- <span class="form-hint">Only name can be changed here</span> -->
-                <div class="form-actions">
-                    <button type="button" matButton="outlined" class="btn-cancel" (click)="cancelEdit()">Cancel</button>
-                    <button type="button" matButton="filled" (click)="updateUser()" class="btn-save">
+                <div class="flex items-center justify-end gap-3 pt-1">
+                    <button
+                        type="button"
+                        (click)="cancelEdit()"
+                        class="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 bg-white dark:bg-gray-800 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        (click)="updateUser()"
+                        class="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm cursor-pointer hover:bg-indigo-500 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
+                    >
                         <svg
-                            width="13"
-                            height="13"
+                            class="size-3.5"
                             viewBox="0 0 16 16"
                             fill="none"
                             stroke="currentColor"
                             stroke-width="2.2"
+                            aria-hidden="true"
                         >
                             <path d="M3 8l4 4 6-6" />
                         </svg>
                         Save Changes
                     </button>
                 </div>
-            </div>
-        </form>
-        }
-    </div>
-
-    <!-- ── ORGANIZATIONS CARD ── -->
-    <div class="org-card">
-        <div class="card-header">
-            <div class="card-title-group">
-                <div class="card-icon green">
-                    <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                    >
-                        <rect x="2" y="7" width="12" height="7" rx="1" />
-                        <path d="M5 7V5a3 3 0 016 0v2" />
-                    </svg>
-                </div>
-                <div>
-                    <div class="card-title">Organizations</div>
-                    <div class="card-subtitle">Workspaces you're a member of</div>
-                </div>
-            </div>
-            <span class="org-count-badge">{{ (userDetails$ | async)?.c_companies?.length || 0 }} total</span>
+            </form>
+            }
         </div>
 
-        <table mat-table [dataSource]="(userDetails$ | async)?.c_companies" class="org-table w-full">
-            <ng-container matColumnDef="companyName">
-                <th mat-header-cell *matHeaderCellDef>Organization</th>
-                <td mat-cell *matCellDef="let element">
-                    <div class="org-cell-inner">
-                        <div
-                            class="org-avatar-sm"
-                            [class.current]="companyDetails?.currentCompany?.company_uname === element.company_uname"
+        <!-- ── ORGANIZATIONS CARD ── -->
+        <div class="rounded-lg border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-3">
+                    <div class="flex size-8 items-center justify-center rounded-lg bg-teal-100 dark:bg-teal-900/50">
+                        <svg
+                            class="size-4 text-teal-600 dark:text-teal-400"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            aria-hidden="true"
                         >
-                            {{ element.name | slice: 0:2 | uppercase }}
-                        </div>
-                        <span
-                            class="org-name"
-                            [class.font-medium]="
-                                companyDetails?.currentCompany?.company_uname === element.company_uname
-                            "
-                            [class.current-org]="
-                                companyDetails?.currentCompany?.company_uname === element.company_uname
-                            "
-                        >
-                            {{ element.name }}
-                            @if (companyDetails?.currentCompany?.company_uname === element.company_uname) {
-                            <span class="current-badge">● Current</span>
-                            }
-                        </span>
+                            <rect x="2" y="7" width="12" height="7" rx="1" />
+                            <path d="M5 7V5a3 3 0 016 0v2" />
+                        </svg>
                     </div>
-                </td>
-            </ng-container>
+                    <div>
+                        <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Organizations</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Workspaces you're a member of</p>
+                    </div>
+                </div>
+                <span
+                    class="inline-flex items-center rounded-md bg-gray-100 dark:bg-gray-700 px-2 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-300"
+                >
+                    {{ (userDetails$ | async)?.c_companies?.length || 0 }} total
+                </span>
+            </div>
 
-            <ng-container matColumnDef="action">
-                <th mat-header-cell *matHeaderCellDef class="action-column">Actions</th>
-                <td mat-cell *matCellDef="let element" class="action-cell">
-                    @if (companyDetails?.currentCompany?.company_uname !== element.company_uname) {
-                    <button matButton="filled" (click)="openModal(element?.id)" class="actions btn-leave">
+            @if ((userDetails$ | async)?.c_companies?.length) {
+            <div class="divide-y divide-gray-100 dark:divide-gray-800">
+                <div
+                    class="hidden lg:grid grid-cols-[1fr_auto] px-5 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+                >
+                    <span>Organization</span>
+                    <span>Actions</span>
+                </div>
+                @for (org of (userDetails$ | async)?.c_companies; track org.id) {
+                <div class="flex flex-wrap items-center justify-between gap-3 px-4 lg:px-5 py-3">
+                    <div class="flex min-w-0 items-center gap-3">
+                        <div
+                            class="size-8 flex-none rounded-full flex items-center justify-center text-xs font-bold select-none"
+                            [class.bg-indigo-100]="companyDetails?.currentCompany?.company_uname === org.company_uname"
+                            [class.dark:bg-indigo-900]="
+                                companyDetails?.currentCompany?.company_uname === org.company_uname
+                            "
+                            [class.text-indigo-700]="
+                                companyDetails?.currentCompany?.company_uname === org.company_uname
+                            "
+                            [class.dark:text-indigo-300]="
+                                companyDetails?.currentCompany?.company_uname === org.company_uname
+                            "
+                            [class.bg-gray-100]="companyDetails?.currentCompany?.company_uname !== org.company_uname"
+                            [class.dark:bg-gray-700]="
+                                companyDetails?.currentCompany?.company_uname !== org.company_uname
+                            "
+                            [class.text-gray-600]="companyDetails?.currentCompany?.company_uname !== org.company_uname"
+                            [class.dark:text-gray-300]="
+                                companyDetails?.currentCompany?.company_uname !== org.company_uname
+                            "
+                        >
+                            {{ org.name | slice: 0:2 | uppercase }}
+                        </div>
+                        <div class="min-w-0 flex items-center gap-2 flex-wrap">
+                            <p
+                                class="text-sm truncate"
+                                [class.font-semibold]="
+                                    companyDetails?.currentCompany?.company_uname === org.company_uname
+                                "
+                                [class.font-medium]="
+                                    companyDetails?.currentCompany?.company_uname !== org.company_uname
+                                "
+                                [class.text-gray-900]="true"
+                                [class.dark:text-white]="true"
+                            >
+                                {{ org.name }}
+                            </p>
+                            @if (companyDetails?.currentCompany?.company_uname === org.company_uname) {
+                            <span
+                                class="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/40 px-2 py-0.5 text-[10px] font-bold uppercase tracking-normal text-green-700 dark:text-green-400"
+                            >
+                                ● Current
+                            </span>
+                            }
+                        </div>
+                    </div>
+                    @if (companyDetails?.currentCompany?.company_uname !== org.company_uname) {
+                    <button
+                        type="button"
+                        (click)="openModal(org?.id)"
+                        class="rounded-md px-3 py-1.5 text-xs font-semibold text-red-600 dark:text-red-400 ring-1 ring-inset ring-red-200 dark:ring-red-800 bg-red-50 dark:bg-red-900/20 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-500"
+                    >
                         ↗ Leave
                     </button>
                     }
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-
-        @if (!(userDetails$ | async)?.c_companies) {
-        <p class="no-data">Nothing here — there are no companies to show</p>
-        }
+                </div>
+                }
+            </div>
+            } @else {
+            <p class="px-5 py-6 text-sm italic text-gray-400 dark:text-gray-500">
+                Nothing here — there are no companies to show
+            </p>
+            }
+        </div>
     </div>
 </div>

@@ -53,7 +53,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { SubscriptionCenterComponent } from '../component/subscription-center/subscription-center.component';
 import { environment } from 'apps/36-blocks-widget/src/environments/environment';
-import { InputFields, WidgetVersion, ViewMode } from './utility/model';
+import { InputFields, WidgetVersion } from './utility/model';
 @Component({
     selector: 'proxy-auth-widget',
     imports: [
@@ -96,24 +96,23 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     );
     protected readonly PublicScriptTheme = PublicScriptTheme;
     protected readonly PublicScriptType = PublicScriptType;
-    protected readonly ViewMode = ViewMode;
 
-    readonly viewMode = computed<ViewMode>(() => {
+    readonly viewMode = computed<PublicScriptType>(() => {
         const authToken = this._authToken$();
         const type = this._type$();
         if (authToken && type === PublicScriptType.UserManagement) {
-            return ViewMode.UserManagement;
+            return PublicScriptType.UserManagement;
         }
         if (type === PublicScriptType.Subscription) {
-            return ViewMode.Subscription;
+            return PublicScriptType.Subscription;
         }
         if (authToken && type === PublicScriptType.OrganizationDetails) {
-            return ViewMode.OrganizationDetails;
+            return PublicScriptType.OrganizationDetails;
         }
-        if (authToken) {
-            return ViewMode.UserProfile;
+        if (authToken && type === PublicScriptType.UserProfile) {
+            return PublicScriptType.UserProfile;
         }
-        return ViewMode.OtpDialog;
+        return PublicScriptType.Authorization;
     });
 
     readonly isDarkTheme = computed<boolean>(() => {

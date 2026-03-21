@@ -13,9 +13,11 @@ import { PublicScriptTheme, PublicScriptType, WidgetConfig } from '@proxy/consta
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
-    protected readonly referenceId = '4512365e1772083784699fda48abd90';
+    protected readonly referenceId = '4512365e177401652469bd580c9ad74';
+    protected theme: PublicScriptTheme = PublicScriptTheme.Dark;
+    protected readonly PublicScriptTheme = PublicScriptTheme;
     protected readonly authToken =
-        'elpmRGYrZFh6TlRwbWJtU2psYU1nUUFta0hEN2FPZ3JUemVzTkphOVMvZjhLT2RCTUswR3AvN01nb3dsaHpRUmlNM1o3YTNpc3N0dTF1akdET2lhVG9MTEgvRVdUOWhDTElzMlhCajRZUnIyYTZiZ01yOUNxWWZ3TmpEZ0xxMGFwbTk0WEtXVnd3cXVSUmZkdEl4ekJIWWFkamt4RGdmL3Jza05STG5DMk8vRURKTkhITEdiM0NGdnJPcjZBNGNUWUhCZDZmaVVoaXUxc3JBRW5OQUhjZz09';
+        'OVo5MStRSTN3NmFWL2sxSW9OYWR3WG1yUjN5VCt4OGd6N0dhSFdVdTlYcDQxV2gxdXVPa1RRSmkxN2czcEw2UjdDdSt5a1dJaXRLRlVMSWM1Uk9TS3FGUVB3eVQvTm91aUFrMWQvUHJXSVFnUDlFNy92R1ZzNjBkdTFwWWYzK3dTalNpdHF3MlZIbmVSUW9WWkdMVi80bGIydzBHMnB2NHloUDd0eE1RQzJJenMwK1JQaFpoVDZPT3JERktocWd4bU52WVdLNGVaeFZPbVBpdnhCZWYyQT09';
 
     constructor() {
         super();
@@ -37,14 +39,13 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         if (!environment.production) {
             const widgetConfig: WidgetConfig = {
                 referenceId: this.referenceId,
-                authToken: this.authToken,
-                type: PublicScriptType.UserManagement,
+                // authToken: this.authToken,
+                type: PublicScriptType.Authorization,
                 // showCompanyDetails: false,
                 // isHidden: true,
-                isRolePermission: true,
-                theme: PublicScriptTheme.System,
+                isRolePermission: false,
+                theme: this.theme,
                 // isPreview: true,
-                // isLogin: true,
                 // loginRedirectUrl: 'https://www.google.com',
                 target: '_self',
                 success: (data) => {

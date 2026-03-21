@@ -2,11 +2,6 @@ import { cloneDeep } from 'lodash-es';
 import { PublicScriptTheme } from '@proxy/constant';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
 import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
 import { OtpService } from './../../service/otp.service';
 import { environment } from './../../../../environments/environment';
@@ -50,16 +45,7 @@ import { IGetOtpRes } from '../../model/otp';
 
 @Component({
     selector: 'proxy-register',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        MatIconModule,
-        MarkAllAsTouchedDirective,
-    ],
+    imports: [CommonModule, ReactiveFormsModule, MarkAllAsTouchedDirective],
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,15 +1,7 @@
 import { CommonModule, NgStyle } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatTableModule } from '@angular/material/table';
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation, inject, input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil, take, filter } from 'rxjs';
@@ -33,21 +25,8 @@ import { updateUser } from '../store/actions/otp.action';
 import { UPDATE_REGEX } from '@proxy/regex';
 import { PublicScriptTheme } from '@proxy/constant';
 @Component({
-    selector: 'proxy-user-profile',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatTabsModule,
-        MatCardModule,
-        MatSnackBarModule,
-        MatProgressSpinnerModule,
-        MatDialogModule,
-        MatTableModule,
-    ],
+    selector: 'user-profile',
+    imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule, MatDialogModule],
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.scss'],
     encapsulation: ViewEncapsulation.None,
@@ -98,7 +77,6 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         email: new FormControl({ value: '', disabled: true }),
     });
 
-    displayedColumns: string[] = ['companyName', 'action'];
     public isEditing = false;
 
     private store = inject<Store<IAppState>>(Store);

@@ -1,12 +1,6 @@
 import { OtpWidgetService } from './../../service/otp-widget.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatRadioModule } from '@angular/material/radio';
 import { NgHcaptchaModule } from 'ng-hcaptcha';
 import {
     AfterViewInit,
@@ -17,6 +11,7 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
+    computed,
     inject,
     input,
     output,
@@ -63,18 +58,8 @@ import { LoginComponentStore } from '../login/login.store';
 import { OtpUtilityService } from '../../service/otp-utility.service';
 import { InputFields, OtpErrorCodes, WidgetVersion } from './utility/model';
 @Component({
-    selector: 'proxy-send-otp-center',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatProgressSpinnerModule,
-        MatRadioModule,
-        NgHcaptchaModule,
-    ],
+    selector: 'authorization',
+    imports: [CommonModule, ReactiveFormsModule, NgHcaptchaModule],
     templateUrl: './send-otp-center.component.html',
     styleUrls: ['./send-otp-center.component.scss'],
     providers: [LoginComponentStore],
@@ -100,6 +85,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public openPopUp = output<any>();
     public closePopUp = output<void>();
 
+    public readonly isDarkTheme = computed(() => this.theme() === PublicScriptTheme.Dark);
     public steps = 1;
     public phoneForm = new FormGroup({
         phone: new FormControl<string>('', [Validators.required]),
@@ -695,10 +681,6 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public get buttonTextColor(): string | null {
         if (this.version() !== WidgetVersion.V2) return null;
         return this.uiPreferences?.button_text_color || null;
-    }
-
-    public get isDarkTheme(): boolean {
-        return this.theme() === PublicScriptTheme.Dark;
     }
 
     public get signUpButtonText(): string {

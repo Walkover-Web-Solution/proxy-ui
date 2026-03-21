@@ -1,13 +1,5 @@
-// ─────────────────────────────────────────────────────────────────────────
-// user-profile.component.scss
-//
-// ViewEncapsulation.None is set on this component, so these styles are
-// injected as global CSS. Everything is scoped under .container to prevent
-// leaking into other components. No ::ng-deep needed anywhere.
-// ─────────────────────────────────────────────────────────────────────────
-
-// ── SHARED STRUCTURE ──────────────────────────────────────────────────────
-
+// Styling handled by Tailwind utility classes in the template.
+/*
 .container {
     background: var(--color-common-bg);
     padding: 15px 60px;
@@ -671,3 +663,4 @@
         }
     }
 }
+*/

@@ -1,12 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
-import { MatRadioModule } from '@angular/material/radio';
 import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
 import { LoginComponentStore } from './login.store';
 import { BehaviorSubject, filter, interval, Observable, Subscription, takeUntil } from 'rxjs';
@@ -26,17 +20,7 @@ import { NgHcaptchaComponent } from 'ng-hcaptcha';
 
 @Component({
     selector: 'proxy-login',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        MatIconModule,
-        MatRadioModule,
-        MarkAllAsTouchedDirective,
-    ],
+    imports: [CommonModule, ReactiveFormsModule, MarkAllAsTouchedDirective],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     providers: [LoginComponentStore],
