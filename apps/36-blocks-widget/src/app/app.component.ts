@@ -38,14 +38,14 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         (window as any).__proxyWidgetInitialized = true;
         if (!environment.production) {
             const widgetConfig: WidgetConfig = {
-                referenceId: this.referenceId,
-                // authToken: this.authToken,
-                // type: PublicScriptType.UserProfile,
-                // showCompanyDetails: false,
-                // isHidden: true,
-                // isRolePermission: false,
-                // theme: this.theme,
-                // isPreview: true,
+                // referenceId: this.referenceId,
+                authToken: this.authToken,
+                type: PublicScriptType.UserProfile,
+                showCompanyDetails: false,
+                isHidden: true,
+                isRolePermission: false,
+                theme: this.theme,
+                isPreview: true,
                 // loginRedirectUrl: 'https://www.google.com',
                 target: '_self',
                 success: (data) => {
