@@ -96,9 +96,7 @@ window['initVerification'] = (config: any) => {
 
             // omitting keys which are not required in API payload; query params fill in missing values
             widgetElement.otherData = { ...paramsData, ...omit(config, RESERVED_KEYS) };
-            if (document.getElementById('proxyContainer') && config?.type !== PublicScriptType.UserManagement) {
-                document.getElementById('proxyContainer').append(widgetElement);
-            } else if (config?.type === PublicScriptType.UserManagement) {
+            if (config?.type === PublicScriptType.UserManagement) {
                 // Master element always stays in body (hidden) for window events
                 widgetElement.style.display = 'none';
                 widgetElement.setAttribute('data-master', 'true');
@@ -149,10 +147,29 @@ window['initVerification'] = (config: any) => {
                         targetContainer.append(createContainerElement());
                     }
                 });
-            } else if (document.getElementById('userProxyContainer')) {
-                document.getElementById('userProxyContainer').append(widgetElement);
             } else {
-                document.getElementsByTagName('body')[0].append(widgetElement);
+                // For all other types: append to #userProxyContainer.
+                // If not found immediately, retry every 100 ms for up to 5 s.
+                // If the container never appears, give up — do NOT fall back to body.
+                const container = document.getElementById('userProxyContainer');
+                if (container) {
+                    container.append(widgetElement);
+                } else {
+                    const RETRY_INTERVAL_MS = 100;
+                    const MAX_RETRIES = 50; // 50 × 100 ms = 5 s
+                    let attempts = 0;
+                    const poll = setInterval(() => {
+                        attempts++;
+                        const found = document.getElementById('userProxyContainer');
+                        if (found) {
+                            clearInterval(poll);
+                            found.append(widgetElement);
+                        } else if (attempts >= MAX_RETRIES) {
+                            clearInterval(poll);
+                            console.warn('[proxy-auth] #userProxyContainer not found after 5 s — widget not mounted.');
+                        }
+                    }, RETRY_INTERVAL_MS);
+                }
             }
 
             window['libLoaded'] = true;

@@ -9,6 +9,10 @@ const STYLE_ID = 'widget-overlay-styles';
  * outside the Shadow DOM. Shadow DOM adoptedStyleSheets are NOT copied
  * because their rules are :host-scoped and do not apply outside the shadow.
  */
+export function ensureAddUserDialogStyles(): void {
+    ensureOverlayStyles();
+}
+
 function ensureOverlayStyles(): void {
     if (document.getElementById(STYLE_ID)) return;
 

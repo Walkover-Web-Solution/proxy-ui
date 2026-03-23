@@ -326,7 +326,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
         this.bridge.openAddUser$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.addUser());
 
         // Consume any event that was buffered before this component mounted
-        if (this.bridge.consumePending()) {
+        if (this.bridge.consumePending() !== null) {
             Promise.resolve().then(() => this.addUser());
         }
 
