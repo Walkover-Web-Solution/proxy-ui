@@ -1,5 +1,5 @@
 import { Injectable, Renderer2 } from '@angular/core';
-import { PublicScriptTheme } from '@proxy/constant';
+import { WidgetTheme } from '@proxy/constant';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyAuthDomBuilderService {
@@ -61,7 +61,7 @@ export class ProxyAuthDomBuilderService {
         theme: string
     ): void {
         let visible = false;
-        const iconColor = theme === PublicScriptTheme.Dark ? '#e5e7eb' : '#5d6164';
+        const iconColor = theme === WidgetTheme.Dark ? '#e5e7eb' : '#5d6164';
         const toggleBtn: HTMLButtonElement = renderer.createElement('button');
         toggleBtn.type = 'button';
         toggleBtn.style.cssText =
@@ -81,7 +81,7 @@ export class ProxyAuthDomBuilderService {
     }
 
     inputStyle(theme: string, borderRadius: string, paddingRight = false): string {
-        const isDark = theme === PublicScriptTheme.Dark;
+        const isDark = theme === WidgetTheme.Dark;
         return `width:100%;height:44px;padding:0 ${paddingRight ? '44px' : '16px'} 0 16px;border:1px solid ${
             isDark ? '#ffffff' : '#cbd5e1'
         };border-radius:${borderRadius};background:${isDark ? 'transparent' : '#ffffff'};color:${

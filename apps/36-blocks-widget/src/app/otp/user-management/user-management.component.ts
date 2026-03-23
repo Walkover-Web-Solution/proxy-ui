@@ -1,18 +1,25 @@
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
     DestroyRef,
+    ElementRef,
+    OnDestroy,
     OnInit,
+    ViewChild,
     computed,
     inject,
     input,
     signal,
 } from '@angular/core';
+import { WidgetPortalRef, WidgetPortalService } from '../service/widget-portal.service';
+import { UserManagementBridgeService } from '../service/user-management-bridge.service';
 import { CommonModule } from '@angular/common';
-import { PublicScriptTheme } from '@proxy/constant';
+import { ToastService } from '../service/toast.service';
+import { ToastComponent } from '../service/toast.component';
+import { WidgetTheme } from '@proxy/constant';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PageEvent } from '@angular/material/paginator';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { select, Store } from '@ngrx/store';
 import { IAppState } from '../store/app.state';
@@ -35,18 +42,24 @@ import {
 import { isEqual } from 'lodash-es';
 import { UserData, Role, UserManagementTab } from '../model/otp';
 
+interface PageEvent {
+    pageIndex: number;
+    pageSize: number;
+    length: number;
+}
+
 @Component({
     selector: 'user-management',
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, ToastComponent],
     templateUrl: './user-management.component.html',
     styleUrls: ['./user-management.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserManagementComponent implements OnInit {
+export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy {
     readonly userToken = input<string>();
     readonly pass = input<boolean>(false);
     readonly theme = input<string>();
-    protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected readonly WidgetTheme = WidgetTheme;
     protected readonly UserManagementTab = UserManagementTab;
     readonly exclude_role_ids = input<any[]>([]);
     readonly include_role_ids = input<any[]>([]);
@@ -58,8 +71,8 @@ export class UserManagementComponent implements OnInit {
     );
     readonly isDark = computed(() => {
         const t = this.theme();
-        if (t === PublicScriptTheme.Dark) return true;
-        if (t === PublicScriptTheme.Light) return false;
+        if (t === WidgetTheme.Dark) return true;
+        if (t === WidgetTheme.Light) return false;
         return this._systemDark();
     });
     readonly availableTabs = computed(() => {
@@ -72,6 +85,7 @@ export class UserManagementComponent implements OnInit {
     readonly hasMultipleTabs = computed(() => this.availableTabs().length > 1);
     public pendingDeleteUser: any = null;
     private pendingDeleteIndex: number = -1;
+    private pendingEditUser: UserData | null = null;
     public roles: any[] = [];
     public permissions: any[] = [];
     public searchTerm: string = '';
@@ -109,6 +123,17 @@ export class UserManagementComponent implements OnInit {
     private readonly fb = inject(FormBuilder);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly store = inject<Store<IAppState>>(Store);
+    readonly toastService = inject(ToastService);
+    private readonly widgetPortal = inject(WidgetPortalService);
+    private readonly bridge = inject(UserManagementBridgeService);
+
+    @ViewChild('mainDialogPortal') private mainDialogPortalEl?: ElementRef<HTMLElement>;
+    @ViewChild('confirmDialogPortal') private confirmDialogPortalEl?: ElementRef<HTMLElement>;
+    @ViewChild('toastPortal') private toastPortalEl?: ElementRef<HTMLElement>;
+
+    private mainDialogRef: WidgetPortalRef | null = null;
+    private confirmDialogRef: WidgetPortalRef | null = null;
+    private toastPortalRef: WidgetPortalRef | null = null;
 
     constructor() {
         this.store
@@ -119,6 +144,10 @@ export class UserManagementComponent implements OnInit {
                     this.defaultRoles = res.data?.default_roles;
                     this.filteredRolesData = [...this.roles];
                     this.isRolesLoading = false;
+                    if (this.pendingEditUser) {
+                        this.patchEditUserForm(this.pendingEditUser);
+                        this.pendingEditUser = null;
+                    }
                     this.cdr.markForCheck();
                 }
             });
@@ -167,6 +196,7 @@ export class UserManagementComponent implements OnInit {
             .subscribe((res) => {
                 if (res) {
                     this.getCompanyUsers();
+                    if (res?.data?.message) this.toastService.success(res.data.message);
                     this.cdr.markForCheck();
                 }
             });
@@ -177,6 +207,7 @@ export class UserManagementComponent implements OnInit {
                 if (res) {
                     this.getRoles();
                     this.refreshFormData();
+                    if (res?.data?.message) this.toastService.success(res.data.message);
                     this.cdr.markForCheck();
                 }
             });
@@ -187,6 +218,7 @@ export class UserManagementComponent implements OnInit {
                 if (res) {
                     this.getPermissions();
                     this.refreshFormData();
+                    if (res?.data?.message) this.toastService.success(res.data.message);
                     this.cdr.markForCheck();
                 }
             });
@@ -197,6 +229,7 @@ export class UserManagementComponent implements OnInit {
                 if (res) {
                     this.getPermissions();
                     this.refreshFormData();
+                    if (res?.data?.message) this.toastService.success(res.data.message);
                     this.cdr.markForCheck();
                 }
             });
@@ -207,6 +240,7 @@ export class UserManagementComponent implements OnInit {
                 if (res) {
                     this.getRoles();
                     this.refreshFormData();
+                    if (res?.data?.message) this.toastService.success(res.data.message);
                     this.cdr.markForCheck();
                 }
             });
@@ -226,6 +260,7 @@ export class UserManagementComponent implements OnInit {
             .subscribe((res) => {
                 if (res) {
                     this.getCompanyUsers();
+                    if (res?.data?.message) this.toastService.success(res.data.message);
                     this.cdr.markForCheck();
                 }
             });
@@ -235,6 +270,7 @@ export class UserManagementComponent implements OnInit {
             .subscribe((res) => {
                 if (res) {
                     this.getCompanyUsers();
+                    if (res?.data?.message) this.toastService.success(res.data.message);
                     this.cdr.markForCheck();
                 }
             });
@@ -282,18 +318,27 @@ export class UserManagementComponent implements OnInit {
             this.destroyRef.onDestroy(() => mq.removeEventListener('change', mqListener));
         }
 
-        const openAddUser = this.addUser.bind(this);
         const showMgmt = () => this.isHidden.set(false);
         const hideMgmt = () => this.isHidden.set(true);
 
-        window.addEventListener('openAddUserDialog', openAddUser);
+        // openAddUserDialog is handled via UserManagementBridgeService
+        // (works even when the event fires before this component mounts)
+        this.bridge.openAddUser$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.addUser());
+
+        // Consume any event that was buffered before this component mounted
+        if (this.bridge.consumePending()) {
+            Promise.resolve().then(() => this.addUser());
+        }
+
         window.addEventListener('showUserManagement', showMgmt);
         window.addEventListener('hideUserManagement', hideMgmt);
 
         this.destroyRef.onDestroy(() => {
-            window.removeEventListener('openAddUserDialog', openAddUser);
             window.removeEventListener('showUserManagement', showMgmt);
             window.removeEventListener('hideUserManagement', hideMgmt);
+            this.mainDialogRef?.detach();
+            this.confirmDialogRef?.detach();
+            this.toastPortalRef?.detach();
             this.showDialog.set(false);
             this.showConfirmDialog.set(false);
         });
@@ -301,6 +346,17 @@ export class UserManagementComponent implements OnInit {
 
     ngOnInit(): void {
         this.getCompanyUsers();
+    }
+
+    ngAfterViewInit(): void {
+        // Teleport the toast to body immediately (always visible, not conditional)
+        if (this.toastPortalEl?.nativeElement) {
+            this.toastPortalRef = this.widgetPortal.attach(this.toastPortalEl.nativeElement);
+        }
+    }
+
+    ngOnDestroy(): void {
+        // handled via destroyRef.onDestroy above
     }
 
     public tabChange(tab: UserManagementTab): void {
@@ -320,6 +376,11 @@ export class UserManagementComponent implements OnInit {
         this.pendingDeleteUser = user;
         this.pendingDeleteIndex = index;
         this.showConfirmDialog.set(true);
+        Promise.resolve().then(() => {
+            if (this.confirmDialogPortalEl?.nativeElement) {
+                this.confirmDialogRef = this.widgetPortal.attach(this.confirmDialogPortalEl.nativeElement);
+            }
+        });
     }
 
     public confirmDelete(): void {
@@ -333,6 +394,8 @@ export class UserManagementComponent implements OnInit {
     }
 
     public cancelDelete(): void {
+        this.confirmDialogRef?.detach();
+        this.confirmDialogRef = null;
         this.pendingDeleteUser = null;
         this.pendingDeleteIndex = -1;
         this.showConfirmDialog.set(false);
@@ -344,18 +407,22 @@ export class UserManagementComponent implements OnInit {
         this.isEditRole = false;
         this.isEditPermission = false;
         this.currentEditingUser = user;
+        this.pendingEditUser = user;
+        this.getRoles();
+        this.openDialog();
+    }
+
+    private patchEditUserForm(user: UserData): void {
         const roleId = this.getRoleIdByName(user.role);
         const userPermissionIds = this.getPermissionIdsByName(user.additionalpermissions || []);
-
         this.addUserForm.patchValue({
             name: user.name,
             email: user.email,
             mobileNumber: (user as any).mobile || '',
-            role: roleId || user.role,
+            role: roleId ? roleId.toString() : user.role || '',
             permission: userPermissionIds,
         });
-
-        this.openDialog();
+        this.cdr.markForCheck();
     }
 
     public getPermissionsTooltip(user: UserData): string {
@@ -375,18 +442,6 @@ export class UserManagementComponent implements OnInit {
     public clearSearch(): void {
         this.searchTerm = '';
         this.applyFilter();
-    }
-
-    public maskEmail(email: string): string {
-        if (!email?.includes('@')) return email;
-        const [local, domain] = email.split('@');
-        if (local.length <= 2) return `${local[0]}***@${domain}`;
-        if (local.length <= 4) return `${local.substring(0, 2)}***@${domain}`;
-        return `${local.substring(0, 2)}${'*'.repeat(Math.max(3, local.length - 3))}${local.slice(-1)}@${domain}`;
-    }
-
-    public getEmailDisplay(email: string, index: number): string {
-        return this.isEmailVisible(index) ? email : this.maskEmail(email);
     }
 
     public isEmailVisible(index: number): boolean {
@@ -429,13 +484,18 @@ export class UserManagementComponent implements OnInit {
     }
 
     private openDialog(): void {
-        if (this.theme() === PublicScriptTheme.Dark) {
-            document.body.classList.add('dark-dialog-open');
-        }
         this.showDialog.set(true);
+        // Microtask fires after OnPush CD flush, guaranteeing @if has rendered
+        Promise.resolve().then(() => {
+            if (this.mainDialogPortalEl?.nativeElement) {
+                this.mainDialogRef = this.widgetPortal.attach(this.mainDialogPortalEl.nativeElement);
+            }
+        });
     }
 
     public addUser(): void {
+        // Call Add role api to get role to show in dropdown list
+        this.getRoles();
         this.isEditUser = false;
         this.isEditRole = false;
         this.isEditPermission = false;
@@ -450,13 +510,14 @@ export class UserManagementComponent implements OnInit {
     }
 
     public closeDialog(): void {
+        this.mainDialogRef?.detach();
+        this.mainDialogRef = null;
         this.showDialog.set(false);
         this.isEditUser = false;
         this.isEditRole = false;
         this.isEditPermission = false;
         this.currentEditingUser = null;
         this.currentEditingPermission = null;
-        document.body.classList.remove('dark-dialog-open');
     }
 
     public saveUser(): void {

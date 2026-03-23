@@ -689,7 +689,7 @@
 <ng-template #previewAuthorization let-authorizationDetails="authorizationDetails" let-previewVersion="previewVersion">
     <div
         class="auth-credentials px-6 w-[350px] border rounded-8 ml-6"
-        [class.dark]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+        [class.dark]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
         style="max-height: 650px"
         [style.--branding-primary-color]="getEffectivePrimaryColor()"
         [style.--branding-button-color]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
@@ -760,8 +760,8 @@
         featureForm.get('brandingDetails.version')?.value === 'v2') {
         <div
             class="flex flex-col items-center gap-1 w-full"
-            [class.dark-theme-login]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
-            [class.preview-input-field]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+            [class.dark-theme-login]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
+            [class.preview-input-field]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
         >
             <mat-form-field appearance="outline" class="w-85">
                 <mat-label>Email or Phone</mat-label>
@@ -797,9 +797,9 @@
             <hr style="flex: 1; border: none; border-top: 1px solid var(--color-common-border); margin: 0" />
             <span
                 class="mat-body-2"
-                [class.text-secondary]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+                [class.text-secondary]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
                 style="white-space: nowrap"
-                [class.bg-dark]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+                [class.bg-dark]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
                 [style.color]="getEffectivePrimaryColor() + ' !important'"
                 >Or continue with</span
             >
@@ -829,21 +829,19 @@
             <button
                 type="button"
                 class="auth-option-btn"
-                [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+                [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
             >
                 <div class="auth-option-content">
                     <mat-icon
                         class="material-icons-outlined auth-option-icon"
                         [style.color]="
-                            featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark
-                                ? '#ffffff'
-                                : '#000000'
+                            featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark ? '#ffffff' : '#000000'
                         "
                         >phone_android</mat-icon
                     >
                     <span
                         class="auth-option-text"
-                        [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+                        [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
                         >Login With OTP</span
                     >
                 </div>
@@ -852,21 +850,19 @@
             <button
                 type="button"
                 class="auth-option-btn"
-                [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+                [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
             >
                 <div class="auth-option-content">
                     <mat-icon
                         class="material-icons-outlined auth-option-icon"
                         [style.color]="
-                            featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark
-                                ? '#ffffff'
-                                : '#000000'
+                            featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark ? '#ffffff' : '#000000'
                         "
                         >apple</mat-icon
                     >
                     <span
                         class="auth-option-text"
-                        [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+                        [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
                         >Continue with Apple</span
                     >
                 </div>
@@ -875,13 +871,13 @@
             <button
                 type="button"
                 class="auth-option-btn"
-                [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+                [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
             >
                 <div class="auth-option-content">
                     <img src="https://www.google.com/favicon.ico" alt="Google" class="auth-option-icon" />
                     <span
                         class="auth-option-text"
-                        [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+                        [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
                         >Continue with Google</span
                     >
                 </div>
@@ -891,21 +887,19 @@
             <button
                 type="button"
                 class="auth-option-btn"
-                [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+                [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
             >
                 <div class="auth-option-content">
                     <mat-icon
                         class="material-icons-outlined auth-option-icon"
                         [style.color]="
-                            featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark
-                                ? '#ffffff'
-                                : '#000000'
+                            featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark ? '#ffffff' : '#000000'
                         "
                         >password</mat-icon
                     >
                     <span
                         class="auth-option-text"
-                        [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === PublicScriptTheme.Dark"
+                        [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
                         >Continue with Password</span
                     >
                 </div>
@@ -1872,7 +1866,7 @@
                         fieldConfig: {
                             label: 'Theme',
                             type: featureFieldType.Select,
-                            source: [PublicScriptTheme.System, PublicScriptTheme.Light, PublicScriptTheme.Dark]
+                            source: [WidgetTheme.System, WidgetTheme.Light, WidgetTheme.Dark]
                         }
                     }
                 "

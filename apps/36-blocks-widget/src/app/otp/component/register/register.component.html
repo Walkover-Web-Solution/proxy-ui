@@ -85,7 +85,7 @@
             type="button"
             (click)="isOtpSent ? resendOtp() : getOtp()"
             [disabled]="(selectGetOtpInProcess$ | async) || (isOtpSent && !canResendOtp)"
-            class="mt-0 inline-flex items-center justify-center rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 whitespace-nowrap shrink-0 cursor-pointer"
+            class="w-btn-primary shrink-0 whitespace-nowrap px-3"
             [class.has-hover-color]="!!buttonHoverColor"
             [style.--btn-hover-color]="buttonHoverColor"
             [style.background-color]="buttonColor || null"
@@ -119,12 +119,7 @@
     <!-- Change Number link -->
     @if (isNumberChanged || isOtpVerified) {
     <div class="flex justify-end">
-        <a
-            href="javascript:void(0)"
-            (click)="numberChanged()"
-            class="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
-            >Change Number</a
-        >
+        <a href="javascript:void(0)" (click)="numberChanged()" class="w-link">Change Number</a>
     </div>
     }
 
@@ -141,7 +136,7 @@
                 (keydown)="onOtpKeydown($event, 'otp1')"
                 (paste)="onOtpPaste($event)"
                 #otp1
-                class="w-9 h-9 text-center text-sm font-medium rounded-lg border-0 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none"
+                class="w-input-otp"
             />
             <input
                 type="text"
@@ -151,7 +146,7 @@
                 (keyup)="onOtpKeyup($event, 'otp2')"
                 (keydown)="onOtpKeydown($event, 'otp2', otp1)"
                 #otp2
-                class="w-9 h-9 text-center text-sm font-medium rounded-lg border-0 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none"
+                class="w-input-otp"
             />
             <input
                 type="text"
@@ -161,7 +156,7 @@
                 (keyup)="onOtpKeyup($event, 'otp3')"
                 (keydown)="onOtpKeydown($event, 'otp3', otp2)"
                 #otp3
-                class="w-9 h-9 text-center text-sm font-medium rounded-lg border-0 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none"
+                class="w-input-otp"
             />
             <input
                 type="text"
@@ -171,14 +166,14 @@
                 (keyup)="onOtpKeyup($event, 'otp4')"
                 (keydown)="onOtpKeydown($event, 'otp4', otp3)"
                 #otp4
-                class="w-9 h-9 text-center text-sm font-medium rounded-lg border-0 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none"
+                class="w-input-otp"
             />
             <a
                 href="javascript:void(0)"
                 (click)="verifyOtp()"
                 [class.opacity-50]="selectVerifyOtpV2InProcess$ | async"
                 [class.pointer-events-none]="selectVerifyOtpV2InProcess$ | async"
-                class="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                class="w-link"
             >
                 {{ (selectVerifyOtpV2InProcess$ | async) ? 'Verifying...' : 'Verify OTP' }}
             </a>
@@ -258,7 +253,7 @@
         <button
             #submitBtn
             type="button"
-            class="inline-flex shrink-0 items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 cursor-pointer"
+            class="w-btn-primary shrink-0"
             [class.has-hover-color]="!!buttonHoverColor"
             [style.--btn-hover-color]="buttonHoverColor"
             [style.background-color]="buttonColor || null"
@@ -289,7 +284,7 @@
                 [formControl]="formControl"
                 [placeholder]="label"
                 maxlength="15"
-                class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3 py-2 pr-9 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none"
+                class="w-input-sm pr-9"
                 [style.border-radius]="borderRadiusValue || null"
             />
             <button
@@ -315,7 +310,7 @@
                 [type]="type || 'text'"
                 [formControl]="formControl"
                 [placeholder]="label"
-                class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none"
+                class="w-input-sm"
                 [style.border-radius]="borderRadiusValue || null"
             />
             }
@@ -367,8 +362,8 @@
     <div [attr.id]="'init-contact-wrapper-' + key" class="w-full" style="position: relative; margin-bottom: 4px">
         <input
             type="tel"
-            class="block w-full rounded-lg border-0 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-indigo-600 outline-none"
-            [class.ring-red-500]="formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']"
+            class="w-input-sm"
+            [class.border-red-500]="formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']"
             [style.border-radius]="borderRadiusValue || null"
             (keypress)="intlClass?.[key]?.onlyPhoneNumber($event)"
             [attr.id]="'init-contact-' + key"

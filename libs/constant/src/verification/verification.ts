@@ -6,7 +6,7 @@ export enum PublicScriptType {
     Subscription = 'subscription',
 }
 
-export enum PublicScriptTheme {
+export enum WidgetTheme {
     System = 'system',
     Light = 'light',
     Dark = 'dark',
@@ -19,7 +19,7 @@ export type WidgetConfig = {
     showCompanyDetails?: boolean;
     isHidden?: boolean;
     isRolePermission?: boolean;
-    theme?: PublicScriptTheme;
+    theme?: WidgetTheme;
     isPreview?: boolean;
     isLogin?: boolean;
     loginRedirectUrl?: string;

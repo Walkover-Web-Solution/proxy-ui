@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, inject, input, output } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    computed,
+    inject,
+    input,
+    output,
+    signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
@@ -13,7 +24,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IlogInData, IOtpData, IResetPassword } from '../../model/otp';
 import { EMAIL_OR_MOBILE_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
-import { META_TAG_ID, PublicScriptTheme } from '@proxy/constant';
+import { META_TAG_ID, WidgetTheme } from '@proxy/constant';
 import { environment } from 'apps/36-blocks-widget/src/environments/environment';
 import { OtpUtilityService } from '../../service/otp-utility.service';
 import { NgHcaptchaComponent } from 'ng-hcaptcha';
@@ -29,7 +40,16 @@ import { NgHcaptchaComponent } from 'ng-hcaptcha';
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public loginServiceData = input<any>();
     public theme = input<string>();
-    protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected readonly WidgetTheme = WidgetTheme;
+    private readonly _systemDark = signal(
+        typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
+    );
+    readonly isDark = computed(() => {
+        const t = this.theme();
+        if (t === WidgetTheme.Dark) return true;
+        if (t === WidgetTheme.Light) return false;
+        return this._systemDark();
+    });
     public togglePopUp = output<void>();
     public closePopUp = output<void>();
     public openPopUp = output<any>();

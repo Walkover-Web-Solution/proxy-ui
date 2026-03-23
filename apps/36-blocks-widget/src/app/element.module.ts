@@ -6,7 +6,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProxyAuthWidgetComponent } from './otp/widget/widget.component';
 import { omit } from 'lodash-es';
 import { UserProfileComponent } from './otp/user-profile/user-profile.component';
-import { ConfirmationDialogComponent } from './otp/user-profile/user-dialog/user-dialog.component';
 import { interval } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { StoreModule } from '@ngrx/store';
@@ -67,7 +66,7 @@ window['initVerification'] = (config: any) => {
         if (config?.referenceId || config?.authToken || config?.showCompanyDetails) {
             const findOtpProvider = document.querySelector('proxy-auth');
             if (findOtpProvider) {
-                document.body.removeChild(findOtpProvider);
+                findOtpProvider.remove();
             }
             const widgetElement = document.createElement('proxy-auth') as NgElement &
                 WithProperties<ProxyAuthWidgetComponent>;
@@ -170,7 +169,6 @@ window['initVerification'] = (config: any) => {
 @NgModule({
     imports: [
         ProxyAuthWidgetComponent,
-        ConfirmationDialogComponent,
         BrowserModule,
         BrowserAnimationsModule,
         HttpClientModule,

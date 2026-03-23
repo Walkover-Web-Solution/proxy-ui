@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { PublicScriptTheme, PublicScriptType, WidgetConfig } from '@proxy/constant';
+import { WidgetTheme, PublicScriptType, WidgetConfig } from '@proxy/constant';
 
 @Component({
     selector: 'proxy-root',
@@ -14,10 +14,10 @@ import { PublicScriptTheme, PublicScriptType, WidgetConfig } from '@proxy/consta
 })
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     protected readonly referenceId = '4512365e177401652469bd580c9ad74';
-    protected theme: PublicScriptTheme = PublicScriptTheme.Dark;
-    protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected theme: WidgetTheme = WidgetTheme.Light;
+    protected readonly WidgetTheme = WidgetTheme;
     protected readonly authToken =
-        'OVo5MStRSTN3NmFWL2sxSW9OYWR3WG1yUjN5VCt4OGd6N0dhSFdVdTlYcDQxV2gxdXVPa1RRSmkxN2czcEw2UjdDdSt5a1dJaXRLRlVMSWM1Uk9TS3FGUVB3eVQvTm91aUFrMWQvUHJXSVFnUDlFNy92R1ZzNjBkdTFwWWYzK3dTalNpdHF3MlZIbmVSUW9WWkdMVi80bGIydzBHMnB2NHloUDd0eE1RQzJJenMwK1JQaFpoVDZPT3JERktocWd4bU52WVdLNGVaeFZPbVBpdnhCZWYyQT09';
+        'VktWbDJjc3dYdUNjQXdVREQyL0N0dFMyRkZhNFYzbW9GcTE4dlFmSGp2VlF4djZSUGcwb2VPa0tqRFlYUCtaOFh4dW9KWVJUMHVMRTk4bWlaQzF2d290NDRlempQb0hSM1NkM0VNdGp1ZlFFS1kwV3FnSk9RWDIvelJEMFVRZ2plcTBGUnFyNWRRRHZsOCtacGpyczBUTkVWUzBFZURNcHlPa2o1d3dTa1R5QS9yWFo4blZHOWs2eFF5NG9UTkNnUUZZNUppVktDZ3FWbjZ0U01tMFVpUT09';
 
     constructor() {
         super();
@@ -40,11 +40,11 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
             const widgetConfig: WidgetConfig = {
                 referenceId: this.referenceId,
                 // authToken: this.authToken,
-                type: PublicScriptType.Authorization,
+                // type: PublicScriptType.UserProfile,
                 // showCompanyDetails: false,
                 // isHidden: true,
-                isRolePermission: false,
-                theme: this.theme,
+                // isRolePermission: false,
+                // theme: this.theme,
                 // isPreview: true,
                 // loginRedirectUrl: 'https://www.google.com',
                 target: '_self',

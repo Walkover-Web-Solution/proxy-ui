@@ -7,6 +7,9 @@
 @use 'assets/scss/component/tabs';
 @use '../../shared/scss/global';
 
+/* Widget shared UI utilities */
+@use 'assets/scss/widget-ui';
+
 :root {
     --color-common-dark: #000000;
     --color-common-slate: #333333;

@@ -51,7 +51,7 @@ import { debounceTime, distinctUntilChanged, skip, take, takeUntil } from 'rxjs/
 import { EMAIL_REGEX, EMAIL_OR_MOBILE_REGEX, ONLY_INTEGER_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { IGetOtpRes, IlogInData, IOtpData, IResetPassword, IWidgetResponse } from '../../model/otp';
 import { IntlPhoneLib } from '@proxy/utils';
-import { META_TAG_ID, PublicScriptTheme } from '@proxy/constant';
+import { META_TAG_ID, WidgetTheme } from '@proxy/constant';
 import { environment } from 'apps/36-blocks-widget/src/environments/environment';
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { LoginComponentStore } from '../login/login.store';
@@ -77,7 +77,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public show_social_login_icons = input<boolean>(false);
     public isCreateAccountLink = input<boolean>();
     public theme = input<string>();
-    protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected readonly WidgetTheme = WidgetTheme;
     public isUserProxyContainer = input<boolean>(true);
     public togglePopUp = output<void>();
     public successReturn = output<any>();
@@ -85,7 +85,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public openPopUp = output<any>();
     public closePopUp = output<void>();
 
-    public readonly isDarkTheme = computed(() => this.theme() === PublicScriptTheme.Dark);
+    public readonly isDarkTheme = computed(() => this.theme() === WidgetTheme.Dark);
     public steps = 1;
     public phoneForm = new FormGroup({
         phone: new FormControl<string>('', [Validators.required]),
@@ -644,7 +644,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         if (this.version() !== WidgetVersion.V2) {
             return null;
         }
-        const isDark = this.theme() === PublicScriptTheme.Dark;
+        const isDark = this.theme() === WidgetTheme.Dark;
         return isDark
             ? this.uiPreferences?.dark_theme_primary_color || null
             : this.uiPreferences?.light_theme_primary_color || null;

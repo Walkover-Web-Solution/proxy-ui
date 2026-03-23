@@ -1,13 +1,29 @@
 import { CommonModule, NgStyle } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialogModule } from '@angular/material/dialog';
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation, inject, input } from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation,
+    computed,
+    inject,
+    input,
+    signal,
+} from '@angular/core';
+import { WidgetPortalRef, WidgetPortalService } from '../service/widget-portal.service';
+import { ToastService } from '../service/toast.service';
+import { ToastComponent } from '../service/toast.component';
+import { ConfirmDialogComponent } from '../ui/confirm-dialog.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil, take, filter } from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
-import { getUserDetails } from '../store/actions/otp.action';
+import { getUserDetails, leaveCompany, updateUser } from '../store/actions/otp.action';
 import {
     error,
     getUserProfileData,
@@ -17,27 +33,31 @@ import {
 } from '../store/selectors';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash-es';
-import { Overlay } from '@angular/cdk/overlay';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ConfirmationDialogComponent } from './user-dialog/user-dialog.component';
-import { updateUser } from '../store/actions/otp.action';
 import { UPDATE_REGEX } from '@proxy/regex';
-import { PublicScriptTheme } from '@proxy/constant';
+import { WidgetTheme } from '@proxy/constant';
 @Component({
     selector: 'user-profile',
-    imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule, MatDialogModule],
+    imports: [CommonModule, ReactiveFormsModule, ToastComponent, ConfirmDialogComponent],
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.scss'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserProfileComponent extends BaseComponent implements OnInit {
+export class UserProfileComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
     public authToken = input<string>();
     public target = input<string>();
     public showCard = input<boolean>();
     public theme = input<string>();
-    protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected readonly WidgetTheme = WidgetTheme;
+    private readonly _systemDark = signal(
+        typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
+    );
+    readonly isDark = computed(() => {
+        const t = this.theme();
+        if (t === WidgetTheme.Dark) return true;
+        if (t === WidgetTheme.Light) return false;
+        return this._systemDark();
+    });
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
@@ -80,9 +100,17 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     public isEditing = false;
 
     private store = inject<Store<IAppState>>(Store);
-    public dialog = inject(MatDialog);
-    private snackBar = inject(MatSnackBar);
-    private overlay = inject(Overlay);
+    readonly toastService = inject(ToastService);
+    private readonly widgetPortal = inject(WidgetPortalService);
+    readonly confirmDialogCompanyId = signal<number | null>(null);
+
+    @ViewChild('editDialogPortal') private editDialogPortalEl?: ElementRef<HTMLElement>;
+    @ViewChild('confirmDialogPortal') private confirmDialogPortalEl?: ElementRef<HTMLElement>;
+    @ViewChild('toastPortal') private toastPortalEl?: ElementRef<HTMLElement>;
+
+    private editDialogRef: WidgetPortalRef | null = null;
+    private confirmDialogPortalRef: WidgetPortalRef | null = null;
+    private toastPortalRef: WidgetPortalRef | null = null;
 
     constructor() {
         super();
@@ -103,6 +131,19 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         );
         this.update$ = this.store.pipe(select(updateSuccess), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
         this.error$ = this.store.pipe(select(error), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
+    }
+
+    ngAfterViewInit(): void {
+        if (this.toastPortalEl?.nativeElement) {
+            this.toastPortalRef = this.widgetPortal.attach(this.toastPortalEl.nativeElement);
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.editDialogRef?.detach();
+        this.confirmDialogPortalRef?.detach();
+        this.toastPortalRef?.detach();
+        super.ngOnDestroy();
     }
 
     ngOnInit(): void {
@@ -130,26 +171,41 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
     }
 
     openModal(companyId: number): void {
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '400px',
-            data: { companyId: companyId, authToken: this.authToken(), theme: this.theme() },
-            panelClass: this.theme() === PublicScriptTheme.Dark ? 'confirm-dialog-dark' : 'confirm-dialog-light',
-            // Prevent CDK BlockScrollStrategy from applying left/top on <html> when dialog opens
-            scrollStrategy: this.overlay.scrollStrategies.noop(),
+        this.confirmDialogCompanyId.set(companyId);
+        Promise.resolve().then(() => {
+            if (this.confirmDialogPortalEl?.nativeElement) {
+                this.confirmDialogPortalRef = this.widgetPortal.attach(this.confirmDialogPortalEl.nativeElement);
+            }
         });
+    }
 
-        dialogRef.afterClosed().subscribe((result) => {
-            if (result === 'confirmed') {
-                this.store.dispatch(
-                    getUserDetails({
-                        request: this.authToken(),
-                    })
-                );
+    confirmLeave(): void {
+        this.confirmDialogPortalRef?.detach();
+        this.confirmDialogPortalRef = null;
+        const companyId = this.confirmDialogCompanyId();
+        this.confirmDialogCompanyId.set(null);
+        if (!companyId) return;
+        this.store.dispatch(leaveCompany({ companyId, authToken: this.authToken() }));
+        this.deleteCompany$.pipe(filter(Boolean), take(1)).subscribe((res) => {
+            if (res) {
+                window.parent.postMessage({ type: 'proxy', data: { event: 'userLeftCompany', companyId } }, '*');
+                this.store.dispatch(getUserDetails({ request: this.authToken() }));
+            }
+        });
+    }
+
+    public openEditDialog(): void {
+        this.isEditing = true;
+        Promise.resolve().then(() => {
+            if (this.editDialogPortalEl?.nativeElement) {
+                this.editDialogRef = this.widgetPortal.attach(this.editDialogPortalEl.nativeElement);
             }
         });
     }
 
     public cancelEdit() {
+        this.editDialogRef?.detach();
+        this.editDialogRef = null;
         this.isEditing = false;
         this.clientForm.get('name').setValue(this.previousName);
     }
@@ -158,6 +214,8 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
         const nameControl = this.clientForm.get('name');
         const enteredName = nameControl?.value?.trim();
         if (enteredName === this.previousName) {
+            this.editDialogRef?.detach();
+            this.editDialogRef = null;
             this.isEditing = false;
             return;
         }
@@ -176,38 +234,23 @@ export class UserProfileComponent extends BaseComponent implements OnInit {
 
         this.update$.pipe(filter(Boolean), take(1)).subscribe((res) => {
             if (res) {
+                this.editDialogRef?.detach();
+                this.editDialogRef = null;
                 this.isEditing = false;
                 this.previousName = enteredName;
-                this.snackBar.open('Information successfully updated', '✕', {
-                    duration: 10000,
-                    horizontalPosition: 'center',
-                    verticalPosition: 'top',
-                    panelClass: ['success-snackbar'],
-                });
+                this.toastService.success('Information successfully updated');
             }
         });
 
         this.error$.pipe(filter(Boolean), take(1)).subscribe((err) => {
-            if (err) {
-                this.snackBar.open(err[0], '✕', {
-                    duration: 10000,
-                    horizontalPosition: 'center',
-                    verticalPosition: 'top',
-                    panelClass: ['error-snackbar'],
-                });
-            }
+            if (err?.[0]) this.toastService.error(err[0]);
         });
 
         window.parent.postMessage({ type: 'proxy', data: { event: 'userNameUpdated', enteredName: enteredName } }, '*');
     }
 
     public clear() {
-        this.snackBar.open('Something went wrong', '✕', {
-            duration: 3000,
-            horizontalPosition: 'center',
-            verticalPosition: 'top',
-            panelClass: ['error-snackbar'],
-        });
+        this.toastService.error('Something went wrong');
         setTimeout(() => {
             this.errorMessage = '';
         }, 3000);

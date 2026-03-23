@@ -1,15 +1,21 @@
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ElementRef,
     OnDestroy,
     OnInit,
+    ViewChild,
     computed,
     inject,
     input,
     signal,
 } from '@angular/core';
-import { PublicScriptTheme } from '@proxy/constant';
+import { WidgetPortalRef, WidgetPortalService } from '../service/widget-portal.service';
+import { ToastService } from '../service/toast.service';
+import { ToastComponent } from '../service/toast.component';
+import { WidgetTheme } from '@proxy/constant';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -20,23 +26,23 @@ import { EMAIL_REGEX } from '@proxy/regex';
 
 @Component({
     selector: 'organization-details',
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, ToastComponent],
     templateUrl: './organization-details.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['./organization-details.component.scss'],
 })
-export class OrganizationDetailsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class OrganizationDetailsComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
     public authToken = input<string>();
     public theme = input<string>();
-    protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected readonly WidgetTheme = WidgetTheme;
 
     private readonly _systemDark = signal(
         typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
     );
     readonly isDark = computed(() => {
         const t = this.theme();
-        if (t === PublicScriptTheme.Dark) return true;
-        if (t === PublicScriptTheme.Light) return false;
+        if (t === WidgetTheme.Dark) return true;
+        if (t === WidgetTheme.Light) return false;
         return this._systemDark();
     });
 
@@ -70,14 +76,20 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
 
     private otpService = inject(OtpService);
     private cdr = inject(ChangeDetectorRef);
+    readonly toastService = inject(ToastService);
+    private readonly widgetPortal = inject(WidgetPortalService);
+
+    @ViewChild('editDialogPortal') private editDialogPortalEl?: ElementRef<HTMLElement>;
+    @ViewChild('toastPortal') private toastPortalEl?: ElementRef<HTMLElement>;
+
+    private editDialogRef: WidgetPortalRef | null = null;
+    private toastPortalRef: WidgetPortalRef | null = null;
 
     constructor() {
         super();
     }
 
     public allowedUpdatePermissions: boolean = false;
-    public toast = signal<{ message: string; type: 'success' | 'error' } | null>(null);
-    private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
     ngOnInit(): void {
         if (this.authToken()) {
@@ -132,30 +144,38 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
             });
     }
 
+    ngAfterViewInit(): void {
+        if (this.toastPortalEl?.nativeElement) {
+            this.toastPortalRef = this.widgetPortal.attach(this.toastPortalEl.nativeElement);
+        }
+    }
+
     ngOnDestroy(): void {
-        if (this.toastTimer) clearTimeout(this.toastTimer);
+        this.editDialogRef?.detach();
+        this.toastPortalRef?.detach();
         super.ngOnDestroy();
     }
 
-    private showToast(message: string, type: 'success' | 'error'): void {
-        if (this.toastTimer) clearTimeout(this.toastTimer);
-        this.toast.set({ message, type });
-        this.cdr.markForCheck();
-        this.toastTimer = setTimeout(() => {
-            this.toast.set(null);
-            this.cdr.markForCheck();
-        }, 3000);
+    private showToast(message: string | undefined, type: 'success' | 'error'): void {
+        if (!message) return;
+        type === 'success' ? this.toastService.success(message) : this.toastService.error(message);
     }
 
     // ── NEW: enter edit mode ──────────────────────────────────────
     public startEdit(): void {
-        // Snapshot current values so Cancel can restore them
         this.editSnapshot = { ...this.organizationForm.value } as typeof this.initialFormValue;
         this.isEditing = true;
+        Promise.resolve().then(() => {
+            if (this.editDialogPortalEl?.nativeElement) {
+                this.editDialogRef = this.widgetPortal.attach(this.editDialogPortalEl.nativeElement);
+            }
+        });
     }
 
     // ── NEW: cancel and restore form to pre-edit state ────────────
     public cancelEdit(): void {
+        this.editDialogRef?.detach();
+        this.editDialogRef = null;
         if (this.editSnapshot) {
             this.organizationForm.patchValue(this.editSnapshot);
         }
@@ -196,7 +216,9 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
             this.initialFormValue.timezone === current.timezone &&
             this.initialFormValue.timeZoneName === current.timeZoneName
         ) {
-            this.isEditing = false; // just close edit mode silently
+            this.editDialogRef?.detach();
+            this.editDialogRef = null;
+            this.isEditing = false;
             return;
         }
 
@@ -220,8 +242,10 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
             .subscribe({
                 next: (res) => {
                     this.initialFormValue = { ...current };
+                    this.editDialogRef?.detach();
+                    this.editDialogRef = null;
                     this.isEditing = false;
-                    this.showToast(res?.data?.message ?? 'Company updated successfully.', 'success');
+                    this.showToast(res?.data?.message, 'success');
                     this.cdr.markForCheck();
                     window.dispatchEvent(
                         new CustomEvent('organizationDetailsUpdateResponse', {
@@ -232,7 +256,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
                     );
                 },
                 error: (error) => {
-                    this.showToast('Something went wrong. Please try again.', 'error');
+                    this.showToast(undefined, 'error');
                     this.cdr.markForCheck();
                     window.dispatchEvent(
                         new CustomEvent('organizationDetailsUpdateResponse', {

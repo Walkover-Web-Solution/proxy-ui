@@ -23,11 +23,9 @@
             (togglePopUp)="handleSubscriptionToggle($event)"
         ></proxy-subscription-center>
     </div>
-    } @case (PublicScriptType.UserProfile) {
-    <user-profile [authToken]="authToken" [theme]="theme"></user-profile>
     } @case (PublicScriptType.OrganizationDetails) {
     <organization-details [authToken]="authToken" [theme]="theme"></organization-details>
-    } @default {
+    } @case (PublicScriptType.Authorization) {
     <div
         class="otp-verification-dialog"
         [class.animation-complete]="animate()"
@@ -36,7 +34,7 @@
         [style.border-radius]="dialogBorderRadius || null"
     >
         @if (isOtpLoading()) {
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        <proxy-progress-bar></proxy-progress-bar>
         } @if (!(showRegistration() || showLogin())) {
         <authorization
             [referenceId]="referenceId"
@@ -109,6 +107,8 @@
             />
         </svg>
     </div>
-    } } }
+    } } @case (PublicScriptType.UserProfile) {
+    <user-profile [authToken]="authToken" [theme]="theme"></user-profile>
+    } }
 </div>
 }
