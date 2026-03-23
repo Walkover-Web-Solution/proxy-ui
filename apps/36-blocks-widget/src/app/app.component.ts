@@ -13,7 +13,7 @@ import { WidgetTheme, PublicScriptType, WidgetConfig } from '@proxy/constant';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
-    protected readonly referenceId = '4512365e177401652469bd580c9ad74';
+    protected readonly referenceId = '4512365c177425472369c0fa8351a15';
     protected theme: WidgetTheme = WidgetTheme.Light;
     protected readonly WidgetTheme = WidgetTheme;
     protected readonly authToken =

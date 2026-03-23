@@ -1638,7 +1638,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     align-items: center;
                     justify-content: flex-start;
                     gap: 12px;
-                    width: 180px;
+                    width: 200px;
                 `;
                 this.renderer.appendChild(contentDiv, image);
                 this.renderer.appendChild(contentDiv, span);

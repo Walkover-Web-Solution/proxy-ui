@@ -148,10 +148,13 @@ window['initVerification'] = (config: any) => {
                     }
                 });
             } else {
-                // For all other types: append to #userProxyContainer.
-                // If not found immediately, retry every 100 ms for up to 5 s.
-                // If the container never appears, give up — do NOT fall back to body.
-                const container = document.getElementById('userProxyContainer');
+                // For all other types: append only to the element whose id matches
+                // config.referenceId. Retry every 100 ms for up to 5 s.
+                // Never fall back to #userProxyContainer or document.body.
+                const resolveContainer = (): HTMLElement | null =>
+                    config?.referenceId ? document.getElementById(config.referenceId) : null;
+
+                const container = resolveContainer();
                 if (container) {
                     container.append(widgetElement);
                 } else {
@@ -160,13 +163,13 @@ window['initVerification'] = (config: any) => {
                     let attempts = 0;
                     const poll = setInterval(() => {
                         attempts++;
-                        const found = document.getElementById('userProxyContainer');
+                        const found = resolveContainer();
                         if (found) {
                             clearInterval(poll);
                             found.append(widgetElement);
                         } else if (attempts >= MAX_RETRIES) {
                             clearInterval(poll);
-                            console.warn('[proxy-auth] #userProxyContainer not found after 5 s — widget not mounted.');
+                            console.warn('[proxy-auth] target container not found after 5 s — widget not mounted.');
                         }
                     }, RETRY_INTERVAL_MS);
                 }
