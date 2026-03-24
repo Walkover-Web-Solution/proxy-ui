@@ -127,6 +127,5 @@ Org settings form:
 | `src/tailwind-blocks.html` | Paste paid Tailwind UI blocks here |
 | `src/styles.scss` | Global styles — minimal |
 | `src/otp-global.scss` | Widget-specific global overrides |
-| `src/shadow-dom-theme.scss` | Material theme for Shadow DOM components |
 | `apps/shared/scss/global.scss` | Tailwind import + shared utilities |
 | `tailwind.config.js` (root) | Tailwind config — content globs + darkMode |

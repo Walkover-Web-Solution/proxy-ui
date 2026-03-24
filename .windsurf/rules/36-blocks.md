@@ -39,8 +39,7 @@ This file defines the Material color palettes and exposes an `emit-design-tokens
 
 | Consumer | File | How it consumes |
 |---|---|---|
-| Global Material theme | `apps/36-blocks/src/assets/scss/theme/_default-theme.scss` | `@include theme.emit-design-tokens()` in `html {}` |
-| Shadow DOM Material theme | `apps/36-blocks-widget/src/shadow-dom-theme.scss` | `@include theme.emit-design-tokens()` in `:host {}` |
+| Global Material theme | `apps/36-blocks/src/assets/scss/theme/_default-theme.scss` | `@include theme.emit-design-tokens()` in `html {}` | `@include theme.emit-design-tokens()` in `:host {}` |
 | Tailwind utilities | `tailwind.config.js` (root) | `theme.extend.colors` references `var(--proxy-*)` CSS vars |
 
 **Rules:**

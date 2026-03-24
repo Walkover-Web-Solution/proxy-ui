@@ -1,25 +1,25 @@
 export enum PublicScriptType {
     Authorization = 'authorization',
-    UserDetails = 'user-details', // Default
+    UserProfile = 'user-profile', // Default
     UserManagement = 'user-management',
     OrganizationDetails = 'organization-details',
     Subscription = 'subscription',
 }
 
-export enum PublicScriptTheme {
+export enum WidgetTheme {
     System = 'system',
     Light = 'light',
     Dark = 'dark',
 }
 
 export type WidgetConfig = {
-    referenceId: string;
-    authToken: string;
+    referenceId?: string;
+    authToken?: string;
     type?: PublicScriptType;
     showCompanyDetails?: boolean;
     isHidden?: boolean;
     isRolePermission?: boolean;
-    theme?: PublicScriptTheme;
+    theme?: WidgetTheme;
     isPreview?: boolean;
     isLogin?: boolean;
     loginRedirectUrl?: string;

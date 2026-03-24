@@ -65,18 +65,18 @@
     height: 32px;
 }
 
-.dark-theme .skeleton-avatar,
-.dark-theme .skeleton-text,
-.dark-theme .skeleton-button {
-    background: linear-gradient(
-        90deg,
-        var(--proxy-neutral-30) 25%,
-        var(--proxy-neutral-20) 50%,
-        var(--proxy-neutral-30) 75%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-}
+// .dark-theme .skeleton-avatar,
+// .dark-theme .skeleton-text,
+// .dark-theme .skeleton-button {
+//     background: linear-gradient(
+//         90deg,
+//         var(--proxy-neutral-30) 25%,
+//         var(--proxy-neutral-20) 50%,
+//         var(--proxy-neutral-30) 75%
+//     );
+//     background-size: 200% 100%;
+//     animation: shimmer 1.5s infinite;
+// }
 
 // ── Angular Material table cell resets ───────────────────────────────────────
 table {

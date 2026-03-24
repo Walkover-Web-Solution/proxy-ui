@@ -25,7 +25,6 @@ These rules govern ALL styling, layout, and component decisions inside
 The widget runs inside `ViewEncapsulation.ShadowDom`. This creates special requirements:
 
 - **Tailwind classes ARE available** — `styles.scss` injects Tailwind into the shadow root via the `styleUrls` array
-- **Global Angular Material theme is NOT available** — `shadow-dom-theme.scss` re-emits tokens on `:host`
 - **`dark:` Tailwind variant** — controlled by adding/removing `class="dark"` on the `:host` element, driven by the `isDarkTheme()` signal
 - **No `document.head` style injection** — styles injected into `document.head` do NOT penetrate the Shadow DOM; all styles must be in `styleUrls` or inline in the shadow root
 
@@ -237,7 +236,7 @@ constructor() {
 ### Computed / derived state
 ```typescript
 // ✓ Derived state
-readonly isDarkTheme = computed(() => this.theme() === PublicScriptTheme.Dark);
+readonly isDarkTheme = computed(() => this.theme() === WidgetTheme.Dark);
 
 // ✓ Async state from store as signal
 readonly isLoading = toSignal(
@@ -252,9 +251,9 @@ readonly isLoading = toSignal(
 private openDialogWithTheme(tpl: TemplateRef<any>): MatDialogRef<any> {
     const ref = this.dialog.open(tpl, {
         width: '500px',
-        panelClass: this.theme() === PublicScriptTheme.Dark ? ['dark-dialog'] : [],
+        panelClass: this.theme() === WidgetTheme.Dark ? ['dark-dialog'] : [],
     });
-    if (this.theme() === PublicScriptTheme.Dark) {
+    if (this.theme() === WidgetTheme.Dark) {
         document.body.classList.add('dark-dialog-open');
         ref.afterClosed().subscribe(() => document.body.classList.remove('dark-dialog-open'));
     }
@@ -268,7 +267,7 @@ private openDialogWithTheme(tpl: TemplateRef<any>): MatDialogRef<any> {
 
 ```typescript
 // ✓ Use computed signals for derived UI state
-readonly isDarkTheme = computed(() => this.theme() === PublicScriptTheme.Dark);
+readonly isDarkTheme = computed(() => this.theme() === WidgetTheme.Dark);
 readonly viewMode = computed<ViewMode>(() => { ... });
 
 // ✓ Use toSignal() for store observables where a synchronous value is needed in template

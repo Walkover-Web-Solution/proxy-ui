@@ -1,12 +1,6 @@
 import { OtpWidgetService } from './../../service/otp-widget.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatRadioModule } from '@angular/material/radio';
 import { NgHcaptchaModule } from 'ng-hcaptcha';
 import {
     AfterViewInit,
@@ -17,6 +11,7 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
+    effect,
     inject,
     input,
     output,
@@ -56,25 +51,16 @@ import { debounceTime, distinctUntilChanged, skip, take, takeUntil } from 'rxjs/
 import { EMAIL_REGEX, EMAIL_OR_MOBILE_REGEX, ONLY_INTEGER_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { IGetOtpRes, IlogInData, IOtpData, IResetPassword, IWidgetResponse } from '../../model/otp';
 import { IntlPhoneLib } from '@proxy/utils';
-import { META_TAG_ID, PublicScriptTheme } from '@proxy/constant';
+import { META_TAG_ID, WidgetTheme } from '@proxy/constant';
 import { environment } from 'apps/36-blocks-widget/src/environments/environment';
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { LoginComponentStore } from '../login/login.store';
 import { OtpUtilityService } from '../../service/otp-utility.service';
+import { WidgetThemeService } from '../../service/widget-theme.service';
 import { InputFields, OtpErrorCodes, WidgetVersion } from './utility/model';
 @Component({
-    selector: 'proxy-send-otp-center',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatProgressSpinnerModule,
-        MatRadioModule,
-        NgHcaptchaModule,
-    ],
+    selector: 'authorization',
+    imports: [CommonModule, ReactiveFormsModule, NgHcaptchaModule],
     templateUrl: './send-otp-center.component.html',
     styleUrls: ['./send-otp-center.component.scss'],
     providers: [LoginComponentStore],
@@ -92,7 +78,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public show_social_login_icons = input<boolean>(false);
     public isCreateAccountLink = input<boolean>();
     public theme = input<string>();
-    protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected readonly WidgetTheme = WidgetTheme;
     public isUserProxyContainer = input<boolean>(true);
     public togglePopUp = output<void>();
     public successReturn = output<any>();
@@ -100,6 +86,8 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public openPopUp = output<any>();
     public closePopUp = output<void>();
 
+    private readonly themeService = inject(WidgetThemeService);
+    public readonly isDarkTheme = this.themeService.isDark;
     public steps = 1;
     public phoneForm = new FormGroup({
         phone: new FormControl<string>('', [Validators.required]),
@@ -200,6 +188,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
 
     constructor() {
         super();
+        effect(() => this.themeService.setInputTheme(this.theme()));
         this.errors$ = this.store.pipe(select(errors), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
         this.selectGetOtpInProcess$ = this.store.pipe(
             select(selectGetOtpInProcess),
@@ -658,7 +647,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         if (this.version() !== WidgetVersion.V2) {
             return null;
         }
-        const isDark = this.theme() === PublicScriptTheme.Dark;
+        const isDark = this.themeService.isDark();
         return isDark
             ? this.uiPreferences?.dark_theme_primary_color || null
             : this.uiPreferences?.light_theme_primary_color || null;
@@ -695,10 +684,6 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public get buttonTextColor(): string | null {
         if (this.version() !== WidgetVersion.V2) return null;
         return this.uiPreferences?.button_text_color || null;
-    }
-
-    public get isDarkTheme(): boolean {
-        return this.theme() === PublicScriptTheme.Dark;
     }
 
     public get signUpButtonText(): string {

@@ -1,14 +1,9 @@
 import { ApplicationRef, DoBootstrap, Injector, NgModule, inject } from '@angular/core';
-import { PublicScriptType } from '@proxy/constant';
 import { createCustomElement, NgElement, WithProperties } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProxyAuthWidgetComponent } from './otp/widget/widget.component';
 import { omit } from 'lodash-es';
-import { UserProfileComponent } from './otp/user-profile/user-profile.component';
-import { ConfirmationDialogComponent } from './otp/user-profile/user-dialog/user-dialog.component';
-import { interval } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { HttpClientModule } from '@angular/common/http';
@@ -18,6 +13,7 @@ import { OtpEffects } from './otp/store/effects';
 import { OtpService } from './otp/service/otp.service';
 import { OtpUtilityService } from './otp/service/otp-utility.service';
 import { OtpWidgetService } from './otp/service/otp-widget.service';
+import { WidgetThemeService } from './otp/service/widget-theme.service';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
 import { environment } from '../environments/environment';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -67,7 +63,7 @@ window['initVerification'] = (config: any) => {
         if (config?.referenceId || config?.authToken || config?.showCompanyDetails) {
             const findOtpProvider = document.querySelector('proxy-auth');
             if (findOtpProvider) {
-                document.body.removeChild(findOtpProvider);
+                findOtpProvider.remove();
             }
             const widgetElement = document.createElement('proxy-auth') as NgElement &
                 WithProperties<ProxyAuthWidgetComponent>;
@@ -97,63 +93,32 @@ window['initVerification'] = (config: any) => {
 
             // omitting keys which are not required in API payload; query params fill in missing values
             widgetElement.otherData = { ...paramsData, ...omit(config, RESERVED_KEYS) };
-            if (document.getElementById('proxyContainer') && config?.type !== PublicScriptType.UserManagement) {
-                document.getElementById('proxyContainer').append(widgetElement);
-            } else if (config?.type === PublicScriptType.UserManagement) {
-                // Master element always stays in body (hidden) for window events
-                widgetElement.style.display = 'none';
-                widgetElement.setAttribute('data-master', 'true');
-                document.body.append(widgetElement);
 
-                // Helper to create a fresh configured element for the container
-                const createContainerElement = () => {
-                    const el = document.createElement('proxy-auth') as NgElement &
-                        WithProperties<ProxyAuthWidgetComponent>;
-                    el.referenceId = config?.referenceId;
-                    el.type = config?.type;
-                    el.authToken = config?.authToken;
-                    el.showCompanyDetails = config?.showCompanyDetails;
-                    el.userToken = config?.userToken;
-                    el.isRolePermission = config?.isRolePermission;
-                    el.isPreview = config?.isPreview;
-                    el.isLogin = config?.isLogin;
-                    el.loginRedirectUrl = config?.loginRedirectUrl;
-                    el.theme = config?.theme;
-                    el.version = config?.version;
-                    el.input_fields = config?.input_fields;
-                    el.show_social_login_icons = config?.show_social_login_icons;
-                    el.exclude_role_ids = config?.exclude_role_ids;
-                    el.include_role_ids = config?.include_role_ids;
-                    el.isHidden = config?.isHidden;
-                    el.target = config?.target ?? '_self';
-                    el.successReturn = config.success;
-                    el.failureReturn = config.failure;
-                    el.otherData = omit(config, RESERVED_KEYS);
-                    return el;
-                };
+            // All types: append to the element whose id matches config.referenceId.
+            // Retry every 100 ms for up to 5 s. Never fall back to document.body.
+            // UserManagementBridgeService (root singleton) handles openAddUserDialog
+            // independently — no master/hidden element needed.
+            const resolveContainer = (): HTMLElement | null =>
+                config?.referenceId ? document.getElementById(config.referenceId) : null;
 
-                // Watch for container to appear/disappear
-                const containerCheck$ = interval(100).pipe(
-                    map(() => document.getElementById('userProxyContainer')),
-                    distinctUntilChanged()
-                );
-
-                containerCheck$.subscribe((targetContainer) => {
-                    // Remove any existing container element (not the master)
-                    const existingContainerElement = document.querySelector('proxy-auth:not([data-master])');
-                    if (existingContainerElement) {
-                        existingContainerElement.remove();
-                    }
-
-                    if (targetContainer) {
-                        // Container exists - create fresh element and append
-                        targetContainer.append(createContainerElement());
-                    }
-                });
-            } else if (document.getElementById('userProxyContainer')) {
-                document.getElementById('userProxyContainer').append(widgetElement);
+            const container = resolveContainer();
+            if (container) {
+                container.append(widgetElement);
             } else {
-                document.getElementsByTagName('body')[0].append(widgetElement);
+                const RETRY_INTERVAL_MS = 100;
+                const MAX_RETRIES = 50; // 50 × 100 ms = 5 s
+                let attempts = 0;
+                const poll = setInterval(() => {
+                    attempts++;
+                    const found = resolveContainer();
+                    if (found) {
+                        clearInterval(poll);
+                        found.append(widgetElement);
+                    } else if (attempts >= MAX_RETRIES) {
+                        clearInterval(poll);
+                        console.warn('[proxy-auth] target container not found after 5 s — widget not mounted.');
+                    }
+                }, RETRY_INTERVAL_MS);
             }
 
             window['libLoaded'] = true;
@@ -170,7 +135,6 @@ window['initVerification'] = (config: any) => {
 @NgModule({
     imports: [
         ProxyAuthWidgetComponent,
-        ConfirmationDialogComponent,
         BrowserModule,
         BrowserAnimationsModule,
         HttpClientModule,
@@ -187,6 +151,7 @@ window['initVerification'] = (config: any) => {
         OtpService,
         OtpUtilityService,
         OtpWidgetService,
+        WidgetThemeService,
         // { provide: OverlayContainer, useClass: ShadowDomOverlayContainer },
         { provide: ProxyBaseUrls.Env, useValue: environment.env },
         { provide: ProxyBaseUrls.BaseURL, useValue: environment.apiUrl + environment.msgMidProxy },

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PublicScriptTheme } from '@proxy/constant';
+import { WidgetTheme } from '@proxy/constant';
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionRendererService {
@@ -49,7 +49,7 @@ export class SubscriptionRendererService {
 
     injectSubscriptionStyles(theme: string): void {
         if (document.getElementById('subscription-styles')) return;
-        const isDark = theme === PublicScriptTheme.Dark;
+        const isDark = theme === WidgetTheme.Dark;
         const style = document.createElement('style');
         style.id = 'subscription-styles';
         style.textContent = this.buildSubscriptionCSS(isDark);
@@ -129,7 +129,7 @@ export class SubscriptionRendererService {
         const priceMatch = plan.plan_price?.match(/(\d+)\s+(.+)/);
         const priceValue = priceMatch ? priceMatch[1] : '0';
         const currency = priceMatch ? priceMatch[2] : 'USD';
-        const iconFill = theme === PublicScriptTheme.Dark ? '#ffffff' : '#4d4d4d';
+        const iconFill = theme === WidgetTheme.Dark ? '#ffffff' : '#4d4d4d';
         const isDisabled = !!plan.isSubscribed;
         const cardClasses = `plan-card d-flex flex-column gap-3 position-relative${
             isPopular ? ' popular highlighted' : ''

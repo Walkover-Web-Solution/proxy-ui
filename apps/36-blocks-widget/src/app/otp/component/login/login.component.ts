@@ -1,12 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, inject, input, output } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    effect,
+    inject,
+    input,
+    output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
-import { MatRadioModule } from '@angular/material/radio';
 import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
 import { LoginComponentStore } from './login.store';
 import { BehaviorSubject, filter, interval, Observable, Subscription, takeUntil } from 'rxjs';
@@ -19,24 +23,15 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IlogInData, IOtpData, IResetPassword } from '../../model/otp';
 import { EMAIL_OR_MOBILE_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
-import { META_TAG_ID, PublicScriptTheme } from '@proxy/constant';
+import { META_TAG_ID, WidgetTheme } from '@proxy/constant';
 import { environment } from 'apps/36-blocks-widget/src/environments/environment';
 import { OtpUtilityService } from '../../service/otp-utility.service';
+import { WidgetThemeService } from '../../service/widget-theme.service';
 import { NgHcaptchaComponent } from 'ng-hcaptcha';
 
 @Component({
     selector: 'proxy-login',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        MatIconModule,
-        MatRadioModule,
-        MarkAllAsTouchedDirective,
-    ],
+    imports: [CommonModule, ReactiveFormsModule, MarkAllAsTouchedDirective],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     providers: [LoginComponentStore],
@@ -45,7 +40,9 @@ import { NgHcaptchaComponent } from 'ng-hcaptcha';
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public loginServiceData = input<any>();
     public theme = input<string>();
-    protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected readonly WidgetTheme = WidgetTheme;
+    private readonly themeService = inject(WidgetThemeService);
+    readonly isDark = this.themeService.isDark;
     public togglePopUp = output<void>();
     public closePopUp = output<void>();
     public openPopUp = output<any>();
@@ -93,6 +90,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 
     constructor() {
         super();
+        effect(() => this.themeService.setInputTheme(this.theme()));
         this.selectWidgetData$ = this.store.pipe(select(selectWidgetData), takeUntil(this.destroy$));
     }
 
