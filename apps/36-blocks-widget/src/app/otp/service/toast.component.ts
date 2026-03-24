@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import { ToastService } from './toast.service';
-import { WidgetTheme } from '@proxy/constant';
+import { WidgetThemeService } from './widget-theme.service';
 
 @Component({
     selector: 'proxy-toast',
@@ -115,11 +115,10 @@ import { WidgetTheme } from '@proxy/constant';
 export class ToastComponent {
     readonly theme = input<string>();
     readonly toastService = inject(ToastService);
+    private readonly themeService = inject(WidgetThemeService);
+    readonly isDark = this.themeService.isDark;
 
-    isDark(): boolean {
-        const t = this.theme();
-        if (t === WidgetTheme.Dark) return true;
-        if (t === WidgetTheme.Light) return false;
-        return typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    constructor() {
+        effect(() => this.themeService.setInputTheme(this.theme()));
     }
 }

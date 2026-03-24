@@ -7,10 +7,9 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
-    computed,
+    effect,
     inject,
     input,
-    signal,
 } from '@angular/core';
 import { WidgetPortalRef, WidgetPortalService } from '../service/widget-portal.service';
 import { ToastService } from '../service/toast.service';
@@ -21,6 +20,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from 'libs/ui/base-component/src/lib/base-component/base.component';
 import { OtpService } from '../service/otp.service';
+import { WidgetThemeService } from '../service/widget-theme.service';
 import { finalize, takeUntil } from 'rxjs';
 import { EMAIL_REGEX } from '@proxy/regex';
 
@@ -35,16 +35,8 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     public authToken = input<string>();
     public theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
-
-    private readonly _systemDark = signal(
-        typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
-    );
-    readonly isDark = computed(() => {
-        const t = this.theme();
-        if (t === WidgetTheme.Dark) return true;
-        if (t === WidgetTheme.Light) return false;
-        return this._systemDark();
-    });
+    private readonly themeService = inject(WidgetThemeService);
+    readonly isDark = this.themeService.isDark;
 
     public organizationForm = new FormGroup({
         companyName: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
@@ -87,6 +79,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
 
     constructor() {
         super();
+        effect(() => this.themeService.setInputTheme(this.theme()));
     }
 
     public allowedUpdatePermissions: boolean = false;

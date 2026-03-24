@@ -14,10 +14,10 @@ import { WidgetTheme, PublicScriptType, WidgetConfig } from '@proxy/constant';
 })
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     protected readonly referenceId = '4512365c177425472369c0fa8351a15';
-    protected theme: WidgetTheme = WidgetTheme.Light;
+    protected theme: WidgetTheme = WidgetTheme.System;
     protected readonly WidgetTheme = WidgetTheme;
     protected readonly authToken =
-        'VktWbDJjc3dYdUNjQXdVREQyL0N0dFMyRkZhNFYzbW9GcTE4dlFmSGp2VlF4djZSUGcwb2VPa0tqRFlYUCtaOFh4dW9KWVJUMHVMRTk4bWlaQzF2d290NDRlempQb0hSM1NkM0VNdGp1ZlFFS1kwV3FnSk9RWDIvelJEMFVRZ2plcTBGUnFyNWRRRHZsOCtacGpyczBUTkVWUzBFZURNcHlPa2o1d3dTa1R5QS9yWFo4blZHOWs2eFF5NG9UTkNnUUZZNUppVktDZ3FWbjZ0U01tMFVpUT09';
+        'YmNmTDJYYnBZdUZtQk5SQUc5ZHc5dE1UMHBkeFRuWjI1emVJNzhRaXYvc0UrVmFOTDFzQk9oa0V3bXdxU3N4MDRtZlBoRVI4Y1JJVGJkREM4NktpRGJBUVJ0RXJ6MGVaKy9jbUd2QnArZnQyVnQvd3dKMFlEcDVIaFFpK2h1WnVneXpaSDhodWFpNUFheUk5L3pWcmdGTG5qR3MrZkx1RDIwV2J2RGYybGkvNDgzeTJPbDB0cllXM2JzUEZDbm5VN1FkVXlZbTB6b1A4NDFVd0M3YXNqZz09';
 
     constructor() {
         super();
@@ -38,14 +38,14 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         (window as any).__proxyWidgetInitialized = true;
         if (!environment.production) {
             const widgetConfig: WidgetConfig = {
-                // referenceId: this.referenceId,
-                authToken: this.authToken,
-                type: PublicScriptType.UserProfile,
-                showCompanyDetails: false,
-                isHidden: true,
-                isRolePermission: false,
-                theme: this.theme,
-                isPreview: true,
+                referenceId: this.referenceId,
+                // authToken: this.authToken,
+                // type: PublicScriptType.UserProfile,
+                // showCompanyDetails: false,
+                // isHidden: true,
+                // isRolePermission: false,
+                // theme: this.theme,
+                // isPreview: true,
                 // loginRedirectUrl: 'https://www.google.com',
                 target: '_self',
                 success: (data) => {

@@ -9,6 +9,7 @@ import {
     OnInit,
     ViewChild,
     computed,
+    effect,
     inject,
     input,
     signal,
@@ -40,6 +41,7 @@ import {
     updateUserRoleData,
 } from '../store/selectors';
 import { isEqual } from 'lodash-es';
+import { WidgetThemeService } from '../service/widget-theme.service';
 import { UserData, Role, UserManagementTab } from '../model/otp';
 
 interface PageEvent {
@@ -66,15 +68,8 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
     readonly isHidden = signal(false);
     readonly showDialog = signal(false);
     readonly showConfirmDialog = signal(false);
-    private readonly _systemDark = signal(
-        typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
-    );
-    readonly isDark = computed(() => {
-        const t = this.theme();
-        if (t === WidgetTheme.Dark) return true;
-        if (t === WidgetTheme.Light) return false;
-        return this._systemDark();
-    });
+    private readonly themeService = inject(WidgetThemeService);
+    readonly isDark = this.themeService.isDark;
     readonly availableTabs = computed(() => {
         const tabs = [UserManagementTab.Members];
         if (this.pass()) {
@@ -136,6 +131,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
     private toastPortalRef: WidgetPortalRef | null = null;
 
     constructor() {
+        effect(() => this.themeService.setInputTheme(this.theme()));
         this.store
             .pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntilDestroyed(this.destroyRef))
             .subscribe((res) => {
@@ -308,16 +304,6 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
             permission: ['', Validators.required],
             description: [''],
         });
-        if (typeof window !== 'undefined') {
-            const mq = window.matchMedia('(prefers-color-scheme: dark)');
-            const mqListener = (e: MediaQueryListEvent) => {
-                this._systemDark.set(e.matches);
-                this.cdr.markForCheck();
-            };
-            mq.addEventListener('change', mqListener);
-            this.destroyRef.onDestroy(() => mq.removeEventListener('change', mqListener));
-        }
-
         const showMgmt = () => this.isHidden.set(false);
         const hideMgmt = () => this.isHidden.set(true);
 

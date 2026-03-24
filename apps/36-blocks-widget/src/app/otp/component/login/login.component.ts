@@ -4,11 +4,10 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
-    computed,
+    effect,
     inject,
     input,
     output,
-    signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -27,6 +26,7 @@ import { CustomValidators } from '@proxy/custom-validator';
 import { META_TAG_ID, WidgetTheme } from '@proxy/constant';
 import { environment } from 'apps/36-blocks-widget/src/environments/environment';
 import { OtpUtilityService } from '../../service/otp-utility.service';
+import { WidgetThemeService } from '../../service/widget-theme.service';
 import { NgHcaptchaComponent } from 'ng-hcaptcha';
 
 @Component({
@@ -41,15 +41,8 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public loginServiceData = input<any>();
     public theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
-    private readonly _systemDark = signal(
-        typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
-    );
-    readonly isDark = computed(() => {
-        const t = this.theme();
-        if (t === WidgetTheme.Dark) return true;
-        if (t === WidgetTheme.Light) return false;
-        return this._systemDark();
-    });
+    private readonly themeService = inject(WidgetThemeService);
+    readonly isDark = this.themeService.isDark;
     public togglePopUp = output<void>();
     public closePopUp = output<void>();
     public openPopUp = output<any>();
@@ -97,6 +90,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 
     constructor() {
         super();
+        effect(() => this.themeService.setInputTheme(this.theme()));
         this.selectWidgetData$ = this.store.pipe(select(selectWidgetData), takeUntil(this.destroy$));
     }
 

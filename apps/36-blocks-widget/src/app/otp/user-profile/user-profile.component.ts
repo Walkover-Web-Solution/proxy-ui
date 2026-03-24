@@ -10,7 +10,7 @@ import {
     OnInit,
     ViewChild,
     ViewEncapsulation,
-    computed,
+    effect,
     inject,
     input,
     signal,
@@ -35,6 +35,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash-es';
 import { UPDATE_REGEX } from '@proxy/regex';
 import { WidgetTheme } from '@proxy/constant';
+import { WidgetThemeService } from '../service/widget-theme.service';
 @Component({
     selector: 'user-profile',
     imports: [CommonModule, ReactiveFormsModule, ToastComponent, ConfirmDialogComponent],
@@ -49,15 +50,8 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     public showCard = input<boolean>();
     public theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
-    private readonly _systemDark = signal(
-        typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
-    );
-    readonly isDark = computed(() => {
-        const t = this.theme();
-        if (t === WidgetTheme.Dark) return true;
-        if (t === WidgetTheme.Light) return false;
-        return this._systemDark();
-    });
+    private readonly themeService = inject(WidgetThemeService);
+    readonly isDark = this.themeService.isDark;
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
@@ -114,6 +108,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
 
     constructor() {
         super();
+        effect(() => this.themeService.setInputTheme(this.theme()));
         this.userDetails$ = this.store.pipe(
             select(getUserProfileData),
             distinctUntilChanged(isEqual),

@@ -11,7 +11,7 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
-    computed,
+    effect,
     inject,
     input,
     output,
@@ -56,6 +56,7 @@ import { environment } from 'apps/36-blocks-widget/src/environments/environment'
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { LoginComponentStore } from '../login/login.store';
 import { OtpUtilityService } from '../../service/otp-utility.service';
+import { WidgetThemeService } from '../../service/widget-theme.service';
 import { InputFields, OtpErrorCodes, WidgetVersion } from './utility/model';
 @Component({
     selector: 'authorization',
@@ -85,7 +86,8 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public openPopUp = output<any>();
     public closePopUp = output<void>();
 
-    public readonly isDarkTheme = computed(() => this.theme() === WidgetTheme.Dark);
+    private readonly themeService = inject(WidgetThemeService);
+    public readonly isDarkTheme = this.themeService.isDark;
     public steps = 1;
     public phoneForm = new FormGroup({
         phone: new FormControl<string>('', [Validators.required]),
@@ -186,6 +188,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
 
     constructor() {
         super();
+        effect(() => this.themeService.setInputTheme(this.theme()));
         this.errors$ = this.store.pipe(select(errors), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
         this.selectGetOtpInProcess$ = this.store.pipe(
             select(selectGetOtpInProcess),
@@ -644,7 +647,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
         if (this.version() !== WidgetVersion.V2) {
             return null;
         }
-        const isDark = this.theme() === WidgetTheme.Dark;
+        const isDark = this.themeService.isDark();
         return isDark
             ? this.uiPreferences?.dark_theme_primary_color || null
             : this.uiPreferences?.light_theme_primary_color || null;

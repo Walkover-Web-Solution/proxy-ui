@@ -29,6 +29,7 @@ import { isEqual } from 'lodash-es';
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { OtpUtilityService } from '../../service/otp-utility.service';
+import { WidgetThemeService } from '../../service/widget-theme.service';
 import { errorResolver } from '@proxy/models/root-models';
 import { BehaviorSubject, distinctUntilChanged, Observable, takeUntil, interval, Subscription } from 'rxjs';
 import {
@@ -149,9 +150,12 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     private otpService = inject(OtpService);
     private otpUtilityService = inject(OtpUtilityService);
     private cdr = inject(ChangeDetectorRef);
+    private readonly themeService = inject(WidgetThemeService);
+    public readonly isDarkTheme = this.themeService.isDark;
 
     constructor() {
         super();
+        effect(() => this.themeService.setInputTheme(this.theme()));
         this.selectGetOtpRes$ = this.store.pipe(
             select(selectGetOtpRes),
             distinctUntilChanged(isEqual),
@@ -646,7 +650,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         if (this.version() !== 'v2') {
             return null;
         }
-        const isDark = this.theme() === WidgetTheme.Dark;
+        const isDark = this.themeService.isDark();
         return isDark
             ? this.uiPreferences?.dark_theme_primary_color || null
             : this.uiPreferences?.light_theme_primary_color || null;
@@ -683,9 +687,5 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public get buttonTextColor(): string | null {
         if (this.version() !== 'v2') return null;
         return this.uiPreferences?.button_text_color || null;
-    }
-
-    public get isDarkTheme(): boolean {
-        return this.theme() === WidgetTheme.Dark;
     }
 }

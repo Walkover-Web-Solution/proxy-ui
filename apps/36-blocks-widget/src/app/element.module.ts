@@ -13,6 +13,7 @@ import { OtpEffects } from './otp/store/effects';
 import { OtpService } from './otp/service/otp.service';
 import { OtpUtilityService } from './otp/service/otp-utility.service';
 import { OtpWidgetService } from './otp/service/otp-widget.service';
+import { WidgetThemeService } from './otp/service/widget-theme.service';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
 import { environment } from '../environments/environment';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -150,6 +151,7 @@ window['initVerification'] = (config: any) => {
         OtpService,
         OtpUtilityService,
         OtpWidgetService,
+        WidgetThemeService,
         // { provide: OverlayContainer, useClass: ShadowDomOverlayContainer },
         { provide: ProxyBaseUrls.Env, useValue: environment.env },
         { provide: ProxyBaseUrls.BaseURL, useValue: environment.apiUrl + environment.msgMidProxy },
