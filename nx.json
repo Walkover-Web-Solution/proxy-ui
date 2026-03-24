@@ -59,5 +59,6 @@
             "inputs": ["default", "^production"]
         }
     },
-    "defaultProject": "36-blocks"
+    "defaultProject": "36-blocks",
+    "analytics": true
 }

@@ -69,7 +69,9 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
     readonly showDialog = signal(false);
     readonly showConfirmDialog = signal(false);
     private readonly themeService = inject(WidgetThemeService);
-    readonly isDark = this.themeService.isDark;
+    get isDark(): boolean {
+        return this.themeService.isDark(this.theme() as WidgetTheme);
+    }
     readonly availableTabs = computed(() => {
         const tabs = [UserManagementTab.Members];
         if (this.pass()) {

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
+import { WidgetTheme } from '@proxy/constant';
 import { ToastService } from './toast.service';
 import { WidgetThemeService } from './widget-theme.service';
 
@@ -14,10 +15,10 @@ import { WidgetThemeService } from './widget-theme.service';
         >
             <div
                 class="pointer-events-auto w-full max-w-sm rounded-lg shadow-lg ring-1"
-                [class.bg-gray-800]="isDark()"
-                [class.ring-gray-700]="isDark()"
-                [class.bg-white]="!isDark()"
-                [class.ring-gray-200]="!isDark()"
+                [class.bg-gray-800]="isDark"
+                [class.ring-gray-700]="isDark"
+                [class.bg-white]="!isDark"
+                [class.ring-gray-200]="!isDark"
             >
                 <div class="p-4">
                     <div class="flex items-start">
@@ -70,11 +71,7 @@ import { WidgetThemeService } from './widget-theme.service';
                             }
                         </div>
                         <div class="ml-3 w-0 flex-1 pt-0.5">
-                            <p
-                                class="text-sm font-medium"
-                                [class.text-gray-900]="!isDark()"
-                                [class.text-white]="isDark()"
-                            >
+                            <p class="text-sm font-medium" [class.text-gray-900]="!isDark" [class.text-white]="isDark">
                                 {{
                                     toastService.toast()!.type === 'success'
                                         ? 'Success'
@@ -83,7 +80,7 @@ import { WidgetThemeService } from './widget-theme.service';
                                         : 'Error'
                                 }}
                             </p>
-                            <p class="mt-1 text-sm" [class.text-gray-500]="!isDark()" [class.text-gray-400]="isDark()">
+                            <p class="mt-1 text-sm" [class.text-gray-500]="!isDark" [class.text-gray-400]="isDark">
                                 {{ toastService.toast()!.message }}
                             </p>
                         </div>
@@ -92,10 +89,10 @@ import { WidgetThemeService } from './widget-theme.service';
                                 type="button"
                                 (click)="toastService.dismiss()"
                                 class="inline-flex rounded-md cursor-pointer focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500"
-                                [class.text-gray-500]="isDark()"
-                                [class.hover:text-white]="isDark()"
-                                [class.text-gray-400]="!isDark()"
-                                [class.hover:text-gray-600]="!isDark()"
+                                [class.text-gray-500]="isDark"
+                                [class.hover:text-white]="isDark"
+                                [class.text-gray-400]="!isDark"
+                                [class.hover:text-gray-600]="!isDark"
                                 aria-label="Close notification"
                             >
                                 <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -116,7 +113,9 @@ export class ToastComponent {
     readonly theme = input<string>();
     readonly toastService = inject(ToastService);
     private readonly themeService = inject(WidgetThemeService);
-    readonly isDark = this.themeService.isDark;
+    get isDark(): boolean {
+        return this.themeService.isDark(this.theme() as WidgetTheme);
+    }
 
     constructor() {
         effect(() => this.themeService.setInputTheme(this.theme()));

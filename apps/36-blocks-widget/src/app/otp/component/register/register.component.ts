@@ -151,7 +151,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     private otpUtilityService = inject(OtpUtilityService);
     private cdr = inject(ChangeDetectorRef);
     private readonly themeService = inject(WidgetThemeService);
-    public readonly isDarkTheme = this.themeService.isDark;
+    get isDarkTheme(): boolean {
+        return this.themeService.isDark(this.theme() as WidgetTheme);
+    }
 
     constructor() {
         super();

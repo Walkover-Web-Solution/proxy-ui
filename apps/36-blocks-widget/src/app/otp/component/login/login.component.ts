@@ -42,7 +42,9 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
     private readonly themeService = inject(WidgetThemeService);
-    readonly isDark = this.themeService.isDark;
+    get isDark(): boolean {
+        return this.themeService.isDark(this.theme() as WidgetTheme);
+    }
     public togglePopUp = output<void>();
     public closePopUp = output<void>();
     public openPopUp = output<any>();

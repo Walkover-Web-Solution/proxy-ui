@@ -51,7 +51,9 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     public theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
     private readonly themeService = inject(WidgetThemeService);
-    readonly isDark = this.themeService.isDark;
+    get isDark(): boolean {
+        return this.themeService.isDark(this.theme() as WidgetTheme);
+    }
     @Input()
     set css(type: NgStyle['ngStyle']) {
         this.cssSubject$.next(type);
