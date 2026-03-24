@@ -165,7 +165,6 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
             <mat-form-field appearance="outline" class="w-full mb-3">
                 <mat-label>
                     {{ fieldConfig?.label }}
-                    @if(fieldConfig?.is_required) {<span class="text-danger">*</span>}
                 </mat-label>
 
                 <!-- Text Input -->

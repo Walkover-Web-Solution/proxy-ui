@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    inject,
+    signal,
+} from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
@@ -10,6 +18,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CDKScrollComponent } from '@proxy/ui/virtual-scroll';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MainLeftSideNavComponent } from './main-left-side-nav/main-left-side-nav.component';
@@ -42,12 +51,14 @@ import { AuthService } from '@proxy/services/proxy/auth';
         MatToolbarModule,
         MatExpansionModule,
         MatTooltipModule,
+        MatSlideToggleModule,
         CDKScrollComponent,
         ScrollingModule,
         MainLeftSideNavComponent,
     ],
     host: { class: 'flex w-full h-screen' },
     templateUrl: './layout.component.html',
+    styleUrls: ['./layout.component.scss'],
 })
 export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy {
     public logInData$: Observable<IFirebaseUserModel>;
@@ -56,6 +67,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     public swtichClientSuccess$: Observable<boolean>;
 
     public isSideNavOpen = new BehaviorSubject<boolean>(true);
+    public isDarkMode = signal<boolean>(false);
 
     public toggleMenuSideBar: boolean;
     public showContainer = false;
@@ -201,6 +213,9 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     switchedDarkMode(isDarkMode: boolean) {
         const hostClass = isDarkMode ? 'dark-theme' : 'light-theme';
         localStorage.setItem('selected-theme', hostClass);
+        document.body.classList.remove('dark-theme', 'light-theme');
+        document.body.classList.add(hostClass);
+        this.isDarkMode.set(isDarkMode);
     }
 
     public isMobileDevice() {

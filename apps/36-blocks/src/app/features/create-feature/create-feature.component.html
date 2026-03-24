@@ -1,8 +1,8 @@
 <div class="app-content flex flex-col">
     @if ((isLoading$ | async) || (loadingScript | async)) { <proxy-loader></proxy-loader> }
-    <div class="flex justify-start gap-1 mb-6" [class.items-start]="isEditMode" [class.items-center]="!isEditMode">
+    <div class="flex justify-start gap-2 mb-6" [class.items-start]="isEditMode" [class.items-center]="!isEditMode">
         <button type="button" matIconButton [routerLink]="['/app', 'features']">
-            <mat-icon>arrow_back_ios_new</mat-icon>
+            <mat-icon>keyboard_arrow_left</mat-icon>
         </button>
         @if (isEditMode) {
         <div class="flex items-center gap-1">
@@ -26,20 +26,23 @@
                 </button>
             </div>
             } @if (!nameFieldEditMode) {
-            <h4 class="my-0 text-secondary mat-body-1 font-medium">{{ (featureDetails$ | async)?.name }}</h4>
+            <h4 class="my-0 text-color mat-body-1 font-medium">{{ (featureDetails$ | async)?.name }}</h4>
             <button type="button" matIconButton (click)="nameFieldEditMode = true">
-                <mat-icon class="material-icons-outlined"> edit </mat-icon>
+                <mat-icon class="material-icons-outlined font-20"> edit </mat-icon>
             </button>
             }
         </div>
         } @if (!isEditMode) {
-        <h4 class="my-0 text-secondary mat-body-1 font-medium">Add New Blocks</h4>
+        <div class="flex flex-col text-color">
+            <h4 class="my-0 font-semibold text-base text-on-surface">Add New Block</h4>
+            <p class="my-0 text-xs text-on-surface/50">Set up a new authentication or subscription block</p>
+        </div>
         }
     </div>
     @if (!isEditMode) {
     <mat-stepper
         #stepper
-        class="rounded-8 border grow mat-stepper-starched"
+        class="rounded-lg border grow mat-stepper-starched shadow-sm"
         labelPosition="bottom"
         [animationDuration]="0"
         [linear]="true"
@@ -76,11 +79,7 @@
             <ng-template matStepLabel>Block Name</ng-template>
             <div #blockNameStepContent class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="blockCreationStepOne; context: { nameControl }"></ng-container>
-                <div class="flex items-center justify-end">
-                    <!-- <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
-                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
-                        >Back
-                    </button> -->
+                <div class="flex items-center justify-end pt-4 border-t border-outline/20">
                     <button type="button" matButton="filled" (click)="validateFirstStepAndNext(nameControl)">
                         Next
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
@@ -93,7 +92,7 @@
             <ng-template matStepLabel>Configure Method</ng-template>
             <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="createBlockConfigureMethodTemplate"></ng-container>
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between pt-4 border-t border-outline/20">
                     <button type="button" matButton="filled" class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
@@ -111,7 +110,7 @@
             <ng-template matStepLabel>Authorization Setup</ng-template>
             <div #authorizationStepContent class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between pt-4 border-t border-outline/20">
                     <button type="button" matButton="filled" class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
@@ -137,11 +136,7 @@
             <ng-template matStepLabel>Branding</ng-template>
             <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="brandingStepContent"></ng-container>
-                <div class="flex items-center justify-between">
-                    <!-- <button type="button" mat-flat-button class="flat-default" matStepperPrevious>
-                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
-                        >
-                    </button> -->
+                <div class="flex items-center justify-between pt-4 border-t border-outline/20">
                     <button type="button" matButton="filled" (click)="updateFeature('branding')">Update</button>
                     <button type="button" matButton="filled" matStepperNext>
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
@@ -159,7 +154,7 @@
             <ng-template matStepLabel>Integration Choice</ng-template>
             <div class="flex flex-col justify-between h-full">
                 <ng-container *ngTemplateOutlet="integrationChoice"></ng-container>
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between pt-4 border-t border-outline/20">
                     <button type="button" matButton="filled" class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
@@ -177,9 +172,7 @@
             <ng-template matStepLabel>Organization Details</ng-template>
             <div class="flex flex-col justify-between h-full">
                 <ng-container *ngTemplateOutlet="organizationDetails"></ng-container>
-                <mat-divider class="w-full mb-6"></mat-divider>
-
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between pt-4 border-t border-outline/20">
                     <button type="button" matButton="filled" class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
@@ -197,8 +190,7 @@
             <ng-template matStepLabel>Billable Metrics / Items</ng-template>
             <div class="flex flex-col justify-between gap-4 h-full">
                 <ng-container *ngTemplateOutlet="billableMetrics"></ng-container>
-
-                <div class="flex items-end justify-end">
+                <div class="flex items-end justify-end pt-4 border-t border-outline/20">
                     <button type="button" matButton="filled" (click)="getPaymentDetailsFormData()" matStepperNext>
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
@@ -211,8 +203,7 @@
             <ng-template matStepLabel>Payment Details</ng-template>
             <div class="flex flex-col justify-between gap-4 h-full">
                 <ng-container *ngTemplateOutlet="paymentDetails"></ng-container>
-
-                <div class="flex items-end justify-end">
+                <div class="flex items-end justify-end pt-4 border-t border-outline/20">
                     <button type="button" matButton="filled" (click)="getCreatePlansFormData()" matStepperNext>
                         skip<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
@@ -226,7 +217,7 @@
             <ng-template matStepLabel>Create Plan</ng-template>
             <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="createPlan"></ng-container>
-                <div class="flex items-end justify-end">
+                <div class="flex items-end justify-end pt-4 border-t border-outline/20">
                     <button type="button" matButton="filled" (click)="createPlanAndGenerateSnippet()">
                         Create Plan & Generate Snippet
                     </button>
@@ -241,7 +232,7 @@
                     <ng-container *ngTemplateOutlet="plansOverview"></ng-container>
                 </form>
                 <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
-                <div class="flex justify-between items-center mt-6">
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-outline/20">
                     <ng-container *ngTemplateOutlet="preview"></ng-container>
                     @if (createUpdateObject$ | async; as createUpdateObject) {
                     <button
@@ -262,7 +253,7 @@
             <ng-template matStepLabel>Design & code</ng-template>
             <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
-                <div class="flex justify-between items-center mt-6">
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-outline/20">
                     <ng-container *ngTemplateOutlet="preview"></ng-container>
                     @if (createUpdateObject$ | async; as createUpdateObject) {
                     <button
@@ -289,9 +280,7 @@
                     <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
                     } @if (featureForm.get('primaryDetails.feature_id')?.value !== 1) {
                     <ng-container *ngTemplateOutlet="manageSubscription"></ng-container>
-                    }
-                    <mat-divider></mat-divider>
-                    @if (featureForm.get('primaryDetails.feature_id')?.value === 1) {
+                    } @if (featureForm.get('primaryDetails.feature_id')?.value === 1) {
                     <div class="flex items-center justify-start mt-6">
                         <button type="button" matButton="filled" (click)="updateFeature('service')">Update</button>
                     </div>
@@ -309,7 +298,6 @@
             <mat-tab label="Setting">
                 <div class="flex flex-col h-full p-6">
                     <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
-                    <mat-divider></mat-divider>
                     <div class="flex items-center justify-start mt-6">
                         <button type="button" matButton="filled" (click)="updateFeature('authorization')">
                             Update
@@ -325,7 +313,7 @@
             </mat-tab>
 
             <mat-tab label="Webhook">
-                <mat-tab-group class="nested-tabs">
+                <mat-tab-group mat-stretch-tabs="false" class="nested-tabs">
                     <mat-tab label="Configurations">
                         <div class="flex flex-col h-full p-6">
                             <ng-container *ngTemplateOutlet="webhook"></ng-container>
@@ -337,42 +325,73 @@
                         </div>
                     </mat-tab>
                     <mat-tab label="Event Catalog">
-                        <div class="p-4 overflow-y-auto">
-                            @if (webhookEventsData?.length) {
-                            <mat-accordion class="webhook-events-accordion">
-                                @for (event of webhookEventsData; track event) {
-                                <mat-expansion-panel>
-                                    <mat-expansion-panel-header>
-                                        <mat-panel-title>
-                                            <div class="event-header-content">
-                                                <span class="event-name">{{ event.value }}</span>
-                                                <span class="event-description">{{ event.description }}</span>
-                                            </div>
-                                        </mat-panel-title>
-                                    </mat-expansion-panel-header>
-                                    <div class="sample-response-container">
-                                        <div class="flex items-center justify-between">
-                                            <p class="response-label">Sample Response:</p>
-                                            <button
-                                                matButton="filled"
-                                                (click)="copySampleResponse(event.sampleResponse)"
-                                            >
-                                                Try it out
-                                            </button>
-                                        </div>
-                                        <pre class="code-block"><code>{{ event.sampleResponse | json }}</code></pre>
+                        <div class="p-6 flex flex-col gap-4">
+                            <div class="rounded-xl border broder-color overflow-hidden">
+                                <div class="flex items-center justify-between px-4 py-3 border-b broder-color bg-color">
+                                    <div class="flex items-center gap-2 text-color">
+                                        <mat-icon class="!text-base !w-4">bolt</mat-icon>
+                                        <span class="mat-body-2 font-semibold">Event Catalog</span>
                                     </div>
-                                </mat-expansion-panel>
+                                    @if (webhookEventsData?.length) {
+                                    <span
+                                        class="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--color-common-hover)] text-color"
+                                    >
+                                        {{ webhookEventsData.length }} events
+                                    </span>
+                                    }
+                                </div>
+                                @if (webhookEventsData?.length) {
+                                <div class="p-4">
+                                    <mat-accordion>
+                                        @for (event of webhookEventsData; track event) {
+                                        <mat-expansion-panel class="!mb-2">
+                                            <mat-expansion-panel-header>
+                                                <mat-panel-title>
+                                                    <div class="flex flex-col gap-0.5">
+                                                        <span class="text-sm font-semibold text-color">{{
+                                                            event.value
+                                                        }}</span>
+                                                        <span class="text-xs font-normal secondary-text-color">{{
+                                                            event.description
+                                                        }}</span>
+                                                    </div>
+                                                </mat-panel-title>
+                                            </mat-expansion-panel-header>
+                                            <div class="flex flex-col gap-3 pt-2">
+                                                <div class="flex items-center justify-between">
+                                                    <p
+                                                        class="text-xs font-semibold text-color m-0 uppercase tracking-wide opacity-60"
+                                                    >
+                                                        Sample Response
+                                                    </p>
+                                                    <button
+                                                        matButton="filled"
+                                                        (click)="copySampleResponse(event.sampleResponse)"
+                                                    >
+                                                        <mat-icon class="!text-base !w-4 mr-1">send</mat-icon>
+                                                        Try it out
+                                                    </button>
+                                                </div>
+                                                <pre
+                                                    class="code-block"
+                                                ><code>{{ event.sampleResponse | json }}</code></pre>
+                                            </div>
+                                        </mat-expansion-panel>
+                                        }
+                                    </mat-accordion>
+                                </div>
+                                } @else {
+                                <div class="flex flex-col items-center justify-center py-16 gap-3">
+                                    <mat-icon class="text-color opacity-30 !text-[48px] !w-12 !h-12">bolt</mat-icon>
+                                    <div class="flex flex-col items-center gap-1">
+                                        <p class="mat-body-1 font-semibold text-color m-0">No events available</p>
+                                        <p class="text-xs m-0 secondary-text-color">
+                                            Events will appear here once configured
+                                        </p>
+                                    </div>
+                                </div>
                                 }
-                            </mat-accordion>
-                            } @else {
-                            <div class="flex flex-col items-center justify-center h-full py-12">
-                                <mat-icon class="text-secondary mb-2" style="font-size: 48px; width: 48px; height: 48px"
-                                    >event_note</mat-icon
-                                >
-                                <p class="mat-headline-6 text-secondary">No events available</p>
                             </div>
-                            }
                         </div>
                     </mat-tab>
                 </mat-tab-group>
@@ -391,7 +410,7 @@
                 [class.active]="type.id === featureTypeControl.value"
             >
                 <mat-icon>{{ type.icon }}</mat-icon>
-                <p class="mat-body-2 text-secondary fe-bold">{{ type.name }}</p>
+                <p class="mat-body-2 text-color fe-bold">{{ type.name }}</p>
                 <input
                     type="radio"
                     name="featureType"
@@ -406,9 +425,15 @@
     </div>
 </ng-template>
 <ng-template #blockCreationStepOne let-nameControl="nameControl">
-    <div class="my-6 grow">
-        <p class="mat-body-2 text-secondary font-medium mb-3">Give a name of your Block</p>
-        <form class="w-1/2 mb-6">
+    <div class="grow flex flex-col gap-8 py-8">
+        <div class="flex flex-col items-center gap-3 text-center">
+            <mat-icon class="material-icons-outlined text-accent">widgets</mat-icon>
+            <div>
+                <h2 class="text-on-surface font-semibold text-lg m-0 mb-1">Name your Block</h2>
+                <p class="text-sm text-on-surface/60 m-0">Give your authentication block a unique, recognisable name</p>
+            </div>
+        </div>
+        <form class="w-full max-w-lg mx-auto flex flex-col gap-2">
             <ng-container
                 *ngTemplateOutlet="
                     inputField;
@@ -533,19 +558,23 @@
     </div>
 </ng-template>
 <ng-template #configureMethodTemplate let-selectedIndex="selectedIndex">
-    <div class="flex gap-4 my-6 grow" style="min-height: 400px">
-        <div class="flex flex-col gap-1 border-right pr-6 w-[250px] service-list">
-            <p class="mat-body-2 font-semibold mt-0">Services</p>
-            <proxy-service-list
-                [services]="(selectedMethod | async)?.method_services ?? []"
-                [selectedIndex]="selectedServiceIndex"
-                [getFormAt]="getServiceFormAt"
-                (serviceSelect)="selectedServiceIndex = $event"
-            ></proxy-service-list>
+    <div class="flex gap-4 my-6 grow min-h-[400px] max-lg:flex-col">
+        <div class="max-xl:flex-col flex gap-4 grow">
+            <mat-card class="shrink-0 self-start max-xl:w-full">
+                <mat-card-header> Services </mat-card-header>
+                <mat-card-content class="!p-2">
+                    <proxy-service-list
+                        [services]="(selectedMethod | async)?.method_services ?? []"
+                        [selectedIndex]="selectedServiceIndex"
+                        [getFormAt]="getServiceFormAt"
+                        (serviceSelect)="selectedServiceIndex = $event"
+                    ></proxy-service-list>
+                </mat-card-content>
+            </mat-card>
+            <ng-container *ngTemplateOutlet="configureMethodFormContent"></ng-container>
         </div>
-        <ng-container *ngTemplateOutlet="configureMethodFormContent"></ng-container>
         @if (isEditMode) {
-        <div>
+        <div class="shrink-0">
             <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
         </div>
         }
@@ -553,68 +582,75 @@
 </ng-template>
 
 <ng-template #configureMethodFormContent let-serviceForm="serviceForm">
-    <div class="auth-credentials px-6 w-full">
-        <div class="flex flex-col">
-            @if ((selectedMethod | async)?.method_services; as methodServices) { @if (serviceForm ??
-            featureForm.get('serviceDetails')?.at(selectedServiceIndex); as formToUse) {
-            <form [formGroup]="formToUse">
+    <div class="flex flex-col grow rounded-xl border broder-color overflow-hidden">
+        @if ((selectedMethod | async)?.method_services; as methodServices) {
+        <div class="flex items-center gap-2 px-4 py-3 border-b broder-color bg-color">
+            <mat-icon class="!text-base !w-4 text-color">tune</mat-icon>
+            <span
+                class="mat-body-2 font-semibold"
+                >{{ methodServices?.[selectedServiceIndex]?.name || 'Configure Service' }}</span
+            >
+        </div>
+        @if (serviceForm ?? featureForm.get('serviceDetails')?.at(selectedServiceIndex); as formToUse) {
+        <div class="p-4 flex flex-col gap-3">
+            <form [formGroup]="formToUse" class="flex flex-col gap-1">
                 @if (methodServices?.[selectedServiceIndex]?.requirements; as requirements) {
-                <p class="mat-body-2 font-semibold mb-2">Credentials</p>
+                <p class="mat-body-2 font-semibold mb-1 secondary-text-color uppercase tracking-wide text-xs">
+                    Credentials
+                </p>
                 @for (controlKeyValue of (formToUse.controls.requirements.controls | keyvalue); track
                 controlKeyValue.key) {
-                <div class="row">
-                    <div class="col-md-12">
-                        <ng-container
-                            *ngTemplateOutlet="
-                                inputField;
-                                context: {
-                                    fieldControl: controlKeyValue.value,
-                                    fieldConfig: requirements[controlKeyValue.key]
-                                }
-                            "
-                        ></ng-container>
-                    </div>
-                </div>
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: controlKeyValue.value,
+                            fieldConfig: requirements[controlKeyValue.key]
+                        }
+                    "
+                ></ng-container>
                 } } @if (methodServices?.[selectedServiceIndex]?.configurations?.fields; as configurationsFields) {
-                <p class="mat-body-2 font-semibold mb-2">Configurations</p>
+                <p class="mat-body-2 font-semibold mb-1 secondary-text-color uppercase tracking-wide text-xs">
+                    Configurations
+                </p>
                 @for (controlKeyValue of (formToUse.controls.configurations.controls | keyvalue); track
                 controlKeyValue.key) {
-                <div class="row">
-                    <div class="col-md-12 w-full">
-                        <ng-container
-                            *ngTemplateOutlet="
-                                inputField;
-                                context: {
-                                    fieldControl: controlKeyValue.value,
-                                    fieldConfig: configurationsFields[controlKeyValue.key]
-                                }
-                            "
-                        ></ng-container>
-                    </div>
-                </div>
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: controlKeyValue.value,
+                            fieldConfig: configurationsFields[controlKeyValue.key]
+                        }
+                    "
+                ></ng-container>
                 } } @if ((featureDetails$ | async)?.callback_url; as callbackUrl) {
-                <mat-form-field appearance="outline" class="w-full">
+                <mat-form-field appearance="outline" class="w-full mt-3">
                     <mat-label>Callback URL</mat-label>
                     <input matInput type="text" placeholder="Callback URL" [value]="callbackUrl" disabled />
                     <proxy-copy-button matSuffix [copyData]="callbackUrl" tooltip="Copy URL"></proxy-copy-button>
                 </mat-form-field>
                 } @if (isEditMode) {
-                <mat-slide-toggle class="w-full mat-body-2 mb-6" [formControl]="formToUse.controls.is_enable">
-                    Enable Service
-                </mat-slide-toggle>
+                <div class="flex items-center justify-between py-3 px-3 rounded-lg bg-[var(--color-common-hover)]">
+                    <span class="mat-body-2">Enable Service</span>
+                    <mat-slide-toggle color="primary" [formControl]="formToUse.controls.is_enable"></mat-slide-toggle>
+                </div>
                 } @if (isEditMode) {
-                <button
-                    type="button"
-                    matButton="filled"
-                    class="flat-default"
-                    (click)="serviceForm ? resetConfigureDialogForm() : resetFormGroup(formToUse, selectedServiceIndex)"
-                >
-                    Reset
-                </button>
+                <div class="flex justify-end pt-2">
+                    <button
+                        type="button"
+                        matButton="outlined"
+                        (click)="
+                            serviceForm ? resetConfigureDialogForm() : resetFormGroup(formToUse, selectedServiceIndex)
+                        "
+                    >
+                        Reset
+                    </button>
+                </div>
                 }
             </form>
-            } }
         </div>
+        } }
     </div>
 </ng-template>
 
@@ -638,49 +674,65 @@
 
 <ng-template #createBlockConfigureMethodTemplate>
     @if (selectedMethod | async; as method) {
-    <div class="flex flex-col gap-4 my-6 grow">
-        <table
-            mat-table
-            [dataSource]="configureMethodsTableData"
-            class="default-table responsive-table w-full configure-methods-table"
+    <div class="flex flex-col gap-3 my-6 grow text-color">
+        @if (configureMethodsTableData.length === 0) {
+        <div
+            class="flex flex-col items-center justify-center py-10 gap-2 rounded-xl border border-dashed broder-color bg-color"
         >
-            <ng-container matColumnDef="method">
-                <th mat-header-cell *matHeaderCellDef class="w-3/4">Method</th>
-                <td mat-cell *matCellDef="let row">{{ row.name }}</td>
-            </ng-container>
-            <ng-container matColumnDef="toggle">
-                <th mat-header-cell *matHeaderCellDef>Toggle</th>
-                <td mat-cell *matCellDef="let row">
+            <mat-icon class="secondary-text-color opacity-40 !text-4xl !w-9 !h-9">tune</mat-icon>
+            <p class="mat-body-2 text-color m-0">No methods available</p>
+        </div>
+        } @else {
+        <div class="rounded-xl border broder-color overflow-hidden">
+            <div class="grid grid-cols-[1fr_auto_auto] items-center px-4 py-2 bg-color border-b broder-color">
+                <span class="mat-body-2 font-semibold text-color uppercase tracking-wide text-xs">Method</span>
+                <span class="mat-body-2 font-semibold text-color uppercase tracking-wide text-xs w-20 text-center"
+                    >Enable</span
+                >
+                <span class="mat-body-2 font-semibold text-color uppercase tracking-wide text-xs w-16 text-center"
+                    >Edit</span
+                >
+            </div>
+            @for (row of configureMethodsTableData; track row.index) {
+            <div
+                class="grid grid-cols-[1fr_auto_auto] items-center px-4 py-3 hover:bg-[var(--color-common-hover)] transition-colors duration-150"
+                [class.border-b]="!$last"
+                [class.broder-color]="!$last"
+            >
+                <div class="flex items-center gap-2 min-w-0">
+                    <span class="mat-body-2 font-medium truncate">{{ row.name }}</span>
+                    @if (row.index === 0) {
+                    <span
+                        class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[var(--color-common-primary-light,#e8f5e9)] text-[var(--color-common-primary)] leading-none"
+                    >
+                        default
+                    </span>
+                    }
+                </div>
+                <div class="flex items-center justify-center w-20">
                     <mat-slide-toggle
                         [formControl]="featureForm.get('serviceDetails')?.at(row.index)?.get('is_enable')"
                         color="primary"
+                    ></mat-slide-toggle>
+                </div>
+                <div class="flex items-center justify-center w-16">
+                    <button
+                        class="accent-color"
+                        matIconButton
+                        (click)="editService(row.index)"
+                        [matTooltip]="'Configure ' + row.name"
                     >
-                    </mat-slide-toggle>
-                    @if (row.index === 0) { <span class="mat-body-2 text-secondary ml-2">(default)</span> }
-                </td>
-            </ng-container>
-            <ng-container matColumnDef="configure">
-                <th mat-header-cell *matHeaderCellDef>Configure</th>
-                <td mat-cell *matCellDef="let row">
-                    <button class="accent-color" matIconButton (click)="editService(row.index)">
                         <mat-icon class="mat-icon-20">edit</mat-icon>
                     </button>
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="configureMethodsTableColumns; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: configureMethodsTableColumns"></tr>
-
-            <tr class="mat-row" *matNoDataRow>
-                <td class="mat-cell" [attr.colspan]="3">
-                    <div class="text-center w-full mat-body-2 text-secondary py-6">No methods available</div>
-                </td>
-            </tr>
-        </table>
-        <p class="mat-body-2 text-secondary my-2">
-            <strong>Note:</strong> By default, 36Blocks credentials will be used, and the consent screen or Sender ID
-            will display the 36Blocks name. You can update these with your own credentials and branding anytime after
-            the block is created.
+                </div>
+            </div>
+            }
+        </div>
+        }
+        <p class="mat-body-2 text-color m-0 leading-relaxed">
+            <strong class="text-color">Note:</strong> By default, 36Blocks credentials will be used, and the consent
+            screen or Sender ID will display the 36Blocks name. You can update these with your own credentials and
+            branding anytime after the block is created.
         </p>
     </div>
     }
@@ -688,9 +740,8 @@
 
 <ng-template #previewAuthorization let-authorizationDetails="authorizationDetails" let-previewVersion="previewVersion">
     <div
-        class="auth-credentials px-6 w-[350px] border rounded-8 ml-6"
+        class="auth-credentials px-6 w-[350px] border rounded-8 max-h-[650px] overflow-y-auto max-lg:w-full"
         [class.dark]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
-        style="max-height: 650px"
         [style.--branding-primary-color]="getEffectivePrimaryColor()"
         [style.--branding-button-color]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
         [style.--branding-button-text-color]="featureForm.get('brandingDetails.button_text_color')?.value || '#000000'"
@@ -797,7 +848,7 @@
             <hr style="flex: 1; border: none; border-top: 1px solid var(--color-common-border); margin: 0" />
             <span
                 class="mat-body-2"
-                [class.text-secondary]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
+                [class.text-color]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
                 style="white-space: nowrap"
                 [class.bg-dark]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
                 [style.color]="getEffectivePrimaryColor() + ' !important'"
@@ -910,84 +961,97 @@
 </ng-template>
 
 <ng-template #authorizationSetup>
-    <div class="flex gap-4">
-        <div class="flex flex-col gap-4 w-3/4 code-snippet-view">
-            <div class="flex flex-col w-1/2">
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('authorizationDetails.session_time'),
-                            fieldConfig: {
-                                label: 'Session Time',
-                                is_required: true,
-                                hint: 'Enter session time in seconds. 24 Hours = 86400 Seconds',
-                                patternErrorText: 'Only integer value allowed',
-                                info: 'Defines how long the user session remains active after login.'
+    <div class="flex gap-6 my-4 max-lg:flex-col">
+        <div class="flex flex-col gap-5 flex-1 min-w-0">
+            <div class="rounded-xl border broder-color overflow-hidden">
+                <div class="flex items-center gap-2 px-4 py-3 text-color border-b broder-color bg-color">
+                    <mat-icon class="!text-base !w-4">settings</mat-icon>
+                    <span class="mat-body-2 font-semibold">Session & Token Settings</span>
+                </div>
+                <div class="flex flex-col gap-1 px-4 pt-4 pb-4 max-w-md max-lg:max-w-full">
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('authorizationDetails.session_time'),
+                                fieldConfig: {
+                                    label: 'Session Time',
+                                    is_required: true,
+                                    hint: 'Enter session time in seconds. 24 Hours = 86400 Seconds',
+                                    patternErrorText: 'Only integer value allowed',
+                                    info: 'Defines how long the user session remains active after login.'
+                                }
                             }
-                        }
-                    "
-                ></ng-container>
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('authorizationDetails.authorizationKey'),
-                            fieldConfig: {
-                                label: 'Key Name',
-                                is_required: true,
-                                hint: 'Key name to pass the JWT as e.g &#8221;authorization&#8221;, &#8221;access_token&#8221; etc',
-                                info: 'This key is used to validate requests between your system and 36Blocks'
+                        "
+                    ></ng-container>
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('authorizationDetails.authorizationKey'),
+                                fieldConfig: {
+                                    label: 'Key Name',
+                                    is_required: true,
+                                    hint: 'Key name to pass the JWT as e.g &#8221;authorization&#8221;, &#8221;access_token&#8221; etc',
+                                    info: 'This key is used to validate requests between your system and 36Blocks'
+                                }
                             }
-                        }
-                    "
-                ></ng-container>
-
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: featureForm.get('authorizationDetails.encryptionKey'),
-                            fieldConfig: {
-                                label: 'Encryption Key',
-                                hint: 'Enter the JWT secret key used for token generation and validation. Make sure it is correct and kept confidential.',
-                                type: featureFieldType.Password
+                        "
+                    ></ng-container>
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('authorizationDetails.encryptionKey'),
+                                fieldConfig: {
+                                    label: 'Encryption Key',
+                                    hint: 'Enter the JWT secret key used for token generation and validation. Make sure it is correct and kept confidential.',
+                                    type: featureFieldType.Password,
+                                    class: 'mb-3'
+                                }
                             }
-                        }
-                    "
-                ></ng-container>
-
-                @if (isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1) {
-                <div class="flex items-center gap-2 mt-6">
-                    <span class="mat-body-2">Block new user sign-ups: </span>
-                    <mat-slide-toggle
-                        [formControl]="featureForm.get('authorizationDetails.blockNewUserSignUps')"
-                        color="primary"
+                        "
+                    ></ng-container>
+                    @if (isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1) {
+                    <div
+                        class="flex items-center justify-between gap-3 py-3 px-3 my-3 rounded-lg bg-[var(--color-common-hover)]"
                     >
-                    </mat-slide-toggle>
+                        <div class="flex flex-col gap-0.5">
+                            <span class="mat-body-2 font-medium">Block new user sign-ups</span>
+                            <span class="text-xs text-color">Prevent new users from registering via this block</span>
+                        </div>
+                        <mat-slide-toggle
+                            [formControl]="featureForm.get('authorizationDetails.blockNewUserSignUps')"
+                            color="primary"
+                        ></mat-slide-toggle>
+                    </div>
+                    }
                 </div>
-                }
             </div>
 
-            <div class="flex flex-col w-3/4">
-                @if (((isEditMode ? featureDetails$ : selectedMethod) | async)?.authorization_format?.format; as code) {
-                <div class="overflow-auto code-snippet-view relative rounded-4">
-                    <markdown [data]="code | json | language: 'javascript'"> </markdown>
-                    <proxy-copy-button
-                        class="absolute"
-                        style="top: 16px; right: 8px"
-                        [copyData]="code | json"
-                        tooltip="Copy JSON"
-                    ></proxy-copy-button>
+            @if (((isEditMode ? featureDetails$ : selectedMethod) | async)?.authorization_format?.format; as code) {
+            <div class="rounded-xl border broder-color overflow-hidden">
+                <div class="flex items-center justify-between px-4 py-3 border-b broder-color bg-color">
+                    <div class="flex items-center gap-2 text-color">
+                        <mat-icon class="!text-base !w-4">data_object</mat-icon>
+                        <span class="mat-body-2 font-semibold">JWT Payload Format</span>
+                    </div>
+                    <proxy-copy-button [copyData]="code | json" tooltip="Copy JSON"></proxy-copy-button>
                 </div>
-                }
-                <p class="mat-body-2 text-secondary my-2">
-                    <strong>Note:</strong> JSON format you will receive after login as JWT in Authorization key
-                </p>
+                <div class="overflow-auto code-snippet-view">
+                    <markdown [data]="code | json | language: 'javascript'"></markdown>
+                </div>
+                <div class="flex px-4 py-3 items-center border-t broder-color bg-color text-color">
+                    <mat-icon class="!text-base">info</mat-icon>
+                    <p class="mat-body-2 m-0 text-xs">
+                        JSON format you will receive after login as JWT in Authorization key
+                    </p>
+                </div>
             </div>
+            }
         </div>
         @if (isEditMode) {
-        <div>
+        <div class="shrink-0">
             <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
         </div>
         }
@@ -995,71 +1059,83 @@
 </ng-template>
 
 <ng-template #designAndCode>
-    <div class="overflow-auto code-snippet-view relative rounded-4">
-        <markdown [data]="proxyAuthScript | language: 'javascript'"> </markdown>
-        <proxy-copy-button
-            class="absolute"
-            style="top: 16px; right: 8px"
-            [copyData]="proxyAuthScript"
-            tooltip="Copy Script"
-        ></proxy-copy-button>
-    </div>
-    <div class="mat-body-2 mt-2">
-        <strong>Note: </strong>The social login button will be displayed in a dialog/modal by default.<br />
-        To integrate this button into your website or application UI, please add a div with the ID like this -
-    </div>
-    <div class="overflow-auto code-snippet-view relative rounded-4">
-        <markdown [data]="demoDiv$ | async | language: 'html'"> </markdown>
-        <proxy-copy-button
-            class="absolute"
-            style="top: 16px; right: 8px"
-            [copyData]="demoDiv$ | async"
-            tooltip="Copy Code"
-        ></proxy-copy-button>
+    <div class="flex flex-col gap-4">
+        <div class="rounded-xl border broder-color overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3 border-b broder-color bg-color">
+                <div class="flex items-center gap-2">
+                    <mat-icon class="!text-base !w-4 text-color">code</mat-icon>
+                    <span class="mat-body-2 font-semibold">Integration Script</span>
+                </div>
+                <proxy-copy-button [copyData]="proxyAuthScript" tooltip="Copy Script"></proxy-copy-button>
+            </div>
+            <div class="overflow-auto code-snippet-view">
+                <markdown [data]="proxyAuthScript | language: 'javascript'"></markdown>
+            </div>
+        </div>
+
+        <div class="rounded-xl border broder-color overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3 border-b broder-color bg-color">
+                <div class="flex items-center gap-2">
+                    <mat-icon class="!text-base !w-4 text-color">html</mat-icon>
+                    <span class="mat-body-2 font-semibold">Button Container Div</span>
+                </div>
+                <proxy-copy-button [copyData]="demoDiv()" tooltip="Copy Code"></proxy-copy-button>
+            </div>
+            <div class="overflow-auto code-snippet-view">
+                <markdown [data]="demoDiv() | language: 'html'"></markdown>
+            </div>
+            <div class="flex px-4 py-3 flex-col border-t broder-color bg-color">
+                <mat-icon class="!text-base text-color">info</mat-icon>
+                <p class="mat-body-2 text-color m-0 text-xs">
+                    The social login button is shown in a dialog by default. Add this div to your UI to render it inline
+                    instead.
+                </p>
+            </div>
+        </div>
     </div>
 </ng-template>
 
 <ng-template #preview>
     @if ((createUpdateObject$ | async) || (featureDetails$ | async)) {
-    <div class="flex items-center justify-start">
+    <div class="flex items-center justify-start mt-6">
         <button type="button" matButton="filled" (click)="previewFeature()">Preview</button>
     </div>
     }
 </ng-template>
 
 <ng-template #webhook>
-    <div class="flex flex-col gap-4 my-6 grow">
-        <div class="flex flex-col w-1/2">
-            <p class="mat-body-2 font-semibold mt-0">Webhook URL</p>
-            <ng-container
-                *ngTemplateOutlet="
-                    inputField;
-                    context: {
-                        fieldControl: featureForm.get('webhookDetails.webhookUrl'),
-                        fieldConfig: {
-                            label: 'Webhook URL',
-                            is_required: true
+    <div class="flex flex-col gap-6 my-4">
+        <div class="rounded-xl border broder-color overflow-hidden">
+            <div class="flex items-center gap-2 px-4 py-3 text-color border-b broder-color bg-color">
+                <mat-icon class="!text-base !w-4">webhook</mat-icon>
+                <span class="mat-body-2 font-semibold">Webhook Configuration</span>
+            </div>
+            <div class="flex flex-col gap-1 px-4 pt-4 pb-4 max-w-xl max-lg:max-w-full">
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: featureForm.get('webhookDetails.webhookUrl'),
+                            fieldConfig: {
+                                label: 'Webhook URL',
+                                is_required: true
+                            }
                         }
-                    }
-                "
-            ></ng-container>
-            <p class="mat-body-2 font-semibold mt-0">Method</p>
-            <ng-container
-                *ngTemplateOutlet="
-                    inputField;
-                    context: {
-                        fieldControl: featureForm.get('webhookDetails.method'),
-                        fieldConfig: {
-                            label: 'Method',
-                            type: featureFieldType.Select,
-                            source: ['POST']
+                    "
+                ></ng-container>
+                <ng-container
+                    *ngTemplateOutlet="
+                        inputField;
+                        context: {
+                            fieldControl: featureForm.get('webhookDetails.method'),
+                            fieldConfig: {
+                                label: 'Method',
+                                type: featureFieldType.Select,
+                                source: ['POST']
+                            }
                         }
-                    }
-                "
-            ></ng-container>
-
-            <p class="mat-body-2 font-semibold mt-0">Trigger Events</p>
-            <ng-container>
+                    "
+                ></ng-container>
                 <mat-form-field appearance="outline" class="w-full mb-0">
                     <mat-label>Select Trigger Events</mat-label>
                     <mat-select [formControl]="featureForm.get('webhookDetails.triggerEvents')" multiple>
@@ -1068,7 +1144,7 @@
                         }
                     </mat-select>
                 </mat-form-field>
-            </ng-container>
+            </div>
         </div>
     </div>
 </ng-template>
@@ -1089,10 +1165,9 @@
     >
         <mat-label>
             {{ fieldConfig?.label }}
-            @if (fieldConfig?.is_required) { <span class="text-danger">*</span> }
         </mat-label>
 
-        @if (fieldConfig?.type === featureFieldType.ChipList) { @if (fieldConfig?.label + '_' +
+        @switch (fieldConfig?.type) { @case (featureFieldType.ChipList) { @if (fieldConfig?.label + '_' +
         this.selectedServiceIndex; as chipListKey) {
         <mat-chip-grid #chipList [formControl]="fieldControl" aria-label="{{ fieldConfig?.label }}">
             @for (item of chipListValues[chipListKey]; track item) {
@@ -1119,7 +1194,7 @@
                 (matChipInputTokenEnd)="updateChipListValues('add', chipListKey, fieldControl, $event.value)"
             />
         </mat-chip-grid>
-        } } @else if (fieldConfig?.type === featureFieldType.Select) {
+        } } @case (featureFieldType.Select) {
         <mat-select
             [formControl]="fieldControl"
             [placeholder]="fieldConfig?.placeholder || 'Select ' + fieldConfig?.label"
@@ -1133,14 +1208,14 @@
             <mat-option [value]="option.value">{{ option.label }}</mat-option>
             }
         </mat-select>
-        } @else if (fieldConfig?.type === featureFieldType.TextArea) {
+        } @case (featureFieldType.TextArea) {
         <textarea
             matInput
             [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
             [formControl]="fieldControl"
             rows="2"
         ></textarea>
-        } @else if (fieldConfig?.type === featureFieldType.ReadFile) {
+        } @case (featureFieldType.ReadFile) {
         <input
             matInput
             type="text"
@@ -1149,7 +1224,7 @@
             [formControl]="fieldControl"
             readonly
         />
-        } @else if (fieldConfig?.type === featureFieldType.Password) {
+        } @case (featureFieldType.Password) {
         <input
             matInput
             type="password"
@@ -1159,7 +1234,7 @@
         />
         @if (fieldConfig?.info) {
         <mat-icon matSuffix [matTooltip]="fieldConfig.info" matTooltipPosition="above" class="info-icon">info</mat-icon>
-        } } @else {
+        } } @default {
         <input
             matInput
             type="text"
@@ -1169,7 +1244,7 @@
         />
         @if (fieldConfig?.info) {
         <mat-icon matSuffix [matTooltip]="fieldConfig.info" matTooltipPosition="above" class="info-icon">info</mat-icon>
-        } } @if (fieldControl.touched) {
+        } } } @if (fieldControl.touched) {
         <mat-error>
             <ng-container
                 *ngTemplateOutlet="
@@ -1180,27 +1255,26 @@
         </mat-error>
         } @if (fieldConfig?.type === featureFieldType.ReadFile) { @if (fieldConfig?.label + '_' +
         this.selectedServiceIndex; as fileKey) {
-        <div matSuffix>
-            @if (fieldControl?.value) {
-            <button
-                matIconButton
-                (click)="fileInput.files = null; updateFileValue(fileKey, fieldConfig, fieldControl, null)"
-            >
-                <mat-icon class="material-icons-outlined mat-icon-18">close</mat-icon>
-            </button>
-            <input
-                #fileInput
-                hidden
-                type="file"
-                [accept]="fieldConfig?.allowed_types ?? ''"
-                (change)="updateFileValue(fileKey, fieldConfig, fieldControl, fileInput.files)"
-            />
-            }
-            <button matIconButton (click)="fileInput.click()">
-                <mat-icon class="material-icons-outlined mat-icon-18">attach_file</mat-icon>
-            </button>
-        </div>
-        } } @if (fieldConfig?.hint) {
+        <input
+            #fileInput
+            hidden
+            type="file"
+            [accept]="fieldConfig?.allowed_types ?? ''"
+            (change)="updateFileValue(fileKey, fieldConfig, fieldControl, fileInput.files)"
+        />
+        @if (!fieldControl?.value) {
+        <button class="!absolute right-0 top-1" matSuffix matIconButton (click)="handleFileUpload(fileInput)">
+            <mat-icon class="material-icons-outlined mat-icon-18">attach_file</mat-icon>
+        </button>
+        } @else {
+        <button
+            matSuffix
+            matIconButton
+            (click)="fileInput.files = null; updateFileValue(fileKey, fieldConfig, fieldControl, null)"
+        >
+            <mat-icon class="material-icons-outlined mat-icon-18">close</mat-icon>
+        </button>
+        } } } @if (fieldConfig?.hint) {
         <mat-hint class="flex items-center justify-between gap-1 font-10">
             {{ fieldConfig?.hint }}
             @if (fieldConfig?.hintInfo) {
@@ -1227,26 +1301,17 @@
 
     <ng-template #matErrors let-label="label" let-fieldControl="fieldControl" let-patternErrorText="patternErrorText">
         @if (fieldControl?.errors?.customError; as customError) {
-        <mat-error>{{ customError }}</mat-error>
+        {{ customError }}
         } @if (fieldControl.errors?.required) {
-        <mat-error>{{ label }} is required.</mat-error>
-        } @if (fieldControl.errors?.minlengthWithSpace) {
-        <mat-error>Min required length is 3</mat-error>
-        } @if (fieldControl.errors?.noStartEndSpaces) {
-        <mat-error>Start and End spaces are not allowed</mat-error>
-        } @if (fieldControl.errors?.min; as minError) {
-        <mat-error>Min value required is {{ minError?.min }}</mat-error>
-        } @if (fieldControl.errors?.max; as maxError) {
-        <mat-error>Max value allowed is {{ maxError?.max }}</mat-error>
-        } @if (fieldControl.errors?.minlength; as minLengthError) {
-        <mat-error>Min required length is {{ minLengthError?.requiredLength }}</mat-error>
-        } @if (fieldControl.errors?.maxlength; as maxLengthError) {
-        <mat-error>Max allowed length is {{ maxLengthError?.requiredLength }}</mat-error>
+        {{ label }} is required. } @if (fieldControl.errors?.minlengthWithSpace) { Min required length is 3 } @if
+        (fieldControl.errors?.noStartEndSpaces) { Start and End spaces are not allowed } @if (fieldControl.errors?.min;
+        as minError) { Min value required is {{ minError?.min }} } @if (fieldControl.errors?.max; as maxError) { Max
+        value allowed is {{ maxError?.max }} } @if (fieldControl.errors?.minlength; as minLengthError) { Min required
+        length is {{ minLengthError?.requiredLength }} } @if (fieldControl.errors?.maxlength; as maxLengthError) { Max
+        allowed length is {{ maxLengthError?.requiredLength }}
         } @if (fieldControl.errors?.pattern) {
-        <mat-error>{{ patternErrorText ?? 'Enter valid ' + label }}</mat-error>
-        } @if (fieldControl?.errors?.atleastOneValueInChipList) {
-        <mat-error>Atleast One Value is Required</mat-error>
-        }
+        {{ patternErrorText ?? 'Enter valid ' + label }}
+        } @if (fieldControl?.errors?.atleastOneValueInChipList) { Atleast One Value is Required }
     </ng-template>
 </ng-template>
 
@@ -1281,7 +1346,7 @@
 <ng-template #organizationDetails>
     <div class="flex flex-col h-full w-3/4">
         <h5 class="mat-h5 mb-6">Organization Details</h5>
-        <p class="mat-body-2 text-secondary"><strong>Note:</strong> These details will be shown on the invoice..</p>
+        <p class="mat-body-2 text-color"><strong>Note:</strong> These details will be shown on the invoice..</p>
         <div class="width-md-700 w-md-100 px-6">
             <div class="flex flex-col">
                 @if ((selectedMethod | async)?.method_services; as methodServices) { @if
@@ -1319,82 +1384,90 @@
 
 <ng-template #billableMetrics>
     <div class="flex flex-col h-full">
-        <h5 class="mat-h5 mb-6">Billable Metrics / Items</h5>
-        <div>
+        <div class="flex items-center justify-between mb-6">
+            <h5 class="mat-h5 my-0">Billable Metrics / Items</h5>
             <button matButton="filled" (click)="addBillableMetric()">
-                <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Metric
+                <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">add</mat-icon> Add Metric
             </button>
         </div>
 
-        <mat-card class="w-full outline-card responsive-card grow mt-6 overflow-table overflow-y-auto p-0">
+        <mat-card class="w-full outline-card responsive-card grow p-0">
             <mat-card-content>
-                <table mat-table [dataSource]="billableMetricstabledata" class="default-table responsive-table">
-                    <!-- Name Column -->
-                    <ng-container matColumnDef="name">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
-                        <td mat-cell *matCellDef="let element" data-label="Name">
-                            <ng-container>
-                                {{ element.name }}
-                            </ng-container>
-                        </td>
-                    </ng-container>
+                <div class="table-scroll">
+                    <table mat-table [dataSource]="billableMetricstabledata" class="default-table responsive-table">
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                            <td mat-cell *matCellDef="let element" data-label="Name">
+                                <span class="font-semibold">{{ element.name }}</span>
+                            </td>
+                        </ng-container>
 
-                    <!-- reference_id Column -->
-                    <ng-container matColumnDef="code">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Code</th>
-                        <td mat-cell *matCellDef="let element" data-label="Reference Id">
-                            <ng-container>
-                                {{ element.code }}
-                                <proxy-copy-button
-                                    [copyData]="element.code"
-                                    tooltip="Copy Reference Id"
-                                ></proxy-copy-button>
-                            </ng-container>
-                        </td>
-                    </ng-container>
+                        <!-- Code Column -->
+                        <ng-container matColumnDef="code">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+                            <td mat-cell *matCellDef="let element" data-label="Code">
+                                <div class="flex items-center gap-1">
+                                    <span
+                                        class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
+                                        >{{ element.code }}</span
+                                    >
+                                    <proxy-copy-button
+                                        [copyData]="element.code"
+                                        tooltip="Copy Code"
+                                    ></proxy-copy-button>
+                                </div>
+                            </td>
+                        </ng-container>
 
-                    <!-- Method Column -->
-                    <ng-container matColumnDef="type">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Type</th>
-                        <td mat-cell *matCellDef="let element" data-label="Type">
-                            <ng-container>{{ element.recurring ? 'Recurring' : 'Metered' }}</ng-container>
-                        </td>
-                    </ng-container>
+                        <!-- Type Column -->
+                        <ng-container matColumnDef="type">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+                            <td mat-cell *matCellDef="let element" data-label="Type">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-otp-primary-light)] [color:var(--color-otp-primary)]"
+                                >
+                                    {{ element.recurring ? 'Recurring' : 'Metered' }}
+                                </span>
+                            </td>
+                        </ng-container>
 
-                    <!-- Type Column -->
-                    <ng-container matColumnDef="aggregation">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Aggregation</th>
-                        <td mat-cell *matCellDef="let element" data-label="Aggregation">
-                            <ng-container>{{ getAggregationLabel(element?.aggregation_type) }}</ng-container>
-                        </td>
-                    </ng-container>
+                        <!-- Aggregation Column -->
+                        <ng-container matColumnDef="aggregation">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Aggregation</th>
+                            <td mat-cell *matCellDef="let element" data-label="Aggregation">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
+                                >
+                                    {{ getAggregationLabel(element?.aggregation_type) }}
+                                </span>
+                            </td>
+                        </ng-container>
 
-                    <ng-container matColumnDef="action">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Action</th>
-                        <td mat-cell *matCellDef="let element; let i = index" data-label="Action">
-                            <button matIconButton (click)="editMetric(element, i)" matTooltip="Edit Metric">
-                                <mat-icon>edit</mat-icon>
-                            </button>
-                            <button matIconButton (click)="deleteMetric(i)" matTooltip="Delete Metric">
-                                <mat-icon>delete</mat-icon>
-                            </button>
-                        </td>
-                    </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef class="!text-right">Action</th>
+                            <td mat-cell *matCellDef="let element; let i = index" data-label="Action">
+                                <div class="flex items-center justify-end gap-1 pr-3">
+                                    <button matIconButton (click)="editMetric(element, i)" matTooltip="Edit Metric">
+                                        <mat-icon class="material-icons-outlined mat-icon-18">edit</mat-icon>
+                                    </button>
+                                    <button matIconButton (click)="deleteMetric(i)" matTooltip="Delete Metric">
+                                        <mat-icon class="material-icons-outlined mat-icon-18">delete</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                    <tr
-                        mat-row
-                        *matRowDef="let row; columns: displayedColumns; let i = index"
-                        class="hover-action"
-                    ></tr>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover-action"></tr>
 
-                    <tr class="mat-row" *matNoDataRow>
-                        <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
-                            <div class="text-center w-full mat-subtitle-2 text-dark">No Record Found</div>
-                        </td>
-                    </tr>
-                </table>
-                <mat-paginator-goto></mat-paginator-goto>
+                        <tr *matNoDataRow>
+                            <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
+                                <proxy-no-record-found [title]="'metrics'" [showBtn]="false"></proxy-no-record-found>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </mat-card-content>
         </mat-card>
     </div>
@@ -1404,7 +1477,7 @@
     <div class="flex flex-col h-full">
         <h5 class="mat-h5 mb-6">Payment Details</h5>
         <div class="flex flex-col h-full">
-            <p class="mat-body-2 text-secondary"><strong>Note:</strong> These details will be can be filled later.</p>
+            <p class="mat-body-2 text-color"><strong>Note:</strong> These details will be can be filled later.</p>
             <div class="px-6">
                 <div class="flex flex-col w-3/4">
                     @if (featureForm.get('paymentDetailsForm')?.at(0); as paymentDetailsForm) {
@@ -1544,101 +1617,120 @@
 
 <ng-template #plansOverview>
     <div class="flex flex-col">
-        <h5 class="mat-h5 mb-6">Created Plans</h5>
-        <div>
+        <div class="flex items-center justify-between mb-6">
+            <h5 class="mat-h5 my-0">Created Plans</h5>
             @if (isEditMode && selectedSubscriptionServiceIndex === -1) {
             <button matButton="filled" (click)="addPlan()">
-                <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Plan
+                <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">add</mat-icon> Add Plan
             </button>
             }
         </div>
 
-        <mat-card class="w-full outline-card responsive-card grow mt-6 add-plan-edit">
+        <mat-card class="w-full outline-card responsive-card grow p-0">
             <mat-card-content>
-                <table mat-table [dataSource]="createdPlanData" class="default-table responsive-table">
-                    <!-- Name Column -->
-                    <ng-container matColumnDef="planName">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
-                        <td mat-cell *matCellDef="let element" data-label="Name">
-                            <ng-container>
-                                {{ element.name }}
-                            </ng-container>
-                        </td>
-                    </ng-container>
+                <div class="table-scroll">
+                    <table mat-table [dataSource]="createdPlanData" class="default-table responsive-table">
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="planName">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                            <td mat-cell *matCellDef="let element" data-label="Name">
+                                <span class="font-semibold">{{ element.name }}</span>
+                            </td>
+                        </ng-container>
 
-                    <!-- reference_id Column -->
-                    <ng-container matColumnDef="code">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Code</th>
-                        <td mat-cell *matCellDef="let element" data-label="Reference Id">
-                            <ng-container>
-                                {{ element.code }}
-                                <proxy-copy-button
-                                    [copyData]="element.code"
-                                    tooltip="Copy Reference Id"
-                                ></proxy-copy-button>
-                            </ng-container>
-                        </td>
-                    </ng-container>
+                        <!-- Code Column -->
+                        <ng-container matColumnDef="code">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+                            <td mat-cell *matCellDef="let element" data-label="Code">
+                                <div class="flex items-center gap-1">
+                                    <span
+                                        class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
+                                        >{{ element.code }}</span
+                                    >
+                                    <proxy-copy-button
+                                        [copyData]="element.code"
+                                        tooltip="Copy Code"
+                                    ></proxy-copy-button>
+                                </div>
+                            </td>
+                        </ng-container>
 
-                    <!-- Method Column -->
-                    <ng-container matColumnDef="billingPeriod">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Billing Period</th>
-                        <td mat-cell *matCellDef="let element" data-label="Type">
-                            <ng-container>{{ element.interval }}</ng-container>
-                        </td>
-                    </ng-container>
+                        <!-- Billing Period Column -->
+                        <ng-container matColumnDef="billingPeriod">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Billing Period</th>
+                            <td mat-cell *matCellDef="let element" data-label="Billing Period">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-whatsApp-primary-light)] [color:var(--color-whatsApp-primary)]"
+                                >
+                                    {{ element.interval }}
+                                </span>
+                            </td>
+                        </ng-container>
 
-                    <!-- Type Column -->
-                    <ng-container matColumnDef="price">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Price</th>
-                        <td mat-cell *matCellDef="let element" data-label="Aggregation">
-                            <ng-container>{{ element.amount_cents / 100 }}</ng-container>
-                        </td>
-                    </ng-container>
+                        <!-- Price Column -->
+                        <ng-container matColumnDef="price">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+                            <td mat-cell *matCellDef="let element" data-label="Price">
+                                <span class="font-semibold tabular-nums">{{ element.amount_cents / 100 }}</span>
+                            </td>
+                        </ng-container>
 
-                    <ng-container matColumnDef="currency">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Currency</th>
-                        <td mat-cell *matCellDef="let element" data-label="Aggregation">
-                            <ng-container>{{ element.amount_currency }}</ng-container>
-                        </td>
-                    </ng-container>
+                        <ng-container matColumnDef="currency">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency</th>
+                            <td mat-cell *matCellDef="let element" data-label="Currency">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium uppercase [background-color:var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
+                                >
+                                    {{ element.amount_currency }}
+                                </span>
+                            </td>
+                        </ng-container>
 
-                    <ng-container matColumnDef="status">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Status</th>
-                        <td mat-cell *matCellDef="let element" data-label="Aggregation">
-                            <ng-container>{{ getAggregationLabel(element?.aggregation_type) }}</ng-container>
-                        </td>
-                    </ng-container>
+                        <ng-container matColumnDef="status">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                            <td mat-cell *matCellDef="let element" data-label="Status">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
+                                >
+                                    {{ getAggregationLabel(element?.aggregation_type) }}
+                                </span>
+                            </td>
+                        </ng-container>
 
-                    <ng-container matColumnDef="action">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Action</th>
-                        <td mat-cell *matCellDef="let element" data-label="Action">
-                            <button type="button" matIconButton (click)="editPlan(element)">
-                                <mat-icon class="material-icons-outlined mat-icon-18"> edit </mat-icon>
-                            </button>
-                            <button type="button" matIconButton (click)="deletePlan(element)">
-                                <mat-icon class="material-icons-outlined mat-icon-18"> delete </mat-icon>
-                            </button>
-                        </td>
-                    </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef class="!text-right">Action</th>
+                            <td mat-cell *matCellDef="let element" data-label="Action">
+                                <div class="flex items-center justify-end gap-1 pr-3">
+                                    <button
+                                        type="button"
+                                        matIconButton
+                                        (click)="editPlan(element)"
+                                        matTooltip="Edit Plan"
+                                    >
+                                        <mat-icon class="material-icons-outlined mat-icon-18">edit</mat-icon>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        matIconButton
+                                        (click)="deletePlan(element)"
+                                        matTooltip="Delete Plan"
+                                    >
+                                        <mat-icon class="material-icons-outlined mat-icon-18">delete</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="plansOverviewColumns; sticky: true"></tr>
-                    <tr
-                        mat-row
-                        *matRowDef="let row; columns: plansOverviewColumns; let i = index"
-                        class="hover-action"
-                    ></tr>
+                        <tr mat-header-row *matHeaderRowDef="plansOverviewColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: plansOverviewColumns" class="hover-action"></tr>
 
-                    <tr class="mat-row" *matNoDataRow>
-                        <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
-                            <div class="flex justify-center items-center w-full mat-subtitle-2 text-dark">
-                                No plans Found
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-
-                <mat-paginator-goto></mat-paginator-goto>
+                        <tr *matNoDataRow>
+                            <td class="mat-cell border-0" [attr.colspan]="plansOverviewColumns.length">
+                                <proxy-no-record-found [title]="'plans'" [showBtn]="false"></proxy-no-record-found>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </mat-card-content>
         </mat-card>
     </div>
@@ -1646,52 +1738,72 @@
 
 <ng-template #taxes>
     <div class="flex flex-col">
-        <div>
+        <div class="flex items-center justify-between mb-6">
+            <h5 class="mat-h5 my-0">Taxes</h5>
             <button matButton="filled" (click)="addNewOption()">
-                <mat-icon class="material-icons-outlined mat-icon-18"> add </mat-icon> Add Tax
+                <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">add</mat-icon> Add Tax
             </button>
         </div>
 
-        <table mat-table [dataSource]="taxesData" class="default-table responsive-table">
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Name</th>
-                <td mat-cell *matCellDef="let tax">
-                    {{ tax.name }}
-                </td>
-            </ng-container>
-            <ng-container matColumnDef="code">
-                <th mat-header-cell *matHeaderCellDef>Code</th>
-                <td mat-cell *matCellDef="let tax">
-                    {{ tax.code }}
-                </td>
-            </ng-container>
-            <ng-container matColumnDef="rate">
-                <th mat-header-cell *matHeaderCellDef>Rate</th>
-                <td mat-cell *matCellDef="let tax">
-                    {{ tax.rate }}
-                </td>
-            </ng-container>
-            <ng-container matColumnDef="action">
-                <th mat-header-cell *matHeaderCellDef>Action</th>
-                <td mat-cell *matCellDef="let tax">
-                    <button type="button" matIconButton (click)="deleteTax(tax)">
-                        <mat-icon class="material-icons-outlined mat-icon-18"> delete </mat-icon>
-                    </button>
-                </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="taxesDisplayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: taxesDisplayedColumns"></tr>
-            <tr class="mat-row" *matNoDataRow>
-                <td class="mat-cell border-0" [attr.colspan]="taxesDisplayedColumns.length">
-                    <div class="flex justify-center items-center w-full mat-subtitle-2 text-dark">No taxes Found</div>
-                </td>
-            </tr>
-        </table>
+        <mat-card class="w-full outline-card responsive-card p-0">
+            <mat-card-content>
+                <div class="table-scroll">
+                    <table mat-table [dataSource]="taxesData" class="default-table responsive-table">
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef>Name</th>
+                            <td mat-cell *matCellDef="let tax" data-label="Name">
+                                <span class="font-semibold">{{ tax.name }}</span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="code">
+                            <th mat-header-cell *matHeaderCellDef>Code</th>
+                            <td mat-cell *matCellDef="let tax" data-label="Code">
+                                <span
+                                    class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
+                                    >{{ tax.code }}</span
+                                >
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="rate">
+                            <th mat-header-cell *matHeaderCellDef>Rate (%)</th>
+                            <td mat-cell *matCellDef="let tax" data-label="Rate">
+                                <span class="font-semibold tabular-nums"
+                                    >{{ tax.rate
+                                    }}<span class="text-xs [color:var(--color-common-text-2)] ml-0.5">%</span></span
+                                >
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef class="!text-right">Action</th>
+                            <td mat-cell *matCellDef="let tax" data-label="Action">
+                                <div class="flex items-center justify-end pr-3">
+                                    <button
+                                        type="button"
+                                        matIconButton
+                                        (click)="deleteTax(tax)"
+                                        matTooltip="Delete Tax"
+                                    >
+                                        <mat-icon class="material-icons-outlined mat-icon-18">delete</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="taxesDisplayedColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: taxesDisplayedColumns" class="hover-action"></tr>
+                        <tr *matNoDataRow>
+                            <td class="mat-cell border-0" [attr.colspan]="taxesDisplayedColumns.length">
+                                <proxy-no-record-found [title]="'taxes'" [showBtn]="false"></proxy-no-record-found>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </mat-card-content>
+        </mat-card>
     </div>
 </ng-template>
 
 <ng-template #manageSubscription>
-    <div class="flex gap-4 my-6 grow" style="min-height: 400px">
+    <div class="flex gap-4 my-6 grow min-h-[400px]">
         <div class="flex flex-col gap-1 border-r pr-6 w-[250px] service-list">
             <p class="mat-body-2 font-semibold mt-0">Services</p>
             <mat-list role="list" class="default-list pt-0">
@@ -1742,16 +1854,12 @@
         <div class="width-md-700 w-md-100 px-6">
             <div class="flex flex-col">
                 @switch (selectedSubscriptionServiceIndex) { @case (-1) {
-                <h3>Plans</h3>
                 <ng-container *ngTemplateOutlet="plansOverview"></ng-container>
                 } @case (-2) {
-                <h3>Billable Metric</h3>
                 <ng-container *ngTemplateOutlet="billableMetrics"></ng-container>
                 } @case (-3) {
-                <h3>Payment Details</h3>
                 <ng-container *ngTemplateOutlet="paymentDetails"></ng-container>
                 } @case (-4) {
-                <h3>Taxes</h3>
                 <ng-container *ngTemplateOutlet="taxes"></ng-container>
                 } }
             </div>
@@ -1760,234 +1868,282 @@
 </ng-template>
 
 <ng-template #brandingStepContent>
-    <div class="flex gap-6 grow min-h-[400px] branding-step-content">
+    <div class="flex gap-6 grow min-h-[400px] branding-step-content max-lg:flex-col justify-between mb-3">
         <!-- Left: Branding form -->
-        <div class="flex flex-col branding-form w-1/2">
-            <p class="mat-body-2 text-secondary font-medium mb-3">Customize your login UI</p>
-            <!-- Logo: choose URL or file upload, then show relevant input -->
-            <div class="flex items-center gap-4 font-12 mb-3 flex-wrap">
-                <!-- <span class="mat-body-2 text-secondary font-medium mb-0">Logo</span> -->
-                <mat-radio-group
-                    [value]="logoInputMode"
-                    (change)="logoInputMode = $event.value"
-                    class="flex gap-4 branding-logo-radio radio-button-custom-style"
-                >
-                    <mat-radio-button value="url">Enter URL</mat-radio-button>
-                    <mat-radio-button value="file">
-                        Upload file
-                        <mat-icon
-                            class="material-icons-outlined mat-icon-14 text-secondary align-middle cursor-default"
-                            matTooltip="Maximum file size: 2 MB"
-                            matTooltipPosition="right"
-                            >info</mat-icon
-                        >
-                    </mat-radio-button>
-                </mat-radio-group>
-            </div>
-            @if (logoInputMode === 'url') {
-            <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Logo URL</mat-label>
-                <input
-                    matInput
-                    type="text"
-                    placeholder="Enter logo URL"
-                    [formControl]="featureForm.get('brandingDetails.logo_url')"
-                />
-            </mat-form-field>
-            } @if (logoInputMode === 'file') {
-            <div class="flex items-center gap-2 mb-20">
-                <input
-                    #logoFileInput
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    (change)="onBrandingLogoFileSelected($event)"
-                />
-                <button type="button" matButton="outlined" (click)="logoFileInput.click()" [disabled]="isLogoUploading">
-                    <mat-icon class="material-icons-outlined mat-icon-18">
-                        {{ isLogoUploading ? 'hourglass_empty' : 'upload_file' }}
-                    </mat-icon>
-                    {{ isLogoUploading ? 'Uploading...' : 'Upload logo' }}
-                </button>
-                @if (logoUrl && !isLogoUploading) {
-                <span class="mat-body-2 text-secondary">{{ logoFileInput.files?.[0]?.name || 'Logo selected' }}</span>
-                <button type="button" matIconButton (click)="logoUrl = null; logoFileInput.value = ''">
-                    <mat-icon class="material-icons-outlined mat-icon-18 text-danger">close</mat-icon>
-                </button>
-                }
-            </div>
-            }
-            <!-- Title (after logo) -->
-            <ng-container
-                *ngTemplateOutlet="
-                    inputField;
-                    context: {
-                        fieldControl: featureForm.get('brandingDetails.title'),
-                        fieldConfig: {
-                            label: 'Title'
-                        }
-                    }
-                "
-            ></ng-container>
-            <!-- Sign up button text -->
-            <ng-container
-                *ngTemplateOutlet="
-                    inputField;
-                    context: {
-                        fieldControl: featureForm.get('brandingDetails.sign_up_button_text'),
-                        fieldConfig: {
-                            label: 'Sign up button text'
-                        }
-                    }
-                "
-            ></ng-container>
-            <!-- Input position / Border radius (after logo) -->
-            <ng-container
-                *ngTemplateOutlet="
-                    inputField;
-                    context: {
-                        fieldControl: featureForm.get('brandingDetails.border_radius'),
-                        fieldConfig: {
-                            label: 'Border radius',
-                            type: featureFieldType.Select,
-                            source: ['none', 'small', 'medium', 'large']
-                        }
-                    }
-                "
-            ></ng-container>
-
-            <!-- Theme -->
-            @if (isEditMode) {
-            <ng-container
-                *ngTemplateOutlet="
-                    inputField;
-                    context: {
-                        fieldControl: featureForm.get('brandingDetails.theme'),
-                        fieldConfig: {
-                            label: 'Theme',
-                            type: featureFieldType.Select,
-                            source: [WidgetTheme.System, WidgetTheme.Light, WidgetTheme.Dark]
-                        }
-                    }
-                "
-            ></ng-container>
-            } @if (isEditMode) {
-            <ng-container
-                *ngTemplateOutlet="
-                    inputField;
-                    context: {
-                        fieldControl: featureForm.get('brandingDetails.version'),
-                        fieldConfig: {
-                            label: 'Version',
-                            type: featureFieldType.Select,
-                            source: ['v1', 'v2']
-                        }
-                    }
-                "
-            ></ng-container>
-            }
-            <!-- Show social login as icon (auth feature only) -->
-            <div class="flex flex-col gap-2 mb-2">
-                @if (featureForm.get('primaryDetails.feature_id')?.value === 1) {
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="mat-body-2 mb-0">Show the social login as a icon: </span>
-                    <mat-slide-toggle [formControl]="featureForm.get('brandingDetails.icons')" color="primary">
-                    </mat-slide-toggle>
+        <div class="flex flex-col gap-4 branding-form w-1/2 max-lg:w-full overflow-y-auto pr-1">
+            <!-- Logo Section -->
+            <div class="rounded-xl border broder-color overflow-hidden">
+                <div class="flex items-center gap-2 px-4 py-3 border-b broder-color bg-color">
+                    <mat-icon class="!text-base !w-4 text-color">image</mat-icon>
+                    <span class="mat-body-2 font-semibold">Logo</span>
                 </div>
-                }
-                <!-- Show Create Account For New User (edit mode only, auth feature only) -->
-                @if (isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1) {
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="mat-body-2 mb-0">Show Create Account For New User: </span>
-                    <mat-slide-toggle
-                        [formControl]="featureForm.get('brandingDetails.create_account_link')"
-                        color="primary"
+                <div class="px-4 pt-4 pb-3 flex flex-col gap-3">
+                    <mat-radio-group
+                        [value]="logoInputMode"
+                        (change)="logoInputMode = $event.value"
+                        class="flex gap-4 branding-logo-radio radio-button-custom-style"
                     >
-                    </mat-slide-toggle>
+                        <mat-radio-button value="url">Enter URL</mat-radio-button>
+                        <mat-radio-button value="file">
+                            Upload file
+                            <mat-icon
+                                class="material-icons-outlined mat-icon-14 text-color align-middle cursor-default"
+                                matTooltip="Maximum file size: 2 MB"
+                                matTooltipPosition="right"
+                                >info</mat-icon
+                            >
+                        </mat-radio-button>
+                    </mat-radio-group>
+                    @if (logoInputMode === 'url') {
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Logo URL</mat-label>
+                        <input
+                            matInput
+                            type="text"
+                            placeholder="Enter logo URL"
+                            [formControl]="featureForm.get('brandingDetails.logo_url')"
+                        />
+                    </mat-form-field>
+                    } @if (logoInputMode === 'file') {
+                    <div class="flex items-center gap-2">
+                        <input
+                            #logoFileInput
+                            type="file"
+                            accept="image/*"
+                            hidden
+                            (change)="onBrandingLogoFileSelected($event)"
+                        />
+                        <button
+                            type="button"
+                            matButton="outlined"
+                            (click)="logoFileInput.click()"
+                            [disabled]="isLogoUploading"
+                        >
+                            <mat-icon class="material-icons-outlined mat-icon-18">
+                                {{ isLogoUploading ? 'hourglass_empty' : 'upload_file' }}
+                            </mat-icon>
+                            {{ isLogoUploading ? 'Uploading...' : 'Upload logo' }}
+                        </button>
+                        @if (logoUrl && !isLogoUploading) {
+                        <span
+                            class="mat-body-2 text-color truncate max-w-[160px]"
+                            >{{ logoFileInput.files?.[0]?.name || 'Logo selected' }}</span
+                        >
+                        <button type="button" matIconButton (click)="logoUrl = null; logoFileInput.value = ''">
+                            <mat-icon class="material-icons-outlined mat-icon-18 text-danger">close</mat-icon>
+                        </button>
+                        }
+                    </div>
+                    }
                 </div>
-                }
-                <!-- Light theme primary color -->
-                <div class="flex items-center gap-2">
-                    <label class="mat-body-2 mb-0 min-w-[120px]">Primary color</label>
-                    <input
-                        type="color"
-                        class="w-[30px] h-[30px] cursor-pointer border border-[var(--color-common-border)] rounded"
-                        [value]="featureForm.get('brandingDetails.light_theme_primary_color')?.value || '#000000'"
-                        (input)="
-                            featureForm
-                                .get('brandingDetails.light_theme_primary_color')
-                                ?.setValue($any($event.target).value)
+            </div>
+
+            <!-- Appearance Section -->
+            <div class="rounded-xl border broder-color overflow-hidden">
+                <div class="flex items-center gap-2 px-4 py-3 border-b broder-color bg-color">
+                    <mat-icon class="!text-base !w-4 text-color">tune</mat-icon>
+                    <span class="mat-body-2 font-semibold">Appearance</span>
+                </div>
+                <div class="px-4 pt-4 pb-2 flex flex-col gap-1">
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('brandingDetails.title'),
+                                fieldConfig: { label: 'Title' }
+                            }
                         "
-                    />
-                    <span class="mat-body-2 text-secondary">{{
-                        featureForm.get('brandingDetails.light_theme_primary_color')?.value || '#000000'
-                    }}</span>
-                    <span class="mat-body-2 text-secondary">(Light theme)</span>
-                </div>
-                <!-- Dark theme primary color -->
-                <div class="flex items-center gap-2">
-                    <label class="mat-body-2 mb-0 min-w-[120px]">Primary color</label>
-                    <input
-                        type="color"
-                        class="w-[30px] h-[30px] cursor-pointer border border-[var(--color-common-border)] rounded"
-                        [value]="featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff'"
-                        (input)="
-                            featureForm
-                                .get('brandingDetails.dark_theme_primary_color')
-                                ?.setValue($any($event.target).value)
+                    ></ng-container>
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('brandingDetails.sign_up_button_text'),
+                                fieldConfig: { label: 'Sign up button text' }
+                            }
                         "
-                    />
-                    <span class="mat-body-2 text-secondary">{{
-                        featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff'
-                    }}</span>
-                    <span class="mat-body-2 text-secondary">(Dark theme)</span>
-                </div>
-                <!-- Button color -->
-                <div class="flex items-center gap-2">
-                    <label class="mat-body-2 mb-0 min-w-[120px]">Button color</label>
-                    <input
-                        type="color"
-                        class="w-[30px] h-[30px] cursor-pointer border border-[var(--color-common-border)] rounded"
-                        [value]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
-                        (input)="featureForm.get('brandingDetails.button_color')?.setValue($any($event.target).value)"
-                    />
-                    <span class="mat-body-2 text-secondary">{{
-                        featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'
-                    }}</span>
-                </div>
-                <!-- Button hover color -->
-                <div class="flex items-center gap-2">
-                    <label class="mat-body-2 mb-0 min-w-[120px]">Button hover color</label>
-                    <input
-                        type="color"
-                        class="w-[30px] h-[30px] cursor-pointer border border-[var(--color-common-border)] rounded"
-                        [value]="featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'"
-                        (input)="
-                            featureForm.get('brandingDetails.button_hover_color')?.setValue($any($event.target).value)
+                    ></ng-container>
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('brandingDetails.border_radius'),
+                                fieldConfig: {
+                                    label: 'Border radius',
+                                    type: featureFieldType.Select,
+                                    source: ['none', 'small', 'medium', 'large']
+                                }
+                            }
                         "
-                    />
-                    <span class="mat-body-2 text-secondary">{{
-                        featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'
-                    }}</span>
-                </div>
-                <!-- Button text color -->
-                <div class="flex items-center gap-2">
-                    <label class="mat-body-2 mb-0 min-w-[120px]">Button text color</label>
-                    <input
-                        type="color"
-                        class="w-[30px] h-[30px] cursor-pointer border border-[var(--color-common-border)] rounded"
-                        [value]="featureForm.get('brandingDetails.button_text_color')?.value || '#000000'"
-                        (input)="
-                            featureForm.get('brandingDetails.button_text_color')?.setValue($any($event.target).value)
+                    ></ng-container>
+                    @if (isEditMode) {
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('brandingDetails.theme'),
+                                fieldConfig: {
+                                    label: 'Theme',
+                                    type: featureFieldType.Select,
+                                    source: [WidgetTheme.System, WidgetTheme.Light, WidgetTheme.Dark]
+                                }
+                            }
                         "
-                    />
-                    <span class="mat-body-2 text-secondary">{{
-                        featureForm.get('brandingDetails.button_text_color')?.value || '#000000'
-                    }}</span>
+                    ></ng-container>
+                    <ng-container
+                        *ngTemplateOutlet="
+                            inputField;
+                            context: {
+                                fieldControl: featureForm.get('brandingDetails.version'),
+                                fieldConfig: {
+                                    label: 'Version',
+                                    type: featureFieldType.Select,
+                                    source: ['v1', 'v2']
+                                }
+                            }
+                        "
+                    ></ng-container>
+                    }
+                </div>
+            </div>
+
+            <!-- Display Options (auth feature only) -->
+            @if (featureForm.get('primaryDetails.feature_id')?.value === 1) {
+            <div class="rounded-xl border broder-color overflow-hidden">
+                <div class="flex items-center gap-2 px-4 py-3 border-b broder-color bg-color">
+                    <mat-icon class="!text-base !w-4 text-color">toggle_on</mat-icon>
+                    <span class="mat-body-2 font-semibold">Display Options</span>
+                </div>
+                <div class="flex flex-col divide-y divide-[var(--color-common-border)]">
+                    <div class="flex items-center justify-between gap-3 px-4 py-3">
+                        <span class="mat-body-2">Show social login as icon</span>
+                        <mat-slide-toggle
+                            [formControl]="featureForm.get('brandingDetails.icons')"
+                            color="primary"
+                        ></mat-slide-toggle>
+                    </div>
+                    @if (isEditMode) {
+                    <div class="flex items-center justify-between gap-3 px-4 py-3">
+                        <span class="mat-body-2">Show Create Account for new user</span>
+                        <mat-slide-toggle
+                            [formControl]="featureForm.get('brandingDetails.create_account_link')"
+                            color="primary"
+                        ></mat-slide-toggle>
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+
+            <!-- Colors Section -->
+            <div class="rounded-xl border broder-color overflow-hidden">
+                <div class="flex items-center gap-2 px-4 py-3 border-b broder-color bg-color">
+                    <mat-icon class="!text-base !w-4 text-color">palette</mat-icon>
+                    <span class="mat-body-2 font-semibold">Colors</span>
+                </div>
+                <div class="flex flex-col divide-y divide-[var(--color-common-border)]">
+                    <div class="flex items-center justify-between gap-3 px-4 py-3">
+                        <div class="flex flex-col gap-0.5">
+                            <label class="mat-body-2 font-medium">Primary color</label>
+                            <span class="text-xs text-color">Light theme</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="mat-body-2 text-color text-xs font-mono">{{
+                                featureForm.get('brandingDetails.light_theme_primary_color')?.value || '#000000'
+                            }}</span>
+                            <input
+                                type="color"
+                                class="w-8 h-8 cursor-pointer border broder-color rounded-lg overflow-hidden p-0.5"
+                                [value]="
+                                    featureForm.get('brandingDetails.light_theme_primary_color')?.value || '#000000'
+                                "
+                                (input)="
+                                    featureForm
+                                        .get('brandingDetails.light_theme_primary_color')
+                                        ?.setValue($any($event.target).value)
+                                "
+                            />
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between gap-3 px-4 py-3">
+                        <div class="flex flex-col gap-0.5">
+                            <label class="mat-body-2 font-medium">Primary color</label>
+                            <span class="text-xs text-color">Dark theme</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="mat-body-2 text-color text-xs font-mono">{{
+                                featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff'
+                            }}</span>
+                            <input
+                                type="color"
+                                class="w-8 h-8 cursor-pointer border broder-color rounded-lg overflow-hidden p-0.5"
+                                [value]="
+                                    featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff'
+                                "
+                                (input)="
+                                    featureForm
+                                        .get('brandingDetails.dark_theme_primary_color')
+                                        ?.setValue($any($event.target).value)
+                                "
+                            />
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between gap-3 px-4 py-3">
+                        <label class="mat-body-2 font-medium">Button color</label>
+                        <div class="flex items-center gap-2">
+                            <span class="mat-body-2 text-color text-xs font-mono">{{
+                                featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'
+                            }}</span>
+                            <input
+                                type="color"
+                                class="w-8 h-8 cursor-pointer border broder-color rounded-lg overflow-hidden p-0.5"
+                                [value]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
+                                (input)="
+                                    featureForm.get('brandingDetails.button_color')?.setValue($any($event.target).value)
+                                "
+                            />
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between gap-3 px-4 py-3">
+                        <label class="mat-body-2 font-medium">Button hover color</label>
+                        <div class="flex items-center gap-2">
+                            <span class="mat-body-2 text-color text-xs font-mono">{{
+                                featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'
+                            }}</span>
+                            <input
+                                type="color"
+                                class="w-8 h-8 cursor-pointer border broder-color rounded-lg overflow-hidden p-0.5"
+                                [value]="featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'"
+                                (input)="
+                                    featureForm
+                                        .get('brandingDetails.button_hover_color')
+                                        ?.setValue($any($event.target).value)
+                                "
+                            />
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between gap-3 px-4 py-3">
+                        <label class="mat-body-2 font-medium">Button text color</label>
+                        <div class="flex items-center gap-2">
+                            <span class="mat-body-2 text-color text-xs font-mono">{{
+                                featureForm.get('brandingDetails.button_text_color')?.value || '#000000'
+                            }}</span>
+                            <input
+                                type="color"
+                                class="w-8 h-8 cursor-pointer border broder-color rounded-lg overflow-hidden p-0.5"
+                                [value]="featureForm.get('brandingDetails.button_text_color')?.value || '#000000'"
+                                (input)="
+                                    featureForm
+                                        .get('brandingDetails.button_text_color')
+                                        ?.setValue($any($event.target).value)
+                                "
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- Right: Preview (always show version 2 layout for branding) -->
+        <!-- Right: Preview -->
         <div class="branding-preview">
             @if (isEditMode && featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
             featureForm.get('brandingDetails.version')?.value === 'v2') {

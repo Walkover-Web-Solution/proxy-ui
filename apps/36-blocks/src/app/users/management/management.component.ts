@@ -11,6 +11,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,12 +23,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDividerModule } from '@angular/material/divider';
 import { ServiceListComponent } from '@proxy/ui/service-list';
+import { NoRecordFoundComponent } from '@proxy/ui/no-record-found';
+import { MatPaginatorGotoComponent } from '@proxy/ui/mat-paginator-goto';
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { CopyButtonComponent } from '@proxy/ui/copy-button';
 import { MarkdownModule } from 'ngx-markdown';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { PageEvent } from '@angular/material/paginator';
 import { FeatureComponentStore } from '../../features/feature/feature.store';
 import { Observable, of, Subject, takeUntil } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -52,7 +55,10 @@ interface IRole {
         CommonModule,
         ReactiveFormsModule,
         MatTableModule,
+        MatCardModule,
         MatPaginatorModule,
+        NoRecordFoundComponent,
+        MatPaginatorGotoComponent,
         MatButtonModule,
         MatIconModule,
         MatFormFieldModule,
@@ -138,8 +144,6 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
     @ViewChild('addRoleDialogTemplate', { static: false }) addRoleDialogTemplate: TemplateRef<any>;
     @ViewChild('addPermissionDialogTemplate', { static: false }) addPermissionDialogTemplate: TemplateRef<any>;
-    @ViewChild('rolesPaginator') rolesPaginator!: MatPaginator;
-    @ViewChild('permissionsPaginator') permissionsPaginator!: MatPaginator;
 
     constructor() {
         this.dialogRoleForm = new FormGroup({

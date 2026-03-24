@@ -182,6 +182,29 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
         super.ngOnDestroy();
     }
 
+    public getMethodBadgeClass(method: string): string {
+        switch (method?.toUpperCase()) {
+            case 'GET':
+                return 'badge-method-get';
+            case 'POST':
+                return 'badge-method-post';
+            case 'PUT':
+            case 'PATCH':
+                return 'badge-method-put';
+            case 'DELETE':
+                return 'badge-method-delete';
+            default:
+                return 'badge-method-default';
+        }
+    }
+
+    public getStatusBadgeClass(code: number): string {
+        if (code >= 200 && code < 300) return 'badge-status-2xx';
+        if (code >= 300 && code < 400) return 'badge-status-3xx';
+        if (code >= 400) return 'badge-status-4xx';
+        return 'badge-method-default';
+    }
+
     public onEnter(searchKeyword: string) {
         if (searchKeyword?.length) {
             this.params = {
