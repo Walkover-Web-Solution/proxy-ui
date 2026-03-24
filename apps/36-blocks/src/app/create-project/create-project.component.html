@@ -244,7 +244,7 @@
 <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
     <mat-form-field appearance="outline" class="w-full">
         <mat-label>
-            {{ fieldConfig?.label }} @if (fieldConfig?.is_required) { <span class="text-danger">*</span> }
+            {{ fieldConfig?.label }}
         </mat-label>
 
         <input
@@ -273,15 +273,16 @@
 </ng-template>
 
 <ng-template #matErrors let-label="label" let-fieldControl="fieldControl" let-patternErrorText="patternErrorText">
-    @if (fieldControl?.errors?.customError; as customError) { <mat-error> {{ customError }} </mat-error> } @if
-    (fieldControl.errors?.required) { <mat-error> {{ label }} is required. </mat-error> } @if
-    (fieldControl.errors?.minlengthWithSpace) { <mat-error> Min required length is 3 </mat-error> } @if
-    (fieldControl.errors?.noStartEndSpaces) { <mat-error> Start and End spaces are not allowed</mat-error> } @if
-    (fieldControl.errors?.min; as minError) { <mat-error> Min value required is {{ minError?.min }} </mat-error> } @if
-    (fieldControl.errors?.max; as maxError) { <mat-error> Max value allowed is {{ maxError?.max }} </mat-error> } @if
-    (fieldControl.errors?.minlength; as minLengthError) {
-    <mat-error> Min required length is {{ minLengthError?.requiredLength }} </mat-error> } @if
-    (fieldControl.errors?.maxlength; as maxLengthError) {
-    <mat-error> Max allowed length is {{ maxLengthError?.requiredLength }} </mat-error> } @if
-    (fieldControl.errors?.pattern) { <mat-error> {{ patternErrorText ?? 'Enter valid ' + label }} </mat-error> }
+    @if (fieldControl?.errors?.customError; as customError) {
+    {{ customError }}
+    } @if (fieldControl.errors?.required) {
+    {{ label }} is required. } @if (fieldControl.errors?.minlengthWithSpace) { Min required length is 3 } @if
+    (fieldControl.errors?.noStartEndSpaces) { Start and End spaces are not allowed } @if (fieldControl.errors?.min; as
+    minError) { Min value required is {{ minError?.min }} } @if (fieldControl.errors?.max; as maxError) { Max value
+    allowed is {{ maxError?.max }} } @if (fieldControl.errors?.minlength; as minLengthError) { Min required length is
+    {{ minLengthError?.requiredLength }} } @if (fieldControl.errors?.maxlength; as maxLengthError) { Max allowed length
+    is {{ maxLengthError?.requiredLength }}
+    } @if (fieldControl.errors?.pattern) {
+    {{ patternErrorText ?? 'Enter valid ' + label }}
+    }
 </ng-template>

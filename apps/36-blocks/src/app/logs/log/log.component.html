@@ -2,9 +2,8 @@
     @if (isLoading$ | async) {
     <proxy-loader></proxy-loader>
     }
-    <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
-        <!-- <div class="flex flex-wrap items-start grow gap-4"> -->
-        <form [formGroup]="engProjectFormGroup" class="flex flex-wrap gap-4">
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <form [formGroup]="engProjectFormGroup" class="flex flex-wrap items-center grow gap-4">
             <mat-form-field appearance="outline" class="no-padding w-xs-100">
                 <mat-label>Select Project</mat-label>
                 <input
@@ -28,9 +27,7 @@
                         <mat-option [value]="''" class="mat-body-2">All</mat-option>
                         @for (project of engProjectFormGroup.value?.environments?.projects ?? (projects$ | async)?.data;
                         track project.id) {
-                        <mat-option [value]="project" class="mat-body-2">
-                            {{ project.name }}
-                        </mat-option>
+                        <mat-option [value]="project" class="mat-body-2">{{ project.name }}</mat-option>
                         }
                     </proxy-cdk-scroll>
                 </mat-autocomplete>
@@ -62,24 +59,21 @@
                         <mat-option [value]="''" class="mat-body-2">All</mat-option>
                         @for (environment of engProjectFormGroup.value?.projects?.environments ?? (environments$ |
                         async)?.data; track environment.id) {
-                        <mat-option [value]="environment" class="mat-body-2">
-                            {{ environment.name }}
-                        </mat-option>
+                        <mat-option [value]="environment" class="mat-body-2">{{ environment.name }}</mat-option>
                         }
                     </proxy-cdk-scroll>
                 </mat-autocomplete>
                 <mat-icon matSuffix>arrow_drop_down</mat-icon>
             </mat-form-field>
             <proxy-lib-search
-                [matFormFieldClass]="'unset-search-width width-md-600 w-md-100'"
+                [matFormFieldClass]="'no-padding w-xs-100'"
                 [placeholder]="'Hit Enter to Search'"
                 (inputChanges)="onEnter($event)"
                 [emitOnEnter]="true"
                 hint="To search in specific field use <b>field:</b> before anything (field => endpoint,request_body,response,headers)"
             ></proxy-lib-search>
         </form>
-        <!-- </div> -->
-        <div class="flex items-center justify-between gap-4 pt-1">
+        <div class="flex items-center gap-4 ml-auto flex-wrap">
             <date-range-picker
                 (selectedRangeValueChange)="setDateRange($event)"
                 [(selectedRangeValue)]="selectedRangeValue"
@@ -91,93 +85,83 @@
             </button>
             <mat-menu #emailExportButtonMenu="matMenu" class="filter-menu" xPosition="before">
                 <div (click)="$event.stopPropagation(); (false)">
-                    <div class="p-2">
-                        <div class="row" [formGroup]="logsFilterForm">
-                            <div class="col-lg-12">
-                                <mat-form-field appearance="outline" floatLabel="always" class="w-full">
-                                    <mat-label>Select request type</mat-label>
-                                    <mat-select
-                                        placeholder="Select request types"
-                                        formControlName="requestType"
-                                        multiple
-                                    >
-                                        <mat-checkbox
-                                            class="mat-option w-full"
-                                            [disableRipple]="true"
-                                            [indeterminate]="
-                                                logsFilterForm.controls.requestType.value.length > 0 &&
-                                                requestTypes.length > logsFilterForm.controls.requestType.value.length
-                                            "
-                                            [checked]="
-                                                requestTypes.length === logsFilterForm.controls.requestType.value.length
-                                            "
-                                            (click)="$event.stopPropagation()"
-                                            (change)="toggleSelectAllReqType($event)"
-                                        >
-                                            All
-                                        </mat-checkbox>
-                                        @for (type of requestTypes; track type) {
-                                        <mat-option [value]="type">{{ type }}</mat-option>
-                                        }
-                                    </mat-select>
-                                </mat-form-field>
-                                <mat-form-field appearance="outline" floatLabel="always" class="w-full">
-                                    <mat-label>Select range type</mat-label>
-                                    <mat-select
-                                        placeholder="Select range type"
-                                        formControlName="range"
-                                        (selectionChange)="changeRangeType($event.value)"
-                                    >
-                                        <mat-option [value]="''">None</mat-option>
-                                        <mat-option [value]="'response_time'">Response Time</mat-option>
-                                        <mat-option [value]="'status_code'">Status Code</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                            <div class="gap-2 flex">
-                                @if (logsFilterForm.controls.range.value) {
-                                <mat-form-field appearance="outline" class="w-full" floatLabel="always">
-                                    <mat-label>From</mat-label>
-                                    <input
-                                        matInput
-                                        placeholder="From"
-                                        autocomplete="off"
-                                        formControlName="from"
-                                        proxyRemoveCharacter
-                                        [charactersToRemove]="['e', '+', '-', '.', ' ']"
-                                    />
-                                    @if (logsFilterForm.controls.from.invalid) { @if
-                                    (logsFilterForm.get('from').errors?.pattern) {
-                                    <mat-error>Invalid Number</mat-error>
-                                    } @if (logsFilterForm.get('from').errors?.limitExceeded) {
-                                    <mat-error><b>From</b> should be less than or equal to <b>To</b></mat-error>
-                                    } @if (logsFilterForm.get('from').errors?.maxlength; as maxlengthError) {
-                                    <mat-error>Max {{ maxlengthError.requiredLength }} number are allowed</mat-error>
-                                    } }
-                                </mat-form-field>
-                                <mat-form-field appearance="outline" class="w-full" floatLabel="always">
-                                    <mat-label>To</mat-label>
-                                    <input
-                                        matInput
-                                        placeholder="To"
-                                        autocomplete="off"
-                                        formControlName="to"
-                                        proxyRemoveCharacter
-                                        [charactersToRemove]="['e', '+', '-', '.', ' ']"
-                                    />
-                                    @if (logsFilterForm.controls.to.invalid) { @if
-                                    (logsFilterForm.get('to').errors?.pattern) {
-                                    <mat-error>Invalid Number</mat-error>
-                                    } @if (logsFilterForm.get('to').errors?.maxlength; as maxlengthError) {
-                                    <mat-error>Max {{ maxlengthError.requiredLength }} number are allowed</mat-error>
-                                    } }
-                                </mat-form-field>
+                    <div class="pb-0 pt-6 px-6" [formGroup]="logsFilterForm">
+                        <mat-form-field appearance="outline" floatLabel="always" class="w-full">
+                            <mat-label>Select request type</mat-label>
+                            <mat-select placeholder="Select request types" formControlName="requestType" multiple>
+                                <mat-checkbox
+                                    class="mat-option w-full"
+                                    [disableRipple]="true"
+                                    [indeterminate]="
+                                        logsFilterForm.controls.requestType.value.length > 0 &&
+                                        requestTypes.length > logsFilterForm.controls.requestType.value.length
+                                    "
+                                    [checked]="requestTypes.length === logsFilterForm.controls.requestType.value.length"
+                                    (click)="$event.stopPropagation()"
+                                    (change)="toggleSelectAllReqType($event)"
+                                >
+                                    All
+                                </mat-checkbox>
+                                @for (type of requestTypes; track type) {
+                                <mat-option [value]="type">{{ type }}</mat-option>
                                 }
-                            </div>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" floatLabel="always" class="w-full">
+                            <mat-label>Select range type</mat-label>
+                            <mat-select
+                                placeholder="Select range type"
+                                formControlName="range"
+                                (selectionChange)="changeRangeType($event.value)"
+                            >
+                                <mat-option [value]="''">None</mat-option>
+                                <mat-option [value]="'response_time'">Response Time</mat-option>
+                                <mat-option [value]="'status_code'">Status Code</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        @if (logsFilterForm.controls.range.value) {
+                        <div class="flex gap-4">
+                            <mat-form-field appearance="outline" class="w-full" floatLabel="always">
+                                <mat-label>From</mat-label>
+                                <input
+                                    matInput
+                                    placeholder="From"
+                                    autocomplete="off"
+                                    formControlName="from"
+                                    proxyRemoveCharacter
+                                    [charactersToRemove]="['e', '+', '-', '.', ' ']"
+                                />
+                                @if (logsFilterForm.controls.from.invalid) { @if
+                                (logsFilterForm.get('from').errors?.pattern) {
+                                <mat-error>Invalid Number</mat-error>
+                                } @if (logsFilterForm.get('from').errors?.limitExceeded) {
+                                <mat-error><b>From</b> should be less than or equal to <b>To</b></mat-error>
+                                } @if (logsFilterForm.get('from').errors?.maxlength; as maxlengthError) {
+                                <mat-error>Max {{ maxlengthError.requiredLength }} number are allowed</mat-error>
+                                } }
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="w-full" floatLabel="always">
+                                <mat-label>To</mat-label>
+                                <input
+                                    matInput
+                                    placeholder="To"
+                                    autocomplete="off"
+                                    formControlName="to"
+                                    proxyRemoveCharacter
+                                    [charactersToRemove]="['e', '+', '-', '.', ' ']"
+                                />
+                                @if (logsFilterForm.controls.to.invalid) { @if
+                                (logsFilterForm.get('to').errors?.pattern) {
+                                <mat-error>Invalid Number</mat-error>
+                                } @if (logsFilterForm.get('to').errors?.maxlength; as maxlengthError) {
+                                <mat-error>Max {{ maxlengthError.requiredLength }} number are allowed</mat-error>
+                                } }
+                            </mat-form-field>
                         </div>
+                        }
                     </div>
                     <mat-divider></mat-divider>
-                    <div class="flex items-center gap-2 action-button p-2">
+                    <div class="flex items-center gap-x-4 action-button p-6">
                         <button matButton="filled" (click)="applyFilter()" [disabled]="logsFilterForm.invalid">
                             Apply
                         </button>
@@ -199,7 +183,7 @@
     </div>
     <mat-card class="p-0 outline-card responsive-card grow">
         <mat-card-content>
-            <div class="table-scroll" style="height: calc(100vh - 180px)">
+            <div class="table-scroll">
                 <table
                     mat-table
                     [dataSource]="(logs$ | async)?.data"
@@ -210,53 +194,83 @@
                     <!-- Time Column -->
                     <ng-container matColumnDef="created_at">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time</th>
-                        <td mat-cell *matCellDef="let element" data-label="Time">
-                            <span>
-                                {{ element?.created_at | date: 'd MMM y' }}
-                            </span>
-                            <span>({{ element?.created_at | date: 'mediumTime' }})</span>
+                        <td mat-cell *matCellDef="let element" data-label="Date/Time">
+                            <div class="flex flex-col gap-0.5">
+                                <span class="text-sm text-color">{{ element?.created_at | date: 'd MMM y' }}</span>
+                                <span class="text-xs text-grey">{{ element?.created_at | date: 'shortTime' }}</span>
+                            </div>
                         </td>
                     </ng-container>
 
                     <!-- Project name Column -->
                     <ng-container matColumnDef="project_name">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Project name</th>
-                        <td mat-cell *matCellDef="let element" data-label="Project name">
-                            {{ element.project_name }} ({{ element.environment_name }})
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Project</th>
+                        <td mat-cell *matCellDef="let element" data-label="Project">
+                            <div class="flex flex-col gap-0.5">
+                                <span class="text-sm font-semibold text-color">{{ element.project_name }}</span>
+                                <span class="text-xs text-grey">{{ element.environment_name }}</span>
+                            </div>
                         </td>
                     </ng-container>
 
                     <!-- User IP Column -->
                     <ng-container matColumnDef="user_ip">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>User IP</th>
-                        <td mat-cell *matCellDef="let element" data-label="User IP">{{ element.user_ip }}</td>
+                        <td mat-cell *matCellDef="let element" data-label="User IP">
+                            <span
+                                class="font-mono text-xs bg-[var(--color-common-chip-bg)] px-2 py-0.5 rounded-4 [color:var(--color-common-text-2)]"
+                                >{{ element.user_ip }}</span
+                            >
+                        </td>
                     </ng-container>
 
                     <!-- Endpoint Column -->
                     <ng-container matColumnDef="endpoint">
                         <th mat-header-cell *matHeaderCellDef>Endpoint</th>
                         <td mat-cell *matCellDef="let element" class="w-b-hyphens" data-label="Endpoint">
-                            {{ element.endpoint }}
+                            <span class="font-mono text-xs [color:var(--color-common-text-2)]">{{
+                                element.endpoint
+                            }}</span>
                         </td>
                     </ng-container>
 
                     <!-- Request Type Column -->
                     <ng-container matColumnDef="request_type">
-                        <th mat-header-cell *matHeaderCellDef>Request type</th>
-                        <td mat-cell *matCellDef="let element" data-label="Request type">{{ element.request_type }}</td>
+                        <th mat-header-cell *matHeaderCellDef>Method</th>
+                        <td mat-cell *matCellDef="let element" data-label="Method">
+                            @if (element.request_type) {
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-semibold uppercase tracking-wide"
+                                [class]="getMethodBadgeClass(element.request_type)"
+                                >{{ element.request_type }}</span
+                            >
+                            }
+                        </td>
                     </ng-container>
 
                     <!-- Status Code Column -->
                     <ng-container matColumnDef="status_code">
-                        <th mat-header-cell *matHeaderCellDef>Status code</th>
-                        <td mat-cell *matCellDef="let element" data-label="Status code">{{ element.status_code }}</td>
+                        <th mat-header-cell *matHeaderCellDef>Status</th>
+                        <td mat-cell *matCellDef="let element" data-label="Status">
+                            @if (element.status_code) {
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-semibold tabular-nums"
+                                [class]="getStatusBadgeClass(element.status_code)"
+                                >{{ element.status_code }}</span
+                            >
+                            }
+                        </td>
                     </ng-container>
 
                     <!-- Response Time Column -->
                     <ng-container matColumnDef="response_time">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Response time</th>
                         <td mat-cell *matCellDef="let element" data-label="Response time">
-                            {{ element.response_time }}
+                            @if (element.response_time != null) {
+                            <span class="text-sm [color:var(--color-common-text-2)]"
+                                >{{ element.response_time }}<span class="text-xs text-grey ml-0.5">ms</span></span
+                            >
+                            }
                         </td>
                     </ng-container>
 

@@ -8,6 +8,5 @@ import { BaseComponent } from '@proxy/ui/base-component';
     selector: 'proxy-dashboard',
     imports: [RouterModule, MatIconModule],
     templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent extends BaseComponent {}

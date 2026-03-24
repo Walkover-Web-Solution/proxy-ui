@@ -35,6 +35,7 @@ import {
     AfterViewInit,
     TemplateRef,
     inject,
+    signal,
 } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { BehaviorSubject, Observable, distinctUntilChanged, filter, of, take, takeUntil } from 'rxjs';
@@ -312,7 +313,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }),
         // New form controls for conditional steps
     });
-    public demoDiv$: Observable<string> = of(null);
+    public demoDiv = signal<string>(null);
     public keepOrder = () => 0;
 
     ngOnInit(): void {
@@ -358,7 +359,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                         feature.reference_id,
                         feature.feature_id === 1 ? 'authorization' : 'subscription'
                     );
-                    this.demoDiv$ = of(`<div id="${feature.reference_id}"></div>`);
+                    this.demoDiv.set(`<div id="${feature.reference_id}"></div>`);
 
                     // Initialize billable metrics form fields for edit mode
                     if (feature.feature_id === 2) {
@@ -500,7 +501,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 }, 10);
             }
             this.featureId = obj.id;
-            this.demoDiv$ = of(`<div id="${obj.reference_id}"></div>`);
+            this.demoDiv.set(`<div id="${obj.reference_id}"></div>`);
         });
 
         this.createBillableMetric$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((metric) => {
@@ -2109,5 +2110,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         } else {
             this.configureMethodDialogForm.markAllAsTouched();
         }
+    }
+
+    handleFileUpload(fileInput: HTMLInputElement): void {
+        fileInput?.click();
     }
 }

@@ -1,6 +1,6 @@
 <div class="flex w-full h-full" [class.collapsed-sidebar]="!(isSideNavOpen | async)">
     <div
-        class="flex flex-col transition-all duration-200 mat-drawer-content max-desktop:fixed max-desktop:z-[999] max-desktop:top-0 max-desktop:bottom-0 max-desktop:bg-white"
+        class="flex flex-col transition-all duration-200 mat-drawer-content max-desktop:fixed max-desktop:z-[999] max-desktop:top-0 max-desktop:bottom-0"
         [class.mat-drawer-toggle-btn-hover]="isSideNavOpen | async"
         [class]="!(isSideNavOpen | async) ? 'overflow-hidden !w-[56px]' : 'w-[246px]'"
     >
@@ -86,6 +86,22 @@
         <!-- Proxy Sidenav::END -->
         @if (logInData$ | async; as user) {
         <div class="mat-drawer-footer mt-auto">
+            @if (isSideNavOpen | async) {
+            <div
+                class="flex items-center gap-2 px-4 py-2"
+                [matTooltip]="isDarkMode() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+                matTooltipPosition="above"
+            >
+                <mat-slide-toggle
+                    [checked]="isDarkMode()"
+                    (change)="switchedDarkMode($event.checked)"
+                    [class.hidden]="!(isSideNavOpen | async)"
+                    [attr.aria-label]="isDarkMode() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+                >
+                    <span class="text-sm">{{ !isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
+                </mat-slide-toggle>
+            </div>
+            }
             <button matButton [matMenuTriggerFor]="menu">
                 <div class="flex items-center">
                     @if (user.photoURL) {

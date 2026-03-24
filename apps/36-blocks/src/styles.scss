@@ -14,7 +14,7 @@
 /*Components*/
 @use 'assets/scss/component/filters';
 @use 'assets/scss/component/toast';
-@use 'assets/scss/component/table';
+// @use 'assets/scss/component/table';
 @use 'assets/scss/component/loader';
 @use 'assets/scss/component/icon';
 @use 'assets/scss/component/card';
@@ -33,14 +33,28 @@
 @use 'assets/scss/component/stepper';
 @use 'assets/scss/component/animation';
 @use '../../shared/scss/global';
-
+body {
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+}
+.text-color {
+    color: var(--mat-sys-on-surface);
+}
+.bg-color {
+    background-color: var(--color-common-bg) !important;
+}
+.broder-color {
+    border-color: var(--color-common-border) !important;
+}
+.secondary-text-color {
+    color: var(--color-common-secondary-text) !important;
+}
 /*Main*/
 .app-content {
     padding: 16px;
     min-height: 100%;
-    height: calc(100vh - 55px);
+    height: 100vh;
     overflow-y: auto;
-    background-color: var(--color-common-app-bg);
     @media (max-width: 768px) {
         overflow-x: auto;
     }

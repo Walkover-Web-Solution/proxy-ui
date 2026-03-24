@@ -1,12 +1,3 @@
-tr.group td[data-label='Actions'] .flex {
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-}
-
-tr.group:hover td[data-label='Actions'] .flex {
-    opacity: 1;
-}
-
 td[data-label='Actions'] {
     padding-right: 16px !important;
 }
