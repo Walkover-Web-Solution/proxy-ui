@@ -1,50 +1,49 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation, inject, input } from '@angular/core';
-import { PublicScriptTheme } from '@proxy/constant';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    effect,
+    inject,
+    input,
+} from '@angular/core';
+import { WidgetPortalRef, WidgetPortalService } from '../service/widget-portal.service';
+import { ToastService } from '../service/toast.service';
+import { ToastComponent } from '../service/toast.component';
+import { WidgetTheme } from '@proxy/constant';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from 'libs/ui/base-component/src/lib/base-component/base.component';
 import { OtpService } from '../service/otp.service';
+import { WidgetThemeService } from '../service/widget-theme.service';
 import { finalize, takeUntil } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { EMAIL_REGEX } from '@proxy/regex';
 
 @Component({
     selector: 'organization-details',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatSelectModule,
-        MatProgressSpinnerModule,
-        MatSnackBarModule,
-    ],
+    imports: [CommonModule, ReactiveFormsModule, ToastComponent],
     templateUrl: './organization-details.component.html',
-    encapsulation: ViewEncapsulation.ShadowDom,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    styleUrls: ['../../../styles.scss', './organization-details.component.scss'],
+    styleUrls: ['./organization-details.component.scss'],
 })
-export class OrganizationDetailsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class OrganizationDetailsComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
     public authToken = input<string>();
     public theme = input<string>();
-    protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected readonly WidgetTheme = WidgetTheme;
+    private readonly themeService = inject(WidgetThemeService);
+    readonly isDark = this.themeService.isDark;
 
     public organizationForm = new FormGroup({
         companyName: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
         email: new FormControl<string>('', [Validators.required, Validators.pattern(EMAIL_REGEX)]),
         phoneNumber: new FormControl<string>('', [Validators.pattern(/^$|^[0-9]{10,15}$/)]),
-        timezone: new FormControl<string>('', [Validators.required]),
-        timeZoneName: new FormControl<string>('', [Validators.required]),
+        timezone: new FormControl<string>(''),
+        timeZoneName: new FormControl<string>(''),
     });
 
     public updateInProgress = false;
@@ -68,10 +67,19 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     private editSnapshot: typeof this.initialFormValue = null;
 
     private otpService = inject(OtpService);
-    private snackBar = inject(MatSnackBar);
+    private cdr = inject(ChangeDetectorRef);
+    readonly toastService = inject(ToastService);
+    private readonly widgetPortal = inject(WidgetPortalService);
+
+    @ViewChild('editDialogPortal') private editDialogPortalEl?: ElementRef<HTMLElement>;
+    @ViewChild('toastPortal') private toastPortalEl?: ElementRef<HTMLElement>;
+
+    private editDialogRef: WidgetPortalRef | null = null;
+    private toastPortalRef: WidgetPortalRef | null = null;
 
     constructor() {
         super();
+        effect(() => this.themeService.setInputTheme(this.theme()));
     }
 
     public allowedUpdatePermissions: boolean = false;
@@ -100,6 +108,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
                             };
                             this.organizationForm.patchValue(value);
                             this.initialFormValue = value;
+                            this.cdr.markForCheck();
                         }
                     },
                     error: () => {},
@@ -128,19 +137,38 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
             });
     }
 
+    ngAfterViewInit(): void {
+        if (this.toastPortalEl?.nativeElement) {
+            this.toastPortalRef = this.widgetPortal.attach(this.toastPortalEl.nativeElement);
+        }
+    }
+
     ngOnDestroy(): void {
+        this.editDialogRef?.detach();
+        this.toastPortalRef?.detach();
         super.ngOnDestroy();
+    }
+
+    private showToast(message: string | undefined, type: 'success' | 'error'): void {
+        if (!message) return;
+        type === 'success' ? this.toastService.success(message) : this.toastService.error(message);
     }
 
     // ── NEW: enter edit mode ──────────────────────────────────────
     public startEdit(): void {
-        // Snapshot current values so Cancel can restore them
         this.editSnapshot = { ...this.organizationForm.value } as typeof this.initialFormValue;
         this.isEditing = true;
+        Promise.resolve().then(() => {
+            if (this.editDialogPortalEl?.nativeElement) {
+                this.editDialogRef = this.widgetPortal.attach(this.editDialogPortalEl.nativeElement);
+            }
+        });
     }
 
     // ── NEW: cancel and restore form to pre-edit state ────────────
     public cancelEdit(): void {
+        this.editDialogRef?.detach();
+        this.editDialogRef = null;
         if (this.editSnapshot) {
             this.organizationForm.patchValue(this.editSnapshot);
         }
@@ -181,11 +209,14 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
             this.initialFormValue.timezone === current.timezone &&
             this.initialFormValue.timeZoneName === current.timeZoneName
         ) {
-            this.isEditing = false; // just close edit mode silently
+            this.editDialogRef?.detach();
+            this.editDialogRef = null;
+            this.isEditing = false;
             return;
         }
 
         this.updateInProgress = true;
+        this.cdr.markForCheck();
         this.otpService
             .updateCompany(this.authToken(), {
                 name: organizationDetails.companyName ?? '',
@@ -196,18 +227,19 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
             })
             .pipe(
                 takeUntil(this.destroy$),
-                finalize(() => (this.updateInProgress = false))
+                finalize(() => {
+                    this.updateInProgress = false;
+                    this.cdr.markForCheck();
+                })
             )
             .subscribe({
                 next: (res) => {
                     this.initialFormValue = { ...current };
-                    this.isEditing = false; // ← close edit mode on success
-                    // this.snackBar.open(res?.data?.message ?? 'Information successfully updated', '✕', {
-                    //     duration: 3000,
-                    //     horizontalPosition: 'center',
-                    //     verticalPosition: 'top',
-                    //     panelClass: ['success-snackbar'],
-                    // });
+                    this.editDialogRef?.detach();
+                    this.editDialogRef = null;
+                    this.isEditing = false;
+                    this.showToast(res?.data?.message, 'success');
+                    this.cdr.markForCheck();
                     window.dispatchEvent(
                         new CustomEvent('organizationDetailsUpdateResponse', {
                             bubbles: true,
@@ -217,13 +249,8 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
                     );
                 },
                 error: (error) => {
-                    // Stay in edit mode so user can retry
-                    // this.snackBar.open('Something went wrong', '✕', {
-                    //     duration: 3000,
-                    //     horizontalPosition: 'center',
-                    //     verticalPosition: 'top',
-                    //     panelClass: ['error-snackbar'],
-                    // });
+                    this.showToast(undefined, 'error');
+                    this.cdr.markForCheck();
                     window.dispatchEvent(
                         new CustomEvent('organizationDetailsUpdateResponse', {
                             bubbles: true,

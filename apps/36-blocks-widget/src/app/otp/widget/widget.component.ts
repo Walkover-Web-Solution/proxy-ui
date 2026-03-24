@@ -1,9 +1,6 @@
 import { OtpService } from './../service/otp.service';
 import { CommonModule } from '@angular/common';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { ProgressBarComponent } from '../ui/progress-bar.component';
 import { SendOtpCenterComponent } from '../component';
 import { RegisterComponent } from '../component/register/register.component';
 import { LoginComponent } from '../component/login/login.component';
@@ -12,6 +9,7 @@ import { UserManagementComponent } from '../user-management/user-management.comp
 import { OrganizationDetailsComponent } from '../organization-details/organization-details.component';
 import {
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     Input,
     NgZone,
@@ -26,13 +24,11 @@ import {
     signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { META_TAG_ID, PublicScriptTheme, PublicScriptType } from '@proxy/constant';
+import { META_TAG_ID, WidgetTheme, PublicScriptType } from '@proxy/constant';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
-import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, skip, take, takeUntil } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
 
 import { getSubscriptionPlans, getWidgetData, upgradeSubscription } from '../store/actions/otp.action';
 import { IAppState } from '../store/app.state';
@@ -47,21 +43,19 @@ import {
 } from '../store/selectors';
 import { FeatureServiceIds } from '@proxy/models/features-model';
 import { OtpWidgetService } from '../service/otp-widget.service';
+import { WidgetThemeService } from '../service/widget-theme.service';
 import { OtpUtilityService } from '../service/otp-utility.service';
 import { SubscriptionRendererService } from '../service/subscription-renderer.service';
 import { ProxyAuthDomBuilderService } from '../service/proxy-auth-dom-builder.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionCenterComponent } from '../component/subscription-center/subscription-center.component';
 import { environment } from 'apps/36-blocks-widget/src/environments/environment';
-import { InputFields, WidgetVersion, ViewMode } from './utility/model';
+import { InputFields, WidgetVersion } from './utility/model';
 @Component({
     selector: 'proxy-auth-widget',
     imports: [
         CommonModule,
-        MatProgressBarModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatIconModule,
+        ProgressBarComponent,
         SubscriptionCenterComponent,
         SendOtpCenterComponent,
         RegisterComponent,
@@ -77,51 +71,43 @@ import { InputFields, WidgetVersion, ViewMode } from './utility/model';
 })
 export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, OnChanges, OnDestroy {
     @Input() public referenceId: string;
-    @Input() public type: string;
     @Input() public target: string;
-    @Input() public authToken: string;
     @Input() public showCompanyDetails: boolean;
     @Input() public userToken: string;
-    @Input() public isRolePermission: string;
-    @Input() public isPreview: boolean;
-    @Input() public isLogin: boolean;
+    @Input() public isRolePermission: boolean;
     @Input() public loginRedirectUrl: string;
+    @Input() public authToken: string;
+    @Input() public type: string;
+    @Input() public isPreview: boolean = false;
+    @Input() public isLogin: boolean = false;
     @Input() public theme: string;
 
     private readonly _authToken$ = signal<string | undefined>(undefined);
     private readonly _type$ = signal<string | undefined>(undefined);
-    private readonly _theme$ = signal<string | undefined>(undefined);
-    protected readonly PublicScriptTheme = PublicScriptTheme;
+    private readonly themeService = inject(WidgetThemeService);
+    protected readonly WidgetTheme = WidgetTheme;
     protected readonly PublicScriptType = PublicScriptType;
-    protected readonly ViewMode = ViewMode;
 
-    readonly viewMode = computed<ViewMode>(() => {
+    readonly viewMode = computed<PublicScriptType>(() => {
         const authToken = this._authToken$();
         const type = this._type$();
         if (authToken && type === PublicScriptType.UserManagement) {
-            return ViewMode.UserManagement;
-        }
-        if (type === PublicScriptType.Subscription) {
-            return ViewMode.Subscription;
+            return PublicScriptType.UserManagement;
         }
         if (authToken && type === PublicScriptType.OrganizationDetails) {
-            return ViewMode.OrganizationDetails;
+            return PublicScriptType.OrganizationDetails;
         }
-        if (authToken) {
-            return ViewMode.UserProfile;
+        if (authToken && type === PublicScriptType.UserProfile) {
+            return PublicScriptType.UserProfile;
         }
-        return ViewMode.OtpDialog;
+        // TODO: Uncomment when subscription is implemented
+        // if (type === PublicScriptType.Subscription) {
+        //     return PublicScriptType.Subscription;
+        // }
+        return PublicScriptType.Authorization;
     });
 
-    readonly isDarkTheme = computed<boolean>(() => {
-        const theme = this._theme$();
-        const type = this._type$();
-        const authToken = this._authToken$();
-        return (
-            (theme === PublicScriptTheme.Dark && (type === PublicScriptType.UserManagement || !!authToken)) ||
-            type === PublicScriptType.OrganizationDetails
-        );
-    });
+    readonly isDarkTheme = this.themeService.isDark;
 
     @Input() public version: string = WidgetVersion.V1;
     @Input() public exclude_role_ids: any[] = [];
@@ -135,24 +121,29 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     @Input() public otherData: { [key: string]: any } = {};
 
     public readonly show = signal<boolean>(false);
-    public selectWidgetData$: Observable<any>;
-    public selectWidgetTheme$: Observable<any>;
-    public animate: boolean = false;
+    public readonly showRegistration = signal<boolean>(false);
+    public readonly animate = signal<boolean>(false);
     public isCreateAccountTextAppended: boolean = false;
     public otpWidgetData;
     public loginWidgetData;
-    public readonly showRegistration = signal<boolean>(false);
     public registrationViaLogin: boolean = true;
     public prefillDetails: string;
-    public cameFromLogin: boolean = false; // Track if user came from login
-    public cameFromSendOtpCenter: boolean = false; // Track if user came from send-otp-center component
+    public cameFromLogin: boolean = false;
+    public cameFromSendOtpCenter: boolean = false;
     public referenceElement: HTMLElement = null;
     public authReference: HTMLElement = null;
-    public showCard: boolean = false;
     public subscriptionPlans: any[] = [];
 
-    private otpWidgetService = inject(OtpWidgetService);
-    private store = inject<Store<IAppState>>(Store);
+    private readonly cdr = inject(ChangeDetectorRef);
+
+    private readonly otpWidgetService = inject(OtpWidgetService);
+    private readonly store = inject<Store<IAppState>>(Store);
+    private readonly ngZone = inject(NgZone);
+    private readonly renderer = inject(Renderer2);
+    private readonly otpUtilityService = inject(OtpUtilityService);
+    private readonly subscriptionRenderer = inject(SubscriptionRendererService);
+    private readonly domBuilder = inject(ProxyAuthDomBuilderService);
+    private readonly otpService = inject(OtpService);
 
     readonly isOtpInProcess = toSignal(this.store.pipe(select(selectGetOtpInProcess), distinctUntilChanged(isEqual)), {
         initialValue: false,
@@ -168,62 +159,49 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     readonly isOtpLoading = computed(
         () => this.isOtpInProcess() || this.isResendOtpInProcess() || this.isVerifyOtpInProcess()
     );
-    public readonly showLogin = toSignal(this.otpWidgetService.showlogin, { initialValue: false });
+    readonly showLogin = toSignal(this.otpWidgetService.showlogin, { initialValue: false });
+
+    readonly widgetData = toSignal(this.store.pipe(select(selectWidgetData), distinctUntilChanged(isEqual)), {
+        initialValue: null,
+    });
+    readonly widgetTheme = toSignal(this.store.pipe(select(selectWidgetTheme), distinctUntilChanged(isEqual)), {
+        initialValue: null,
+    });
+
     private showSkeleton: boolean = false;
     public dialogBorderRadius: string = null;
-    private createAccountTextAppended: boolean = false; // Flag to track if create account text has been appended
+    private createAccountTextAppended: boolean = false;
     private hcaptchaLoading: boolean = false;
     private hcaptchaRenderQueue: Array<() => void> = [];
     public isUserProxyContainer: boolean = true;
 
-    private ngZone = inject(NgZone);
-    private renderer = inject(Renderer2);
-    private otpUtilityService = inject(OtpUtilityService);
-    private subscriptionRenderer = inject(SubscriptionRendererService);
-    private domBuilder = inject(ProxyAuthDomBuilderService);
-    private otpService = inject(OtpService);
-    private dialog = inject(MatDialog);
-
     constructor() {
         super();
-        this.selectWidgetData$ = this.store.pipe(select(selectWidgetData), takeUntil(this.destroy$));
-        this.selectWidgetTheme$ = this.store.pipe(select(selectWidgetTheme), takeUntil(this.destroy$));
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes['authToken']) {
-            this._authToken$.set(this.authToken);
-        }
-        if (changes['type']) {
-            this._type$.set(this.type);
-        }
-        if (changes['theme']) {
-            this._theme$.set(this.theme);
-        }
+        if (changes['authToken']) this._authToken$.set(this.authToken);
+        if (changes['type']) this._type$.set(this.type);
+        if (changes['theme']) this.themeService.setInputTheme(this.theme);
     }
 
     ngOnInit() {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-        prefersDark.addEventListener('change', (event) => {
-            this.theme = event?.matches ? PublicScriptTheme.Dark : PublicScriptTheme.Light;
-            this._theme$.set(this.theme);
-        });
-        if (!this.theme) {
-            this.theme = prefersDark.matches ? PublicScriptTheme.Dark : PublicScriptTheme.Light;
-            this._theme$.set(this.theme);
-        }
-        this.selectWidgetTheme$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((theme) => {
-            if (theme?.ui_preferences?.theme !== PublicScriptTheme.System) {
-                this.theme = theme?.ui_preferences.theme || theme;
-                this._theme$.set(this.theme);
-            }
-            this.loginWidgetData = theme?.registerState;
-            this.version = theme?.ui_preferences?.version || 'v1';
-            this.input_fields = theme?.ui_preferences?.input_fields || 'top';
-            this.show_social_login_icons = theme?.ui_preferences?.icons || false;
-            this.isCreateAccountTextAppended = theme?.ui_preferences?.create_account_link || false;
-            this.dialogBorderRadius = this.getBorderRadiusCssValue(theme?.ui_preferences?.border_radius);
-        });
+        this._authToken$.set(this.authToken);
+        this._type$.set(this.type);
+        this.themeService.setInputTheme(this.theme);
+        this.store
+            .pipe(select(selectWidgetTheme), filter(Boolean), takeUntil(this.destroy$))
+            .subscribe((theme: any) => {
+                if (theme?.ui_preferences?.theme !== WidgetTheme.System) {
+                    this.themeService.setThemeOverride(theme?.ui_preferences?.theme || theme);
+                }
+                this.loginWidgetData = theme?.registerState;
+                this.version = theme?.ui_preferences?.version || 'v1';
+                this.input_fields = theme?.ui_preferences?.input_fields || 'top';
+                this.show_social_login_icons = theme?.ui_preferences?.icons || false;
+                this.isCreateAccountTextAppended = theme?.ui_preferences?.create_account_link || false;
+                this.dialogBorderRadius = this.getBorderRadiusCssValue(theme?.ui_preferences?.border_radius);
+            });
         if (this.type === PublicScriptType.Subscription) {
             // Load subscription plans first
             this.store.dispatch(getSubscriptionPlans({ referenceId: this.referenceId, authToken: this.authToken }));
@@ -254,28 +232,38 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             }
         }
         this.loadExternalFonts();
-        this.store.dispatch(
-            getWidgetData({
-                referenceId: this.referenceId,
-                payload: this.otherData,
-            })
-        );
-        this.selectWidgetData$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((widgetData) => {
-            this.otpWidgetData = widgetData?.find((widget) => widget?.service_id === FeatureServiceIds.Msg91OtpService);
-            if (this.otpWidgetData) {
-                this.otpWidgetService.setWidgetConfig(
-                    this.otpWidgetData?.widget_id,
-                    this.otpWidgetData?.token_auth,
-                    this.otpWidgetData?.state
+        if (!this.authToken) {
+            if (this.referenceId) {
+                this.store.dispatch(
+                    getWidgetData({
+                        referenceId: this.referenceId,
+                        payload: this.otherData,
+                    })
                 );
-                this.otpWidgetService.loadScript();
+            } else {
+                console.error('Reference Id is undefined ! Please provide referenceId in the widget configuration.');
             }
-            if (!this.loginWidgetData) {
-                this.loginWidgetData = widgetData?.find(
-                    (widget) => widget?.service_id === FeatureServiceIds.PasswordAuthentication
+        }
+        this.store
+            .pipe(select(selectWidgetData), filter(Boolean), takeUntil(this.destroy$))
+            .subscribe((widgetData: any[]) => {
+                this.otpWidgetData = widgetData?.find(
+                    (widget) => widget?.service_id === FeatureServiceIds.Msg91OtpService
                 );
-            }
-        });
+                if (this.otpWidgetData) {
+                    this.otpWidgetService.setWidgetConfig(
+                        this.otpWidgetData?.widget_id,
+                        this.otpWidgetData?.token_auth,
+                        this.otpWidgetData?.state
+                    );
+                    this.otpWidgetService.loadScript();
+                }
+                if (!this.loginWidgetData) {
+                    this.loginWidgetData = widgetData?.find(
+                        (widget) => widget?.service_id === FeatureServiceIds.PasswordAuthentication
+                    );
+                }
+            });
         this.otpWidgetService.otpWidgetToken.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((token) => {
             this.hitCallbackUrl(this.otpWidgetData.callbackUrl, { state: this.otpWidgetData?.state, code: token });
         });
@@ -308,11 +296,11 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             this.ngZone.run(() => {
                 const current = this.show();
                 if (current) {
-                    this.animate = true;
+                    this.animate.set(true);
                     this.setShowLogin(false);
                     setTimeout(() => {
                         this.show.set(false);
-                        this.animate = false;
+                        this.animate.set(false);
                     }, 300);
                 } else {
                     this.show.set(true);
@@ -322,7 +310,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             this.setShowLogin(false);
             this.isUserProxyContainer = false;
             this.show.set(false);
-            this.animate = false;
+            this.animate.set(false);
             this.createAccountTextAppended = false;
 
             if (intial) {
@@ -332,7 +320,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     }
                 } else {
                     this.showSkeleton = true;
-                    this.appendSkeletonLoader(this.referenceElement, 1);
+                    this.domBuilder.appendSkeletonLoader(this.renderer, this.referenceElement);
                     this.addButtonsToReferenceElement(this.referenceElement);
                 }
             }
@@ -412,26 +400,22 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         });
     }
 
-    // Method to disable Angular subscription component
-    public disableAngularSubscription(): void {
-        this.type = 'custom-subscription';
-    }
-
     private createSubscriptionCenterHTML(): string {
-        return this.subscriptionRenderer.buildContainerHTML(this.subscriptionPlans || [], this.theme, this.isLogin);
-    }
-
-    private createPlanCardHTML(plan: any): string {
-        return this.subscriptionRenderer.buildPlanCardHTML(plan, this.theme, this.isLogin);
+        return this.subscriptionRenderer.buildContainerHTML(
+            this.subscriptionPlans || [],
+            this.themeService.resolvedTheme(),
+            this.isLogin
+        );
     }
 
     private addSubscriptionStyles(): void {
-        this.subscriptionRenderer.injectSubscriptionStyles(this.theme);
+        this.subscriptionRenderer.injectSubscriptionStyles(this.themeService.resolvedTheme());
     }
 
     private addButtonsToReferenceElement(element): void {
-        this.selectWidgetData$
+        this.store
             .pipe(
+                select(selectWidgetData),
                 filter((e) => !!e),
                 take(1)
             )
@@ -440,16 +424,16 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 const totalButtons = widgetDataArray.length;
 
                 if (totalButtons > 0 && this.showSkeleton) {
-                    this.removeSkeletonLoader(element);
-                    this.appendSkeletonLoader(element, totalButtons);
+                    this.domBuilder.removeSkeletonLoader(this.renderer, element);
+                    this.domBuilder.appendSkeletonLoader(this.renderer, element);
                 } else if (totalButtons > 0 && !this.showSkeleton) {
-                    this.removeSkeletonLoader(element);
+                    this.domBuilder.removeSkeletonLoader(this.renderer, element);
                 }
 
                 if (totalButtons === 0) {
                     if (this.showSkeleton) {
                         this.showSkeleton = false;
-                        this.removeSkeletonLoader(element);
+                        this.domBuilder.removeSkeletonLoader(this.renderer, element);
                     }
                     if (!this.createAccountTextAppended) {
                         this.appendCreateAccountText(element);
@@ -463,7 +447,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 const fallbackTimeout = setTimeout(() => {
                     if (this.showSkeleton && !this.createAccountTextAppended) {
                         this.showSkeleton = false;
-                        this.removeSkeletonLoader(element);
+                        this.domBuilder.removeSkeletonLoader(this.renderer, element);
                         const allButtons = element.querySelectorAll('button');
                         allButtons.forEach((button) => {
                             button.style.visibility = 'visible';
@@ -477,8 +461,8 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 const immediateFallback = setTimeout(() => {
                     if (this.showSkeleton && !this.createAccountTextAppended) {
                         this.showSkeleton = false;
-                        this.removeSkeletonLoader(element);
-                        this.forceRemoveAllSkeletonLoaders();
+                        this.domBuilder.removeSkeletonLoader(this.renderer, element);
+                        this.domBuilder.forceRemoveAllSkeletonLoaders(this.renderer, this.referenceElement);
                         const allButtons = element.querySelectorAll('button');
                         allButtons.forEach((button) => {
                             button.style.visibility = 'visible';
@@ -621,9 +605,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         light_theme_primary_color?: string;
         dark_theme_primary_color?: string;
     }): string {
+        const resolved = this.themeService.resolvedTheme();
         const isDark =
-            this.theme === PublicScriptTheme.Dark ||
-            (this.theme === PublicScriptTheme.System &&
+            resolved === WidgetTheme.Dark ||
+            (resolved === WidgetTheme.System &&
                 typeof window !== 'undefined' &&
                 window.matchMedia('(prefers-color-scheme: dark)').matches);
         if (this.version !== WidgetVersion.V2) {
@@ -634,16 +619,12 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             : uiPreferences?.light_theme_primary_color ?? '#000000';
     }
 
-    private createLogoElement(logoUrl: string): HTMLElement | null {
-        return this.domBuilder.createLogoElement(this.renderer, logoUrl);
-    }
-
     public appendPasswordAuthenticationButtonV2(element: HTMLElement, buttonsData: any, totalButtons: number): void {
         if (this.showSkeleton) {
             this.showSkeleton = false;
-            this.removeSkeletonLoader(element);
+            this.domBuilder.removeSkeletonLoader(this.renderer, element);
         }
-        const selectWidgetTheme = this.getValueFromObservable(this.selectWidgetTheme$);
+        const selectWidgetTheme = this.widgetTheme() as any;
         const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
         const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
         const isV2 = this.version === WidgetVersion.V2;
@@ -673,7 +654,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
         const isInputFieldsTop = this.input_fields === 'top';
         const logoUrl = selectWidgetTheme?.ui_preferences?.logo_url;
-        const logoElement = this.createLogoElement(logoUrl);
+        const logoElement = this.domBuilder.createLogoElement(this.renderer, logoUrl);
 
         if (logoElement) {
             if (element.firstChild) {
@@ -730,16 +711,16 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         const hCaptchaToken = getHCaptchaToken();
 
         if (!username || !password) {
-            this.setInlineLoginError(errorText, 'Email/Mobile and password are required.');
+            this.domBuilder.setInlineError(errorText, 'Email/Mobile and password are required.');
             return;
         }
 
         if (!hCaptchaToken) {
-            this.setInlineLoginError(errorText, 'Please complete the hCaptcha verification.');
+            this.domBuilder.setInlineError(errorText, 'Please complete the hCaptcha verification.');
             return;
         }
 
-        this.setInlineLoginError(errorText, '');
+        this.domBuilder.setInlineError(errorText, '');
         const originalText = loginButton.textContent || 'Login';
         loginButton.disabled = true;
         loginButton.textContent = 'Please wait...';
@@ -757,7 +738,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 loginButton.textContent = originalText;
 
                 if (res?.hasError) {
-                    this.setInlineLoginError(errorText, res?.errors?.[0] || 'Unable to login. Please try again.');
+                    this.domBuilder.setInlineError(errorText, res?.errors?.[0] || 'Unable to login. Please try again.');
                     resetHCaptcha();
                     return;
                 }
@@ -779,7 +760,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     return;
                 }
 
-                this.setInlineLoginError(
+                this.domBuilder.setInlineError(
                     errorText,
                     error?.error?.errors?.[0] || 'Login failed. Please check your details and try again.'
                 );
@@ -787,14 +768,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 this.returnFailureObj(error);
             }
         );
-    }
-
-    private setInlineLoginError(errorText: HTMLElement, message: string): void {
-        this.domBuilder.setInlineError(errorText, message);
-    }
-
-    private addPasswordVisibilityToggle(input: HTMLInputElement, container: HTMLElement): void {
-        this.domBuilder.addPasswordVisibilityToggle(this.renderer, input, container, this.theme);
     }
 
     /**
@@ -816,8 +789,9 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         // Clear the login container
         loginContainer.innerHTML = '';
 
-        const selectWidgetTheme = this.getValueFromObservable(this.selectWidgetTheme$);
+        const selectWidgetTheme = this.widgetTheme() as any;
         const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
+        const isDarkFP = this.themeService.resolvedTheme() === WidgetTheme.Dark;
 
         // Create back button
         const backButton: HTMLButtonElement = this.renderer.createElement('button');
@@ -847,7 +821,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             font-size: 16px;
             line-height: 20px;
             font-weight: 600;
-            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
+            color: ${isDarkFP ? '#ffffff' : '#1f2937'};
             margin-bottom: 16px;
         `;
 
@@ -863,16 +837,16 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         const emailInput: HTMLInputElement = this.renderer.createElement('input');
         emailInput.type = 'text';
         emailInput.placeholder = 'Email or Mobile';
-        emailInput.value = prefillEmail;
         emailInput.autocomplete = 'off';
+        emailInput.value = prefillEmail;
         emailInput.style.cssText = `
             width: 100%;
             height: 44px;
             padding: 0 16px;
-            border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border: ${isDarkFP ? '1px solid #ffffff' : '1px solid #cbd5e1'};
             border-radius: ${borderRadius};
-            background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : '#ffffff'};
-            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
+            background: ${isDarkFP ? 'transparent' : '#ffffff'};
+            color: ${isDarkFP ? '#ffffff' : '#1f2937'};
             font-size: 14px;
             outline: none;
             box-sizing: border-box;
@@ -909,11 +883,11 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         const handleSendOtp = () => {
             const userDetails = emailInput.value?.trim();
             if (!userDetails) {
-                this.setInlineLoginError(errorText, 'Email or Mobile is required.');
+                this.domBuilder.setInlineError(errorText, 'Email or Mobile is required.');
                 return;
             }
 
-            this.setInlineLoginError(errorText, '');
+            this.domBuilder.setInlineError(errorText, '');
             const originalText = sendOtpButton.textContent || 'Send OTP';
             sendOtpButton.disabled = true;
             sendOtpButton.textContent = 'Please wait...';
@@ -929,7 +903,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     sendOtpButton.textContent = originalText;
 
                     if (res?.hasError) {
-                        this.setInlineLoginError(
+                        this.domBuilder.setInlineError(
                             errorText,
                             res?.errors?.[0] || 'Unable to send OTP. Please try again.'
                         );
@@ -942,7 +916,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 (error) => {
                     sendOtpButton.disabled = false;
                     sendOtpButton.textContent = originalText;
-                    this.setInlineLoginError(
+                    this.domBuilder.setInlineError(
                         errorText,
                         error?.error?.errors?.[0] || 'Failed to send OTP. Please try again.'
                     );
@@ -974,8 +948,9 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         // Clear the login container
         loginContainer.innerHTML = '';
 
-        const selectWidgetTheme = this.getValueFromObservable(this.selectWidgetTheme$);
+        const selectWidgetTheme = this.widgetTheme() as any;
         const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
+        const isDarkCP = this.themeService.resolvedTheme() === WidgetTheme.Dark;
 
         let remainingSeconds = 15;
         let timerInterval: any = null;
@@ -1009,7 +984,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             font-size: 16px;
             line-height: 20px;
             font-weight: 600;
-            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
+            color: ${isDarkCP ? '#ffffff' : '#1f2937'};
             margin-bottom: 8px;
         `;
 
@@ -1017,7 +992,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         const userInfo: HTMLElement = this.renderer.createElement('p');
         userInfo.style.cssText = `
             font-size: 14px;
-            color: ${this.theme === PublicScriptTheme.Dark ? '#e5e7eb' : '#5d6164'};
+            color: ${isDarkCP ? '#e5e7eb' : '#5d6164'};
             margin: 0 0 8px 0;
         `;
         userInfo.innerHTML = `${userDetails} <a href="javascript:void(0)" style="color: #1976d2; text-decoration: none;">Change</a>`;
@@ -1102,10 +1077,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             width: 100%;
             height: 44px;
             padding: 0 16px;
-            border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #ffffff' : '1px solid #cbd5e1'};
+            border: ${isDarkCP ? '1px solid #ffffff' : '1px solid #cbd5e1'};
             border-radius: ${borderRadius};
-            background: ${this.theme === PublicScriptTheme.Dark ? 'transparent' : '#ffffff'};
-            color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'};
+            background: ${isDarkCP ? 'transparent' : '#ffffff'};
+            color: ${isDarkCP ? '#ffffff' : '#1f2937'};
             font-size: 14px;
             outline: none;
             box-sizing: border-box;
@@ -1132,7 +1107,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             'Password should contain at least one Capital Letter, one Small Letter, one Digit and one Symbol (min 8 characters)';
         passwordHint.style.cssText = `
             font-size: 12px;
-            color: ${this.theme === PublicScriptTheme.Dark ? '#9ca3af' : '#6b7280'};
+            color: ${isDarkCP ? '#9ca3af' : '#6b7280'};
             margin: -8px 0 12px 0;
         `;
 
@@ -1171,30 +1146,30 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             const confirmPassword = confirmPasswordInput.value;
 
             if (!otp) {
-                this.setInlineLoginError(errorText, 'OTP is required.');
+                this.domBuilder.setInlineError(errorText, 'OTP is required.');
                 return;
             }
             if (!password) {
-                this.setInlineLoginError(errorText, 'Password is required.');
+                this.domBuilder.setInlineError(errorText, 'Password is required.');
                 return;
             }
             if (password.length < 8) {
-                this.setInlineLoginError(errorText, 'Password must be at least 8 characters.');
+                this.domBuilder.setInlineError(errorText, 'Password must be at least 8 characters.');
                 return;
             }
             if (!PASSWORD_REGEX.test(password)) {
-                this.setInlineLoginError(
+                this.domBuilder.setInlineError(
                     errorText,
                     'Password should contain at least one Capital Letter, one Small Letter, one Digit and one Symbol.'
                 );
                 return;
             }
             if (password !== confirmPassword) {
-                this.setInlineLoginError(errorText, 'Passwords do not match.');
+                this.domBuilder.setInlineError(errorText, 'Passwords do not match.');
                 return;
             }
 
-            this.setInlineLoginError(errorText, '');
+            this.domBuilder.setInlineError(errorText, '');
             const originalText = submitButton.textContent || 'Submit';
             submitButton.disabled = true;
             submitButton.textContent = 'Please wait...';
@@ -1213,7 +1188,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     submitButton.textContent = originalText;
 
                     if (res?.hasError) {
-                        this.setInlineLoginError(
+                        this.domBuilder.setInlineError(
                             errorText,
                             res?.errors?.[0] || 'Unable to reset password. Please try again.'
                         );
@@ -1227,7 +1202,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 (error) => {
                     submitButton.disabled = false;
                     submitButton.textContent = originalText;
-                    this.setInlineLoginError(
+                    this.domBuilder.setInlineError(
                         errorText,
                         error?.error?.errors?.[0] || 'Failed to reset password. Please try again.'
                     );
@@ -1262,14 +1237,14 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     private buildLoginFormContent(loginContainer: HTMLElement, buttonsData: any): void {
-        const selectWidgetTheme = this.getValueFromObservable(this.selectWidgetTheme$);
+        const selectWidgetTheme = this.widgetTheme() as any;
         const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
         const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
 
         const title: HTMLElement = this.renderer.createElement('div');
         title.textContent = 'Login';
         title.style.cssText = `font-size:16px;line-height:20px;font-weight:600;color:${
-            this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#1f2937'
+            this.themeService.resolvedTheme() === WidgetTheme.Dark ? '#ffffff' : '#1f2937'
         };margin-bottom:0;text-align:center;`;
 
         const loginButton: HTMLButtonElement = this.renderer.createElement('button');
@@ -1279,7 +1254,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         const onForgotPassword = (email: string) => this.showForgotPasswordForm(loginContainer, buttonsData, email);
 
         const logoUrl = selectWidgetTheme?.ui_preferences?.logo_url;
-        const logoElement = this.createLogoElement(logoUrl);
+        const logoElement = this.domBuilder.createLogoElement(this.renderer, logoUrl);
         if (logoElement) {
             this.renderer.appendChild(loginContainer, logoElement);
         }
@@ -1296,7 +1271,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         primaryColor: string,
         onForgotPassword: (email: string) => void
     ): void {
-        const isDark = this.theme === PublicScriptTheme.Dark;
+        const isDark = this.themeService.resolvedTheme() === WidgetTheme.Dark;
         const noteColor = this.version === 'v2' ? primaryColor : isDark ? '#e5e7eb' : '#5d6164';
 
         const usernameField: HTMLElement = this.renderer.createElement('div');
@@ -1331,7 +1306,12 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         };border-radius:${borderRadius};background:${isDark ? 'transparent' : '#ffffff'};color:${
             isDark ? '#ffffff' : '#1f2937'
         };font-size:14px;outline:none;box-sizing:border-box;`;
-        this.addPasswordVisibilityToggle(passwordInput, passwordInputWrapper);
+        this.domBuilder.addPasswordVisibilityToggle(
+            this.renderer,
+            passwordInput,
+            passwordInputWrapper,
+            this.themeService.resolvedTheme()
+        );
         this.renderer.appendChild(passwordInputWrapper, passwordInput);
 
         const hcaptchaWrapper: HTMLElement = this.renderer.createElement('div');
@@ -1366,23 +1346,23 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         const renderHCaptcha = () => {
             const instance = this.getHCaptchaInstance();
             if (!instance || !environment.hCaptchaSiteKey) {
-                this.setInlineLoginError(errorText, 'Unable to load hCaptcha. Please refresh and try again.');
+                this.domBuilder.setInlineError(errorText, 'Unable to load hCaptcha. Please refresh and try again.');
                 return;
             }
             hcaptchaPlaceholder.innerHTML = '';
             hCaptchaWidgetId = instance.render(hcaptchaPlaceholder, {
                 sitekey: environment.hCaptchaSiteKey,
-                theme: isDark ? PublicScriptTheme.Dark : PublicScriptTheme.Light,
+                theme: isDark ? WidgetTheme.Dark : WidgetTheme.Light,
                 callback: (token: string) => {
                     hCaptchaToken = token;
-                    this.setInlineLoginError(errorText, '');
+                    this.domBuilder.setInlineError(errorText, '');
                 },
                 'expired-callback': () => {
                     hCaptchaToken = '';
                 },
                 'error-callback': () => {
                     hCaptchaToken = '';
-                    this.setInlineLoginError(errorText, 'hCaptcha verification failed. Please retry.');
+                    this.domBuilder.setInlineError(errorText, 'hCaptcha verification failed. Please retry.');
                 },
             });
         };
@@ -1485,8 +1465,8 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
             if (this.showSkeleton) {
                 this.showSkeleton = false;
-                this.removeSkeletonLoader(element);
-                this.forceRemoveAllSkeletonLoaders();
+                this.domBuilder.removeSkeletonLoader(this.renderer, element);
+                this.domBuilder.forceRemoveAllSkeletonLoaders(this.renderer, this.referenceElement);
 
                 const allButtons = element.querySelectorAll('button');
                 allButtons.forEach((button) => {
@@ -1503,10 +1483,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     private appendButton(element, buttonsData): void {
         if (this.showSkeleton) {
             this.showSkeleton = false;
-            this.removeSkeletonLoader(element);
+            this.domBuilder.removeSkeletonLoader(this.renderer, element);
         }
 
-        const selectWidgetTheme = this.getValueFromObservable(this.selectWidgetTheme$);
+        const selectWidgetTheme = this.widgetTheme() as any;
         const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
 
         const button: HTMLButtonElement = this.renderer.createElement('button');
@@ -1557,7 +1537,9 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 justify-content: center;
                 font-size: 14px;
                 background-color: transparent;
-                border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #ffffff' : '1px solid #d1d5db'};
+                border: ${
+                    this.themeService.resolvedTheme() === WidgetTheme.Dark ? '1px solid #ffffff' : '1px solid #d1d5db'
+                };
                 border-radius: ${borderRadius};
                 cursor: pointer;
                 visibility: ${isOtpButton ? 'hidden' : 'visible'};
@@ -1599,10 +1581,12 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 ${useDiv ? '' : 'gap: 12px;'}
                 font-size: 14px;
                 background-color: transparent;
-                border: ${this.theme === PublicScriptTheme.Dark ? '1px solid #ffffff' : '1px solid #000000'};
+                border: ${
+                    this.themeService.resolvedTheme() === WidgetTheme.Dark ? '1px solid #ffffff' : '1px solid #000000'
+                };
                 border-radius: ${borderRadius};
                 height: 44px;
-                color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#111827'};
+                color: ${this.themeService.resolvedTheme() === WidgetTheme.Dark ? '#ffffff' : '#111827'};
                 margin: 8px 8px 16px 8px;
                 cursor: pointer;
                 width: ${useDiv ? '316px' : '260px'};
@@ -1615,7 +1599,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 ${invertIcon ? 'filter: invert(1);' : ''}
             `;
             span.style.cssText = `
-                color: ${this.theme === PublicScriptTheme.Dark ? '#ffffff' : '#111827'};
+                color: ${this.themeService.resolvedTheme() === WidgetTheme.Dark ? '#ffffff' : '#111827'};
                 font-weight: 600;
             `;
             image.src = buttonsData.icon;
@@ -1643,7 +1627,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     align-items: center;
                     justify-content: flex-start;
                     gap: 12px;
-                    width: 180px;
+                    width: 200px;
                 `;
                 this.renderer.appendChild(contentDiv, image);
                 this.renderer.appendChild(contentDiv, span);
@@ -1685,7 +1669,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         }
         this.createAccountTextAppended = true;
 
-        const selectWidgetTheme = this.getValueFromObservable(this.selectWidgetTheme$);
+        const selectWidgetTheme = this.widgetTheme() as any;
         const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
 
         const paragraph: HTMLParagraphElement = this.renderer.createElement('p');
@@ -1822,20 +1806,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         }
     }
 
-    private appendSkeletonLoader(element: HTMLElement, _buttonCount: number): void {
-        this.domBuilder.appendSkeletonLoader(this.renderer, element);
-    }
-
-    private removeSkeletonLoader(element: HTMLElement): void {
-        this.domBuilder.removeSkeletonLoader(this.renderer, element);
-    }
-
-    private forceRemoveAllSkeletonLoaders(): void {
-        this.domBuilder.forceRemoveAllSkeletonLoaders(this.renderer, this.referenceElement);
-    }
-    private formatSubscriptionPlans(plans: any[]): any[] {
-        return this.subscriptionRenderer.formatPlans(plans, this.isLogin, this.referenceId, this.loginRedirectUrl);
-    }
     public handleSubscriptionToggle(event?: any): void {
         if (this.isPreview) {
             this.toggleSendOtp();
@@ -1885,6 +1855,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     private shouldInvertIcon(buttonsData: any): boolean {
         const isApple = buttonsData?.text?.toLowerCase()?.includes('apple');
         const isPassword = buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication;
-        return this.theme === PublicScriptTheme.Dark && (isApple || isPassword);
+        return this.themeService.resolvedTheme() === WidgetTheme.Dark && (isApple || isPassword);
     }
 }

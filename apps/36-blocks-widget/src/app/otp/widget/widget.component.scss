@@ -1,14 +1,39 @@
 @use 'intl-tel-input/build/css/intlTelInput.css';
 @use '../../../intl' as *;
 @use '../../../otp-global' as *;
-@use '../../../shadow-dom-theme';
+@use 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
 
-.with-reference-id {
-    display: flex;
-    position: fixed;
+:host {
+    display: block !important;
+    height: inherit !important;
+    min-height: inherit !important;
+    max-height: inherit !important;
+    background: transparent !important;
+
+    // Prevent client-page CSS from bleeding into the widget.
+    // Shadow DOM already blocks inherited styles at the boundary,
+    // but these resets guard against any CSS that targets :host from outside.
+    all: initial;
+    display: block !important;
+    height: inherit !important;
+    min-height: inherit !important;
+    max-height: inherit !important;
+    background: transparent !important;
+
+    // Establish an independent stacking context so position:fixed children
+    // (dialogs, backdrops) are positioned relative to the viewport, not clipped
+    // by a client-side transform or will-change on an ancestor.
+    isolation: isolate;
+
+    // Ensure base typography is not inherited from the client page.
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: inherit;
+    box-sizing: border-box;
 }
 
-.without-reference-id {
-    display: block;
-    position: static;
+.authorization-container {
+    @apply h-full flex justify-center items-center;
 }

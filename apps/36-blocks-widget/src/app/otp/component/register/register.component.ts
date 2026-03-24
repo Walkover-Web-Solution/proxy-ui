@@ -1,12 +1,7 @@
 import { cloneDeep } from 'lodash-es';
-import { PublicScriptTheme } from '@proxy/constant';
+import { WidgetTheme } from '@proxy/constant';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
 import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
 import { OtpService } from './../../service/otp.service';
 import { environment } from './../../../../environments/environment';
@@ -34,6 +29,7 @@ import { isEqual } from 'lodash-es';
 import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
 import { OtpUtilityService } from '../../service/otp-utility.service';
+import { WidgetThemeService } from '../../service/widget-theme.service';
 import { errorResolver } from '@proxy/models/root-models';
 import { BehaviorSubject, distinctUntilChanged, Observable, takeUntil, interval, Subscription } from 'rxjs';
 import {
@@ -50,16 +46,7 @@ import { IGetOtpRes } from '../../model/otp';
 
 @Component({
     selector: 'proxy-register',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        MatIconModule,
-        MarkAllAsTouchedDirective,
-    ],
+    imports: [CommonModule, ReactiveFormsModule, MarkAllAsTouchedDirective],
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -73,7 +60,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public showCompanyDetails = input<boolean>(true);
     public version = input<string>('v1');
     public theme = input<string>();
-    protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected readonly WidgetTheme = WidgetTheme;
     public firstName = input<string>();
     public lastName = input<string>();
     public email = input<string>();
@@ -163,9 +150,12 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     private otpService = inject(OtpService);
     private otpUtilityService = inject(OtpUtilityService);
     private cdr = inject(ChangeDetectorRef);
+    private readonly themeService = inject(WidgetThemeService);
+    public readonly isDarkTheme = this.themeService.isDark;
 
     constructor() {
         super();
+        effect(() => this.themeService.setInputTheme(this.theme()));
         this.selectGetOtpRes$ = this.store.pipe(
             select(selectGetOtpRes),
             distinctUntilChanged(isEqual),
@@ -660,7 +650,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         if (this.version() !== 'v2') {
             return null;
         }
-        const isDark = this.theme() === PublicScriptTheme.Dark;
+        const isDark = this.themeService.isDark();
         return isDark
             ? this.uiPreferences?.dark_theme_primary_color || null
             : this.uiPreferences?.light_theme_primary_color || null;
@@ -697,9 +687,5 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public get buttonTextColor(): string | null {
         if (this.version() !== 'v2') return null;
         return this.uiPreferences?.button_text_color || null;
-    }
-
-    public get isDarkTheme(): boolean {
-        return this.theme() === PublicScriptTheme.Dark;
     }
 }

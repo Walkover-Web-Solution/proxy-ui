@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { PublicScriptType, WidgetConfig } from '@proxy/constant';
+import { WidgetTheme, PublicScriptType, WidgetConfig } from '@proxy/constant';
 
 @Component({
     selector: 'proxy-root',
@@ -13,9 +13,11 @@ import { PublicScriptType, WidgetConfig } from '@proxy/constant';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
-    protected readonly referenceId = '4512365e1772083784699fda48abd90';
+    protected readonly referenceId = '4512365c177425472369c0fa8351a15';
+    protected theme: WidgetTheme = WidgetTheme.System;
+    protected readonly WidgetTheme = WidgetTheme;
     protected readonly authToken =
-        'dERVbGpiRy9WVTliV0M3L2NNYjdSQ21DZDdiVERvZ2xrU3ZSUFJ4T2JIZFBJT2hXZFdqNWRJVzZwemZLV3Q0bnkwSTF3Ui8vaGMrUEMwdjhYSFFYdHdEUnd1c2o0U1VhOXV5SExEV0Q3dEF3VEovRlZLeWRuWkV5ZFl6RDVHcnhlRnhtN2FYRm1jZ2ZhVWZHNGxDSTRDMWIxbXlkMkgyTUgxSS9sQlV0dVRxL01IdUFVTnlPUVE5b3NqczEyZ0dUcXFDenMyY3pGa3JnUHRVQlFWUndVQT09';
+        'YmNmTDJYYnBZdUZtQk5SQUc5ZHc5dE1UMHBkeFRuWjI1emVJNzhRaXYvc0UrVmFOTDFzQk9oa0V3bXdxU3N4MDRtZlBoRVI4Y1JJVGJkREM4NktpRGJBUVJ0RXJ6MGVaKy9jbUd2QnArZnQyVnQvd3dKMFlEcDVIaFFpK2h1WnVneXpaSDhodWFpNUFheUk5L3pWcmdGTG5qR3MrZkx1RDIwV2J2RGYybGkvNDgzeTJPbDB0cllXM2JzUEZDbm5VN1FkVXlZbTB6b1A4NDFVd0M3YXNqZz09';
 
     constructor() {
         super();
@@ -30,19 +32,20 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     public initOtpProvider() {
-        if (customElements.get('h-captcha')) {
+        if (customElements.get('h-captcha') || (window as any).__proxyWidgetInitialized) {
             return;
         }
+        (window as any).__proxyWidgetInitialized = true;
         if (!environment.production) {
             const widgetConfig: WidgetConfig = {
                 referenceId: this.referenceId,
-                authToken: this.authToken,
-                type: PublicScriptType.UserManagement,
-                showCompanyDetails: false,
+                // authToken: this.authToken,
+                // type: PublicScriptType.UserProfile,
+                // showCompanyDetails: false,
                 // isHidden: true,
-                // theme: 'dark',
-                isPreview: true,
-                isLogin: true,
+                // isRolePermission: false,
+                // theme: this.theme,
+                // isPreview: true,
                 // loginRedirectUrl: 'https://www.google.com',
                 target: '_self',
                 success: (data) => {

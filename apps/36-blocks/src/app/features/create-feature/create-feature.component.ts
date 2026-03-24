@@ -52,7 +52,7 @@ import {
     ProxyAuthScript,
     ProxyAuthScriptUrl,
 } from '@proxy/models/features-model';
-import { PublicScriptTheme } from '@proxy/constant';
+import { WidgetTheme } from '@proxy/constant';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
@@ -231,7 +231,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public paymentDetailsFormFields: any;
     public paymentDetailsData: any;
     public featureFieldType = FeatureFieldType;
-    protected readonly PublicScriptTheme = PublicScriptTheme;
+    protected readonly WidgetTheme = WidgetTheme;
     public proxyAuthScript = ProxyAuthScript(environment.proxyServer);
 
     public configureMethodsTableColumns: string[] = ['method', 'toggle', 'configure'];
@@ -694,8 +694,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public getEffectivePrimaryColor(): string {
         const theme = this.featureForm.get('brandingDetails.theme')?.value;
         const isDark =
-            theme === PublicScriptTheme.Dark ||
-            (theme === PublicScriptTheme.System &&
+            theme === WidgetTheme.Dark ||
+            (theme === WidgetTheme.System &&
                 typeof localStorage !== 'undefined' &&
                 localStorage.getItem('selected-theme') === 'dark-theme');
         if (isDark) {

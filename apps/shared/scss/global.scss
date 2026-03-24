@@ -124,19 +124,19 @@ pre {
     }
 }
 
-.border {
-    border: 1px solid var(--color-common-border);
-}
-.border-right {
-    border-right: 1px solid var(--color-common-border);
-}
-// border radius
-.rounded-4 {
-    border-radius: var(--border-common-radius-4);
-}
-.rounded-8 {
-    border-radius: var(--border-common-radius);
-}
+// .border {
+//     border: 1px solid var(--color-common-border);
+// }
+// .border-right {
+//     border-right: 1px solid var(--color-common-border);
+// }
+// // border radius
+// .rounded-4 {
+//     border-radius: var(--border-common-radius-4);
+// }
+// .rounded-8 {
+//     border-radius: var(--border-common-radius);
+// }
 
 // Add Scrollbar in Markdown with custom color
 markdown pre {

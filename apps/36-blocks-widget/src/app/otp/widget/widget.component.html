@@ -1,24 +1,42 @@
 @if (show()) {
 <div
-    class="container"
-    [class.with-reference-id]="referenceId"
-    [class.without-reference-id]="authToken"
-    [class.dark-theme]="isDarkTheme()"
-    [class.user-profile-mode]="viewMode() === ViewMode.UserProfile"
-    [class.user-management]="viewMode() === ViewMode.UserManagement"
+    [class.h-full]="viewMode() !== PublicScriptType.Authorization"
+    [class.authorization-container]="referenceId && !authToken"
+    [class.dark]="isDarkTheme()"
 >
-    @switch (viewMode()) { @case (ViewMode.OtpDialog) {
+    @switch (viewMode()) { @case (PublicScriptType.UserManagement) {
+    <user-management
+        [userToken]="authToken"
+        [pass]="isRolePermission"
+        [theme]="theme"
+        [isHidden]="isHidden"
+        [exclude_role_ids]="exclude_role_ids"
+        [include_role_ids]="include_role_ids"
+    ></user-management>
+    } @case (PublicScriptType.Subscription) {
+    <div [class.subscription-dialog]="isPreview">
+        <proxy-subscription-center
+            [referenceId]="referenceId"
+            [isPreview]="isPreview"
+            [isLogin]="isLogin"
+            [loginRedirectUrl]="loginRedirectUrl"
+            (togglePopUp)="handleSubscriptionToggle($event)"
+        ></proxy-subscription-center>
+    </div>
+    } @case (PublicScriptType.OrganizationDetails) {
+    <organization-details [authToken]="authToken" [theme]="theme"></organization-details>
+    } @case (PublicScriptType.Authorization) {
     <div
         class="otp-verification-dialog"
-        [class.animation-complete]="animate"
+        [class.animation-complete]="animate()"
         [class.register-user]="showRegistration()"
-        [class.dark-theme]="theme === PublicScriptTheme.Dark"
+        [class.dark-theme]="isDarkTheme()"
         [style.border-radius]="dialogBorderRadius || null"
     >
         @if (isOtpLoading()) {
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        <proxy-progress-bar></proxy-progress-bar>
         } @if (!(showRegistration() || showLogin())) {
-        <proxy-send-otp-center
+        <authorization
             [referenceId]="referenceId"
             [serviceData]="otpWidgetData"
             [target]="target"
@@ -32,7 +50,7 @@
             (openPopUp)="setShowRegistrationFromSendOtpCenter($event)"
             (successReturn)="returnSuccessObj($event)"
             (failureReturn)="returnFailureObj($event)"
-        ></proxy-send-otp-center>
+        ></authorization>
         } @if (showRegistration()) {
         <proxy-register
             [referenceId]="referenceId"
@@ -89,29 +107,8 @@
             />
         </svg>
     </div>
-    } } @case (ViewMode.UserManagement) {
-    <proxy-user-management
-        [userToken]="authToken"
-        [pass]="isRolePermission"
-        [theme]="theme"
-        [isHidden]="isHidden"
-        [exclude_role_ids]="exclude_role_ids"
-        [include_role_ids]="include_role_ids"
-    ></proxy-user-management>
-    } @case (ViewMode.Subscription) {
-    <div [class.subscription-dialog]="isPreview">
-        <proxy-subscription-center
-            [referenceId]="referenceId"
-            [isPreview]="isPreview"
-            [isLogin]="isLogin"
-            [loginRedirectUrl]="loginRedirectUrl"
-            (togglePopUp)="handleSubscriptionToggle($event)"
-        ></proxy-subscription-center>
-    </div>
-    } @case (ViewMode.UserProfile) {
-    <proxy-user-profile [authToken]="authToken" [theme]="theme"></proxy-user-profile>
-    } @case (ViewMode.OrganizationDetails) {
-    <organization-details [authToken]="authToken" [theme]="theme"></organization-details>
+    } } @case (PublicScriptType.UserProfile) {
+    <user-profile [authToken]="authToken" [theme]="theme"></user-profile>
     } }
 </div>
 }

@@ -1,149 +1,125 @@
-<div class="container">
+<!-- <div class="relative w-full">
     @if (isPreview()) {
-    <button matIconButton mat-dialog-close class="close-dialog" (click)="close(true)">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-                d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
-                fill="#5D6164"
-            />
-        </svg>
-    </button>
+    <div class="flex justify-end px-4 pt-4">
+        <button
+            type="button"
+            (click)="close(true)"
+            aria-label="Close"
+            class="rounded-md p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
+        >
+            <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+            </svg>
+        </button>
+    </div>
     }
 
-    <div class="subscription-plans-container flex flex-col items-center justify-center">
-        <div class="plans-grid flex flex-row gap-6 justify-start items-stretch w-full py-6">
-            @for (plan of subscriptionPlans; track plan.title; let i = $index) {
+    @if (subscriptionPlans.length === 0) {
+    <div class="flex flex-col items-center justify-center py-16 gap-3">
+        <proxy-spinner size="lg" />
+        <p class="text-sm text-gray-400 dark:text-gray-500">Loading plans…</p>
+    </div>
+    } @else {
+    <div class="overflow-x-auto px-4 pb-6 pt-2">
+        <div class="flex flex-row gap-4 min-w-max">
+            @for (plan of subscriptionPlans; track plan.id; let i = $index) {
             <div
-                class="plan-card flex flex-col justify-between relative"
-                [class.popular]="plan.isPopular"
-                [class.selected]="plan.isSelected"
-                [class.highlighted]="plan.isPopular"
+                class="relative flex flex-col rounded-xl border bg-white dark:bg-gray-900 p-6 w-64 shadow-sm transition-shadow duration-150 hover:shadow-md"
+                [class.border-indigo-500]="plan.isPopular"
+                [class.ring-2]="plan.isPopular"
+                [class.ring-indigo-500]="plan.isPopular"
+                [class.border-gray-200]="!plan.isPopular"
+                [class.dark:border-gray-700]="!plan.isPopular"
+                [class.border-indigo-400]="plan.isSelected"
             >
-                <!-- Popular Badge -->
                 @if (plan.tag) {
-                <div class="popular-badge">{{ plan.tag }}</div>
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center rounded-full bg-indigo-600 px-3 py-0.5 text-xs font-semibold text-white shadow">
+                    {{ plan.tag }}
+                </span>
                 }
-                <div>
-                    <!-- Plan Title -->
-                    <h1 class="plan-title mt-0">{{ plan.title }}</h1>
 
-                    <!-- Plan Price -->
-                    <div class="plan-price mb-6">
-                        <div class="price-container block mb-6">
-                            <span class="price-number">{{ plan.priceValue }}</span>
-                            <span class="price-currency">{{ plan.currency }}</span>
-                        </div>
-                    </div>
+                <h2 class="text-base font-bold text-gray-900 dark:text-white mb-1">{{ plan.title }}</h2>
 
-                    <!-- Action Button -->
-                    @if (!plan.subscribeButtonHidden) {
-                    <button
-                        class="plan-button"
-                        [class.primary]="plan.buttonStyle === 'primary'"
-                        [class.secondary]="plan.buttonStyle === 'secondary'"
-                        (click)="selectPlan(plan); $event.stopPropagation()"
-                        [attr.data-link]="plan.subscribeButtonLink"
-                    >
-                        {{ plan.buttonText }}
-                    </button>
+                <div class="flex items-baseline gap-1 mb-5">
+                    <span class="text-3xl font-extrabold text-gray-900 dark:text-white">{{ plan.priceValue }}</span>
+                    @if (plan.currency) {
+                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ plan.currency }}</span>
                     }
-
-                    <!-- Hidden Button State -->
-                    @if (plan.subscribeButtonHidden) {
-                    <div class="plan-button-hidden w-full text-center">
-                        {{ plan.buttonText }}
-                    </div>
-                    }
-
-                    <div class="divider w-full my-6"></div>
+                    <span class="text-xs text-gray-400 dark:text-gray-500">/mo</span>
                 </div>
 
-                <!-- Included Resources -->
+                @if (!plan.subscribeButtonHidden) {
+                <button
+                    type="button"
+                    (click)="selectPlan(plan); $event.stopPropagation()"
+                    class="w-full rounded-lg px-4 py-2 text-sm font-semibold transition-colors duration-150 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mb-5"
+                    [class.bg-indigo-600]="plan.buttonStyle === 'primary'"
+                    [class.text-white]="plan.buttonStyle === 'primary'"
+                    [class.hover:bg-indigo-500]="plan.buttonStyle === 'primary'"
+                    [class.bg-white]="plan.buttonStyle !== 'primary'"
+                    [class.dark:bg-gray-800]="plan.buttonStyle !== 'primary'"
+                    [class.text-indigo-600]="plan.buttonStyle !== 'primary'"
+                    [class.ring-1]="plan.buttonStyle !== 'primary'"
+                    [class.ring-inset]="plan.buttonStyle !== 'primary'"
+                    [class.ring-indigo-300]="plan.buttonStyle !== 'primary'"
+                >
+                    {{ plan.buttonText }}
+                </button>
+                } @else {
+                <div class="w-full text-center text-sm text-gray-400 dark:text-gray-500 mb-5">{{ plan.buttonText }}</div>
+                }
+
+                <hr class="border-gray-200 dark:border-gray-700 mb-4" />
+
                 @if (plan.metrics && plan.metrics.length > 0) {
-                <div class="included-resources mb-2">
-                    <h4 class="section-title text-left">Included</h4>
-                    <div class="resource-boxes">
-                        @for (metric of plan.metrics; track metric) {
-                        <div class="resource-box">{{ metric }}</div>
-                        }
-                    </div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">Included</p>
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                    @for (metric of plan.metrics; track metric) {
+                    <span class="inline-flex items-center rounded-md bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 text-xs font-medium text-indigo-700 dark:text-indigo-300">
+                        {{ metric }}
+                    </span>
+                    }
                 </div>
                 }
 
-                <!-- Plan Features -->
-                @if ((plan.features && plan.features.length > 0) || (plan.notIncludedFeatures &&
-                plan.notIncludedFeatures.length > 0)) {
-                <div class="mb-2 text-left">
-                    <h4 class="section-title text-left">Features</h4>
-                    <ul class="plan-features gap-6 m-0 p-0 text-left">
-                        <!-- Included Features -->
-                        @for (feature of plan.features; track feature) {
-                        <li class="feature-item included flex items-center relative p-0 gap-2 m-0">
-                            <span class="feature-icon included">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    height="24px"
-                                    viewBox="0 -960 960 960"
-                                    width="24px"
-                                    fill="#4d4d4d"
-                                >
-                                    <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
-                                </svg>
-                            </span>
-                            {{ feature }}
-                        </li>
-                        }
-                        <!-- Not Included Features -->
-                        @for (feature of plan.notIncludedFeatures; track feature) {
-                        <li class="feature-item not-included flex items-center relative p-0 gap-2">
-                            <span class="feature-icon not-included">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    height="24px"
-                                    viewBox="0 -960 960 960"
-                                    width="24px"
-                                    fill="#999999"
-                                >
-                                    <path
-                                        d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"
-                                    />
-                                </svg>
-                            </span>
-                            {{ feature }}
-                        </li>
-                        }
-                    </ul>
-                </div>
+                @if ((plan.features && plan.features.length > 0) || (plan.notIncludedFeatures && plan.notIncludedFeatures.length > 0)) {
+                <p class="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">Features</p>
+                <ul class="flex flex-col gap-2 mb-4 list-none p-0 m-0">
+                    @for (feature of plan.features; track feature) {
+                    <li class="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <svg class="mt-0.5 size-4 shrink-0 text-green-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                        </svg>
+                        {{ feature }}
+                    </li>
+                    }
+                    @for (feature of plan.notIncludedFeatures; track feature) {
+                    <li class="flex items-start gap-2 text-sm text-gray-400 dark:text-gray-500 line-through">
+                        <svg class="mt-0.5 size-4 shrink-0 text-gray-300 dark:text-gray-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+                        </svg>
+                        {{ feature }}
+                    </li>
+                    }
+                </ul>
                 }
 
-                <!-- Extra Features Section -->
                 @if (plan.extraFeatures && plan.extraFeatures.length > 0) {
-                <div class="mb-6 text-left">
-                    <h4 class="section-title text-left">Extra</h4>
-                    <ul class="plan-features gap-6 m-0 p-0 text-left">
-                        @for (extraFeature of plan.extraFeatures; track extraFeature) {
-                        <li class="feature-item extra flex items-center relative p-0 gap-2 m-0">
-                            <span class="feature-icon extra">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    height="24px"
-                                    viewBox="0 -960 960 960"
-                                    width="24px"
-                                    fill="#4d4d4d"
-                                >
-                                    <path
-                                        d="m354-287 126-76 126 77-33-144 111-96-146-13-58-136-58 135-146 13 111 97-33 143ZM233-120l65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-350Z"
-                                    />
-                                </svg>
-                            </span>
-                            {{ extraFeature }}
-                        </li>
-                        }
-                    </ul>
-                </div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 mb-2">Extra</p>
+                <ul class="flex flex-col gap-2 list-none p-0 m-0">
+                    @for (extraFeature of plan.extraFeatures; track extraFeature) {
+                    <li class="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <svg class="mt-0.5 size-4 shrink-0 text-indigo-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292Z" />
+                        </svg>
+                        {{ extraFeature }}
+                    </li>
+                    }
+                </ul>
                 }
             </div>
             }
         </div>
     </div>
-</div>
+    }
+</div> -->

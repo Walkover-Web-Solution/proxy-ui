@@ -12,6 +12,6 @@ export enum ViewMode {
     OtpDialog = 'otp-dialog',
     UserManagement = PublicScriptType.UserManagement,
     Subscription = PublicScriptType.Subscription,
-    UserProfile = 'user-profile',
+    UserProfile = PublicScriptType.UserProfile,
     OrganizationDetails = PublicScriptType.OrganizationDetails,
 }
