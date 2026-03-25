@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, input, inject } from '@angular/core
 import { MatButtonModule } from '@angular/material/button';
 import { A11yModule } from '@angular/cdk/a11y';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
     selector: 'proxy-confirm-dialog',
-    imports: [MatButtonModule, A11yModule],
+    imports: [MatButtonModule, A11yModule, MatDialogModule],
     templateUrl: './confirm-dialog.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })

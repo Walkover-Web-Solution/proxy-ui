@@ -1,8 +1,8 @@
-<h1 mat-dialog-title class="mat-subheading-2 text-dark mb-6 font-medium" [innerHTML]="title()"></h1>
-<div mat-dialog-content class="w-full mb-6">
-    <p class="text-dark mat-body-2 my-0" [innerHTML]="confirmationMessage()"></p>
-</div>
-<div cdkTrapFocus mat-dialog-actions class="flex gap-2 items-center" [class]="footerButtonPosition()">
+<h1 mat-dialog-title [innerHTML]="title()"></h1>
+<mat-dialog-content>
+    <p class="text-dark mat-body-2" [innerHTML]="confirmationMessage()"></p>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="gap-2" [class]="footerButtonPosition()">
     @if (showCancelButton()) {
     <button
         cdkFocusRegionStart
@@ -29,4 +29,4 @@
         {{ confirmButtonText() }}
     </button>
     }
-</div>
+</mat-dialog-actions>
