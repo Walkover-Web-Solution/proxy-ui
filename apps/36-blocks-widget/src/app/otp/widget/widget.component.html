@@ -29,13 +29,12 @@
     <div
         class="otp-verification-dialog"
         [class.animation-complete]="animate()"
-        [class.register-user]="showRegistration()"
         [class.dark-theme]="isDarkTheme"
         [style.border-radius]="dialogBorderRadius || null"
     >
         @if (isOtpLoading()) {
         <proxy-progress-bar></proxy-progress-bar>
-        } @if (!(showRegistration() || showLogin())) {
+        }
         <authorization
             [referenceId]="referenceId"
             [serviceData]="otpWidgetData"
@@ -51,38 +50,53 @@
             (successReturn)="returnSuccessObj($event)"
             (failureReturn)="returnFailureObj($event)"
         ></authorization>
-        } @if (showRegistration()) {
-        <proxy-register
-            [referenceId]="referenceId"
-            [serviceData]="otpWidgetData"
-            [loginServiceData]="loginWidgetData"
-            [registrationViaLogin]="registrationViaLogin"
-            [showCompanyDetails]="showCompanyDetails"
-            [version]="version"
-            [theme]="theme"
-            [prefillDetails]="prefillDetails"
-            [firstName]="otherData?.firstName"
-            [lastName]="otherData?.lastName"
-            [email]="otherData?.email"
-            [signupServiceId]="otherData?.signupServiceId"
-            [isRegisterFormOnly]="isRegisterFormOnly"
-            (togglePopUp)="setShowRegistration(false)"
-            (successReturn)="setShowRegistration(false)"
-            (failureReturn)="returnFailureObj($event)"
-        ></proxy-register>
-        } @if (showLogin()) {
-        <proxy-login
-            [loginServiceData]="loginWidgetData"
-            [theme]="theme"
-            (togglePopUp)="toggleSendOtp()"
-            (closePopUp)="setShowLogin(false)"
-            (openPopUp)="setShowRegistrationFromLogin($event)"
-            (failureReturn)="returnFailureObj($event)"
-        ></proxy-login>
-        }
     </div>
-
-    @if (referenceId) {
+    @if (showRegistration() || showLogin()) {
+    <div #dialogPortal [class.dark]="isDarkTheme">
+        <div class="w-dialog-backdrop" (click)="closeOverlayDialog()" aria-hidden="true"></div>
+        <div
+            role="dialog"
+            aria-modal="true"
+            class="w-dialog-panel"
+            [style.max-width]="showRegistration() ? '40rem' : '26rem'"
+        >
+            @if (isOtpLoading()) {
+            <proxy-progress-bar></proxy-progress-bar>
+            }
+            <div class="w-dialog-body">
+                @if (showRegistration()) {
+                <proxy-register
+                    [referenceId]="referenceId"
+                    [serviceData]="otpWidgetData"
+                    [loginServiceData]="loginWidgetData"
+                    [registrationViaLogin]="registrationViaLogin"
+                    [showCompanyDetails]="showCompanyDetails"
+                    [version]="version"
+                    [theme]="theme"
+                    [prefillDetails]="prefillDetails"
+                    [firstName]="otherData?.firstName"
+                    [lastName]="otherData?.lastName"
+                    [email]="otherData?.email"
+                    [signupServiceId]="otherData?.signupServiceId"
+                    [isRegisterFormOnly]="isRegisterFormOnly"
+                    (togglePopUp)="closeOverlayDialog()"
+                    (successReturn)="closeOverlayDialog()"
+                    (failureReturn)="returnFailureObj($event)"
+                ></proxy-register>
+                } @if (showLogin()) {
+                <proxy-login
+                    [loginServiceData]="loginWidgetData"
+                    [theme]="theme"
+                    (togglePopUp)="closeOverlayDialog()"
+                    (closePopUp)="closeOverlayDialog()"
+                    (openPopUp)="setShowRegistrationFromLogin($event)"
+                    (failureReturn)="returnFailureObj($event)"
+                ></proxy-login>
+                }
+            </div>
+        </div>
+    </div>
+    } @if (referenceId) {
     <div class="otp-verification-footer">
         <span>Secured by</span>
         <svg

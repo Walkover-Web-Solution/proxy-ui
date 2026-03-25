@@ -1,11 +1,11 @@
 export const envVariables = {
     firebaseConfig: {
-        apiKey: 'AIzaSyCxRjom_yz_suroteRqwqBk91HPqgh4Z3c',
-        authDomain: 'admin-panel-test-b5a7e.firebaseapp.com',
-        projectId: 'admin-panel-test-b5a7e',
-        storageBucket: 'admin-panel-test-b5a7e.appspot.com',
-        messagingSenderId: '970692014254',
-        appId: '1:970692014254:web:a50174f6d1d939533f7d3f',
+        apiKey: 'AIzaSyDAh1_6NQHdbzuYJX_DJ6G4CCHj_G9P2J8',
+        authDomain: 'msg91-admin-panel-auth.firebaseapp.com',
+        projectId: 'msg91-admin-panel-auth',
+        storageBucket: 'msg91-admin-panel-auth.appspot.com',
+        messagingSenderId: '420919615057',
+        appId: '1:420919615057:web:93eb6d1dbb05ea8c27e270',
     },
 
     // VIASOCKET INTERFACE

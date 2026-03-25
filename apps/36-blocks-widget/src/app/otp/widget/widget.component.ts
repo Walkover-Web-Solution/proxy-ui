@@ -11,6 +11,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ElementRef,
     Input,
     NgZone,
     OnChanges,
@@ -18,6 +19,7 @@ import {
     OnInit,
     Renderer2,
     SimpleChanges,
+    ViewChild,
     ViewEncapsulation,
     computed,
     inject,
@@ -51,6 +53,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionCenterComponent } from '../component/subscription-center/subscription-center.component';
 import { environment } from 'apps/36-blocks-widget/src/environments/environment';
 import { InputFields, WidgetVersion } from './utility/model';
+import { WidgetPortalRef, WidgetPortalService } from '../service/widget-portal.service';
 @Component({
     selector: 'proxy-auth-widget',
     imports: [
@@ -121,6 +124,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     @Input() public successReturn: (arg: any) => any;
     @Input() public failureReturn: (arg: any) => any;
     @Input() public otherData: { [key: string]: any } = {};
+
+    @ViewChild('dialogPortal') private dialogPortalEl?: ElementRef<HTMLElement>;
+    private dialogPortalRef: WidgetPortalRef | null = null;
+    private readonly widgetPortal = inject(WidgetPortalService);
 
     public readonly show = signal<boolean>(false);
     public readonly showRegistration = signal<boolean>(false);
@@ -272,10 +279,26 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     ngOnDestroy() {
+        this.dialogPortalRef?.detach();
+        this.dialogPortalRef = null;
         if (this.referenceElement) {
             this.clearSubscriptionPlans(this.referenceElement);
         }
         super.ngOnDestroy();
+    }
+
+    public closeOverlayDialog(): void {
+        this.dialogPortalRef?.detach();
+        this.dialogPortalRef = null;
+        this.ngZone.run(() => {
+            this.showRegistration.set(false);
+            this.otpWidgetService.openLogin(false);
+            if (this.referenceElement) {
+                this.show.set(false);
+            }
+            this.cameFromLogin = false;
+            this.cameFromSendOtpCenter = false;
+        });
     }
 
     private loadExternalFonts() {
@@ -1751,6 +1774,9 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     this.setShowLogin(false);
                     this.show.set(true);
                 } else {
+                    // Detach portal when closing
+                    this.dialogPortalRef?.detach();
+                    this.dialogPortalRef = null;
                     // When closing registration, go back to where user came from
                     if (this.cameFromLogin) {
                         // If user came from login, go back to login
@@ -1781,6 +1807,14 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 this.prefillDetails = data;
             }
         });
+        // Teleport to body after Angular renders the @if block
+        if (value) {
+            Promise.resolve().then(() => {
+                if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
+                    this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                }
+            });
+        }
     }
     public setShowLogin(value: boolean) {
         this.ngZone.run(() => {
@@ -1789,6 +1823,17 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             }
             this.otpWidgetService.openLogin(value);
         });
+        // Teleport login dialog to body after Angular renders the @if block
+        if (value) {
+            Promise.resolve().then(() => {
+                if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
+                    this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                }
+            });
+        } else {
+            this.dialogPortalRef?.detach();
+            this.dialogPortalRef = null;
+        }
     }
 
     public setShowRegistrationFromLogin(data?: string) {

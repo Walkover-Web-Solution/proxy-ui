@@ -26,7 +26,7 @@ function ensureOverlayStyles(): void {
 [data-widget-overlay] *{box-sizing:border-box}
 .w-dialog-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:2147483646}
 .dark .w-dialog-backdrop{background:rgba(0,0,0,.7)}
-.w-dialog-panel{position:fixed;left:1rem;right:1rem;top:50%;transform:translateY(-50%);z-index:2147483647;background:#fff;border-radius:.75rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);outline:1px solid rgba(17,24,39,.05);display:flex;flex-direction:column;max-height:85vh}
+.w-dialog-panel{position:fixed;left:1rem;right:1rem;top:50%;transform:translateY(-50%);z-index:2147483647;background:#fff;border-radius:.75rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);outline:1px solid rgba(17,24,39,.05);display:flex;flex-direction:column;max-height:85vh;overflow:hidden}
 .dark .w-dialog-panel{background:#111827;outline-color:rgba(255,255,255,.1)}
 @media(min-width:640px){.w-dialog-panel{left:50%;right:auto;width:100%;max-width:32rem;transform:translate(-50%,-50%)}}
 .w-dialog-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.5rem;border-bottom:1px solid #e5e7eb;flex-shrink:0}

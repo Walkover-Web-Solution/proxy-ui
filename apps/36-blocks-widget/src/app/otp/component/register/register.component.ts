@@ -229,9 +229,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 this.registrationForm.get('user.mobile').setErrors(null);
                 this.otpError = ''; // Clear error on successful verification
             }
+            this.cdr.markForCheck();
         });
         this.selectVerifyOtpV2Data$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             this.otpVerificationToken = res?.data?.otp_verification_token;
+            this.cdr.markForCheck();
         });
         this.selectGetOtpSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             this.isOtpSent = res;
@@ -240,6 +242,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 this.lastSentMobileNumber = this.registrationForm.get('user.mobile').value;
                 this.isNumberChanged = true;
             }
+            this.cdr.markForCheck();
         });
 
         // Handle OTP verification errors
@@ -249,6 +252,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 // Clear OTP form to allow user to retry
                 this.otpForm.reset();
             }
+            this.cdr.markForCheck();
         });
 
         // Add global paste event listener
