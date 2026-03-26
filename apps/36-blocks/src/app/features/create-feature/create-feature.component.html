@@ -582,8 +582,8 @@
 </ng-template>
 
 <ng-template #configureMethodFormContent let-serviceForm="serviceForm">
-    <div class="flex flex-col grow rounded-xl border broder-color overflow-hidden">
-        @if ((selectedMethod | async)?.method_services; as methodServices) {
+    <div class="flex flex-col grow rounded-xl broder-color overflow-hidden" [class.border]="!serviceForm">
+        @if ((selectedMethod | async)?.method_services; as methodServices) { @if (!serviceForm) {
         <div class="flex items-center gap-2 px-4 py-3 border-b broder-color bg-color">
             <mat-icon class="!text-base !w-4 text-color">tune</mat-icon>
             <span
@@ -591,14 +591,15 @@
                 >{{ methodServices?.[selectedServiceIndex]?.name || 'Configure Service' }}</span
             >
         </div>
-        @if (serviceForm ?? featureForm.get('serviceDetails')?.at(selectedServiceIndex); as formToUse) {
-        <div class="p-4 flex flex-col gap-3">
+        } @if (serviceForm ?? featureForm.get('serviceDetails')?.at(selectedServiceIndex); as formToUse) {
+        <div class="flex flex-col gap-3" [class.p-4]="!serviceForm">
             <form [formGroup]="formToUse" class="flex flex-col gap-1">
-                @if (methodServices?.[selectedServiceIndex]?.requirements; as requirements) {
+                @if (methodServices?.[selectedServiceIndex]?.requirements; as requirements) { @if
+                ((formToUse.controls.requirements.controls | keyvalue)?.length) {
                 <p class="mat-body-2 font-semibold mb-1 secondary-text-color uppercase tracking-wide text-xs">
                     Credentials
                 </p>
-                @for (controlKeyValue of (formToUse.controls.requirements.controls | keyvalue); track
+                } @for (controlKeyValue of (formToUse.controls.requirements.controls | keyvalue); track
                 controlKeyValue.key) {
                 <ng-container
                     *ngTemplateOutlet="

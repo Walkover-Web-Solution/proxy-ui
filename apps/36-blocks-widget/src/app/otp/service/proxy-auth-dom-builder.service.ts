@@ -17,6 +17,7 @@ export class ProxyAuthDomBuilderService {
     }
 
     appendSkeletonLoader(renderer: Renderer2, element: HTMLElement): void {
+        if (element.querySelector('#skeleton-loader')) return;
         const container = renderer.createElement('div');
         container.id = 'skeleton-loader';
         container.style.cssText = 'display:block;width:100%;';

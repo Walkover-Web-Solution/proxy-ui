@@ -1,7 +1,7 @@
 <div
     #container
     [style.display]="isHidden() ? 'none' : 'flex'"
-    [class.dark]="isDark()"
+    [class.dark]="isDark"
     class="h-full flex-col bg-transparent overflow-y-auto"
 >
     <!-- ── Top header bar (hidden when only Members tab is available) ───── -->
@@ -628,7 +628,7 @@
 
     <!-- ══ MODAL DIALOG ════════════════════════════════════════════════════ -->
     @if (showDialog()) {
-    <div #mainDialogPortal [class.dark]="isDark()">
+    <div #mainDialogPortal [class.dark]="isDark">
         <div class="w-dialog-backdrop" (click)="closeDialog()" aria-hidden="true"></div>
         <div role="dialog" aria-labelledby="dialog-title" aria-modal="true" class="w-dialog-panel">
             <!-- Header -->
@@ -871,7 +871,7 @@
 
     <!-- ══ CONFIRM DELETE DIALOG ══════════════════════════════════════════ -->
     @if (showConfirmDialog()) {
-    <div #confirmDialogPortal [class.dark]="isDark()">
+    <div #confirmDialogPortal [class.dark]="isDark">
         <div class="w-dialog-backdrop" (click)="cancelDelete()" aria-hidden="true"></div>
         <div
             role="alertdialog"

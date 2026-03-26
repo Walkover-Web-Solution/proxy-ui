@@ -22,20 +22,32 @@ export class OtpEffects {
                 return this.otpService.getWidgetData(p.referenceId, p.payload).pipe(
                     map((res: any) => {
                         if (res) {
+                            console.log(
+                                '[ProxyAuth] API response received, ciphered length:',
+                                res?.data?.ciphered?.length
+                            );
+                            const decrypted = this.otpUtilityService.aesDecrypt(
+                                res?.data?.ciphered ?? '',
+                                environment.apiEncodeKey,
+                                environment.apiIvKey,
+                                true
+                            );
+                            console.log(
+                                '[ProxyAuth] Decrypted result:',
+                                decrypted ? 'OK (' + decrypted.length + ' chars)' : 'EMPTY'
+                            );
+                            const parsed = JSON.parse(decrypted);
+                            console.log('[ProxyAuth] Parsed widget data:', parsed);
                             return otpActions.getWidgetDataComplete({
-                                response: JSON.parse(
-                                    this.otpUtilityService.aesDecrypt(
-                                        res?.data?.ciphered ?? '',
-                                        environment.apiEncodeKey,
-                                        environment.apiIvKey,
-                                        true
-                                    )
-                                ),
+                                response: parsed,
                                 theme: res?.data,
                             });
                         }
                     }),
                     catchError((err) => {
+                        console.error('[ProxyAuth] getWidgetData failed:', err);
+                        console.error('[ProxyAuth] apiEncodeKey defined:', !!environment.apiEncodeKey);
+                        console.error('[ProxyAuth] apiIvKey defined:', !!environment.apiIvKey);
                         return of(
                             otpActions.getWidgetDataError({
                                 errors: errorResolver(err.errors),

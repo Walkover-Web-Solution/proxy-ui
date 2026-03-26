@@ -36,7 +36,9 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     public theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
     private readonly themeService = inject(WidgetThemeService);
-    readonly isDark = this.themeService.isDark;
+    get isDark(): boolean {
+        return this.themeService.isDark(this.theme() as WidgetTheme);
+    }
 
     public organizationForm = new FormGroup({
         companyName: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),

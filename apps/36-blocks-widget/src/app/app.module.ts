@@ -5,6 +5,7 @@ import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppComponent } from './app.component';
 import { ElementModule } from './element.module';
+import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 let conditional_imports = [];
 if (environment.production) {
@@ -20,7 +21,7 @@ if (environment.production) {
 @NgModule({
     declarations: [],
     imports: [AppComponent, BrowserModule, BrowserAnimationsModule, ElementModule, ...conditional_imports],
-    providers: [provideZoneChangeDetection({ eventCoalescing: true })],
+    providers: [WidgetThemeService, provideZoneChangeDetection({ eventCoalescing: true })],
 })
 export class AppModule implements DoBootstrap {
     ngDoBootstrap(appRef: ApplicationRef) {

@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, signal, computed, effect } from '@angular/core';
+import { Injectable, OnDestroy, signal, computed } from '@angular/core';
 import { WidgetTheme } from '@proxy/constant';
 
 @Injectable()
@@ -10,19 +10,16 @@ export class WidgetThemeService implements OnDestroy {
     private readonly _themeOverride = signal<string | undefined>(undefined);
     private readonly _inputTheme = signal<string | undefined>(undefined);
 
-    private readonly _resolvedTheme = computed(() => this._themeOverride() ?? this._inputTheme());
+    readonly resolvedTheme = computed(() => this._themeOverride() ?? this._inputTheme());
 
-    readonly resolvedTheme = this._resolvedTheme;
-
-    readonly isDark = computed<boolean>(() => {
-        const t = this._resolvedTheme();
+    readonly isDark = (theme?: WidgetTheme): boolean => {
+        const t = theme ?? this.resolvedTheme();
         if (t === WidgetTheme.Dark) return true;
         if (t === WidgetTheme.Light) return false;
-        if (t === WidgetTheme.System) return this._systemDark();
-        return false;
-    });
+        return this._systemDark();
+    };
 
-    private _mediaQueryCleanup: (() => void) | undefined;
+    private _mediaQueryCleanup?: () => void;
 
     constructor() {
         if (typeof window !== 'undefined') {

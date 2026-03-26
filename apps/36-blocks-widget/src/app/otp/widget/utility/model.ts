@@ -1,4 +1,4 @@
-import { PublicScriptType } from '@proxy/constant';
+// import { PublicScriptType } from '@proxy/constant';
 
 export enum WidgetVersion {
     V1 = 'v1',
@@ -8,10 +8,10 @@ export enum InputFields {
     TOP = 'top',
     BOTTOM = 'bottom',
 }
-export enum ViewMode {
-    OtpDialog = 'otp-dialog',
-    UserManagement = PublicScriptType.UserManagement,
-    Subscription = PublicScriptType.Subscription,
-    UserProfile = PublicScriptType.UserProfile,
-    OrganizationDetails = PublicScriptType.OrganizationDetails,
-}
+// export enum ViewMode {
+//     OtpDialog = 'otp-dialog',
+//     UserManagement = PublicScriptType.UserManagement,
+//     Subscription = PublicScriptType.Subscription,
+//     UserProfile = PublicScriptType.UserProfile,
+//     OrganizationDetails = PublicScriptType.OrganizationDetails,
+// }

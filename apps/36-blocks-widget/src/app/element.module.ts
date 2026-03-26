@@ -63,6 +63,10 @@ window['initVerification'] = (config: any) => {
         if (config?.referenceId || config?.authToken || config?.showCompanyDetails) {
             const findOtpProvider = document.querySelector('proxy-auth');
             if (findOtpProvider) {
+                const parentContainer = findOtpProvider.parentElement;
+                if (parentContainer) {
+                    parentContainer.querySelectorAll('#skeleton-loader').forEach((el) => el.remove());
+                }
                 findOtpProvider.remove();
             }
             const widgetElement = document.createElement('proxy-auth') as NgElement &

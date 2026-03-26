@@ -1,4 +1,4 @@
-<div class="h-full flex-col bg-transparent overflow-y-auto" [class.dark]="isDark()">
+<div class="h-full flex-col bg-transparent overflow-y-auto" [class.dark]="isDark">
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
         <!-- ── USER DETAILS CARD ── -->
         <div class="w-card-section">
@@ -259,7 +259,7 @@
     </div>
 </div>
 @if (isEditing) {
-<div #editDialogPortal [class.dark]="isDark()">
+<div #editDialogPortal [class.dark]="isDark">
     <div class="w-dialog-backdrop" (click)="cancelEdit()" aria-hidden="true"></div>
     <div role="dialog" aria-labelledby="edit-profile-title" aria-modal="true" class="w-dialog-panel">
         <div class="w-dialog-header">
@@ -336,13 +336,13 @@
     </div>
 </div>
 } @if (confirmDialogCompanyId()) {
-<div #confirmDialogPortal [class.dark]="isDark()">
+<div #confirmDialogPortal [class.dark]="isDark">
     <proxy-confirm-dialog
         title="Leave Company"
         message="Are you sure you want to leave this company? This action cannot be undone."
         confirmLabel="Leave"
         cancelLabel="Cancel"
-        [isDark]="isDark()"
+        [isDark]="isDark"
         (confirmed)="confirmLeave()"
         (cancelled)="confirmDialogCompanyId.set(null)"
     ></proxy-confirm-dialog>

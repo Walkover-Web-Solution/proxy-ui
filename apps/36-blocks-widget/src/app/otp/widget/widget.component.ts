@@ -107,7 +107,9 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         return PublicScriptType.Authorization;
     });
 
-    readonly isDarkTheme = this.themeService.isDark;
+    get isDarkTheme(): boolean {
+        return this.themeService.isDark(this.theme as WidgetTheme);
+    }
 
     @Input() public version: string = WidgetVersion.V1;
     @Input() public exclude_role_ids: any[] = [];
@@ -322,6 +324,12 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     this.showSkeleton = true;
                     this.domBuilder.appendSkeletonLoader(this.renderer, this.referenceElement);
                     this.addButtonsToReferenceElement(this.referenceElement);
+                    setTimeout(() => {
+                        if (this.showSkeleton) {
+                            this.showSkeleton = false;
+                            this.domBuilder.forceRemoveAllSkeletonLoaders(this.renderer, this.referenceElement);
+                        }
+                    }, 10000);
                 }
             }
         }
