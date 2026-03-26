@@ -4,7 +4,7 @@ import { from, Observable } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { GoogleAuthProvider } from 'firebase/auth';
 import { IToken, ProxyBaseUrls } from '@proxy/models/root-models';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({

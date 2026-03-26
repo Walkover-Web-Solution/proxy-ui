@@ -13,13 +13,13 @@
         },
         "build": {
             "dependsOn": ["set-env"],
-            "executor": "@angular-devkit/build-angular:browser",
+            "executor": "@angular-devkit/build-angular:application",
             "outputs": ["{options.outputPath}"],
             "options": {
                 "outputPath": "dist/apps/36-blocks",
                 "index": "apps/36-blocks/src/index.html",
-                "main": "apps/36-blocks/src/main.ts",
-                "polyfills": "apps/36-blocks/src/polyfills.ts",
+                "browser": "apps/36-blocks/src/main.ts",
+                "polyfills": ["zone.js"],
                 "tsConfig": "apps/36-blocks/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
                 "stylePreprocessorOptions": {
@@ -35,7 +35,8 @@
                     "node_modules/prismjs/prism.js",
                     "node_modules/prismjs/components/prism-csharp.min.js",
                     "node_modules/prismjs/components/prism-css.min.js"
-                ]
+                ],
+                "allowedCommonJsDependencies": ["crypto-js", "dayjs", "prismjs"]
             },
             "configurations": {
                 "production": {
@@ -102,20 +103,14 @@
                     "outputHashing": "all"
                 },
                 "development": {
-                    "buildOptimizer": false,
                     "optimization": false,
-                    "vendorChunk": true,
                     "extractLicenses": false,
-                    "sourceMap": true,
-                    "namedChunks": true
+                    "sourceMap": true
                 },
                 "local": {
-                    "buildOptimizer": false,
                     "optimization": false,
-                    "vendorChunk": true,
                     "extractLicenses": false,
-                    "sourceMap": true,
-                    "namedChunks": true
+                    "sourceMap": true
                 }
             },
             "defaultConfiguration": "production"

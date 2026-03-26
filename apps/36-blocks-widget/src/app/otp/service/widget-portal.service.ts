@@ -22,8 +22,9 @@ function ensureOverlayStyles(): void {
     // Always use unscoped handwritten CSS — Shadow DOM adoptedStyleSheets rules are
     // scoped with :host and do not match elements teleported outside the Shadow DOM.
     styleEl.textContent = `
-[data-widget-overlay]{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:16px;box-sizing:border-box}
-[data-widget-overlay] *{box-sizing:border-box}
+.proxy-widget-portal{isolation:isolate;font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:16px;line-height:1.5;box-sizing:border-box;color:#111827}
+.proxy-widget-portal *{box-sizing:border-box}
+.dark .proxy-widget-portal{color:#f3f4f6}
 .w-dialog-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:2147483646}
 .dark .w-dialog-backdrop{background:rgba(0,0,0,.7)}
 .w-dialog-panel{position:fixed;left:1rem;right:1rem;top:50%;transform:translateY(-50%);z-index:2147483647;background:#fff;border-radius:.75rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);outline:1px solid rgba(17,24,39,.05);display:flex;flex-direction:column;max-height:85vh;overflow:hidden}
@@ -176,6 +177,7 @@ export class WidgetPortalService {
         // Host container appended directly to body
         const host = document.createElement('div');
         host.setAttribute('data-widget-overlay', '');
+        host.classList.add('proxy-widget-portal');
         document.body.appendChild(host);
 
         const outlet = new DomPortalOutlet(host, this._appRef, this._injector);

@@ -42,7 +42,7 @@ import {
 } from '@proxy/constant';
 import { Observable } from 'rxjs';
 import { IPaginatedResponse } from '@proxy/models/root-models';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { omit } from 'lodash-es';
 import { PageEvent } from '@angular/material/paginator';
 import { UserComponentStore } from './user.store';
