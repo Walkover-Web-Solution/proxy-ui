@@ -141,7 +141,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     public cameFromLogin: boolean = false;
     public cameFromSendOtpCenter: boolean = false;
     public referenceElement: HTMLElement = null;
-    public authReference: HTMLElement = null;
     public subscriptionPlans: any[] = [];
 
     private readonly cdr = inject(ChangeDetectorRef);
@@ -171,9 +170,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     );
     readonly showLogin = toSignal(this.otpWidgetService.showlogin, { initialValue: false });
 
-    readonly widgetData = toSignal(this.store.pipe(select(selectWidgetData), distinctUntilChanged(isEqual)), {
-        initialValue: null,
-    });
     readonly widgetTheme = toSignal(this.store.pipe(select(selectWidgetTheme), distinctUntilChanged(isEqual)), {
         initialValue: null,
     });
@@ -200,6 +196,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     ngOnInit() {
+        console.info('Widget component initialized', this.authToken, this.type, this.theme);
         this._authToken$.set(this.authToken);
         this._type$.set(this.type);
         this.themeService.setInputTheme(this.theme);

@@ -7,7 +7,7 @@ import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 const REFERENCE_ID = '4512365c177425472369c0fa8351a15';
 const THEME: WidgetTheme = WidgetTheme.System;
-const TYPE: PublicScriptType = PublicScriptType.Authorization;
+const TYPE: PublicScriptType = PublicScriptType.OrganizationDetails;
 const AUTH_TOKEN =
     'a1hZNmtkYWJRUStXV25MdVpkeVN1YTZ1QlhDajNMdjdkZklMaEpLa1plMktUTVRZZklxRnV2SkZkVTJNQ1NDQWVUdlFpY3hUSHM0SHBpbCtjcVZxMmgzVHJNbnQ1K0d2NU1Ra1BrSTk0V0NWa1lVbEw1em5XbFVGL3VLSCsrb2JnalhObnlyN2pmNnFwdlgzeDQyRHVhSGFEZkY1eU55TDNSTElqaGo4UW5kb3o3WVU4Z3AyNzdlK0YwSlJ3S09kb1pPZXJhY1k5Q01JeWY1UkZkVk9yQT09';
 
@@ -47,10 +47,10 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
 
         if (!environment.production) {
             const widgetConfig: WidgetConfig = {
-                referenceId: REFERENCE_ID,
-                // authToken: AUTH_TOKEN,
-                // type: TYPE,
-                // showCompanyDetails: false,
+                // referenceId: REFERENCE_ID,
+                authToken: AUTH_TOKEN,
+                type: TYPE,
+                showCompanyDetails: false,
                 // isHidden: true,
                 // isRolePermission: false,
                 theme: THEME,

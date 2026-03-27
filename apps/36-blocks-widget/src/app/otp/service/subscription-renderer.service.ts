@@ -2,48 +2,6 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionRendererService {
-    // ─── Plan data helpers ────────────────────────────────────────────────────
-
-    formatPlans(plans: any[], isLogin: boolean, referenceId: string, loginRedirectUrl: string): any[] {
-        return plans.map((plan, index) => ({
-            id: plan.plan_name?.toLowerCase().replace(/\s+/g, '-') || `plan-${index}`,
-            title: plan.plan_name || 'Unnamed Plan',
-            priceNumber: this.extractPriceValue(plan.plan_price) || 0,
-            priceText:
-                this.extractCurrency(plan.plan_price) ||
-                (plan.plan_price ? plan.plan_price.replace(/[\d.]/g, '').trim() : 'Free'),
-            priceValue: this.extractPriceValue(plan.plan_price),
-            currency: this.extractCurrency(plan.plan_price),
-            buttonText: plan.subscribe_button_hidden ? 'Hidden' : 'Get Started',
-            buttonStyle: 'secondary',
-            isPopular: false,
-            isSelected: false,
-            features: this.getIncludedFeatures(plan.charges),
-            status: plan.plan_status,
-            subscribeButtonLink: isLogin
-                ? plan.subscribe_button_link?.replace('{ref_id}', referenceId)
-                : loginRedirectUrl,
-            subscribeButtonHidden: plan.subscribe_button_hidden,
-        }));
-    }
-
-    extractPriceValue(priceString: string): number {
-        if (!priceString) return 0;
-        const match = priceString.match(/[\d.]+/);
-        return match ? parseFloat(match[0]) : 0;
-    }
-
-    extractCurrency(priceString: string): string {
-        if (!priceString) return '';
-        const match = priceString.match(/[A-Z]{3}/);
-        return match ? match[0] : '';
-    }
-
-    getIncludedFeatures(charges: any[]): string[] {
-        if (!charges || !Array.isArray(charges)) return [];
-        return charges.map((c) => `${c.quotas || ''} ${c.billable_metric_name || ''}`.trim());
-    }
-
     // ─── Styles injection ─────────────────────────────────────────────────────
 
     injectSubscriptionStyles(isDark: boolean): void {
