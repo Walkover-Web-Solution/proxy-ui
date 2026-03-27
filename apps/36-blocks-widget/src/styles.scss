@@ -10,6 +10,9 @@
 /* Widget shared UI utilities */
 @use 'assets/scss/widget-ui';
 
+/* intl-tel-input custom overrides — global so dropdown applies outside Shadow DOM */
+@use '../../shared/assets/utils/intl-tel-input-custom';
+
 :root {
     --color-common-dark: #000000;
     --color-common-slate: #333333;

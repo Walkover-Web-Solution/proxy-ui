@@ -25,7 +25,15 @@
                 "stylePreprocessorOptions": {
                     "includePaths": ["apps/shared/scss"]
                 },
-                "assets": ["apps/36-blocks/src/favicon.ico", "apps/36-blocks/src/assets"],
+                "assets": [
+                    "apps/36-blocks/src/favicon.ico",
+                    "apps/36-blocks/src/assets",
+                    {
+                        "glob": "intl-tel-input-custom.css",
+                        "input": "apps/shared/assets/utils",
+                        "output": "assets/utils"
+                    }
+                ],
                 "styles": [
                     "apps/36-blocks/src/styles.scss",
                     "node_modules/primeng/resources/primeng.min.css",

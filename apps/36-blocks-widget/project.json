@@ -23,9 +23,17 @@
                 "tsConfig": "apps/36-blocks-widget/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
                 "stylePreprocessorOptions": {
-                    "includePaths": ["apps/shared/scss"]
+                    "includePaths": ["apps/shared/scss", "apps/shared"]
                 },
-                "assets": ["apps/36-blocks-widget/src/favicon.ico", "apps/36-blocks-widget/src/assets"],
+                "assets": [
+                    "apps/36-blocks-widget/src/favicon.ico",
+                    "apps/36-blocks-widget/src/assets",
+                    {
+                        "glob": "intl-tel-input-custom.css",
+                        "input": "apps/shared/assets/utils",
+                        "output": "assets/utils"
+                    }
+                ],
                 "styles": ["apps/36-blocks-widget/src/styles.scss"],
                 "scripts": [],
                 "outputHashing": "none",
@@ -89,7 +97,14 @@
                 "development": {
                     "optimization": false,
                     "extractLicenses": false,
-                    "sourceMap": true
+                    "sourceMap": true,
+                    "index": "apps/36-blocks-widget/src/index.html",
+                    "fileReplacements": [
+                        {
+                            "replace": "apps/36-blocks-widget/src/main.ts",
+                            "with": "apps/36-blocks-widget/src/main.dev.ts"
+                        }
+                    ]
                 }
             },
             "defaultConfiguration": "production"
@@ -98,8 +113,7 @@
             "dependsOn": ["set-env"],
             "executor": "@angular-devkit/build-angular:dev-server",
             "options": {
-                "buildTarget": "36-blocks-widget:build:development",
-                "browser": "apps/36-blocks-widget/src/main.dev.ts"
+                "buildTarget": "36-blocks-widget:build:development"
             },
             "configurations": {
                 "production": {

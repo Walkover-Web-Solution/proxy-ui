@@ -22,6 +22,7 @@ import {
     ViewChild,
     ViewEncapsulation,
     computed,
+    effect,
     inject,
     signal,
 } from '@angular/core';
@@ -186,6 +187,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
     constructor() {
         super();
+        effect(() => {
+            const dark = this.themeService.isDark$();
+            this.reapplyInjectedButtonTheme(dark);
+        });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -434,13 +439,13 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     private createSubscriptionCenterHTML(): string {
         return this.subscriptionRenderer.buildContainerHTML(
             this.subscriptionPlans || [],
-            this.themeService.resolvedTheme(),
+            this.themeService.isDark(),
             this.isLogin
         );
     }
 
     private addSubscriptionStyles(): void {
-        this.subscriptionRenderer.injectSubscriptionStyles(this.themeService.resolvedTheme());
+        this.subscriptionRenderer.injectSubscriptionStyles(this.themeService.isDark());
     }
 
     private addButtonsToReferenceElement(element): void {
@@ -636,12 +641,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         light_theme_primary_color?: string;
         dark_theme_primary_color?: string;
     }): string {
-        const resolved = this.themeService.resolvedTheme();
-        const isDark =
-            resolved === WidgetTheme.Dark ||
-            (resolved === WidgetTheme.System &&
-                typeof window !== 'undefined' &&
-                window.matchMedia('(prefers-color-scheme: dark)').matches);
+        const isDark = this.themeService.isDark();
         if (this.version !== WidgetVersion.V2) {
             return isDark ? '#FFFFFF' : '#000000';
         }
@@ -822,7 +822,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
         const selectWidgetTheme = this.widgetTheme() as any;
         const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
-        const isDarkFP = this.themeService.resolvedTheme() === WidgetTheme.Dark;
+        const isDarkFP = this.themeService.isDark();
 
         // Create back button
         const backButton: HTMLButtonElement = this.renderer.createElement('button');
@@ -981,7 +981,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
         const selectWidgetTheme = this.widgetTheme() as any;
         const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
-        const isDarkCP = this.themeService.resolvedTheme() === WidgetTheme.Dark;
+        const isDarkCP = this.themeService.isDark();
 
         let remainingSeconds = 15;
         let timerInterval: any = null;
@@ -1275,7 +1275,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         const title: HTMLElement = this.renderer.createElement('div');
         title.textContent = 'Login';
         title.style.cssText = `font-size:16px;line-height:20px;font-weight:600;color:${
-            this.themeService.resolvedTheme() === WidgetTheme.Dark ? '#ffffff' : '#1f2937'
+            this.themeService.isDark() ? '#ffffff' : '#1f2937'
         };margin-bottom:0;text-align:center;`;
 
         const loginButton: HTMLButtonElement = this.renderer.createElement('button');
@@ -1302,7 +1302,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         primaryColor: string,
         onForgotPassword: (email: string) => void
     ): void {
-        const isDark = this.themeService.resolvedTheme() === WidgetTheme.Dark;
+        const isDark = this.themeService.isDark();
         const noteColor = this.version === 'v2' ? primaryColor : isDark ? '#e5e7eb' : '#5d6164';
 
         const usernameField: HTMLElement = this.renderer.createElement('div');
@@ -1560,6 +1560,8 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 }
             }
 
+            button.setAttribute('data-paw-button', 'true');
+            button.setAttribute('data-paw-icon-only', 'true');
             button.style.cssText = `
                 outline: none;
                 padding: 12px;
@@ -1568,9 +1570,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 justify-content: center;
                 font-size: 14px;
                 background-color: transparent;
-                border: ${
-                    this.themeService.resolvedTheme() === WidgetTheme.Dark ? '1px solid #ffffff' : '1px solid #d1d5db'
-                };
+                border: ${this.themeService.isDark() ? '1px solid #ffffff' : '1px solid #d1d5db'};
                 border-radius: ${borderRadius};
                 cursor: pointer;
                 visibility: ${isOtpButton ? 'hidden' : 'visible'};
@@ -1603,6 +1603,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         } else {
             const span: HTMLSpanElement = this.renderer.createElement('span');
 
+            button.setAttribute('data-paw-button', 'true');
             button.style.cssText = `
                 outline: none;
                 padding: 0 16px;
@@ -1612,12 +1613,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 ${useDiv ? '' : 'gap: 12px;'}
                 font-size: 14px;
                 background-color: transparent;
-                border: ${
-                    this.themeService.resolvedTheme() === WidgetTheme.Dark ? '1px solid #ffffff' : '1px solid #000000'
-                };
+                border: ${this.themeService.isDark() ? '1px solid #ffffff' : '1px solid #000000'};
                 border-radius: ${borderRadius};
                 height: 44px;
-                color: ${this.themeService.resolvedTheme() === WidgetTheme.Dark ? '#ffffff' : '#111827'};
+                color: ${this.themeService.isDark() ? '#ffffff' : '#111827'};
                 margin: 8px 8px 16px 8px;
                 cursor: pointer;
                 width: ${useDiv ? '316px' : '260px'};
@@ -1630,7 +1629,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 ${invertIcon ? 'filter: invert(1);' : ''}
             `;
             span.style.cssText = `
-                color: ${this.themeService.resolvedTheme() === WidgetTheme.Dark ? '#ffffff' : '#111827'};
+                color: ${this.themeService.isDark() ? '#ffffff' : '#111827'};
                 font-weight: 600;
             `;
             image.src = buttonsData.icon;
@@ -1658,7 +1657,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     align-items: center;
                     justify-content: flex-start;
                     gap: 12px;
-                    width: 200px;
                 `;
                 this.renderer.appendChild(contentDiv, image);
                 this.renderer.appendChild(contentDiv, span);
@@ -1806,15 +1804,13 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             if (data) {
                 this.prefillDetails = data;
             }
-        });
-        // Teleport to body after Angular renders the @if block
-        if (value) {
-            Promise.resolve().then(() => {
+            if (value) {
+                this.cdr.detectChanges();
                 if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
                     this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
                 }
-            });
-        }
+            }
+        });
     }
     public setShowLogin(value: boolean) {
         this.ngZone.run(() => {
@@ -1822,18 +1818,16 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 this.show.set(value);
             }
             this.otpWidgetService.openLogin(value);
-        });
-        // Teleport login dialog to body after Angular renders the @if block
-        if (value) {
-            Promise.resolve().then(() => {
+            if (value) {
+                this.cdr.detectChanges();
                 if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
                     this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
                 }
-            });
-        } else {
-            this.dialogPortalRef?.detach();
-            this.dialogPortalRef = null;
-        }
+            } else {
+                this.dialogPortalRef?.detach();
+                this.dialogPortalRef = null;
+            }
+        });
     }
 
     public setShowRegistrationFromLogin(data?: string) {
@@ -1905,9 +1899,43 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         }
     }
 
+    private reapplyInjectedButtonTheme(dark: boolean): void {
+        const container = this.referenceElement;
+        if (!container) return;
+
+        const selectWidgetTheme = this.widgetTheme() as any;
+        const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
+        const textColor = dark ? '#ffffff' : '#111827';
+        const border = dark ? '1px solid #ffffff' : '1px solid #000000';
+        const borderIconOnly = dark ? '1px solid #ffffff' : '1px solid #d1d5db';
+
+        container.querySelectorAll<HTMLButtonElement>('button[data-paw-button]').forEach((btn) => {
+            const isIconOnly = btn.hasAttribute('data-paw-icon-only');
+            if (isIconOnly) {
+                btn.style.border = borderIconOnly;
+            } else {
+                btn.style.border = border;
+                btn.style.color = textColor;
+                const span = btn.querySelector<HTMLSpanElement>('span');
+                if (span) span.style.color = textColor;
+                const img = btn.querySelector<HTMLImageElement>('img');
+                if (img) {
+                    const isApple = img.alt?.toLowerCase().includes('apple');
+                    const isPassword = btn.dataset['serviceId'] === String(FeatureServiceIds.PasswordAuthentication);
+                    img.style.filter = dark && (isApple || isPassword) ? 'invert(1)' : '';
+                }
+            }
+        });
+
+        const createAccountP = container.querySelector<HTMLParagraphElement>('p[data-create-account="true"]');
+        if (createAccountP) {
+            createAccountP.style.setProperty('color', primaryColor, 'important');
+        }
+    }
+
     private shouldInvertIcon(buttonsData: any): boolean {
         const isApple = buttonsData?.text?.toLowerCase()?.includes('apple');
         const isPassword = buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication;
-        return this.themeService.resolvedTheme() === WidgetTheme.Dark && (isApple || isPassword);
+        return this.themeService.isDark() && (isApple || isPassword);
     }
 }

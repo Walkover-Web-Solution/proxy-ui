@@ -243,10 +243,9 @@
 // Dialog panel (centered, responsive)
 // z-index: 2147483647 = max-int to always appear above any client sidebar/overlay
 .w-dialog-panel {
-    @apply fixed inset-x-4 top-1/2 -translate-y-1/2
-           sm:inset-x-auto sm:left-1/2 sm:w-full sm:max-w-lg sm:-translate-x-1/2
-           rounded-xl bg-white shadow-2xl ring-1 ring-gray-900/5
-           flex flex-col max-h-[85vh];
+    @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+           flex flex-col w-[calc(100%-2rem)] max-h-[85vh]
+           rounded-xl bg-white shadow-2xl ring-1 ring-gray-900/5;
     z-index: 2147483647;
 
     .dark & {

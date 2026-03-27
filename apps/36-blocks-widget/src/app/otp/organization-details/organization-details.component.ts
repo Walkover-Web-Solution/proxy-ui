@@ -160,11 +160,10 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     public startEdit(): void {
         this.editSnapshot = { ...this.organizationForm.value } as typeof this.initialFormValue;
         this.isEditing = true;
-        Promise.resolve().then(() => {
-            if (this.editDialogPortalEl?.nativeElement) {
-                this.editDialogRef = this.widgetPortal.attach(this.editDialogPortalEl.nativeElement);
-            }
-        });
+        this.cdr.detectChanges();
+        if (this.editDialogPortalEl?.nativeElement) {
+            this.editDialogRef = this.widgetPortal.attach(this.editDialogPortalEl.nativeElement);
+        }
     }
 
     // ── NEW: cancel and restore form to pre-edit state ────────────

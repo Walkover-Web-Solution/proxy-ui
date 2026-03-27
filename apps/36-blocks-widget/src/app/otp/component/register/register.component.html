@@ -362,6 +362,7 @@
     <div [attr.id]="'init-contact-wrapper-' + key" class="w-full" style="position: relative; margin-bottom: 4px">
         <input
             type="tel"
+            autocomplete="off"
             class="w-input-sm"
             [class.border-red-500]="formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']"
             [style.border-radius]="borderRadiusValue || null"

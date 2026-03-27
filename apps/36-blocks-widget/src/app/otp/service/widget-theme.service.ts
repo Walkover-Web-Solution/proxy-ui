@@ -12,11 +12,18 @@ export class WidgetThemeService implements OnDestroy {
 
     readonly resolvedTheme = computed(() => this._themeOverride() ?? this._inputTheme());
 
-    readonly isDark = (theme?: WidgetTheme): boolean => {
-        const t = theme ?? this.resolvedTheme();
+    readonly isDark$ = computed(() => {
+        const t = this._themeOverride() ?? this._inputTheme();
         if (t === WidgetTheme.Dark) return true;
         if (t === WidgetTheme.Light) return false;
         return this._systemDark();
+    });
+
+    readonly isDark = (theme?: WidgetTheme): boolean => {
+        if (theme === WidgetTheme.Dark) return true;
+        if (theme === WidgetTheme.Light) return false;
+        if (theme !== undefined) return this._systemDark();
+        return this.isDark$();
     };
 
     private _mediaQueryCleanup?: () => void;
