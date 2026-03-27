@@ -5,11 +5,12 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { WidgetTheme, PublicScriptType, WidgetConfig } from '@proxy/constant';
 import { WidgetThemeService } from './otp/service/widget-theme.service';
 
-const REFERENCE_ID = '4512365c177425472369c0fa8351a15';
+const showAuth = false;
+const REFERENCE_ID = showAuth ? '4512365c177425472369c0fa8351a15' : '';
 const THEME: WidgetTheme = WidgetTheme.System;
-const TYPE: PublicScriptType = PublicScriptType.OrganizationDetails;
+const TYPE: PublicScriptType = PublicScriptType.UserManagement;
 const AUTH_TOKEN =
-    'a1hZNmtkYWJRUStXV25MdVpkeVN1YTZ1QlhDajNMdjdkZklMaEpLa1plMktUTVRZZklxRnV2SkZkVTJNQ1NDQWVUdlFpY3hUSHM0SHBpbCtjcVZxMmgzVHJNbnQ1K0d2NU1Ra1BrSTk0V0NWa1lVbEw1em5XbFVGL3VLSCsrb2JnalhObnlyN2pmNnFwdlgzeDQyRHVhSGFEZkY1eU55TDNSTElqaGo4UW5kb3o3WVU4Z3AyNzdlK0YwSlJ3S09kb1pPZXJhY1k5Q01JeWY1UkZkVk9yQT09';
+    'Sm5jL093OWNxRGpibHo1M05MTWxDbVZZcEVaU0hQc1UrcExWT1BqcTJSOFNyMEFTSzgwWUlxREczSFE5cnNmQTZScW5qdzdrUDZrZFltVWxJYnlaWE5DMklZN1Zoc1BhdFBHNlVwdC9tUURpdVJNdVNaSWNudld5dFBnYW5MdExpN1hhSlYzRG5UbHdsSTcwcTBuL0xHV1VZSjBFMWV6aVF2WldhQnBseHRab2d5ZlExM2prUnJMWGZHV1FFYUttNlhiYzNZR1F0Nm91NW5zc29JbHJCUT09';
 
 @Component({
     selector: 'proxy-root',
@@ -35,7 +36,6 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.initOtpProvider();
-
         console.log('Widget initialized', this.themeService.isDark());
     }
 
@@ -47,13 +47,9 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
 
         if (!environment.production) {
             const widgetConfig: WidgetConfig = {
-                // referenceId: REFERENCE_ID,
-                authToken: AUTH_TOKEN,
-                type: TYPE,
-                showCompanyDetails: false,
+                // showCompanyDetails: false,
                 // isHidden: true,
                 // isRolePermission: false,
-                theme: THEME,
                 // isPreview: true,
                 // loginRedirectUrl: 'https://www.google.com',
                 target: '_self',
@@ -64,6 +60,17 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                     console.log('failure reason', error);
                 },
             };
+            if (REFERENCE_ID) {
+                widgetConfig['referenceId'] = REFERENCE_ID;
+            } else if (AUTH_TOKEN) {
+                widgetConfig['authToken'] = AUTH_TOKEN;
+                if (TYPE) {
+                    widgetConfig['type'] = TYPE;
+                }
+            }
+            if (THEME) {
+                widgetConfig['theme'] = THEME;
+            }
             window.initVerification(widgetConfig);
         }
     }
