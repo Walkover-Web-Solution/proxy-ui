@@ -196,7 +196,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     ngOnInit() {
-        console.info('Widget component initialized', this.authToken, this.type, this.theme);
         this._authToken$.set(this.authToken);
         this._type$.set(this.type);
         this.themeService.setInputTheme(this.theme);

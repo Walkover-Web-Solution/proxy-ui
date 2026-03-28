@@ -39,6 +39,7 @@ import { environment } from '../../../environments/environment';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import { UserComponentStore } from '../user/user.store';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { PROXY_DOM_ID } from '@proxy/constant';
 
 interface IRole {
     id: number;
@@ -138,8 +139,12 @@ export class ManagementComponent implements OnInit, OnDestroy {
         return ProxyUserManagementScript(environment.proxyServer, referenceId || '<auth_token>');
     }
 
+    public get proxyDomId(): string {
+        return PROXY_DOM_ID;
+    }
+
     public get userProxyContainerHtml(): string {
-        return `<div id="userProxyContainer"></div>`;
+        return `<div id="${PROXY_DOM_ID}"></div>`;
     }
 
     @ViewChild('addRoleDialogTemplate', { static: false }) addRoleDialogTemplate: TemplateRef<any>;

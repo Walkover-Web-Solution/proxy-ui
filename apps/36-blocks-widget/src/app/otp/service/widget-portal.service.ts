@@ -18,7 +18,7 @@ function ensureOverlayStyles(): void {
     const link = document.createElement('link');
     link.id = STYLE_LINK_ID;
     link.rel = 'stylesheet';
-    link.href = `${environment.baseUrl}/styles.css`;
+    link.href = `${environment.production ? environment.baseUrl : window.location.origin}/styles.css`;
     document.head.appendChild(link);
 }
 

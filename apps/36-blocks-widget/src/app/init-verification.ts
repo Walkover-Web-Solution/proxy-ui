@@ -1,6 +1,7 @@
 import { NgElement, WithProperties } from '@angular/elements';
 import { ProxyAuthWidgetComponent } from './otp/widget/widget.component';
 import { omit } from 'lodash-es';
+import { PROXY_DOM_ID, PublicScriptType } from '@proxy/constant';
 
 export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure'];
 
@@ -93,34 +94,86 @@ if (!window.initVerification) {
                 // omitting keys which are not required in API payload; query params fill in missing values
                 widgetElement.otherData = { ...paramsData, ...omit(config, RESERVED_KEYS) };
 
-                // All types: append to the element whose id matches config.referenceId.
-                // Retry every 100 ms for up to 5 s. Never fall back to document.body.
-                // UserManagementBridgeService (root singleton) handles openAddUserDialog
-                // independently — no master/hidden element needed.
-                const resolveContainer = (): HTMLElement | null =>
-                    config?.referenceId ? document.getElementById(config.referenceId) : null;
+                // Determine the target container id:
+                const FALLBACK_CONTAINER_ID = PROXY_DOM_ID;
+                const targetId: string =
+                    config?.authToken || config?.type === PublicScriptType.Authorization
+                        ? FALLBACK_CONTAINER_ID
+                        : config?.referenceId;
+
+                const resolveContainer = (): HTMLElement | null => document.getElementById(targetId);
+
+                // Mount helper — called exactly once when the container is found.
+                const mountWidget = (container: HTMLElement): void => {
+                    container.append(widgetElement);
+                    window['libLoaded'] = true;
+                };
 
                 const container = resolveContainer();
                 if (container) {
-                    container.append(widgetElement);
+                    mountWidget(container);
                 } else {
-                    const RETRY_INTERVAL_MS = 100;
-                    const MAX_RETRIES = 50; // 50 × 100 ms = 5 s
-                    let attempts = 0;
-                    const poll = setInterval(() => {
-                        attempts++;
+                    // SPA-safe retry strategy:
+                    //   1. MutationObserver watches the entire document for the target element
+                    //      being added at any depth (handles Angular/React/Next.js async renders).
+                    //   2. A setInterval heartbeat runs in parallel as a safety net for cases
+                    //      where MutationObserver misses the insertion (e.g. innerHTML swap).
+                    //   3. Both are cancelled the moment the container is found.
+                    //   4. After TIMEOUT_MS with no container, log a clear error and stop.
+
+                    const RETRY_INTERVAL_MS = 150;
+                    const TIMEOUT_MS = 30_000; // 30 s — covers slow/lazy SPA routes
+                    let resolved = false;
+                    const startTime = Date.now();
+
+                    const cleanup = (observer: MutationObserver, intervalId: ReturnType<typeof setInterval>): void => {
+                        observer.disconnect();
+                        clearInterval(intervalId);
+                    };
+
+                    const tryMount = (
+                        observer: MutationObserver,
+                        intervalId: ReturnType<typeof setInterval>
+                    ): boolean => {
+                        if (resolved) return true;
                         const found = resolveContainer();
                         if (found) {
-                            clearInterval(poll);
-                            found.append(widgetElement);
-                        } else if (attempts >= MAX_RETRIES) {
-                            clearInterval(poll);
-                            console.warn('[proxy-auth] target container not found after 5 s — widget not mounted.');
+                            resolved = true;
+                            cleanup(observer, intervalId);
+                            mountWidget(found);
+                            return true;
                         }
+                        if (Date.now() - startTime >= TIMEOUT_MS) {
+                            resolved = true;
+                            cleanup(observer, intervalId);
+                            console.error(
+                                `[proxy-auth] Container element with id="${targetId}" was not found in the document ` +
+                                    `after ${TIMEOUT_MS / 1000} s. ` +
+                                    `Ensure the element exists in the DOM before calling window.initVerification().`
+                            );
+                            return true;
+                        }
+                        return false;
+                    };
+
+                    // Placeholder interval id — replaced after both are created.
+                    let intervalId: ReturnType<typeof setInterval>;
+
+                    const observer = new MutationObserver(() => {
+                        tryMount(observer, intervalId);
+                    });
+
+                    observer.observe(document.documentElement, {
+                        childList: true,
+                        subtree: true,
+                        attributes: true,
+                        attributeFilter: ['id'],
+                    });
+
+                    intervalId = setInterval(() => {
+                        tryMount(observer, intervalId);
                     }, RETRY_INTERVAL_MS);
                 }
-
-                window['libLoaded'] = true;
             } else {
                 if (!config?.referenceId) {
                     throw Error('Reference Id is missing!');

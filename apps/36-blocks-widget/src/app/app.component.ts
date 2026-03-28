@@ -2,13 +2,12 @@ import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { WidgetTheme, PublicScriptType, WidgetConfig } from '@proxy/constant';
+import { WidgetTheme, PublicScriptType, WidgetConfig, PROXY_DOM_ID } from '@proxy/constant';
 import { WidgetThemeService } from './otp/service/widget-theme.service';
 
-const showAuth = false;
-const REFERENCE_ID = showAuth ? '4512365c177425472369c0fa8351a15' : '';
+const REFERENCE_ID = '4512365c177425472369c0fa8351a15';
 const THEME: WidgetTheme = WidgetTheme.System;
-const TYPE: PublicScriptType = PublicScriptType.UserManagement;
+const TYPE: PublicScriptType = PublicScriptType.Authorization;
 const AUTH_TOKEN =
     'Sm5jL093OWNxRGpibHo1M05MTWxDbVZZcEVaU0hQc1UrcExWT1BqcTJSOFNyMEFTSzgwWUlxREczSFE5cnNmQTZScW5qdzdrUDZrZFltVWxJYnlaWE5DMklZN1Zoc1BhdFBHNlVwdC9tUURpdVJNdVNaSWNudld5dFBnYW5MdExpN1hhSlYzRG5UbHdsSTcwcTBuL0xHV1VZSjBFMWV6aVF2WldhQnBseHRab2d5ZlExM2prUnJMWGZHV1FFYUttNlhiYzNZR1F0Nm91NW5zc29JbHJCUT09';
 
@@ -26,9 +25,13 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     get isDarkTheme(): boolean {
         return this.themeService.isDark(THEME);
     }
-    public readonly referenceId: string = REFERENCE_ID;
-    public readonly theme: WidgetTheme = THEME;
-    public readonly authToken: string = AUTH_TOKEN;
+    protected readonly showAuthentication: boolean = false;
+    protected readonly referenceId: string = REFERENCE_ID;
+    protected readonly theme: WidgetTheme = THEME;
+    protected readonly authToken: string = AUTH_TOKEN;
+    get containerId(): string {
+        return this.showAuthentication ? REFERENCE_ID : PROXY_DOM_ID;
+    }
 
     constructor() {
         super();
@@ -36,7 +39,6 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.initOtpProvider();
-        console.log('Widget initialized', this.themeService.isDark());
     }
 
     public initOtpProvider(): void {
@@ -47,10 +49,10 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
 
         if (!environment.production) {
             const widgetConfig: WidgetConfig = {
+                referenceId: REFERENCE_ID, // Always pass referenceId
                 // showCompanyDetails: false,
                 // isHidden: true,
                 // isRolePermission: false,
-                // isPreview: true,
                 // loginRedirectUrl: 'https://www.google.com',
                 target: '_self',
                 success: (data) => {
@@ -60,17 +62,20 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                     console.log('failure reason', error);
                 },
             };
-            if (REFERENCE_ID) {
-                widgetConfig['referenceId'] = REFERENCE_ID;
-            } else if (AUTH_TOKEN) {
-                widgetConfig['authToken'] = AUTH_TOKEN;
+            if (!this.showAuthentication) {
                 if (TYPE) {
                     widgetConfig['type'] = TYPE;
+                    if (TYPE === PublicScriptType.Authorization) {
+                        widgetConfig['isPreview'] = true;
+                    } else {
+                        widgetConfig['authToken'] = AUTH_TOKEN;
+                    }
                 }
             }
             if (THEME) {
                 widgetConfig['theme'] = THEME;
             }
+            console.log('widgetConfig', widgetConfig);
             window.initVerification(widgetConfig);
         }
     }
