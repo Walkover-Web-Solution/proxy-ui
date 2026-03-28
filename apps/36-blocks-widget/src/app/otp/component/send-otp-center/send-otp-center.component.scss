@@ -1,23 +1,21 @@
-:host {
-    width: 316px;
-    min-height: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-}
+// :host {
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center;
+//     position: relative;
+// }
 
-/* API-driven button hover color override */
-.has-hover-color:hover {
-    background-color: var(--btn-hover-color) !important;
-}
+// /* API-driven button hover color override */
+// .has-hover-color:hover {
+//     background-color: var(--btn-hover-color) !important;
+// }
 
-/* intl-tel-input: force wrapper to fill container */
-:host ::ng-deep .iti {
-    width: 100%;
-}
+// /* intl-tel-input: force wrapper to fill container */
+// :host ::ng-deep .iti {
+//     width: 100%;
+// }
 
-/* intl-tel-input: prevent flag from overlapping input text */
-:host ::ng-deep .iti input[type='tel'] {
-    padding-left: 52px !important;
-}
+// /* intl-tel-input: prevent flag from overlapping input text */
+// :host ::ng-deep .iti input[type='tel'] {
+//     padding-left: 52px !important;
+// }

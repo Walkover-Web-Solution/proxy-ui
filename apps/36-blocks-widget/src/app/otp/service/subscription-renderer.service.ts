@@ -1,55 +1,11 @@
 import { Injectable } from '@angular/core';
-import { WidgetTheme } from '@proxy/constant';
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionRendererService {
-    // ─── Plan data helpers ────────────────────────────────────────────────────
-
-    formatPlans(plans: any[], isLogin: boolean, referenceId: string, loginRedirectUrl: string): any[] {
-        return plans.map((plan, index) => ({
-            id: plan.plan_name?.toLowerCase().replace(/\s+/g, '-') || `plan-${index}`,
-            title: plan.plan_name || 'Unnamed Plan',
-            priceNumber: this.extractPriceValue(plan.plan_price) || 0,
-            priceText:
-                this.extractCurrency(plan.plan_price) ||
-                (plan.plan_price ? plan.plan_price.replace(/[\d.]/g, '').trim() : 'Free'),
-            priceValue: this.extractPriceValue(plan.plan_price),
-            currency: this.extractCurrency(plan.plan_price),
-            buttonText: plan.subscribe_button_hidden ? 'Hidden' : 'Get Started',
-            buttonStyle: 'secondary',
-            isPopular: false,
-            isSelected: false,
-            features: this.getIncludedFeatures(plan.charges),
-            status: plan.plan_status,
-            subscribeButtonLink: isLogin
-                ? plan.subscribe_button_link?.replace('{ref_id}', referenceId)
-                : loginRedirectUrl,
-            subscribeButtonHidden: plan.subscribe_button_hidden,
-        }));
-    }
-
-    extractPriceValue(priceString: string): number {
-        if (!priceString) return 0;
-        const match = priceString.match(/[\d.]+/);
-        return match ? parseFloat(match[0]) : 0;
-    }
-
-    extractCurrency(priceString: string): string {
-        if (!priceString) return '';
-        const match = priceString.match(/[A-Z]{3}/);
-        return match ? match[0] : '';
-    }
-
-    getIncludedFeatures(charges: any[]): string[] {
-        if (!charges || !Array.isArray(charges)) return [];
-        return charges.map((c) => `${c.quotas || ''} ${c.billable_metric_name || ''}`.trim());
-    }
-
     // ─── Styles injection ─────────────────────────────────────────────────────
 
-    injectSubscriptionStyles(theme: string): void {
+    injectSubscriptionStyles(isDark: boolean): void {
         if (document.getElementById('subscription-styles')) return;
-        const isDark = theme === WidgetTheme.Dark;
         const style = document.createElement('style');
         style.id = 'subscription-styles';
         style.textContent = this.buildSubscriptionCSS(isDark);
@@ -115,21 +71,21 @@ export class SubscriptionRendererService {
 
     // ─── HTML string builders ─────────────────────────────────────────────────
 
-    buildContainerHTML(plans: any[], theme: string, isLogin: boolean): string {
+    buildContainerHTML(plans: any[], isDark: boolean, isLogin: boolean): string {
         if (plans.length === 0) {
             return `<div class="proxy-container"><div class="subscription-plans-container d-flex flex-column align-items-center justify-content-center"><div style="padding:20px;text-align:center;color:#666;font-size:16px;">No subscription plans available</div></div></div>`;
         }
-        const plansHTML = plans.map((p) => this.buildPlanCardHTML(p, theme, isLogin)).join('');
+        const plansHTML = plans.map((p) => this.buildPlanCardHTML(p, isDark, isLogin)).join('');
         return `<div class="proxy-container"><div class="subscription-plans-container d-flex flex-column align-items-center justify-content-center"><div class="plans-grid d-flex flex-row gap-4 justify-content-start align-items-stretch w-100 py-3">${plansHTML}</div></div></div>`;
     }
 
-    buildPlanCardHTML(plan: any, theme: string, isLogin: boolean): string {
+    buildPlanCardHTML(plan: any, isDark: boolean, isLogin: boolean): string {
         const isPopular = plan.plan_meta?.highlight_plan || false;
         const popularBadge = plan.plan_meta?.tag ? `<div class="popular-badge">${plan.plan_meta.tag}</div>` : '';
         const priceMatch = plan.plan_price?.match(/(\d+)\s+(.+)/);
         const priceValue = priceMatch ? priceMatch[1] : '0';
         const currency = priceMatch ? priceMatch[2] : 'USD';
-        const iconFill = theme === WidgetTheme.Dark ? '#ffffff' : '#4d4d4d';
+        const iconFill = isDark ? '#ffffff' : '#4d4d4d';
         const isDisabled = !!plan.isSubscribed;
         const cardClasses = `plan-card d-flex flex-column gap-3 position-relative${
             isPopular ? ' popular highlighted' : ''

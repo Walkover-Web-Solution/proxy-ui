@@ -229,16 +229,19 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 this.registrationForm.get('user.mobile').setErrors(null);
                 this.otpError = ''; // Clear error on successful verification
             }
+            this.cdr.markForCheck();
         });
         this.selectVerifyOtpV2Data$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             this.otpVerificationToken = res?.data?.otp_verification_token;
+            this.cdr.markForCheck();
         });
         this.selectGetOtpSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
-            this.isOtpSent = res;
             if (res) {
+                this.isOtpSent = true;
                 this.startResendTimer();
                 this.lastSentMobileNumber = this.registrationForm.get('user.mobile').value;
                 this.isNumberChanged = true;
+                this.cdr.markForCheck();
             }
         });
 
@@ -249,6 +252,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 // Clear OTP form to allow user to retry
                 this.otpForm.reset();
             }
+            this.cdr.markForCheck();
         });
 
         // Add global paste event listener
@@ -266,18 +270,20 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         }
     }
     ngAfterViewInit(): void {
-        this.initIntl('user');
-        let count = 0;
-        const userIntlWrapper = document
-            ?.querySelector('proxy-auth')
-            ?.shadowRoot?.querySelector('#init-contact-wrapper-user');
-        const interval = setInterval(() => {
-            if (count > 6 || userIntlWrapper?.querySelector('.iti__selected-flag')?.getAttribute('title')) {
-                this.initIntl('company');
-                clearInterval(interval);
-            }
-            count += 1;
-        }, 500);
+        setTimeout(() => {
+            this.initIntl('user');
+            let count = 0;
+            const interval = setInterval(() => {
+                const userIntlWrapper =
+                    document.querySelector('proxy-auth')?.shadowRoot?.querySelector('#init-contact-wrapper-user') ||
+                    document.getElementById('init-contact-wrapper-user');
+                if (count > 6 || userIntlWrapper?.querySelector('.iti__selected-flag')?.getAttribute('title')) {
+                    this.initIntl('company');
+                    clearInterval(interval);
+                }
+                count += 1;
+            }, 500);
+        });
     }
 
     public ngOnDestroy(): void {
@@ -338,11 +344,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     public initIntl(key: string): void {
-        const parentDom = document.querySelector('proxy-auth')?.shadowRoot;
-        const input = document.querySelector('proxy-auth')?.shadowRoot?.getElementById('init-contact-' + key);
-        const customCssStyleURL = `${environment.baseUrl}/assets/utils/intl-tel-input-custom.css`;
+        const input = (document.querySelector('proxy-auth')?.shadowRoot?.getElementById('init-contact-' + key) ||
+            document.getElementById('init-contact-' + key)) as HTMLElement;
+        const customCssStyleURL = `${window.location.origin}/assets/utils/intl-tel-input-custom.css`;
         if (input) {
-            this.intlClass[key] = new IntlPhoneLib(input, parentDom, customCssStyleURL);
+            this.intlClass[key] = new IntlPhoneLib(input, document.head, customCssStyleURL);
             if (this.prefilledNumber) {
                 input.setAttribute('value', `+${this.prefilledNumber}`);
             }
@@ -510,7 +516,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             this.store.dispatch(
                 sendOtpAction({
                     request: {
-                        referenceId: this.referenceId,
+                        referenceId: this.referenceId(),
                         mobile: mobileControl.value,
                         authkey: environment.sendOtpAuthKey,
                     },

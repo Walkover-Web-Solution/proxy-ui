@@ -45,3 +45,5 @@ export const VERIFICATION_MODE = {
     KYC: '1',
     MANUAL: '2',
 };
+
+export const PROXY_DOM_ID = 'userProxyContainer';

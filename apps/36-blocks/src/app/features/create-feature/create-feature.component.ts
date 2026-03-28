@@ -52,7 +52,7 @@ import {
     ProxyAuthScript,
     ProxyAuthScriptUrl,
 } from '@proxy/models/features-model';
-import { WidgetTheme } from '@proxy/constant';
+import { PublicScriptType, WidgetTheme } from '@proxy/constant';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
@@ -1373,7 +1373,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             referenceId:
                 this.getValueFromObservable(this.createUpdateObject$)?.reference_id ??
                 this.getValueFromObservable(this.featureDetails$)?.reference_id,
-            type: featureId === 1 ? 'authorization' : 'subscription',
+            type: featureId === 1 ? PublicScriptType.Authorization : PublicScriptType.Subscription,
             isPreview: true,
             target: '_blank',
             success: (data) => {

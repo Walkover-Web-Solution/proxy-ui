@@ -35,7 +35,7 @@
                     <button
                         type="button"
                         (click)="tabChange(UserManagementTab.Members)"
-                        [attr.aria-current]="activeTab === UserManagementTab.Members ? 'page' : null"
+                        [attr.aria-current]="activeTab === UserManagementTab.Members ? ariaCurrent : null"
                         [ngClass]="
                             activeTab === UserManagementTab.Members
                                 ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
@@ -50,7 +50,7 @@
                             [ngClass]="
                                 activeTab === UserManagementTab.Members
                                     ? 'text-indigo-500 dark:text-indigo-400'
-                                    : 'text-gray-400 group-hover:text-gray-500'
+                                    : 'text-gray-400 hover:text-gray-500'
                             "
                             class="-ml-0.5 size-4"
                         >
@@ -64,7 +64,7 @@
                     <button
                         type="button"
                         (click)="tabChange(UserManagementTab.Roles)"
-                        [attr.aria-current]="activeTab === UserManagementTab.Roles ? 'page' : null"
+                        [attr.aria-current]="activeTab === UserManagementTab.Roles ? ariaCurrent : null"
                         [ngClass]="
                             activeTab === UserManagementTab.Roles
                                 ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
@@ -79,7 +79,7 @@
                             [ngClass]="
                                 activeTab === UserManagementTab.Roles
                                     ? 'text-indigo-500 dark:text-indigo-400'
-                                    : 'text-gray-400 group-hover:text-gray-500'
+                                    : 'text-gray-400 hover:text-gray-500'
                             "
                             class="-ml-0.5 size-4"
                         >
@@ -93,7 +93,7 @@
                     <button
                         type="button"
                         (click)="tabChange(UserManagementTab.Permissions)"
-                        [attr.aria-current]="activeTab === UserManagementTab.Permissions ? 'page' : null"
+                        [attr.aria-current]="activeTab === UserManagementTab.Permissions ? ariaCurrent : null"
                         [ngClass]="
                             activeTab === UserManagementTab.Permissions
                                 ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
@@ -108,7 +108,7 @@
                             [ngClass]="
                                 activeTab === UserManagementTab.Permissions
                                     ? 'text-indigo-500 dark:text-indigo-400'
-                                    : 'text-gray-400 group-hover:text-gray-500'
+                                    : 'text-gray-400 hover:text-gray-500'
                             "
                             class="-ml-0.5 size-4"
                         >
@@ -132,7 +132,7 @@
                     <button
                         type="button"
                         (click)="tabChange(UserManagementTab.Members)"
-                        [attr.aria-current]="activeTab === UserManagementTab.Members ? 'page' : null"
+                        [attr.aria-current]="activeTab === UserManagementTab.Members ? ariaCurrent : null"
                         [ngClass]="
                             activeTab === UserManagementTab.Members
                                 ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
@@ -160,7 +160,7 @@
                     <button
                         type="button"
                         (click)="tabChange(UserManagementTab.Roles)"
-                        [attr.aria-current]="activeTab === UserManagementTab.Roles ? 'page' : null"
+                        [attr.aria-current]="activeTab === UserManagementTab.Roles ? ariaCurrent : null"
                         [ngClass]="
                             activeTab === UserManagementTab.Roles
                                 ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
@@ -188,7 +188,7 @@
                     <button
                         type="button"
                         (click)="tabChange(UserManagementTab.Permissions)"
-                        [attr.aria-current]="activeTab === UserManagementTab.Permissions ? 'page' : null"
+                        [attr.aria-current]="activeTab === UserManagementTab.Permissions ? ariaCurrent : null"
                         [ngClass]="
                             activeTab === UserManagementTab.Permissions
                                 ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'

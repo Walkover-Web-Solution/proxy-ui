@@ -3,6 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {
     AfterViewInit,
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     Input,
@@ -98,6 +99,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     private store = inject<Store<IAppState>>(Store);
     readonly toastService = inject(ToastService);
     private readonly widgetPortal = inject(WidgetPortalService);
+    private readonly cdr = inject(ChangeDetectorRef);
     readonly confirmDialogCompanyId = signal<number | null>(null);
 
     @ViewChild('editDialogPortal') private editDialogPortalEl?: ElementRef<HTMLElement>;
@@ -169,11 +171,10 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
 
     openModal(companyId: number): void {
         this.confirmDialogCompanyId.set(companyId);
-        Promise.resolve().then(() => {
-            if (this.confirmDialogPortalEl?.nativeElement) {
-                this.confirmDialogPortalRef = this.widgetPortal.attach(this.confirmDialogPortalEl.nativeElement);
-            }
-        });
+        this.cdr.detectChanges();
+        if (this.confirmDialogPortalEl?.nativeElement) {
+            this.confirmDialogPortalRef = this.widgetPortal.attach(this.confirmDialogPortalEl.nativeElement);
+        }
     }
 
     confirmLeave(): void {
@@ -193,11 +194,10 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
 
     public openEditDialog(): void {
         this.isEditing = true;
-        Promise.resolve().then(() => {
-            if (this.editDialogPortalEl?.nativeElement) {
-                this.editDialogRef = this.widgetPortal.attach(this.editDialogPortalEl.nativeElement);
-            }
-        });
+        this.cdr.detectChanges();
+        if (this.editDialogPortalEl?.nativeElement) {
+            this.editDialogRef = this.widgetPortal.attach(this.editDialogPortalEl.nativeElement);
+        }
     }
 
     public cancelEdit() {

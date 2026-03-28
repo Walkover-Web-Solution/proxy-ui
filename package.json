@@ -23,6 +23,7 @@
         "build:proxy-auth:prod": "node tools/set-env --auth && node --max_old_space_size=2560 ./node_modules/nx/bin/nx.js build 36-blocks-widget --configuration=production && npm run postbuild:proxy-auth:elements",
         "postbuild:proxy-auth:elements": "node ./apps/36-blocks-widget/build-elements.js",
         "test": "nx test",
+        "test:contract": "nx test 36-blocks-widget --testPathPattern=contract",
         "lint": "nx workspace-lint && nx lint",
         "e2e": "nx e2e",
         "affected:apps": "nx affected:apps",

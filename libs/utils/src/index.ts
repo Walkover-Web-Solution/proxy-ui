@@ -4,7 +4,7 @@ export * from './rename-key-recursively';
 export * from './convert-to-utc';
 
 import { Result, getHostNameDetail } from '@proxy/ui/handle-domain';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { cloneDeep, pickBy, uniqBy } from 'lodash-es';
 import { sha256Encrypt } from './crypto';
 

@@ -44,7 +44,7 @@ import { LogsComponentStore } from './logs.store';
 import { Observable, distinctUntilChanged, takeUntil } from 'rxjs';
 import { IEnvironments, ILogDetailRes, ILogsRes, IProjects } from '@proxy/models/logs-models';
 import { IClientSettings, IPaginatedResponse } from '@proxy/models/root-models';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { isEqual, omit } from 'lodash-es';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ONLY_INTEGER_REGEX } from '@proxy/regex';

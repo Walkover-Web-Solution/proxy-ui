@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import * as dayjs from 'dayjs';
-import * as objectSupport from 'dayjs/plugin/objectSupport';
+import dayjs from 'dayjs';
+import objectSupport from 'dayjs/plugin/objectSupport';
 import { ConvertToDigitTimeToken } from '@proxy/utils';
 
 dayjs.extend(objectSupport);
