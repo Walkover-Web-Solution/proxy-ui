@@ -124,15 +124,18 @@
         role="dialog"
         aria-modal="true"
         aria-labelledby="auth-dialog-title"
-        class="fixed inset-x-4 top-1/2 z-50 -translate-y-1/2 sm:inset-x-auto sm:left-1/2 sm:w-full sm:max-w-sm sm:-translate-x-1/2 rounded-xl bg-white dark:bg-gray-900 shadow-2xl ring-1 ring-gray-900/5 dark:ring-white/10 flex flex-col max-h-[90vh]"
+        [class]="
+            'fixed inset-x-4 top-1/2 z-50 -translate-y-1/2 sm:inset-x-auto sm:left-1/2 sm:w-full sm:-translate-x-1/2 rounded-xl bg-white dark:bg-gray-900 shadow-2xl ring-1 ring-gray-900/5 dark:ring-white/10 flex flex-col max-h-[90vh] ' +
+            (showRegistrationInDialog() ? 'sm:max-w-md' : 'sm:max-w-sm')
+        "
     >
         <!-- Dialog header -->
         <div class="flex items-center justify-between px-5 py-3 border-b border-gray-200 dark:border-gray-700">
-            <!-- Back button — shown only on registration screen -->
-            @if (showRegistrationInDialog()) {
+            <!-- Back button — shown on registration screen or forgot password steps -->
+            @if (showRegistrationInDialog() || loginStep === 2 || loginStep === 3) {
             <button
                 type="button"
-                (click)="goBackFromRegistration()"
+                (click)="showRegistrationInDialog() ? goBackFromRegistration() : changeLoginStep(1)"
                 class="flex size-7 items-center justify-center rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
                 aria-label="Back"
             >
@@ -153,7 +156,8 @@
 
             <!-- Title -->
             <h2 id="auth-dialog-title" class="text-sm font-semibold text-gray-900 dark:text-white">
-                @if (showRegistrationInDialog()) { Create Account } @else { Sign In }
+                @if (showRegistrationInDialog()) { Create Account } @else if (loginStep === 2 || loginStep === 3) {
+                Forgot Password } @else { Sign In }
             </h2>
 
             <!-- Close button -->
@@ -189,6 +193,7 @@
                 [tokenAuth]="tokenAuth()"
                 [theme]="theme()"
                 [version]="version()"
+                [isInDialog]="true"
                 (successReturn)="successReturn.emit($event)"
                 (failureReturn)="failureReturn.emit($event)"
                 (closePopUp)="goBackFromRegistration()"

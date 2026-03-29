@@ -1,4 +1,5 @@
-<!-- Header: Register title + Close button -->
+<!-- Header: Register title + Close button — hidden when rendered inside a dialog -->
+@if (!isInDialog()) {
 <div class="flex items-center justify-between mb-4">
     <h2 class="text-base font-semibold text-gray-900 dark:text-white" [style.color]="primaryColor || null">Register</h2>
     @if (!isRegisterFormOnly()) {
@@ -17,6 +18,7 @@
     </button>
     }
 </div>
+}
 
 <!-- Form -->
 <div

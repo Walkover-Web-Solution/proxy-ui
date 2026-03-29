@@ -66,6 +66,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public email = input<string>();
     public signupServiceId = input<string | number>();
     public isRegisterFormOnly = input<boolean>(false);
+    public isInDialog = input<boolean>(false);
     public showPassword: boolean = false;
     public showConfirmPassword: boolean = false;
     public togglePopUp = output<void>();
