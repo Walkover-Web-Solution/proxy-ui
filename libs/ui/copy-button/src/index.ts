@@ -1,1 +1,1 @@
-export * from './lib/ui-copy-button.module';
+export * from './lib/copy-button.component';

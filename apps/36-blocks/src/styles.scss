@@ -1,0 +1,81 @@
+/* Plus imports for other components in your app.*/
+@use 'assets/scss/base/default-variables';
+@use 'assets/scss/base/light-theme';
+@use 'assets/scss/base/dark-theme';
+
+/* Reset*/
+@use 'assets/scss/base/reset';
+/* Component*/
+@use 'assets/scss/component/modal';
+
+/* Theme*/
+@use 'assets/scss/theme/default-theme';
+
+/*Components*/
+@use 'assets/scss/component/filters';
+@use 'assets/scss/component/toast';
+// @use 'assets/scss/component/table';
+@use 'assets/scss/component/loader';
+@use 'assets/scss/component/icon';
+@use 'assets/scss/component/card';
+@use 'assets/scss/component/form-field';
+@use 'assets/scss/component/pagination';
+@use 'assets/scss/component/tabs';
+@use 'assets/scss/component/buttons';
+@use 'assets/scss/component/status';
+@use 'assets/scss/component/text-style';
+@use 'assets/scss/component/side-dialog';
+@use 'assets/scss/component/menu';
+@use 'assets/scss/component/sidenav';
+@use 'assets/scss/component/select-option';
+@use 'assets/scss/component/chart';
+@use 'assets/scss/component/mat-list';
+@use 'assets/scss/component/stepper';
+@use 'assets/scss/component/animation';
+@use '../../shared/scss/global';
+body {
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+}
+.text-color {
+    color: var(--mat-sys-on-surface);
+}
+.bg-color {
+    background-color: var(--color-common-bg) !important;
+}
+.broder-color {
+    border-color: var(--color-common-border) !important;
+}
+.secondary-text-color {
+    color: var(--color-common-secondary-text) !important;
+}
+/*Main*/
+.app-content {
+    padding: 16px;
+    min-height: 100%;
+    height: 100vh;
+    overflow-y: auto;
+    @media (max-width: 768px) {
+        overflow-x: auto;
+    }
+}
+
+.register-user-details {
+    margin-top: 5px;
+    #init-contact-user {
+        height: 39px;
+        font-size: 15px;
+    }
+    .invalid-input {
+        outline: 2px solid #f44336;
+    }
+    .iti--allow-dropdown {
+        width: 100%;
+    }
+}
+
+// .block-feature-tabs {
+//     .mat-tab-body-wrapper {
+//         height: 100%;
+//     }
+// }

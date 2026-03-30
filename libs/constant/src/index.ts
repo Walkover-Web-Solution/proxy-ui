@@ -188,7 +188,7 @@ export enum ReportMicroServiceTypeEnums {
 
 export const INTL_INPUT_OPTION = {
     nationalMode: true,
-    utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/js/utils.js',
+    utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js',
     autoHideDialCode: false,
     separateDialCode: false,
     initialCountry: 'auto',

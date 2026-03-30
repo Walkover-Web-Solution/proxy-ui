@@ -1,10 +1,10 @@
-import { ModuleWithProviders, NgModule, Pipe, PipeTransform } from '@angular/core';
-import * as dayjs from 'dayjs';
-import * as objectSupport from 'dayjs/plugin/objectSupport';
+import { Pipe, PipeTransform } from '@angular/core';
+import dayjs from 'dayjs';
+import objectSupport from 'dayjs/plugin/objectSupport';
 import { ConvertToDigitTimeToken } from '@proxy/utils';
 
 dayjs.extend(objectSupport);
-@Pipe({ name: 'timeToken' })
+@Pipe({ name: 'timeToken', standalone: true })
 export class TimeTokenPipe implements PipeTransform {
     constructor() {}
 
@@ -36,18 +36,5 @@ export class TimeTokenPipe implements PipeTransform {
             return Math.floor(expireAfter) + ' secs';
         }
         return null;
-    }
-}
-
-@NgModule({
-    declarations: [TimeTokenPipe],
-    exports: [TimeTokenPipe],
-})
-export class PipesTimeTokenPipeModule {
-    public static forRoot(): ModuleWithProviders<PipesTimeTokenPipeModule> {
-        return {
-            ngModule: PipesTimeTokenPipeModule,
-            providers: [TimeTokenPipe],
-        };
     }
 }

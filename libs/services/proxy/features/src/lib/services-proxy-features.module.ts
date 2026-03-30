@@ -1,18 +1,11 @@
-import { NgModule, Inject, Injectable } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { BaseResponse, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
 import { Observable } from 'rxjs';
 import { IFeature, IFeatureDetails, IFeatureReq, IFeatureType, IMethod } from '@proxy/models/features-model';
 import { FeaturesUrls } from '@proxy/urls/features-url';
-
-@NgModule({
-    imports: [CommonModule],
-})
-export class ServicesProxyFeaturesModule {}
-
 @Injectable({
-    providedIn: ServicesProxyFeaturesModule,
+    providedIn: 'root',
 })
 export class FeaturesService {
     constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseURL: any) {}

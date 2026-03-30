@@ -1,0 +1,18 @@
+<mat-list role="list" class="pt-0 service-list">
+    @for (service of services(); track service; let i = $index) {
+    <mat-list-item
+        role="listitem"
+        class="rounded-4"
+        [class.active]="selectedIndex() === i"
+        (click)="serviceSelect.emit(i)"
+    >
+        <div class="flex items-center grow">
+            <span class="font-14">{{ service.name }}</span>
+            @if (isInvalid(i)) {
+            <mat-icon class="material-icons-outlined mat-icon-18 text-danger ml-1 mt-1">error</mat-icon>
+            }
+        </div>
+        <mat-icon class="material-icons-outlined mat-icon-18">navigate_next</mat-icon>
+    </mat-list-item>
+    }
+</mat-list>

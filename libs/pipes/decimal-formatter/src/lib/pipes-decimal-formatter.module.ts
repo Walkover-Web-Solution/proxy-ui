@@ -1,8 +1,8 @@
-import { ModuleWithProviders, NgModule, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { decimalNumberSystem, numberSystem } from '@proxy/constant';
-import { PipesFieldValuePipeModule, FieldValuePipe } from '@proxy/pipes/FieldValuePipe';
+import { FieldValuePipe } from '@proxy/pipes/FieldValuePipe';
 
-@Pipe({ name: 'decimalFormatter' })
+@Pipe({ name: 'decimalFormatter', standalone: true })
 export class DecimalFormatterPipe implements PipeTransform {
     constructor(private fieldValuePipe: FieldValuePipe) {}
     /**
@@ -66,19 +66,5 @@ export class DecimalFormatterPipe implements PipeTransform {
             subStrings.push(x.splice(0, i).reverse().join(''));
         }
         return subStrings.reverse().join(joinWith);
-    }
-}
-@NgModule({
-    declarations: [DecimalFormatterPipe],
-    exports: [DecimalFormatterPipe],
-    imports: [PipesFieldValuePipeModule],
-    providers: [FieldValuePipe],
-})
-export class PipesDecimalFormatterModule {
-    public static forRoot(): ModuleWithProviders<PipesDecimalFormatterModule> {
-        return {
-            ngModule: PipesDecimalFormatterModule,
-            providers: [DecimalFormatterPipe],
-        };
     }
 }

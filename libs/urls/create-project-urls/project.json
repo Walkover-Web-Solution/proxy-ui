@@ -6,7 +6,7 @@
     "prefix": "proxy",
     "targets": {
         "lint": {
-            "executor": "@nrwl/linter:eslint",
+            "executor": "@nx/eslint:lint",
             "options": {
                 "lintFilePatterns": ["libs/urls/create-project-urls/**/*.ts", "libs/urls/create-project-urls/**/*.html"]
             }

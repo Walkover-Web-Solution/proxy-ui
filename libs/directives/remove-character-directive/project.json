@@ -6,7 +6,7 @@
     "prefix": "proxy",
     "targets": {
         "lint": {
-            "executor": "@nrwl/linter:eslint",
+            "executor": "@nx/eslint:lint",
             "options": {
                 "lintFilePatterns": [
                     "libs/directives/remove-character-directive/src/**/*.ts",
@@ -15,7 +15,7 @@
             }
         },
         "test": {
-            "executor": "@nrwl/jest:jest",
+            "executor": "@nx/jest:jest",
             "outputs": ["{workspaceRoot}/coverage/libs/directives/remove-character-directive"],
             "options": {
                 "tsConfig": "libs/directives/remove-character-directive/tsconfig.lib.json",
