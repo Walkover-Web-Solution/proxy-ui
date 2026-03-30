@@ -29,7 +29,7 @@
             background-color: var(--color-common-bg-lighter);
         }
 
-        &:hover:not(.mat-no-data-row) {
+        &:hover:not(.mat-mdc-no-data-row) {
             background: var(--color-common-silver);
         }
 
@@ -53,6 +53,9 @@
                     opacity: 1;
                 }
             }
+        }
+        .mat-no-data-cell {
+            padding-inline: 0 !important;
         }
     }
 }

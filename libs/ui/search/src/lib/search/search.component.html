@@ -10,7 +10,7 @@
         [matTooltipPosition]="toolTipPosition()"
         [matTooltipDisabled]="toolTipString().length > 0 ? toolTipDisable() : true"
         [formControl]="searchFormControl"
-        (keydown.enter)="emitOnEnter() ? emitInputChanges(searchFormControl.value) : null"
+        (keydown.enter)="$event.preventDefault(); emitOnEnter() ? emitInputChanges(searchFormControl.value) : null"
     />
     } @else {
     <input
@@ -25,7 +25,7 @@
         [formControl]="searchFormControl"
         proxyRemoveCharacter
         [charactersToRemove]="charactersToRemove()?.length ? charactersToRemove() : ['e', '+', '-']"
-        (keydown.enter)="emitOnEnter() ? emitInputChanges(searchFormControl.value) : null"
+        (keydown.enter)="$event.preventDefault(); emitOnEnter() ? emitInputChanges(searchFormControl.value) : null"
     />
     }
     <mat-icon matPrefix>search</mat-icon>
