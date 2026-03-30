@@ -43,7 +43,7 @@ function writeProxyEnv() {
     interfaceScriptUrl: ${JSON.stringify(get('INTERFACE_SCRIPT_URL'))},
 };
 `;
-    const outPath = path.join(root, 'apps/proxy/src/environments/env-variables.ts');
+    const outPath = path.join(root, 'apps/36-blocks/src/environments/env-variables.ts');
     fs.writeFileSync(outPath, content, 'utf8');
     console.log(`[set-env] Written: ${outPath}`);
 }
@@ -59,7 +59,7 @@ function writeProxyAuthEnv() {
     sendOtpAuthKey: ${JSON.stringify(get('SEND_OTP_AUTH_KEY'))},
 };
 `;
-    const outPath = path.join(root, 'apps/proxy-auth/src/environments/env-variables.ts');
+    const outPath = path.join(root, 'apps/36-blocks-widget/src/environments/env-variables.ts');
     fs.writeFileSync(outPath, content, 'utf8');
     console.log(`[set-env] Written: ${outPath}`);
 }

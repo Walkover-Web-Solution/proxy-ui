@@ -1,6 +1,6 @@
-<mat-card class="no-record-card h-100 w-100" style="box-shadow: none !important">
-    <mat-card-content class="h-100">
-        <div class="d-flex flex-column align-items-center justify-content-center h-100">
+<mat-card class="no-record-card h-full w-full" style="box-shadow: none !important">
+    <mat-card-content class="h-full">
+        <div class="flex flex-col items-center justify-center h-full">
             <img
                 src="assets/images/utility/no_records_graphic.png"
                 width="200"
@@ -9,11 +9,13 @@
                 loading="lazy"
             />
             <p class="card-title">Nothing Here</p>
-            <div class="d-flex align-items-center">
+            <div class="flex items-center">
                 <p class="card-subtitle my-0">
-                    There are no <span>{{ title }}</span> to show.
+                    There are no <span>{{ title() }}</span> to show.
                 </p>
-                <button mat-button color="primary" class="fw-bolder px-1" *ngIf="showBtn">Create a new Chat</button>
+                @if (showBtn()) {
+                <button matButton class="font-semibold px-1">Create a new Chat</button>
+                }
             </div>
         </div>
     </mat-card-content>

@@ -53,8 +53,8 @@ Thumbs.db
 .env
 
 # Generated environment variable files (created by tools/set-env.js from .env)
-apps/proxy/src/environments/env-variables.ts
-apps/proxy-auth/src/environments/env-variables.ts
+apps/36-blocks/src/environments/env-variables.ts
+apps/36-blocks-widget/src/environments/env-variables.ts
 
 # Nx cache
 .nx/cache

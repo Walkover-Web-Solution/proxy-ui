@@ -1,1 +1,1 @@
-export * from './lib/ui-mat-paginator-goto.module';
+export * from './lib/mat-paginator-goto/mat-paginator-goto.component';

@@ -1,0 +1,11 @@
+:not(.collapsed-sidebar) {
+    @media (max-width: 992px) {
+        .mat-drawer-content {
+            position: fixed;
+            z-index: 999;
+            top: 0;
+            bottom: 0;
+            background: var(--mat-sys-surface);
+        }
+    }
+}

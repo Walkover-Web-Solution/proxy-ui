@@ -1,3 +1,5 @@
+import { PublicScriptType } from '@proxy/constant';
+
 export interface IFeature {
     id: number;
     feature_id: number;
@@ -143,7 +145,7 @@ export const ProxyUserManagementScript = (
 ) => `<script type="text/javascript">
     var configuration = {
         authToken: '{{authToken}}',
-        type: 'user-management',
+        type: '${PublicScriptType.UserManagement}',
         success: (data) => {
             // get verified token in response
             console.log('success response', data);

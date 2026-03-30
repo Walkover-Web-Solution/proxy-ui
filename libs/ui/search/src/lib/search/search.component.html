@@ -1,53 +1,47 @@
-<mat-form-field class="search-form-field" [ngClass]="matFormFieldClass?.length ? matFormFieldClass : ''">
-    <ng-container *ngIf="!isRemoveChar">
-        <input
-            [attr.type]="type"
-            matInput
-            [placeholder]="placeholder"
-            autocomplete="off"
-            [matTooltip]="toolTipString"
-            #tooltip="matTooltip"
-            [matTooltipPosition]="toolTipPosition"
-            [matTooltipDisabled]="toolTipString.length > 0 ? toolTipDisable : true"
-            [formControl]="searchFormControl"
-            (keydown.enter)="emitOnEnter ? emitInputChanges(searchFormControl.value) : null"
-        />
-    </ng-container>
-    <ng-container *ngIf="isRemoveChar">
-        <input
-            [attr.type]="type"
-            matInput
-            [placeholder]="placeholder"
-            autocomplete="off"
-            [matTooltip]="toolTipString"
-            #tooltip="matTooltip"
-            [matTooltipPosition]="toolTipPosition"
-            [matTooltipDisabled]="toolTipString.length > 0 ? toolTipDisable : true"
-            [formControl]="searchFormControl"
-            proxyRemoveCharacter
-            [charactersToRemove]="charactersToRemove?.length ? charactersToRemove : ['e', '+', '-']"
-            (keydown.enter)="emitOnEnter ? emitInputChanges(searchFormControl.value) : null"
-        />
-    </ng-container>
+<mat-form-field class="search-form-field" [class]="matFormFieldClass()?.length ? matFormFieldClass() : ''">
+    @if (!isRemoveChar()) {
+    <input
+        [attr.type]="type()"
+        matInput
+        [placeholder]="placeholder()"
+        autocomplete="off"
+        [matTooltip]="toolTipString()"
+        #tooltip="matTooltip"
+        [matTooltipPosition]="toolTipPosition()"
+        [matTooltipDisabled]="toolTipString().length > 0 ? toolTipDisable() : true"
+        [formControl]="searchFormControl"
+        (keydown.enter)="$event.preventDefault(); emitOnEnter() ? emitInputChanges(searchFormControl.value) : null"
+    />
+    } @else {
+    <input
+        [attr.type]="type()"
+        matInput
+        [placeholder]="placeholder()"
+        autocomplete="off"
+        [matTooltip]="toolTipString()"
+        #tooltip="matTooltip"
+        [matTooltipPosition]="toolTipPosition()"
+        [matTooltipDisabled]="toolTipString().length > 0 ? toolTipDisable() : true"
+        [formControl]="searchFormControl"
+        proxyRemoveCharacter
+        [charactersToRemove]="charactersToRemove()?.length ? charactersToRemove() : ['e', '+', '-']"
+        (keydown.enter)="$event.preventDefault(); emitOnEnter() ? emitInputChanges(searchFormControl.value) : null"
+    />
+    }
     <mat-icon matPrefix>search</mat-icon>
-    <button
-        (click)="clearSearch()"
-        class="icon-btn-md"
-        color="primary"
-        *ngIf="searchFormControl.value?.length && !hideCloseIcon"
-        mat-icon-button
-        matSuffix
-    >
+    @if (searchFormControl.value?.length && !hideCloseIcon()) {
+    <button (click)="clearSearch()" class="icon-btn-md" matIconButton matSuffix>
         <mat-icon>close</mat-icon>
     </button>
-    <mat-hint *ngIf="hint" [innerHTML]="hint"></mat-hint>
+    } @if (hint()) {
+    <mat-hint [innerHTML]="hint()"></mat-hint>
+    }
 </mat-form-field>
 <ng-container *ngTemplateOutlet="error"></ng-container>
 
 <ng-template #error>
-    <ng-container *ngIf="searchFormControl.dirty">
-        <ng-container *ngFor="let error of formErrors || {} | keyvalue">
-            <mat-error *ngIf="searchFormControl.errors?.[error.key]">{{ error.value }}</mat-error>
-        </ng-container>
-    </ng-container>
+    @if (searchFormControl.dirty) { @for (error of formErrors() || {} | keyvalue; track error.key) { @if
+    (searchFormControl.errors?.[error.key]) {
+    <mat-error>{{ error.value }}</mat-error>
+    } } }
 </ng-template>

@@ -1,1 +1,1 @@
-export * from './lib/directives-auto-select-dropdown.module';
+export * from './lib/auto-select-dropdown-directive';

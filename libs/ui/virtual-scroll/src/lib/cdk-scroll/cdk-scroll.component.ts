@@ -1,24 +1,24 @@
-import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { CdkScrollable, ScrollDispatcher, ScrollingModule } from '@angular/cdk/scrolling';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, input, output, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { DEBOUNCE_TIME } from '@proxy/constant';
 
 @Component({
-    standalone: false,
     selector: 'proxy-cdk-scroll',
+    imports: [ScrollingModule],
     templateUrl: './cdk-scroll.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CDKScrollComponent implements OnInit {
     @ViewChild(CdkScrollable) public scrollableWrapper: CdkScrollable | undefined;
     /** Scrollable element ID, provided to avoid multiple event triggering when
      * same page has multiple instances of proxy-cdk-scroll component
      */
-    @Input() public scrollableElementId = 'scrollableWrapper';
-    @Output() public fetchNextPage: EventEmitter<string> = new EventEmitter();
+    public scrollableElementId = input<string>('scrollableWrapper');
+    public fetchNextPage = output<string>();
     private destroy$: Subject<any> = new Subject();
-
-    constructor(private sd: ScrollDispatcher) {}
+    private sd = inject(ScrollDispatcher);
 
     public ngOnInit(): void {
         this.sd
@@ -28,7 +28,7 @@ export class CDKScrollComponent implements OnInit {
                 if (
                     res &&
                     (res.getElementRef().nativeElement.id === 'scrollableWrapper' ||
-                        res.getElementRef().nativeElement.id === this.scrollableElementId) &&
+                        res.getElementRef().nativeElement.id === this.scrollableElementId()) &&
                     res.measureScrollOffset('bottom') <= 30 &&
                     res.measureScrollOffset('top')
                 ) {

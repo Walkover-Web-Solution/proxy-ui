@@ -1,37 +1,40 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { A11yModule } from '@angular/cdk/a11y';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
-    standalone: false,
     selector: 'proxy-confirm-dialog',
+    imports: [MatButtonModule, A11yModule, MatDialogModule],
     templateUrl: './confirm-dialog.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmDialogComponent {
-    /** Title of dialog */
-    @Input() public title: string = 'Confirmation';
-    /** Confirmation message of dialog */
-    @Input() public confirmationMessage: string = 'Are you sure to perform this operation?';
-    /** Confirm button text of dialog */
-    @Input() public confirmButtonText: string = 'Yes';
-    /** Cancel button text of dialog */
-    @Input() public cancelButtonText: string = 'Cancel';
-    /** Show Footer Action Button Position */
-    @Input() public footerButtonPosition: string = 'justify-content-end';
-    /** Confirm button color */
-    @Input() public confirmButtonColor: string = 'warn';
-    /** Cancel button color */
-    @Input() public cancelButtonColor: string = '';
-    /** True, if need to show confirm button */
-    @Input() public showConfirmButton: boolean = true;
-    /** True, if need to show cancel button */
-    @Input() public showCancelButton: boolean = true;
-    /** True, if need to change confirm button type */
-    @Input() public confirmButtonClass: string = 'mat-flat-button';
-    /** True, if need to change cancel button type*/
-    @Input() public cancelButtonClass: string = 'mat-button';
+    public dialogRef = inject<MatDialogRef<ConfirmDialogComponent>>(MatDialogRef);
 
-    constructor(public dialogRef: MatDialogRef<ConfirmDialogComponent>) {}
+    /** Title of dialog */
+    public title = input<string>('Confirmation');
+    /** Confirmation message of dialog */
+    public confirmationMessage = input<string>('Are you sure to perform this operation?');
+    /** Confirm button text of dialog */
+    public confirmButtonText = input<string>('Yes');
+    /** Cancel button text of dialog */
+    public cancelButtonText = input<string>('Cancel');
+    /** Show Footer Action Button Position */
+    public footerButtonPosition = input<string>('justify-content-end');
+    /** Confirm button color */
+    public confirmButtonColor = input<string>('warn');
+    /** Cancel button color */
+    public cancelButtonColor = input<string>('');
+    /** True, if need to show confirm button */
+    public showConfirmButton = input<boolean>(true);
+    /** True, if need to show cancel button */
+    public showCancelButton = input<boolean>(true);
+    /** True, if need to change confirm button type */
+    public confirmButtonClass = input<string>('mat-flat-button');
+    /** True, if need to change cancel button type*/
+    public cancelButtonClass = input<string>('mat-button');
 
     /**
      * Closes the dialog with user provided action

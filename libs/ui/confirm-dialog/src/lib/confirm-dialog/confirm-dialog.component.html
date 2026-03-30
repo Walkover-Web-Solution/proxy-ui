@@ -1,31 +1,32 @@
-<h1 mat-dialog-title class="mat-subheading-2 text-dark mb-3 fw-bold" [innerHTML]="title"></h1>
-<div mat-dialog-content class="w-100 mb-4">
-    <p class="text-dark mat-body-2 my-0" [innerHTML]="confirmationMessage"></p>
-</div>
-<div cdkTrapFocus mat-dialog-actions class="d-flex gap-2 align-items-center" [ngClass]="footerButtonPosition">
+<h1 mat-dialog-title [innerHTML]="title()"></h1>
+<mat-dialog-content>
+    <p class="text-dark mat-body-2" [innerHTML]="confirmationMessage()"></p>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="gap-2" [class]="footerButtonPosition()">
+    @if (showCancelButton()) {
     <button
-        *ngIf="showCancelButton"
         cdkFocusRegionStart
         type="reset"
-        [ngClass]="cancelButtonClass"
+        [class]="cancelButtonClass()"
         mat-dialog-close
-        mat-button
-        [color]="cancelButtonColor"
+        matButton
+        [color]="cancelButtonColor()"
         (click)="closeDialog('no')"
     >
-        {{ cancelButtonText }}
+        {{ cancelButtonText() }}
     </button>
+    } @if (showConfirmButton()) {
     <button
-        *ngIf="showConfirmButton"
         type="button"
-        mat-flat-button
+        matButton="filled"
         mat-dialog-close
         cdkFocusRegionEnd
         cdkFocusInitial
-        [ngClass]="confirmButtonClass"
-        [color]="confirmButtonColor"
+        [class]="confirmButtonClass()"
+        [color]="confirmButtonColor()"
         (click)="closeDialog('yes')"
     >
-        {{ confirmButtonText }}
+        {{ confirmButtonText() }}
     </button>
-</div>
+    }
+</mat-dialog-actions>

@@ -1,17 +1,21 @@
-import { Component, Input, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
-    standalone: false,
     selector: 'proxy-loader',
+    imports: [MatProgressSpinnerModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
-        <div class="h-100 content-loader">
-            <div class="loading-box">
+        <div
+            class="h-screen content-loader absolute flex justify-center items-center bg-transparent top-0 left-0 right-0 bottom-0 bg-color rounded-lg"
+        >
+            <div class="loading-box flex items-center gap-4">
                 <mat-spinner></mat-spinner>
-                <span>{{ message }}</span>
+                <span class="text-color">{{ message() }}</span>
             </div>
         </div>
     `,
 })
 export class LoaderComponent {
-    @Input() public message: string = 'Loading...';
+    public message = input<string>('Loading...');
 }

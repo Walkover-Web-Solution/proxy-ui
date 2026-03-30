@@ -1,0 +1,135 @@
+<div class="flex w-full h-full" [class.collapsed-sidebar]="!(isSideNavOpen | async)">
+    <div
+        class="flex flex-col transition-all duration-200 mat-drawer-content max-desktop:fixed max-desktop:z-[999] max-desktop:top-0 max-desktop:bottom-0"
+        [class.mat-drawer-toggle-btn-hover]="isSideNavOpen | async"
+        [class]="!(isSideNavOpen | async) ? 'overflow-hidden !w-[56px]' : 'w-[246px]'"
+    >
+        <div
+            class="flex items-center mat-drawer-header"
+            [class]="!(isSideNavOpen | async) ? 'flex-col gap-2 mt-3' : ''"
+        >
+            <div
+                class="flex items-center grow gap-2 mat-drawer-header-title px-4"
+                #clientsMenuTrigger="matMenuTrigger"
+                [matMenuTriggerFor]="clientsMenu"
+            >
+                <mat-icon class="mat-icon-22">apps</mat-icon>
+                <div
+                    class="flex items-center gap-x-1 mat-drawer-header-subtitle cursor-pointer"
+                    [class.hidden]="!(isSideNavOpen | async)"
+                >
+                    <span class="font-16 font-semibold overflow-dotted" style="max-width: 145px">
+                        {{ (clientSettings$ | async)?.client?.name }}
+                    </span>
+                    @if (isSideNavOpen | async) {
+                    <mat-icon>{{
+                        clientsMenuTrigger?.menuOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
+                    }}</mat-icon>
+                    }
+                    <mat-menu #clientsMenu="matMenu" class="profile-sub-dropdown" xPosition="before">
+                        @if (clients$ | async; as clientList) {
+                        <mat-list>
+                            @if (clientList.totalEntityCount > 25) {
+                            <proxy-cdk-scroll (fetchNextPage)="fetchClientsNextPage()">
+                                <cdk-virtual-scroll-viewport
+                                    [itemSize]="40"
+                                    minBufferPx="400"
+                                    maxBufferPx="400"
+                                    id="scrollableWrapper"
+                                    style="height: 80vh; width: 280px; overflow: hidden overlay"
+                                >
+                                    @for (client of clientList?.data; track client.id) {
+                                    <button
+                                        mat-menu-item
+                                        (click)="switchClient(client?.id)"
+                                        [disabled]="(clientSettings$ | async)?.client?.id === client?.id"
+                                        [class.text-dark]="(clientSettings$ | async)?.client?.id === client?.id"
+                                    >
+                                        {{ client.name }}
+                                    </button>
+                                    }
+                                </cdk-virtual-scroll-viewport>
+                            </proxy-cdk-scroll>
+                            } @else { @for (client of clientList?.data; track client.id) {
+                            <button
+                                mat-menu-item
+                                (click)="switchClient(client?.id)"
+                                [disabled]="(clientSettings$ | async)?.client?.id === client?.id"
+                                [class.text-dark]="(clientSettings$ | async)?.client?.id === client?.id"
+                            >
+                                {{ client.name }}
+                            </button>
+                            } }
+                        </mat-list>
+                        }
+                    </mat-menu>
+                </div>
+            </div>
+            <button
+                matIconButton
+                class="mat-drawer-toggle-btn icon-btn-md mr-1"
+                (click)="toggleSideBarEvent()"
+                [matTooltip]="(isSideNavOpen | async) ? 'Collapse Menu' : 'Expand Menu'"
+                matTooltipPosition="right"
+                type="button"
+            >
+                <mat-icon>{{
+                    (isSideNavOpen | async) ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
+                }}</mat-icon>
+            </button>
+        </div>
+        <!-- Proxy Sidenav::START -->
+        <proxy-main-left-side-nav
+            class="mat-drawer-nav proxy-left-menu"
+            [isSideNavOpen]="!(isSideNavOpen | async)"
+        ></proxy-main-left-side-nav>
+        <!-- Proxy Sidenav::END -->
+        @if (logInData$ | async; as user) {
+        <div class="mat-drawer-footer mt-auto">
+            @if (isSideNavOpen | async) {
+            <div
+                class="flex items-center gap-2 px-4 py-2"
+                [matTooltip]="isDarkMode() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+                matTooltipPosition="above"
+            >
+                <mat-slide-toggle
+                    [checked]="isDarkMode()"
+                    (change)="switchedDarkMode($event.checked)"
+                    [class.hidden]="!(isSideNavOpen | async)"
+                    [attr.aria-label]="isDarkMode() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+                >
+                    <span class="text-sm">{{ !isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
+                </mat-slide-toggle>
+            </div>
+            }
+            <button matButton [matMenuTriggerFor]="menu">
+                <div class="flex items-center">
+                    @if (user.photoURL) {
+                    <img [src]="user.photoURL" alt="No Image" class="w-7 h-7 rounded-full" loading="lazy" />
+                    } @else {
+                    <mat-icon aria-hidden="false" class="mr-6 text-grey material-icons-outlined">
+                        account_circle</mat-icon
+                    >
+                    }
+                    <div class="flex flex-col" style="width: 140px">
+                        <h6 [class.hidden]="!(isSideNavOpen | async)" class="username m-0">{{ user.displayName }}</h6>
+                    </div>
+                    <mat-icon class="mx-1 text-secondary material-icons-outlined">keyboard_arrow_up</mat-icon>
+                </div>
+            </button>
+            <mat-menu #menu="matMenu" class="profile-menu ml-1">
+                <h4 class="m-0 py-2 px-6 text-dark font-medium">{{ user.displayName }}</h4>
+                <a mat-menu-item class="flex items-center justify-between text-danger" (click)="logOut()">
+                    Logout <mat-icon class="mat-icon-18 text-danger mr-0">logout</mat-icon>
+                </a>
+            </mat-menu>
+        </div>
+        }
+    </div>
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Content::START -->
+        <router-outlet></router-outlet>
+        <div id="ChatbotContainer" class="h-screen w-full"></div>
+        <!-- Content::END -->
+    </div>
+</div>

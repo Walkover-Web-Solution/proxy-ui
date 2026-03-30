@@ -1,1 +1,1 @@
-export * from './lib/pipes-chart-date-add.module';
+export { DateAddPipe } from './lib/pipes-chart-date-add.module';

@@ -1,0 +1,15 @@
+import { Pipe, PipeTransform } from '@angular/core';
+import { SafeHtml } from '@angular/platform-browser';
+import dayjs from 'dayjs';
+
+@Pipe({
+    name: 'dateadd',
+})
+export class DateAddPipe implements PipeTransform {
+    constructor() {}
+
+    transform(value: string): SafeHtml {
+        let currentDate = dayjs(value).add(7, 'day').toDate();
+        return currentDate;
+    }
+}
