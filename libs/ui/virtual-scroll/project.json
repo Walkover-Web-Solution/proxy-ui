@@ -6,13 +6,13 @@
     "prefix": "proxy",
     "targets": {
         "lint": {
-            "executor": "@nrwl/linter:eslint",
+            "executor": "@nx/eslint:lint",
             "options": {
                 "lintFilePatterns": ["libs/ui/virtual-scroll/src/**/*.ts", "libs/ui/virtual-scroll/src/**/*.html"]
             }
         },
         "test": {
-            "executor": "@nrwl/jest:jest",
+            "executor": "@nx/jest:jest",
             "outputs": ["{workspaceRoot}/coverage/libs/ui/virtual-scroll"],
             "options": {
                 "tsConfig": "libs/ui/virtual-scroll/tsconfig.lib.json",

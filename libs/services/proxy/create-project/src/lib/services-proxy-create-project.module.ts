@@ -1,5 +1,4 @@
-import { Inject, Injectable, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { BaseResponse, IPaginatedResponse, IReqParams, ProxyBaseUrls } from '@proxy/models/root-models';
 import { Observable } from 'rxjs';
@@ -7,14 +6,8 @@ import { CreatProjectUrl } from '@proxy/urls/create-project-urls';
 import { IEnvironments, IProjects } from '@proxy/models/logs-models';
 import { ICreateSource } from '@proxy/models/project-model';
 import { IClientData } from '@proxy/models/users-model';
-
-@NgModule({
-    imports: [CommonModule],
-})
-export class ServicesProxyCreateProjectModule {}
-
 @Injectable({
-    providedIn: ServicesProxyCreateProjectModule,
+    providedIn: 'root',
 })
 export class CreateProjectService {
     constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseURL: any) {}

@@ -1,1 +1,1 @@
-export * from './lib/directives-remove-character-directive.module';
+export { RemoveCharacterDirective } from './lib/directives-remove-character-directive.module';

@@ -1,1 +1,1 @@
-export * from './lib/directives-skeleton.module';
+export * from './lib/skeleton/skeleton.directive';

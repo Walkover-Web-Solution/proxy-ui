@@ -1,1 +1,1 @@
-export * from './lib/ui-components-search.module';
+export * from './lib/search/search.component';

@@ -1,4 +1,10 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, output, inject } from '@angular/core';
+import { ToastModule } from 'primeng/toast';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { errorResolver } from '@proxy/models/root-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash-es';
@@ -9,12 +15,14 @@ import { PrimeNgToastService } from '../prime-ng-toast.service';
 
 @Component({
     selector: 'proxy-prime-ng-toast',
+    imports: [ToastModule, RippleModule, ButtonModule, MatIconModule, MatButtonModule, MatTooltipModule],
     templateUrl: './prime-ng-toast.component.html',
     styleUrls: ['./prime-ng-toast.component.scss'],
     providers: [MessageService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrimeNgToastComponent extends BaseComponent implements OnInit, OnDestroy {
-    @Output() public undoMail = new EventEmitter<any>();
+    public undoMail = output<any>();
     private toastDefaultSetting = {
         summary: '',
         life: 3000,
@@ -22,13 +30,9 @@ export class PrimeNgToastComponent extends BaseComponent implements OnInit, OnDe
     public undoTimerInterval: any;
     public undoTimer: number = 0;
 
-    constructor(
-        private messageService: MessageService,
-        private primengConfig: PrimeNGConfig,
-        private primeNgToastService: PrimeNgToastService
-    ) {
-        super();
-    }
+    private messageService = inject(MessageService);
+    private primengConfig = inject(PrimeNGConfig);
+    private primeNgToastService = inject(PrimeNgToastService);
 
     public ngOnInit(): void {
         this.primengConfig.ripple = true;
@@ -154,7 +158,7 @@ export class PrimeNgToastComponent extends BaseComponent implements OnInit, OnDe
     public onReject(event): void {
         setTimeout(() => {
             if (event.message?.detail?.buttonContent === 'Undo' && this.undoTimer > 0) {
-                this.undoMail.emit();
+                this.undoMail.emit(undefined);
                 clearInterval(this.undoTimerInterval);
             }
         }, 500);

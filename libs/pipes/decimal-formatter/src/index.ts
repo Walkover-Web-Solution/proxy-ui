@@ -1,1 +1,1 @@
-export * from './lib/pipes-decimal-formatter.module';
+export { DecimalFormatterPipe } from './lib/pipes-decimal-formatter.module';

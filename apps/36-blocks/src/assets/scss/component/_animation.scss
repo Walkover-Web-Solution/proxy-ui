@@ -1,0 +1,38 @@
+// css for skeleton
+.shimmer-loading {
+    animation: shimmer-animation infinite 2s linear;
+    background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+    background-size: 1000px 100%;
+}
+
+body.dark-theme {
+    .shimmer-loading {
+        background: linear-gradient(to right, #2a2d30 0%, #3a3d42 20%, #2a2d30 40%, #2a2d30 100%);
+    }
+}
+
+// Keyframes with vernder prefixes
+@mixin keyframes($animationName) {
+    @-webkit-keyframes #{$animationName} {
+        @content;
+    }
+    @-moz-keyframes #{$animationName} {
+        @content;
+    }
+    @-o-keyframes #{$animationName} {
+        @content;
+    }
+    @keyframes #{$animationName} {
+        @content;
+    }
+}
+
+@include keyframes(shimmer-animation) {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
