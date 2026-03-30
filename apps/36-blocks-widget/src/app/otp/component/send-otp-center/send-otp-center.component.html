@@ -30,6 +30,7 @@
      ══════════════════════════════════════════════════════════════ -->
 @if (!isUserProxyContainer()) {
 <!-- Close button -->
+@if (!hideInlineHeader()) {
 <button
     type="button"
     (click)="close(true)"
@@ -43,6 +44,7 @@
         />
     </svg>
 </button>
+}
 
 <div class="flex w-full flex-col gap-4">
     <ng-container *ngTemplateOutlet="authContentTemplate"></ng-container>
@@ -375,10 +377,12 @@
 
     <!-- Step 2: Reset Password — Send OTP -->
     @if (loginStep === 2) {
-    <div class="flex flex-col gap-3 w-full" [formGroup]="sendOtpLoginForm">
+    <div class="flex flex-col gap-3 w-full" [class.p-4]="hideInlineHeader()" [formGroup]="sendOtpLoginForm">
+        @if (!hideInlineHeader()) {
         <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1" [style.color]="primaryColor || null">
             Reset Password
         </h2>
+        }
 
         <div>
             <label for="reset-user-details" class="w-label">Email or Mobile</label>

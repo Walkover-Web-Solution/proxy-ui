@@ -84,6 +84,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
     public isUserProxyContainer = input<boolean>(true);
+    public hideInlineHeader = input<boolean>(false);
     public togglePopUp = output<void>();
     public successReturn = output<any>();
     public failureReturn = output<any>();

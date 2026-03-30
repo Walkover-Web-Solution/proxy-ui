@@ -132,6 +132,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
     public readonly show = signal<boolean>(false);
     public readonly showRegistration = signal<boolean>(false);
+    public readonly showForgotPassword = signal<boolean>(false);
     public readonly animate = signal<boolean>(false);
     public isCreateAccountTextAppended: boolean = false;
     public otpWidgetData;
@@ -293,7 +294,9 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         this.dialogPortalRef = null;
         this.ngZone.run(() => {
             this.showRegistration.set(false);
+            this.showForgotPassword.set(false);
             this.otpWidgetService.openLogin(false);
+            this.otpWidgetService.closeForgotPassword();
             if (this.referenceElement) {
                 this.show.set(false);
             }
@@ -801,11 +804,15 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
      * Opens the forgot password dialog
      */
     private openForgotPasswordDialog(prefillEmail: string = ''): void {
-        // Open the dialog
         this.ngZone.run(() => {
-            this.show.set(true);
-            // Signal to send-otp-center to open in forgot password mode
+            this.showForgotPassword.set(true);
             this.otpWidgetService.openForgotPassword(prefillEmail);
+            this.cdr.detectChanges();
+            setTimeout(() => {
+                if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
+                    this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                }
+            });
         });
     }
 
