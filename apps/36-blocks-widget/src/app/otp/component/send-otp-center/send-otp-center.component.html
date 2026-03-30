@@ -1,4 +1,36 @@
+<!-- ══════════════════════════════════════════════════════════════
+     MODE A — Preview-button mode (isUserProxyContainer = true)
+     Shows a single "Preview" button; auth happens inside a portal dialog.
+     ══════════════════════════════════════════════════════════════ -->
+@if (isUserProxyContainer()) {
+<section class="flex flex-col items-center gap-4 p-5">
+    <h1>Click Here to preview this Reference ID: {{ referenceId() }}</h1>
+    <button
+        type="button"
+        (click)="openPreviewDialog()"
+        class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 active:bg-indigo-700 transition-colors duration-150 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
+        aria-haspopup="dialog"
+    >
+        <svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path d="M10 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
+            <path
+                fill-rule="evenodd"
+                d="M.664 10.59a1.651 1.651 0 0 1 0-1.186A10.004 10.004 0 0 1 10 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0 1 10 17c-4.257 0-7.893-2.66-9.336-6.41ZM14 10a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"
+                clip-rule="evenodd"
+            />
+        </svg>
+        Preview
+    </button>
+</section>
+}
+
+<!-- ══════════════════════════════════════════════════════════════
+     MODE B — Inline mode (isUserProxyContainer = false)
+     Existing behaviour: close button + auth content rendered inline.
+     ══════════════════════════════════════════════════════════════ -->
+@if (!isUserProxyContainer()) {
 <!-- Close button -->
+@if (!hideInlineHeader()) {
 <button
     type="button"
     (click)="close(true)"
@@ -12,8 +44,15 @@
         />
     </svg>
 </button>
+}
 
 <div class="flex w-full flex-col gap-4">
+    <ng-container *ngTemplateOutlet="authContentTemplate"></ng-container>
+</div>
+}
+
+<!-- ── Auth Content Template — shared by MODE B inline and dialog Screen 1 ── -->
+<ng-template #authContentTemplate>
     @if (selectWidgetData$ | async; as widgetDataArray) {
 
     <!-- Logo + Title — password auth v2 step 1 only -->
@@ -66,7 +105,106 @@
     } @if (!widgetDataArray?.length) {
     <p class="text-xs text-gray-500 dark:text-gray-400">No Service Enabled</p>
     } }
+</ng-template>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PORTAL DIALOG — teleported to document.body via WidgetPortalService
+     Visible only when dialogOpen() = true (preview-button mode).
+     ══════════════════════════════════════════════════════════════ -->
+@if (dialogOpen()) {
+<!-- Fake dialog -->
+<div #dialogWrap [class.dark]="isDarkTheme">
+    <!-- Backdrop -->
+    <div
+        class="fixed inset-0 z-40 bg-black/50 dark:bg-black/70 backdrop-blur-sm"
+        (click)="closePreviewDialog()"
+        aria-hidden="true"
+    ></div>
+
+    <!-- Panel -->
+    <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="auth-dialog-title"
+        [class]="
+            'fixed inset-x-4 top-1/2 z-50 -translate-y-1/2 sm:inset-x-auto sm:left-1/2 sm:w-full sm:-translate-x-1/2 rounded-xl bg-white dark:bg-gray-900 shadow-2xl ring-1 ring-gray-900/5 dark:ring-white/10 flex flex-col max-h-[90vh] ' +
+            (showRegistrationInDialog() ? 'sm:max-w-md' : 'sm:max-w-sm')
+        "
+    >
+        <!-- Dialog header -->
+        <div class="flex items-center justify-between px-5 py-3 border-b border-gray-200 dark:border-gray-700">
+            <!-- Back button — shown on registration screen or forgot password steps -->
+            @if (showRegistrationInDialog() || loginStep === 2 || loginStep === 3) {
+            <button
+                type="button"
+                (click)="showRegistrationInDialog() ? goBackFromRegistration() : changeLoginStep(1)"
+                class="flex size-7 items-center justify-center rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
+                aria-label="Back"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="18px"
+                    viewBox="0 -960 960 960"
+                    width="18px"
+                    fill="currentColor"
+                    aria-hidden="true"
+                >
+                    <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+                </svg>
+            </button>
+            } @else {
+            <div class="size-7" aria-hidden="true"></div>
+            }
+
+            <!-- Title -->
+            <h2 id="auth-dialog-title" class="text-sm font-semibold text-gray-900 dark:text-white">
+                @if (showRegistrationInDialog()) { Create Account } @else if (loginStep === 2 || loginStep === 3) {
+                Forgot Password } @else { Sign In }
+            </h2>
+
+            <!-- Close button -->
+            <button
+                type="button"
+                (click)="closePreviewDialog()"
+                class="flex size-7 items-center justify-center rounded-md text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
+                aria-label="Close dialog"
+            >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path
+                        d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
+                        fill="currentColor"
+                    />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Dialog body — scrollable -->
+        <div class="flex-1 overflow-y-auto min-h-0 px-5 py-5">
+            <!-- Screen 1: Auth — reuse the same templates used by MODE B -->
+            @if (!showRegistrationInDialog()) {
+            <div class="flex flex-col gap-4">
+                <ng-container *ngTemplateOutlet="authContentTemplate"></ng-container>
+            </div>
+            }
+
+            <!-- Screen 2: Registration — reuse actual proxy-register component -->
+            @if (showRegistrationInDialog()) {
+            <proxy-register
+                [serviceData]="serviceData()"
+                [referenceId]="referenceId()"
+                [tokenAuth]="tokenAuth()"
+                [theme]="theme()"
+                [version]="version()"
+                [isInDialog]="true"
+                (successReturn)="successReturn.emit($event)"
+                (failureReturn)="failureReturn.emit($event)"
+                (closePopUp)="goBackFromRegistration()"
+            ></proxy-register>
+            }
+        </div>
+    </div>
 </div>
+}
 
 <!-- ── Visibility Icon Template ── -->
 <ng-template #visibilityIcon>
@@ -239,29 +377,12 @@
 
     <!-- Step 2: Reset Password — Send OTP -->
     @if (loginStep === 2) {
-    <div class="flex flex-col gap-3 w-full" [formGroup]="sendOtpLoginForm">
-        @if (isUserProxyContainer()) {
-        <button
-            type="button"
-            (click)="changeLoginStep(1)"
-            class="absolute left-4 top-4 flex size-5 items-center justify-center rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
-            aria-label="Back"
-        >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="16px"
-                viewBox="0 -960 960 960"
-                width="16px"
-                aria-hidden="true"
-                [attr.fill]="isDarkTheme ? '#ffffff' : '#5f6368'"
-            >
-                <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
-            </svg>
-        </button>
-        }
+    <div class="flex flex-col gap-3 w-full" [class.p-4]="hideInlineHeader()" [formGroup]="sendOtpLoginForm">
+        @if (!hideInlineHeader()) {
         <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1" [style.color]="primaryColor || null">
             Reset Password
         </h2>
+        }
 
         <div>
             <label for="reset-user-details" class="w-label">Email or Mobile</label>
@@ -314,23 +435,6 @@
     <!-- Step 3: Change Password — Verify OTP -->
     @if (loginStep === 3) {
     <div class="flex flex-col gap-3 w-full" [formGroup]="resetPasswordForm">
-        <button
-            type="button"
-            (click)="changeLoginStep(2)"
-            class="absolute left-4 top-4 flex size-5 items-center justify-center rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
-            aria-label="Back"
-        >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="16px"
-                viewBox="0 -960 960 960"
-                width="16px"
-                aria-hidden="true"
-                [attr.fill]="isDarkTheme ? '#ffffff' : '#5f6368'"
-            >
-                <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
-            </svg>
-        </button>
         <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-1" [style.color]="primaryColor || null">
             Change Password
         </h2>
@@ -347,7 +451,8 @@
             class="w-link self-start"
         >
             Resend OTP @if (remainingSeconds > 0) {
-            <span class="ml-1 text-gray-500 dark:text-gray-400">({{ remainingSeconds }}s)</span> }
+            <span class="ml-1 text-gray-500 dark:text-gray-400">({{ remainingSeconds }}s)</span>
+            }
         </button>
 
         <!-- OTP field -->

@@ -11,6 +11,8 @@ export const environment = {
     baseUrl: 'https://test.proxy.msg91.com',
     msgMidProxy: '',
     ...envVariables,
+    // hCaptcha official test sitekey — whitelisted for localhost, suppresses the "localhost detected" warning
+    hCaptchaSiteKey: '10000000-ffff-ffff-ffff-000000000001',
 };
 
 /*

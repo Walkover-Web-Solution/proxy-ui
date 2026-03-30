@@ -13,29 +13,38 @@
         },
         "build": {
             "dependsOn": ["set-env"],
-            "executor": "@angular-devkit/build-angular:browser",
+            "executor": "@angular-devkit/build-angular:application",
             "outputs": ["{options.outputPath}"],
             "options": {
                 "outputPath": "dist/apps/36-blocks-widget",
-                "index": "apps/36-blocks-widget/src/index.html",
-                "main": "apps/36-blocks-widget/src/main.ts",
-                "polyfills": "apps/36-blocks-widget/src/polyfills.ts",
+                "browser": "apps/36-blocks-widget/src/main.ts",
+                "index": false,
+                "polyfills": [],
                 "tsConfig": "apps/36-blocks-widget/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
                 "stylePreprocessorOptions": {
-                    "includePaths": ["apps/shared/scss"]
+                    "includePaths": ["apps/shared/scss", "apps/shared"]
                 },
-                "assets": ["apps/36-blocks-widget/src/favicon.ico", "apps/36-blocks-widget/src/assets"],
+                "assets": [
+                    "apps/36-blocks-widget/src/favicon.ico",
+                    "apps/36-blocks-widget/src/assets",
+                    {
+                        "glob": "intl-tel-input-custom.css",
+                        "input": "apps/shared/assets/utils",
+                        "output": "assets/utils"
+                    }
+                ],
                 "styles": ["apps/36-blocks-widget/src/styles.scss"],
-                "aot": true,
-                "scripts": []
+                "scripts": [],
+                "outputHashing": "none",
+                "allowedCommonJsDependencies": ["crypto-js", "dayjs"]
             },
             "configurations": {
                 "production": {
                     "budgets": [
                         {
                             "type": "initial",
-                            "maximumWarning": "1mb",
+                            "maximumWarning": "1.5mb",
                             "maximumError": "3mb"
                         }
                     ],
@@ -45,18 +54,20 @@
                             "with": "apps/36-blocks-widget/src/environments/environment.prod.ts"
                         }
                     ],
-                    "buildOptimizer": true,
-                    "optimization": true,
-                    "vendorChunk": false,
+                    "optimization": {
+                        "scripts": true,
+                        "styles": true,
+                        "fonts": true
+                    },
+                    "namedChunks": false,
                     "extractLicenses": false,
-                    "sourceMap": false,
-                    "namedChunks": false
+                    "sourceMap": false
                 },
                 "test": {
                     "budgets": [
                         {
                             "type": "initial",
-                            "maximumWarning": "1mb",
+                            "maximumWarning": "1.5mb",
                             "maximumError": "3mb"
                         }
                     ],
@@ -66,19 +77,15 @@
                             "with": "apps/36-blocks-widget/src/environments/environment.test.ts"
                         }
                     ],
-                    "buildOptimizer": true,
                     "optimization": true,
-                    "vendorChunk": false,
                     "extractLicenses": false,
-                    "sourceMap": false,
-                    "namedChunks": false,
-                    "outputHashing": "all"
+                    "sourceMap": false
                 },
                 "stage": {
                     "budgets": [
                         {
                             "type": "initial",
-                            "maximumWarning": "1mb",
+                            "maximumWarning": "1.5mb",
                             "maximumError": "3mb"
                         }
                     ],
@@ -88,21 +95,21 @@
                             "with": "apps/36-blocks-widget/src/environments/environment.stage.ts"
                         }
                     ],
-                    "buildOptimizer": true,
                     "optimization": true,
-                    "vendorChunk": false,
                     "extractLicenses": false,
-                    "sourceMap": false,
-                    "namedChunks": false,
-                    "outputHashing": "all"
+                    "sourceMap": false
                 },
                 "development": {
-                    "buildOptimizer": false,
                     "optimization": false,
-                    "vendorChunk": true,
                     "extractLicenses": false,
                     "sourceMap": true,
-                    "namedChunks": true
+                    "index": "apps/36-blocks-widget/src/index.html",
+                    "fileReplacements": [
+                        {
+                            "replace": "apps/36-blocks-widget/src/main.ts",
+                            "with": "apps/36-blocks-widget/src/main.dev.ts"
+                        }
+                    ]
                 }
             },
             "defaultConfiguration": "production"
@@ -111,7 +118,7 @@
             "dependsOn": ["set-env"],
             "executor": "@angular-devkit/build-angular:dev-server",
             "options": {
-                "buildTarget": "36-blocks-widget:build"
+                "buildTarget": "36-blocks-widget:build:development"
             },
             "configurations": {
                 "production": {

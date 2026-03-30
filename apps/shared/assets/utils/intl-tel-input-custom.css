@@ -59,7 +59,6 @@
 }
 
 .iti__country-list {
-    position: absolute;
     z-index: 2;
     list-style: none;
     text-align: left;
@@ -1522,7 +1521,7 @@
 .iti__flag {
     height: 15px;
     box-shadow: 0px 0px 1px 0px #888;
-    background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/img/flags.png");
+    background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags.png") !important;
     background-repeat: no-repeat;
     background-color: #DBDBDB;
     background-position: 20px 0;
@@ -1531,7 +1530,7 @@
 @media (-webkit-min-device-pixel-ratio: 2),
 (min-resolution: 192dpi) {
     .iti__flag {
-        background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/img/flags@2x.png");
+        background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags.png");
     }
 }
 
@@ -1553,8 +1552,6 @@
     margin-bottom: 8px;
 }
 
-
-@import '~intl-tel-input/build/css/intlTelInput.css';
 
 #phone,
 [id^=init-contact] {
@@ -1598,6 +1595,11 @@
 // } */
 
 .iti .iti__country-list {
+    position: absolute !important;
+    bottom: 0 !important;
+    top: auto !important;
+    left: auto !important;
+    transform: translateY(101%) !important;
     box-shadow: none;
     font-size: 14px;
     margin-left: 0;
@@ -1739,12 +1741,12 @@
 }
 
 /* // .iti__flag {
-//     background-image: url('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/img/flags.png');
+//     background-image: url('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags.png');
 // }
 
 // @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
 //     .iti__flag {
-//         background-image: url('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/img/flags@2x.png');
+//         background-image: url('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags.png');
 //     }
 // }
 // .iti__dial-code {
@@ -1752,4 +1754,39 @@
 // } */
 .invalid-input {
     outline: 2px solid #cc5229;
+}
+
+/* Dark mode — triggered by .dark class on root element */
+.dark .iti .iti__country-list {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+}
+
+.dark .iti__country {
+    color: #f9fafb !important;
+}
+
+.dark .iti__country:hover,
+.dark .iti__country.iti__highlight {
+    background-color: #312e81 !important;
+}
+
+.dark .iti__dial-code {
+    color: #9ca3af;
+}
+
+.dark .iti__divider {
+    border-bottom-color: #374151;
+}
+
+.dark .iti__selected-flag:hover,
+.dark .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark #phone,
+.dark [id^=init-contact] {
+    color: #f9fafb;
+    background-color: transparent;
 }

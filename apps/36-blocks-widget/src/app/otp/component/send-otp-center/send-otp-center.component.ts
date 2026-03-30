@@ -15,7 +15,9 @@ import {
     inject,
     input,
     output,
+    signal,
 } from '@angular/core';
+import { WidgetPortalRef, WidgetPortalService } from '../../service/widget-portal.service';
 import { NgHcaptchaComponent } from 'ng-hcaptcha';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
@@ -58,9 +60,10 @@ import { LoginComponentStore } from '../login/login.store';
 import { OtpUtilityService } from '../../service/otp-utility.service';
 import { WidgetThemeService } from '../../service/widget-theme.service';
 import { InputFields, OtpErrorCodes, WidgetVersion } from './utility/model';
+import { RegisterComponent } from '../register/register.component';
 @Component({
     selector: 'authorization',
-    imports: [CommonModule, ReactiveFormsModule, NgHcaptchaModule],
+    imports: [CommonModule, ReactiveFormsModule, NgHcaptchaModule, RegisterComponent],
     templateUrl: './send-otp-center.component.html',
     styleUrls: ['./send-otp-center.component.scss'],
     providers: [LoginComponentStore],
@@ -69,6 +72,7 @@ import { InputFields, OtpErrorCodes, WidgetVersion } from './utility/model';
 export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('initContact') initContact: ElementRef;
     @ViewChild(NgHcaptchaComponent) hCaptchaComponent: NgHcaptchaComponent;
+    @ViewChild('dialogWrap') dialogWrapRef: ElementRef<HTMLElement>;
     public referenceId = input<string>();
     public serviceData = input<any>();
     public tokenAuth = input<string>();
@@ -80,6 +84,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
     public isUserProxyContainer = input<boolean>(true);
+    public hideInlineHeader = input<boolean>(false);
     public togglePopUp = output<void>();
     public successReturn = output<any>();
     public failureReturn = output<any>();
@@ -182,11 +187,16 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
 
     public uiPreferences: any = {};
 
+    public readonly dialogOpen = signal<boolean>(false);
+    public readonly showRegistrationInDialog = signal<boolean>(false);
+    private dialogPortalRef: WidgetPortalRef | null = null;
+
     private store = inject<Store<IAppState>>(Store);
     private cdr = inject(ChangeDetectorRef);
     private _elemRef = inject(ElementRef);
     private loginComponentStore = inject(LoginComponentStore);
     private otpUtilityService = inject(OtpUtilityService);
+    private readonly widgetPortal = inject(WidgetPortalService);
 
     constructor() {
         super();
@@ -591,7 +601,33 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     }
 
     public showRegistration(prefillDetails?: string) {
-        this.openPopUp.emit(prefillDetails || this.loginForm.get('username')?.value);
+        if (this.isUserProxyContainer()) {
+            this.showRegistrationInDialog.set(true);
+        } else {
+            this.openPopUp.emit(prefillDetails || this.loginForm.get('username')?.value);
+        }
+    }
+
+    public openPreviewDialog(): void {
+        this.dialogOpen.set(true);
+        this.showRegistrationInDialog.set(false);
+        setTimeout(() => {
+            if (this.dialogWrapRef?.nativeElement) {
+                this.dialogPortalRef = this.widgetPortal.attach(this.dialogWrapRef.nativeElement);
+            }
+        });
+    }
+
+    public closePreviewDialog(): void {
+        this.dialogPortalRef?.detach();
+        this.dialogPortalRef = null;
+        this.dialogOpen.set(false);
+        this.showRegistrationInDialog.set(false);
+        this.changeLoginStep(1);
+    }
+
+    public goBackFromRegistration(): void {
+        this.showRegistrationInDialog.set(false);
     }
 
     public hasOtherAuthOptions(widgetDataArray: any[]): boolean {

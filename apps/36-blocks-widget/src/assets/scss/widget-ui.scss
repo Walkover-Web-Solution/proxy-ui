@@ -243,10 +243,9 @@
 // Dialog panel (centered, responsive)
 // z-index: 2147483647 = max-int to always appear above any client sidebar/overlay
 .w-dialog-panel {
-    @apply fixed inset-x-4 top-1/2 -translate-y-1/2
-           sm:inset-x-auto sm:left-1/2 sm:w-full sm:max-w-lg sm:-translate-x-1/2
-           rounded-xl bg-white shadow-2xl ring-1 ring-gray-900/5
-           flex flex-col max-h-[85vh];
+    @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+           flex flex-col max-h-[85vh]
+           rounded-xl bg-white shadow-2xl ring-1 ring-gray-900/5;
     z-index: 2147483647;
 
     .dark & {
@@ -274,7 +273,21 @@
 
 // Dialog scrollable body
 .w-dialog-body {
-    @apply flex-1 overflow-y-auto min-h-0 px-6 py-5;
+    @apply flex-1 overflow-y-auto min-h-0 px-6 py-5 w-full;
+}
+
+// Forgot-password dialog: hide send-otp-center's own absolute close button + h2 heading
+// (both are replaced by the w-dialog-header rendered in widget.component.html)
+.fp-dialog-content {
+    > authorization,
+    > authorization > send-otp-center {
+        button[aria-label='Close'] {
+            display: none !important;
+        }
+        h2 {
+            display: none !important;
+        }
+    }
 }
 
 // Dialog footer action bar

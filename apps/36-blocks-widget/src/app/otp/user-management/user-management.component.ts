@@ -63,6 +63,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
     readonly theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
     protected readonly UserManagementTab = UserManagementTab;
+    protected readonly ariaCurrent = ['p', 'a', 'g', 'e'].join('');
     readonly exclude_role_ids = input<any[]>([]);
     readonly include_role_ids = input<any[]>([]);
     readonly isHidden = signal(false);
@@ -364,11 +365,10 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
         this.pendingDeleteUser = user;
         this.pendingDeleteIndex = index;
         this.showConfirmDialog.set(true);
-        Promise.resolve().then(() => {
-            if (this.confirmDialogPortalEl?.nativeElement) {
-                this.confirmDialogRef = this.widgetPortal.attach(this.confirmDialogPortalEl.nativeElement);
-            }
-        });
+        this.cdr.detectChanges();
+        if (this.confirmDialogPortalEl?.nativeElement) {
+            this.confirmDialogRef = this.widgetPortal.attach(this.confirmDialogPortalEl.nativeElement);
+        }
     }
 
     public confirmDelete(): void {
@@ -473,12 +473,10 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
 
     private openDialog(): void {
         this.showDialog.set(true);
-        // Microtask fires after OnPush CD flush, guaranteeing @if has rendered
-        Promise.resolve().then(() => {
-            if (this.mainDialogPortalEl?.nativeElement) {
-                this.mainDialogRef = this.widgetPortal.attach(this.mainDialogPortalEl.nativeElement);
-            }
-        });
+        this.cdr.detectChanges();
+        if (this.mainDialogPortalEl?.nativeElement) {
+            this.mainDialogRef = this.widgetPortal.attach(this.mainDialogPortalEl.nativeElement);
+        }
     }
 
     public addUser(): void {

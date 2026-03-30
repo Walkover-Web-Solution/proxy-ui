@@ -1,6 +1,7 @@
 @use 'tailwindcss';
 @use './imports';
 @use './mixins/common-utils' as *;
+@source not inline("group-[aria-current=page]:text-indigo-600");
 .service-list {
     &.mat-mdc-list-base {
         .mat-mdc-list-item {
@@ -112,16 +113,6 @@ pre {
 
 .box-shadow-none {
     box-shadow: none !important;
-}
-
-.dark-theme {
-    .custom-datepicker {
-        .date-input {
-            .float-label {
-                background: transparent !important;
-            }
-        }
-    }
 }
 
 // .border {

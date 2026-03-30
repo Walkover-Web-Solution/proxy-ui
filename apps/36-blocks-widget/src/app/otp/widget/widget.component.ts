@@ -11,6 +11,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ElementRef,
     Input,
     NgZone,
     OnChanges,
@@ -18,8 +19,10 @@ import {
     OnInit,
     Renderer2,
     SimpleChanges,
+    ViewChild,
     ViewEncapsulation,
     computed,
+    effect,
     inject,
     signal,
 } from '@angular/core';
@@ -51,6 +54,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionCenterComponent } from '../component/subscription-center/subscription-center.component';
 import { environment } from 'apps/36-blocks-widget/src/environments/environment';
 import { InputFields, WidgetVersion } from './utility/model';
+import { WidgetPortalRef, WidgetPortalService } from '../service/widget-portal.service';
 @Component({
     selector: 'proxy-auth-widget',
     imports: [
@@ -122,8 +126,13 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     @Input() public failureReturn: (arg: any) => any;
     @Input() public otherData: { [key: string]: any } = {};
 
+    @ViewChild('dialogPortal') private dialogPortalEl?: ElementRef<HTMLElement>;
+    private dialogPortalRef: WidgetPortalRef | null = null;
+    private readonly widgetPortal = inject(WidgetPortalService);
+
     public readonly show = signal<boolean>(false);
     public readonly showRegistration = signal<boolean>(false);
+    public readonly showForgotPassword = signal<boolean>(false);
     public readonly animate = signal<boolean>(false);
     public isCreateAccountTextAppended: boolean = false;
     public otpWidgetData;
@@ -133,7 +142,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     public cameFromLogin: boolean = false;
     public cameFromSendOtpCenter: boolean = false;
     public referenceElement: HTMLElement = null;
-    public authReference: HTMLElement = null;
     public subscriptionPlans: any[] = [];
 
     private readonly cdr = inject(ChangeDetectorRef);
@@ -163,9 +171,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     );
     readonly showLogin = toSignal(this.otpWidgetService.showlogin, { initialValue: false });
 
-    readonly widgetData = toSignal(this.store.pipe(select(selectWidgetData), distinctUntilChanged(isEqual)), {
-        initialValue: null,
-    });
     readonly widgetTheme = toSignal(this.store.pipe(select(selectWidgetTheme), distinctUntilChanged(isEqual)), {
         initialValue: null,
     });
@@ -179,6 +184,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
     constructor() {
         super();
+        effect(() => {
+            const dark = this.themeService.isDark$();
+            this.reapplyInjectedButtonTheme(dark);
+        });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -272,10 +281,28 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     ngOnDestroy() {
+        this.dialogPortalRef?.detach();
+        this.dialogPortalRef = null;
         if (this.referenceElement) {
             this.clearSubscriptionPlans(this.referenceElement);
         }
         super.ngOnDestroy();
+    }
+
+    public closeOverlayDialog(): void {
+        this.dialogPortalRef?.detach();
+        this.dialogPortalRef = null;
+        this.ngZone.run(() => {
+            this.showRegistration.set(false);
+            this.showForgotPassword.set(false);
+            this.otpWidgetService.openLogin(false);
+            this.otpWidgetService.closeForgotPassword();
+            if (this.referenceElement) {
+                this.show.set(false);
+            }
+            this.cameFromLogin = false;
+            this.cameFromSendOtpCenter = false;
+        });
     }
 
     private loadExternalFonts() {
@@ -411,13 +438,13 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     private createSubscriptionCenterHTML(): string {
         return this.subscriptionRenderer.buildContainerHTML(
             this.subscriptionPlans || [],
-            this.themeService.resolvedTheme(),
+            this.themeService.isDark(),
             this.isLogin
         );
     }
 
     private addSubscriptionStyles(): void {
-        this.subscriptionRenderer.injectSubscriptionStyles(this.themeService.resolvedTheme());
+        this.subscriptionRenderer.injectSubscriptionStyles(this.themeService.isDark());
     }
 
     private addButtonsToReferenceElement(element): void {
@@ -613,12 +640,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         light_theme_primary_color?: string;
         dark_theme_primary_color?: string;
     }): string {
-        const resolved = this.themeService.resolvedTheme();
-        const isDark =
-            resolved === WidgetTheme.Dark ||
-            (resolved === WidgetTheme.System &&
-                typeof window !== 'undefined' &&
-                window.matchMedia('(prefers-color-scheme: dark)').matches);
+        const isDark = this.themeService.isDark();
         if (this.version !== WidgetVersion.V2) {
             return isDark ? '#FFFFFF' : '#000000';
         }
@@ -782,11 +804,15 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
      * Opens the forgot password dialog
      */
     private openForgotPasswordDialog(prefillEmail: string = ''): void {
-        // Open the dialog
         this.ngZone.run(() => {
-            this.show.set(true);
-            // Signal to send-otp-center to open in forgot password mode
+            this.showForgotPassword.set(true);
             this.otpWidgetService.openForgotPassword(prefillEmail);
+            this.cdr.detectChanges();
+            setTimeout(() => {
+                if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
+                    this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                }
+            });
         });
     }
 
@@ -799,7 +825,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
         const selectWidgetTheme = this.widgetTheme() as any;
         const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
-        const isDarkFP = this.themeService.resolvedTheme() === WidgetTheme.Dark;
+        const isDarkFP = this.themeService.isDark();
 
         // Create back button
         const backButton: HTMLButtonElement = this.renderer.createElement('button');
@@ -958,7 +984,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
         const selectWidgetTheme = this.widgetTheme() as any;
         const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
-        const isDarkCP = this.themeService.resolvedTheme() === WidgetTheme.Dark;
+        const isDarkCP = this.themeService.isDark();
 
         let remainingSeconds = 15;
         let timerInterval: any = null;
@@ -1252,7 +1278,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         const title: HTMLElement = this.renderer.createElement('div');
         title.textContent = 'Login';
         title.style.cssText = `font-size:16px;line-height:20px;font-weight:600;color:${
-            this.themeService.resolvedTheme() === WidgetTheme.Dark ? '#ffffff' : '#1f2937'
+            this.themeService.isDark() ? '#ffffff' : '#1f2937'
         };margin-bottom:0;text-align:center;`;
 
         const loginButton: HTMLButtonElement = this.renderer.createElement('button');
@@ -1279,7 +1305,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         primaryColor: string,
         onForgotPassword: (email: string) => void
     ): void {
-        const isDark = this.themeService.resolvedTheme() === WidgetTheme.Dark;
+        const isDark = this.themeService.isDark();
         const noteColor = this.version === 'v2' ? primaryColor : isDark ? '#e5e7eb' : '#5d6164';
 
         const usernameField: HTMLElement = this.renderer.createElement('div');
@@ -1537,6 +1563,8 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 }
             }
 
+            button.setAttribute('data-paw-button', 'true');
+            button.setAttribute('data-paw-icon-only', 'true');
             button.style.cssText = `
                 outline: none;
                 padding: 12px;
@@ -1545,9 +1573,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 justify-content: center;
                 font-size: 14px;
                 background-color: transparent;
-                border: ${
-                    this.themeService.resolvedTheme() === WidgetTheme.Dark ? '1px solid #ffffff' : '1px solid #d1d5db'
-                };
+                border: ${this.themeService.isDark() ? '1px solid #ffffff' : '1px solid #d1d5db'};
                 border-radius: ${borderRadius};
                 cursor: pointer;
                 visibility: ${isOtpButton ? 'hidden' : 'visible'};
@@ -1580,6 +1606,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         } else {
             const span: HTMLSpanElement = this.renderer.createElement('span');
 
+            button.setAttribute('data-paw-button', 'true');
             button.style.cssText = `
                 outline: none;
                 padding: 0 16px;
@@ -1589,12 +1616,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 ${useDiv ? '' : 'gap: 12px;'}
                 font-size: 14px;
                 background-color: transparent;
-                border: ${
-                    this.themeService.resolvedTheme() === WidgetTheme.Dark ? '1px solid #ffffff' : '1px solid #000000'
-                };
+                border: ${this.themeService.isDark() ? '1px solid #ffffff' : '1px solid #000000'};
                 border-radius: ${borderRadius};
                 height: 44px;
-                color: ${this.themeService.resolvedTheme() === WidgetTheme.Dark ? '#ffffff' : '#111827'};
+                color: ${this.themeService.isDark() ? '#ffffff' : '#111827'};
                 margin: 8px 8px 16px 8px;
                 cursor: pointer;
                 width: ${useDiv ? '316px' : '260px'};
@@ -1607,7 +1632,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 ${invertIcon ? 'filter: invert(1);' : ''}
             `;
             span.style.cssText = `
-                color: ${this.themeService.resolvedTheme() === WidgetTheme.Dark ? '#ffffff' : '#111827'};
+                color: ${this.themeService.isDark() ? '#ffffff' : '#111827'};
                 font-weight: 600;
             `;
             image.src = buttonsData.icon;
@@ -1635,7 +1660,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     align-items: center;
                     justify-content: flex-start;
                     gap: 12px;
-                    width: 200px;
                 `;
                 this.renderer.appendChild(contentDiv, image);
                 this.renderer.appendChild(contentDiv, span);
@@ -1751,6 +1775,9 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     this.setShowLogin(false);
                     this.show.set(true);
                 } else {
+                    // Detach portal when closing
+                    this.dialogPortalRef?.detach();
+                    this.dialogPortalRef = null;
                     // When closing registration, go back to where user came from
                     if (this.cameFromLogin) {
                         // If user came from login, go back to login
@@ -1780,6 +1807,12 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             if (data) {
                 this.prefillDetails = data;
             }
+            if (value) {
+                this.cdr.detectChanges();
+                if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
+                    this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                }
+            }
         });
     }
     public setShowLogin(value: boolean) {
@@ -1788,6 +1821,15 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 this.show.set(value);
             }
             this.otpWidgetService.openLogin(value);
+            if (value) {
+                this.cdr.detectChanges();
+                if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
+                    this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                }
+            } else {
+                this.dialogPortalRef?.detach();
+                this.dialogPortalRef = null;
+            }
         });
     }
 
@@ -1860,9 +1902,43 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         }
     }
 
+    private reapplyInjectedButtonTheme(dark: boolean): void {
+        const container = this.referenceElement;
+        if (!container) return;
+
+        const selectWidgetTheme = this.widgetTheme() as any;
+        const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
+        const textColor = dark ? '#ffffff' : '#111827';
+        const border = dark ? '1px solid #ffffff' : '1px solid #000000';
+        const borderIconOnly = dark ? '1px solid #ffffff' : '1px solid #d1d5db';
+
+        container.querySelectorAll<HTMLButtonElement>('button[data-paw-button]').forEach((btn) => {
+            const isIconOnly = btn.hasAttribute('data-paw-icon-only');
+            if (isIconOnly) {
+                btn.style.border = borderIconOnly;
+            } else {
+                btn.style.border = border;
+                btn.style.color = textColor;
+                const span = btn.querySelector<HTMLSpanElement>('span');
+                if (span) span.style.color = textColor;
+                const img = btn.querySelector<HTMLImageElement>('img');
+                if (img) {
+                    const isApple = img.alt?.toLowerCase().includes('apple');
+                    const isPassword = btn.dataset['serviceId'] === String(FeatureServiceIds.PasswordAuthentication);
+                    img.style.filter = dark && (isApple || isPassword) ? 'invert(1)' : '';
+                }
+            }
+        });
+
+        const createAccountP = container.querySelector<HTMLParagraphElement>('p[data-create-account="true"]');
+        if (createAccountP) {
+            createAccountP.style.setProperty('color', primaryColor, 'important');
+        }
+    }
+
     private shouldInvertIcon(buttonsData: any): boolean {
         const isApple = buttonsData?.text?.toLowerCase()?.includes('apple');
         const isPassword = buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication;
-        return this.themeService.resolvedTheme() === WidgetTheme.Dark && (isApple || isPassword);
+        return this.themeService.isDark() && (isApple || isPassword);
     }
 }

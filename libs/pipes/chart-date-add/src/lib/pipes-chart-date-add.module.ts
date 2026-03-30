@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 @Pipe({
     name: 'dateadd',

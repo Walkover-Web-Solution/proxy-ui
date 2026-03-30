@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { WidgetTheme, PublicScriptType, WidgetConfig } from '@proxy/constant';
+import { WidgetTheme, PublicScriptType, WidgetConfig, PROXY_DOM_ID } from '@proxy/constant';
 import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 const REFERENCE_ID = '4512365c177425472369c0fa8351a15';
 const THEME: WidgetTheme = WidgetTheme.System;
-const TYPE: PublicScriptType = PublicScriptType.UserProfile;
+const TYPE: PublicScriptType = PublicScriptType.Authorization;
 const AUTH_TOKEN =
-    'YmNmTDJYYnBZdUZtQk5SQUc5ZHc5dE1UMHBkeFRuWjI1emVJNzhRaXYvc0UrVmFOTDFzQk9oa0V3bXdxU3N4MDRtZlBoRVI4Y1JJVGJkREM4NktpRGJBUVJ0RXJ6MGVaKy9jbUd2QnArZnQyVnQvd3dKMFlEcDVIaFFpK2h1WnVneXpaSDhodWFpNUFheUk5L3pWcmdGTG5qR3MrZkx1RDIwV2J2RGYybGkvNDgzeTJPbDB0cllXM2JzUEZDbm5VN1FkVXlZbTB6b1A4NDFVd0M3YXNqZz09';
+    'ZHN5YlVZcjRDR3U5NjNGSk5rVGFRejI0MEdCZWg3RWpUK0xVYzlvajJFMlM4a2F4NUpxaWJjcnJkVzZSeW5RMStZaWJaV1JYandHOXpsTlBVZXBnNUZWbzl5MFJHU0xyNEtMWUkxVjRSS0RiRXBOcER4czlxakJUdThLNUhnOFJGOHV3bXBHclAwN241d3dDM0JmZE9JMlhzNHZHaVZ6cGdvTkdIenJzbnNiMHFGNmhVMUpQbkZPUWRWOVFGcTRPQ2NBU1plM0lKUUFPTmI0cUVSUEJTdz09';
 
 @Component({
     selector: 'proxy-root',
@@ -22,21 +22,26 @@ const AUTH_TOKEN =
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     private readonly themeService = inject(WidgetThemeService);
 
-    get isDarkTheme(): boolean {
-        return this.themeService.isDark(THEME);
+    protected readonly showAuthentication: boolean = true;
+    protected readonly referenceId: string = REFERENCE_ID;
+    protected readonly theme: WidgetTheme = THEME;
+    protected readonly authToken: string = AUTH_TOKEN;
+    get containerId(): string {
+        return this.showAuthentication ? REFERENCE_ID : PROXY_DOM_ID;
     }
-    public readonly referenceId: string = REFERENCE_ID;
-    public readonly theme: WidgetTheme = THEME;
-    public readonly authToken: string = AUTH_TOKEN;
 
     constructor() {
         super();
+        effect(() => {
+            const resolved = this.themeService.resolvedTheme();
+            const themeClass = `${resolved ?? WidgetTheme.System}-theme`;
+            document.body.classList.remove('light-theme', 'dark-theme', 'system-theme');
+            document.body.classList.add(themeClass);
+        });
     }
 
     ngOnInit(): void {
         this.initOtpProvider();
-
-        console.log('Widget initialized', this.themeService.isDark());
     }
 
     public initOtpProvider(): void {
@@ -47,14 +52,9 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
 
         if (!environment.production) {
             const widgetConfig: WidgetConfig = {
-                referenceId: REFERENCE_ID,
-                // authToken: AUTH_TOKEN,
-                // type: TYPE,
+                referenceId: REFERENCE_ID, // Always pass referenceId
                 // showCompanyDetails: false,
                 // isHidden: true,
-                // isRolePermission: false,
-                theme: THEME,
-                // isPreview: true,
                 // loginRedirectUrl: 'https://www.google.com',
                 target: '_self',
                 success: (data) => {
@@ -64,6 +64,25 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                     console.log('failure reason', error);
                 },
             };
+            if (!this.showAuthentication) {
+                if (TYPE) {
+                    widgetConfig['type'] = TYPE;
+                    if (TYPE === PublicScriptType.Authorization) {
+                        widgetConfig['isPreview'] = true;
+                    } else {
+                        widgetConfig['authToken'] = AUTH_TOKEN;
+
+                        if (TYPE === PublicScriptType.UserManagement) {
+                            // True If you want show Role and Permission tab
+                            widgetConfig['isRolePermission'] = true;
+                        }
+                    }
+                }
+            }
+            if (THEME) {
+                widgetConfig['theme'] = THEME;
+            }
+            console.log('widgetConfig', widgetConfig);
             window.initVerification(widgetConfig);
         }
     }
