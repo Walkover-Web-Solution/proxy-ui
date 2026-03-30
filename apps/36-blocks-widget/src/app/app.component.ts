@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -7,7 +7,7 @@ import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 const REFERENCE_ID = '4512365c177425472369c0fa8351a15';
 const THEME: WidgetTheme = WidgetTheme.System;
-const TYPE: PublicScriptType = PublicScriptType.UserProfile;
+const TYPE: PublicScriptType = PublicScriptType.Authorization;
 const AUTH_TOKEN =
     'ZHN5YlVZcjRDR3U5NjNGSk5rVGFRejI0MEdCZWg3RWpUK0xVYzlvajJFMlM4a2F4NUpxaWJjcnJkVzZSeW5RMStZaWJaV1JYandHOXpsTlBVZXBnNUZWbzl5MFJHU0xyNEtMWUkxVjRSS0RiRXBOcER4czlxakJUdThLNUhnOFJGOHV3bXBHclAwN241d3dDM0JmZE9JMlhzNHZHaVZ6cGdvTkdIenJzbnNiMHFGNmhVMUpQbkZPUWRWOVFGcTRPQ2NBU1plM0lKUUFPTmI0cUVSUEJTdz09';
 
@@ -22,10 +22,7 @@ const AUTH_TOKEN =
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     private readonly themeService = inject(WidgetThemeService);
 
-    get isDarkTheme(): boolean {
-        return this.themeService.isDark(THEME);
-    }
-    protected readonly showAuthentication: boolean = false;
+    protected readonly showAuthentication: boolean = true;
     protected readonly referenceId: string = REFERENCE_ID;
     protected readonly theme: WidgetTheme = THEME;
     protected readonly authToken: string = AUTH_TOKEN;
@@ -35,6 +32,12 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
 
     constructor() {
         super();
+        effect(() => {
+            const resolved = this.themeService.resolvedTheme();
+            const themeClass = `${resolved ?? WidgetTheme.System}-theme`;
+            document.body.classList.remove('light-theme', 'dark-theme', 'system-theme');
+            document.body.classList.add(themeClass);
+        });
     }
 
     ngOnInit(): void {

@@ -14,7 +14,8 @@
 @use '../../shared/assets/utils/intl-tel-input-custom';
 
 :root {
-    --color-common-dark: #000000;
+    color-scheme: light dark;
+    --color-common-dark: #030712;
     --color-common-slate: #333333;
     --color-common-rock: #5d6164;
     --color-common-grey: #333333;
@@ -42,7 +43,18 @@ body {
     width: 100vw;
     height: 100vh;
     overflow-x: hidden;
-    // background-color: black;
+    &.light-theme {
+        background-color: var(--color-common-white) !important;
+        color: var(--color-common-dark);
+    }
+    &.dark-theme {
+        background-color: var(--color-common-dark) !important;
+        color: var(--color-common-white);
+    }
+    &.system-theme {
+        background-color: light-dark(var(--color-common-white), var(--color-common-dark)) !important;
+        color: light-dark(var(--color-common-dark), var(--color-common-white));
+    }
 }
 
 *,
