@@ -53,7 +53,7 @@ jobs:
         with:
           useRollingCache: true
           working-directory: .
-          install-command: npm ci --audit false
+          install-command: npm ci --audit false --legacy-peer-deps
 
       - name: Starting build check
         shell: bash
