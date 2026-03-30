@@ -19,7 +19,7 @@
                 "outputPath": "dist/apps/36-blocks-widget",
                 "browser": "apps/36-blocks-widget/src/main.ts",
                 "index": false,
-                "polyfills": ["zone.js"],
+                "polyfills": [],
                 "tsConfig": "apps/36-blocks-widget/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
                 "stylePreprocessorOptions": {
@@ -54,7 +54,12 @@
                             "with": "apps/36-blocks-widget/src/environments/environment.prod.ts"
                         }
                     ],
-                    "optimization": true,
+                    "optimization": {
+                        "scripts": true,
+                        "styles": true,
+                        "fonts": true
+                    },
+                    "namedChunks": false,
                     "extractLicenses": false,
                     "sourceMap": false
                 },

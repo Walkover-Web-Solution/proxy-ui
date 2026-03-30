@@ -1,5 +1,6 @@
 import { ApplicationRef, EnvironmentInjector, Injectable, inject } from '@angular/core';
 import { Subject } from 'rxjs';
+import { AddUserDialogComponent } from '../user-management/add-user-dialog.component';
 
 export interface OpenAddUserConfig {
     authToken: string;
@@ -61,12 +62,10 @@ export class UserManagementBridgeService {
     }
 
     private _openStandaloneDialog(config: OpenAddUserConfig): void {
-        // Lazy import to avoid circular deps and keep the chunk separate
-        import('../user-management/add-user-dialog.component').then(({ AddUserDialogComponent }) => {
-            AddUserDialogComponent.open(this._appRef, this._injector, {
-                authToken: config.authToken,
-                theme: config.theme ?? '',
-            });
+        // Direct call - no dynamic import to avoid ES6 module chunks in bundle
+        AddUserDialogComponent.open(this._appRef, this._injector, {
+            authToken: config.authToken,
+            theme: config.theme ?? '',
         });
     }
 }

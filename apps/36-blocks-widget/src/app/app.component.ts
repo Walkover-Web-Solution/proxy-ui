@@ -52,7 +52,6 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                 referenceId: REFERENCE_ID, // Always pass referenceId
                 // showCompanyDetails: false,
                 // isHidden: true,
-                // isRolePermission: false,
                 // loginRedirectUrl: 'https://www.google.com',
                 target: '_self',
                 success: (data) => {
@@ -69,6 +68,11 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                         widgetConfig['isPreview'] = true;
                     } else {
                         widgetConfig['authToken'] = AUTH_TOKEN;
+
+                        if (TYPE === PublicScriptType.UserManagement) {
+                            // True If you want show Role and Permission tab
+                            widgetConfig['isRolePermission'] = true;
+                        }
                     }
                 }
             }

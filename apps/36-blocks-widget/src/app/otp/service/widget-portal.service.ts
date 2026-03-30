@@ -2,24 +2,35 @@ import { ApplicationRef, Injectable, Injector, inject } from '@angular/core';
 import { DomPortal, DomPortalOutlet } from '@angular/cdk/portal';
 import { environment } from '../../../environments/environment';
 
-const STYLE_LINK_ID = 'widget-overlay-styles';
+const STYLE_ELEMENT_ID = 'widget-overlay-styles';
 
 /**
  * Injects the compiled widget styles.css into document.head so that w-*
  * utility classes work on elements teleported outside the Shadow DOM.
- * widget-ui.scss is the single source of truth — no CSS is duplicated here.
+ *
+ * The CSS is inlined into proxy-auth.js at build time by build-elements.js
+ * and stored in window.__proxyAuth.inlinedStyles. This ensures the widget
+ * works as a single self-contained JS file without external style dependencies.
  */
 export function ensureAddUserDialogStyles(): void {
     ensureOverlayStyles();
 }
 
 function ensureOverlayStyles(): void {
-    if (document.getElementById(STYLE_LINK_ID)) return;
-    const link = document.createElement('link');
-    link.id = STYLE_LINK_ID;
-    link.rel = 'stylesheet';
-    link.href = `${environment.production ? environment.baseUrl : window.location.origin}/styles.css`;
-    document.head.appendChild(link);
+    if (document.getElementById(STYLE_ELEMENT_ID)) return;
+
+    // Get inlined CSS from global object (injected by build-elements.js)
+    const inlinedCSS = (window as any).__proxyAuth?.inlinedStyles;
+
+    if (!inlinedCSS) {
+        console.warn('[proxy-auth] Widget overlay styles not found in bundle. Dialogs may not render correctly.');
+        return;
+    }
+
+    const style = document.createElement('style');
+    style.id = STYLE_ELEMENT_ID;
+    style.textContent = inlinedCSS;
+    document.head.appendChild(style);
 }
 
 /**
