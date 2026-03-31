@@ -60,7 +60,7 @@
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
                         <td mat-cell *matCellDef="let element" data-label="Name">
                             @if (!loading.dataLoading) {
-                            <span class="font-semibold text-sm text-color">{{ element.name }}</span>
+                            <span>{{ element.name }}</span>
                             } @else {
                             <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
                             }
@@ -76,7 +76,7 @@
                                 <span
                                     [matTooltip]="element.reference_id"
                                     matTooltipPosition="above"
-                                    class="cursor-pointer font-mono text-xs bg-[var(--color-common-chip-bg)] px-2 py-0.5 rounded-4 [color:var(--color-common-text-2)] min-w-[150px]"
+                                    class="cursor-pointer font-mono text-xs px-2 py-0.5 rounded-4 min-w-[150px]"
                                 >
                                     {{
                                         element.reference_id?.length > 15
@@ -102,11 +102,7 @@
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Method</th>
                         <td mat-cell *matCellDef="let element" data-label="Method">
                             @if (!loading.dataLoading) { @if (element.method?.name) {
-                            <span
-                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
-                            >
-                                {{ element.method?.name }}
-                            </span>
+                            {{ element.method?.name }}
                             } } @else {
                             <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
                             }
@@ -118,11 +114,7 @@
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Type</th>
                         <td mat-cell *matCellDef="let element" data-label="Type">
                             @if (!loading.dataLoading) { @if (element.feature?.name) {
-                            <span
-                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
-                            >
-                                {{ element.feature?.name }}
-                            </span>
+                            {{ element.feature?.name }}
                             } } @else {
                             <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
                             }

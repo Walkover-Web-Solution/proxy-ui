@@ -55,7 +55,7 @@
                             <ng-container matColumnDef="role">
                                 <th mat-header-cell *matHeaderCellDef>Role</th>
                                 <td mat-cell *matCellDef="let element" data-label="Role">
-                                    <span class="font-semibold text-sm text-color">{{ element.role }}</span>
+                                    <span>{{ element.role }}</span>
                                 </td>
                             </ng-container>
 
@@ -65,11 +65,7 @@
                                 <td mat-cell *matCellDef="let element" data-label="Permissions">
                                     <div class="flex flex-wrap gap-1.5 py-2">
                                         @for (permission of element.permissionsList; track permission.name) {
-                                        <span
-                                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
-                                        >
-                                            {{ permission.name }}
-                                        </span>
+                                        {{ permission.name }}
                                         }
                                     </div>
                                 </td>
@@ -168,9 +164,9 @@
                             <ng-container matColumnDef="permission">
                                 <th mat-header-cell *matHeaderCellDef>Permission</th>
                                 <td mat-cell *matCellDef="let element" data-label="Permission">
-                                    <p class="font-semibold text-sm text-color m-0">{{ element.name }}</p>
+                                    <p class="m-0">{{ element.name }}</p>
                                     @if (element.description) {
-                                    <p class="text-xs [color:var(--color-common-text-2)] mt-0.5 m-0">
+                                    <p class="text-xs mt-0.5 m-0">
                                         {{ element.description }}
                                     </p>
                                     }
@@ -240,18 +236,18 @@
             <!-- ── Snippet Tab ── -->
             @if (selectedSectionIndex === 2) {
             <div class="flex flex-col gap-4 max-w-2xl">
-                <div class="rounded-xl border broder-color overflow-hidden">
-                    <div class="flex items-center justify-between px-4 py-3 border-b broder-color bg-color">
+                <div class="card-with-header">
+                    <div class="card-with-header--header justify-between">
                         <div class="flex items-center gap-2">
                             <mat-icon class="!text-base !w-4 !h-4 secondary-text-color opacity-70">code</mat-icon>
                             <span class="mat-body-2 font-semibold">Integration Script</span>
                         </div>
                         <proxy-copy-button [copyData]="userManagementScript" tooltip="Copy Script"></proxy-copy-button>
                     </div>
-                    <div class="overflow-auto code-snippet-view">
+                    <div class="bg-color overflow-auto code-snippet-view">
                         <markdown [data]="userManagementScript | language: 'javascript'"></markdown>
                     </div>
-                    <div class="flex gap-2 px-4 py-3 border-t broder-color bg-color">
+                    <div class="bg-color flex gap-2 px-4 py-3 border-t border-color bg-color">
                         <mat-icon class="!text-sm !w-3.5 !h-3.5 secondary-text-color opacity-60 shrink-0 mt-0.5"
                             >info</mat-icon
                         >
@@ -260,15 +256,15 @@
                         </p>
                     </div>
                 </div>
-                <div class="rounded-xl border broder-color overflow-hidden">
-                    <div class="flex items-center justify-between px-4 py-3 border-b broder-color bg-color">
+                <div class="card-with-header">
+                    <div class="card-with-header--header justify-between">
                         <div class="flex items-center gap-2">
                             <mat-icon class="!text-base !w-4 !h-4 secondary-text-color opacity-70">html</mat-icon>
                             <span class="mat-body-2 font-semibold">Container HTML</span>
                         </div>
                         <proxy-copy-button [copyData]="userProxyContainerHtml" tooltip="Copy Code"></proxy-copy-button>
                     </div>
-                    <div class="overflow-auto code-snippet-view">
+                    <div class="bg-color overflow-auto code-snippet-view">
                         <markdown [data]="userProxyContainerHtml | language: 'html'"></markdown>
                     </div>
                 </div>
@@ -283,9 +279,7 @@
                 <form [formGroup]="defaultRolesForm" class="flex flex-col gap-6">
                     <mat-card class="outline-card p-5">
                         <mat-card-content class="flex items-start gap-3 !p-0">
-                            <div
-                                class="mt-0.5 w-8 h-8 rounded-lg bg-[var(--color-common-bg-light)] flex items-center justify-center shrink-0"
-                            >
+                            <div class="mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
                                 <mat-icon class="material-icons-outlined mat-icon-18 [color:var(--color-common-icon)]"
                                     >person_add</mat-icon
                                 >
@@ -307,9 +301,7 @@
 
                     <mat-card class="outline-card p-5">
                         <mat-card-content class="flex items-start gap-3 !p-0">
-                            <div
-                                class="mt-0.5 w-8 h-8 rounded-lg bg-[var(--color-common-bg-light)] flex items-center justify-center shrink-0"
-                            >
+                            <div class="mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
                                 <mat-icon class="material-icons-outlined mat-icon-18 [color:var(--color-common-icon)]"
                                     >group_add</mat-icon
                                 >
@@ -331,9 +323,7 @@
 
                     <mat-card class="outline-card p-5">
                         <mat-card-content class="flex items-start gap-3 !p-0">
-                            <div
-                                class="mt-0.5 w-8 h-8 rounded-lg bg-[var(--color-common-bg-light)] flex items-center justify-center shrink-0"
-                            >
+                            <div class="mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
                                 <mat-icon class="material-icons-outlined mat-icon-18 [color:var(--color-common-icon)]"
                                     >visibility_off</mat-icon
                                 >
