@@ -7,8 +7,9 @@
         routerLinkActive="mdc-list-item--activated"
         [matTooltipPosition]="'right'"
         [matTooltip]="isSideNavOpen() ? item.label : ''"
+        [style.padding]="isSideNavOpen() ? '10px' : ''"
     >
-        <mat-icon matListIcon aria-hidden="false">{{ item.icon }}</mat-icon>
+        <mat-icon matListIcon [class.mr-3]="!isSideNavOpen()" aria-hidden="false">{{ item.icon }}</mat-icon>
         <span [class.hidden]="isSideNavOpen()" matLine>{{ item.label }}</span>
     </a>
     }
