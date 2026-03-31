@@ -1,5 +1,4 @@
 @use 'intl-tel-input/build/css/intlTelInput.css';
-@use '../../../otp-global' as *;
 @use 'tailwindcss';
 @source not inline("group-[aria-current=page]:text-indigo-600");
 @custom-variant dark (&:where(.dark, .dark *));
