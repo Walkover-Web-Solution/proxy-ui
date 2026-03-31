@@ -65,14 +65,14 @@
                 </div>
             </div>
             <button
-                matIconButton
-                class="mat-drawer-toggle-btn icon-btn-md mr-1"
+                matButton="tonal"
+                class="mat-drawer-toggle-btn mat-icon-32 !p-0 !min-w-0"
                 (click)="toggleSideBarEvent()"
                 [matTooltip]="(isSideNavOpen | async) ? 'Collapse Menu' : 'Expand Menu'"
                 matTooltipPosition="right"
                 type="button"
             >
-                <mat-icon>{{
+                <mat-icon class="!m-0">{{
                     (isSideNavOpen | async) ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
                 }}</mat-icon>
             </button>
@@ -85,22 +85,6 @@
         <!-- Proxy Sidenav::END -->
         @if (logInData$ | async; as user) {
         <div class="mat-drawer-footer mt-auto">
-            @if (isSideNavOpen | async) {
-            <div
-                class="flex items-center gap-2 px-4 py-2"
-                [matTooltip]="isDarkMode() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
-                matTooltipPosition="above"
-            >
-                <mat-slide-toggle
-                    [checked]="isDarkMode()"
-                    (change)="switchedDarkMode($event.checked)"
-                    [class.hidden]="!(isSideNavOpen | async)"
-                    [attr.aria-label]="isDarkMode() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
-                >
-                    <span class="text-sm">{{ !isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
-                </mat-slide-toggle>
-            </div>
-            }
             <button class="!rounded-lg" matButton [matMenuTriggerFor]="menu">
                 <div class="flex items-center">
                     @if (user.photoURL) {
@@ -118,6 +102,12 @@
             </button>
             <mat-menu #menu="matMenu" class="profile-menu ml-1">
                 <h4 class="m-0 py-2 px-6 text-dark font-medium">{{ user.displayName }}</h4>
+                <div mat-menu-item class="flex items-center gap-2" (click)="switchedDarkMode(!isDarkMode())">
+                    <mat-icon class="mat-icon-18 material-icons-outlined">{{
+                        isDarkMode() ? 'dark_mode' : 'light_mode'
+                    }}</mat-icon>
+                    <span>{{ isDarkMode() ? 'Dark Mode' : 'Light Mode' }}</span>
+                </div>
                 <a mat-menu-item class="flex items-center justify-between text-danger" (click)="logOut()">
                     Logout <mat-icon class="mat-icon-18 text-danger mr-0">logout</mat-icon>
                 </a>

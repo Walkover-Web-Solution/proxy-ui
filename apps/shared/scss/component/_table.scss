@@ -14,16 +14,14 @@
     .mat-mdc-header-row {
         .mat-mdc-header-cell {
             font-weight: 600;
-            font-size: 12px;
             color: var(--color-table-head) !important;
-            border-bottom-color: var(--color-table-head-border) !important;
         }
     }
 
     .mat-mdc-row {
-        .mat-mdc-cell {
-            border-bottom-color: var(--color-table-cell-border) !important;
-        }
+        // .mat-mdc-cell {
+        //     border-bottom-color: var(--color-table-cell-border) !important;
+        // }
 
         &.highlight {
             background-color: var(--color-common-bg-lighter);
@@ -105,7 +103,7 @@
             height: auto !important;
             width: 100%;
             padding: 8px 16px !important;
-            border-bottom: 1px solid var(--color-table-cell-border) !important;
+            // border-bottom: 1px solid var(--color-table-cell-border) !important;
             box-sizing: border-box;
             font-size: 13px;
             word-break: break-word;

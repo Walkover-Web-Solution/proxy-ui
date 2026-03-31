@@ -11,6 +11,8 @@ html {
     @include mat.all-component-themes(theme.$light-theme);
     @include mat.system-level-colors(theme.$light-theme);
     @include mat.system-level-typography(theme.$light-theme);
+    --mat-sys-outline: var(--color-common-border);
+    --mat-sys-on-surface: var(--proxy-neutral-40);
 }
 
 /* System default: follow OS dark mode when body has no theme class */
@@ -18,6 +20,8 @@ html {
     html:not(body.light-theme *):not(body.dark-theme *) {
         @include mat.all-component-colors(theme.$dark-theme);
         @include mat.system-level-colors(theme.$dark-theme);
+        --mat-sys-outline: var(--color-common-border);
+        --mat-sys-on-surface: var(--proxy-neutral-40);
     }
 }
 
@@ -25,10 +29,14 @@ html {
 body.dark-theme {
     @include mat.all-component-colors(theme.$dark-theme);
     @include mat.system-level-colors(theme.$dark-theme);
+    --mat-sys-outline: var(--color-common-border);
+    --mat-sys-on-surface: var(--proxy-neutral-40);
 }
 
 /* Force light theme (overrides OS dark preference) */
 body.light-theme {
     @include mat.all-component-colors(theme.$light-theme);
     @include mat.system-level-colors(theme.$light-theme);
+    --mat-sys-outline: var(--color-common-border);
+    --mat-sys-on-surface: var(--proxy-neutral-40);
 }
