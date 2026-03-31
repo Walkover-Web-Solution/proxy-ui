@@ -65,14 +65,14 @@
                 </div>
             </div>
             <button
-                matIconButton
-                class="mat-drawer-toggle-btn icon-btn-md mr-1"
+                matButton="tonal"
+                class="mat-drawer-toggle-btn mat-icon-32 !p-0 !min-w-0"
                 (click)="toggleSideBarEvent()"
                 [matTooltip]="(isSideNavOpen | async) ? 'Collapse Menu' : 'Expand Menu'"
                 matTooltipPosition="right"
                 type="button"
             >
-                <mat-icon>{{
+                <mat-icon class="!m-0">{{
                     (isSideNavOpen | async) ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
                 }}</mat-icon>
             </button>
