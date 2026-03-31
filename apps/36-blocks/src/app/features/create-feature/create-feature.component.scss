@@ -9,46 +9,6 @@
     border-color: var(--color-dark-accent) !important;
 }
 
-// Show Configure column edit button only on row hover
-// .configure-methods-table {
-//     tr.mat-row,
-//     tr.mat-mdc-row {
-//         .mat-column-configure button {
-//             opacity: 0;
-//             transition: opacity 0.15s ease;
-//         }
-//         &:hover .mat-column-configure button {
-//             opacity: 1;
-//         }
-//     }
-//     th {
-//         font-size: var(--font-size-common-14) !important;
-//     }
-// }
-
-// Fix table borders
-// .default-table {
-//     .mat-mdc-row {
-//         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-
-//         &:last-child {
-//             border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-//         }
-//     }
-
-//     .mat-mdc-header-row {
-//         border-bottom: 2px solid rgba(0, 0, 0, 0.12);
-//     }
-
-//     .mat-mdc-cell,
-//     .mat-mdc-header-cell {
-//         border-right: 1px solid rgba(0, 0, 0, 0.12);
-
-//         &:last-child {
-//             border-right: none;
-//         }
-//     }
-// }
 .organization-details-form {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

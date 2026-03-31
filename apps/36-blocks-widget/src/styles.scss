@@ -1,10 +1,4 @@
-/* Layout*/
-@use 'assets/scss/layout/spacing';
-@use 'assets/scss/layout/display';
-
 /* Components*/
-@use 'assets/scss/component/form-field';
-@use 'assets/scss/component/tabs';
 @use '../../shared/scss/global';
 
 /* Widget shared UI utilities */
@@ -62,8 +56,4 @@ proxy-auth,
 .iti__country-list {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
-}
-
-* {
-    box-sizing: border-box;
 }

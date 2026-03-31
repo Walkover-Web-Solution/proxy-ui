@@ -5,12 +5,6 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :host {
-    display: block !important;
-    height: inherit !important;
-    min-height: inherit !important;
-    max-height: inherit !important;
-    background: transparent !important;
-
     // Prevent client-page CSS from bleeding into the widget.
     // Shadow DOM already blocks inherited styles at the boundary,
     // but these resets guard against any CSS that targets :host from outside.

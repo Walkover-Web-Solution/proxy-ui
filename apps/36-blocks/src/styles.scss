@@ -3,34 +3,13 @@
 @use 'assets/scss/base/light-theme';
 @use 'assets/scss/base/dark-theme';
 
-/* Reset*/
-@use 'assets/scss/base/reset';
-/* Component*/
-@use 'assets/scss/component/modal';
-
 /* Theme*/
 @use 'assets/scss/theme/default-theme';
 
 /*Components*/
-@use 'assets/scss/component/filters';
 @use 'assets/scss/component/toast';
-// @use 'assets/scss/component/table';
 @use 'assets/scss/component/loader';
 @use 'assets/scss/component/icon';
-@use 'assets/scss/component/card';
-@use 'assets/scss/component/form-field';
-@use 'assets/scss/component/pagination';
-@use 'assets/scss/component/tabs';
-@use 'assets/scss/component/buttons';
-@use 'assets/scss/component/status';
-@use 'assets/scss/component/text-style';
-@use 'assets/scss/component/side-dialog';
-@use 'assets/scss/component/menu';
-@use 'assets/scss/component/sidenav';
-@use 'assets/scss/component/select-option';
-@use 'assets/scss/component/chart';
-@use 'assets/scss/component/mat-list';
-@use 'assets/scss/component/stepper';
 @use 'assets/scss/component/animation';
 @use '../../shared/scss/global';
 body {
@@ -73,9 +52,3 @@ body {
         width: 100%;
     }
 }
-
-// .block-feature-tabs {
-//     .mat-tab-body-wrapper {
-//         height: 100%;
-//     }
-// }
