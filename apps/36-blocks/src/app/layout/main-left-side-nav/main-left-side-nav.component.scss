@@ -1,6 +1,7 @@
-:host {
-    a.active-list-item::before {
-        background-color: var(--mat-list-list-item-hover-state-layer-color, var(--mat-sys-on-surface));
-        opacity: var(--mat-list-list-item-hover-state-layer-opacity, var(--mat-sys-hover-state-layer-opacity));
+.service-list {
+    .mat-mdc-list-item {
+        border-radius: 8px !important;
+        height: 42px !important;
+        margin-bottom: 2px;
     }
 }

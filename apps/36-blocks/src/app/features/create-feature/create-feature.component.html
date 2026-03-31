@@ -1,4 +1,4 @@
-<div class="app-content flex flex-col">
+<div class="flex flex-col">
     @if ((isLoading$ | async) || (loadingScript | async)) { <proxy-loader></proxy-loader> }
     <div class="flex justify-start gap-2 mb-6" [class.items-start]="isEditMode" [class.items-center]="!isEditMode">
         <button type="button" matIconButton [routerLink]="['/app', 'features']">
@@ -326,22 +326,20 @@
                     </mat-tab>
                     <mat-tab label="Event Catalog">
                         <div class="p-6 flex flex-col gap-4">
-                            <div class="rounded-xl border broder-color overflow-hidden">
-                                <div class="flex items-center justify-between px-4 py-3 border-b broder-color bg-color">
+                            <div class="card-with-header">
+                                <div class="card-with-header--header justify-between">
                                     <div class="flex items-center gap-2 text-color">
                                         <mat-icon class="!text-base !w-4">bolt</mat-icon>
                                         <span class="mat-body-2 font-semibold">Event Catalog</span>
                                     </div>
                                     @if (webhookEventsData?.length) {
-                                    <span
-                                        class="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--color-common-hover)] text-color"
-                                    >
+                                    <span class="text-xs font-medium px-2 py-0.5 rounded-full text-color">
                                         {{ webhookEventsData.length }} events
                                     </span>
                                     }
                                 </div>
                                 @if (webhookEventsData?.length) {
-                                <div class="p-4">
+                                <div class="bg-color p-4">
                                     <mat-accordion>
                                         @for (event of webhookEventsData; track event) {
                                         <mat-expansion-panel class="!mb-2">
@@ -381,7 +379,7 @@
                                     </mat-accordion>
                                 </div>
                                 } @else {
-                                <div class="flex flex-col items-center justify-center py-16 gap-3">
+                                <div class="bg-color flex flex-col items-center justify-center py-16 gap-3">
                                     <mat-icon class="text-color opacity-30 !text-[48px] !w-12 !h-12">bolt</mat-icon>
                                     <div class="flex flex-col items-center gap-1">
                                         <p class="mat-body-1 font-semibold text-color m-0">No events available</p>
@@ -582,9 +580,9 @@
 </ng-template>
 
 <ng-template #configureMethodFormContent let-serviceForm="serviceForm">
-    <div class="flex flex-col grow rounded-xl broder-color overflow-hidden" [class.border]="!serviceForm">
+    <div class="flex flex-col grow card-with-header" [class.border]="!serviceForm">
         @if ((selectedMethod | async)?.method_services; as methodServices) { @if (!serviceForm) {
-        <div class="flex items-center gap-2 px-4 py-3 border-b broder-color bg-color">
+        <div class="card-with-header--header">
             <mat-icon class="!text-base !w-4 text-color">tune</mat-icon>
             <span
                 class="mat-body-2 font-semibold"
@@ -592,7 +590,7 @@
             >
         </div>
         } @if (serviceForm ?? featureForm.get('serviceDetails')?.at(selectedServiceIndex); as formToUse) {
-        <div class="flex flex-col gap-3" [class.p-4]="!serviceForm">
+        <div class="bg-color flex flex-col gap-3" [class.p-4]="!serviceForm">
             <form [formGroup]="formToUse" class="flex flex-col gap-1">
                 @if (methodServices?.[selectedServiceIndex]?.requirements; as requirements) { @if
                 ((formToUse.controls.requirements.controls | keyvalue)?.length) {
@@ -632,7 +630,7 @@
                     <proxy-copy-button matSuffix [copyData]="callbackUrl" tooltip="Copy URL"></proxy-copy-button>
                 </mat-form-field>
                 } @if (isEditMode) {
-                <div class="flex items-center justify-between py-3 px-3 rounded-lg bg-[var(--color-common-hover)]">
+                <div class="flex items-center justify-between py-3 px-3 rounded-lg">
                     <span class="mat-body-2">Enable Service</span>
                     <mat-slide-toggle color="primary" [formControl]="formToUse.controls.is_enable"></mat-slide-toggle>
                 </div>
@@ -678,14 +676,14 @@
     <div class="flex flex-col gap-3 my-6 grow text-color">
         @if (configureMethodsTableData.length === 0) {
         <div
-            class="flex flex-col items-center justify-center py-10 gap-2 rounded-xl border border-dashed broder-color bg-color"
+            class="flex flex-col items-center justify-center py-10 gap-2 rounded-xl border border-dashed border-color bg-color"
         >
             <mat-icon class="secondary-text-color opacity-40 !text-4xl !w-9 !h-9">tune</mat-icon>
             <p class="mat-body-2 text-color m-0">No methods available</p>
         </div>
         } @else {
-        <div class="rounded-xl border broder-color overflow-hidden">
-            <div class="grid grid-cols-[1fr_auto_auto] items-center px-4 py-2 bg-color border-b broder-color">
+        <div class="card-with-header">
+            <div class="grid grid-cols-[1fr_auto_auto] items-center px-4 py-2 bg-color border-b border-color">
                 <span class="mat-body-2 font-semibold text-color uppercase tracking-wide text-xs">Method</span>
                 <span class="mat-body-2 font-semibold text-color uppercase tracking-wide text-xs w-20 text-center"
                     >Enable</span
@@ -696,15 +694,15 @@
             </div>
             @for (row of configureMethodsTableData; track row.index) {
             <div
-                class="grid grid-cols-[1fr_auto_auto] items-center px-4 py-3 hover:bg-[var(--color-common-hover)] transition-colors duration-150"
+                class="grid grid-cols-[1fr_auto_auto] items-center px-4 py-3 transition-colors duration-150"
                 [class.border-b]="!$last"
-                [class.broder-color]="!$last"
+                [class.border-color]="!$last"
             >
                 <div class="flex items-center gap-2 min-w-0">
                     <span class="mat-body-2 font-medium truncate">{{ row.name }}</span>
                     @if (row.index === 0) {
                     <span
-                        class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[var(--color-common-primary-light,#e8f5e9)] text-[var(--color-common-primary)] leading-none"
+                        class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold text-[var(--color-common-primary)] leading-none"
                     >
                         default
                     </span>
@@ -813,11 +811,10 @@
         <div
             class="flex flex-col items-center gap-1 w-full"
             [class.dark-theme-login]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
-            [class.preview-input-field]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
         >
             <mat-form-field appearance="outline" class="w-[85%]">
                 <mat-label>Email or Phone</mat-label>
-                <input matInput type="text" placeholder="Enter Email or Phone" />
+                <input matInput type="text" placeholder="Enter email or phone" />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-[85%]">
@@ -963,13 +960,13 @@
 
 <ng-template #authorizationSetup>
     <div class="flex gap-6 my-4 max-lg:flex-col">
-        <div class="flex flex-col gap-5 flex-1 min-w-0">
-            <div class="rounded-xl border broder-color overflow-hidden">
-                <div class="flex items-center gap-2 px-4 py-3 text-color border-b broder-color bg-color">
+        <div class="flex flex-col gap-5 flex-1 min-w-0 w-1/2 max-2xl:w-full">
+            <div class="card-with-header">
+                <div class="card-with-header--header">
                     <mat-icon class="!text-base !w-4">settings</mat-icon>
                     <span class="mat-body-2 font-semibold">Session & Token Settings</span>
                 </div>
-                <div class="flex flex-col gap-1 px-4 pt-4 pb-4 max-w-md max-lg:max-w-full">
+                <div class="bg-color flex flex-col gap-1 px-4 pt-4 pb-4">
                     <ng-container
                         *ngTemplateOutlet="
                             inputField;
@@ -1014,9 +1011,7 @@
                         "
                     ></ng-container>
                     @if (isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1) {
-                    <div
-                        class="flex items-center justify-between gap-3 py-3 px-3 my-3 rounded-lg bg-[var(--color-common-hover)]"
-                    >
+                    <div class="flex items-center justify-between gap-3 py-3 px-3 my-3 rounded-lg">
                         <div class="flex flex-col gap-0.5">
                             <span class="mat-body-2 font-medium">Block new user sign-ups</span>
                             <span class="text-xs text-color">Prevent new users from registering via this block</span>
@@ -1031,18 +1026,18 @@
             </div>
 
             @if (((isEditMode ? featureDetails$ : selectedMethod) | async)?.authorization_format?.format; as code) {
-            <div class="rounded-xl border broder-color overflow-hidden">
-                <div class="flex items-center justify-between px-4 py-3 border-b broder-color bg-color">
+            <div class="card-with-header">
+                <div class="card-with-header--header justify-between">
                     <div class="flex items-center gap-2 text-color">
                         <mat-icon class="!text-base !w-4">data_object</mat-icon>
                         <span class="mat-body-2 font-semibold">JWT Payload Format</span>
                     </div>
                     <proxy-copy-button [copyData]="code | json" tooltip="Copy JSON"></proxy-copy-button>
                 </div>
-                <div class="overflow-auto code-snippet-view">
+                <div class="bg-color overflow-auto code-snippet-view">
                     <markdown [data]="code | json | language: 'javascript'"></markdown>
                 </div>
-                <div class="flex px-4 py-3 items-center border-t broder-color bg-color text-color">
+                <div class="bg-color flex px-4 py-3 items-center border-t border-color bg-color text-color">
                     <mat-icon class="!text-base">info</mat-icon>
                     <p class="mat-body-2 m-0 text-xs">
                         JSON format you will receive after login as JWT in Authorization key
@@ -1061,31 +1056,31 @@
 
 <ng-template #designAndCode>
     <div class="flex flex-col gap-4">
-        <div class="rounded-xl border broder-color overflow-hidden">
-            <div class="flex items-center justify-between px-4 py-3 border-b broder-color bg-color">
+        <div class="card-with-header">
+            <div class="card-with-header--header justify-between">
                 <div class="flex items-center gap-2">
                     <mat-icon class="!text-base !w-4 text-color">code</mat-icon>
                     <span class="mat-body-2 font-semibold">Integration Script</span>
                 </div>
                 <proxy-copy-button [copyData]="proxyAuthScript" tooltip="Copy Script"></proxy-copy-button>
             </div>
-            <div class="overflow-auto code-snippet-view">
+            <div class="bg-color overflow-auto code-snippet-view">
                 <markdown [data]="proxyAuthScript | language: 'javascript'"></markdown>
             </div>
         </div>
 
-        <div class="rounded-xl border broder-color overflow-hidden">
-            <div class="flex items-center justify-between px-4 py-3 border-b broder-color bg-color">
+        <div class="card-with-header">
+            <div class="card-with-header--header justify-between">
                 <div class="flex items-center gap-2">
                     <mat-icon class="!text-base !w-4 text-color">html</mat-icon>
                     <span class="mat-body-2 font-semibold">Button Container Div</span>
                 </div>
                 <proxy-copy-button [copyData]="demoDiv()" tooltip="Copy Code"></proxy-copy-button>
             </div>
-            <div class="overflow-auto code-snippet-view">
+            <div class="bg-color overflow-auto code-snippet-view">
                 <markdown [data]="demoDiv() | language: 'html'"></markdown>
             </div>
-            <div class="flex px-4 py-3 flex-col border-t broder-color bg-color">
+            <div class="bg-color flex items-center px-4 py-3 border-t border-color bg-color">
                 <mat-icon class="!text-base text-color">info</mat-icon>
                 <p class="mat-body-2 text-color m-0 text-xs">
                     The social login button is shown in a dialog by default. Add this div to your UI to render it inline
@@ -1106,12 +1101,12 @@
 
 <ng-template #webhook>
     <div class="flex flex-col gap-6 my-4">
-        <div class="rounded-xl border broder-color overflow-hidden">
-            <div class="flex items-center gap-2 px-4 py-3 text-color border-b broder-color bg-color">
+        <div class="card-with-header">
+            <div class="card-with-header--header">
                 <mat-icon class="!text-base !w-4">webhook</mat-icon>
                 <span class="mat-body-2 font-semibold">Webhook Configuration</span>
             </div>
-            <div class="flex flex-col gap-1 px-4 pt-4 pb-4 max-w-xl max-lg:max-w-full">
+            <div class="bg-color flex flex-col gap-1 px-4 pt-4 pb-4">
                 <ng-container
                     *ngTemplateOutlet="
                         inputField;
@@ -1410,7 +1405,7 @@
                             <td mat-cell *matCellDef="let element" data-label="Code">
                                 <div class="flex items-center gap-1">
                                     <span
-                                        class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
+                                        class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)]"
                                         >{{ element.code }}</span
                                     >
                                     <proxy-copy-button
@@ -1438,7 +1433,7 @@
                             <th mat-header-cell *matHeaderCellDef mat-sort-header>Aggregation</th>
                             <td mat-cell *matCellDef="let element" data-label="Aggregation">
                                 <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
+                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-common-chip-bg)]"
                                 >
                                     {{ getAggregationLabel(element?.aggregation_type) }}
                                 </span>
@@ -1645,7 +1640,7 @@
                             <td mat-cell *matCellDef="let element" data-label="Code">
                                 <div class="flex items-center gap-1">
                                     <span
-                                        class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
+                                        class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)]"
                                         >{{ element.code }}</span
                                     >
                                     <proxy-copy-button
@@ -1680,7 +1675,7 @@
                             <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency</th>
                             <td mat-cell *matCellDef="let element" data-label="Currency">
                                 <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium uppercase [background-color:var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
+                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium uppercase [background-color:var(--color-common-chip-bg)]"
                                 >
                                     {{ element.amount_currency }}
                                 </span>
@@ -1691,7 +1686,7 @@
                             <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
                             <td mat-cell *matCellDef="let element" data-label="Status">
                                 <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
+                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-common-chip-bg)]"
                                 >
                                     {{ getAggregationLabel(element?.aggregation_type) }}
                                 </span>
@@ -1760,7 +1755,7 @@
                             <th mat-header-cell *matHeaderCellDef>Code</th>
                             <td mat-cell *matCellDef="let tax" data-label="Code">
                                 <span
-                                    class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)] [color:var(--color-common-text-2)]"
+                                    class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)]"
                                     >{{ tax.code }}</span
                                 >
                             </td>
@@ -1769,8 +1764,7 @@
                             <th mat-header-cell *matHeaderCellDef>Rate (%)</th>
                             <td mat-cell *matCellDef="let tax" data-label="Rate">
                                 <span class="font-semibold tabular-nums"
-                                    >{{ tax.rate
-                                    }}<span class="text-xs [color:var(--color-common-text-2)] ml-0.5">%</span></span
+                                    >{{ tax.rate }}<span class="text-xs ml-0.5">%</span></span
                                 >
                             </td>
                         </ng-container>
@@ -1871,14 +1865,14 @@
 <ng-template #brandingStepContent>
     <div class="flex gap-6 grow min-h-[400px] branding-step-content max-lg:flex-col justify-between mb-3">
         <!-- Left: Branding form -->
-        <div class="flex flex-col gap-4 branding-form w-1/2 max-lg:w-full overflow-y-auto pr-1">
+        <div class="flex flex-col gap-4 branding-form w-1/2 max-2xl:w-full overflow-y-auto pr-1">
             <!-- Logo Section -->
-            <div class="rounded-xl border broder-color overflow-hidden">
-                <div class="flex items-center gap-2 px-4 py-3 border-b broder-color bg-color">
+            <div class="card-with-header">
+                <div class="card-with-header--header">
                     <mat-icon class="!text-base !w-4 text-color">image</mat-icon>
                     <span class="mat-body-2 font-semibold">Logo</span>
                 </div>
-                <div class="px-4 pt-4 pb-3 flex flex-col gap-3">
+                <div class="bg-color px-4 pt-4 pb-3 flex flex-col gap-3">
                     <mat-radio-group
                         [value]="logoInputMode"
                         (change)="logoInputMode = $event.value"
@@ -1940,12 +1934,12 @@
             </div>
 
             <!-- Appearance Section -->
-            <div class="rounded-xl border broder-color overflow-hidden">
-                <div class="flex items-center gap-2 px-4 py-3 border-b broder-color bg-color">
+            <div class="card-with-header">
+                <div class="card-with-header--header">
                     <mat-icon class="!text-base !w-4 text-color">tune</mat-icon>
                     <span class="mat-body-2 font-semibold">Appearance</span>
                 </div>
-                <div class="px-4 pt-4 pb-2 flex flex-col gap-1">
+                <div class="bg-color px-4 pt-4 pb-2 flex flex-col gap-1">
                     <ng-container
                         *ngTemplateOutlet="
                             inputField;
@@ -2010,12 +2004,12 @@
 
             <!-- Display Options (auth feature only) -->
             @if (featureForm.get('primaryDetails.feature_id')?.value === 1) {
-            <div class="rounded-xl border broder-color overflow-hidden">
-                <div class="flex items-center gap-2 px-4 py-3 border-b broder-color bg-color">
+            <div class="card-with-header">
+                <div class="card-with-header--header">
                     <mat-icon class="!text-base !w-4 text-color">toggle_on</mat-icon>
                     <span class="mat-body-2 font-semibold">Display Options</span>
                 </div>
-                <div class="flex flex-col divide-y divide-[var(--color-common-border)]">
+                <div class="bg-color flex flex-col divide-y divide-[var(--color-common-border)]">
                     <div class="flex items-center justify-between gap-3 px-4 py-3">
                         <span class="mat-body-2">Show social login as icon</span>
                         <mat-slide-toggle
@@ -2037,12 +2031,12 @@
             }
 
             <!-- Colors Section -->
-            <div class="rounded-xl border broder-color overflow-hidden">
-                <div class="flex items-center gap-2 px-4 py-3 border-b broder-color bg-color">
+            <div class="card-with-header">
+                <div class="card-with-header--header">
                     <mat-icon class="!text-base !w-4 text-color">palette</mat-icon>
                     <span class="mat-body-2 font-semibold">Colors</span>
                 </div>
-                <div class="flex flex-col divide-y divide-[var(--color-common-border)]">
+                <div class="bg-color flex flex-col divide-y divide-[var(--color-common-border)]">
                     <div class="flex items-center justify-between gap-3 px-4 py-3">
                         <div class="flex flex-col gap-0.5">
                             <label class="mat-body-2 font-medium">Primary color</label>
@@ -2054,7 +2048,7 @@
                             }}</span>
                             <input
                                 type="color"
-                                class="w-8 h-8 cursor-pointer border broder-color rounded-lg overflow-hidden p-0.5"
+                                class="w-8 h-8 cursor-pointer border border-color rounded-lg overflow-hidden p-0.5"
                                 [value]="
                                     featureForm.get('brandingDetails.light_theme_primary_color')?.value || '#000000'
                                 "
@@ -2077,7 +2071,7 @@
                             }}</span>
                             <input
                                 type="color"
-                                class="w-8 h-8 cursor-pointer border broder-color rounded-lg overflow-hidden p-0.5"
+                                class="w-8 h-8 cursor-pointer border border-color rounded-lg overflow-hidden p-0.5"
                                 [value]="
                                     featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff'
                                 "
@@ -2097,7 +2091,7 @@
                             }}</span>
                             <input
                                 type="color"
-                                class="w-8 h-8 cursor-pointer border broder-color rounded-lg overflow-hidden p-0.5"
+                                class="w-8 h-8 cursor-pointer border border-color rounded-lg overflow-hidden p-0.5"
                                 [value]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
                                 (input)="
                                     featureForm.get('brandingDetails.button_color')?.setValue($any($event.target).value)
@@ -2113,7 +2107,7 @@
                             }}</span>
                             <input
                                 type="color"
-                                class="w-8 h-8 cursor-pointer border broder-color rounded-lg overflow-hidden p-0.5"
+                                class="w-8 h-8 cursor-pointer border border-color rounded-lg overflow-hidden p-0.5"
                                 [value]="featureForm.get('brandingDetails.button_hover_color')?.value || '#19E6CE'"
                                 (input)="
                                     featureForm
@@ -2131,7 +2125,7 @@
                             }}</span>
                             <input
                                 type="color"
-                                class="w-8 h-8 cursor-pointer border broder-color rounded-lg overflow-hidden p-0.5"
+                                class="w-8 h-8 cursor-pointer border border-color rounded-lg overflow-hidden p-0.5"
                                 [value]="featureForm.get('brandingDetails.button_text_color')?.value || '#000000'"
                                 (input)="
                                     featureForm

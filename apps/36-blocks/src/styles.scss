@@ -11,6 +11,7 @@
 @use 'assets/scss/component/loader';
 @use 'assets/scss/component/icon';
 @use 'assets/scss/component/animation';
+@use 'assets/scss/component/utility-classes';
 @use '../../shared/scss/global';
 body {
     background: var(--mat-sys-surface);
@@ -22,7 +23,7 @@ body {
 .bg-color {
     background-color: var(--color-common-bg) !important;
 }
-.broder-color {
+.border-color {
     border-color: var(--color-common-border) !important;
 }
 .secondary-text-color {
@@ -30,7 +31,7 @@ body {
 }
 /*Main*/
 .app-content {
-    padding: 16px;
+    padding: 24px;
     min-height: 100%;
     height: 100vh;
     overflow-y: auto;
@@ -51,4 +52,9 @@ body {
     .iti--allow-dropdown {
         width: 100%;
     }
+}
+
+pre[class*='language-'] {
+    margin: 0 !important;
+    border-radius: 0 !important;
 }
