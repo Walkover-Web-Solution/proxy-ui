@@ -1,19 +1,18 @@
 <div class="flex w-full h-full" [class.collapsed-sidebar]="!(isSideNavOpen | async)">
     <div
-        class="flex flex-col transition-all duration-200 mat-drawer-content max-desktop:fixed max-desktop:z-[999] max-desktop:top-0 max-desktop:bottom-0"
+        class="flex flex-col transition-all duration-200 mat-drawer-content max-desktop:fixed max-desktop:z-[999] max-desktop:top-0 max-desktop:bottom-0 bg-color p-2"
         [class.mat-drawer-toggle-btn-hover]="isSideNavOpen | async"
-        [class]="!(isSideNavOpen | async) ? 'overflow-hidden !w-[56px]' : 'w-[246px]'"
+        [class]="!(isSideNavOpen | async) ? 'overflow-hidden !w-[56px] p-1.5' : 'w-[246px]'"
     >
-        <div
-            class="flex items-center mat-drawer-header"
-            [class]="!(isSideNavOpen | async) ? 'flex-col gap-2 mt-3' : ''"
-        >
+        <div class="flex items-center py-2" [class]="!(isSideNavOpen | async) ? 'flex-col gap-2' : ''">
             <div
                 class="flex items-center grow gap-2 mat-drawer-header-title px-4"
                 #clientsMenuTrigger="matMenuTrigger"
                 [matMenuTriggerFor]="clientsMenu"
             >
+                @if (!(isSideNavOpen | async)) {
                 <mat-icon class="mat-icon-22">apps</mat-icon>
+                }
                 <div
                     class="flex items-center gap-x-1 mat-drawer-header-subtitle cursor-pointer"
                     [class.hidden]="!(isSideNavOpen | async)"
@@ -102,7 +101,7 @@
                 </mat-slide-toggle>
             </div>
             }
-            <button matButton [matMenuTriggerFor]="menu">
+            <button class="!rounded-lg" matButton [matMenuTriggerFor]="menu">
                 <div class="flex items-center">
                     @if (user.photoURL) {
                     <img [src]="user.photoURL" alt="No Image" class="w-7 h-7 rounded-full" loading="lazy" />
@@ -114,7 +113,7 @@
                     <div class="flex flex-col" style="width: 140px">
                         <h6 [class.hidden]="!(isSideNavOpen | async)" class="username m-0">{{ user.displayName }}</h6>
                     </div>
-                    <mat-icon class="mx-1 text-secondary material-icons-outlined">keyboard_arrow_up</mat-icon>
+                    <mat-icon class="mx-1 material-icons-outlined">keyboard_arrow_up</mat-icon>
                 </div>
             </button>
             <mat-menu #menu="matMenu" class="profile-menu ml-1">
@@ -126,7 +125,7 @@
         </div>
         }
     </div>
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col app-content">
         <!-- Content::START -->
         <router-outlet></router-outlet>
         <div id="ChatbotContainer" class="h-screen w-full"></div>
