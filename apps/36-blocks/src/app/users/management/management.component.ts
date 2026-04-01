@@ -42,6 +42,7 @@ import { UserComponentStore } from '../user/user.store';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PROXY_DOM_ID } from '@proxy/constant';
 import { MatChipsModule } from '@angular/material/chips';
+import { SearchComponent } from '@proxy/ui/search';
 
 interface IRole {
     id: number;
@@ -76,6 +77,7 @@ interface IRole {
         CopyButtonComponent,
         MarkdownModule,
         MatChipsModule,
+        SearchComponent,
     ],
     templateUrl: './management.component.html',
     styleUrls: ['./management.component.scss'],

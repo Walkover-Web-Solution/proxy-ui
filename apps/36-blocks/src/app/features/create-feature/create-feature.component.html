@@ -876,13 +876,7 @@
                 [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
             >
                 <div class="auth-option-content">
-                    <mat-icon
-                        class="material-icons-outlined auth-option-icon"
-                        [style.color]="
-                            featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark ? '#ffffff' : '#000000'
-                        "
-                        >phone_android</mat-icon
-                    >
+                    <mat-icon class="material-icons-outlined auth-option-icon">phone_android</mat-icon>
                     <span
                         class="auth-option-text"
                         [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
@@ -897,13 +891,7 @@
                 [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
             >
                 <div class="auth-option-content">
-                    <mat-icon
-                        class="material-icons-outlined auth-option-icon"
-                        [style.color]="
-                            featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark ? '#ffffff' : '#000000'
-                        "
-                        >apple</mat-icon
-                    >
+                    <mat-icon class="material-icons-outlined auth-option-icon">apple</mat-icon>
                     <span
                         class="auth-option-text"
                         [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
@@ -934,13 +922,7 @@
                 [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
             >
                 <div class="auth-option-content">
-                    <mat-icon
-                        class="material-icons-outlined auth-option-icon"
-                        [style.color]="
-                            featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark ? '#ffffff' : '#000000'
-                        "
-                        >password</mat-icon
-                    >
+                    <mat-icon class="material-icons-outlined auth-option-icon">password</mat-icon>
                     <span
                         class="auth-option-text"
                         [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
@@ -2106,26 +2088,20 @@
         <div class="branding-preview">
             @if (isEditMode && featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
             featureForm.get('brandingDetails.version')?.value === 'v2') {
-            <div class="flex items-center justify-center w-full mb-6">
-                <div class="custom-toggle-group">
-                    <button
-                        type="button"
-                        class="custom-toggle-btn"
-                        [class.active]="previewInputPosition !== 'bottom'"
+            <section class="mb-6 flex items-center justify-center">
+                <mat-button-toggle-group>
+                    <mat-button-toggle
+                        [class.mat-button-toggle-checked]="previewInputPosition !== 'bottom'"
                         (click)="previewInputPosition = 'top'"
+                        >Input on Top</mat-button-toggle
                     >
-                        Input on Top
-                    </button>
-                    <button
-                        type="button"
-                        class="custom-toggle-btn"
-                        [class.active]="previewInputPosition === 'bottom'"
+                    <mat-button-toggle
+                        [class.mat-button-toggle-checked]="previewInputPosition === 'bottom'"
                         (click)="previewInputPosition = 'bottom'"
+                        >Input on Bottom</mat-button-toggle
                     >
-                        Input on Bottom
-                    </button>
-                </div>
-            </div>
+                </mat-button-toggle-group>
+            </section>
             }
             <ng-container *ngTemplateOutlet="previewAuthorization; context: { previewVersion: 'v2' }"></ng-container>
         </div>

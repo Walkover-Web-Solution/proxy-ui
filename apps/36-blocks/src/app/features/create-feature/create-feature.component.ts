@@ -69,6 +69,7 @@ import { CreateTaxDialogComponent } from './create-tax-dialog/create-tax-dialog.
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { ServiceListComponent, ServiceListItem } from '@proxy/ui/service-list';
 import { UiSettingsService } from '../../layout/ui-settings.service';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 type ServiceFormGroup = FormGroup<{
     requirements: FormGroup<{
         [key: string]: FormControl<any>;
@@ -135,6 +136,7 @@ export interface PeriodicElement {
         MatExpansionModule,
         MatRadioModule,
         ServiceListComponent,
+        MatButtonToggleModule,
     ],
     templateUrl: './create-feature.component.html',
     styleUrls: ['./create-feature.component.scss'],
