@@ -4,67 +4,51 @@
         [class.mat-drawer-toggle-btn-hover]="isSideNavOpen()"
         [class]="!isSideNavOpen() ? 'overflow-hidden !w-[56px] p-1.5' : 'w-[246px]'"
     >
-        <div class="flex items-center pt-2" [class]="!isSideNavOpen() ? 'flex-col gap-2' : ''">
+        @let clientSettings = clientSettings$ | async; @let clientList = clients$ | async; @let isMultipleClients =
+        (clientList?.data?.length ?? 0) > 1;
+        <div class="flex items-center pt-2" [class.flex-col]="!isSideNavOpen()" [class.gap-2]="!isSideNavOpen()">
             <div
                 class="flex items-center grow gap-2 mat-drawer-header-title pr-2"
                 #clientsMenuTrigger="matMenuTrigger"
-                [matMenuTriggerFor]="clientsMenu"
-                [class]="!isSideNavOpen() ? 'pl-2' : 'pl-4'"
+                [matMenuTriggerFor]="isMultipleClients ? clientsMenu : null"
+                [class.pl-2]="!isSideNavOpen()"
+                [class.pl-4]="isSideNavOpen()"
             >
-                @if (!isSideNavOpen()) {
-                <mat-icon class="mat-icon-22">apps</mat-icon>
-                }
-                <div
-                    class="flex items-center gap-x-1 mat-drawer-header-subtitle cursor-pointer"
-                    [class.hidden]="!isSideNavOpen()"
-                >
-                    <span class="font-16 font-semibold overflow-dotted" style="max-width: 145px">
-                        {{ (clientSettings$ | async)?.client?.name }}
+                @if (isSideNavOpen()) {
+                <div class="flex items-center gap-x-1 mat-drawer-header-subtitle cursor-pointer">
+                    <span class="font-16 font-semibold max-w-[162px] overflow-hidden whitespace-nowrap text-ellipsis">
+                        {{ clientSettings?.client?.name }}
                     </span>
-                    @if (isSideNavOpen()) {
+                    @if (isMultipleClients){
                     <mat-icon>{{
                         clientsMenuTrigger?.menuOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
                     }}</mat-icon>
                     }
-                    <mat-menu #clientsMenu="matMenu" class="profile-sub-dropdown" xPosition="before">
-                        @if (clients$ | async; as clientList) {
-                        <mat-list>
-                            @if (clientList.totalEntityCount > 25) {
-                            <proxy-cdk-scroll (fetchNextPage)="fetchClientsNextPage()">
-                                <cdk-virtual-scroll-viewport
-                                    [itemSize]="40"
-                                    minBufferPx="400"
-                                    maxBufferPx="400"
-                                    id="scrollableWrapper"
-                                    style="height: 80vh; width: 280px; overflow: hidden overlay"
-                                >
-                                    @for (client of clientList?.data; track client.id) {
-                                    <button
-                                        mat-menu-item
-                                        (click)="switchClient(client?.id)"
-                                        [disabled]="(clientSettings$ | async)?.client?.id === client?.id"
-                                        [class.text-dark]="(clientSettings$ | async)?.client?.id === client?.id"
-                                    >
-                                        {{ client.name }}
-                                    </button>
-                                    }
-                                </cdk-virtual-scroll-viewport>
-                            </proxy-cdk-scroll>
-                            } @else { @for (client of clientList?.data; track client.id) {
-                            <button
-                                mat-menu-item
-                                (click)="switchClient(client?.id)"
-                                [disabled]="(clientSettings$ | async)?.client?.id === client?.id"
-                                [class.text-dark]="(clientSettings$ | async)?.client?.id === client?.id"
-                            >
-                                {{ client.name }}
-                            </button>
-                            } }
-                        </mat-list>
-                        }
-                    </mat-menu>
                 </div>
+                } @else {
+                <mat-icon class="mat-icon-22">apps</mat-icon>
+                }
             </div>
+            <mat-menu #clientsMenu="matMenu" class="w-[240px]" xPosition="after">
+                @for (client of clientList?.data; track client.id) {
+                <button
+                    mat-menu-item
+                    (click)="switchClient(client.id)"
+                    [disabled]="clientSettings?.client?.id === client.id"
+                >
+                    <span class="flex items-center justify-between w-full gap-3">
+                        {{ client.name }}
+                        @if (clientSettings?.client?.id === client.id) {
+                        <span
+                            class="text-[10px] font-medium px-1.5 py-0.5 rounded leading-none text-white"
+                            style="background: var(--mat-sys-primary)"
+                            >Active</span
+                        >
+                        }
+                    </span>
+                </button>
+                }
+            </mat-menu>
             <button
                 matIconButton
                 class="sidebar-toggle-btn"
@@ -86,6 +70,7 @@
         <!-- Proxy Sidenav::END -->
         @if (logInData$ | async; as user) {
         <div class="mt-auto">
+            @if (isSideNavOpen()) {
             <button
                 class="!rounded-lg !p-0 w-full"
                 matButton
@@ -95,13 +80,7 @@
             >
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        @if (user.photoURL) {
-                        <img [src]="user.photoURL" alt="No Image" class="w-7 h-7 rounded-full" loading="lazy" />
-                        } @else {
-                        <mat-icon aria-hidden="false" class="mr-6 text-grey material-icons-outlined">
-                            account_circle
-                        </mat-icon>
-                        }
+                        <ng-container *ngTemplateOutlet="displayPicture; context: { user: user }"></ng-container>
                         <h6
                             [class.hidden]="!isSideNavOpen()"
                             class="username m-0 max-w-[162px] overflow-hidden whitespace-nowrap text-ellipsis"
@@ -112,6 +91,18 @@
                     <mat-icon class="mx-1 material-icons-outlined">keyboard_arrow_up</mat-icon>
                 </div>
             </button>
+            } @else {
+            <button
+                matIconButton
+                aria-label="User Profile"
+                class="flex items-center justify-center"
+                [matMenuTriggerFor]="menu"
+                [matTooltip]="user.displayName"
+                matTooltipPosition="after"
+            >
+                <ng-container *ngTemplateOutlet="displayPicture; context: { user: user }"></ng-container>
+            </button>
+            }
             <mat-menu #menu="matMenu" class="profile-menu ml-1">
                 <h4 class="m-0 py-2 px-6 text-dark font-medium">{{ user.displayName }}</h4>
                 <div mat-menu-item class="flex items-center gap-2" (click)="switchedDarkMode(!isDarkMode())">
@@ -134,3 +125,11 @@
         <!-- Content::END -->
     </div>
 </div>
+
+<ng-template #displayPicture let-user="user">
+    @if (user.photoURL) {
+    <img [src]="user.photoURL" alt="No Image" class="w-7 h-7 rounded-full" loading="lazy" />
+    } @else {
+    <mat-icon aria-hidden="false" class="mr-6 text-grey material-icons-outlined"> account_circle </mat-icon>
+    }
+</ng-template>

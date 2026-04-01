@@ -1,3 +1,7 @@
+:host {
+    display: block;
+    height: 100%;
+}
 .code-snippet-view {
     transition: min-height 0.2s linear;
     min-width: 500px;

@@ -1387,85 +1387,78 @@
             </button>
         </div>
 
-        <mat-card class="w-full outline-card responsive-card grow p-0">
-            <mat-card-content>
-                <div class="table-scroll">
-                    <table mat-table [dataSource]="billableMetricstabledata" class="default-table responsive-table">
-                        <!-- Name Column -->
-                        <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-                            <td mat-cell *matCellDef="let element" data-label="Name">
-                                <span class="font-semibold">{{ element.name }}</span>
-                            </td>
-                        </ng-container>
+        <div class="table-scroll">
+            <table mat-table [dataSource]="billableMetricstabledata" class="default-table responsive-table">
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                    <td mat-cell *matCellDef="let element" data-label="Name">
+                        <span class="font-semibold">{{ element.name }}</span>
+                    </td>
+                </ng-container>
 
-                        <!-- Code Column -->
-                        <ng-container matColumnDef="code">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
-                            <td mat-cell *matCellDef="let element" data-label="Code">
-                                <div class="flex items-center gap-1">
-                                    <span
-                                        class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)]"
-                                        >{{ element.code }}</span
-                                    >
-                                    <proxy-copy-button
-                                        [copyData]="element.code"
-                                        tooltip="Copy Code"
-                                    ></proxy-copy-button>
-                                </div>
-                            </td>
-                        </ng-container>
+                <!-- Code Column -->
+                <ng-container matColumnDef="code">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+                    <td mat-cell *matCellDef="let element" data-label="Code">
+                        <div class="flex items-center gap-1">
+                            <span
+                                class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)]"
+                                >{{ element.code }}</span
+                            >
+                            <proxy-copy-button [copyData]="element.code" tooltip="Copy Code"></proxy-copy-button>
+                        </div>
+                    </td>
+                </ng-container>
 
-                        <!-- Type Column -->
-                        <ng-container matColumnDef="type">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
-                            <td mat-cell *matCellDef="let element" data-label="Type">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-otp-primary-light)] [color:var(--color-otp-primary)]"
-                                >
-                                    {{ element.recurring ? 'Recurring' : 'Metered' }}
-                                </span>
-                            </td>
-                        </ng-container>
+                <!-- Type Column -->
+                <ng-container matColumnDef="type">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+                    <td mat-cell *matCellDef="let element" data-label="Type">
+                        <span
+                            class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-otp-primary-light)] [color:var(--color-otp-primary)]"
+                        >
+                            {{ element.recurring ? 'Recurring' : 'Metered' }}
+                        </span>
+                    </td>
+                </ng-container>
 
-                        <!-- Aggregation Column -->
-                        <ng-container matColumnDef="aggregation">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Aggregation</th>
-                            <td mat-cell *matCellDef="let element" data-label="Aggregation">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-common-chip-bg)]"
-                                >
-                                    {{ getAggregationLabel(element?.aggregation_type) }}
-                                </span>
-                            </td>
-                        </ng-container>
+                <!-- Aggregation Column -->
+                <ng-container matColumnDef="aggregation">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Aggregation</th>
+                    <td mat-cell *matCellDef="let element" data-label="Aggregation">
+                        <span
+                            class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-common-chip-bg)]"
+                        >
+                            {{ getAggregationLabel(element?.aggregation_type) }}
+                        </span>
+                    </td>
+                </ng-container>
 
-                        <ng-container matColumnDef="action">
-                            <th mat-header-cell *matHeaderCellDef class="!text-right">Action</th>
-                            <td mat-cell *matCellDef="let element; let i = index" data-label="Action">
-                                <div class="flex items-center justify-end gap-1 pr-3">
-                                    <button matIconButton (click)="editMetric(element, i)" matTooltip="Edit Metric">
-                                        <mat-icon class="material-icons-outlined mat-icon-18">edit</mat-icon>
-                                    </button>
-                                    <button matIconButton (click)="deleteMetric(i)" matTooltip="Delete Metric">
-                                        <mat-icon class="material-icons-outlined mat-icon-18">delete</mat-icon>
-                                    </button>
-                                </div>
-                            </td>
-                        </ng-container>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef class="!text-right">Action</th>
+                    <td mat-cell *matCellDef="let element; let i = index" data-label="Action">
+                        <div class="flex items-center justify-end gap-1 pr-3">
+                            <button matIconButton (click)="editMetric(element, i)" matTooltip="Edit Metric">
+                                <mat-icon class="material-icons-outlined mat-icon-18">edit</mat-icon>
+                            </button>
+                            <button matIconButton (click)="deleteMetric(i)" matTooltip="Delete Metric">
+                                <mat-icon class="material-icons-outlined mat-icon-18">delete</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
 
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover-action"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover-action"></tr>
 
-                        <tr *matNoDataRow>
-                            <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
-                                <proxy-no-record-found [title]="'metrics'" [showBtn]="false"></proxy-no-record-found>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </mat-card-content>
-        </mat-card>
+                <tr *matNoDataRow>
+                    <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
+                        <proxy-no-record-found [title]="'metrics'" [showBtn]="false"></proxy-no-record-found>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </ng-template>
 
@@ -1622,113 +1615,96 @@
             }
         </div>
 
-        <mat-card class="w-full outline-card responsive-card grow p-0">
-            <mat-card-content>
-                <div class="table-scroll">
-                    <table mat-table [dataSource]="createdPlanData" class="default-table responsive-table">
-                        <!-- Name Column -->
-                        <ng-container matColumnDef="planName">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-                            <td mat-cell *matCellDef="let element" data-label="Name">
-                                <span class="font-semibold">{{ element.name }}</span>
-                            </td>
-                        </ng-container>
+        <div class="table-scroll">
+            <table mat-table [dataSource]="createdPlanData" class="default-table responsive-table">
+                <!-- Name Column -->
+                <ng-container matColumnDef="planName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                    <td mat-cell *matCellDef="let element" data-label="Name">
+                        <span class="font-semibold">{{ element.name }}</span>
+                    </td>
+                </ng-container>
 
-                        <!-- Code Column -->
-                        <ng-container matColumnDef="code">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
-                            <td mat-cell *matCellDef="let element" data-label="Code">
-                                <div class="flex items-center gap-1">
-                                    <span
-                                        class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)]"
-                                        >{{ element.code }}</span
-                                    >
-                                    <proxy-copy-button
-                                        [copyData]="element.code"
-                                        tooltip="Copy Code"
-                                    ></proxy-copy-button>
-                                </div>
-                            </td>
-                        </ng-container>
+                <!-- Code Column -->
+                <ng-container matColumnDef="code">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+                    <td mat-cell *matCellDef="let element" data-label="Code">
+                        <div class="flex items-center gap-1">
+                            <span
+                                class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)]"
+                                >{{ element.code }}</span
+                            >
+                            <proxy-copy-button [copyData]="element.code" tooltip="Copy Code"></proxy-copy-button>
+                        </div>
+                    </td>
+                </ng-container>
 
-                        <!-- Billing Period Column -->
-                        <ng-container matColumnDef="billingPeriod">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Billing Period</th>
-                            <td mat-cell *matCellDef="let element" data-label="Billing Period">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-whatsApp-primary-light)] [color:var(--color-whatsApp-primary)]"
-                                >
-                                    {{ element.interval }}
-                                </span>
-                            </td>
-                        </ng-container>
+                <!-- Billing Period Column -->
+                <ng-container matColumnDef="billingPeriod">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Billing Period</th>
+                    <td mat-cell *matCellDef="let element" data-label="Billing Period">
+                        <span
+                            class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-whatsApp-primary-light)] [color:var(--color-whatsApp-primary)]"
+                        >
+                            {{ element.interval }}
+                        </span>
+                    </td>
+                </ng-container>
 
-                        <!-- Price Column -->
-                        <ng-container matColumnDef="price">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-                            <td mat-cell *matCellDef="let element" data-label="Price">
-                                <span class="font-semibold tabular-nums">{{ element.amount_cents / 100 }}</span>
-                            </td>
-                        </ng-container>
+                <!-- Price Column -->
+                <ng-container matColumnDef="price">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+                    <td mat-cell *matCellDef="let element" data-label="Price">
+                        <span class="font-semibold tabular-nums">{{ element.amount_cents / 100 }}</span>
+                    </td>
+                </ng-container>
 
-                        <ng-container matColumnDef="currency">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency</th>
-                            <td mat-cell *matCellDef="let element" data-label="Currency">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium uppercase [background-color:var(--color-common-chip-bg)]"
-                                >
-                                    {{ element.amount_currency }}
-                                </span>
-                            </td>
-                        </ng-container>
+                <ng-container matColumnDef="currency">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency</th>
+                    <td mat-cell *matCellDef="let element" data-label="Currency">
+                        <span
+                            class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium uppercase [background-color:var(--color-common-chip-bg)]"
+                        >
+                            {{ element.amount_currency }}
+                        </span>
+                    </td>
+                </ng-container>
 
-                        <ng-container matColumnDef="status">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-                            <td mat-cell *matCellDef="let element" data-label="Status">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-common-chip-bg)]"
-                                >
-                                    {{ getAggregationLabel(element?.aggregation_type) }}
-                                </span>
-                            </td>
-                        </ng-container>
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                    <td mat-cell *matCellDef="let element" data-label="Status">
+                        <span
+                            class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-medium [background-color:var(--color-common-chip-bg)]"
+                        >
+                            {{ getAggregationLabel(element?.aggregation_type) }}
+                        </span>
+                    </td>
+                </ng-container>
 
-                        <ng-container matColumnDef="action">
-                            <th mat-header-cell *matHeaderCellDef class="!text-right">Action</th>
-                            <td mat-cell *matCellDef="let element" data-label="Action">
-                                <div class="flex items-center justify-end gap-1 pr-3">
-                                    <button
-                                        type="button"
-                                        matIconButton
-                                        (click)="editPlan(element)"
-                                        matTooltip="Edit Plan"
-                                    >
-                                        <mat-icon class="material-icons-outlined mat-icon-18">edit</mat-icon>
-                                    </button>
-                                    <button
-                                        type="button"
-                                        matIconButton
-                                        (click)="deletePlan(element)"
-                                        matTooltip="Delete Plan"
-                                    >
-                                        <mat-icon class="material-icons-outlined mat-icon-18">delete</mat-icon>
-                                    </button>
-                                </div>
-                            </td>
-                        </ng-container>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef class="!text-right">Action</th>
+                    <td mat-cell *matCellDef="let element" data-label="Action">
+                        <div class="flex items-center justify-end gap-1 pr-3">
+                            <button type="button" matIconButton (click)="editPlan(element)" matTooltip="Edit Plan">
+                                <mat-icon class="material-icons-outlined mat-icon-18">edit</mat-icon>
+                            </button>
+                            <button type="button" matIconButton (click)="deletePlan(element)" matTooltip="Delete Plan">
+                                <mat-icon class="material-icons-outlined mat-icon-18">delete</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
 
-                        <tr mat-header-row *matHeaderRowDef="plansOverviewColumns; sticky: true"></tr>
-                        <tr mat-row *matRowDef="let row; columns: plansOverviewColumns" class="hover-action"></tr>
+                <tr mat-header-row *matHeaderRowDef="plansOverviewColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: plansOverviewColumns" class="hover-action"></tr>
 
-                        <tr *matNoDataRow>
-                            <td class="mat-cell border-0" [attr.colspan]="plansOverviewColumns.length">
-                                <proxy-no-record-found [title]="'plans'" [showBtn]="false"></proxy-no-record-found>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </mat-card-content>
-        </mat-card>
+                <tr *matNoDataRow>
+                    <td class="mat-cell border-0" [attr.colspan]="plansOverviewColumns.length">
+                        <proxy-no-record-found [title]="'plans'" [showBtn]="false"></proxy-no-record-found>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </ng-template>
 
@@ -1741,59 +1717,50 @@
             </button>
         </div>
 
-        <mat-card class="w-full outline-card responsive-card p-0">
-            <mat-card-content>
-                <div class="table-scroll">
-                    <table mat-table [dataSource]="taxesData" class="default-table responsive-table">
-                        <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef>Name</th>
-                            <td mat-cell *matCellDef="let tax" data-label="Name">
-                                <span class="font-semibold">{{ tax.name }}</span>
-                            </td>
-                        </ng-container>
-                        <ng-container matColumnDef="code">
-                            <th mat-header-cell *matHeaderCellDef>Code</th>
-                            <td mat-cell *matCellDef="let tax" data-label="Code">
-                                <span
-                                    class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)]"
-                                    >{{ tax.code }}</span
-                                >
-                            </td>
-                        </ng-container>
-                        <ng-container matColumnDef="rate">
-                            <th mat-header-cell *matHeaderCellDef>Rate (%)</th>
-                            <td mat-cell *matCellDef="let tax" data-label="Rate">
-                                <span class="font-semibold tabular-nums"
-                                    >{{ tax.rate }}<span class="text-xs ml-0.5">%</span></span
-                                >
-                            </td>
-                        </ng-container>
-                        <ng-container matColumnDef="action">
-                            <th mat-header-cell *matHeaderCellDef class="!text-right">Action</th>
-                            <td mat-cell *matCellDef="let tax" data-label="Action">
-                                <div class="flex items-center justify-end pr-3">
-                                    <button
-                                        type="button"
-                                        matIconButton
-                                        (click)="deleteTax(tax)"
-                                        matTooltip="Delete Tax"
-                                    >
-                                        <mat-icon class="material-icons-outlined mat-icon-18">delete</mat-icon>
-                                    </button>
-                                </div>
-                            </td>
-                        </ng-container>
-                        <tr mat-header-row *matHeaderRowDef="taxesDisplayedColumns; sticky: true"></tr>
-                        <tr mat-row *matRowDef="let row; columns: taxesDisplayedColumns" class="hover-action"></tr>
-                        <tr *matNoDataRow>
-                            <td class="mat-cell border-0" [attr.colspan]="taxesDisplayedColumns.length">
-                                <proxy-no-record-found [title]="'taxes'" [showBtn]="false"></proxy-no-record-found>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </mat-card-content>
-        </mat-card>
+        <div class="table-scroll">
+            <table mat-table [dataSource]="taxesData" class="default-table responsive-table">
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <td mat-cell *matCellDef="let tax" data-label="Name">
+                        <span class="font-semibold">{{ tax.name }}</span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="code">
+                    <th mat-header-cell *matHeaderCellDef>Code</th>
+                    <td mat-cell *matCellDef="let tax" data-label="Code">
+                        <span
+                            class="font-mono text-xs px-2 py-0.5 rounded-4 [background-color:var(--color-common-chip-bg)]"
+                            >{{ tax.code }}</span
+                        >
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="rate">
+                    <th mat-header-cell *matHeaderCellDef>Rate (%)</th>
+                    <td mat-cell *matCellDef="let tax" data-label="Rate">
+                        <span class="font-semibold tabular-nums"
+                            >{{ tax.rate }}<span class="text-xs ml-0.5">%</span></span
+                        >
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef class="!text-right">Action</th>
+                    <td mat-cell *matCellDef="let tax" data-label="Action">
+                        <div class="flex items-center justify-end pr-3">
+                            <button type="button" matIconButton (click)="deleteTax(tax)" matTooltip="Delete Tax">
+                                <mat-icon class="material-icons-outlined mat-icon-18">delete</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="taxesDisplayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: taxesDisplayedColumns" class="hover-action"></tr>
+                <tr *matNoDataRow>
+                    <td class="mat-cell border-0" [attr.colspan]="taxesDisplayedColumns.length">
+                        <proxy-no-record-found [title]="'taxes'" [showBtn]="false"></proxy-no-record-found>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </ng-template>
 

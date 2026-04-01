@@ -41,6 +41,16 @@ export class RootEffects {
                             this.showError(res.errors);
                             return rootActions.getAllClientsError();
                         }
+                        console.log(res.data?.data);
+                        const data = [
+                            ...(res.data?.data || []),
+                            ...(res.data?.data || []),
+                            ...(res.data?.data || []),
+                            ...(res.data?.data || []),
+                            ...(res.data?.data || []),
+                            ...(res.data?.data || []),
+                        ];
+                        res.data['data'] = data.map((i, indx) => ({ ...i, id: i.id + indx }));
                         return rootActions.getAllClientsSuccess({ response: res.data });
                     }),
                     catchError((err) => {
