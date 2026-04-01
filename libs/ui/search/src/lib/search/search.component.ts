@@ -33,7 +33,7 @@ import { debounceTime } from 'rxjs/operators';
         RemoveCharacterDirective,
     ],
     templateUrl: './search.component.html',
-    styleUrls: ['./search.component.scss'],
+    styles: ``,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchComponent implements OnInit {

@@ -26,7 +26,9 @@
                     }
                 </div>
                 } @else {
-                <mat-icon class="mat-icon-22">apps</mat-icon>
+                <mat-icon class="mat-icon-22" [matTooltip]="clientSettings?.client?.name" matTooltipPosition="right"
+                    >apps</mat-icon
+                >
                 }
             </div>
             <mat-menu #clientsMenu="matMenu" class="w-[240px]" xPosition="after">
