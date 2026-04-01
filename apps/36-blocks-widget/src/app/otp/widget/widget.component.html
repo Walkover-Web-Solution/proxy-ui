@@ -14,15 +14,13 @@
         [include_role_ids]="include_role_ids"
     ></user-management>
     } @case (PublicScriptType.Subscription) {
-    <div [class.subscription-dialog]="isPreview">
-        <proxy-subscription-center
-            [referenceId]="referenceId"
-            [isPreview]="isPreview"
-            [isLogin]="isLogin"
-            [loginRedirectUrl]="loginRedirectUrl"
-            (togglePopUp)="handleSubscriptionToggle($event)"
-        ></proxy-subscription-center>
-    </div>
+    <proxy-subscription-center
+        [referenceId]="referenceId"
+        [isPreview]="isPreview"
+        [isLogin]="isLogin"
+        [loginRedirectUrl]="loginRedirectUrl"
+        (togglePopUp)="handleSubscriptionToggle($event)"
+    ></proxy-subscription-center>
     } @case (PublicScriptType.OrganizationDetails) {
     <organization-details [authToken]="authToken" [theme]="theme"></organization-details>
     } @case (PublicScriptType.UserProfile) {
@@ -38,6 +36,7 @@
         }
         <authorization
             [referenceId]="referenceId"
+            [isPreview]="isPreview"
             [serviceData]="otpWidgetData"
             [target]="target"
             [version]="version"

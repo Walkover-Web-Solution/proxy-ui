@@ -22,7 +22,7 @@ const AUTH_TOKEN =
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     private readonly themeService = inject(WidgetThemeService);
 
-    protected readonly showAuthentication: boolean = true;
+    protected readonly showAuthentication: boolean = false;
     protected readonly referenceId: string = REFERENCE_ID;
     protected readonly theme: WidgetTheme = THEME;
     protected readonly authToken: string = AUTH_TOKEN;
@@ -82,7 +82,6 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
             if (THEME) {
                 widgetConfig['theme'] = THEME;
             }
-            console.log('widgetConfig', widgetConfig);
             window.initVerification(widgetConfig);
         }
     }
