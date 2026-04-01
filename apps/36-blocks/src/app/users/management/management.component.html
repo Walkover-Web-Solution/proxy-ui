@@ -1,9 +1,39 @@
 <div class="h-full flex flex-col gap-6">
-    <!-- Block Selector Header -->
+    @if (!roleForm.get('feature_id')?.value) {
+    <!-- Empty state: centered block selector -->
+    <div class="flex-1 flex flex-col items-center justify-center gap-5 text-center">
+        <div
+            class="flex items-center justify-center w-16 h-16 rounded-full"
+            style="background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent)"
+        >
+            <mat-icon class="mat-icon-36 material-icons-outlined" style="color: var(--mat-sys-primary)"
+                >featured_play_list</mat-icon
+            >
+        </div>
+        <div>
+            <p class="font-semibold text-base m-0 mb-1">Select a Block to get started</p>
+            <p class="text-sm secondary-text-color m-0">
+                Choose a block from the dropdown below to manage its roles, permissions, and settings.
+            </p>
+        </div>
+        <mat-form-field appearance="outline" class="no-padding w-72">
+            <mat-label>Block</mat-label>
+            <mat-select [formControl]="roleForm.get('feature_id')" placeholder="Select Block">
+                @for (feature of features; track feature.reference_id) {
+                <mat-option [value]="feature.reference_id">{{ feature.name }}</mat-option>
+                }
+            </mat-select>
+            @if (roleForm.get('feature_id')?.hasError('required')) {
+            <mat-error>Block is required</mat-error>
+            }
+        </mat-form-field>
+    </div>
+    } @else {
+    <!-- Block Selector Header (when a block is selected) -->
     <div class="flex flex-wrap items-center gap-4">
-        <mat-form-field appearance="outline" class="no-padding w-xs-100 mt-6">
-            <mat-label>Select Block</mat-label>
-            <mat-select [formControl]="roleForm.get('feature_id')">
+        <mat-form-field appearance="outline" class="no-padding w-full mt-6">
+            <mat-label>Block</mat-label>
+            <mat-select [formControl]="roleForm.get('feature_id')" placeholder="Select Block">
                 @for (feature of features; track feature.reference_id) {
                 <mat-option [value]="feature.reference_id">{{ feature.name }}</mat-option>
                 }
@@ -14,20 +44,15 @@
         </mat-form-field>
     </div>
 
-    @if (roleForm.get('feature_id')?.value) {
     <!-- Main Content Area -->
     <div class="flex max-md:flex-col gap-6 grow min-h-[400px] overflow-hidden">
         <!-- Sidebar Nav -->
-        <mat-card class="w-[200px] shrink-0 self-start max-md:w-full">
-            <mat-card-header> Settings </mat-card-header>
-            <mat-card-content class="!p-2">
-                <proxy-service-list
-                    [services]="managementSections"
-                    [selectedIndex]="selectedSectionIndex"
-                    (serviceSelect)="selectedSectionIndex = $event"
-                ></proxy-service-list>
-            </mat-card-content>
-        </mat-card>
+        <proxy-service-list
+            class="w-[200px] shrink-0 self-start max-md:w-full"
+            [services]="managementSections"
+            [selectedIndex]="selectedSectionIndex"
+            (serviceSelect)="selectedSectionIndex = $event"
+        ></proxy-service-list>
 
         <!-- Content Panel -->
         <div class="grow">

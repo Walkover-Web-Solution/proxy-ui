@@ -558,17 +558,13 @@
 <ng-template #configureMethodTemplate let-selectedIndex="selectedIndex">
     <div class="flex gap-4 my-6 grow min-h-[400px] max-lg:flex-col">
         <div class="max-xl:flex-col flex gap-4 grow">
-            <mat-card class="shrink-0 self-start max-xl:w-full">
-                <mat-card-header> Services </mat-card-header>
-                <mat-card-content class="!p-2">
-                    <proxy-service-list
-                        [services]="(selectedMethod | async)?.method_services ?? []"
-                        [selectedIndex]="selectedServiceIndex"
-                        [getFormAt]="getServiceFormAt"
-                        (serviceSelect)="selectedServiceIndex = $event"
-                    ></proxy-service-list>
-                </mat-card-content>
-            </mat-card>
+            <proxy-service-list
+                class="shrink-0 self-start max-xl:w-full"
+                [services]="getServiceListItems((selectedMethod | async)?.method_services ?? [])"
+                [selectedIndex]="selectedServiceIndex"
+                [getFormAt]="getServiceFormAt"
+                (serviceSelect)="selectedServiceIndex = $event"
+            ></proxy-service-list>
             <ng-container *ngTemplateOutlet="configureMethodFormContent"></ng-container>
         </div>
         @if (isEditMode) {

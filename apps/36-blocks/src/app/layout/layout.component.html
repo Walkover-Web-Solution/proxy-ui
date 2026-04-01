@@ -1,20 +1,24 @@
-<div class="flex w-full h-full" [class.collapsed-sidebar]="!isSideNavOpen()">
+<div class="flex w-full h-full" [class.collapsed-sidebar]="!sideNavService.isSideNavOpen()">
     <div
         class="flex flex-col transition-all duration-200 mat-drawer-content max-desktop:fixed max-desktop:z-[999] max-desktop:top-0 max-desktop:bottom-0 bg-color p-2"
-        [class.mat-drawer-toggle-btn-hover]="isSideNavOpen()"
-        [class]="!isSideNavOpen() ? 'overflow-hidden !w-[56px] p-1.5' : 'w-[246px]'"
+        [class.mat-drawer-toggle-btn-hover]="sideNavService.isSideNavOpen()"
+        [class]="!sideNavService.isSideNavOpen() ? 'overflow-hidden !w-[56px] p-1.5' : 'w-[246px]'"
     >
         @let clientSettings = clientSettings$ | async; @let clientList = clients$ | async; @let isMultipleClients =
         (clientList?.data?.length ?? 0) > 1;
-        <div class="flex items-center pt-2" [class.flex-col]="!isSideNavOpen()" [class.gap-2]="!isSideNavOpen()">
+        <div
+            class="flex items-center pt-2"
+            [class.flex-col]="!sideNavService.isSideNavOpen()"
+            [class.gap-2]="!sideNavService.isSideNavOpen()"
+        >
             <div
                 class="flex items-center grow gap-2 mat-drawer-header-title pr-2"
                 #clientsMenuTrigger="matMenuTrigger"
                 [matMenuTriggerFor]="isMultipleClients ? clientsMenu : null"
-                [class.pl-2]="!isSideNavOpen()"
-                [class.pl-4]="isSideNavOpen()"
+                [class.pl-2]="!sideNavService.isSideNavOpen()"
+                [class.pl-4]="sideNavService.isSideNavOpen()"
             >
-                @if (isSideNavOpen()) {
+                @if (sideNavService.isSideNavOpen()) {
                 <div class="flex items-center gap-x-1 mat-drawer-header-subtitle cursor-pointer">
                     <span class="font-16 font-semibold max-w-[162px] overflow-hidden whitespace-nowrap text-ellipsis">
                         {{ clientSettings?.client?.name }}
@@ -55,24 +59,24 @@
                 matIconButton
                 class="sidebar-toggle-btn"
                 (click)="toggleSideBarEvent()"
-                [matTooltip]="isSideNavOpen() ? 'Collapse Menu' : 'Expand Menu'"
+                [matTooltip]="sideNavService.isSideNavOpen() ? 'Collapse Menu' : 'Expand Menu'"
                 matTooltipPosition="right"
                 type="button"
             >
                 <mat-icon>{{
-                    isSideNavOpen() ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
+                    sideNavService.isSideNavOpen() ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
                 }}</mat-icon>
             </button>
         </div>
         <!-- Proxy Sidenav::START -->
         <proxy-main-left-side-nav
             class="mat-drawer-nav proxy-left-menu"
-            [isSideNavOpen]="!isSideNavOpen()"
+            [isSideNavOpen]="!sideNavService.isSideNavOpen()"
         ></proxy-main-left-side-nav>
         <!-- Proxy Sidenav::END -->
         @if (logInData$ | async; as user) {
         <div class="mt-auto">
-            @if (isSideNavOpen()) {
+            @if (sideNavService.isSideNavOpen()) {
             <button
                 class="!rounded-lg !p-0 w-full"
                 matButton
@@ -84,7 +88,7 @@
                     <div class="flex items-center gap-2">
                         <ng-container *ngTemplateOutlet="displayPicture; context: { user: user }"></ng-container>
                         <h6
-                            [class.hidden]="!isSideNavOpen()"
+                            [class.hidden]="!sideNavService.isSideNavOpen()"
                             class="username m-0 max-w-[162px] overflow-hidden whitespace-nowrap text-ellipsis"
                         >
                             {{ user.displayName }}
