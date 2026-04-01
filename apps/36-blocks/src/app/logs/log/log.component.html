@@ -3,7 +3,7 @@
     <proxy-loader></proxy-loader>
     }
     <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <form [formGroup]="engProjectFormGroup" class="flex flex-wrap items-center grow gap-4">
+        <form [formGroup]="engProjectFormGroup" class="flex flex-wrap items-start grow gap-4">
             <mat-form-field appearance="outline" class="no-padding w-xs-100">
                 <mat-label>Select Project</mat-label>
                 <input
@@ -66,11 +66,11 @@
                 <mat-icon matSuffix>arrow_drop_down</mat-icon>
             </mat-form-field>
             <proxy-lib-search
-                [matFormFieldClass]="'no-padding w-xs-100'"
+                [matFormFieldClass]="'w-xs-100 w-100'"
                 [placeholder]="'Hit Enter to Search'"
                 (inputChanges)="onEnter($event)"
                 [emitOnEnter]="true"
-                hint="To search in specific field use <b>field:</b> before anything (field => endpoint,request_body,response,headers)"
+                hint="Use field: to search specific fields (endpoint, request_body, response, headers)."
             ></proxy-lib-search>
         </form>
         <div class="flex items-center gap-4 ml-auto flex-wrap">
