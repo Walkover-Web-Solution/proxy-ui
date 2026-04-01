@@ -63,165 +63,154 @@
                     </button>
                 </div>
             </div>
-            <mat-card class="p-0 outline-card responsive-card grow">
-                <mat-card-content>
-                    <div class="table-scroll">
-                        <table
-                            mat-table
-                            [dataSource]="
-                                (users$ | async)?.data?.length
-                                    ? (users$ | async)?.data
-                                    : loading.dataLoading
-                                    ? [1, 2, 3, 4]
-                                    : []
-                            "
-                            class="default-table responsive-table"
-                        >
-                            <!-- Name Column -->
-                            <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
-                                <td mat-cell *matCellDef="let element" data-label="Name">
-                                    @if (!loading.dataLoading) {
-                                    <span>{{ element.name }}</span>
-                                    } @else {
-                                    <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
-                                    }
-                                </td>
-                            </ng-container>
+            <div class="table-scroll">
+                <table
+                    mat-table
+                    [dataSource]="
+                        (users$ | async)?.data?.length
+                            ? (users$ | async)?.data
+                            : loading.dataLoading
+                            ? [1, 2, 3, 4]
+                            : []
+                    "
+                    class="default-table responsive-table"
+                >
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
+                        <td mat-cell *matCellDef="let element" data-label="Name">
+                            @if (!loading.dataLoading) {
+                            <span>{{ element.name }}</span>
+                            } @else {
+                            <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
+                            }
+                        </td>
+                    </ng-container>
 
-                            <!-- Email Column -->
-                            <ng-container matColumnDef="email">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Email</th>
-                                <td mat-cell *matCellDef="let element" data-label="Email">
-                                    @if (!loading.dataLoading) {
-                                    <span class="text-sm">{{ element.email }}</span>
-                                    } @else {
-                                    <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
-                                    }
-                                </td>
-                            </ng-container>
+                    <!-- Email Column -->
+                    <ng-container matColumnDef="email">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Email</th>
+                        <td mat-cell *matCellDef="let element" data-label="Email">
+                            @if (!loading.dataLoading) {
+                            <span class="text-sm">{{ element.email }}</span>
+                            } @else {
+                            <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
+                            }
+                        </td>
+                    </ng-container>
 
-                            <!-- Phone Number Column -->
-                            <ng-container matColumnDef="phone_number">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone Number</th>
-                                <td mat-cell *matCellDef="let element" data-label="Phone Number">
-                                    @if (!loading.dataLoading) {
-                                    <span class="text-sm">{{ element.mobile ?? '-' }}</span>
-                                    } @else {
-                                    <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
-                                    }
-                                </td>
-                            </ng-container>
+                    <!-- Phone Number Column -->
+                    <ng-container matColumnDef="phone_number">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone Number</th>
+                        <td mat-cell *matCellDef="let element" data-label="Phone Number">
+                            @if (!loading.dataLoading) {
+                            <span class="text-sm">{{ element.mobile ?? '-' }}</span>
+                            } @else {
+                            <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
+                            }
+                        </td>
+                    </ng-container>
 
-                            <!-- User ID Column -->
-                            <ng-container matColumnDef="user_id">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>User ID</th>
-                                <td mat-cell *matCellDef="let element" data-label="User ID">
-                                    @if (!loading.dataLoading) {
-                                    <div class="flex items-center gap-2">
-                                        <span
-                                            [matTooltip]="element?.id"
-                                            matTooltipPosition="above"
-                                            class="cursor-pointer font-mono text-xs px-2 py-0.5 rounded-4 min-w-[120px]"
-                                        >
-                                            {{
-                                                element?.id?.length > 15
-                                                    ? (element?.id | slice: 0:10) + '...' + (element?.id | slice: -5)
-                                                    : element?.id
-                                            }}
-                                        </span>
-                                        <proxy-copy-button
-                                            [copyData]="element?.id"
-                                            tooltip="Copy User ID"
-                                        ></proxy-copy-button>
-                                    </div>
-                                    } @else {
-                                    <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
-                                    }
-                                </td>
-                            </ng-container>
+                    <!-- User ID Column -->
+                    <ng-container matColumnDef="user_id">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>User ID</th>
+                        <td mat-cell *matCellDef="let element" data-label="User ID">
+                            @if (!loading.dataLoading) {
+                            <div class="flex items-center gap-2">
+                                <span
+                                    [matTooltip]="element?.id"
+                                    matTooltipPosition="above"
+                                    class="cursor-pointer font-mono text-xs px-2 py-0.5 rounded-4 min-w-[120px]"
+                                >
+                                    {{
+                                        element?.id?.length > 15
+                                            ? (element?.id | slice: 0:10) + '...' + (element?.id | slice: -5)
+                                            : element?.id
+                                    }}
+                                </span>
+                                <proxy-copy-button [copyData]="element?.id" tooltip="Copy User ID"></proxy-copy-button>
+                            </div>
+                            } @else {
+                            <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
+                            }
+                        </td>
+                    </ng-container>
 
-                            <!-- Block Name Column -->
-                            <ng-container matColumnDef="block_name">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Block Name</th>
-                                <td mat-cell *matCellDef="let element" data-label="Block Name">
-                                    @if (!loading.dataLoading) { @if (element?.feature_configuration?.name) {
-                                    {{ element.feature_configuration.name }}
-                                    } @else {
-                                    <span class="text-sm secondary-text-color">-</span>
-                                    } } @else {
-                                    <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
-                                    }
-                                </td>
-                            </ng-container>
+                    <!-- Block Name Column -->
+                    <ng-container matColumnDef="block_name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Block Name</th>
+                        <td mat-cell *matCellDef="let element" data-label="Block Name">
+                            @if (!loading.dataLoading) { @if (element?.feature_configuration?.name) {
+                            {{ element.feature_configuration.name }}
+                            } @else {
+                            <span class="text-sm secondary-text-color">-</span>
+                            } } @else {
+                            <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
+                            }
+                        </td>
+                    </ng-container>
 
-                            <!-- Last Login Column -->
-                            <ng-container matColumnDef="last_login">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Login</th>
-                                <td mat-cell *matCellDef="let element" data-label="Last Login">
-                                    @if (!loading.dataLoading) { @if (element?.last_login_at) {
-                                    <div class="flex flex-col gap-0.5">
-                                        <span class="text-sm text-color">{{
-                                            element.last_login_at | date: 'd MMM y'
-                                        }}</span>
-                                        <span class="text-xs secondary-text-color">{{
-                                            element.last_login_at | date: 'mediumTime'
-                                        }}</span>
-                                    </div>
-                                    } @else {
-                                    <span class="text-sm secondary-text-color">-</span>
-                                    } } @else {
-                                    <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
-                                    }
-                                </td>
-                            </ng-container>
+                    <!-- Last Login Column -->
+                    <ng-container matColumnDef="last_login">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Login</th>
+                        <td mat-cell *matCellDef="let element" data-label="Last Login">
+                            @if (!loading.dataLoading) { @if (element?.last_login_at) {
+                            <div class="flex flex-col gap-0.5">
+                                <span class="text-sm text-color">{{ element.last_login_at | date: 'd MMM y' }}</span>
+                                <span class="text-xs secondary-text-color">{{
+                                    element.last_login_at | date: 'mediumTime'
+                                }}</span>
+                            </div>
+                            } @else {
+                            <span class="text-sm secondary-text-color">-</span>
+                            } } @else {
+                            <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
+                            }
+                        </td>
+                    </ng-container>
 
-                            <!-- Created At Column -->
-                            <ng-container matColumnDef="created_at">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Created At</th>
-                                <td mat-cell *matCellDef="let element" data-label="Created At">
-                                    @if (!loading.dataLoading) { @if (element?.created_at) {
-                                    <div class="flex flex-col gap-0.5">
-                                        <span class="text-sm text-color">{{
-                                            element.created_at | date: 'd MMM y'
-                                        }}</span>
-                                        <span class="text-xs secondary-text-color">{{
-                                            element.created_at | date: 'mediumTime'
-                                        }}</span>
-                                    </div>
-                                    } @else {
-                                    <span class="text-sm secondary-text-color">-</span>
-                                    } } @else {
-                                    <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
-                                    }
-                                </td>
-                            </ng-container>
+                    <!-- Created At Column -->
+                    <ng-container matColumnDef="created_at">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Created At</th>
+                        <td mat-cell *matCellDef="let element" data-label="Created At">
+                            @if (!loading.dataLoading) { @if (element?.created_at) {
+                            <div class="flex flex-col gap-0.5">
+                                <span class="text-sm text-color">{{ element.created_at | date: 'd MMM y' }}</span>
+                                <span class="text-xs secondary-text-color">{{
+                                    element.created_at | date: 'mediumTime'
+                                }}</span>
+                            </div>
+                            } @else {
+                            <span class="text-sm secondary-text-color">-</span>
+                            } } @else {
+                            <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
+                            }
+                        </td>
+                    </ng-container>
 
-                            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                            <tr
-                                mat-row
-                                *matRowDef="let row; columns: displayedColumns; let i = index"
-                                class="hover-action"
-                                [class.last-child]="i + 1 === ((users$ | async)?.itemsPerPage || 25)"
-                            ></tr>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                    <tr
+                        mat-row
+                        *matRowDef="let row; columns: displayedColumns; let i = index"
+                        class="hover-action"
+                        [class.last-child]="i + 1 === ((users$ | async)?.itemsPerPage || 25)"
+                    ></tr>
 
-                            <tr *matNoDataRow>
-                                <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
-                                    <proxy-no-record-found [title]="'users'" [showBtn]="false"></proxy-no-record-found>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <mat-paginator-goto
-                        [length]="(users$ | async)?.totalEntityCount"
-                        [pageSize]="(users$ | async)?.itemsPerPage || 25"
-                        [pageSizeOptions]="pageSizeOptions"
-                        (page)="pageChange($event)"
-                        [pageIndex]="(users$ | async)?.pageNumber - 1"
-                        class="box-shadow-none"
-                    ></mat-paginator-goto>
-                </mat-card-content>
-            </mat-card>
+                    <tr *matNoDataRow>
+                        <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
+                            <proxy-no-record-found [title]="'users'" [showBtn]="false"></proxy-no-record-found>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <mat-paginator-goto
+                [length]="(users$ | async)?.totalEntityCount"
+                [pageSize]="(users$ | async)?.itemsPerPage || 25"
+                [pageSizeOptions]="pageSizeOptions"
+                (page)="pageChange($event)"
+                [pageIndex]="(users$ | async)?.pageNumber - 1"
+                class="box-shadow-none"
+            ></mat-paginator-goto>
         </mat-tab>
 
         <!-- Management Tab -->

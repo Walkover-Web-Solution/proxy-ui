@@ -1,6 +1,10 @@
 .table-scroll {
     overflow-x: auto;
     width: 100%;
+    @media screen and (min-width: 768px) {
+        border: 1px solid var(--color-common-border);
+        border-radius: var(--border-common-radius-4) var(--border-common-radius-4) 0 0;
+    }
 }
 
 .default-table {

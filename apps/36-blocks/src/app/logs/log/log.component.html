@@ -181,120 +181,117 @@
             </button>
         </div>
     </div>
-    <mat-card class="p-0 outline-card responsive-card">
-        <mat-card-content>
-            <div class="table-scroll">
-                <table
-                    mat-table
-                    [dataSource]="(logs$ | async)?.data"
-                    class="default-table responsive-table"
-                    matSort
-                    (matSortChange)="sortLogs($event)"
-                >
-                    <!-- Time Column -->
-                    <ng-container matColumnDef="created_at">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time</th>
-                        <td mat-cell *matCellDef="let element" data-label="Date/Time">
-                            <div class="flex flex-col gap-0.5">
-                                <span class="text-sm text-color">{{ element?.created_at | date: 'd MMM y' }}</span>
-                                <span class="text-xs text-grey">{{ element?.created_at | date: 'shortTime' }}</span>
-                            </div>
-                        </td>
-                    </ng-container>
 
-                    <!-- Project name Column -->
-                    <ng-container matColumnDef="project_name">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Project</th>
-                        <td mat-cell *matCellDef="let element" data-label="Project">
-                            <div class="flex flex-col gap-0.5">
-                                <span class="text-sm font-semibold text-color">{{ element.project_name }}</span>
-                                <span class="text-xs text-grey">{{ element.environment_name }}</span>
-                            </div>
-                        </td>
-                    </ng-container>
+    <div class="table-scroll">
+        <table
+            mat-table
+            [dataSource]="(logs$ | async)?.data"
+            class="default-table responsive-table"
+            matSort
+            (matSortChange)="sortLogs($event)"
+        >
+            <!-- Time Column -->
+            <ng-container matColumnDef="created_at">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time</th>
+                <td mat-cell *matCellDef="let element" data-label="Date/Time">
+                    <div class="flex flex-col gap-0.5">
+                        <span class="text-sm text-color">{{ element?.created_at | date: 'd MMM y' }}</span>
+                        <span class="text-xs text-grey">{{ element?.created_at | date: 'shortTime' }}</span>
+                    </div>
+                </td>
+            </ng-container>
 
-                    <!-- User IP Column -->
-                    <ng-container matColumnDef="user_ip">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>User IP</th>
-                        <td mat-cell *matCellDef="let element" data-label="User IP">
-                            <span class="font-mono text-xs px-2 py-0.5 rounded-4">{{ element.user_ip }}</span>
-                        </td>
-                    </ng-container>
+            <!-- Project name Column -->
+            <ng-container matColumnDef="project_name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Project</th>
+                <td mat-cell *matCellDef="let element" data-label="Project">
+                    <div class="flex flex-col gap-0.5">
+                        <span class="text-sm font-semibold text-color">{{ element.project_name }}</span>
+                        <span class="text-xs text-grey">{{ element.environment_name }}</span>
+                    </div>
+                </td>
+            </ng-container>
 
-                    <!-- Endpoint Column -->
-                    <ng-container matColumnDef="endpoint">
-                        <th mat-header-cell *matHeaderCellDef>Endpoint</th>
-                        <td mat-cell *matCellDef="let element" class="w-b-hyphens" data-label="Endpoint">
-                            <span class="font-mono text-xs">{{ element.endpoint }}</span>
-                        </td>
-                    </ng-container>
+            <!-- User IP Column -->
+            <ng-container matColumnDef="user_ip">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>User IP</th>
+                <td mat-cell *matCellDef="let element" data-label="User IP">
+                    <span class="font-mono text-xs px-2 py-0.5 rounded-4">{{ element.user_ip }}</span>
+                </td>
+            </ng-container>
 
-                    <!-- Request Type Column -->
-                    <ng-container matColumnDef="request_type">
-                        <th mat-header-cell *matHeaderCellDef>Method</th>
-                        <td mat-cell *matCellDef="let element" data-label="Method">
-                            @if (element.request_type) {
-                            <span
-                                class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-semibold uppercase tracking-wide"
-                                [class]="getMethodBadgeClass(element.request_type)"
-                                >{{ element.request_type }}</span
-                            >
-                            }
-                        </td>
-                    </ng-container>
+            <!-- Endpoint Column -->
+            <ng-container matColumnDef="endpoint">
+                <th mat-header-cell *matHeaderCellDef>Endpoint</th>
+                <td mat-cell *matCellDef="let element" class="w-b-hyphens" data-label="Endpoint">
+                    <span class="font-mono text-xs">{{ element.endpoint }}</span>
+                </td>
+            </ng-container>
 
-                    <!-- Status Code Column -->
-                    <ng-container matColumnDef="status_code">
-                        <th mat-header-cell *matHeaderCellDef>Status</th>
-                        <td mat-cell *matCellDef="let element" data-label="Status">
-                            @if (element.status_code) {
-                            <span
-                                class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-semibold tabular-nums"
-                                [class]="getStatusBadgeClass(element.status_code)"
-                                >{{ element.status_code }}</span
-                            >
-                            }
-                        </td>
-                    </ng-container>
+            <!-- Request Type Column -->
+            <ng-container matColumnDef="request_type">
+                <th mat-header-cell *matHeaderCellDef>Method</th>
+                <td mat-cell *matCellDef="let element" data-label="Method">
+                    @if (element.request_type) {
+                    <span
+                        class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-semibold uppercase tracking-wide"
+                        [class]="getMethodBadgeClass(element.request_type)"
+                        >{{ element.request_type }}</span
+                    >
+                    }
+                </td>
+            </ng-container>
 
-                    <!-- Response Time Column -->
-                    <ng-container matColumnDef="response_time">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Response time</th>
-                        <td mat-cell *matCellDef="let element" data-label="Response time">
-                            @if (element.response_time != null) {
-                            <span class="text-sm"
-                                >{{ element.response_time }}<span class="text-xs text-grey ml-0.5">ms</span></span
-                            >
-                            }
-                        </td>
-                    </ng-container>
+            <!-- Status Code Column -->
+            <ng-container matColumnDef="status_code">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let element" data-label="Status">
+                    @if (element.status_code) {
+                    <span
+                        class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-semibold tabular-nums"
+                        [class]="getStatusBadgeClass(element.status_code)"
+                        >{{ element.status_code }}</span
+                    >
+                    }
+                </td>
+            </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                    <tr
-                        mat-row
-                        *matRowDef="let row; columns: displayedColumns; let i = index"
-                        (click)="viewLogsDetails(row?._id)"
-                        class="cursor-pointer"
-                        [class.highlight]="(reqLogs$ | async)?.id === row._id"
-                        [class.last-child]="i + 1 === pageSizeOptions[0]"
-                        title="Click here to view logs details"
-                    ></tr>
+            <!-- Response Time Column -->
+            <ng-container matColumnDef="response_time">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Response time</th>
+                <td mat-cell *matCellDef="let element" data-label="Response time">
+                    @if (element.response_time != null) {
+                    <span class="text-sm"
+                        >{{ element.response_time }}<span class="text-xs text-grey ml-0.5">ms</span></span
+                    >
+                    }
+                </td>
+            </ng-container>
 
-                    <tr *matNoDataRow>
-                        <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
-                            <proxy-no-record-found [title]="'logs'" [showBtn]="false"></proxy-no-record-found>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <mat-paginator-goto
-                [length]="(logs$ | async)?.totalEntityCount"
-                [pageSize]="(logs$ | async)?.itemsPerPage || 25"
-                [pageSizeOptions]="pageSizeOptions"
-                (page)="pageChange($event)"
-                [pageIndex]="(logs$ | async)?.pageNumber - 1"
-                class="box-shadow-none"
-            ></mat-paginator-goto>
-        </mat-card-content>
-    </mat-card>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr
+                mat-row
+                *matRowDef="let row; columns: displayedColumns; let i = index"
+                (click)="viewLogsDetails(row?._id)"
+                class="cursor-pointer"
+                [class.highlight]="(reqLogs$ | async)?.id === row._id"
+                [class.last-child]="i + 1 === pageSizeOptions[0]"
+                title="Click here to view logs details"
+            ></tr>
+
+            <tr *matNoDataRow>
+                <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
+                    <proxy-no-record-found [title]="'logs'" [showBtn]="false"></proxy-no-record-found>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <mat-paginator-goto
+        [length]="(logs$ | async)?.totalEntityCount"
+        [pageSize]="(logs$ | async)?.itemsPerPage || 25"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="pageChange($event)"
+        [pageIndex]="(logs$ | async)?.pageNumber - 1"
+        class="box-shadow-none"
+    ></mat-paginator-goto>
 </div>
