@@ -40,6 +40,7 @@ import { IPaginatedResponse } from '@proxy/models/root-models';
 import { UserComponentStore } from '../user/user.store';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PROXY_DOM_ID } from '@proxy/constant';
+import { MatChipsModule } from '@angular/material/chips';
 
 interface IRole {
     id: number;
@@ -72,6 +73,7 @@ interface IRole {
         ServiceListComponent,
         CopyButtonComponent,
         MarkdownModule,
+        MatChipsModule,
     ],
     templateUrl: './management.component.html',
     styleUrls: ['./management.component.scss'],
