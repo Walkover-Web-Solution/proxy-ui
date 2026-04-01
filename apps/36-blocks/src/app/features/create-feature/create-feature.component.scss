@@ -150,40 +150,6 @@
     color: var(--color-common-primary) !important;
 }
 
-.custom-toggle-group {
-    display: inline-flex;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid var(--color-common-border);
-    background-color: var(--color-common-bg);
-
-    .custom-toggle-btn {
-        padding: 8px 20px;
-        font-size: 13px;
-        font-weight: 500;
-        border: none;
-        background-color: transparent;
-        color: var(--color-common-secondary-text);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        outline: none;
-
-        &:not(:last-child) {
-            border-right: 1px solid var(--color-common-border);
-        }
-
-        &:hover:not(.active) {
-            background-color: var(--color-common-hover);
-        }
-
-        &.active {
-            background-color: var(--color-common-white);
-            color: var(--color-common-primary);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-    }
-}
-
 .social-login-icon-box {
     border: 1px solid var(--color-common-border);
     border-radius: 8px;
@@ -205,15 +171,15 @@
     border-radius: 8px !important;
     font-size: 14px;
     font-weight: 600;
-    background-color: var(--color-common-white) !important;
+    // background-color: var(--color-common-white) !important;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    &.dark-theme {
-        background-color: transparent !important;
-        border-color: #ffffff !important;
-    }
+    // &.dark-theme {
+    //     background-color: transparent !important;
+    border-color: #ffffff !important;
+    // }
 }
 
 .auth-option-content {

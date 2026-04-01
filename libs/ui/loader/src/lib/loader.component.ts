@@ -6,10 +6,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     imports: [MatProgressSpinnerModule],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
-        <div
-            class="h-screen content-loader absolute flex justify-center items-center bg-transparent top-0 left-0 right-0 bottom-0 bg-color rounded-lg"
-        >
-            <div class="loading-box flex items-center gap-4">
+        <div class="h-screen content-loader flex justify-center items-center bg-transparent">
+            <div class="flex gap-4 items-center loading-box p-1.5 rounded-lg bg-color">
                 <mat-spinner></mat-spinner>
                 <span class="text-color">{{ message() }}</span>
             </div>

@@ -1,7 +1,10 @@
 $border: 1px solid var(--color-common-border);
 $border-radius: var(--border-common-radius-4);
 .table-scroll {
-    @apply w-full overflow-x-auto grow;
+    @apply w-full overflow-x-auto;
+    &:has(proxy-no-record-found) {
+        flex-grow: 1;
+    }
     @media screen and (min-width: 768px) {
         border: $border;
         border-radius: $border-radius;
