@@ -1,6 +1,11 @@
 @if (loading$ | async; as loading) {
 <div class="flex flex-col h-full">
-    <mat-tab-group mat-stretch-tabs="false" animationDuration="200ms" class="h-full">
+    <mat-tab-group
+        mat-stretch-tabs="false"
+        animationDuration="200ms"
+        class="h-full"
+        (selectedTabChange)="onTabChange($event.index)"
+    >
         <!-- User Tab -->
         <mat-tab label="User">
             <div class="flex flex-col h-full">

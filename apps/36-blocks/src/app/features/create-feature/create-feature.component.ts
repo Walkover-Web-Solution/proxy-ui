@@ -67,7 +67,8 @@ import { SimpleDialogComponent } from './simple-dialog/simple-dialog.component';
 import { CreatePlanDialogComponent } from './create-plan-dialog/create-plan-dialog.component';
 import { CreateTaxDialogComponent } from './create-tax-dialog/create-tax-dialog.component';
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
-import { ServiceListComponent } from '@proxy/ui/service-list';
+import { ServiceListComponent, ServiceListItem } from '@proxy/ui/service-list';
+import { UiSettingsService } from '../../layout/ui-settings.service';
 type ServiceFormGroup = FormGroup<{
     requirements: FormGroup<{
         [key: string]: FormControl<any>;
@@ -153,6 +154,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     private ngZone = inject(NgZone);
     private dialog = inject(MatDialog);
     private http = inject(HttpClient);
+    private uiSettings = inject(UiSettingsService);
 
     public taxes: any[] = [];
     public createPlanForm: any;
@@ -215,6 +217,22 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public previewInputPosition: 'top' | 'bottom' = 'top';
     public selectedServiceIndex = 0;
     public selectedSubscriptionServiceIndex = -2;
+
+    public getServiceListItems(services: IMethodService[]): ServiceListItem[] {
+        return (services ?? []).map((s) => ({ name: s.name, icon: this._serviceIcon(s.name) }));
+    }
+
+    private _serviceIcon(name: string): string {
+        const n = (name ?? '').toLowerCase();
+        if (n.includes('google')) return 'g_mobiledata';
+        if (n.includes('apple')) return 'apple';
+        if (n.includes('password') || n.includes('login')) return 'lock';
+        if (n.includes('otp') || n.includes('sms') || n.includes('msg')) return 'sms';
+        if (n.includes('email') || n.includes('mail')) return 'mail';
+        if (n.includes('whatsapp')) return 'chat';
+        if (n.includes('phone') || n.includes('mobile')) return 'smartphone';
+        return 'miscellaneous_services';
+    }
 
     /** Duplicate of service form used inside configure method dialog; patched back to serviceForm on close */
     public configureMethodDialogForm: ServiceFormGroup | null = null;
@@ -684,19 +702,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     /** Default primary color: black in light theme, white in dark theme */
     public getDefaultPrimaryColor(): string {
-        return typeof localStorage !== 'undefined' && localStorage.getItem('selected-theme') === 'dark-theme'
-            ? '#ffffff'
-            : '#000000';
+        return this.uiSettings.theme === 'dark-theme' ? '#ffffff' : '#000000';
     }
 
     /** Returns the effective primary color based on the selected branding theme */
     public getEffectivePrimaryColor(): string {
         const theme = this.featureForm.get('brandingDetails.theme')?.value;
         const isDark =
-            theme === WidgetTheme.Dark ||
-            (theme === WidgetTheme.System &&
-                typeof localStorage !== 'undefined' &&
-                localStorage.getItem('selected-theme') === 'dark-theme');
+            theme === WidgetTheme.Dark || (theme === WidgetTheme.System && this.uiSettings.theme === 'dark-theme');
         if (isDark) {
             return this.featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff';
         }

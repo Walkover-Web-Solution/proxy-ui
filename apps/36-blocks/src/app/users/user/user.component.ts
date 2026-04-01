@@ -32,6 +32,7 @@ import { SkeletonDirective } from '@proxy/directives/skeleton';
 import { MarkdownModule } from 'ngx-markdown';
 import { CopyButtonComponent } from '@proxy/ui/copy-button';
 import { ManagementComponent } from '../management/management.component';
+import { SideNavService } from '../../layout/side-nav.service';
 import { BaseComponent } from '@proxy/ui/base-component';
 import {
     DEFAULT_END_DATE,
@@ -94,6 +95,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     private componentStore = inject(UserComponentStore);
     private featureComponentStore = inject(FeatureComponentStore);
     private cdr = inject(ChangeDetectorRef);
+    private sideNavService = inject(SideNavService);
 
     /** Store current API inprogress state */
     public loading$: Observable<{ [key: string]: boolean }> = this.componentStore.loading$;
@@ -162,6 +164,12 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
      */
     private filterFeatures(features: IFeature[]): void {
         this.features = features.filter((feature) => feature.feature_id === 1);
+    }
+
+    public onTabChange(index: number): void {
+        if (index === 1) {
+            this.sideNavService.close();
+        }
     }
 
     public ngOnDestroy(): void {
