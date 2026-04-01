@@ -76,6 +76,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public referenceId = input<string>();
     public serviceData = input<any>();
     public tokenAuth = input<string>();
+    public isPreview = input<boolean>(false);
     public target = input<string>();
     public version = input<WidgetVersion>(WidgetVersion.V1);
     public input_fields = input<string>(InputFields.TOP);
@@ -380,6 +381,9 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
 
     ngAfterViewInit(): void {
         this.initIntl();
+        if (this.isPreview()) {
+            this.openPreviewDialog();
+        }
     }
 
     public initIntl() {

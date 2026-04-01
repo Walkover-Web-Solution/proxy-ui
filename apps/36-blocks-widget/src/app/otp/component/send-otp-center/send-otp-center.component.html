@@ -2,7 +2,7 @@
      MODE A — Preview-button mode (isUserProxyContainer = true)
      Shows a single "Preview" button; auth happens inside a portal dialog.
      ══════════════════════════════════════════════════════════════ -->
-@if (isUserProxyContainer()) {
+@if (isUserProxyContainer() && !isPreview()) {
 <section class="flex flex-col items-center gap-4 p-5">
     <h1>Click Here to preview this Reference ID: {{ referenceId() }}</h1>
     <button
@@ -128,7 +128,7 @@
         aria-labelledby="auth-dialog-title"
         [class]="
             'fixed inset-x-4 top-1/2 z-50 -translate-y-1/2 sm:inset-x-auto sm:left-1/2 sm:w-full sm:-translate-x-1/2 rounded-xl bg-white dark:bg-gray-900 shadow-2xl ring-1 ring-gray-900/5 dark:ring-white/10 flex flex-col max-h-[90vh] ' +
-            (showRegistrationInDialog() ? 'sm:max-w-md' : 'sm:max-w-sm')
+            (showRegistrationInDialog() ? 'max-w-[600px]' : 'max-w-[400px]')
         "
     >
         <!-- Dialog header -->
