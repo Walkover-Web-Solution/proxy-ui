@@ -7,7 +7,7 @@ import { envVariables } from './env-variables';
 export const environment = {
     production: false,
     env: 'local',
-    proxyServer: 'https://test.proxy.msg91.com',
+    proxyServer: 'http://localhost:4200',
     baseUrl: 'https://apitest.msg91.com/api',
     ...envVariables,
 };

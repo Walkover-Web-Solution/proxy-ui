@@ -52,7 +52,7 @@ import {
     ProxyAuthScript,
     ProxyAuthScriptUrl,
 } from '@proxy/models/features-model';
-import { PublicScriptType, WidgetTheme } from '@proxy/constant';
+import { PROXY_DOM_ID, PublicScriptType, WidgetTheme } from '@proxy/constant';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
@@ -332,6 +332,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     });
     public demoDiv = signal<string>(null);
     public keepOrder = () => 0;
+    protected readonly proxyDomId = PROXY_DOM_ID;
 
     ngOnInit(): void {
         this.componentStore.getWebhookEvents();
