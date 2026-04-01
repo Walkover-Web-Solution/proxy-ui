@@ -42,7 +42,7 @@
     @if (!isEditMode) {
     <mat-stepper
         #stepper
-        class="rounded-lg grow mat-stepper-starched shadow-sm"
+        class="rounded-lg grow stepper-starched shadow-sm"
         labelPosition="bottom"
         [animationDuration]="0"
         [linear]="true"
@@ -190,7 +190,7 @@
             <ng-template matStepLabel>Billable Metrics / Items</ng-template>
             <div class="flex flex-col justify-between gap-4 h-full">
                 <ng-container *ngTemplateOutlet="billableMetrics"></ng-container>
-                <div class="flex items-end justify-end pt-4 border-t border-outline/20">
+                <div class="flex items-end justify-end pt-4">
                     <button type="button" matButton="filled" (click)="getPaymentDetailsFormData()" matStepperNext>
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
@@ -203,7 +203,7 @@
             <ng-template matStepLabel>Payment Details</ng-template>
             <div class="flex flex-col justify-between gap-4 h-full">
                 <ng-container *ngTemplateOutlet="paymentDetails"></ng-container>
-                <div class="flex items-end justify-end pt-4 border-t border-outline/20">
+                <div class="flex items-end justify-end pt-4">
                     <button type="button" matButton="filled" (click)="getCreatePlansFormData()" matStepperNext>
                         skip<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
@@ -217,7 +217,7 @@
             <ng-template matStepLabel>Create Plan</ng-template>
             <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="createPlan"></ng-container>
-                <div class="flex items-end justify-end pt-4 border-t border-outline/20">
+                <div class="flex items-end justify-end pt-4">
                     <button type="button" matButton="filled" (click)="createPlanAndGenerateSnippet()">
                         Create Plan & Generate Snippet
                     </button>
@@ -232,7 +232,7 @@
                     <ng-container *ngTemplateOutlet="plansOverview"></ng-container>
                 </form>
                 <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
-                <div class="flex justify-between items-center mt-6 pt-4 border-t border-outline/20">
+                <div class="flex justify-between items-center mt-6 pt-4">
                     <ng-container *ngTemplateOutlet="preview"></ng-container>
                     @if (createUpdateObject$ | async; as createUpdateObject) {
                     <button
@@ -253,7 +253,7 @@
             <ng-template matStepLabel>Design & code</ng-template>
             <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
-                <div class="flex justify-between items-center mt-6 pt-4 border-t border-outline/20">
+                <div class="flex justify-between items-center mt-6 pt-4">
                     <ng-container *ngTemplateOutlet="preview"></ng-container>
                     @if (createUpdateObject$ | async; as createUpdateObject) {
                     <button
@@ -576,7 +576,7 @@
 </ng-template>
 
 <ng-template #configureMethodFormContent let-serviceForm="serviceForm">
-    <div class="flex flex-col grow card-with-header" [class.border]="!serviceForm">
+    <div class="flex flex-col grow" [class]="!serviceForm ? 'border card-with-header' : ''">
         @if ((selectedMethod | async)?.method_services; as methodServices) { @if (!serviceForm) {
         <div class="card-with-header--header">
             <mat-icon class="!text-base !w-4 text-color">tune</mat-icon>
@@ -586,7 +586,7 @@
             >
         </div>
         } @if (serviceForm ?? featureForm.get('serviceDetails')?.at(selectedServiceIndex); as formToUse) {
-        <div class="bg-color flex flex-col gap-3" [class.p-4]="!serviceForm">
+        <div class="flex flex-col gap-3" [class]="!serviceForm ? 'p-4 bg-color' : ''">
             <form [formGroup]="formToUse" class="flex flex-col gap-1">
                 @if (methodServices?.[selectedServiceIndex]?.requirements; as requirements) { @if
                 ((formToUse.controls.requirements.controls | keyvalue)?.length) {
@@ -669,7 +669,7 @@
 
 <ng-template #createBlockConfigureMethodTemplate>
     @if (selectedMethod | async; as method) {
-    <div class="flex flex-col gap-3 my-6 grow text-color">
+    <div class="flex flex-col gap-3 mb-6 grow text-color">
         @if (configureMethodsTableData.length === 0) {
         <div
             class="flex flex-col items-center justify-center py-10 gap-2 rounded-xl border border-dashed border-color bg-color"
