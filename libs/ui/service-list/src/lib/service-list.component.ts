@@ -5,6 +5,7 @@ import { AbstractControl } from '@angular/forms';
 
 export interface ServiceListItem {
     name: string;
+    icon?: string;
 }
 
 @Component({

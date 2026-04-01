@@ -19,7 +19,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { CDKScrollComponent } from '@proxy/ui/virtual-scroll';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MainLeftSideNavComponent } from './main-left-side-nav/main-left-side-nav.component';
 import { IClient, IClientSettings, IFirebaseUserModel, IPaginatedResponse } from '@proxy/models/root-models';
@@ -36,6 +35,8 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { RootService } from '@proxy/services/proxy/root';
 import { environment } from '../../environments/environment';
 import { AuthService } from '@proxy/services/proxy/auth';
+import { SideNavService } from './side-nav.service';
+import { UiSettingsService } from './ui-settings.service';
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-layout',
@@ -65,7 +66,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     public clients$: Observable<IPaginatedResponse<IClient[]>>;
     public swtichClientSuccess$: Observable<boolean>;
 
-    public isSideNavOpen = signal<boolean>(true);
     public isDarkMode = signal<boolean>(false);
 
     public toggleMenuSideBar: boolean;
@@ -81,6 +81,8 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     private rootService = inject(RootService);
     private authService = inject(AuthService);
     private cdr = inject(ChangeDetectorRef);
+    public sideNavService = inject(SideNavService);
+    private uiSettings = inject(UiSettingsService);
 
     constructor() {
         super();
@@ -122,7 +124,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
         this.getCurrentTheme();
 
         if (this.isMobileDevice()) {
-            this.toggleSideBarEvent();
+            this.sideNavService.close();
         }
         this.swtichClientSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
@@ -189,19 +191,12 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     }
 
     public getCurrentTheme() {
-        if (
-            localStorage.getItem('selected-theme') === null ||
-            localStorage.getItem('selected-theme') === 'light-theme'
-        ) {
-            this.switchedDarkMode(false);
-        } else {
-            this.switchedDarkMode(true);
-        }
+        this.switchedDarkMode(this.uiSettings.theme === 'dark-theme');
     }
 
     switchedDarkMode(isDarkMode: boolean) {
         const hostClass = isDarkMode ? 'dark-theme' : 'light-theme';
-        localStorage.setItem('selected-theme', hostClass);
+        this.uiSettings.setTheme(hostClass);
         document.body.classList.remove('dark-theme', 'light-theme');
         document.body.classList.add(hostClass);
         this.isDarkMode.set(isDarkMode);
@@ -218,6 +213,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     }
 
     public toggleSideBarEvent(): void {
-        this.isSideNavOpen.set(!this.isSideNavOpen());
+        this.sideNavService.toggle();
     }
 }

@@ -11,6 +11,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
+import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
@@ -57,8 +58,10 @@ interface IRole {
         CommonModule,
         ReactiveFormsModule,
         MatTableModule,
+        MatListModule,
         MatCardModule,
         MatPaginatorModule,
+        ServiceListComponent,
         NoRecordFoundComponent,
         MatPaginatorGotoComponent,
         MatButtonModule,
@@ -70,7 +73,6 @@ interface IRole {
         MatTooltipModule,
         MatSlideToggleModule,
         MatDividerModule,
-        ServiceListComponent,
         CopyButtonComponent,
         MarkdownModule,
         MatChipsModule,
@@ -120,10 +122,10 @@ export class ManagementComponent implements OnInit, OnDestroy {
     public editingPermission: any | null = null;
     public selectedSectionIndex: number = 0;
     public readonly managementSections = [
-        { name: 'Roles' },
-        { name: 'Permissions' },
-        { name: 'Snippet' },
-        { name: 'Settings' },
+        { name: 'Roles', icon: 'person' },
+        { name: 'Permissions', icon: 'shield' },
+        { name: 'Snippet', icon: 'code' },
+        { name: 'Settings', icon: 'settings' },
     ];
     public features$: Observable<IPaginatedResponse<IFeature[]>> = this.featureComponentStore.feature$;
     public roles$: Observable<IPaginatedResponse<any[]>> = this.userComponentStore.roles$;

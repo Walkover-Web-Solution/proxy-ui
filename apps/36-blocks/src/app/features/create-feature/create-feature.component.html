@@ -1,4 +1,4 @@
-<div class="flex flex-col">
+<div class="flex flex-col h-full">
     @if ((isLoading$ | async) || (loadingScript | async)) { <proxy-loader></proxy-loader> }
     <div class="flex justify-start gap-2 mb-6" [class.items-start]="isEditMode" [class.items-center]="!isEditMode">
         <button type="button" matIconButton [routerLink]="['/app', 'features']">
@@ -341,7 +341,7 @@
                                 @if (webhookEventsData?.length) {
                                 <div class="bg-color p-4">
                                     <mat-accordion>
-                                        @for (event of webhookEventsData; track event) {
+                                        @for (event of webhookEventsData; track event.value) {
                                         <mat-expansion-panel class="!mb-2">
                                             <mat-expansion-panel-header>
                                                 <mat-panel-title>
@@ -558,17 +558,13 @@
 <ng-template #configureMethodTemplate let-selectedIndex="selectedIndex">
     <div class="flex gap-4 my-6 grow min-h-[400px] max-lg:flex-col">
         <div class="max-xl:flex-col flex gap-4 grow">
-            <mat-card class="shrink-0 self-start max-xl:w-full">
-                <mat-card-header> Services </mat-card-header>
-                <mat-card-content class="!p-2">
-                    <proxy-service-list
-                        [services]="(selectedMethod | async)?.method_services ?? []"
-                        [selectedIndex]="selectedServiceIndex"
-                        [getFormAt]="getServiceFormAt"
-                        (serviceSelect)="selectedServiceIndex = $event"
-                    ></proxy-service-list>
-                </mat-card-content>
-            </mat-card>
+            <proxy-service-list
+                class="shrink-0 self-start max-xl:w-full"
+                [services]="getServiceListItems((selectedMethod | async)?.method_services ?? [])"
+                [selectedIndex]="selectedServiceIndex"
+                [getFormAt]="getServiceFormAt"
+                (serviceSelect)="selectedServiceIndex = $event"
+            ></proxy-service-list>
             <ng-container *ngTemplateOutlet="configureMethodFormContent"></ng-container>
         </div>
         @if (isEditMode) {
@@ -965,7 +961,7 @@
                     <mat-icon class="!text-base !w-4">settings</mat-icon>
                     <span class="mat-body-2 font-semibold">Session & Token Settings</span>
                 </div>
-                <div class="bg-color flex flex-col gap-1 px-4 pt-4 pb-4">
+                <div class="bg-color flex flex-col gap-2 px-4 pt-4 pb-4">
                     <ng-container
                         *ngTemplateOutlet="
                             inputField;
@@ -1071,7 +1067,7 @@
         <div class="card-with-header">
             <div class="card-with-header--header justify-between">
                 <div class="flex items-center gap-2">
-                    <mat-icon class="!text-base !w-4 text-color">html</mat-icon>
+                    <mat-icon class="!text-base !w-4 text-color">code</mat-icon>
                     <span class="mat-body-2 font-semibold">Button Container Div</span>
                 </div>
                 <proxy-copy-button [copyData]="demoDiv()" tooltip="Copy Code"></proxy-copy-button>
@@ -1095,7 +1091,6 @@
     <div class="flex items-center justify-start mt-6">
         <button type="button" matButton="filled" (click)="previewFeature()">Preview</button>
     </div>
-    <!-- <div id="userProxyContainer"></div> -->
     }
 </ng-template>
 
@@ -1106,7 +1101,7 @@
                 <mat-icon class="!text-base !w-4">webhook</mat-icon>
                 <span class="mat-body-2 font-semibold">Webhook Configuration</span>
             </div>
-            <div class="bg-color flex flex-col gap-1 px-4 pt-4 pb-4">
+            <div class="bg-color flex flex-col gap-2 px-4 pt-4 pb-4">
                 <ng-container
                     *ngTemplateOutlet="
                         inputField;
@@ -1862,7 +1857,7 @@
                         <input
                             matInput
                             type="text"
-                            placeholder="Enter logo URL"
+                            placeholder="https://example.com/logo.png"
                             [formControl]="featureForm.get('brandingDetails.logo_url')"
                         />
                     </mat-form-field>

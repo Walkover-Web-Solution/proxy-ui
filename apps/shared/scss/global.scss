@@ -5,6 +5,9 @@
 .service-list {
     &.mat-mdc-list-base {
         .mat-mdc-list-item {
+            border-radius: 8px !important;
+            height: 42px !important;
+            margin-bottom: 2px;
             .mdc-list-item__primary-text {
                 display: flex;
                 align-items: center;
