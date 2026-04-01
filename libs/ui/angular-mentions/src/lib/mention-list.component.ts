@@ -98,7 +98,7 @@ import { getCaretCoordinates } from './caret-coords';
             } @for (item of items; track item; let i = $index) {
             <li [class.active]="activeIndex == i" [class.mention-active]="!styleOff && activeIndex == i">
                 <a
-                    class="dropdown-item overflow-dotted"
+                    class="dropdown-item overflow-hidden whitespace-nowrap text-ellipsis"
                     [class.mention-item]="!styleOff"
                     (mousedown)="activeIndex = i; itemClick.emit(); $event.preventDefault()"
                 >

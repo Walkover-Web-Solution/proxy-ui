@@ -1,15 +1,20 @@
+$border: 1px solid var(--color-common-border);
+$border-radius: var(--border-common-radius-4);
 .table-scroll {
-    overflow-x: auto;
-    width: 100%;
+    @apply w-full overflow-x-auto grow;
     @media screen and (min-width: 768px) {
-        border: 1px solid var(--color-common-border);
-        border-radius: var(--border-common-radius-4) var(--border-common-radius-4) 0 0;
+        border: $border;
+        border-radius: $border-radius;
+
+        &:has(+ mat-paginator-goto .go-to-pagination) {
+            border-radius: $border-radius $border-radius 0 0;
+        }
     }
 }
 
 .default-table {
     box-shadow: none;
-    width: 100%;
+    @apply w-full h-full;
 
     &:has(.mat-no-data-row) {
         height: 100%;
@@ -82,7 +87,7 @@
             border-radius: 8px;
             margin-bottom: 12px;
             // background-color: var(--color-common-bg);
-            border: 1px solid var(--color-common-border);
+            border: $border;
             box-shadow: 0 1px 4px rgb(0 0 0 / 6%);
             padding: 4px 0;
         }

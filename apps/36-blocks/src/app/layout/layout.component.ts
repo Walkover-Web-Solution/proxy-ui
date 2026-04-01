@@ -52,7 +52,6 @@ import { AuthService } from '@proxy/services/proxy/auth';
         MatExpansionModule,
         MatTooltipModule,
         MatSlideToggleModule,
-        CDKScrollComponent,
         ScrollingModule,
         MainLeftSideNavComponent,
     ],
@@ -72,7 +71,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     public toggleMenuSideBar: boolean;
     public showContainer = false;
     public clientsParams = {
-        itemsPerPage: 25,
+        itemsPerPage: 200,
         pageNo: 1,
     };
 
@@ -183,16 +182,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
 
     public getClientSettings() {
         this.store.dispatch(rootActions.getClientSettings());
-    }
-
-    public fetchClientsNextPage() {
-        if (this.clientsParams.pageNo < this.getValueFromObservable(this.clients$)?.totalPageCount) {
-            this.clientsParams = {
-                ...this.clientsParams,
-                pageNo: this.clientsParams.pageNo + 1,
-            };
-            this.getClients();
-        }
     }
 
     public switchClient(clientId: number): void {
