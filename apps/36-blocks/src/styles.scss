@@ -58,3 +58,11 @@ pre[class*='language-'] {
     margin: 0 !important;
     border-radius: 0 !important;
 }
+
+button {
+    &.w-full {
+        .mdc-button__label {
+            width: 100%;
+        }
+    }
+}

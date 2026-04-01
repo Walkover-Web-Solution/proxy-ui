@@ -27,7 +27,7 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { Store, select } from '@ngrx/store';
 import { selectLogInData } from '../auth/ngrx/selector/login.selector';
 import { isEqual } from 'lodash-es';
-import { BehaviorSubject, Observable, distinctUntilChanged, filter, takeUntil, combineLatest } from 'rxjs';
+import { Observable, distinctUntilChanged, filter, takeUntil, combineLatest } from 'rxjs';
 import { ILogInFeatureStateWithRootState } from '../auth/ngrx/store/login.state';
 import * as logInActions from '../auth/ngrx/actions/login.action';
 import { rootActions } from '../ngrx/actions';
@@ -66,7 +66,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     public clients$: Observable<IPaginatedResponse<IClient[]>>;
     public swtichClientSuccess$: Observable<boolean>;
 
-    public isSideNavOpen = new BehaviorSubject<boolean>(true);
+    public isSideNavOpen = signal<boolean>(true);
     public isDarkMode = signal<boolean>(false);
 
     public toggleMenuSideBar: boolean;
@@ -229,6 +229,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     }
 
     public toggleSideBarEvent(): void {
-        this.isSideNavOpen.next(!this.isSideNavOpen.getValue());
+        this.isSideNavOpen.set(!this.isSideNavOpen());
     }
 }

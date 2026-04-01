@@ -1,26 +1,26 @@
-<div class="flex w-full h-full" [class.collapsed-sidebar]="!(isSideNavOpen | async)">
+<div class="flex w-full h-full" [class.collapsed-sidebar]="!isSideNavOpen()">
     <div
         class="flex flex-col transition-all duration-200 mat-drawer-content max-desktop:fixed max-desktop:z-[999] max-desktop:top-0 max-desktop:bottom-0 bg-color p-2"
-        [class.mat-drawer-toggle-btn-hover]="isSideNavOpen | async"
-        [class]="!(isSideNavOpen | async) ? 'overflow-hidden !w-[56px] p-1.5' : 'w-[246px]'"
+        [class.mat-drawer-toggle-btn-hover]="isSideNavOpen()"
+        [class]="!isSideNavOpen() ? 'overflow-hidden !w-[56px] p-1.5' : 'w-[246px]'"
     >
-        <div class="flex items-center py-2" [class]="!(isSideNavOpen | async) ? 'flex-col gap-2' : ''">
+        <div class="flex items-center py-2" [class]="!isSideNavOpen() ? 'flex-col gap-2' : ''">
             <div
                 class="flex items-center grow gap-2 mat-drawer-header-title px-4"
                 #clientsMenuTrigger="matMenuTrigger"
                 [matMenuTriggerFor]="clientsMenu"
             >
-                @if (!(isSideNavOpen | async)) {
+                @if (!isSideNavOpen()) {
                 <mat-icon class="mat-icon-22">apps</mat-icon>
                 }
                 <div
                     class="flex items-center gap-x-1 mat-drawer-header-subtitle cursor-pointer"
-                    [class.hidden]="!(isSideNavOpen | async)"
+                    [class.hidden]="!isSideNavOpen()"
                 >
                     <span class="font-16 font-semibold overflow-dotted" style="max-width: 145px">
                         {{ (clientSettings$ | async)?.client?.name }}
                     </span>
-                    @if (isSideNavOpen | async) {
+                    @if (isSideNavOpen()) {
                     <mat-icon>{{
                         clientsMenuTrigger?.menuOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
                     }}</mat-icon>
@@ -68,34 +68,45 @@
                 matButton="tonal"
                 class="mat-drawer-toggle-btn mat-icon-32 !p-0 !min-w-0"
                 (click)="toggleSideBarEvent()"
-                [matTooltip]="(isSideNavOpen | async) ? 'Collapse Menu' : 'Expand Menu'"
+                [matTooltip]="isSideNavOpen() ? 'Collapse Menu' : 'Expand Menu'"
                 matTooltipPosition="right"
                 type="button"
             >
                 <mat-icon class="!m-0">{{
-                    (isSideNavOpen | async) ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
+                    isSideNavOpen() ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
                 }}</mat-icon>
             </button>
         </div>
         <!-- Proxy Sidenav::START -->
         <proxy-main-left-side-nav
             class="mat-drawer-nav proxy-left-menu"
-            [isSideNavOpen]="!(isSideNavOpen | async)"
+            [isSideNavOpen]="!isSideNavOpen()"
         ></proxy-main-left-side-nav>
         <!-- Proxy Sidenav::END -->
         @if (logInData$ | async; as user) {
-        <div class="mat-drawer-footer mt-auto">
-            <button class="!rounded-lg" matButton [matMenuTriggerFor]="menu">
-                <div class="flex items-center">
-                    @if (user.photoURL) {
-                    <img [src]="user.photoURL" alt="No Image" class="w-7 h-7 rounded-full" loading="lazy" />
-                    } @else {
-                    <mat-icon aria-hidden="false" class="mr-6 text-grey material-icons-outlined">
-                        account_circle</mat-icon
-                    >
-                    }
-                    <div class="flex flex-col" style="width: 140px">
-                        <h6 [class.hidden]="!(isSideNavOpen | async)" class="username m-0">{{ user.displayName }}</h6>
+        <div class="mt-auto">
+            <button
+                class="!rounded-lg !p-0 w-full"
+                matButton
+                [matMenuTriggerFor]="menu"
+                [matTooltip]="user.displayName"
+                matTooltipPosition="after"
+            >
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        @if (user.photoURL) {
+                        <img [src]="user.photoURL" alt="No Image" class="w-7 h-7 rounded-full" loading="lazy" />
+                        } @else {
+                        <mat-icon aria-hidden="false" class="mr-6 text-grey material-icons-outlined">
+                            account_circle
+                        </mat-icon>
+                        }
+                        <h6
+                            [class.hidden]="!isSideNavOpen()"
+                            class="username m-0 max-w-[162px] overflow-hidden whitespace-nowrap text-ellipsis"
+                        >
+                            {{ user.displayName }}
+                        </h6>
                     </div>
                     <mat-icon class="mx-1 material-icons-outlined">keyboard_arrow_up</mat-icon>
                 </div>

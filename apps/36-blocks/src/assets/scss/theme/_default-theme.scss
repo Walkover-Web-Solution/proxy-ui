@@ -21,7 +21,7 @@ html {
         @include mat.all-component-colors(theme.$dark-theme);
         @include mat.system-level-colors(theme.$dark-theme);
         --mat-sys-outline: var(--color-common-border);
-        --mat-sys-on-surface: var(--proxy-neutral-40);
+        --mat-sys-on-surface: var(--proxy-neutral-80);
     }
 }
 
@@ -30,7 +30,7 @@ body.dark-theme {
     @include mat.all-component-colors(theme.$dark-theme);
     @include mat.system-level-colors(theme.$dark-theme);
     --mat-sys-outline: var(--color-common-border);
-    --mat-sys-on-surface: var(--proxy-neutral-40);
+    --mat-sys-on-surface: var(--proxy-neutral-80);
 }
 
 /* Force light theme (overrides OS dark preference) */
