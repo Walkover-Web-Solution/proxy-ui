@@ -4,11 +4,12 @@
         [class.mat-drawer-toggle-btn-hover]="isSideNavOpen()"
         [class]="!isSideNavOpen() ? 'overflow-hidden !w-[56px] p-1.5' : 'w-[246px]'"
     >
-        <div class="flex items-center py-2" [class]="!isSideNavOpen() ? 'flex-col gap-2' : ''">
+        <div class="flex items-center pt-2" [class]="!isSideNavOpen() ? 'flex-col gap-2' : ''">
             <div
-                class="flex items-center grow gap-2 mat-drawer-header-title px-4"
+                class="flex items-center grow gap-2 mat-drawer-header-title pr-2"
                 #clientsMenuTrigger="matMenuTrigger"
                 [matMenuTriggerFor]="clientsMenu"
+                [class]="!isSideNavOpen() ? 'pl-2' : 'pl-4'"
             >
                 @if (!isSideNavOpen()) {
                 <mat-icon class="mat-icon-22">apps</mat-icon>
@@ -65,14 +66,14 @@
                 </div>
             </div>
             <button
-                matButton="tonal"
-                class="mat-drawer-toggle-btn mat-icon-32 !p-0 !min-w-0"
+                matIconButton
+                class="sidebar-toggle-btn"
                 (click)="toggleSideBarEvent()"
                 [matTooltip]="isSideNavOpen() ? 'Collapse Menu' : 'Expand Menu'"
                 matTooltipPosition="right"
                 type="button"
             >
-                <mat-icon class="!m-0">{{
+                <mat-icon>{{
                     isSideNavOpen() ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
                 }}</mat-icon>
             </button>

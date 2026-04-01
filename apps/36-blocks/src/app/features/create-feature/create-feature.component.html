@@ -42,7 +42,7 @@
     @if (!isEditMode) {
     <mat-stepper
         #stepper
-        class="rounded-lg border grow mat-stepper-starched shadow-sm"
+        class="rounded-lg grow mat-stepper-starched shadow-sm"
         labelPosition="bottom"
         [animationDuration]="0"
         [linear]="true"
@@ -79,7 +79,7 @@
             <ng-template matStepLabel>Block Name</ng-template>
             <div #blockNameStepContent class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="blockCreationStepOne; context: { nameControl }"></ng-container>
-                <div class="flex items-center justify-end pt-4 border-t border-outline/20">
+                <div class="flex items-center justify-end pt-4">
                     <button type="button" matButton="filled" (click)="validateFirstStepAndNext(nameControl)">
                         Next
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix">navigate_next</mat-icon>
@@ -92,7 +92,7 @@
             <ng-template matStepLabel>Configure Method</ng-template>
             <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="createBlockConfigureMethodTemplate"></ng-container>
-                <div class="flex items-center justify-between pt-4 border-t border-outline/20">
+                <div class="flex items-center justify-between pt-4">
                     <button type="button" matButton="filled" class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
@@ -110,7 +110,7 @@
             <ng-template matStepLabel>Authorization Setup</ng-template>
             <div #authorizationStepContent class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
-                <div class="flex items-center justify-between pt-4 border-t border-outline/20">
+                <div class="flex items-center justify-between pt-4">
                     <button type="button" matButton="filled" class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
@@ -136,7 +136,7 @@
             <ng-template matStepLabel>Branding</ng-template>
             <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="brandingStepContent"></ng-container>
-                <div class="flex items-center justify-between pt-4 border-t border-outline/20">
+                <div class="flex items-center justify-between pt-4">
                     <button type="button" matButton="filled" (click)="updateFeature('branding')">Update</button>
                     <button type="button" matButton="filled" matStepperNext>
                         Next<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
@@ -154,7 +154,7 @@
             <ng-template matStepLabel>Integration Choice</ng-template>
             <div class="flex flex-col justify-between h-full">
                 <ng-container *ngTemplateOutlet="integrationChoice"></ng-container>
-                <div class="flex items-center justify-between pt-4 border-t border-outline/20">
+                <div class="flex items-center justify-between pt-4">
                     <button type="button" matButton="filled" class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
@@ -172,7 +172,7 @@
             <ng-template matStepLabel>Organization Details</ng-template>
             <div class="flex flex-col justify-between h-full">
                 <ng-container *ngTemplateOutlet="organizationDetails"></ng-container>
-                <div class="flex items-center justify-between pt-4 border-t border-outline/20">
+                <div class="flex items-center justify-between pt-4">
                     <button type="button" matButton="filled" class="flat-default" matStepperPrevious>
                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">navigate_before</mat-icon
                         >Back
@@ -736,10 +736,9 @@
     </div>
     }
 </ng-template>
-
 <ng-template #previewAuthorization let-authorizationDetails="authorizationDetails" let-previewVersion="previewVersion">
     <div
-        class="auth-credentials px-6 w-[350px] border rounded-8 max-h-[650px] overflow-y-auto max-lg:w-full"
+        class="auth-credentials px-6 w-[350px] border border-color rounded-8 max-h-[650px] overflow-y-auto max-lg:w-full"
         [class.dark]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
         [style.--branding-primary-color]="getEffectivePrimaryColor()"
         [style.--branding-button-color]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
@@ -1096,6 +1095,7 @@
     <div class="flex items-center justify-start mt-6">
         <button type="button" matButton="filled" (click)="previewFeature()">Preview</button>
     </div>
+    <!-- <div id="userProxyContainer"></div> -->
     }
 </ng-template>
 
