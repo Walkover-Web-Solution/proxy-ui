@@ -31,12 +31,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
         MatRadioModule,
     ],
     template: `
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 mat-dialog-title>{{ dialogTitle }}</h2>
-            <button mat-icon-button mat-dialog-close (click)="onClose()">
-                <mat-icon>close</mat-icon>
-            </button>
-        </div>
+        <h2 matDialogTitle>{{ dialogTitle }}</h2>
         <mat-dialog-content class="create-tax-content">
             <div class="d-flex flex-column h-100">
                 <p class="mat-body-2 text-secondary mb-3">
@@ -64,7 +59,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
         </mat-dialog-content>
 
         <mat-dialog-actions align="end">
-            <button mat-button (click)="onClose()">Cancel</button>
+            <button mat-button (click)="onClose()">Close</button>
             <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!taxForm.valid">
                 {{ submitButtonText }}
             </button>

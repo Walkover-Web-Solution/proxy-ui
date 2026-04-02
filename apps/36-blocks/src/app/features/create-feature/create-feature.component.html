@@ -650,18 +650,14 @@
 </ng-template>
 
 <ng-template #configureMethodDialogTemplate>
-    <div class="flex justify-between items-center">
-        <h2 mat-dialog-title class="m-0">{{ getSelectedServiceName() }}</h2>
-        <button matIconButton mat-dialog-close>
-            <mat-icon>close</mat-icon>
-        </button>
-    </div>
+    <h2 matDialogTitle>{{ getSelectedServiceName() }}</h2>
     <mat-dialog-content class="max-h-[65vh] overflow-y-auto">
         <ng-container
             *ngTemplateOutlet="configureMethodFormContent; context: { serviceForm: configureMethodDialogForm }"
         ></ng-container>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
+        <button matButton matDialogClose>Close</button>
         <button matButton="filled" (click)="resetConfigureDialogForm()">Reset</button>
         <button matButton="filled" (click)="closeDialog()">Done</button>
     </mat-dialog-actions>
