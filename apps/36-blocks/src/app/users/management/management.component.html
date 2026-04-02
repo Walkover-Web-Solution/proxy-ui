@@ -1,4 +1,15 @@
 <div class="h-full flex flex-col gap-6">
+    <mat-form-field appearance="outline" class="no-padding w-full mt-6">
+        <mat-label>Block</mat-label>
+        <mat-select [formControl]="roleForm.get('feature_id')" placeholder="Select Block">
+            @for (feature of features; track feature.reference_id) {
+            <mat-option [value]="feature.reference_id">{{ feature.name }}</mat-option>
+            }
+        </mat-select>
+        @if (roleForm.get('feature_id')?.hasError('required')) {
+        <mat-error>Block is required</mat-error>
+        }
+    </mat-form-field>
     @if (!roleForm.get('feature_id')?.value) {
     <!-- Empty state: centered block selector -->
     <div class="flex-1 flex flex-col items-center justify-center gap-5 text-center">
@@ -16,34 +27,8 @@
                 Choose a block from the dropdown below to manage its roles, permissions, and settings.
             </p>
         </div>
-        <mat-form-field appearance="outline" class="no-padding w-72">
-            <mat-label>Block</mat-label>
-            <mat-select [formControl]="roleForm.get('feature_id')" placeholder="Select Block">
-                @for (feature of features; track feature.reference_id) {
-                <mat-option [value]="feature.reference_id">{{ feature.name }}</mat-option>
-                }
-            </mat-select>
-            @if (roleForm.get('feature_id')?.hasError('required')) {
-            <mat-error>Block is required</mat-error>
-            }
-        </mat-form-field>
     </div>
     } @else {
-    <!-- Block Selector Header (when a block is selected) -->
-    <div class="flex flex-wrap items-center gap-4">
-        <mat-form-field appearance="outline" class="no-padding w-full mt-6">
-            <mat-label>Block</mat-label>
-            <mat-select [formControl]="roleForm.get('feature_id')" placeholder="Select Block">
-                @for (feature of features; track feature.reference_id) {
-                <mat-option [value]="feature.reference_id">{{ feature.name }}</mat-option>
-                }
-            </mat-select>
-            @if (roleForm.get('feature_id')?.hasError('required')) {
-            <mat-error>Block is required</mat-error>
-            }
-        </mat-form-field>
-    </div>
-
     <!-- Main Content Area -->
     <div class="flex max-xl:flex-col gap-6 grow min-h-[400px]">
         <!-- Sidebar Nav -->
@@ -365,7 +350,7 @@
 
 <!-- Add Role Dialog Template -->
 <ng-template #addRoleDialogTemplate>
-    <h2 mat-dialog-title>{{ isEditMode ? 'Edit Role' : 'Add Role' }}</h2>
+    <h2 matDialogTitle>{{ isEditMode ? 'Edit Role' : 'Add Role' }}</h2>
     <mat-dialog-content>
         <form [formGroup]="dialogRoleForm" class="flex flex-col gap-1">
             <mat-form-field appearance="outline" class="w-full mt-2">
@@ -393,7 +378,7 @@
         </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-        <button matButton (click)="closeDialog()">Cancel</button>
+        <button matButton (click)="closeDialog()">Close</button>
         <button matButton="filled" (click)="submitDialog()" [disabled]="!dialogRoleForm.valid">
             {{ isEditMode ? 'Update Role' : 'Add Role' }}
         </button>
@@ -402,7 +387,7 @@
 
 <!-- Add Permission Dialog Template -->
 <ng-template #addPermissionDialogTemplate>
-    <h2 mat-dialog-title>{{ isEditPermissionMode ? 'Edit Permission' : 'Add Permission' }}</h2>
+    <h2 matDialogTitle>{{ isEditPermissionMode ? 'Edit Permission' : 'Add Permission' }}</h2>
     <mat-dialog-content>
         <form [formGroup]="dialogPermissionForm" class="flex flex-col gap-1">
             <mat-form-field appearance="outline" class="w-full mt-2">
@@ -419,7 +404,7 @@
         </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-        <button matButton (click)="closePermissionDialog()">Cancel</button>
+        <button matButton (click)="closePermissionDialog()">Close</button>
         <button matButton="filled" (click)="submitPermissionDialog()" [disabled]="!dialogPermissionForm.valid">
             {{ isEditPermissionMode ? 'Update Permission' : 'Add Permission' }}
         </button>

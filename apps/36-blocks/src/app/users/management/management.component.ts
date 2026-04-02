@@ -386,8 +386,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
         });
 
         this.dialogRef = this.dialog.open(this.addRoleDialogTemplate, {
-            width: '500px',
-            autoFocus: false,
+            panelClass: ['mat-dialog'],
+            autoFocus: true,
             restoreFocus: false,
         });
         setTimeout(() => {
@@ -422,8 +422,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
         });
 
         this.dialogRef = this.dialog.open(this.addRoleDialogTemplate, {
-            width: '500px',
-            autoFocus: false,
+            panelClass: ['mat-dialog'],
+            autoFocus: true,
             restoreFocus: false,
         });
 
@@ -461,7 +461,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     public deleteRole(role: IRole): void {
-        const confirmDialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
+        const confirmDialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+            panelClass: ['mat-dialog'],
+        });
         confirmDialogRef.componentRef.setInput(
             'confirmationMessage',
             `Are you sure you want to delete the role "${role.role}"?`
@@ -492,8 +494,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
         });
 
         this.dialogRef = this.dialog.open(this.addPermissionDialogTemplate, {
-            width: '500px',
-            autoFocus: false,
+            panelClass: ['mat-dialog'],
+            autoFocus: true,
             restoreFocus: false,
         });
 
@@ -515,8 +517,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
         });
 
         this.dialogRef = this.dialog.open(this.addPermissionDialogTemplate, {
-            width: '500px',
-            autoFocus: false,
+            panelClass: ['mat-dialog'],
+            autoFocus: true,
             restoreFocus: false,
         });
 
@@ -554,7 +556,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     public deletePermission(permission: any): void {
-        const confirmDialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
+        const confirmDialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+            panelClass: ['mat-dialog'],
+        });
         confirmDialogRef.componentRef.setInput(
             'confirmationMessage',
             `Are you sure you want to delete the permission "${permission.name}"?`

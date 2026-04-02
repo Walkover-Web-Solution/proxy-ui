@@ -1227,9 +1227,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public addBillableMetric(): void {
         try {
             const dialogRef = this.dialog.open(SimpleDialogComponent, {
-                width: '600px',
-                height: 'auto',
-                maxHeight: '90vh',
+                panelClass: ['mat-dialog', 'mat-dialog-md', 'mat-high-dialog'],
                 autoFocus: false,
                 restoreFocus: false,
                 hasBackdrop: true,
@@ -1262,9 +1260,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         const billableMetricsFormFields = this.billableMetricsFormFields;
 
         const dialogRef = this.dialog.open(SimpleDialogComponent, {
-            height: 'auto',
-            maxHeight: '90vh',
-            autoFocus: false,
+            panelClass: ['mat-dialog', 'mat-dialog-md', 'mat-high-dialog'],
+            autoFocus: true,
             restoreFocus: false,
             hasBackdrop: true,
             data: {
@@ -1284,7 +1281,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     }
 
     public deleteMetric(index: number): void {
-        const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
+        const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+            panelClass: ['mat-dialog'],
+        });
         dialogRef.componentRef.setInput('confirmationMessage', `Are you sure to delete this metric?`);
         dialogRef.componentRef.setInput('confirmButtonText', 'Delete');
         dialogRef.afterClosed().subscribe((action) => {
@@ -1803,9 +1802,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             };
 
             this.openPlanDialogRef = this.dialog.open(CreatePlanDialogComponent, {
-                width: '800px',
-                height: 'auto',
-                maxHeight: '90vh',
+                panelClass: ['mat-dialog', 'mat-dialog-md', 'mat-high-dialog'],
                 autoFocus: false,
                 restoreFocus: false,
                 hasBackdrop: true,
@@ -1823,7 +1820,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                         this.componentStore.createTax(of(payload));
                     },
                 },
-                panelClass: 'mat-dialog-md',
             });
 
             this.openPlanDialogRef.afterClosed().subscribe((result) => {
@@ -1852,7 +1848,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }
     }
     public deletePlan(plan: any): void {
-        const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
+        const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+            panelClass: ['mat-dialog'],
+        });
         dialogRef.componentRef.setInput('confirmationMessage', `Are you sure to delete this metric?`);
         dialogRef.componentRef.setInput('confirmButtonText', 'Delete');
         dialogRef.afterClosed().subscribe((action) => {
@@ -2001,7 +1999,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         this.getTaxes();
     }
     public deleteTax(tax: any): void {
-        const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent);
+        const dialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+            panelClass: ['mat-dialog'],
+        });
         dialogRef.componentRef.setInput('confirmationMessage', `Are you sure to delete this tax?`);
         dialogRef.componentRef.setInput('confirmButtonText', 'Delete');
         dialogRef.afterClosed().subscribe((action) => {
@@ -2032,9 +2032,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         };
 
         const dialogRef = this.dialog.open(CreateTaxDialogComponent, {
-            width: '800px',
-            height: 'auto',
-            maxHeight: '90vh',
+            panelClass: ['mat-dialog', 'mat-dialog-md', 'mat-high-dialog'],
             autoFocus: false,
             restoreFocus: false,
             hasBackdrop: true,
@@ -2045,7 +2043,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 editData: null,
                 optionsData: optionsData,
             },
-            panelClass: 'mat-dialog-md',
         });
 
         dialogRef.afterClosed().subscribe((result) => {
@@ -2097,7 +2094,9 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         const sourceForm = serviceDetailsArray?.at(index) as ServiceFormGroup | null;
         if (!sourceForm) return;
         this.configureMethodDialogForm = this.cloneFormGroup(sourceForm) as ServiceFormGroup;
-        this.configureMethodDialog = this.dialog.open(this.configureMethodDialogTemplateRef);
+        this.configureMethodDialog = this.dialog.open(this.configureMethodDialogTemplateRef, {
+            panelClass: ['mat-dialog'],
+        });
         this.configureMethodDialog
             .afterClosed()
             .pipe(takeUntil(this.destroy$))

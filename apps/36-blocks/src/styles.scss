@@ -68,3 +68,64 @@ button {
         }
     }
 }
+
+.mat-right-dialog {
+    position: absolute !important;
+    right: 0;
+    top: 0;
+    height: 100%;
+    overflow: auto;
+    box-shadow: -4px 0px 16px #00000059;
+    &.mat-dialog-lg {
+        width: 535px;
+        @media only screen and (max-width: 768px) {
+            width: 100%;
+            max-width: 100% !important;
+        }
+    }
+    &.mat-dialog-md {
+        width: 450px;
+    }
+    &.mat-dialog-xs {
+        width: 374px;
+    }
+    &.mat-dialog-xlg {
+        width: 40vw;
+        @media only screen and (max-width: 1280px) {
+            width: 60vw;
+        }
+        @media only screen and (max-width: 992px) {
+            width: 100%;
+            max-width: 90% !important;
+        }
+    }
+}
+
+.mat-dialog {
+    min-width: 500px !important;
+    &.mat-dialog-lg {
+        max-width: 100% !important;
+
+        .mat-mdc-dialog-container {
+            min-width: 800px !important;
+        }
+    }
+    &.mat-high-dialog {
+        height: auto;
+        max-height: 90vh;
+        overflow: auto;
+    }
+
+    &.mat-dialog-md {
+        max-width: 680px !important;
+        min-width: 680px !important;
+        width: 680px !important;
+        padding: 24px !important;
+    }
+
+    &.mat-dialog-auto {
+        max-width: max-content !important;
+        min-width: auto !important;
+        width: auto !important;
+    }
+}

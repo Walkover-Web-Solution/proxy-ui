@@ -1,4 +1,4 @@
-<h1 mat-dialog-title [innerHTML]="title()"></h1>
+<h1 matDialogTitle [innerHTML]="title()"></h1>
 <mat-dialog-content>
     <p class="text-dark mat-body-2" [innerHTML]="confirmationMessage()"></p>
 </mat-dialog-content>
@@ -8,10 +8,9 @@
         cdkFocusRegionStart
         type="reset"
         [class]="cancelButtonClass()"
-        mat-dialog-close
+        matDialogClose
         matButton
         [color]="cancelButtonColor()"
-        (click)="closeDialog('no')"
     >
         {{ cancelButtonText() }}
     </button>
@@ -19,7 +18,6 @@
     <button
         type="button"
         matButton="filled"
-        mat-dialog-close
         cdkFocusRegionEnd
         cdkFocusInitial
         [class]="confirmButtonClass()"
