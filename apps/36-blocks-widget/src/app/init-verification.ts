@@ -1,7 +1,7 @@
 import { NgElement, WithProperties } from '@angular/elements';
 import { ProxyAuthWidgetComponent } from './otp/widget/widget.component';
 import { omit } from 'lodash-es';
-import { PROXY_DOM_ID, PublicScriptType } from '@proxy/constant';
+import { PROXY_DOM_ID, PublicScriptType, WidgetEvent } from '@proxy/constant';
 
 export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure'];
 
@@ -9,8 +9,6 @@ declare global {
     interface Window {
         initVerification: any;
         intlTelInput: any;
-        showUserManagement: any;
-        hideUserManagement: any;
         __proxyAuth: any;
         __proxyAuthLoaded: boolean;
     }
@@ -21,19 +19,12 @@ window.__proxyAuth = window.__proxyAuth || {};
 window.__proxyAuth.version = '0.0.3';
 window.__proxyAuth.buildTime = new Date().toISOString();
 
-// Global function to show user management component (sets isHidden to false)
-if (!window.showUserManagement) {
-    window['showUserManagement'] = () => {
-        window.dispatchEvent(new CustomEvent('showUserManagement'));
-    };
-}
-
-// Global function to hide user management component (sets isHidden to true)
-if (!window.hideUserManagement) {
-    window['hideUserManagement'] = () => {
-        window.dispatchEvent(new CustomEvent('hideUserManagement'));
-    };
-}
+// Buffer any `openAddUserDialog` events fired before Angular bootstraps.
+// UserManagementBridgeService drains this buffer on construction.
+window.__proxyAuth.pendingDialogEvents = window.__proxyAuth.pendingDialogEvents || [];
+window.addEventListener(WidgetEvent.OpenInviteMemberDialog, (e: Event) => {
+    (window.__proxyAuth.pendingDialogEvents as Event[]).push(e);
+});
 
 function documentReady(fn: any) {
     // see if DOM is already available
@@ -82,7 +73,6 @@ if (!window.initVerification) {
                 widgetElement.show_social_login_icons = config?.show_social_login_icons;
                 widgetElement.exclude_role_ids = config?.exclude_role_ids;
                 widgetElement.include_role_ids = config?.include_role_ids;
-                widgetElement.isHidden = config?.isHidden;
                 widgetElement.isRegisterFormOnly = config?.isRegisterFormOnly || isRegisterFormOnlyFromParams;
                 widgetElement.target = config?.target ?? '_self';
                 if (!config.success || typeof config.success !== 'function') {

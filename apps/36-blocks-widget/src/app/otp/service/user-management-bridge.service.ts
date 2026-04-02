@@ -1,6 +1,8 @@
-import { ApplicationRef, EnvironmentInjector, Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Subject } from 'rxjs';
+import { WidgetEvent } from '@proxy/constant';
 import { AddUserDialogComponent } from '../user-management/add-user-dialog.component';
+import { WidgetDialogRef, WidgetDialogService } from './widget-dialog.service';
 
 export interface OpenAddUserConfig {
     authToken: string;
@@ -8,64 +10,91 @@ export interface OpenAddUserConfig {
 }
 
 /**
- * Bridges the global `openAddUserDialog` window event to the
- * UserManagementComponent regardless of whether the component is
- * currently mounted.
+ * Bridges the global WidgetEvent.OpenInviteMemberDialog window event to the widget.
  *
- * If UserManagementComponent IS mounted it delegates directly to it.
- * If it is NOT mounted, a standalone AddUserDialogComponent is created
- * dynamically and appended directly to document.body — no parent
- * component required, no z-index issues.
+ * Two cases:
+ *   A) UserManagementComponent IS mounted → delivers via openAddUser$ subject.
+ *   B) UserManagementComponent is NOT mounted → opens AddUserDialogComponent
+ *      standalone via WidgetDialogService (fully CSS-isolated shadow DOM host).
+ *
+ * WidgetDialogService is the single standard place for all window-event-driven
+ * dialogs. To add a new global dialog:
+ *   1. Add a new value to the WidgetEvent enum in libs/constant/src/widget-events.ts.
+ *   2. Create the dialog component (no static open() needed).
+ *   3. Register its window event in a service similar to this one, calling
+ *      WidgetDialogService.open(MyDialogComponent, { theme, setup }).
  *
  * Event usage from client page:
- *   window.dispatchEvent(new CustomEvent('openAddUserDialog', {
+ *   window.dispatchEvent(new CustomEvent(WidgetEvent.OpenInviteMemberDialog, {
  *     detail: { authToken: 'xxx', theme: 'dark' }
  *   }));
  */
 @Injectable({ providedIn: 'root' })
 export class UserManagementBridgeService {
-    /** Emits every time `openAddUserDialog` fires while UserManagementComponent IS mounted. */
-    readonly openAddUser$ = new Subject<void>();
+    /** Emits when the event fires while UserManagementComponent IS mounted. */
+    readonly openAddUser$ = new Subject<OpenAddUserConfig>();
 
-    /** Buffered config when event fires before component mounts. */
-    private _pendingConfig: OpenAddUserConfig | null = null;
+    private readonly _dialogService = inject(WidgetDialogService);
 
-    private readonly _appRef = inject(ApplicationRef);
-    private readonly _injector = inject(EnvironmentInjector);
+    /** Prevents multiple simultaneous standalone dialogs. */
+    private _activeRef: WidgetDialogRef<AddUserDialogComponent> | null = null;
 
     constructor() {
         if (typeof window === 'undefined') return;
-        window.addEventListener('openAddUserDialog', (e: Event) => {
-            const config: OpenAddUserConfig = {
-                authToken: (e as CustomEvent).detail?.authToken ?? '',
-                theme: (e as CustomEvent).detail?.theme ?? '',
-            };
 
-            if (this.openAddUser$.observed) {
-                // UserManagementComponent is subscribed — deliver to it directly
-                this.openAddUser$.next();
-            } else {
-                // Component not mounted — open standalone dialog immediately
-                this._openStandaloneDialog(config);
-            }
-        });
+        // Drain events buffered before Angular bootstrapped.
+        // Always open standalone — UserManagementComponent was NOT mounted when
+        // they fired, so never route buffered events through openAddUser$ even if
+        // the component has subscribed by the time we drain here.
+        // Take only the LAST buffered event — discard duplicate rapid fires.
+        const pending: Event[] = (window as any).__proxyAuth?.pendingDialogEvents ?? [];
+        if (pending.length) {
+            (window as any).__proxyAuth.pendingDialogEvents = [];
+            this._openStandaloneDialog(this._extractConfig(pending[pending.length - 1]));
+        }
+
+        window.addEventListener(WidgetEvent.OpenInviteMemberDialog, (e: Event) => this._handleEvent(e));
     }
 
-    /**
-     * Called by UserManagementComponent in its constructor.
-     * Returns any buffered config so the component can open the dialog on first render.
-     */
-    consumePending(): OpenAddUserConfig | null {
-        const cfg = this._pendingConfig;
-        this._pendingConfig = null;
-        return cfg;
+    private _handleEvent(e: Event): void {
+        const config = this._extractConfig(e);
+        if (this.openAddUser$.observed) {
+            // UserManagementComponent is mounted — let it handle the dialog
+            // so it can refresh its table after a member is added.
+            this.openAddUser$.next(config);
+        } else {
+            this._openStandaloneDialog(config);
+        }
+    }
+
+    private _extractConfig(e: Event): OpenAddUserConfig {
+        const detail = (e as CustomEvent).detail ?? {};
+        return {
+            authToken: detail.authToken ?? '',
+            theme: detail.theme ?? undefined,
+        };
     }
 
     private _openStandaloneDialog(config: OpenAddUserConfig): void {
-        // Direct call - no dynamic import to avoid ES6 module chunks in bundle
-        AddUserDialogComponent.open(this._appRef, this._injector, {
-            authToken: config.authToken,
-            theme: config.theme ?? '',
+        // Guard: don't open a second dialog while one is already visible.
+        if (this._activeRef) return;
+
+        const ref = this._dialogService.open(AddUserDialogComponent, {
+            theme: config.theme,
+            setup: (instance, dialogRef) => {
+                instance.authToken = config.authToken;
+                instance.theme = config.theme ?? '';
+                instance.dialogRef = dialogRef;
+            },
         });
+
+        this._activeRef = ref;
+
+        // Wrap close() so the guard resets when the dialog is dismissed.
+        const originalClose = ref.close.bind(ref);
+        ref.close = () => {
+            this._activeRef = null;
+            originalClose();
+        };
     }
 }

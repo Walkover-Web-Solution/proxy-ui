@@ -17,7 +17,6 @@ export type WidgetConfig = {
     authToken?: string;
     type?: PublicScriptType;
     showCompanyDetails?: boolean;
-    isHidden?: boolean;
     isRolePermission?: boolean;
     theme?: WidgetTheme;
     isPreview?: boolean;

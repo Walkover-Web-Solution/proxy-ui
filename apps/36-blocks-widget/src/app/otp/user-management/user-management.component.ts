@@ -69,7 +69,6 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
     protected readonly ariaCurrent = ['p', 'a', 'g', 'e'].join('');
     readonly exclude_role_ids = input<any[]>([]);
     readonly include_role_ids = input<any[]>([]);
-    readonly isHidden = signal(false);
     readonly showDialog = signal(false);
     readonly showConfirmDialog = signal(false);
     private readonly themeService = inject(WidgetThemeService);
@@ -337,24 +336,15 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
             permission: ['', Validators.required],
             description: [''],
         });
-        const showMgmt = () => this.isHidden.set(false);
-        const hideMgmt = () => this.isHidden.set(true);
-
-        // openAddUserDialog is handled via UserManagementBridgeService
-        // (works even when the event fires before this component mounts)
-        this.bridge.openAddUser$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.addUser());
-
-        // Consume any event that was buffered before this component mounted
-        if (this.bridge.consumePending() !== null) {
-            Promise.resolve().then(() => this.addUser());
-        }
-
-        window.addEventListener('showUserManagement', showMgmt);
-        window.addEventListener('hideUserManagement', hideMgmt);
+        // openAddUserDialog is handled via UserManagementBridgeService.
+        // If this component IS mounted, it handles the dialog via addUser()
+        // so it can integrate with its own state (refresh table, etc.).
+        // If NOT mounted, WidgetDialogService opens a standalone isolated dialog.
+        this.bridge.openAddUser$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+            this.addUser();
+        });
 
         this.destroyRef.onDestroy(() => {
-            window.removeEventListener('showUserManagement', showMgmt);
-            window.removeEventListener('hideUserManagement', hideMgmt);
             this.mainDialogRef?.detach();
             this.confirmDialogRef?.detach();
             this.toastPortalRef?.detach();

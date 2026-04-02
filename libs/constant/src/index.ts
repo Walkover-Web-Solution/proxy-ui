@@ -7,6 +7,7 @@ export * from './mat-icon';
 export * from './jitsi-calling';
 export * from './permission-mapping';
 export * from './verification';
+export * from './widget-events';
 export * from './moment';
 export const IS_USER = 'i';
 export const HELLO_REF_ID = 'h';
