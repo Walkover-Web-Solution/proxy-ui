@@ -1,0 +1,4 @@
+:host {
+    --header-height: 50px;
+    --body-height: calc(100% - var(--header-height));
+}

@@ -7,9 +7,9 @@ import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 const REFERENCE_ID = '4512365c177425472369c0fa8351a15';
 const THEME: WidgetTheme = WidgetTheme.System;
-const TYPE: PublicScriptType = PublicScriptType.Authorization;
+const TYPE: PublicScriptType = PublicScriptType.UserManagement;
 const AUTH_TOKEN =
-    'ZHN5YlVZcjRDR3U5NjNGSk5rVGFRejI0MEdCZWg3RWpUK0xVYzlvajJFMlM4a2F4NUpxaWJjcnJkVzZSeW5RMStZaWJaV1JYandHOXpsTlBVZXBnNUZWbzl5MFJHU0xyNEtMWUkxVjRSS0RiRXBOcER4czlxakJUdThLNUhnOFJGOHV3bXBHclAwN241d3dDM0JmZE9JMlhzNHZHaVZ6cGdvTkdIenJzbnNiMHFGNmhVMUpQbkZPUWRWOVFGcTRPQ2NBU1plM0lKUUFPTmI0cUVSUEJTdz09';
+    'eTdRN2licE5LV3JIZE55NVE3cHFPTHRLVEMwVW5SckxtbVRlcmpkNmtZMTRYWmxpUjhGTkRpRXBud3BaVXRCSE04bWNzdVVVVVpIYTZGMkNrd2kxeFNxNTJ6Wm9IdkhzVE5qR3hpcC9EMVgwaGd5L1FlN0RVNzlnSmNSakxNSFhoZ0IvZk9FZ25xUk1jVXo1MklRZGVIN2s0N1BOalk0OUhTbGkvZUc2M0g5ZUU4WVpyYXd3dElPQlFnWDF4dlZVc0pzMUc4WUR0Y3dzRzlocTF5c29NZz09';
 
 @Component({
     selector: 'proxy-root',
@@ -68,13 +68,14 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                 if (TYPE) {
                     widgetConfig['type'] = TYPE;
                     if (TYPE === PublicScriptType.Authorization) {
+                        // Opens the widget directly in a dialog; used for Block Preview in the admin panel's Design & Code section
                         widgetConfig['isPreview'] = true;
                     } else {
                         widgetConfig['authToken'] = AUTH_TOKEN;
 
                         if (TYPE === PublicScriptType.UserManagement) {
-                            // True If you want show Role and Permission tab
-                            widgetConfig['isRolePermission'] = true;
+                            // Enables the Role & Permission tab in the User Management widget
+                            widgetConfig['isRolePermission'] = false;
                         }
                     }
                 }
