@@ -35,12 +35,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
         MatRadioModule,
     ],
     template: `
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 mat-dialog-title>{{ dialogTitle }}</h2>
-            <button mat-icon-button mat-dialog-close (click)="onClose()">
-                <mat-icon>close</mat-icon>
-            </button>
-        </div>
+        <h2 matDialogTitle>{{ dialogTitle }}</h2>
         <mat-dialog-content class="create-plan-content">
             <div class="d-flex flex-column h-100">
                 <p class="mat-body-2 text-secondary mb-3">
