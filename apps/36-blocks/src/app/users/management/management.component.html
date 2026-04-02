@@ -378,7 +378,7 @@
         </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-        <button matButton (click)="closeDialog()">Cancel</button>
+        <button matButton (click)="closeDialog()">Close</button>
         <button matButton="filled" (click)="submitDialog()" [disabled]="!dialogRoleForm.valid">
             {{ isEditMode ? 'Update Role' : 'Add Role' }}
         </button>
@@ -404,7 +404,7 @@
         </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-        <button matButton (click)="closePermissionDialog()">Cancel</button>
+        <button matButton (click)="closePermissionDialog()">Close</button>
         <button matButton="filled" (click)="submitPermissionDialog()" [disabled]="!dialogPermissionForm.valid">
             {{ isEditPermissionMode ? 'Update Permission' : 'Add Permission' }}
         </button>

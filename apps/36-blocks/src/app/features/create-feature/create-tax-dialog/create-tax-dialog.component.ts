@@ -59,7 +59,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
         </mat-dialog-content>
 
         <mat-dialog-actions align="end">
-            <button mat-button (click)="onClose()">Cancel</button>
+            <button mat-button (click)="onClose()">Close</button>
             <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!taxForm.valid">
                 {{ submitButtonText }}
             </button>

@@ -28,7 +28,7 @@ import { HttpClient } from '@angular/common/http';
         MatSlideToggleModule,
     ],
     template: `
-        <h2 matDialogTitle class="m-0">{{ dialogTitle }}</h2>
+        <h2 matDialogTitle>{{ dialogTitle }}</h2>
         <mat-dialog-content>
             <form [formGroup]="metricForm" class="metric-form">
                 @for (fieldKey of getFormFields(); track fieldKey) { @if (!isFieldHidden(fieldKey)) {
@@ -46,7 +46,7 @@ import { HttpClient } from '@angular/common/http';
         </mat-dialog-content>
 
         <mat-dialog-actions align="end">
-            <button mat-button (click)="onClose()">Cancel</button>
+            <button mat-button (click)="onClose()">Close</button>
             <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!metricForm.valid">
                 {{ submitButtonText }}
             </button>
