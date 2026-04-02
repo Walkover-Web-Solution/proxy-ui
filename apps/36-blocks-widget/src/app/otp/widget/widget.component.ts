@@ -118,7 +118,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     @Input() public version: string = WidgetVersion.V1;
     @Input() public exclude_role_ids: any[] = [];
     @Input() public include_role_ids: any[] = [];
-    @Input() public isHidden: boolean = false;
     @Input() public input_fields: string = InputFields.TOP;
     @Input() public show_social_login_icons: boolean = false;
     @Input() public isRegisterFormOnly: boolean = false;

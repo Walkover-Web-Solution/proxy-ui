@@ -1,9 +1,4 @@
-<div
-    #container
-    [class.dark]="isDark"
-    [class]="isHidden() ? 'hidden' : 'flex'"
-    class="h-full flex-col bg-transparent overflow-y-auto"
->
+<div #container [class.dark]="isDark" class="flex h-full flex-col bg-transparent overflow-y-auto">
     <!-- ── Top header bar (hidden when only Members tab is available) ───── -->
     @if (hasMultipleTabs()) {
     <header

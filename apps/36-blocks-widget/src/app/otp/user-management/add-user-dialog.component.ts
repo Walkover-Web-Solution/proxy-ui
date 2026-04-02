@@ -1,15 +1,10 @@
 import {
-    ApplicationRef,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    ComponentRef,
     DestroyRef,
-    EnvironmentInjector,
-    OnDestroy,
     OnInit,
     computed,
-    createComponent,
     inject,
     signal,
 } from '@angular/core';
@@ -23,16 +18,12 @@ import { IAppState } from '../store/app.state';
 import { otpActions } from '../store/actions';
 import { rolesData, addUserData } from '../store/selectors';
 import { WidgetTheme } from '@proxy/constant';
-import { ensureAddUserDialogStyles } from '../service/widget-portal.service';
+import { WidgetDialogRef } from '../service/widget-dialog.service';
 
 /**
- * Fully standalone Add-User dialog that mounts itself directly onto
- * document.body so it is never blocked by a parent stacking context.
- *
- * Lifecycle:
- *   1. Call AddUserDialogComponent.open(appRef, injector, config) to create.
- *   2. The dialog appends its own host <div> to document.body.
- *   3. On close the host is removed and the ComponentRef is destroyed.
+ * Standalone Add-User dialog.
+ * Opened exclusively via WidgetDialogService.open() — never instantiated
+ * directly. WidgetDialogService handles shadow DOM isolation and CSS reset.
  */
 @Component({
     selector: 'add-user-dialog',
@@ -144,10 +135,12 @@ import { ensureAddUserDialogStyles } from '../service/widget-portal.service';
         </div>
     `,
 })
-export class AddUserDialogComponent implements OnInit, OnDestroy {
-    /** Config passed by the bridge service before the component is attached. */
+export class AddUserDialogComponent implements OnInit {
+    /** Set by WidgetDialogService before onInit via setup callback. */
     authToken = '';
     theme = '';
+    /** Injected by WidgetDialogService — used to close the dialog. */
+    dialogRef!: WidgetDialogRef<AddUserDialogComponent>;
 
     readonly roles = signal<any[]>([]);
     form!: FormGroup;
@@ -157,17 +150,19 @@ export class AddUserDialogComponent implements OnInit, OnDestroy {
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly destroyRef = inject(DestroyRef);
 
-    /** The host element appended to document.body. */
-    private _hostEl: HTMLDivElement | null = null;
-    /** Self-reference so we can destroy from within. */
-    private _selfRef: ComponentRef<AddUserDialogComponent> | null = null;
-
     private readonly _systemDark = signal(
         typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
     );
     readonly isDark = computed(() => {
         if (this.theme === WidgetTheme.Dark) return true;
         if (this.theme === WidgetTheme.Light) return false;
+        if (typeof document !== 'undefined') {
+            const r = document.documentElement;
+            const b = document.body;
+            if (r.classList.contains('dark') || b.classList.contains('dark')) return true;
+            if (r.getAttribute('data-theme') === 'dark' || b.getAttribute('data-theme') === 'dark') return true;
+            if (r.getAttribute('data-mode') === 'dark' || b.getAttribute('data-mode') === 'dark') return true;
+        }
         return this._systemDark();
     });
 
@@ -178,11 +173,6 @@ export class AddUserDialogComponent implements OnInit, OnDestroy {
             mobileNumber: ['', [Validators.pattern(/^(\+?[1-9]\d{1,14}|[0-9]{10})$/)]],
             role: [''],
         });
-
-        // Keep host element dark class in sync
-        if (this._hostEl) {
-            this._hostEl.classList.toggle('dark', this.isDark());
-        }
 
         // Fetch roles for the dropdown
         this.store.dispatch(otpActions.getRoles({ authToken: this.authToken, itemsPerPage: 1000 }));
@@ -210,19 +200,11 @@ export class AddUserDialogComponent implements OnInit, OnDestroy {
             const mq = window.matchMedia('(prefers-color-scheme: dark)');
             const listener = (e: MediaQueryListEvent) => {
                 this._systemDark.set(e.matches);
-                if (this._hostEl) {
-                    this._hostEl.classList.toggle('dark', this.isDark());
-                }
                 this.cdr.markForCheck();
             };
             mq.addEventListener('change', listener);
             this.destroyRef.onDestroy(() => mq.removeEventListener('change', listener));
         }
-    }
-
-    ngOnDestroy(): void {
-        this._hostEl?.remove();
-        this._hostEl = null;
     }
 
     save(): void {
@@ -243,47 +225,6 @@ export class AddUserDialogComponent implements OnInit, OnDestroy {
     }
 
     close(): void {
-        if (this._selfRef) {
-            this._selfRef.destroy();
-            this._selfRef = null;
-        }
-    }
-
-    /**
-     * Factory: dynamically creates the component, appends it to body, and returns the ref.
-     */
-    static open(
-        appRef: ApplicationRef,
-        injector: EnvironmentInjector,
-        config: { authToken: string; theme: string }
-    ): ComponentRef<AddUserDialogComponent> {
-        ensureAddUserDialogStyles();
-
-        const host = document.createElement('div');
-        host.setAttribute('data-widget-overlay', '');
-        host.classList.toggle(
-            'dark',
-            (() => {
-                if (config.theme === WidgetTheme.Dark) return true;
-                if (config.theme === WidgetTheme.Light) return false;
-                return window.matchMedia('(prefers-color-scheme: dark)').matches;
-            })()
-        );
-        document.body.appendChild(host);
-
-        const ref = createComponent(AddUserDialogComponent, {
-            environmentInjector: injector,
-            hostElement: host,
-        });
-
-        ref.instance.authToken = config.authToken;
-        ref.instance.theme = config.theme;
-        ref.instance._hostEl = host;
-        ref.instance._selfRef = ref;
-
-        appRef.attachView(ref.hostView);
-        ref.changeDetectorRef.detectChanges();
-
-        return ref;
+        this.dialogRef?.close();
     }
 }

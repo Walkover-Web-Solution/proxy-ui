@@ -54,13 +54,12 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
             const widgetConfig: WidgetConfig = {
                 referenceId: REFERENCE_ID, // Always pass referenceId
                 // showCompanyDetails: false,
-                // isHidden: true,
                 // loginRedirectUrl: 'https://www.google.com',
                 target: '_self',
-                success: (data) => {
+                success: (data: unknown) => {
                     console.log('success response', data);
                 },
-                failure: (error) => {
+                failure: (error: unknown) => {
                     console.log('failure reason', error);
                 },
             };
