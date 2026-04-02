@@ -42,7 +42,7 @@ import { WidgetThemeService } from '../service/widget-theme.service';
     imports: [CommonModule, ReactiveFormsModule, ToastComponent, ConfirmDialogComponent],
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.scss'],
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.ShadowDom,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserProfileComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {

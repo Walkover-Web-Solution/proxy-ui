@@ -7,6 +7,7 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
+    ViewEncapsulation,
     effect,
     inject,
     input,
@@ -28,8 +29,9 @@ import { EMAIL_REGEX } from '@proxy/regex';
     selector: 'organization-details',
     imports: [CommonModule, ReactiveFormsModule, ToastComponent],
     templateUrl: './organization-details.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['./organization-details.component.scss'],
+    encapsulation: ViewEncapsulation.ShadowDom,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganizationDetailsComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
     public authToken = input<string>();

@@ -55,3 +55,8 @@ $mat-icon-sizes: (
         background-color: var(--color-email-primary-light);
     }
 }
+
+// Only works for button (suffix icon positioning inside mat-button)
+.mat-icon-suffix {
+    @apply order-1 !mr-0 !ml-2;
+}

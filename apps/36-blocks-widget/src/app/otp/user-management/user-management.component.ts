@@ -8,6 +8,7 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
+    ViewEncapsulation,
     computed,
     effect,
     inject,
@@ -56,6 +57,7 @@ interface PageEvent {
     imports: [CommonModule, FormsModule, ReactiveFormsModule, ToastComponent],
     templateUrl: './user-management.component.html',
     styleUrls: ['./user-management.component.scss'],
+    encapsulation: ViewEncapsulation.ShadowDom,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy {
