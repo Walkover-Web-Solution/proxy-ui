@@ -1,12 +1,15 @@
 <div
     #container
-    [style.display]="isHidden() ? 'none' : 'flex'"
     [class.dark]="isDark"
+    [class]="isHidden() ? 'hidden' : 'flex'"
     class="h-full flex-col bg-transparent overflow-y-auto"
 >
     <!-- ── Top header bar (hidden when only Members tab is available) ───── -->
     @if (hasMultipleTabs()) {
-    <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+    <header
+        class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800"
+        [style.height]="'var(--header-height)'"
+    >
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex h-12 items-center gap-3">
                 <div class="flex size-7 items-center justify-center rounded-md bg-indigo-600">
@@ -23,8 +26,11 @@
     }
 
     <!-- ── Main layout: sidebar + content ───────────────────────────────── -->
-    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col lg:flex-row gap-x-6 py-5">
+    <div
+        class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
+        [style.height]="hasMultipleTabs() ? 'var(--body-height)' : '100%'"
+    >
+        <div class="flex flex-col lg:flex-row gap-x-6 h-full py-5">
             <!-- ── Nav: only rendered when multiple tabs exist ── -->
             @if (hasMultipleTabs()) {
 
@@ -221,188 +227,181 @@
             <main class="flex-1 min-w-0 overflow-y-auto lg:px-4 pt-3 lg:pt-0">
                 <!-- ══ MEMBERS ══════════════════════════════════════════ -->
                 @if (activeTab === UserManagementTab.Members) {
-                <div>
-                    <!-- Header -->
-                    <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
-                        <div>
-                            <h2 class="text-sm font-bold text-gray-900 dark:text-white">Team members</h2>
-                            <p class="w-section-subtitle">Manage who has access to this workspace.</p>
-                        </div>
-                        @if (canAddUser) {
-                        <button type="button" (click)="addUser()" class="w-btn-primary-sm">
-                            <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path
-                                    d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
-                                />
-                            </svg>
-                            Invite member
-                        </button>
-                        }
+                <!-- Header -->
+                <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+                    <div>
+                        <h2 class="text-sm font-bold text-gray-900 dark:text-white">Team members</h2>
+                        <p class="w-section-subtitle">Manage who has access to this workspace.</p>
                     </div>
-
-                    <!-- Search -->
-                    <div class="relative mb-6 px-px">
-                        <svg class="w-search-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    @if (canAddUser) {
+                    <button type="button" (click)="addUser()" class="w-btn-primary-sm">
+                        <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path
-                                fill-rule="evenodd"
-                                d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-                                clip-rule="evenodd"
+                                d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
                             />
                         </svg>
-                        <input
-                            type="search"
-                            [(ngModel)]="searchTerm"
-                            (input)="applyFilter()"
-                            placeholder="Search members..."
-                            autocomplete="off"
-                            class="w-input-search"
+                        Invite member
+                    </button>
+                    }
+                </div>
+
+                <!-- Search -->
+                <div class="relative mb-6 px-px">
+                    <svg class="w-search-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path
+                            fill-rule="evenodd"
+                            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                            clip-rule="evenodd"
                         />
-                    </div>
+                    </svg>
+                    <input
+                        type="search"
+                        [(ngModel)]="searchTerm"
+                        (input)="applyFilter()"
+                        placeholder="Search members..."
+                        autocomplete="off"
+                        class="w-input-search"
+                    />
+                </div>
 
-                    <!-- Skeletons -->
-                    @if (isUsersLoading && !skipSkeletonLoading) {
-                    <div class="flex flex-col gap-3">
-                        @for (s of [1,2,3]; track s) {
-                        <div class="w-card px-5 py-4 flex items-center justify-between gap-4 animate-pulse">
-                            <div class="flex min-w-0 items-center gap-x-3">
-                                <div class="size-10 flex-none rounded-full bg-gray-200 dark:bg-gray-700"></div>
-                                <div class="min-w-0 flex-auto space-y-1.5">
-                                    <div class="h-3 w-32 rounded bg-gray-200 dark:bg-gray-700"></div>
-                                    <div class="h-2.5 w-44 rounded bg-gray-200 dark:bg-gray-700"></div>
-                                </div>
-                            </div>
-                            <div class="flex shrink-0 items-center gap-x-2">
-                                <div class="h-2.5 w-14 rounded bg-gray-200 dark:bg-gray-700"></div>
-                                <div class="h-7 w-12 rounded-md bg-gray-200 dark:bg-gray-700"></div>
-                                <div class="h-7 w-14 rounded-md bg-gray-200 dark:bg-gray-700"></div>
-                            </div>
-                        </div>
-                        }
-                    </div>
-                    }
-
-                    <!-- Empty state -->
-                    @if (!isUsersLoading || skipSkeletonLoading) { @if (userData.length === 0) {
-                    <div class="flex flex-col items-center justify-center py-16 text-center">
-                        <svg
-                            class="size-12 text-gray-300 dark:text-gray-600 mb-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            stroke-width="1"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
-                            />
-                        </svg>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">No team members yet</p>
-                        <p class="w-section-subtitle">Invite someone to get started.</p>
-                    </div>
-                    }
-
-                    <!-- Member cards -->
-                    <div class="flex flex-col gap-3">
-                        @for (user of userData; track user; let i = $index) {
-                        <div
-                            class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3"
-                        >
-                            <div class="flex min-w-0 items-center gap-x-3">
-                                <div class="w-avatar size-9">
-                                    {{ (user.name || user.email || '?').charAt(0).toUpperCase() }}
-                                </div>
-                                <div class="min-w-0 flex-auto overflow-hidden">
-                                    <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                                        {{ user.name || '—' }}
-                                    </p>
-                                    <p
-                                        class="mt-0.5 flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 truncate"
-                                    >
-                                        <svg class="size-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                            <path
-                                                d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z"
-                                            />
-                                            <path
-                                                d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z"
-                                            />
-                                        </svg>
-                                        {{ user.email }}
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex shrink-0 items-center gap-x-2 pl-12 sm:pl-0">
-                                <span class="w-badge-green inline-flex">
-                                    {{ user.role || 'Member' }}
-                                </span>
-                                @if (canEditUser) {
-                                <button
-                                    type="button"
-                                    (click)="editUser(user, i)"
-                                    class="w-btn-secondary-sm px-2.5 py-1"
-                                >
-                                    Edit<span class="sr-only">, {{ user.name }}</span>
-                                </button>
-                                } @if (canRemoveUser) {
-                                <button type="button" (click)="deleteUser(user, i)" class="w-btn-danger-sm px-2.5 py-1">
-                                    Remove<span class="sr-only">, {{ user.name }}</span>
-                                </button>
-                                }
+                <!-- Skeletons -->
+                @if (isUsersLoading && !skipSkeletonLoading) {
+                <div class="flex flex-col gap-3">
+                    @for (s of [1,2,3]; track s) {
+                    <div class="w-card px-5 py-4 flex items-center justify-between gap-4 animate-pulse">
+                        <div class="flex min-w-0 items-center gap-x-3">
+                            <div class="size-10 flex-none rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                            <div class="min-w-0 flex-auto space-y-1.5">
+                                <div class="h-3 w-32 rounded bg-gray-200 dark:bg-gray-700"></div>
+                                <div class="h-2.5 w-44 rounded bg-gray-200 dark:bg-gray-700"></div>
                             </div>
                         </div>
-                        }
-                    </div>
-                    }
-
-                    <!-- Pagination -->
-                    @if (totalUsers > currentPageSize) {
-                    <nav
-                        class="flex flex-col lg:flex-row items-center justify-between gap-3 border-t border-gray-200 dark:border-gray-700 pt-4 mt-2"
-                        aria-label="Pagination"
-                    >
-                        <p class="text-xs text-gray-700 dark:text-gray-300 text-center lg:text-left">
-                            Showing <span class="font-medium">{{ currentPageIndex * currentPageSize + 1 }}</span
-                            >–<span class="font-medium">{{
-                                (currentPageIndex + 1) * currentPageSize > totalUsers
-                                    ? totalUsers
-                                    : (currentPageIndex + 1) * currentPageSize
-                            }}</span>
-                            of <span class="font-medium">{{ totalUsers }}</span>
-                        </p>
-                        <div class="flex gap-2">
-                            <button
-                                type="button"
-                                (click)="
-                                    onUsersPageChange({
-                                        pageIndex: currentPageIndex - 1,
-                                        pageSize: currentPageSize,
-                                        length: totalUsers
-                                    })
-                                "
-                                [disabled]="currentPageIndex === 0"
-                                class="w-btn-secondary"
-                            >
-                                Previous
-                            </button>
-                            <button
-                                type="button"
-                                (click)="
-                                    onUsersPageChange({
-                                        pageIndex: currentPageIndex + 1,
-                                        pageSize: currentPageSize,
-                                        length: totalUsers
-                                    })
-                                "
-                                [disabled]="(currentPageIndex + 1) * currentPageSize >= totalUsers"
-                                class="w-btn-secondary"
-                            >
-                                Next
-                            </button>
+                        <div class="flex shrink-0 items-center gap-x-2">
+                            <div class="h-2.5 w-14 rounded bg-gray-200 dark:bg-gray-700"></div>
+                            <div class="h-7 w-12 rounded-md bg-gray-200 dark:bg-gray-700"></div>
+                            <div class="h-7 w-14 rounded-md bg-gray-200 dark:bg-gray-700"></div>
                         </div>
-                    </nav>
+                    </div>
                     }
                 </div>
                 }
+
+                <!-- Empty state -->
+                @if (!isUsersLoading || skipSkeletonLoading) { @if (userData.length === 0) {
+                <div class="flex flex-col items-center justify-center py-16 text-center">
+                    <svg
+                        class="size-12 text-gray-300 dark:text-gray-600 mb-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
+                        />
+                    </svg>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">No team members yet</p>
+                    <p class="w-section-subtitle">Invite someone to get started.</p>
+                </div>
+                }
+
+                <!-- Member cards -->
+                <div class="flex flex-col gap-3">
+                    @for (user of userData; track user; let i = $index) {
+                    <div
+                        class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3"
+                    >
+                        <div class="flex min-w-0 items-center gap-x-3">
+                            <div class="w-avatar size-9">
+                                {{ (user.name || user.email || '?').charAt(0).toUpperCase() }}
+                            </div>
+                            <div class="min-w-0 flex-auto overflow-hidden">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                                    {{ user.name || '—' }}
+                                </p>
+                                <p
+                                    class="mt-0.5 flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 truncate"
+                                >
+                                    <svg class="size-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <path
+                                            d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z"
+                                        />
+                                        <path
+                                            d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z"
+                                        />
+                                    </svg>
+                                    {{ user.email }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex shrink-0 items-center gap-x-2 pl-12 sm:pl-0">
+                            <span class="w-badge-green inline-flex">
+                                {{ user.role || 'Member' }}
+                            </span>
+                            @if (canEditUser) {
+                            <button type="button" (click)="editUser(user, i)" class="w-btn-secondary-sm px-2.5 py-1">
+                                Edit<span class="sr-only">, {{ user.name }}</span>
+                            </button>
+                            } @if (canRemoveUser) {
+                            <button type="button" (click)="deleteUser(user, i)" class="w-btn-danger-sm px-2.5 py-1">
+                                Remove<span class="sr-only">, {{ user.name }}</span>
+                            </button>
+                            }
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+
+                <!-- Pagination -->
+                @if (totalUsers > currentPageSize) {
+                <nav
+                    class="flex flex-col lg:flex-row items-center justify-between gap-3 border-t border-gray-200 dark:border-gray-700 pt-4 mt-2"
+                    aria-label="Pagination"
+                >
+                    <p class="text-xs text-gray-700 dark:text-gray-300 text-center lg:text-left">
+                        Showing <span class="font-medium">{{ currentPageIndex * currentPageSize + 1 }}</span
+                        >–<span class="font-medium">{{
+                            (currentPageIndex + 1) * currentPageSize > totalUsers
+                                ? totalUsers
+                                : (currentPageIndex + 1) * currentPageSize
+                        }}</span>
+                        of <span class="font-medium">{{ totalUsers }}</span>
+                    </p>
+                    <div class="flex gap-2">
+                        <button
+                            type="button"
+                            (click)="
+                                onUsersPageChange({
+                                    pageIndex: currentPageIndex - 1,
+                                    pageSize: currentPageSize,
+                                    length: totalUsers
+                                })
+                            "
+                            [disabled]="currentPageIndex === 0"
+                            class="w-btn-secondary"
+                        >
+                            Previous
+                        </button>
+                        <button
+                            type="button"
+                            (click)="
+                                onUsersPageChange({
+                                    pageIndex: currentPageIndex + 1,
+                                    pageSize: currentPageSize,
+                                    length: totalUsers
+                                })
+                            "
+                            [disabled]="(currentPageIndex + 1) * currentPageSize >= totalUsers"
+                            class="w-btn-secondary"
+                        >
+                            Next
+                        </button>
+                    </div>
+                </nav>
+                } }
 
                 <!-- ══ ROLES ══════════════════════════════════════════ -->
                 @if (activeTab === UserManagementTab.Roles && pass()) {
@@ -413,7 +412,7 @@
                             <h2 class="text-sm font-bold text-gray-900 dark:text-white">Roles</h2>
                             <p class="w-section-subtitle">Define roles and their associated permissions.</p>
                         </div>
-                        <button type="button" (click)="openAddRoleDialog()" class="w-btn-primary-sm">
+                        <button type="button" (click)="addRole()" class="w-btn-primary-sm">
                             <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path
                                     d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
@@ -480,7 +479,6 @@
                                         role.name
                                     }}</span>
                                     @if (role.is_default) {
-                                    <span class="w-badge">Default</span>
                                     <span class="w-badge">Default</span>
                                     }
                                 </div>
@@ -676,6 +674,20 @@
                             <p class="px-3.5 py-3 text-sm text-gray-500 dark:text-gray-400 italic">
                                 No permissions available
                             </p>
+                            } @if (permissions.length > 0) {
+                            <label
+                                class="w-checkbox-row border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50"
+                            >
+                                <input
+                                    type="checkbox"
+                                    [checked]="allRolePermissionsSelected()"
+                                    [indeterminate]="someRolePermissionsSelected()"
+                                    (change)="toggleAllRolePermissions($event)"
+                                    class="w-checkbox"
+                                    aria-label="Select all permissions"
+                                />
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">Select all</span>
+                            </label>
                             } @for (p of permissions; track p.id) {
                             <label class="w-checkbox-row">
                                 <input
@@ -750,17 +762,18 @@
                     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                         <div>
                             <label for="user-name" class="w-label"
-                                >Full name <span class="text-red-500" aria-hidden="true">*</span></label
+                                >Full name <span class="text-red-500" aria-hidden="true">*</span>
+                                {{ isEditUser }}</label
                             >
                             <input
                                 id="user-name"
                                 formControlName="name"
                                 type="text"
                                 placeholder="Jane Smith"
-                                [attr.readonly]="isEditUser ? '' : null"
+                                [attr.readonly]="isEditUser || null"
                                 [attr.aria-readonly]="isEditUser ? 'true' : null"
                                 aria-describedby="user-name-error"
-                                class="w-input-readonly read-only:cursor-default read-only:opacity-60"
+                                class="w-input-readonly"
                             />
                             @if (addUserForm.get('name')?.touched && addUserForm.get('name')?.hasError('required')) {
                             <p id="user-name-error" role="alert" class="w-field-error">Name is required</p>
@@ -800,10 +813,10 @@
                             formControlName="email"
                             type="email"
                             placeholder="jane@company.com"
-                            [attr.readonly]="isEditUser ? '' : null"
+                            [attr.readonly]="isEditUser || null"
                             [attr.aria-readonly]="isEditUser ? 'true' : null"
                             aria-describedby="user-email-error"
-                            class="w-input-readonly read-only:cursor-default read-only:opacity-60"
+                            class="w-input-readonly"
                         />
                         @if (addUserForm.get('email')?.touched && addUserForm.get('email')?.hasError('required')) {
                         <p id="user-email-error" role="alert" class="w-field-error">Email is required</p>
@@ -820,10 +833,10 @@
                             formControlName="mobileNumber"
                             type="tel"
                             placeholder="917001002003"
-                            [attr.readonly]="isEditUser ? '' : null"
+                            [attr.readonly]="isEditUser || null"
                             [attr.aria-readonly]="isEditUser ? 'true' : null"
                             aria-describedby="user-mobile-hint user-mobile-error"
-                            class="w-input-readonly read-only:cursor-default read-only:opacity-60"
+                            class="w-input-readonly"
                         />
                         @if (addUserForm.get('mobileNumber')?.touched &&
                         addUserForm.get('mobileNumber')?.hasError('pattern')) {
@@ -839,7 +852,21 @@
                     <div>
                         <label id="user-extra-perms-label" class="w-label">Additional permissions</label>
                         <div role="group" aria-labelledby="user-extra-perms-label" class="w-checkbox-group">
-                            @for (p of getAvailableAdditionalPermissions(); track p.id) {
+                            @if (getAvailableAdditionalPermissions().length > 0) {
+                            <label
+                                class="w-checkbox-row border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50"
+                            >
+                                <input
+                                    type="checkbox"
+                                    [checked]="allUserPermissionsSelected()"
+                                    [indeterminate]="someUserPermissionsSelected()"
+                                    (change)="toggleAllUserPermissions($event)"
+                                    class="w-checkbox"
+                                    aria-label="Select all additional permissions"
+                                />
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">Select all</span>
+                            </label>
+                            } @for (p of getAvailableAdditionalPermissions(); track p.id) {
                             <label class="w-checkbox-row">
                                 <input
                                     type="checkbox"

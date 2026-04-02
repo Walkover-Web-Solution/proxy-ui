@@ -8,7 +8,7 @@ export const environment = {
     production: false,
     env: 'local',
     apiUrl: 'https://apitest.msg91.com/api',
-    baseUrl: 'https://test.proxy.msg91.com',
+    baseUrl: 'http://localhost:4200',
     msgMidProxy: '',
     ...envVariables,
     // hCaptcha official test sitekey — whitelisted for localhost, suppresses the "localhost detected" warning
