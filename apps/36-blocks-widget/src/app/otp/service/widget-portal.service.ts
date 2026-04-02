@@ -1,37 +1,54 @@
 import { ApplicationRef, Injectable, Injector, inject } from '@angular/core';
 import { DomPortal, DomPortalOutlet } from '@angular/cdk/portal';
-import { environment } from '../../../environments/environment';
-
-const STYLE_ELEMENT_ID = 'widget-overlay-styles';
 
 /**
- * Injects the compiled widget styles.css into document.head so that w-*
- * utility classes work on elements teleported outside the Shadow DOM.
- *
- * The CSS is inlined into proxy-auth.js at build time by build-elements.js
- * and stored in window.__proxyAuth.inlinedStyles. This ensures the widget
- * works as a single self-contained JS file without external style dependencies.
+ * Lazily-constructed CSSStyleSheet shared across all portal shadow roots.
+ * Using adoptedStyleSheets means the CSS bytes are parsed once and shared.
  */
-export function ensureAddUserDialogStyles(): void {
-    ensureOverlayStyles();
+let _sharedSheet: CSSStyleSheet | null = null;
+
+function getWidgetCSS(): string | null {
+    return (window as any).__proxyAuth?.inlinedStyles ?? null;
 }
 
-function ensureOverlayStyles(): void {
-    if (document.getElementById(STYLE_ELEMENT_ID)) return;
+function getOrCreateSharedSheet(): CSSStyleSheet | null {
+    if (_sharedSheet) return _sharedSheet;
+    const css = getWidgetCSS();
+    if (!css) return null;
+    try {
+        const sheet = new CSSStyleSheet();
+        sheet.replaceSync(css);
+        _sharedSheet = sheet;
+        return sheet;
+    } catch {
+        return null;
+    }
+}
 
-    // Get inlined CSS from global object (injected by build-elements.js)
-    const inlinedCSS = (window as any).__proxyAuth?.inlinedStyles;
-
-    if (!inlinedCSS) {
+/**
+ * Attaches widget CSS into a shadow root.
+ * Fast path: adoptedStyleSheets (shared, zero-copy).
+ * Fallback: <style> tag inside the shadow root.
+ */
+function adoptWidgetStyles(shadowRoot: ShadowRoot): void {
+    const css = getWidgetCSS();
+    if (!css) {
         console.warn('[proxy-auth] Widget overlay styles not found in bundle. Dialogs may not render correctly.');
         return;
     }
 
-    const style = document.createElement('style');
-    style.id = STYLE_ELEMENT_ID;
-    style.textContent = inlinedCSS;
-    document.head.appendChild(style);
+    const sheet = getOrCreateSharedSheet();
+    if (sheet) {
+        shadowRoot.adoptedStyleSheets = [sheet];
+    } else {
+        const style = document.createElement('style');
+        style.textContent = css;
+        shadowRoot.appendChild(style);
+    }
 }
+
+/** @deprecated kept for backwards compatibility — no longer needed */
+export function ensureAddUserDialogStyles(): void {}
 
 /**
  * Handle returned by WidgetPortalService.attach().
@@ -41,7 +58,8 @@ export class WidgetPortalRef {
     constructor(
         private readonly _portal: DomPortal,
         private readonly _outlet: DomPortalOutlet,
-        private readonly _placeholder: Comment
+        private readonly _placeholder: Comment,
+        private readonly _shadowHost: HTMLElement
     ) {}
 
     detach(): void {
@@ -52,6 +70,8 @@ export class WidgetPortalRef {
         this._placeholder.parentNode?.insertBefore(this._portal.element, this._placeholder);
         this._placeholder.parentNode?.removeChild(this._placeholder);
         this._outlet.dispose();
+        // Remove the shadow host from body
+        this._shadowHost.parentNode?.removeChild(this._shadowHost);
     }
 }
 
@@ -60,9 +80,10 @@ export class WidgetPortalRef {
  * to document.body so it escapes any stacking-context constraints imposed
  * by the client page's container hierarchy.
  *
- * This mirrors how Angular CDK Overlay / Angular Material Dialog works
- * internally — the Angular view stays attached to the original component
- * tree (all template bindings continue to work), only the DOM node moves.
+ * The teleported element is placed inside a NEW Shadow DOM host appended to
+ * document.body. This means client CSS (including client Tailwind, * selectors,
+ * etc.) cannot bleed into the dialog — the shadow boundary blocks it.
+ * Widget CSS is injected directly into the shadow root via adoptedStyleSheets.
  *
  * Usage in a component:
  *
@@ -90,27 +111,56 @@ export class WidgetPortalService {
 
     /**
      * Moves `element` from wherever it currently lives (inside Shadow DOM)
-     * to a new host div that is a direct child of document.body.
+     * into a new Shadow DOM host that is a direct child of document.body.
      *
-     * Returns a WidgetPortalRef whose detach() moves the element back.
+     * Returns a WidgetPortalRef whose detach() moves the element back and
+     * removes the shadow host from the DOM.
      */
     attach(element: HTMLElement): WidgetPortalRef {
-        ensureOverlayStyles();
-
         // Leave a comment node as a placeholder so we know where to reinsert
         const placeholder = document.createComment('widget-portal-placeholder');
         element.parentNode!.insertBefore(placeholder, element);
 
-        // Host container appended directly to body
-        const host = document.createElement('div');
-        host.setAttribute('data-widget-overlay', '');
-        host.classList.add('proxy-widget-portal');
-        document.body.appendChild(host);
+        // Outer host — sits in document.body light DOM, just a positional anchor
+        const shadowHost = document.createElement('div');
+        shadowHost.setAttribute('data-widget-overlay', '');
+        // Reset ALL inherited CSS properties on the shadow host itself.
+        // Inherited properties (font-family, text-transform, color, etc.) propagate
+        // from the host element's computed style into the shadow root — this stops them.
+        shadowHost.style.cssText = [
+            'all:initial',
+            'display:block',
+            'position:static',
+            'font-family:Inter,ui-sans-serif,system-ui,sans-serif',
+            'font-size:16px',
+            'line-height:1.5',
+            'color:inherit',
+            'text-transform:none',
+            'letter-spacing:normal',
+            'word-spacing:normal',
+        ].join(';');
+        document.body.appendChild(shadowHost);
 
-        const outlet = new DomPortalOutlet(host, this._appRef, this._injector);
+        // Shadow root — client stylesheet rules cannot cross this boundary.
+        // Inherited properties are reset via the host's inline style above.
+        const shadowRoot = shadowHost.attachShadow({ mode: 'open' });
+
+        // Inject widget CSS into the shadow root
+        adoptWidgetStyles(shadowRoot);
+
+        // Inner slot where Angular will render the portal content.
+        // An extra all:initial reset here covers any inherited properties that
+        // slipped through (belt-and-suspenders).
+        const inner = document.createElement('div');
+        inner.classList.add('proxy-widget-portal');
+        inner.style.cssText =
+            'all:initial;display:contents;text-transform:none;font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:16px;line-height:1.5';
+        shadowRoot.appendChild(inner);
+
+        const outlet = new DomPortalOutlet(inner, this._appRef, this._injector);
         const portal = new DomPortal(element);
         outlet.attach(portal);
 
-        return new WidgetPortalRef(portal, outlet, placeholder);
+        return new WidgetPortalRef(portal, outlet, placeholder, shadowHost);
     }
 }
