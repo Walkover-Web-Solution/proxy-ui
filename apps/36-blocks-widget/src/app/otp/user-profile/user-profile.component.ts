@@ -21,7 +21,7 @@ import { ToastService } from '../service/toast.service';
 import { ToastComponent } from '../service/toast.component';
 import { ConfirmDialogComponent } from '../ui/confirm-dialog.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil, take, filter } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil, take, filter, skip } from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { select, Store } from '@ngrx/store';
 import { getUserDetails, leaveCompany, updateUser } from '../store/actions/otp.action';
@@ -227,21 +227,22 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
             return;
         }
 
-        this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken() }));
-
-        this.update$.pipe(filter(Boolean), take(1)).subscribe((res) => {
+        this.update$.pipe(skip(1), filter(Boolean), take(1)).subscribe((res) => {
             if (res) {
                 this.editDialogRef?.detach();
                 this.editDialogRef = null;
                 this.isEditing = false;
+                this.cdr.detectChanges();
                 this.previousName = enteredName;
                 this.toastService.success('Information successfully updated');
             }
         });
 
-        this.error$.pipe(filter(Boolean), take(1)).subscribe((err) => {
+        this.error$.pipe(skip(1), filter(Boolean), take(1)).subscribe((err) => {
             if (err?.[0]) this.toastService.error(err[0]);
         });
+
+        this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken() }));
 
         window.parent.postMessage({ type: 'proxy', data: { event: 'userNameUpdated', enteredName: enteredName } }, '*');
     }
