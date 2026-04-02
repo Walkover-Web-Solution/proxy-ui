@@ -22,6 +22,7 @@ import { ToastComponent } from '../service/toast.component';
 import { WidgetTheme } from '@proxy/constant';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { IAppState } from '../store/app.state';
 import { otpActions } from '../store/actions';
@@ -124,6 +125,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
     readonly toastService = inject(ToastService);
     private readonly widgetPortal = inject(WidgetPortalService);
     private readonly bridge = inject(UserManagementBridgeService);
+    private readonly actions$ = inject(Actions);
 
     @ViewChild('mainDialogPortal') private mainDialogPortalEl?: ElementRef<HTMLElement>;
     @ViewChild('confirmDialogPortal') private confirmDialogPortalEl?: ElementRef<HTMLElement>;
@@ -274,6 +276,32 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
                 }
             });
 
+        this.actions$
+            .pipe(
+                ofType(
+                    otpActions.createRoleError,
+                    otpActions.updateRoleError,
+                    otpActions.createPermissionError,
+                    otpActions.updatePermissionError,
+                    otpActions.addUserError,
+                    otpActions.updateCompanyUserError,
+                    otpActions.updateUserRoleError,
+                    otpActions.updateUserPermissionError
+                ),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe(({ errorResponse }) => {
+                const msg =
+                    errorResponse?.error?.errors?.message ||
+                    errorResponse?.error?.data?.message ||
+                    errorResponse?.errors?.message ||
+                    errorResponse?.data?.message ||
+                    errorResponse?.message ||
+                    'Something went wrong. Please try again.';
+                this.toastService.error(msg);
+                this.cdr.markForCheck();
+            });
+
         this.searchSubject
             .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
             .subscribe((searchTerm) => {
@@ -353,6 +381,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
         if (tab === UserManagementTab.Roles) {
             this.isRolesLoading = true;
             this.getRoles();
+            this.getPermissions();
         } else if (tab === UserManagementTab.Permissions) {
             this.isPermissionsLoading = true;
             this.getPermissions();
@@ -649,6 +678,48 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
         this.addPermissionTabForm.reset();
         this.closeDialog();
     }
+    public allRolePermissionsSelected(): boolean {
+        const selected: number[] = this.addRoleForm.get('permission')?.value ?? [];
+        return this.permissions.length > 0 && selected.length === this.permissions.length;
+    }
+
+    public someRolePermissionsSelected(): boolean {
+        const selected: number[] = this.addRoleForm.get('permission')?.value ?? [];
+        return selected.length > 0 && selected.length < this.permissions.length;
+    }
+
+    public toggleAllRolePermissions(event: Event): void {
+        const checked = (event.target as HTMLInputElement).checked;
+        const ids = checked ? this.permissions.map((p) => p.id) : [];
+        this.addRoleForm.get('permission')?.setValue(ids);
+        this.addRoleForm.get('permission')?.markAsTouched();
+    }
+
+    public allUserPermissionsSelected(): boolean {
+        const available = this.getAvailableAdditionalPermissions();
+        const selected: number[] = this.addUserForm.get('permission')?.value ?? [];
+        return available.length > 0 && available.every((p) => selected.includes(p.id));
+    }
+
+    public someUserPermissionsSelected(): boolean {
+        const available = this.getAvailableAdditionalPermissions();
+        const selected: number[] = this.addUserForm.get('permission')?.value ?? [];
+        const count = available.filter((p) => selected.includes(p.id)).length;
+        return count > 0 && count < available.length;
+    }
+
+    public toggleAllUserPermissions(event: Event): void {
+        const checked = (event.target as HTMLInputElement).checked;
+        const available = this.getAvailableAdditionalPermissions();
+        const current: number[] = this.addUserForm.get('permission')?.value ?? [];
+        const availableIds = available.map((p) => p.id);
+        const ids = checked
+            ? [...new Set([...current, ...availableIds])]
+            : current.filter((id) => !availableIds.includes(id));
+        this.addUserForm.get('permission')?.setValue(ids);
+        this.addUserForm.get('permission')?.markAsTouched();
+    }
+
     public onPermissionCheckboxChange(formName: 'addRoleForm' | 'addUserForm', permId: number, event: Event): void {
         const checked = (event.target as HTMLInputElement).checked;
         const form = this[formName];

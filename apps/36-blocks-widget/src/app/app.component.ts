@@ -75,7 +75,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
 
                         if (TYPE === PublicScriptType.UserManagement) {
                             // Enables the Role & Permission tab in the User Management widget
-                            widgetConfig['isRolePermission'] = true;
+                            widgetConfig['isRolePermission'] = false;
                         }
                     }
                 }
