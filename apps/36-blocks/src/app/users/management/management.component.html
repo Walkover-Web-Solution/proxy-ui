@@ -33,10 +33,12 @@
     <div class="flex max-xl:flex-col gap-6 grow min-h-[400px]">
         <!-- Sidebar Nav -->
         <proxy-service-list
-            class="w-[200px] shrink-0 self-start max-md:w-full"
+            class="w-[200px] shrink-0 self-start max-xl:w-full"
+            [classList]="'max-xl:!flex max-xl:gap-2 max-md:!block'"
             [services]="managementSections"
             [selectedIndex]="selectedSectionIndex"
             (serviceSelect)="selectedSectionIndex = $event"
+            [iconClass]="'max-xl:rotate-90'"
         ></proxy-service-list>
 
         <!-- Content Panel -->
@@ -266,75 +268,43 @@
 
             <!-- ── Settings Tab ── -->
             @if (selectedSectionIndex === 3) {
-            <div class="max-w-xl">
+            <div class="w-full">
                 <p class="mat-body-2 font-medium mb-6">Default Roles</p>
-                <form [formGroup]="defaultRolesForm" class="flex flex-col gap-6">
-                    <mat-card class="outline-card p-5">
-                        <mat-card-content class="flex items-start gap-3 !p-0">
-                            <div class="mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
-                                <mat-icon class="material-icons-outlined mat-icon-18 [color:var(--color-common-icon)]"
-                                    >person_add</mat-icon
-                                >
-                            </div>
-                            <div class="grow">
-                                <p class="mat-body-2 font-semibold m-0">Default role for creator</p>
-                                <p class="text-grey text-xs mt-0.5 mb-4">Assigned after creating an organization.</p>
+                @let roleCards = [ { icon: 'person_add', title: 'Default role for creator', desc: 'Assigned after
+                creating an organization.', controlName: 'defaultRoleForCreator', label: 'Select default role for
+                creator', multiple: false, options: null }, { icon: 'group_add', title: 'Default role for member', desc:
+                'Assigned to new organization members.', controlName: 'defaultRoleForMember', label: 'Select default
+                role for member', multiple: false, options: null }, { icon: 'visibility_off', title: 'Hidden roles',
+                desc: 'Select default roles to hide from users.', controlName: 'hiddenDefaultRoles', label: 'Select
+                roles to hide', multiple: true, options: [{value: 'owner', label: 'Owner'}, {value: 'user', label:
+                'User'}] } ];
+                <form [formGroup]="defaultRolesForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @for (card of roleCards; track card.controlName) {
+                        <mat-card>
+                            <mat-card-content class="!flex flex-col gap-3">
+                                <div class="flex flex-col gap-3">
+                                    <div class="flex items-center gap-3">
+                                        <mat-icon class="material-icons-outlined mat-icon-18">{{ card.icon }}</mat-icon>
+                                        <p class="mat-body-2 font-semibold">{{ card.title }}</p>
+                                    </div>
+                                    <p class="text-grey text-xs">{{ card.desc }}</p>
+                                </div>
                                 <mat-form-field appearance="outline" class="w-full">
-                                    <mat-label>Select default role for creator</mat-label>
-                                    <mat-select formControlName="defaultRoleForCreator">
-                                        @for (role of rolesDataSource.data; track role.id) {
+                                    <mat-label>{{ card.label }}</mat-label>
+                                    <mat-select [formControlName]="card.controlName" [multiple]="card.multiple">
+                                        @if (card.options) { @for (opt of card.options; track opt.value) {
+                                        <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                                        } } @else { @for (role of rolesDataSource.data; track role.id) {
                                         <mat-option [value]="role.id">{{ role.role }}</mat-option>
-                                        }
+                                        } }
                                     </mat-select>
                                 </mat-form-field>
-                            </div>
-                        </mat-card-content>
-                    </mat-card>
-
-                    <mat-card class="outline-card p-5">
-                        <mat-card-content class="flex items-start gap-3 !p-0">
-                            <div class="mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
-                                <mat-icon class="material-icons-outlined mat-icon-18 [color:var(--color-common-icon)]"
-                                    >group_add</mat-icon
-                                >
-                            </div>
-                            <div class="grow">
-                                <p class="mat-body-2 font-semibold m-0">Default role for member</p>
-                                <p class="text-grey text-xs mt-0.5 mb-4">Assigned to new organization members.</p>
-                                <mat-form-field appearance="outline" class="w-full">
-                                    <mat-label>Select default role for member</mat-label>
-                                    <mat-select formControlName="defaultRoleForMember">
-                                        @for (role of rolesDataSource.data; track role.id) {
-                                        <mat-option [value]="role.id">{{ role.role }}</mat-option>
-                                        }
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                        </mat-card-content>
-                    </mat-card>
-
-                    <mat-card class="outline-card p-5">
-                        <mat-card-content class="flex items-start gap-3 !p-0">
-                            <div class="mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
-                                <mat-icon class="material-icons-outlined mat-icon-18 [color:var(--color-common-icon)]"
-                                    >visibility_off</mat-icon
-                                >
-                            </div>
-                            <div class="grow">
-                                <p class="mat-body-2 font-semibold m-0">Hidden roles</p>
-                                <p class="text-grey text-xs mt-0.5 mb-4">Select default roles to hide from users.</p>
-                                <mat-form-field appearance="outline" class="w-full">
-                                    <mat-label>Select roles to hide</mat-label>
-                                    <mat-select formControlName="hiddenDefaultRoles" multiple>
-                                        <mat-option value="owner">Owner</mat-option>
-                                        <mat-option value="user">User</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                        </mat-card-content>
-                    </mat-card>
-
-                    <div class="flex gap-3">
+                            </mat-card-content>
+                        </mat-card>
+                        }
+                    </div>
+                    <div class="flex gap-3 w-full mt-3">
                         <button matButton="filled" (click)="saveDefaultRoles()" [disabled]="!defaultRolesForm.valid">
                             Save Changes
                         </button>
