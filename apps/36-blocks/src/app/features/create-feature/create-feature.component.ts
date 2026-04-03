@@ -50,9 +50,8 @@ import {
     IMethod,
     IMethodService,
     ProxyAuthScript,
-    ProxyAuthScriptUrl,
 } from '@proxy/models/features-model';
-import { PROXY_DOM_ID, PublicScriptType, WidgetTheme } from '@proxy/constant';
+import { WidgetTheme } from '@proxy/constant';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
@@ -70,6 +69,7 @@ import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { ServiceListComponent, ServiceListItem } from '@proxy/ui/service-list';
 import { UiSettingsService } from '../../layout/ui-settings.service';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { FeaturePreviewComponent } from './feature-preview/feature-preview.component';
 type ServiceFormGroup = FormGroup<{
     requirements: FormGroup<{
         [key: string]: FormControl<any>;
@@ -137,6 +137,7 @@ export interface PeriodicElement {
         MatRadioModule,
         ServiceListComponent,
         MatButtonToggleModule,
+        FeaturePreviewComponent,
     ],
     templateUrl: './create-feature.component.html',
     styleUrls: ['./create-feature.component.scss'],
@@ -334,7 +335,6 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     });
     public demoDiv = signal<string>(null);
     public keepOrder = () => 0;
-    protected readonly proxyDomId = PROXY_DOM_ID;
 
     ngOnInit(): void {
         this.componentStore.getWebhookEvents();
@@ -1378,48 +1378,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         this.chargesList.splice(index, 1);
         this.chargesList = [...this.chargesList];
     }
-    public previewFeature(): void {
-        const featureId =
-            this.getValueFromObservable(this.createUpdateObject$)?.feature_id ??
-            this.getValueFromObservable(this.featureDetails$)?.feature_id;
 
-        const configuration = {
-            referenceId:
-                this.getValueFromObservable(this.createUpdateObject$)?.reference_id ??
-                this.getValueFromObservable(this.featureDetails$)?.reference_id,
-            type: featureId === 1 ? PublicScriptType.Authorization : PublicScriptType.Subscription,
-            isPreview: true,
-            target: '_blank',
-            success: (data) => {
-                // get verified token in response
-                this.ngZone.run(() => {
-                    this.toast.success('Authorization successfully completed');
-                });
-            },
-            failure: (error) => {
-                // handle error
-                this.ngZone.run(() => {
-                    this.toast.error(error?.message);
-                });
-            },
-        };
-        if (!this.scriptLoaded.getValue()) {
-            this.loadingScript.next(true);
-            const head = document.getElementsByTagName('head')[0];
-            const currentTimestamp = new Date().getTime();
-            const otpProviderScript = document.createElement('script');
-            otpProviderScript.type = 'text/javascript';
-            otpProviderScript.src = ProxyAuthScriptUrl(environment.proxyServer, currentTimestamp);
-            head.appendChild(otpProviderScript);
-            otpProviderScript.onload = () => {
-                this.loadingScript.next(false);
-                window?.['initVerification']?.(configuration);
-            };
-            this.scriptLoaded.next(true);
-        } else {
-            window?.['initVerification']?.(configuration);
-        }
-    }
     public getPlansForm(): void {
         const selectedMethod = cloneDeep(this.selectedMethod.getValue());
         const services = this.getServicePayload(selectedMethod);

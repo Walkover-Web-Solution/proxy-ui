@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { PrimeNgToastComponent } from '@proxy/ui/prime-ng-toast';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { VersionCheckService } from '@proxy/service';
+import { UiSettingsService } from './layout/ui-settings.service';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { Observable } from 'rxjs';
@@ -37,6 +38,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     private actRoute = inject(ActivatedRoute);
     private store = inject<Store<IAppState>>(Store);
     private versionCheckService = inject(VersionCheckService);
+    private uiSettings = inject(UiSettingsService);
 
     constructor() {
         super();
@@ -86,6 +88,10 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
+        const theme = this.uiSettings.theme;
+        document.body.classList.remove('dark-theme', 'light-theme');
+        document.body.classList.add(theme);
+
         this.logoutActionComplete$.subscribe((res) => {
             if (res) {
                 this.router.navigate(['/login']);

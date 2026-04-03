@@ -1,0 +1,196 @@
+<div class="flex flex-col h-screen bg-color overflow-hidden">
+    <!-- Header -->
+    <div class="flex-none bg-color border-b border-color px-4 h-14 flex items-center justify-between gap-4 shrink-0">
+        <div class="flex items-center gap-2">
+            <button mat-icon-button type="button" (click)="goBack()" aria-label="Go back" matTooltip="Back">
+                <mat-icon aria-hidden="true" class="!leading-[80%]">arrow_back</mat-icon>
+            </button>
+            <h1 class="text-sm font-semibold text-color">Widget Showcase</h1>
+            <span class="secondary-text-color">·</span>
+            <p class="text-xs secondary-text-color">Live preview of all widget types for this block</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <!-- Theme toggle -->
+            <mat-button-toggle-group [value]="theme()" (change)="onThemeChange($event.value)" aria-label="Select theme">
+                <mat-button-toggle [value]="WidgetTheme.Light" matTooltip="Light theme">
+                    <mat-icon aria-hidden="true">light_mode</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle [value]="WidgetTheme.System" matTooltip="System theme">
+                    <mat-icon aria-hidden="true">contrast</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle [value]="WidgetTheme.Dark" matTooltip="Dark theme">
+                    <mat-icon aria-hidden="true">dark_mode</mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <!-- Auth Token indicator -->
+            @if (!authToken()) {
+            <button
+                mat-stroked-button
+                type="button"
+                (click)="showAuthTokenInput.set(true)"
+                matTooltip="Auth token required for User Profile, User Management & Organization tabs"
+            >
+                <mat-icon aria-hidden="true">key</mat-icon>
+                Add Auth Token
+            </button>
+            } @else {
+            <div class="inline-flex items-center gap-1.5 rounded border border-green-200 bg-green-50 px-2.5 py-1">
+                <mat-icon class="!text-sm !w-4 !h-4 text-green-600" aria-hidden="true">verified</mat-icon>
+                <span class="text-xs font-medium text-green-700">Auth Token Set</span>
+                <button
+                    mat-icon-button
+                    type="button"
+                    (click)="copyAuthToken()"
+                    matTooltip="Copy token"
+                    aria-label="Copy auth token"
+                >
+                    <mat-icon class="!text-sm" aria-hidden="true">content_copy</mat-icon>
+                </button>
+                <button
+                    mat-icon-button
+                    type="button"
+                    (click)="authToken.set('')"
+                    matTooltip="Clear token"
+                    aria-label="Clear auth token"
+                >
+                    <mat-icon class="!text-sm" aria-hidden="true">close</mat-icon>
+                </button>
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- Auth token inline input bar -->
+    @if (showAuthTokenInput()) {
+    <div class="flex-none bg-amber-50 border-b border-amber-200 px-6 py-3 flex items-center gap-3 shrink-0">
+        <mat-icon class="!text-base text-amber-600 flex-none" aria-hidden="true">key</mat-icon>
+        <div class="flex-1 min-w-0">
+            <p class="text-xs text-amber-700 mb-2">
+                Complete <strong>Authorization</strong> first — paste your auth token here to unlock the other widget
+                previews.
+            </p>
+            <div class="flex items-center gap-2">
+                <mat-form-field appearance="outline" class="flex-1" subscriptSizing="dynamic">
+                    <mat-label>Auth Token</mat-label>
+                    <input
+                        matInput
+                        type="text"
+                        [(ngModel)]="authToken"
+                        placeholder="Paste your auth token here…"
+                        class="font-mono"
+                    />
+                    <mat-icon matPrefix aria-hidden="true">key</mat-icon>
+                </mat-form-field>
+                <button mat-flat-button type="button" (click)="onAuthTokenSave()">Save</button>
+                <button mat-button type="button" (click)="showAuthTokenInput.set(false)">Cancel</button>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Body: sidebar + content -->
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar — matches admin panel nav style -->
+        <aside class="w-48 shrink-0 bg-color border-r border-color flex flex-col py-3 overflow-y-auto">
+            <nav aria-label="Widget types">
+                @for (tab of tabs; track tab.id) {
+                <button
+                    type="button"
+                    (click)="selectTab(tab.id)"
+                    [attr.aria-current]="activeTab() === tab.id ? 'page' : null"
+                    [disabled]="tab.requiresAuth && !authToken()"
+                    class="flex items-center gap-x-2.5 px-4 py-2 text-sm text-left w-full transition-colors duration-150 focus-visible:outline-none text-color"
+                    [class.mdc-list-item--activated]="activeTab() === tab.id"
+                    [class.border-l-2]="activeTab() === tab.id"
+                    [class.font-medium]="activeTab() === tab.id"
+                    [class.opacity-40]="tab.requiresAuth && !authToken()"
+                    [class.cursor-not-allowed]="tab.requiresAuth && !authToken()"
+                    [class.cursor-pointer]="!(tab.requiresAuth && !authToken())"
+                    [matTooltip]="tab.requiresAuth && !authToken() ? 'Complete Authorization first to unlock' : ''"
+                >
+                    <mat-icon class="!text-lg !w-5 !h-5 flex-none" aria-hidden="true">{{ tab.icon }}</mat-icon>
+                    <span class="flex-1 truncate">{{ tab.label }}</span>
+                    @if (tab.requiresAuth && !authToken()) {
+                    <mat-icon class="!text-sm !w-4 !h-4 secondary-text-color" aria-hidden="true">lock</mat-icon>
+                    }
+                </button>
+                }
+            </nav>
+
+            <!-- Bottom hint -->
+            <div class="mt-auto px-4 py-3 border-t border-color">
+                @if (!authToken()) {
+                <p class="text-xs secondary-text-color leading-snug">
+                    Sign in via <strong>Authorization</strong> to unlock the other previews.
+                </p>
+                } @else {
+                <p class="text-xs leading-snug font-medium" style="color: var(--mat-sys-primary)">
+                    All widget previews unlocked.
+                </p>
+                }
+            </div>
+        </aside>
+
+        <!-- Widget preview area -->
+        <main class="flex-1 overflow-auto flex flex-col">
+            @for (tab of tabs; track tab.id) { @if (activeTab() === tab.id) {
+            <div class="flex-1 flex flex-col h-full">
+                <!-- Tab header -->
+                <div class="flex-none px-6 py-4 border-b border-color bg-color flex items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-sm font-semibold text-color">{{ tab.label }}</h2>
+                        <p class="text-xs secondary-text-color mt-0.5">
+                            @if (tab.id === PublicScriptType.Authorization) { Sign in to get an auth token — unlocks the
+                            other widgets. } @if (tab.id === PublicScriptType.UserProfile) { View and edit the
+                            authenticated user's profile. } @if (tab.id === PublicScriptType.UserManagement) { Manage
+                            users and roles for your organization. } @if (tab.id ===
+                            PublicScriptType.OrganizationDetails) { View and update organization information. }
+                        </p>
+                    </div>
+                    @if (tab.requiresAuth && !authToken()) {
+                    <button mat-stroked-button type="button" (click)="showAuthTokenInput.set(true)">
+                        <mat-icon aria-hidden="true">key</mat-icon>
+                        Add Auth Token
+                    </button>
+                    }
+                </div>
+
+                <!-- Widget mount point -->
+                <div
+                    class="flex-1 flex items-start justify-center p-8 overflow-auto transition-colors duration-300"
+                    [class.bg-white]="theme() === WidgetTheme.Light"
+                    [class.bg-gray-950]="theme() === WidgetTheme.Dark"
+                    [class.bg-gray-50]="theme() === WidgetTheme.System"
+                >
+                    @if (tab.requiresAuth && !authToken()) {
+                    <div class="flex flex-col items-center justify-center gap-4 py-20 text-center">
+                        <div class="flex size-14 items-center justify-center rounded-full bg-color" aria-hidden="true">
+                            <mat-icon class="!text-2xl !w-7 !h-7 secondary-text-color" aria-hidden="true"
+                                >lock</mat-icon
+                            >
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-semibold text-color">Auth Token Required</h3>
+                            <p class="mt-1 text-xs secondary-text-color max-w-xs">
+                                Complete the <strong>Authorization</strong> flow first to unlock this preview.
+                            </p>
+                        </div>
+                        <button mat-flat-button type="button" (click)="selectTab(PublicScriptType.Authorization)">
+                            <mat-icon aria-hidden="true">arrow_back</mat-icon>
+                            Go to Authorization
+                        </button>
+                    </div>
+                    } @else {
+                    <div
+                        [id]="tab.id === PublicScriptType.Authorization ? referenceId : proxyDomId"
+                        [class.w-full]="tab.id != PublicScriptType.Authorization"
+                    ></div>
+                    }
+                </div>
+            </div>
+            } }
+        </main>
+    </div>
+</div>

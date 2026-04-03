@@ -32,12 +32,16 @@
             </button>
             }
         </div>
-        } @if (!isEditMode) {
+        } @else {
         <div class="flex flex-col text-color">
             <h4 class="my-0 font-semibold text-base text-on-surface">Add New Block</h4>
             <p class="my-0 text-xs text-on-surface/50">Set up a new authentication or subscription block</p>
         </div>
-        }
+        } @let _cuo = createUpdateObject$ | async; @let _fd = featureDetails$ | async;
+        <blocks-feature-preview
+            class="ml-auto"
+            [referenceId]="_cuo?.reference_id ?? _fd?.reference_id"
+        ></blocks-feature-preview>
     </div>
     @if (!isEditMode) {
     <mat-stepper
@@ -233,13 +237,8 @@
                 </form>
                 <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
                 <div class="flex justify-between items-center mt-6 pt-4">
-                    <ng-container *ngTemplateOutlet="preview"></ng-container>
-                    @if (createUpdateObject$ | async; as createUpdateObject) {
-                    <button
-                        type="button"
-                        matButton="filled"
-                        [routerLink]="['/app/features/manage', createUpdateObject?.id]"
-                    >
+                    @let cuo = createUpdateObject$ | async; @if (cuo) {
+                    <button type="button" matButton="filled" [routerLink]="['/app/features/manage', cuo?.id]">
                         Manage Feature<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                             >navigate_next</mat-icon
                         >
@@ -254,7 +253,6 @@
             <div class="flex flex-col h-full">
                 <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
                 <div class="flex justify-between items-center mt-6 pt-4">
-                    <ng-container *ngTemplateOutlet="preview"></ng-container>
                     @if (createUpdateObject$ | async; as createUpdateObject) {
                     <button
                         type="button"
@@ -308,7 +306,6 @@
             <mat-tab label="Design & code">
                 <div class="p-6">
                     <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
-                    <ng-container *ngTemplateOutlet="preview" class="mt-6"></ng-container>
                 </div>
             </mat-tab>
 
@@ -1063,16 +1060,6 @@
             </div>
         </div>
     </div>
-</ng-template>
-
-<ng-template #preview>
-    @if ((createUpdateObject$ | async) || (featureDetails$ | async)) {
-    <div class="flex items-center justify-start mt-6">
-        <button type="button" matButton="filled" (click)="previewFeature()">Preview</button>
-    </div>
-    <!-- Use id to render Authorization widget -->
-    <div [id]="proxyDomId"></div>
-    }
 </ng-template>
 
 <ng-template #webhook>

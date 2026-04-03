@@ -16,6 +16,15 @@ export const appRoutes: Route[] = [
         canActivate: [AngularFireAuthGuard],
     },
     {
+        path: 'widget-preview/:referenceId',
+        loadComponent: () =>
+            import(
+                './features/create-feature/feature-preview/widget-showcase-dialog/widget-showcase-dialog.component'
+            ).then((c) => c.WidgetShowcaseDialogComponent),
+        data: { authGuardPipe: redirectUnauthorizedToLogin },
+        canActivate: [AngularFireAuthGuard],
+    },
+    {
         path: 'project',
         loadComponent: () => import('./create-project/create-project.component').then((c) => c.CreateProjectComponent),
         data: { authGuardPipe: redirectUnauthorizedToLogin },
