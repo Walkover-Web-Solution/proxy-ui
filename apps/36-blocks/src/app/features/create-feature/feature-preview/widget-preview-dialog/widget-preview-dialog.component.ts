@@ -1,43 +1,31 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, inject, NgZone, signal, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { AfterViewInit, Component, inject, NgZone, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PROXY_DOM_ID, PublicScriptType, WidgetTheme } from '@proxy/constant';
 import { ProxyAuthScriptUrl } from '@proxy/models/features-model';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
+import { MatListModule } from '@angular/material/list';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { environment } from '../../../../../environments/environment';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-export type ShowcaseTab =
+export type PreviewTab =
     | PublicScriptType.Authorization
     | PublicScriptType.UserProfile
     | PublicScriptType.UserManagement
     | PublicScriptType.OrganizationDetails;
 
 @Component({
-    selector: 'blocks-widget-showcase',
-    imports: [
-        CommonModule,
-        FormsModule,
-        MatButtonModule,
-        MatButtonToggleModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatToolbarModule,
-        MatTooltipModule,
-    ],
-    templateUrl: './widget-showcase-dialog.component.html',
+    selector: 'blocks-widget-preview',
+    imports: [CommonModule, MatButtonModule, MatButtonToggleModule, MatIconModule, MatTooltipModule, MatListModule],
+    templateUrl: './widget-preview-dialog.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WidgetShowcaseDialogComponent implements AfterViewInit {
+export class WidgetPreviewDialogComponent implements AfterViewInit {
     private router = inject(Router);
     private route = inject(ActivatedRoute);
     private location = inject(Location);
@@ -51,17 +39,55 @@ export class WidgetShowcaseDialogComponent implements AfterViewInit {
     protected readonly referenceId: string | null = this.route.snapshot.paramMap.get('referenceId');
     private scriptLoaded = false;
 
-    public activeTab = signal<ShowcaseTab>(PublicScriptType.Authorization);
+    public activeTab = signal<PreviewTab>(PublicScriptType.Authorization);
     public theme = signal<WidgetTheme>(WidgetTheme.System);
     public authToken = signal<string>('');
-    public showAuthTokenInput = signal(false);
 
-    protected readonly tabs: { id: ShowcaseTab; label: string; icon: string; requiresAuth: boolean }[] = [
+    private readonly systemDark = signal(
+        typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
+    );
+    public readonly isDark = computed(() => {
+        const t = this.theme();
+        if (t === WidgetTheme.Dark) return true;
+        if (t === WidgetTheme.Light) return false;
+        return this.systemDark();
+    });
+
+    protected readonly tabs: { id: PreviewTab; label: string; icon: string; requiresAuth: boolean }[] = [
         { id: PublicScriptType.Authorization, label: 'Authorization', icon: 'lock', requiresAuth: false },
         { id: PublicScriptType.UserProfile, label: 'User Profile', icon: 'person', requiresAuth: true },
         { id: PublicScriptType.UserManagement, label: 'User Management', icon: 'manage_accounts', requiresAuth: true },
         { id: PublicScriptType.OrganizationDetails, label: 'Organization', icon: 'business', requiresAuth: true },
     ];
+
+    constructor() {
+        if (typeof window !== 'undefined') {
+            const mq = window.matchMedia('(prefers-color-scheme: dark)');
+            const handler = (e: MediaQueryListEvent) => this.systemDark.set(e.matches);
+            mq.addEventListener('change', handler);
+        }
+
+        this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
+            const token = params.get('proxy_auth_token');
+            const explicitTab = params.get('tab') as PreviewTab | null;
+
+            if (token) {
+                this.authToken.set(token);
+                if (!explicitTab) {
+                    this.activeTab.set(PublicScriptType.UserProfile);
+                }
+            }
+
+            const theme = params.get('theme') as WidgetTheme | null;
+            if (theme && Object.values(WidgetTheme).includes(theme)) {
+                this.theme.set(theme);
+            }
+
+            if (explicitTab && this.tabs.some((t) => t.id === explicitTab)) {
+                this.activeTab.set(explicitTab);
+            }
+        });
+    }
 
     ngAfterViewInit(): void {
         setTimeout(() => this.launchWidget());
@@ -71,37 +97,35 @@ export class WidgetShowcaseDialogComponent implements AfterViewInit {
         this.location.back();
     }
 
-    public selectTab(tab: ShowcaseTab): void {
+    public selectTab(tab: PreviewTab): void {
         if (tab !== PublicScriptType.Authorization && !this.authToken()?.trim()) {
             return;
         }
         this.activeTab.set(tab);
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { tab },
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+        });
         setTimeout(() => this.launchWidget(), 100);
     }
 
     public onThemeChange(newTheme: WidgetTheme): void {
         this.theme.set(newTheme);
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { theme: newTheme },
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+        });
         setTimeout(() => this.launchWidget(), 50);
-    }
-
-    public onAuthTokenSave(): void {
-        this.showAuthTokenInput.set(false);
-        if (this.authToken()?.trim() && this.activeTab() !== PublicScriptType.Authorization) {
-            setTimeout(() => this.launchWidget(), 50);
-        }
-    }
-
-    public copyAuthToken(): void {
-        const token = this.authToken()?.trim();
-        if (token) {
-            navigator.clipboard.writeText(token);
-            this.toast.success('Auth token copied');
-        }
     }
 
     public launchWidget(): void {
         const tab = this.activeTab();
-        const domId = tab === PublicScriptType.Authorization ? this.referenceId ?? '' : this.proxyDomId;
+        const isAuthTab = tab === PublicScriptType.Authorization;
+        const domId = isAuthTab ? this.referenceId : this.proxyDomId;
         const el = document.getElementById(domId);
         if (!el) return;
 
@@ -113,11 +137,12 @@ export class WidgetShowcaseDialogComponent implements AfterViewInit {
             target: '_blank',
             success: (data: unknown) => {
                 this.ngZone.run(() => {
-                    if (tab === PublicScriptType.Authorization) {
+                    if (isAuthTab) {
                         const token = (data as any)?.data?.token ?? (data as any)?.token ?? '';
                         if (token) {
                             this.authToken.set(token);
                             this.toast.success('Login successful — auth token received');
+                            setTimeout(() => this.selectTab(PublicScriptType.UserProfile), 50);
                         } else {
                             this.toast.success('Authorization successful');
                         }
@@ -133,9 +158,8 @@ export class WidgetShowcaseDialogComponent implements AfterViewInit {
             },
         };
 
-        if (tab === PublicScriptType.Authorization) {
-            // No `type` set — mirrors showAuthentication=true flow:
-            // widget renders as embedded auth directly into the referenceId-named container
+        if (isAuthTab) {
+            config['redirect_path'] = this.location.path().split('?')[0];
         } else {
             config['type'] = tab;
             config['authToken'] = this.authToken()?.trim();
@@ -146,7 +170,6 @@ export class WidgetShowcaseDialogComponent implements AfterViewInit {
 
         const launch = () => window?.['initVerification']?.(config);
 
-        // If initVerification already exists on window (script loaded globally), call directly
         if (typeof window?.['initVerification'] === 'function') {
             launch();
             return;
@@ -161,7 +184,6 @@ export class WidgetShowcaseDialogComponent implements AfterViewInit {
             script.onload = () => launch();
             script.onerror = () => this.toast.error('Failed to load widget script');
         } else {
-            // Script tag was appended but onload hasn't fired yet — poll until ready
             const interval = setInterval(() => {
                 if (typeof window?.['initVerification'] === 'function') {
                     clearInterval(interval);

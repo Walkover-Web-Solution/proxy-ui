@@ -14,7 +14,7 @@ export class FeaturePreviewComponent {
 
     private router = inject(Router);
 
-    public openShowcase(): void {
+    public openPreview(): void {
         if (this.referenceId) {
             this.router.navigate(['/widget-preview', this.referenceId]);
         }

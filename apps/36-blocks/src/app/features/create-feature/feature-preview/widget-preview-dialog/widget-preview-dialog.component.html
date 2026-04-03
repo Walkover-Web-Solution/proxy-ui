@@ -1,0 +1,101 @@
+<div class="flex flex-col h-screen bg-color overflow-hidden">
+    <!-- Header -->
+    <div class="flex-none bg-color border-b border-color px-4 h-14 flex items-center justify-between gap-4 shrink-0">
+        <div class="flex items-center gap-3">
+            <button matButton type="button" (click)="goBack()" aria-label="Go back">
+                <mat-icon aria-hidden="true" class="mat-icon-prefix">arrow_back</mat-icon>
+                Back
+            </button>
+            <span class="border-l border-color h-5"></span>
+            <h1 class="text-sm font-semibold text-color">Widget Preview</h1>
+            <span class="secondary-text-color">·</span>
+            <p class="text-xs secondary-text-color">Live preview of all widget types for this block</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <!-- Theme toggle -->
+            <mat-button-toggle-group [value]="theme()" (change)="onThemeChange($event.value)" aria-label="Select theme">
+                <mat-button-toggle [value]="WidgetTheme.Light" matTooltip="Light theme">
+                    <mat-icon aria-hidden="true">light_mode</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle [value]="WidgetTheme.System" matTooltip="System theme">
+                    <mat-icon aria-hidden="true">contrast</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle [value]="WidgetTheme.Dark" matTooltip="Dark theme">
+                    <mat-icon aria-hidden="true">dark_mode</mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+    </div>
+
+    <!-- Body: sidebar + content -->
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar -->
+        <mat-nav-list class="!pt-2 !pr-2 w-[240px] shrink-0 border-r border-color h-full overflow-y-auto service-list">
+            @for (tab of tabs; track tab.id) {
+            <button
+                mat-list-item
+                [class.mdc-list-item--activated]="activeTab() === tab.id"
+                (click)="selectTab(tab.id)"
+                [matTooltip]="tab.requiresAuth && !authToken() ? 'Complete Authorization first to unlock' : ''"
+                matTooltipPosition="right"
+                [class.!cursor-not-allowed]="tab.requiresAuth && !authToken()"
+            >
+                <mat-icon matListItemIcon class="material-icons-outlined">{{ tab.icon }}</mat-icon>
+                <span matListItemTitle class="font-14 flex items-center justify-between w-full">
+                    {{ tab.label }}
+                    @if (tab.requiresAuth && !authToken()) {
+                    <mat-icon class="material-icons-outlined mat-icon-18 shrink-0 secondary-text-color">lock</mat-icon>
+                    } @else {
+                    <mat-icon class="material-icons-outlined mat-icon-18 shrink-0">navigate_next</mat-icon>
+                    }
+                </span>
+            </button>
+            }
+        </mat-nav-list>
+
+        <!-- Widget preview area -->
+        <main class="flex-1 overflow-auto flex flex-col">
+            @for (tab of tabs; track tab.id) { @if (activeTab() === tab.id) {
+            <div class="flex-1 flex flex-col h-full">
+                <!-- Widget mount point -->
+                <div
+                    class="flex-1 flex items-center justify-center p-8 overflow-auto transition-colors duration-300"
+                    [class]="isDark() ? 'bg-gray-950' : 'bg-white'"
+                >
+                    @if (tab.requiresAuth && !authToken()) {
+                    <div class="flex flex-col items-center justify-center gap-4 text-center">
+                        <div
+                            class="flex size-14 items-center justify-center rounded-full"
+                            style="background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent)"
+                        >
+                            <mat-icon
+                                class="!text-2xl !w-7 !h-7"
+                                style="color: var(--mat-sys-primary)"
+                                aria-hidden="true"
+                                >lock</mat-icon
+                            >
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-semibold text-color">Auth Token Required</h3>
+                            <p class="mt-1 text-xs secondary-text-color max-w-xs">
+                                Complete the <strong>Authorization</strong> flow first to unlock this preview.
+                            </p>
+                        </div>
+                        <button matButton="outlined" type="button" (click)="selectTab(PublicScriptType.Authorization)">
+                            <mat-icon aria-hidden="true" class="mat-icon-prefix">arrow_back</mat-icon>
+                            Go to Authorization
+                        </button>
+                    </div>
+                    } @else {
+                    <div
+                        [id]="tab.id === PublicScriptType.Authorization ? referenceId : proxyDomId"
+                        [class.w-full]="tab.id != PublicScriptType.Authorization"
+                    ></div>
+                    }
+                </div>
+            </div>
+            } }
+        </main>
+    </div>
+</div>

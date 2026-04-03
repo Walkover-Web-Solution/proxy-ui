@@ -118,7 +118,15 @@
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let element" data-label="Manage">
                     @if (!loading.dataLoading) {
-                    <div class="actions flex justify-end pr-3">
+                    <div class="actions flex justify-end gap-3 pr-3">
+                        <button
+                            matButton="outlined"
+                            [routerLink]="['/widget-preview', element.reference_id]"
+                            class="mat-btn-md"
+                        >
+                            <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">play_circle</mat-icon>
+                            Preview
+                        </button>
                         <button matButton="outlined" [routerLink]="['manage', element.id]" class="mat-btn-md">
                             <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">settings</mat-icon>
                             Manage
