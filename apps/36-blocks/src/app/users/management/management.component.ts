@@ -116,6 +116,46 @@ export class ManagementComponent implements OnInit, OnDestroy {
     public dialogRoleForm: FormGroup;
     public dialogPermissionForm: FormGroup;
     public defaultRolesForm: FormGroup;
+    public roleCards: {
+        icon: string;
+        title: string;
+        desc: string;
+        controlName: string;
+        label: string;
+        multiple: boolean;
+        options: { value: string; label: string }[] | null;
+    }[] = [
+        {
+            icon: 'person_add',
+            title: 'Default role for creator',
+            desc: 'Assigned after creating an organization.',
+            controlName: 'defaultRoleForCreator',
+            label: 'Select default role for creator',
+            multiple: false,
+            options: null,
+        },
+        {
+            icon: 'group_add',
+            title: 'Default role for member',
+            desc: 'Assigned to new organization members.',
+            controlName: 'defaultRoleForMember',
+            label: 'Select default role for member',
+            multiple: false,
+            options: null,
+        },
+        {
+            icon: 'visibility_off',
+            title: 'Hidden roles',
+            desc: 'Select default roles to hide from users.',
+            controlName: 'hiddenDefaultRoles',
+            label: 'Select roles to hide',
+            multiple: true,
+            options: [
+                { value: 'owner', label: 'Owner' },
+                { value: 'user', label: 'User' },
+            ],
+        },
+    ];
     private dialogRef: MatDialogRef<any>;
     private destroy$ = new Subject<void>();
     public isEditMode: boolean = false;
