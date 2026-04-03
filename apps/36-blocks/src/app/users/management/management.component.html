@@ -270,14 +270,6 @@
             @if (selectedSectionIndex === 3) {
             <div class="w-full">
                 <p class="mat-body-2 font-medium mb-6">Default Roles</p>
-                @let roleCards = [ { icon: 'person_add', title: 'Default role for creator', desc: 'Assigned after
-                creating an organization.', controlName: 'defaultRoleForCreator', label: 'Select default role for
-                creator', multiple: false, options: null }, { icon: 'group_add', title: 'Default role for member', desc:
-                'Assigned to new organization members.', controlName: 'defaultRoleForMember', label: 'Select default
-                role for member', multiple: false, options: null }, { icon: 'visibility_off', title: 'Hidden roles',
-                desc: 'Select default roles to hide from users.', controlName: 'hiddenDefaultRoles', label: 'Select
-                roles to hide', multiple: true, options: [{value: 'owner', label: 'Owner'}, {value: 'user', label:
-                'User'}] } ];
                 <form [formGroup]="defaultRolesForm">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @for (card of roleCards; track card.controlName) {
