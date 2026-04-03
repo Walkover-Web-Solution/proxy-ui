@@ -20,6 +20,8 @@ export class ServiceListComponent {
     selectedIndex = input<number>(0);
     getFormAt = input<(index: number) => AbstractControl | null>();
     serviceSelect = output<number>();
+    classList = input<string>('');
+    iconClass = input<string>('');
 
     isInvalid(i: number): boolean {
         const getter = this.getFormAt();

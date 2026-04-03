@@ -1,4 +1,4 @@
-<mat-nav-list class="!pt-0 service-list">
+<mat-nav-list [class]="classList()" class="!pt-0 service-list">
     @for (service of services(); track service; let i = $index) {
     <button mat-list-item [class.mdc-list-item--activated]="selectedIndex() === i" (click)="serviceSelect.emit(i)">
         @if (service.icon) {
@@ -9,7 +9,9 @@
             @if (isInvalid(i)) {
             <mat-icon class="material-icons-outlined mat-icon-18 text-danger shrink-0">error</mat-icon>
             } @else {
-            <mat-icon class="material-icons-outlined mat-icon-18 shrink-0">navigate_next</mat-icon>
+            <mat-icon [class]="iconClass()" class="material-icons-outlined mat-icon-18 shrink-0"
+                >navigate_next</mat-icon
+            >
             }
         </span>
     </button>

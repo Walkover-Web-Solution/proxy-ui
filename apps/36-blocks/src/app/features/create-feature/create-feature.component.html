@@ -560,10 +560,12 @@
         <div class="max-xl:flex-col flex gap-4 grow">
             <proxy-service-list
                 class="shrink-0 self-start max-xl:w-full"
+                [classList]="'max-xl:!flex max-xl:gap-2 max-md:!block'"
                 [services]="getServiceListItems((selectedMethod | async)?.method_services ?? [])"
                 [selectedIndex]="selectedServiceIndex"
                 [getFormAt]="getServiceFormAt"
                 (serviceSelect)="selectedServiceIndex = $event"
+                [iconClass]="'max-xl:rotate-90'"
             ></proxy-service-list>
             <ng-container *ngTemplateOutlet="configureMethodFormContent"></ng-container>
         </div>
