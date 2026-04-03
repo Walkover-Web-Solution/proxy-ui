@@ -275,6 +275,7 @@ Uses `version: 'v2'` UI, icon-only social buttons, custom input field position, 
 | `isLogin` | `boolean` | `false` | Show login UI alongside subscription plans (`subscription` type). |
 | `isRegisterFormOnly` | `boolean` | `false` | Show only the registration form, skipping the login/auth buttons. |
 | `loginRedirectUrl` | `string` | — | URL to redirect to after a successful login. |
+| `redirect_path` | `string` | — | Path to redirect after login (e.g. `'/login'`). Internally forwarded as `addInfo.redirect_path` in the API payload. Primarily used to obtain a `proxy_auth_token` in the admin panel during preview. |
 | `input_fields` | `string` | `'top'` | Input field position. `'top'` or `'bottom'`. |
 | `show_social_login_icons` | `boolean` | `false` | Show social login as icon-only buttons instead of full-width. |
 | `exclude_role_ids` | `number[]` | — | Role IDs to hide in the `user-management` view. |
@@ -291,3 +292,4 @@ Uses `version: 'v2'` UI, icon-only social buttons, custom input field position, 
 - `success` callback is **required** — omitting it throws `Error: success callback function missing!`.
 - Any property not in the reserved list is forwarded as extra payload to the widget API (e.g. custom `otherData` fields).
 - URL query parameters `first_name`, `last_name`, `email`, `signup_service_id` automatically pre-fill the registration form.
+- `redirect_path` is **not** sent directly in the API payload — it is automatically moved into `addInfo.redirect_path` before the request is made. Do not nest it manually.

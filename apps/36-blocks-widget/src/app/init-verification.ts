@@ -81,6 +81,12 @@ if (!window.initVerification) {
                 widgetElement.successReturn = config.success;
                 widgetElement.failureReturn = config.failure;
 
+                // Optional: Path to redirect after login (e.g., '/login') only used get proxy_auth_token in admin panel while preview
+                if (config?.redirect_path) {
+                    const { redirect_path, ...rest } = config;
+                    config = { ...rest, addInfo: { redirect_path } };
+                }
+
                 // omitting keys which are not required in API payload; query params fill in missing values
                 widgetElement.otherData = { ...paramsData, ...omit(config, RESERVED_KEYS) };
 

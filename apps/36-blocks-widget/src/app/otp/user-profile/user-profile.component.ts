@@ -77,7 +77,6 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     );
     public successReturn = input<(arg: any) => any>();
     public failureReturn = input<(arg: any) => any>();
-    public otherData = input<{ [key: string]: any }>({});
     public userDetails$: Observable<any>;
     public userInProcess$: Observable<boolean>;
     public deleteCompany$: Observable<any>;

@@ -22,6 +22,7 @@ export type WidgetConfig = {
     isPreview?: boolean;
     isLogin?: boolean;
     loginRedirectUrl?: string;
+    redirect_path?: string; // Optional: Path to redirect after login (e.g., '/dashboard') only used get proxy_auth_token in admin panel while preview
     target?: '_self' | '_blank';
     success?: (data: unknown) => void;
     failure?: (error: unknown) => void;

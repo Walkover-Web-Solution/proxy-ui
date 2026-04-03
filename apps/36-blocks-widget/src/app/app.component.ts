@@ -80,6 +80,9 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                         }
                     }
                 }
+            } else {
+                // Optional: Path to redirect after login (e.g., '/login') only used get proxy_auth_token in admin panel while preview
+                widgetConfig['redirect_path'] = '/login';
             }
             if (THEME) {
                 widgetConfig['theme'] = THEME;

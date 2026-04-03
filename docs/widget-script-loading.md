@@ -263,6 +263,7 @@ type Config = {
   isPreview?:            boolean;            // preview mode — no mutations
   isLogin?:              boolean;            // show login alongside subscription plans
   loginRedirectUrl?:     string;             // redirect after successful login
+  redirect_path?:        string;             // forwarded as addInfo.redirect_path; used to obtain proxy_auth_token in admin panel preview
   showCompanyDetails?:   boolean;            // include company section in org-details view
 
   // Authorization-specific
