@@ -1,6 +1,6 @@
+// If you want mat-form-field height is same as material default then used .initial-height class
 mat-form-field {
     &.mat-mdc-form-field {
-        // width: 100%;
         &:not(.initial-height, .mat-mdc-paginator-page-size-select, :has(textarea)) {
             --mat-form-field-container-height: var(--custom-mat-form-field-height);
             .mdc-text-field--outlined {

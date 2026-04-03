@@ -339,7 +339,7 @@
                                     }
                                 </div>
                                 @if (webhookEventsData?.length) {
-                                <div class="bg-color p-4">
+                                <div class="p-4">
                                     <mat-accordion>
                                         @for (event of webhookEventsData; track event.value) {
                                         <mat-expansion-panel class="!mb-2">
@@ -586,7 +586,7 @@
             >
         </div>
         } @if (serviceForm ?? featureForm.get('serviceDetails')?.at(selectedServiceIndex); as formToUse) {
-        <div class="flex flex-col gap-3 grow" [class]="!serviceForm ? 'p-4 bg-color' : ''">
+        <div class="flex flex-col gap-3 grow" [class]="!serviceForm ? 'p-4' : ''">
             <form [formGroup]="formToUse" class="flex flex-col gap-1">
                 @if (methodServices?.[selectedServiceIndex]?.requirements; as requirements) { @if
                 ((formToUse.controls.requirements.controls | keyvalue)?.length) {
@@ -675,9 +675,10 @@
         </div>
         } @else {
         <div class="card-with-header">
-            <div class="grid grid-cols-[1fr_auto_auto] items-center px-4 py-2 bg-color border-b border-color">
+            <div class="card-with-header--header">
                 <span class="mat-body-2 font-semibold text-color uppercase tracking-wide text-xs">Method</span>
-                <span class="mat-body-2 font-semibold text-color uppercase tracking-wide text-xs w-20 text-center"
+                <span
+                    class="mat-body-2 font-semibold text-color uppercase tracking-wide text-xs w-20 text-center ml-auto"
                     >Enable</span
                 >
                 <span class="mat-body-2 font-semibold text-color uppercase tracking-wide text-xs w-16 text-center"
@@ -939,7 +940,7 @@
                     <mat-icon class="!text-base !w-4">settings</mat-icon>
                     <span class="mat-body-2 font-semibold">Session & Token Settings</span>
                 </div>
-                <div class="bg-color flex flex-col gap-2 px-4 pt-4 pb-4">
+                <div class="flex flex-col gap-2 px-4 pt-4 pb-4">
                     <ng-container
                         *ngTemplateOutlet="
                             inputField;
@@ -1007,10 +1008,10 @@
                     </div>
                     <proxy-copy-button [copyData]="code | json" tooltip="Copy JSON"></proxy-copy-button>
                 </div>
-                <div class="bg-color overflow-auto code-snippet-view">
+                <div class="overflow-auto code-snippet-view">
                     <markdown [data]="code | json | language: 'javascript'"></markdown>
                 </div>
-                <div class="bg-color flex px-4 py-3 items-center border-t border-color bg-color text-color">
+                <div class="flex px-4 py-3 items-center border-t border-color text-color">
                     <mat-icon class="!text-base">info</mat-icon>
                     <p class="mat-body-2 m-0 text-xs">
                         JSON format you will receive after login as JWT in Authorization key
@@ -1037,7 +1038,7 @@
                 </div>
                 <proxy-copy-button [copyData]="proxyAuthScript" tooltip="Copy Script"></proxy-copy-button>
             </div>
-            <div class="bg-color overflow-auto code-snippet-view">
+            <div class="overflow-auto code-snippet-view">
                 <markdown [data]="proxyAuthScript | language: 'javascript'"></markdown>
             </div>
         </div>
@@ -1050,10 +1051,10 @@
                 </div>
                 <proxy-copy-button [copyData]="demoDiv()" tooltip="Copy Code"></proxy-copy-button>
             </div>
-            <div class="bg-color overflow-auto code-snippet-view">
+            <div class="overflow-auto code-snippet-view">
                 <markdown [data]="demoDiv() | language: 'html'"></markdown>
             </div>
-            <div class="bg-color flex items-center px-4 py-3 border-t border-color bg-color">
+            <div class="flex items-center px-4 py-3 border-t border-color">
                 <mat-icon class="!text-base text-color">info</mat-icon>
                 <p class="mat-body-2 text-color m-0 text-xs">
                     The social login button is shown in a dialog by default. Add this div to your UI to render it inline
@@ -1081,7 +1082,7 @@
                 <mat-icon class="!text-base !w-4">webhook</mat-icon>
                 <span class="mat-body-2 font-semibold">Webhook Configuration</span>
             </div>
-            <div class="bg-color flex flex-col gap-2 px-4 pt-4 pb-4">
+            <div class="flex flex-col gap-2 px-4 pt-4 pb-4">
                 <ng-container
                     *ngTemplateOutlet="
                         inputField;
@@ -1814,7 +1815,7 @@
                     <mat-icon class="!text-base !w-4 text-color">image</mat-icon>
                     <span class="mat-body-2 font-semibold">Logo</span>
                 </div>
-                <div class="bg-color px-4 pt-4 pb-3 flex flex-col gap-3">
+                <div class="px-4 pt-4 pb-3 flex flex-col gap-3">
                     <mat-radio-group
                         [value]="logoInputMode"
                         (change)="logoInputMode = $event.value"
@@ -1951,7 +1952,7 @@
                     <mat-icon class="!text-base !w-4 text-color">toggle_on</mat-icon>
                     <span class="mat-body-2 font-semibold">Display Options</span>
                 </div>
-                <div class="bg-color flex flex-col divide-y divide-[var(--color-common-border)]">
+                <div class="flex flex-col divide-y divide-[var(--color-common-border)]">
                     <div class="flex items-center justify-between gap-3 px-4 py-3">
                         <span class="mat-body-2">Show social login as icon</span>
                         <mat-slide-toggle
@@ -1978,7 +1979,7 @@
                     <mat-icon class="!text-base !w-4 text-color">palette</mat-icon>
                     <span class="mat-body-2 font-semibold">Colors</span>
                 </div>
-                <div class="bg-color flex flex-col divide-y divide-[var(--color-common-border)]">
+                <div class="flex flex-col divide-y divide-[var(--color-common-border)]">
                     <div class="flex items-center justify-between gap-3 px-4 py-3">
                         <div class="flex flex-col gap-0.5">
                             <label class="mat-body-2 font-medium">Primary color</label>
