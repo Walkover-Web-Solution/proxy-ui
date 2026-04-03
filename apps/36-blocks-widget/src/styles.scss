@@ -29,24 +29,22 @@
 }
 
 /* You can add global styles to this file, and also import other style files */
-body {
-    &.36-blocks-widget {
-        margin: 0;
-        width: 100vw;
-        height: 100vh;
-        overflow-x: hidden;
-        &.light-theme {
-            background-color: var(--color-common-white) !important;
-            color: var(--color-common-dark);
-        }
-        &.dark-theme {
-            background-color: var(--color-common-dark) !important;
-            color: var(--color-common-white);
-        }
-        &.system-theme {
-            background-color: light-dark(var(--color-common-white), var(--color-common-dark)) !important;
-            color: light-dark(var(--color-common-dark), var(--color-common-white));
-        }
+body.\33 6-blocks-widget {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    &.light-theme {
+        background-color: var(--color-common-white) !important;
+        color: var(--color-common-dark);
+    }
+    &.dark-theme {
+        background-color: var(--color-common-dark) !important;
+        color: var(--color-common-white);
+    }
+    &.system-theme {
+        background-color: light-dark(var(--color-common-white), var(--color-common-dark)) !important;
+        color: light-dark(var(--color-common-dark), var(--color-common-white));
     }
 }
 
