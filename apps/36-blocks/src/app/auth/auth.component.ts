@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { WidgetTheme } from '@proxy/constant';
+import { WidgetThemeService } from 'apps/36-blocks-widget/src/app/otp/service/widget-theme.service';
 import { DomSanitizer, Meta, SafeHtml, Title } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { DOCUMENT } from '@angular/common';
@@ -29,6 +31,7 @@ import * as logInActions from './ngrx/actions/login.action';
     imports: [RouterModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule],
     templateUrl: './auth.component.html',
     styleUrls: ['./auth.component.scss'],
+    providers: [WidgetThemeService],
 })
 export class AuthComponent extends BaseComponent implements OnInit {
     public selectLogInErrors$: Observable<string[]>;
@@ -75,12 +78,10 @@ export class AuthComponent extends BaseComponent implements OnInit {
     public selectedColor = '#ef4444';
     public selectedAppearance: 'dark' | 'light' | 'system' = 'dark';
     public borderRadius = 8;
-    private systemDarkMq: MediaQueryList | null = null;
+    private readonly themeService = inject(WidgetThemeService);
 
     public get isDark(): boolean {
-        if (this.selectedAppearance === 'dark') return true;
-        if (this.selectedAppearance === 'light') return false;
-        return this.systemDarkMq?.matches ?? true;
+        return this.themeService.isDark(this.selectedAppearance as WidgetTheme);
     }
 
     public get themeVars(): Record<string, string> {
@@ -103,6 +104,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
 
     public selectAppearance(mode: 'dark' | 'light' | 'system'): void {
         this.selectedAppearance = mode;
+        this.themeService.setInputTheme(mode);
         this.cdr.markForCheck();
     }
 
@@ -345,8 +347,8 @@ export class AuthComponent extends BaseComponent implements OnInit {
                     'Launch secure user signup, login, roles, and access control in minutes. Plug & play authentication platform with social login, OTP, and RBAC.',
             },
             { property: 'og:type', content: 'website' },
-            { property: 'og:url', content: 'https://36blocks.io/' },
-            { property: 'og:image', content: 'https://36blocks.io/assets/og-image.png' },
+            { property: 'og:url', content: 'https://36blocks.com/' },
+            { property: 'og:image', content: 'https://36blocks.com/assets/og-image.png' },
             { property: 'og:image:width', content: '1200' },
             { property: 'og:image:height', content: '630' },
             { property: 'og:image:alt', content: '36Blocks — Secure Auth & User Management' },
@@ -357,20 +359,13 @@ export class AuthComponent extends BaseComponent implements OnInit {
                 name: 'twitter:description',
                 content: 'Plug & play authentication with social login, OTP, RBAC, and analytics. 5-minute setup.',
             },
-            { name: 'twitter:image', content: 'https://36blocks.io/assets/og-image.png' },
+            { name: 'twitter:image', content: 'https://36blocks.com/assets/og-image.png' },
             { name: 'twitter:image:alt', content: '36Blocks — Secure Auth & User Management' },
         ]);
 
         this.injectJsonLdSchema();
 
         if (isPlatformBrowser(this.platformId)) {
-            this.systemDarkMq = window.matchMedia('(prefers-color-scheme: dark)');
-            this.systemDarkMq.addEventListener('change', () => {
-                if (this.selectedAppearance === 'system') {
-                    this.cdr.markForCheck();
-                }
-            });
-
             this.selectLogInErrors$.subscribe((res) => {
                 res?.forEach((r) => {
                     this.toast.error(r);
@@ -379,7 +374,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
 
             this.logInData$.subscribe((res) => {
                 if (res) {
-                    this.router.navigate(['/app']);
+                    this.router.navigate(['/app/dashboard']);
                 }
             });
 
@@ -433,27 +428,27 @@ export class AuthComponent extends BaseComponent implements OnInit {
                 '@context': 'https://schema.org',
                 '@type': 'Organization',
                 name: '36Blocks',
-                url: 'https://36blocks.io',
-                logo: 'https://36blocks.io/assets/logo.png',
+                url: 'https://36blocks.com/',
+                logo: 'https://36blocks.com/assets/logo.png',
                 sameAs: [],
                 contactPoint: {
                     '@type': 'ContactPoint',
                     contactType: 'customer support',
-                    url: 'https://36blocks.io',
+                    url: 'https://36blocks.com/',
                 },
             },
             {
                 '@context': 'https://schema.org',
                 '@type': 'WebSite',
                 name: '36Blocks',
-                url: 'https://36blocks.io',
+                url: 'https://36blocks.com/',
                 description:
                     'Secure authentication and user management platform with social login, OTP, RBAC, and analytics.',
                 potentialAction: {
                     '@type': 'SearchAction',
                     target: {
                         '@type': 'EntryPoint',
-                        urlTemplate: 'https://36blocks.io/?q={search_term_string}',
+                        urlTemplate: 'https://36blocks.com/?q={search_term_string}',
                     },
                     'query-input': 'required name=search_term_string',
                 },
@@ -462,7 +457,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
                 '@context': 'https://schema.org',
                 '@type': 'SoftwareApplication',
                 name: '36Blocks',
-                url: 'https://36blocks.io',
+                url: 'https://36blocks.com/',
                 applicationCategory: 'DeveloperApplication',
                 operatingSystem: 'Web',
                 description:
@@ -487,7 +482,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
                 author: {
                     '@type': 'Organization',
                     name: '36Blocks',
-                    url: 'https://36blocks.io',
+                    url: 'https://36blocks.com/',
                 },
             },
         ];

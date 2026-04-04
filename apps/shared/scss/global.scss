@@ -133,6 +133,11 @@ markdown pre {
     .mat-horizontal-stepper-header-container {
         padding: 24px;
     }
+    .mat-horizontal-content-container {
+        &:has(.mat-horizontal-stepper-content-current .branding-step-content) {
+            overflow: visible;
+        }
+    }
     @media screen and (max-width: 768px) {
         .mat-horizontal-stepper-header-container {
             padding: 8px;
