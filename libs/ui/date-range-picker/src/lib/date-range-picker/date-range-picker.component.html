@@ -85,7 +85,7 @@
                                 />
                                 <mat-icon matSuffix class="mat-icon-18">today</mat-icon>
                                 @if (range.get('start').errors?.pattern) {
-                                <mat-error>Invalid Date Format.</mat-error>
+                                    <mat-error>Invalid Date Format.</mat-error>
                                 }
                             </mat-form-field>
                             <mat-form-field appearance="outline" class="mat-form-custom">
@@ -99,7 +99,7 @@
                                 />
                                 <mat-icon matSuffix class="mat-icon-18">today</mat-icon>
                                 @if (range.get('end').errors?.pattern) {
-                                <mat-error>Invalid Date Format.</mat-error>
+                                    <mat-error>Invalid Date Format.</mat-error>
                                 }
                             </mat-form-field>
                         </form>
@@ -115,11 +115,12 @@
                     </div>
                     <div class="drp-calendar-content">
                         @if (selectedDateIsGreaterThenToday) {
-                        <p class="pl-2 m-0 text-danger" style="font-size: 12px">Future Date Selected.</p>
-                        } @if (selectedDateIsSmallerThenMinDate) {
-                        <p class="pl-2 m-0 text-danger" style="font-size: 12px">
-                            Date Selected older then available data.
-                        </p>
+                            <p class="pl-2 m-0 text-danger" style="font-size: 12px">Future Date Selected.</p>
+                        }
+                        @if (selectedDateIsSmallerThenMinDate) {
+                            <p class="pl-2 m-0 text-danger" style="font-size: 12px">
+                                Date Selected older then available data.
+                            </p>
                         }
                     </div>
                     <div class="drp-calendar-actions px-2">

@@ -1,5 +1,4 @@
 <mat-drawer-container class="h-screen bg-color!" autosize="false" [hasBackdrop]="isMobile()">
-
     <!-- Sidebar drawer -->
     <mat-drawer
         #drawer
@@ -19,24 +18,26 @@
             <!-- Nav items -->
             <mat-nav-list class="!pt-3 !px-3 flex-1 overflow-y-auto service-list">
                 @for (tab of tabs; track tab.id) {
-                <button
-                    mat-list-item
-                    [class.mdc-list-item--activated]="activeTab() === tab.id"
-                    (click)="selectTab(tab.id)"
-                    [matTooltip]="tab.requiresAuth && !authToken() ? 'Complete Authorization first to unlock' : ''"
-                    matTooltipPosition="right"
-                    [class.!cursor-not-allowed]="tab.requiresAuth && !authToken()"
-                >
-                    <mat-icon matListItemIcon class="material-icons-outlined">{{ tab.icon }}</mat-icon>
-                    <span matListItemTitle class="font-14 flex items-center justify-between w-full">
-                        {{ tab.label }}
-                        @if (tab.requiresAuth && !authToken()) {
-                        <mat-icon class="material-icons-outlined mat-icon-18 shrink-0 secondary-text-color">lock</mat-icon>
-                        } @else {
-                        <mat-icon class="material-icons-outlined mat-icon-18 shrink-0">navigate_next</mat-icon>
-                        }
-                    </span>
-                </button>
+                    <button
+                        mat-list-item
+                        [class.mdc-list-item--activated]="activeTab() === tab.id"
+                        (click)="selectTab(tab.id)"
+                        [matTooltip]="tab.requiresAuth && !authToken() ? 'Complete Authorization first to unlock' : ''"
+                        matTooltipPosition="right"
+                        [class.!cursor-not-allowed]="tab.requiresAuth && !authToken()"
+                    >
+                        <mat-icon matListItemIcon class="material-icons-outlined">{{ tab.icon }}</mat-icon>
+                        <span matListItemTitle class="font-14 flex items-center justify-between w-full">
+                            {{ tab.label }}
+                            @if (tab.requiresAuth && !authToken()) {
+                                <mat-icon class="material-icons-outlined mat-icon-18 shrink-0 secondary-text-color"
+                                    >lock</mat-icon
+                                >
+                            } @else {
+                                <mat-icon class="material-icons-outlined mat-icon-18 shrink-0">navigate_next</mat-icon>
+                            }
+                        </span>
+                    </button>
                 }
             </mat-nav-list>
         </div>
@@ -78,48 +79,49 @@
 
     <!-- Main content -->
     <mat-drawer-content class="!flex flex-col overflow-hidden bg-color!">
-
         <!-- Mobile top bar -->
         @if (isMobile()) {
-        <div class="flex flex-col border-b border-color shrink-0">
-            <!-- Row 1: hamburger + tab name -->
-            <div class="flex items-center gap-2 px-3 pt-2 pb-1">
-                <button matIconButton type="button" (click)="drawer.toggle()" aria-label="Open menu">
-                    <mat-icon aria-hidden="true">menu</mat-icon>
-                </button>
-                <span class="flex-1 text-sm font-semibold text-color truncate">{{ activeTabLabel() }}</span>
+            <div class="flex flex-col border-b border-color shrink-0">
+                <!-- Row 1: hamburger + tab name -->
+                <div class="flex items-center gap-2 px-3 pt-2 pb-1">
+                    <button matIconButton type="button" (click)="drawer.toggle()" aria-label="Open menu">
+                        <mat-icon aria-hidden="true">menu</mat-icon>
+                    </button>
+                    <span class="flex-1 text-sm font-semibold text-color truncate">{{ activeTabLabel() }}</span>
+                </div>
+                <!-- Row 2: theme toggle + view mode toggle -->
+                <div class="flex items-center justify-between px-3 pb-2 gap-2">
+                    <ng-container *ngTemplateOutlet="themeTpl"></ng-container>
+                    <ng-container *ngTemplateOutlet="viewModeTpl"></ng-container>
+                </div>
             </div>
-            <!-- Row 2: theme toggle + view mode toggle -->
-            <div class="flex items-center justify-between px-3 pb-2 gap-2">
-                <ng-container *ngTemplateOutlet="themeTpl"></ng-container>
-                <ng-container *ngTemplateOutlet="viewModeTpl"></ng-container>
-            </div>
-        </div>
         }
 
         <!-- Desktop top bar -->
         @if (!isMobile()) {
-        <div class="flex items-center justify-between px-4 py-3 shrink-0">
-            <ng-container *ngTemplateOutlet="viewModeTpl"></ng-container>
-            <ng-container *ngTemplateOutlet="themeTpl"></ng-container>
-        </div>
+            <div class="flex items-center justify-between px-4 py-3 shrink-0">
+                <ng-container *ngTemplateOutlet="viewModeTpl"></ng-container>
+                <ng-container *ngTemplateOutlet="themeTpl"></ng-container>
+            </div>
         }
 
         <!-- Preview content -->
-        @for (tab of tabs; track tab.id) { @if (activeTab() === tab.id) {
-        <div [class]="viewMode() !== 'preview' ? 'hidden' : 'flex'" class="flex-1 flex-col overflow-hidden">
-            <div
-                class="flex-1 flex justify-center overflow-auto transition-colors duration-300"
-                [class]="isDark() ? 'bg-gray-950' : 'bg-white'"
-                [class.items-center]="tab.id == PublicScriptType.Authorization"
-            >
-                <div
-                    [id]="tab.id === PublicScriptType.Authorization ? referenceId : proxyDomId"
-                    [class.w-full]="tab.id != PublicScriptType.Authorization"
-                ></div>
-            </div>
-        </div>
-        } }
+        @for (tab of tabs; track tab.id) {
+            @if (activeTab() === tab.id) {
+                <div [class]="viewMode() !== 'preview' ? 'hidden' : 'flex'" class="flex-1 flex-col overflow-hidden">
+                    <div
+                        class="flex-1 flex justify-center overflow-auto transition-colors duration-300"
+                        [class]="isDark() ? 'bg-gray-950' : 'bg-white'"
+                        [class.items-center]="tab.id == PublicScriptType.Authorization"
+                    >
+                        <div
+                            [id]="tab.id === PublicScriptType.Authorization ? referenceId : proxyDomId"
+                            [class.w-full]="tab.id != PublicScriptType.Authorization"
+                        ></div>
+                    </div>
+                </div>
+            }
+        }
 
         <!-- Code view -->
         <div [hidden]="viewMode() !== 'code'" class="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
@@ -136,7 +138,5 @@
                 </div>
             </div>
         </div>
-
     </mat-drawer-content>
-
 </mat-drawer-container>

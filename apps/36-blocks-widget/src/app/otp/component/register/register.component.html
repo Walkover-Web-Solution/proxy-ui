@@ -1,23 +1,25 @@
 <!-- Header: Register title + Close button — hidden when rendered inside a dialog -->
 @if (!isInDialog()) {
-<div class="flex items-center justify-between mb-4">
-    <h2 class="text-base font-semibold text-gray-900 dark:text-white" [style.color]="primaryColor || null">Register</h2>
-    @if (!isRegisterFormOnly()) {
-    <button
-        type="button"
-        (click)="close(true)"
-        class="flex size-6 items-center justify-center rounded text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
-        aria-label="Close"
-    >
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <path
-                d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
-                [attr.fill]="isDarkTheme() ? '#ffffff' : '#5D6164'"
-            />
-        </svg>
-    </button>
-    }
-</div>
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-base font-semibold text-gray-900 dark:text-white" [style.color]="primaryColor || null">
+            Register
+        </h2>
+        @if (!isRegisterFormOnly()) {
+            <button
+                type="button"
+                (click)="close(true)"
+                class="flex size-6 items-center justify-center rounded text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
+                aria-label="Close"
+            >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path
+                        d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
+                        [attr.fill]="isDarkTheme() ? '#ffffff' : '#5D6164'"
+                    />
+                </svg>
+            </button>
+        }
+    </div>
 }
 
 <!-- Form -->
@@ -39,7 +41,7 @@
                 context: {
                     label: 'First Name',
                     patternError: 'Only alphabets are allowed',
-                    formControl: registrationForm.get('user.firstName')
+                    formControl: registrationForm.get('user.firstName'),
                 }
             "
         ></ng-container>
@@ -49,7 +51,7 @@
                 context: {
                     label: 'Last Name',
                     patternError: 'Only alphabets are allowed',
-                    formControl: registrationForm.get('user.lastName')
+                    formControl: registrationForm.get('user.lastName'),
                 }
             "
         ></ng-container>
@@ -61,7 +63,7 @@
             formField;
             context: {
                 label: 'Email',
-                formControl: registrationForm.get('user.email')
+                formControl: registrationForm.get('user.email'),
             }
         "
     ></ng-container>
@@ -77,113 +79,118 @@
                         label: 'Mobile',
                         required: true,
                         formControl: registrationForm.get('user.mobile'),
-                        isFieldFocused: isNumberChanged
+                        isFieldFocused: isNumberChanged,
                     }
                 "
             ></ng-container>
         </div>
         @if (!isOtpVerified) {
-        <button
-            type="button"
-            (click)="isOtpSent ? resendOtp() : getOtp()"
-            [disabled]="(selectGetOtpInProcess$ | async) || (isOtpSent && !canResendOtp)"
-            class="w-btn-primary shrink-0 whitespace-nowrap px-3"
-            [class.has-hover-color]="!!buttonHoverColor"
-            [style.--btn-hover-color]="buttonHoverColor"
-            [style.background-color]="buttonColor || null"
-            [style.color]="buttonColor ? buttonTextColor || '#ffffff' : null"
-            [style.border-radius]="borderRadiusValue || null"
-        >
-            @if (!isOtpSent) {
-            {{ (selectGetOtpInProcess$ | async) ? 'Sending...' : 'Get OTP' }}
-            } @else if (isOtpSent && !canResendOtp) { Resend in {{ resendTimer }}s } @else if (isOtpSent && canResendOtp
-            && !(selectGetOtpInProcess$ | async)) { Resend OTP } @else { Sending... }
-        </button>
-        } @else {
-        <span class="flex items-center gap-1 mt-1 text-sm font-medium text-green-600">
-            Verified
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="18px"
-                viewBox="0 -960 960 960"
-                width="18px"
-                fill="#4caf50"
-                aria-hidden="true"
+            <button
+                type="button"
+                (click)="isOtpSent ? resendOtp() : getOtp()"
+                [disabled]="(selectGetOtpInProcess$ | async) || (isOtpSent && !canResendOtp)"
+                class="w-btn-primary shrink-0 whitespace-nowrap px-3"
+                [class.has-hover-color]="!!buttonHoverColor"
+                [style.--btn-hover-color]="buttonHoverColor"
+                [style.background-color]="buttonColor || null"
+                [style.color]="buttonColor ? buttonTextColor || '#ffffff' : null"
+                [style.border-radius]="borderRadiusValue || null"
             >
-                <path
-                    d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
-                />
-            </svg>
-        </span>
+                @if (!isOtpSent) {
+                    {{ (selectGetOtpInProcess$ | async) ? 'Sending...' : 'Get OTP' }}
+                } @else if (isOtpSent && !canResendOtp) {
+                    Resend in {{ resendTimer }}s
+                } @else if (isOtpSent && canResendOtp && !(selectGetOtpInProcess$ | async)) {
+                    Resend OTP
+                } @else {
+                    Sending...
+                }
+            </button>
+        } @else {
+            <span class="flex items-center gap-1 mt-1 text-sm font-medium text-green-600">
+                Verified
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="18px"
+                    viewBox="0 -960 960 960"
+                    width="18px"
+                    fill="#4caf50"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+                    />
+                </svg>
+            </span>
         }
     </div>
 
     <!-- Change Number link -->
     @if (isNumberChanged || isOtpVerified) {
-    <div class="flex justify-end">
-        <a href="javascript:void(0)" (click)="numberChanged()" class="w-link">Change Number</a>
-    </div>
+        <div class="flex justify-end">
+            <a href="javascript:void(0)" (click)="numberChanged()" class="w-link">Change Number</a>
+        </div>
     }
 
     <!-- OTP entry boxes -->
     @if (isOtpSent && !isOtpVerified) {
-    <div class="flex flex-col gap-2">
-        <div class="flex items-center gap-3" [formGroup]="otpForm">
-            <input
-                type="text"
-                maxlength="1"
-                formControlName="otp1"
-                (input)="onOtpInput($event, 'otp1', otp2)"
-                (keyup)="onOtpKeyup($event, 'otp1')"
-                (keydown)="onOtpKeydown($event, 'otp1')"
-                (paste)="onOtpPaste($event)"
-                #otp1
-                class="w-input-otp"
-            />
-            <input
-                type="text"
-                maxlength="1"
-                formControlName="otp2"
-                (input)="onOtpInput($event, 'otp2', otp3)"
-                (keyup)="onOtpKeyup($event, 'otp2')"
-                (keydown)="onOtpKeydown($event, 'otp2', otp1)"
-                #otp2
-                class="w-input-otp"
-            />
-            <input
-                type="text"
-                maxlength="1"
-                formControlName="otp3"
-                (input)="onOtpInput($event, 'otp3', otp4)"
-                (keyup)="onOtpKeyup($event, 'otp3')"
-                (keydown)="onOtpKeydown($event, 'otp3', otp2)"
-                #otp3
-                class="w-input-otp"
-            />
-            <input
-                type="text"
-                maxlength="1"
-                formControlName="otp4"
-                (input)="onOtpInput($event, 'otp4')"
-                (keyup)="onOtpKeyup($event, 'otp4')"
-                (keydown)="onOtpKeydown($event, 'otp4', otp3)"
-                #otp4
-                class="w-input-otp"
-            />
-            <a
-                href="javascript:void(0)"
-                (click)="verifyOtp()"
-                [class.opacity-50]="selectVerifyOtpV2InProcess$ | async"
-                [class.pointer-events-none]="selectVerifyOtpV2InProcess$ | async"
-                class="w-link"
-            >
-                {{ (selectVerifyOtpV2InProcess$ | async) ? 'Verifying...' : 'Verify OTP' }}
-            </a>
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-3" [formGroup]="otpForm">
+                <input
+                    type="text"
+                    maxlength="1"
+                    formControlName="otp1"
+                    (input)="onOtpInput($event, 'otp1', otp2)"
+                    (keyup)="onOtpKeyup($event, 'otp1')"
+                    (keydown)="onOtpKeydown($event, 'otp1')"
+                    (paste)="onOtpPaste($event)"
+                    #otp1
+                    class="w-input-otp"
+                />
+                <input
+                    type="text"
+                    maxlength="1"
+                    formControlName="otp2"
+                    (input)="onOtpInput($event, 'otp2', otp3)"
+                    (keyup)="onOtpKeyup($event, 'otp2')"
+                    (keydown)="onOtpKeydown($event, 'otp2', otp1)"
+                    #otp2
+                    class="w-input-otp"
+                />
+                <input
+                    type="text"
+                    maxlength="1"
+                    formControlName="otp3"
+                    (input)="onOtpInput($event, 'otp3', otp4)"
+                    (keyup)="onOtpKeyup($event, 'otp3')"
+                    (keydown)="onOtpKeydown($event, 'otp3', otp2)"
+                    #otp3
+                    class="w-input-otp"
+                />
+                <input
+                    type="text"
+                    maxlength="1"
+                    formControlName="otp4"
+                    (input)="onOtpInput($event, 'otp4')"
+                    (keyup)="onOtpKeyup($event, 'otp4')"
+                    (keydown)="onOtpKeydown($event, 'otp4', otp3)"
+                    #otp4
+                    class="w-input-otp"
+                />
+                <a
+                    href="javascript:void(0)"
+                    (click)="verifyOtp()"
+                    [class.opacity-50]="selectVerifyOtpV2InProcess$ | async"
+                    [class.pointer-events-none]="selectVerifyOtpV2InProcess$ | async"
+                    class="w-link"
+                >
+                    {{ (selectVerifyOtpV2InProcess$ | async) ? 'Verifying...' : 'Verify OTP' }}
+                </a>
+            </div>
+            @if (otpError) {
+                <p class="text-xs text-red-600 dark:text-red-400">{{ otpError }}</p>
+            }
         </div>
-        @if (otpError) {
-        <p class="text-xs text-red-600 dark:text-red-400">{{ otpError }}</p>
-        }
-    </div>
     }
 
     <!-- Password + Confirm Password -->
@@ -195,7 +202,7 @@
                     type: 'password',
                     label: 'Password',
                     patternError: 'Enter a valid password',
-                    formControl: registrationForm.get('user.password')
+                    formControl: registrationForm.get('user.password'),
                 }
             "
         ></ng-container>
@@ -206,7 +213,7 @@
                     type: 'confirm password',
                     label: 'Confirm Password',
                     patternError: 'Enter a valid password',
-                    formControl: registrationForm.get('user.confirmPassword')
+                    formControl: registrationForm.get('user.confirmPassword'),
                 }
             "
         ></ng-container>
@@ -220,37 +227,43 @@
 
     <!-- Company Details -->
     @if (showCompanyDetail) {
-    <hr class="my-1 border-gray-200 dark:border-gray-700" />
-    <p class="text-sm font-semibold text-gray-900 dark:text-white" [style.color]="primaryColor || null">
-        Company Details (Optional)
-    </p>
-    <ng-container
-        *ngTemplateOutlet="
-            formField;
-            context: { label: 'Company Name', formControl: registrationForm.get('company.name') }
-        "
-    ></ng-container>
-    <ng-container
-        *ngTemplateOutlet="
-            intlFormField;
-            context: {
-                key: 'company',
-                label: 'Mobile',
-                formControl: registrationForm.get('company.mobile')
-            }
-        "
-    ></ng-container>
-    <ng-container
-        *ngTemplateOutlet="formField; context: { label: 'Email', formControl: registrationForm.get('company.email') }"
-    ></ng-container>
+        <hr class="my-1 border-gray-200 dark:border-gray-700" />
+        <p class="text-sm font-semibold text-gray-900 dark:text-white" [style.color]="primaryColor || null">
+            Company Details (Optional)
+        </p>
+        <ng-container
+            *ngTemplateOutlet="
+                formField;
+                context: { label: 'Company Name', formControl: registrationForm.get('company.name') }
+            "
+        ></ng-container>
+        <ng-container
+            *ngTemplateOutlet="
+                intlFormField;
+                context: {
+                    key: 'company',
+                    label: 'Mobile',
+                    formControl: registrationForm.get('company.mobile'),
+                }
+            "
+        ></ng-container>
+        <ng-container
+            *ngTemplateOutlet="
+                formField;
+                context: { label: 'Email', formControl: registrationForm.get('company.email') }
+            "
+        ></ng-container>
     }
 
     <!-- API Errors + Submit -->
     <div class="flex items-end justify-between gap-3 mt-1">
         <div class="text-xs text-red-600 dark:text-red-400">
             @if (apiError | async; as apiErrorList) {
-            <span class="font-semibold">Error: </span>
-            @for (error of apiErrorList; track error) { <span>{{ error }}<br /></span> } }
+                <span class="font-semibold">Error: </span>
+                @for (error of apiErrorList; track error) {
+                    <span>{{ error }}<br /></span>
+                }
+            }
         </div>
         <button
             #submitBtn
@@ -280,73 +293,80 @@
         <label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">{{ label }}</label>
         <div class="relative">
             @if (type === 'password' || type === 'confirm password') {
-            <input
-                autocomplete="off"
-                [type]="(type === 'password' ? showPassword : showConfirmPassword) ? 'text' : 'password'"
-                [formControl]="formControl"
-                [placeholder]="label"
-                maxlength="15"
-                class="w-input-sm pr-9"
-                [style.border-radius]="borderRadiusValue || null"
-            />
-            <button
-                type="button"
-                (click)="
-                    type === 'password' ? (showPassword = !showPassword) : (showConfirmPassword = !showConfirmPassword)
-                "
-                class="absolute inset-y-0 right-0 flex items-center pr-2.5 cursor-pointer text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                [attr.aria-label]="
-                    (type === 'password' ? showPassword : showConfirmPassword) ? 'Hide password' : 'Show password'
-                "
-            >
-                <ng-container
-                    *ngTemplateOutlet="
-                        visibilityIcon;
-                        context: { visible: type === 'password' ? showPassword : showConfirmPassword }
+                <input
+                    autocomplete="off"
+                    [type]="(type === 'password' ? showPassword : showConfirmPassword) ? 'text' : 'password'"
+                    [formControl]="formControl"
+                    [placeholder]="label"
+                    maxlength="15"
+                    class="w-input-sm pr-9"
+                    [style.border-radius]="borderRadiusValue || null"
+                />
+                <button
+                    type="button"
+                    (click)="
+                        type === 'password'
+                            ? (showPassword = !showPassword)
+                            : (showConfirmPassword = !showConfirmPassword)
                     "
-                ></ng-container>
-            </button>
+                    class="absolute inset-y-0 right-0 flex items-center pr-2.5 cursor-pointer text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    [attr.aria-label]="
+                        (type === 'password' ? showPassword : showConfirmPassword) ? 'Hide password' : 'Show password'
+                    "
+                >
+                    <ng-container
+                        *ngTemplateOutlet="
+                            visibilityIcon;
+                            context: { visible: type === 'password' ? showPassword : showConfirmPassword }
+                        "
+                    ></ng-container>
+                </button>
             } @else {
-            <input
-                autocomplete="off"
-                [type]="type || 'text'"
-                [formControl]="formControl"
-                [placeholder]="label"
-                class="w-input-sm"
-                [style.border-radius]="borderRadiusValue || null"
-            />
+                <input
+                    autocomplete="off"
+                    [type]="type || 'text'"
+                    [formControl]="formControl"
+                    [placeholder]="label"
+                    class="w-input-sm"
+                    [style.border-radius]="borderRadiusValue || null"
+                />
             }
         </div>
-        @if (formControl?.touched) { @if (formControl.errors?.['required']) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">{{ label }} is required.</p>
-        } @else if (formControl.errors?.['minlengthWithSpace']) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">Min required length is 3.</p>
-        } @else if (formControl.errors?.['noStartEndSpaces']) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">Start and End spaces are not allowed.</p>
-        } @else if (formControl.errors?.['min']; as minError) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
-            Min value required is {{ minError?.min }}.
-        </p>
-        } @else if (formControl.errors?.['max']; as maxError) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
-            Max value allowed is {{ maxError?.max }}.
-        </p>
-        } @else if (formControl.errors?.['minlength']; as minLengthError) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
-            Min required length is {{ minLengthError?.requiredLength }}.
-        </p>
-        } @else if (formControl.errors?.['maxlength']; as maxLengthError) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
-            Max allowed length is {{ maxLengthError?.requiredLength }}.
-        </p>
-        } @else if (formControl.errors?.['pattern']) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
-            {{ patternError ? patternError : 'Enter valid ' + label }}
-        </p>
-        } @else if (formControl.errors?.['valueSameAsControl']) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">{{ label }} mismatch.</p>
-        } } @if (hint) {
-        <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">{{ hint }}</p>
+        @if (formControl?.touched) {
+            @if (formControl.errors?.['required']) {
+                <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">{{ label }} is required.</p>
+            } @else if (formControl.errors?.['minlengthWithSpace']) {
+                <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">Min required length is 3.</p>
+            } @else if (formControl.errors?.['noStartEndSpaces']) {
+                <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
+                    Start and End spaces are not allowed.
+                </p>
+            } @else if (formControl.errors?.['min']; as minError) {
+                <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
+                    Min value required is {{ minError?.min }}.
+                </p>
+            } @else if (formControl.errors?.['max']; as maxError) {
+                <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
+                    Max value allowed is {{ maxError?.max }}.
+                </p>
+            } @else if (formControl.errors?.['minlength']; as minLengthError) {
+                <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
+                    Min required length is {{ minLengthError?.requiredLength }}.
+                </p>
+            } @else if (formControl.errors?.['maxlength']; as maxLengthError) {
+                <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
+                    Max allowed length is {{ maxLengthError?.requiredLength }}.
+                </p>
+            } @else if (formControl.errors?.['pattern']) {
+                <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">
+                    {{ patternError ? patternError : 'Enter valid ' + label }}
+                </p>
+            } @else if (formControl.errors?.['valueSameAsControl']) {
+                <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">{{ label }} mismatch.</p>
+            }
+        }
+        @if (hint) {
+            <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">{{ hint }}</p>
         }
     </div>
 </ng-template>
@@ -366,19 +386,24 @@
             type="tel"
             autocomplete="off"
             class="w-input-sm"
-            [class.border-red-500]="formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']"
+            [class.border-red-500]="
+                formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']
+            "
             [style.border-radius]="borderRadiusValue || null"
             (keypress)="intlClass?.[key]?.onlyPhoneNumber($event)"
             [attr.id]="'init-contact-' + key"
             [placeholder]="'Enter ' + label + (required ? ' *' : '')"
             (input)="onMobileInput($event, key)"
-            (blur)="formControl?.markAsTouched(); formControl?.setValue(intlClass?.[key]?.phoneNumber?.replace('+', ''))"
+            (blur)="
+                formControl?.markAsTouched(); formControl?.setValue(intlClass?.[key]?.phoneNumber?.replace('+', ''))
+            "
             [disabled]="isFieldFocused"
         />
         @if (formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">Please enter valid mobile number.</p>
-        } @if (formControl.errors?.['otpVerificationFailed']) {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">Please verify the mobile number.</p>
+            <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">Please enter valid mobile number.</p>
+        }
+        @if (formControl.errors?.['otpVerificationFailed']) {
+            <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">Please verify the mobile number.</p>
         }
     </div>
 </ng-template>
@@ -386,28 +411,28 @@
 <!-- ── Visibility Icon Template ── -->
 <ng-template #visibilityIcon let-visible="visible">
     @if (!visible) {
-    <svg
-        class="size-4 text-gray-400 dark:text-gray-500"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        aria-hidden="true"
-    >
-        <path
-            d="M12.01 20c-5.065 0-9.586-4.211-12.01-8.424 2.418-4.103 6.943-7.576 12.01-7.576 5.135 0 9.635 3.453 11.999 7.564-2.241 4.43-6.726 8.436-11.999 8.436zm-10.842-8.416c.843 1.331 5.018 7.416 10.842 7.416 6.305 0 10.112-6.103 10.851-7.405-.772-1.198-4.606-6.595-10.851-6.595-6.116 0-10.025 5.355-10.842 6.584zm10.832-4.584c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5zm0 1c2.208 0 4 1.792 4 4s-1.792 4-4 4-4-1.792-4-4 1.792-4 4-4z"
-        />
-    </svg>
+        <svg
+            class="size-4 text-gray-400 dark:text-gray-500"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+        >
+            <path
+                d="M12.01 20c-5.065 0-9.586-4.211-12.01-8.424 2.418-4.103 6.943-7.576 12.01-7.576 5.135 0 9.635 3.453 11.999 7.564-2.241 4.43-6.726 8.436-11.999 8.436zm-10.842-8.416c.843 1.331 5.018 7.416 10.842 7.416 6.305 0 10.112-6.103 10.851-7.405-.772-1.198-4.606-6.595-10.851-6.595-6.116 0-10.025 5.355-10.842 6.584zm10.832-4.584c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5zm0 1c2.208 0 4 1.792 4 4s-1.792 4-4 4-4-1.792-4-4 1.792-4 4-4z"
+            />
+        </svg>
     } @else {
-    <svg
-        class="size-4 text-gray-400 dark:text-gray-500"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        aria-hidden="true"
-    >
-        <path
-            d="M8.137 15.147c-.71-.857-1.146-1.947-1.146-3.147 0-2.76 2.241-5 5-5 1.201 0 2.291.435 3.148 1.145l1.897-1.897c-1.441-.738-3.122-1.248-5.035-1.248-6.115 0-10.025 5.355-10.842 6.584.529.834 2.379 3.527 5.113 5.428l1.865-1.865zm6.294-6.294c-.673-.53-1.515-.853-2.44-.853-2.207 0-4 1.792-4 4 0 .923.324 1.765.854 2.439l5.586-5.586zm7.56-6.146l-19.292 19.293-.708-.707 3.548-3.548c-2.298-1.612-4.234-3.885-5.548-6.169 2.418-4.103 6.943-7.576 12.01-7.576 2.065 0 4.021.566 5.782 1.501l3.501-3.501.707.707zm-2.465 3.879l-.734.734c2.236 1.619 3.628 3.604 4.061 4.274-.739 1.303-4.546 7.406-10.852 7.406-1.425 0-2.749-.368-3.951-.938l-.748.748c1.475.742 3.057 1.19 4.699 1.19 5.274 0 9.758-4.006 11.999-8.436-1.087-1.891-2.63-3.637-4.474-4.978zm-3.535 5.414c0-.554-.113-1.082-.317-1.562l.734-.734c.361.69.583 1.464.583 2.296 0 2.759-2.24 5-5 5-.832 0-1.604-.223-2.295-.583l.734-.735c.48.204 1.007.318 1.561.318 2.208 0 4-1.792 4-4z"
-        />
-    </svg>
+        <svg
+            class="size-4 text-gray-400 dark:text-gray-500"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+        >
+            <path
+                d="M8.137 15.147c-.71-.857-1.146-1.947-1.146-3.147 0-2.76 2.241-5 5-5 1.201 0 2.291.435 3.148 1.145l1.897-1.897c-1.441-.738-3.122-1.248-5.035-1.248-6.115 0-10.025 5.355-10.842 6.584.529.834 2.379 3.527 5.113 5.428l1.865-1.865zm6.294-6.294c-.673-.53-1.515-.853-2.44-.853-2.207 0-4 1.792-4 4 0 .923.324 1.765.854 2.439l5.586-5.586zm7.56-6.146l-19.292 19.293-.708-.707 3.548-3.548c-2.298-1.612-4.234-3.885-5.548-6.169 2.418-4.103 6.943-7.576 12.01-7.576 2.065 0 4.021.566 5.782 1.501l3.501-3.501.707.707zm-2.465 3.879l-.734.734c2.236 1.619 3.628 3.604 4.061 4.274-.739 1.303-4.546 7.406-10.852 7.406-1.425 0-2.749-.368-3.951-.938l-.748.748c1.475.742 3.057 1.19 4.699 1.19 5.274 0 9.758-4.006 11.999-8.436-1.087-1.891-2.63-3.637-4.474-4.978zm-3.535 5.414c0-.554-.113-1.082-.317-1.562l.734-.734c.361.69.583 1.464.583 2.296 0 2.759-2.24 5-5 5-.832 0-1.604-.223-2.295-.583l.734-.735c.48.204 1.007.318 1.561.318 2.208 0 4-1.792 4-4z"
+            />
+        </svg>
     }
 </ng-template>

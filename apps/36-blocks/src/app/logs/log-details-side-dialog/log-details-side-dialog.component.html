@@ -1,5 +1,5 @@
 @if (data.isLoading$ | async) {
-<proxy-loader></proxy-loader>
+    <proxy-loader></proxy-loader>
 }
 <!-- Top Fixed Header::START -->
 <div matDialogContent>
@@ -9,26 +9,32 @@
 
 <!-- Content::START -->
 @if (data) {
-<mat-dialog-content>
-    @if (data.logData$ | async; as logdata) { @if (data?.logSettings?.store_headers) {
-    <ng-container
-        [ngTemplateOutlet]="jsonCard"
-        [ngTemplateOutletContext]="{ title: 'Headers', jsonData: logdata?.headers }"
-    ></ng-container>
-    } @if (data?.logSettings?.store_requestBody) {
-    <ng-container
-        [ngTemplateOutlet]="jsonCard"
-        [ngTemplateOutletContext]="{ title: 'Request body', jsonData: logdata?.request_body }"
-    ></ng-container>
-    } @if (data?.logSettings?.store_response) {
-    <ng-container
-        [ngTemplateOutlet]="jsonCard"
-        [ngTemplateOutletContext]="{ title: 'Response', jsonData: logdata?.response }"
-    ></ng-container>
-    } } @else { @if ((data.isLoading$ | async) === false) {
-    <proxy-no-record-found [title]="'Log Details'" [showBtn]="false"></proxy-no-record-found>
-    } }
-</mat-dialog-content>
+    <mat-dialog-content>
+        @if (data.logData$ | async; as logdata) {
+            @if (data?.logSettings?.store_headers) {
+                <ng-container
+                    [ngTemplateOutlet]="jsonCard"
+                    [ngTemplateOutletContext]="{ title: 'Headers', jsonData: logdata?.headers }"
+                ></ng-container>
+            }
+            @if (data?.logSettings?.store_requestBody) {
+                <ng-container
+                    [ngTemplateOutlet]="jsonCard"
+                    [ngTemplateOutletContext]="{ title: 'Request body', jsonData: logdata?.request_body }"
+                ></ng-container>
+            }
+            @if (data?.logSettings?.store_response) {
+                <ng-container
+                    [ngTemplateOutlet]="jsonCard"
+                    [ngTemplateOutletContext]="{ title: 'Response', jsonData: logdata?.response }"
+                ></ng-container>
+            }
+        } @else {
+            @if ((data.isLoading$ | async) === false) {
+                <proxy-no-record-found [title]="'Log Details'" [showBtn]="false"></proxy-no-record-found>
+            }
+        }
+    </mat-dialog-content>
 }
 <mat-dialog-actions align="end">
     <button mat-button (click)="onCloseDialog()">Close</button>

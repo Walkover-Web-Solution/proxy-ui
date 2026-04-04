@@ -45,6 +45,3 @@ Thumbs.db
 *.yml
 apps/proxy/src/assets/
 libs/ui/handle-domain/src/lib/rules.json
-
-# Angular @if/@for control flow syntax is not supported by Prettier 2.7.1
-**/*.component.html

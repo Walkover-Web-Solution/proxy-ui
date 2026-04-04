@@ -1,129 +1,139 @@
 @if (show()) {
-<div
-    [class.h-full]="viewMode() !== PublicScriptType.Authorization"
-    [class.authorization-container]="referenceId && !authToken"
-    [class.dark]="isDarkTheme()"
->
-    @switch (viewMode()) { @case (PublicScriptType.UserManagement) {
-    <user-management
-        [userToken]="authToken"
-        [pass]="isRolePermission"
-        [theme]="theme"
-        [exclude_role_ids]="exclude_role_ids"
-        [include_role_ids]="include_role_ids"
-    ></user-management>
-    } @case (PublicScriptType.Subscription) {
-    <proxy-subscription-center
-        [referenceId]="referenceId"
-        [isPreview]="isPreview"
-        [isLogin]="isLogin"
-        [loginRedirectUrl]="loginRedirectUrl"
-        (togglePopUp)="handleSubscriptionToggle($event)"
-    ></proxy-subscription-center>
-    } @case (PublicScriptType.OrganizationDetails) {
-    <organization-details [authToken]="authToken" [theme]="theme"></organization-details>
-    } @case (PublicScriptType.UserProfile) {
-    <user-profile [authToken]="authToken" [theme]="theme"></user-profile>
-    } @case (PublicScriptType.Authorization) {
     <div
-        [class.dark-theme]="isDarkTheme()"
-        [style.border-radius]="dialogBorderRadius || null"
-        [style.display]="(showRegistration() || showLogin()) && referenceElement ? 'none' : null"
+        [class.h-full]="viewMode() !== PublicScriptType.Authorization"
+        [class.authorization-container]="referenceId && !authToken"
+        [class.dark]="isDarkTheme()"
     >
-        @if (isOtpLoading()) {
-        <proxy-progress-bar></proxy-progress-bar>
-        }
-        <authorization
-            [referenceId]="referenceId"
-            [isPreview]="isPreview"
-            [serviceData]="otpWidgetData"
-            [target]="target"
-            [version]="version"
-            [isCreateAccountLink]="isCreateAccountTextAppended"
-            [theme]="theme"
-            [input_fields]="input_fields"
-            [show_social_login_icons]="show_social_login_icons"
-            [isUserProxyContainer]="isUserProxyContainer"
-            (togglePopUp)="toggleSendOtp()"
-            (openPopUp)="setShowRegistrationFromSendOtpCenter($event)"
-            (successReturn)="returnSuccessObj($event)"
-            (failureReturn)="returnFailureObj($event)"
-        ></authorization>
-    </div>
-    } }
-</div>
-} @if (showRegistration() || showLogin() || showForgotPassword()) {
-<div #dialogPortal [class.dark]="isDarkTheme()">
-    <div class="w-dialog-backdrop" (click)="closeOverlayDialog()" aria-hidden="true"></div>
-    <div
-        role="dialog"
-        aria-modal="true"
-        class="w-dialog-panel"
-        [style.max-width]="showRegistration() ? '40rem' : showForgotPassword() ? '30rem' : '26rem'"
-        [style.min-width]="showForgotPassword() ? '400px' : null"
-        [style.width]="showForgotPassword() ? '30rem' : null"
-    >
-        @if (isOtpLoading()) {
-        <proxy-progress-bar></proxy-progress-bar>
-        } @if (showForgotPassword()) {
-        <div class="w-dialog-header">
-            <span class="w-dialog-title">Reset Password</span>
-            <button type="button" (click)="closeOverlayDialog()" class="w-btn-close" aria-label="Close dialog">
-                <svg class="size-4" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                    <path
-                        d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
-                        fill="currentColor"
-                    />
-                </svg>
-            </button>
-        </div>
-        }
-        <div [class]="showForgotPassword() ? 'px-6 pb-6 pt-0 w-full' : 'w-dialog-body'">
-            @if (showRegistration()) {
-            <proxy-register
-                [referenceId]="referenceId"
-                [serviceData]="otpWidgetData"
-                [loginServiceData]="loginWidgetData"
-                [registrationViaLogin]="registrationViaLogin"
-                [showCompanyDetails]="showCompanyDetails"
-                [version]="version"
-                [theme]="theme"
-                [prefillDetails]="prefillDetails"
-                [firstName]="otherData?.firstName"
-                [lastName]="otherData?.lastName"
-                [email]="otherData?.email"
-                [signupServiceId]="otherData?.signupServiceId"
-                [isRegisterFormOnly]="isRegisterFormOnly"
-                (togglePopUp)="closeOverlayDialog()"
-                (successReturn)="closeOverlayDialog()"
-                (failureReturn)="returnFailureObj($event)"
-            ></proxy-register>
-            } @if (showLogin()) {
-            <proxy-login
-                [loginServiceData]="loginWidgetData"
-                [theme]="theme"
-                (togglePopUp)="closeOverlayDialog()"
-                (closePopUp)="closeOverlayDialog()"
-                (openPopUp)="setShowRegistrationFromLogin($event)"
-                (failureReturn)="returnFailureObj($event)"
-            ></proxy-login>
-            } @if (showForgotPassword()) {
-            <div class="fp-dialog-content">
-                <authorization
-                    [referenceId]="referenceId"
-                    [version]="version"
+        @switch (viewMode()) {
+            @case (PublicScriptType.UserManagement) {
+                <user-management
+                    [userToken]="authToken"
+                    [pass]="isRolePermission"
                     [theme]="theme"
-                    [isUserProxyContainer]="false"
-                    [hideInlineHeader]="true"
-                    (togglePopUp)="closeOverlayDialog()"
-                    (successReturn)="returnSuccessObj($event)"
-                    (failureReturn)="returnFailureObj($event)"
-                ></authorization>
-            </div>
+                    [exclude_role_ids]="exclude_role_ids"
+                    [include_role_ids]="include_role_ids"
+                ></user-management>
             }
+            @case (PublicScriptType.Subscription) {
+                <proxy-subscription-center
+                    [referenceId]="referenceId"
+                    [isPreview]="isPreview"
+                    [isLogin]="isLogin"
+                    [loginRedirectUrl]="loginRedirectUrl"
+                    (togglePopUp)="handleSubscriptionToggle($event)"
+                ></proxy-subscription-center>
+            }
+            @case (PublicScriptType.OrganizationDetails) {
+                <organization-details [authToken]="authToken" [theme]="theme"></organization-details>
+            }
+            @case (PublicScriptType.UserProfile) {
+                <user-profile [authToken]="authToken" [theme]="theme"></user-profile>
+            }
+            @case (PublicScriptType.Authorization) {
+                <div
+                    [class.dark-theme]="isDarkTheme()"
+                    [style.border-radius]="dialogBorderRadius || null"
+                    [style.display]="(showRegistration() || showLogin()) && referenceElement ? 'none' : null"
+                >
+                    @if (isOtpLoading()) {
+                        <proxy-progress-bar></proxy-progress-bar>
+                    }
+                    <authorization
+                        [referenceId]="referenceId"
+                        [isPreview]="isPreview"
+                        [serviceData]="otpWidgetData"
+                        [target]="target"
+                        [version]="version"
+                        [isCreateAccountLink]="isCreateAccountTextAppended"
+                        [theme]="theme"
+                        [input_fields]="input_fields"
+                        [show_social_login_icons]="show_social_login_icons"
+                        [isUserProxyContainer]="isUserProxyContainer"
+                        (togglePopUp)="toggleSendOtp()"
+                        (openPopUp)="setShowRegistrationFromSendOtpCenter($event)"
+                        (successReturn)="returnSuccessObj($event)"
+                        (failureReturn)="returnFailureObj($event)"
+                    ></authorization>
+                </div>
+            }
+        }
+    </div>
+}
+@if (showRegistration() || showLogin() || showForgotPassword()) {
+    <div #dialogPortal [class.dark]="isDarkTheme()">
+        <div class="w-dialog-backdrop" (click)="closeOverlayDialog()" aria-hidden="true"></div>
+        <div
+            role="dialog"
+            aria-modal="true"
+            class="w-dialog-panel"
+            [style.max-width]="showRegistration() ? '40rem' : showForgotPassword() ? '30rem' : '26rem'"
+            [style.min-width]="showForgotPassword() ? '400px' : null"
+            [style.width]="showForgotPassword() ? '30rem' : null"
+        >
+            @if (isOtpLoading()) {
+                <proxy-progress-bar></proxy-progress-bar>
+            }
+            @if (showForgotPassword()) {
+                <div class="w-dialog-header">
+                    <span class="w-dialog-title">Reset Password</span>
+                    <button type="button" (click)="closeOverlayDialog()" class="w-btn-close" aria-label="Close dialog">
+                        <svg class="size-4" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                            <path
+                                d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
+                                fill="currentColor"
+                            />
+                        </svg>
+                    </button>
+                </div>
+            }
+            <div [class]="showForgotPassword() ? 'px-6 pb-6 pt-0 w-full' : 'w-dialog-body'">
+                @if (showRegistration()) {
+                    <proxy-register
+                        [referenceId]="referenceId"
+                        [serviceData]="otpWidgetData"
+                        [loginServiceData]="loginWidgetData"
+                        [registrationViaLogin]="registrationViaLogin"
+                        [showCompanyDetails]="showCompanyDetails"
+                        [version]="version"
+                        [theme]="theme"
+                        [prefillDetails]="prefillDetails"
+                        [firstName]="otherData?.firstName"
+                        [lastName]="otherData?.lastName"
+                        [email]="otherData?.email"
+                        [signupServiceId]="otherData?.signupServiceId"
+                        [isRegisterFormOnly]="isRegisterFormOnly"
+                        (togglePopUp)="closeOverlayDialog()"
+                        (successReturn)="closeOverlayDialog()"
+                        (failureReturn)="returnFailureObj($event)"
+                    ></proxy-register>
+                }
+                @if (showLogin()) {
+                    <proxy-login
+                        [loginServiceData]="loginWidgetData"
+                        [theme]="theme"
+                        (togglePopUp)="closeOverlayDialog()"
+                        (closePopUp)="closeOverlayDialog()"
+                        (openPopUp)="setShowRegistrationFromLogin($event)"
+                        (failureReturn)="returnFailureObj($event)"
+                    ></proxy-login>
+                }
+                @if (showForgotPassword()) {
+                    <div class="fp-dialog-content">
+                        <authorization
+                            [referenceId]="referenceId"
+                            [version]="version"
+                            [theme]="theme"
+                            [isUserProxyContainer]="false"
+                            [hideInlineHeader]="true"
+                            (togglePopUp)="closeOverlayDialog()"
+                            (successReturn)="returnSuccessObj($event)"
+                            (failureReturn)="returnFailureObj($event)"
+                        ></authorization>
+                    </div>
+                }
+            </div>
         </div>
     </div>
-</div>
 }
 
 <!-- @if (referenceId) {

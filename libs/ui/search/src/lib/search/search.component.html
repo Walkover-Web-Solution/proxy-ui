@@ -1,47 +1,51 @@
 <mat-form-field class="!min-w-[280px]" [class]="matFormFieldClass()?.length ? matFormFieldClass() : ''">
     @if (!isRemoveChar()) {
-    <input
-        [attr.type]="type()"
-        matInput
-        [placeholder]="placeholder()"
-        autocomplete="off"
-        [matTooltip]="toolTipString()"
-        #tooltip="matTooltip"
-        [matTooltipPosition]="toolTipPosition()"
-        [matTooltipDisabled]="toolTipString().length > 0 ? toolTipDisable() : true"
-        [formControl]="searchFormControl"
-        (keydown.enter)="$event.preventDefault(); emitOnEnter() ? emitInputChanges(searchFormControl.value) : null"
-    />
+        <input
+            [attr.type]="type()"
+            matInput
+            [placeholder]="placeholder()"
+            autocomplete="off"
+            [matTooltip]="toolTipString()"
+            #tooltip="matTooltip"
+            [matTooltipPosition]="toolTipPosition()"
+            [matTooltipDisabled]="toolTipString().length > 0 ? toolTipDisable() : true"
+            [formControl]="searchFormControl"
+            (keydown.enter)="$event.preventDefault(); emitOnEnter() ? emitInputChanges(searchFormControl.value) : null"
+        />
     } @else {
-    <input
-        [attr.type]="type()"
-        matInput
-        [placeholder]="placeholder()"
-        autocomplete="off"
-        [matTooltip]="toolTipString()"
-        #tooltip="matTooltip"
-        [matTooltipPosition]="toolTipPosition()"
-        [matTooltipDisabled]="toolTipString().length > 0 ? toolTipDisable() : true"
-        [formControl]="searchFormControl"
-        proxyRemoveCharacter
-        [charactersToRemove]="charactersToRemove()?.length ? charactersToRemove() : ['e', '+', '-']"
-        (keydown.enter)="$event.preventDefault(); emitOnEnter() ? emitInputChanges(searchFormControl.value) : null"
-    />
+        <input
+            [attr.type]="type()"
+            matInput
+            [placeholder]="placeholder()"
+            autocomplete="off"
+            [matTooltip]="toolTipString()"
+            #tooltip="matTooltip"
+            [matTooltipPosition]="toolTipPosition()"
+            [matTooltipDisabled]="toolTipString().length > 0 ? toolTipDisable() : true"
+            [formControl]="searchFormControl"
+            proxyRemoveCharacter
+            [charactersToRemove]="charactersToRemove()?.length ? charactersToRemove() : ['e', '+', '-']"
+            (keydown.enter)="$event.preventDefault(); emitOnEnter() ? emitInputChanges(searchFormControl.value) : null"
+        />
     }
     <mat-icon matPrefix>search</mat-icon>
     @if (searchFormControl.value?.length && !hideCloseIcon()) {
-    <button (click)="clearSearch()" class="icon-btn-md mr-1" matIconButton matSuffix>
-        <mat-icon>close</mat-icon>
-    </button>
-    } @if (hint()) {
-    <mat-hint [innerHTML]="hint()"></mat-hint>
+        <button (click)="clearSearch()" class="icon-btn-md mr-1" matIconButton matSuffix>
+            <mat-icon>close</mat-icon>
+        </button>
+    }
+    @if (hint()) {
+        <mat-hint [innerHTML]="hint()"></mat-hint>
     }
 </mat-form-field>
 <ng-container *ngTemplateOutlet="error"></ng-container>
 
 <ng-template #error>
-    @if (searchFormControl.dirty) { @for (error of formErrors() || {} | keyvalue; track error.key) { @if
-    (searchFormControl.errors?.[error.key]) {
-    <mat-error>{{ error.value }}</mat-error>
-    } } }
+    @if (searchFormControl.dirty) {
+        @for (error of formErrors() || {} | keyvalue; track error.key) {
+            @if (searchFormControl.errors?.[error.key]) {
+                <mat-error>{{ error.value }}</mat-error>
+            }
+        }
+    }
 </ng-template>
