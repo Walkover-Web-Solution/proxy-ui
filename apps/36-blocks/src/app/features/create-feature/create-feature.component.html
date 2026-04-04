@@ -259,12 +259,11 @@
                         </form>
                         <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
                         <div class="flex justify-between items-center mt-6 pt-4">
-                            @let cuo = createUpdateObject$ | async;
-                            @if (cuo) {
+                            @if (createUpdateObject$ | async; as createUpdateObject) {
                                 <button
                                     type="button"
                                     matButton="filled"
-                                    [routerLink]="['/app/features/manage', cuo?.id]"
+                                    [routerLink]="['/app/features/manage', createUpdateObject?.id]"
                                 >
                                     Manage Feature<mat-icon class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                                         >navigate_next</mat-icon
@@ -299,140 +298,151 @@
         </mat-stepper>
     }
     @if (isEditMode) {
-        <mat-card class="outline-card p-0 grow">
-            <mat-tab-group animationDuration="0ms" class="h-full block-feature-tabs">
-                <mat-tab label="Service">
-                    <div class="flex flex-col h-full p-6">
-                        @if (featureForm.get('primaryDetails.feature_id')?.value === 1) {
-                            <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
-                        }
-                        @if (featureForm.get('primaryDetails.feature_id')?.value !== 1) {
-                            <ng-container *ngTemplateOutlet="manageSubscription"></ng-container>
-                        }
-                        @if (featureForm.get('primaryDetails.feature_id')?.value === 1) {
-                            <div class="flex items-center justify-start mt-6">
-                                <button type="button" matButton="filled" (click)="updateFeature('service')">
-                                    Update
-                                </button>
-                            </div>
-                        }
-                    </div>
-                </mat-tab>
-                <mat-tab label="Branding">
-                    <div class="flex flex-col h-full p-6 justify-between">
-                        <ng-container *ngTemplateOutlet="brandingStepContent"></ng-container>
-                        <div class="flex items-center justify-start mt-6">
-                            <button type="button" matButton="filled" (click)="updateFeature('branding')">Update</button>
-                        </div>
-                    </div>
-                </mat-tab>
-                <mat-tab label="Setting">
-                    <div class="flex flex-col h-full p-6">
-                        <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
-                        <div class="flex items-center justify-start mt-6">
-                            <button type="button" matButton="filled" (click)="updateFeature('authorization')">
-                                Update
-                            </button>
-                        </div>
-                    </div>
-                </mat-tab>
-                <mat-tab label="Design & code">
-                    <div class="p-6">
-                        <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
-                    </div>
-                </mat-tab>
-
-                <mat-tab label="Webhook">
-                    <mat-tab-group mat-stretch-tabs="false" class="nested-tabs">
-                        <mat-tab label="Configurations">
-                            <div class="flex flex-col h-full p-6">
-                                <ng-container *ngTemplateOutlet="webhook"></ng-container>
+        <div class="flex gap-4 grow items-start">
+            <mat-card class="outline-card p-0 grow">
+                <mat-tab-group animationDuration="0ms" class="h-full block-feature-tabs">
+                    <mat-tab label="Service">
+                        <div class="flex flex-col h-full p-6">
+                            @if (featureForm.get('primaryDetails.feature_id')?.value === 1) {
+                                <ng-container *ngTemplateOutlet="configureMethodTemplate"></ng-container>
+                            }
+                            @if (featureForm.get('primaryDetails.feature_id')?.value !== 1) {
+                                <ng-container *ngTemplateOutlet="manageSubscription"></ng-container>
+                            }
+                            @if (featureForm.get('primaryDetails.feature_id')?.value === 1) {
                                 <div class="flex items-center justify-start mt-6">
-                                    <button type="button" matButton="filled" (click)="updateFeature('webhook')">
+                                    <button type="button" matButton="filled" (click)="updateFeature('service')">
                                         Update
                                     </button>
                                 </div>
+                            }
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Branding">
+                        <div class="flex flex-col h-full p-6 justify-between">
+                            <ng-container *ngTemplateOutlet="brandingStepContent"></ng-container>
+                            <div class="flex items-center justify-start mt-6">
+                                <button type="button" matButton="filled" (click)="updateFeature('branding')">
+                                    Update
+                                </button>
                             </div>
-                        </mat-tab>
-                        <mat-tab label="Event Catalog">
-                            <div class="p-6 flex flex-col gap-4">
-                                <div class="card-with-header">
-                                    <div class="card-with-header--header justify-between">
-                                        <div class="flex items-center gap-2 text-color">
-                                            <mat-icon class="!text-base !w-4">bolt</mat-icon>
-                                            <span class="mat-body-2 font-semibold">Event Catalog</span>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Setting">
+                        <div class="flex flex-col h-full p-6">
+                            <ng-container *ngTemplateOutlet="authorizationSetup"></ng-container>
+                            <div class="flex items-center justify-start mt-6">
+                                <button type="button" matButton="filled" (click)="updateFeature('authorization')">
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Design & code">
+                        <div class="p-6">
+                            <ng-container *ngTemplateOutlet="designAndCode"></ng-container>
+                            <ng-container *ngTemplateOutlet="preview" class="mt-6"></ng-container>
+                        </div>
+                    </mat-tab>
+
+                    <mat-tab label="Webhook">
+                        <mat-tab-group mat-stretch-tabs="false" class="nested-tabs">
+                            <mat-tab label="Configurations">
+                                <div class="flex flex-col h-full p-6">
+                                    <ng-container *ngTemplateOutlet="webhook"></ng-container>
+                                    <div class="flex items-center justify-start mt-6">
+                                        <button type="button" matButton="filled" (click)="updateFeature('webhook')">
+                                            Update
+                                        </button>
+                                    </div>
+                                </div>
+                            </mat-tab>
+                            <mat-tab label="Event Catalog">
+                                <div class="p-6 flex flex-col gap-4">
+                                    <div class="card-with-header">
+                                        <div class="card-with-header--header justify-between">
+                                            <div class="flex items-center gap-2 text-color">
+                                                <mat-icon class="!text-base !w-4">bolt</mat-icon>
+                                                <span class="mat-body-2 font-semibold">Event Catalog</span>
+                                            </div>
+                                            @if (webhookEventsData?.length) {
+                                                <span class="text-xs font-medium px-2 py-0.5 rounded-full text-color">
+                                                    {{ webhookEventsData.length }} events
+                                                </span>
+                                            }
                                         </div>
                                         @if (webhookEventsData?.length) {
-                                            <span class="text-xs font-medium px-2 py-0.5 rounded-full text-color">
-                                                {{ webhookEventsData.length }} events
-                                            </span>
+                                            <div class="bg-color p-4">
+                                                <mat-accordion>
+                                                    @for (event of webhookEventsData; track event.value) {
+                                                        <mat-expansion-panel class="!mb-2">
+                                                            <mat-expansion-panel-header>
+                                                                <mat-panel-title>
+                                                                    <div class="flex flex-col gap-0.5">
+                                                                        <span
+                                                                            class="text-sm font-semibold text-color"
+                                                                            >{{ event.value }}</span
+                                                                        >
+                                                                        <span
+                                                                            class="text-xs font-normal secondary-text-color"
+                                                                            >{{ event.description }}</span
+                                                                        >
+                                                                    </div>
+                                                                </mat-panel-title>
+                                                            </mat-expansion-panel-header>
+                                                            <div class="flex flex-col gap-3 pt-2">
+                                                                <div class="flex items-center justify-between">
+                                                                    <p
+                                                                        class="text-xs font-semibold text-color m-0 uppercase tracking-wide opacity-60"
+                                                                    >
+                                                                        Sample Response
+                                                                    </p>
+                                                                    <button
+                                                                        matButton="filled"
+                                                                        (click)="
+                                                                            copySampleResponse(event.sampleResponse)
+                                                                        "
+                                                                    >
+                                                                        <mat-icon class="!text-base !w-4 mr-1"
+                                                                            >send</mat-icon
+                                                                        >
+                                                                        Try it out
+                                                                    </button>
+                                                                </div>
+                                                                <pre
+                                                                    class="code-block"
+                                                                ><code>{{ event.sampleResponse | json }}</code></pre>
+                                                            </div>
+                                                        </mat-expansion-panel>
+                                                    }
+                                                </mat-accordion>
+                                            </div>
+                                        } @else {
+                                            <div class="bg-color flex flex-col items-center justify-center py-16 gap-3">
+                                                <mat-icon class="text-color opacity-30 !text-[48px] !w-12 !h-12"
+                                                    >bolt</mat-icon
+                                                >
+                                                <div class="flex flex-col items-center gap-1">
+                                                    <p class="mat-body-1 font-semibold text-color m-0">
+                                                        No events available
+                                                    </p>
+                                                    <p class="text-xs m-0 secondary-text-color">
+                                                        Events will appear here once configured
+                                                    </p>
+                                                </div>
+                                            </div>
                                         }
                                     </div>
-                                    @if (webhookEventsData?.length) {
-                                        <div class="p-4">
-                                            <mat-accordion>
-                                                @for (event of webhookEventsData; track event.value) {
-                                                    <mat-expansion-panel class="!mb-2">
-                                                        <mat-expansion-panel-header>
-                                                            <mat-panel-title>
-                                                                <div class="flex flex-col gap-0.5">
-                                                                    <span class="text-sm font-semibold text-color">{{
-                                                                        event.value
-                                                                    }}</span>
-                                                                    <span
-                                                                        class="text-xs font-normal secondary-text-color"
-                                                                        >{{ event.description }}</span
-                                                                    >
-                                                                </div>
-                                                            </mat-panel-title>
-                                                        </mat-expansion-panel-header>
-                                                        <div class="flex flex-col gap-3 pt-2">
-                                                            <div class="flex items-center justify-between">
-                                                                <p
-                                                                    class="text-xs font-semibold text-color m-0 uppercase tracking-wide opacity-60"
-                                                                >
-                                                                    Sample Response
-                                                                </p>
-                                                                <button
-                                                                    matButton="filled"
-                                                                    (click)="copySampleResponse(event.sampleResponse)"
-                                                                >
-                                                                    <mat-icon class="!text-base !w-4 mr-1"
-                                                                        >send</mat-icon
-                                                                    >
-                                                                    Try it out
-                                                                </button>
-                                                            </div>
-                                                            <pre
-                                                                class="code-block"
-                                                            ><code>{{ event.sampleResponse | json }}</code></pre>
-                                                        </div>
-                                                    </mat-expansion-panel>
-                                                }
-                                            </mat-accordion>
-                                        </div>
-                                    } @else {
-                                        <div class="bg-color flex flex-col items-center justify-center py-16 gap-3">
-                                            <mat-icon class="text-color opacity-30 !text-[48px] !w-12 !h-12"
-                                                >bolt</mat-icon
-                                            >
-                                            <div class="flex flex-col items-center gap-1">
-                                                <p class="mat-body-1 font-semibold text-color m-0">
-                                                    No events available
-                                                </p>
-                                                <p class="text-xs m-0 secondary-text-color">
-                                                    Events will appear here once configured
-                                                </p>
-                                            </div>
-                                        </div>
-                                    }
                                 </div>
-                            </div>
-                        </mat-tab>
-                    </mat-tab-group>
-                </mat-tab>
-            </mat-tab-group>
-        </mat-card>
+                            </mat-tab>
+                        </mat-tab-group>
+                    </mat-tab>
+                </mat-tab-group>
+            </mat-card>
+            <div class="shrink-0 sticky top-0 self-start">
+                <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
+            </div>
+        </div>
     }
 </div>
 <ng-template #selectFeature let-featureType="featureType" let-featureTypeControl="featureTypeControl">
@@ -606,11 +616,11 @@
             ></proxy-service-list>
             <ng-container *ngTemplateOutlet="configureMethodFormContent"></ng-container>
         </div>
-        @if (isEditMode) {
-            <div class="shrink-0">
-                <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
-            </div>
-        }
+        <!-- @if (isEditMode) {
+        <div class="shrink-0">
+            <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
+        </div>
+        } -->
     </div>
 </ng-template>
 
@@ -1115,11 +1125,11 @@
                 </div>
             }
         </div>
-        @if (isEditMode) {
-            <div class="shrink-0">
-                <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
-            </div>
-        }
+        <!-- @if (isEditMode) {
+        <div class="shrink-0">
+            <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
+        </div>
+        } -->
     </div>
 </ng-template>
 
@@ -1992,9 +2002,9 @@
 </ng-template>
 
 <ng-template #brandingStepContent>
-    <div class="flex gap-6 grow min-h-[400px] branding-step-content max-lg:flex-col justify-between mb-3">
+    <div class="flex gap-6 grow min-h-[400px] branding-step-content max-lg:flex-col justify-between mb-3 items-start">
         <!-- Left: Branding form -->
-        <div class="flex flex-col gap-4 branding-form w-1/2 max-2xl:w-full overflow-y-auto pr-1">
+        <div class="flex flex-col gap-4 branding-form w-full overflow-y-auto pr-1">
             <!-- Logo Section -->
             <div class="card-with-header">
                 <div class="card-with-header--header">
@@ -2268,7 +2278,7 @@
             </div>
         </div>
         <!-- Right: Preview -->
-        <div class="branding-preview">
+        <div class="branding-preview position-sticky top-0">
             @if (
                 isEditMode &&
                 featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
@@ -2289,7 +2299,11 @@
                     </mat-button-toggle-group>
                 </section>
             }
-            <ng-container *ngTemplateOutlet="previewAuthorization; context: { previewVersion: 'v2' }"></ng-container>
+            @if (!isEditMode) {
+                <ng-container
+                    *ngTemplateOutlet="previewAuthorization; context: { previewVersion: 'v2' }"
+                ></ng-container>
+            }
         </div>
     </div>
 </ng-template>

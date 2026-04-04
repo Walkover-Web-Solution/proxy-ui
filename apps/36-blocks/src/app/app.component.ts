@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PrimeNgToastComponent } from '@proxy/ui/prime-ng-toast';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
@@ -39,6 +40,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     private store = inject<Store<IAppState>>(Store);
     private versionCheckService = inject(VersionCheckService);
     private uiSettings = inject(UiSettingsService);
+    private platformId = inject(PLATFORM_ID);
 
     constructor() {
         super();
@@ -66,7 +68,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                 takeUntil(this.destroy$)
             )
             .subscribe((res) => {
-                if (this.newVersionAvailableForWebApp) {
+                if (this.newVersionAvailableForWebApp && isPlatformBrowser(this.platformId)) {
                     window.location.reload();
                 }
             });
@@ -94,7 +96,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
 
         this.logoutActionComplete$.subscribe((res) => {
             if (res) {
-                this.router.navigate(['/login']);
+                this.router.navigate(['']);
             }
         });
 

@@ -1,381 +1,481 @@
-<div class="auth-landing">
-    <header class="landing-header">
-        <button class="header-login-btn" (click)="login()">Login</button>
+<!-- Skip to main content (accessibility) -->
+<a
+    href="#main-content"
+    class="skip-link absolute left-0 top-[-100%] z-[9999] no-underline px-6 py-3 text-[#0d1117] font-semibold text-sm rounded-br-md bg-teal-400"
+    >Skip to main content</a
+>
+
+<div class="page-shell relative overflow-x-hidden min-h-screen">
+    <!-- HEADER -->
+    <header
+        class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-18 py-4 md:px-8 sm:px-5 transition-colors duration-300"
+        role="banner"
+    >
+        <a href="/" aria-label="36Blocks home" class="flex items-center gap-3 no-underline">
+            <img
+                src="/assets/images/36-blocks-logo.svg"
+                alt="36Blocks logo"
+                height="100"
+                width="100"
+                aria-hidden="true"
+            />
+        </a>
+        <nav aria-label="Site navigation">
+            <button
+                class="cursor-pointer px-6 py-2.5 bg-transparent rounded-lg text-sm font-semibold transition-all duration-200 hover:-translate-y-px"
+                [class]="accent.btnOutline"
+                (click)="login()"
+                aria-label="Login to your 36Blocks account"
+            >
+                Login
+            </button>
+        </nav>
     </header>
 
-    <main class="hero">
-        <div class="hero-copy">
-            <div class="badge-pill">
-                <span class="badge-dot"></span>
-                Plug & Play Authentication
+    <!-- ─── HERO ─────────────────────────────────────────── -->
+    <main
+        id="main-content"
+        class="hero-grid relative z-[1] grid items-center gap-20 max-w-[1400px] mx-auto px-18 pt-28 pb-16 min-h-screen lg:grid-cols-2 grid-cols-1 md:px-8 md:gap-12 md:pt-20 sm:px-5 sm:pt-16"
+        role="main"
+    >
+        <!-- Decorative: dot grid + orbs -->
+        <div class="dot-grid" aria-hidden="true"></div>
+        <div class="orb orb-teal-lg -top-40 -left-40" aria-hidden="true"></div>
+        <div class="orb orb-blue bottom-0 right-0" aria-hidden="true"></div>
+
+        <!-- Left: Copy -->
+        <div class="relative z-[1] flex flex-col gap-7">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium w-fit anim-fade-up stagger-1"
+                [class]="accent.pillBadge"
+                aria-hidden="true"
+            >
+                <span class="w-2 h-2 rounded-full animate-pulse bg-teal-400"></span>
+                Plug &amp; Play Authentication
             </div>
 
-            <h1><span class="accent-text">Secure Auth</span> & User <br />Management for <br />Modern Apps</h1>
+            <h1
+                class="text-[58px] leading-[1.08] font-bold themed-text-primary m-0 tracking-[-2px] md:text-[44px] sm:text-[36px] anim-fade-up stagger-2"
+            >
+                <span class="shimmer-text">Secure Auth</span> &amp; User<br />Management for<br />Modern Apps
+            </h1>
 
-            <p class="lead">
-                Launch secure user signup, login, roles, and access control in minutes— without building complex
+            <p class="text-[17px] leading-relaxed themed-text-secondary max-w-[460px] m-0 anim-fade-up stagger-3">
+                Launch secure user signup, login, roles, and access control in minutes — without building complex
                 authentication systems from scratch.
             </p>
 
-            <div class="currently-building">
-                <span class="building-value"
+            <div
+                class="flex flex-col gap-2 px-5 py-4 themed-card border border-teal-400/20 rounded-2xl max-w-[420px] anim-fade-up stagger-4"
+                aria-live="polite"
+                aria-label="Platform description"
+            >
+                <span class="text-[15px] font-medium leading-relaxed text-teal-400"
                     >A developer-friendly authentication platform with social login, OTP, analytics, and role-based
                     access control.</span
                 >
             </div>
 
-            <div class="cta-buttons">
-                <button class="cta-primary" (click)="login()">Explore Platform</button>
-                <button class="cta-secondary" (click)="login()">View Documentation</button>
+            <div class="flex gap-3 sm:flex-col anim-fade-up stagger-5" role="group" aria-label="Primary actions">
+                <button
+                    class="cursor-pointer border-0 px-7 py-3.5 rounded-xl font-semibold text-[15px] btn-cta-glow"
+                    [class]="accent.btnPrimary"
+                    (click)="login()"
+                    aria-label="Explore the 36Blocks platform"
+                >
+                    Explore Platform
+                </button>
+                <button
+                    class="cursor-pointer px-7 py-3.5 rounded-xl bg-transparent border themed-text-body font-semibold text-[15px] transition-all duration-200 hover:border-teal-400/50 hover:-translate-y-px"
+                    (click)="login()"
+                    aria-label="View 36Blocks documentation"
+                >
+                    View Documentation
+                </button>
             </div>
 
-            <div class="feature-badges">
-                <div class="feature-badge">
-                    <mat-icon>check</mat-icon>
-                    Social Login
-                </div>
-                <div class="feature-badge">
-                    <mat-icon>check</mat-icon>
-                    OTP Auth
-                </div>
-                <div class="feature-badge">
-                    <mat-icon>check</mat-icon>
-                    RBAC
-                </div>
-            </div>
+            <ul
+                class="flex list-none p-0 m-0 gap-6 sm:flex-wrap sm:gap-4 anim-fade-up stagger-6"
+                aria-label="Key features"
+                role="list"
+            >
+                @for (badge of heroBadges; track badge.label) {
+                    <li class="flex items-center gap-2 themed-text-secondary text-sm" role="listitem">
+                        <mat-icon class="!text-base !w-4 text-teal-400" aria-hidden="true">check_circle</mat-icon>
+                        {{ badge.label }}
+                    </li>
+                }
+            </ul>
+
+            <!-- Stats row -->
+            <ul
+                class="grid grid-cols-4 list-none p-0 m-0 gap-3 pt-2 border-t border-teal-400/10 anim-fade-up stagger-7 sm:grid-cols-2"
+                aria-label="Platform statistics"
+                role="list"
+            >
+                @for (stat of heroStats; track stat.label) {
+                    <li
+                        class="stat-card themed-card border border-teal-400/10 rounded-xl px-3 py-3 text-center"
+                        role="listitem"
+                    >
+                        <p class="m-0 text-[22px] font-bold text-teal-400 leading-none">{{ stat.value }}</p>
+                        <p class="m-0 text-[11px] themed-text-secondary mt-1 leading-tight">{{ stat.label }}</p>
+                    </li>
+                }
+            </ul>
         </div>
 
-        <div class="code-card-wrapper">
-            <div class="code-badge typescript-badge">
-                <span class="badge-dot green"></span>
-                JavaScript Ready
-            </div>
-            <div class="code-badge enterprise-badge">
-                <mat-icon>verified</mat-icon>
-                Enterprise-grade
-            </div>
+        <!-- Right: Code Card -->
+        <div class="relative z-[1] anim-fade-right stagger-3" aria-label="Code integration example">
+            <!-- Spinning decorative ring -->
+            <div
+                class="absolute -inset-6 rounded-3xl border border-teal-400/10 ring-spin pointer-events-none"
+                aria-hidden="true"
+            ></div>
+            <div
+                class="absolute -inset-12 rounded-[40px] border border-teal-400/5 ring-spin pointer-events-none"
+                style="animation-direction: reverse; animation-duration: 28s"
+                aria-hidden="true"
+            ></div>
 
-            <div class="code-card">
-                <div class="card-header">
-                    <div class="window-controls">
-                        <span class="dot red"></span>
-                        <span class="dot yellow"></span>
-                        <span class="dot green"></span>
+            @for (badge of floatingBadges; track badge.text) {
+                <div
+                    class="absolute -top-3 z-[2] inline-flex items-center gap-1.5 px-3 py-1.5 themed-card border rounded-full text-xs font-medium themed-text-body shadow-lg"
+                    [class.left-5]="badge.side === 'left'"
+                    [class.right-5]="badge.side === 'right'"
+                    aria-hidden="true"
+                >
+                    @if (badge.dot) {
+                        <span class="w-2 h-2 rounded-full" [class]="badge.dot"></span>
+                    }
+                    @if (badge.icon) {
+                        <mat-icon class="!text-sm !w-3.5 !h-3.5 text-teal-400" aria-hidden="true">{{
+                            badge.icon
+                        }}</mat-icon>
+                    }
+                    {{ badge.text }}
+                </div>
+            }
+
+            <figure
+                class="themed-card border border-teal-400/15 overflow-hidden rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.5)] animate-[floatUp_7s_ease-in-out_infinite] m-0"
+                aria-label="5-minute integration code sample"
+            >
+                <div
+                    class="flex items-center gap-3 px-5 py-4 bg-black/30 border-b border-teal-400/10"
+                    aria-hidden="true"
+                >
+                    <div class="flex gap-2">
+                        @for (dot of macDots; track dot) {
+                            <span class="w-3 h-3 rounded-full" [class]="dot"></span>
+                        }
                     </div>
-                    <span class="file-name">proxy-auth.js</span>
+                    <span class="themed-text-secondary text-[13px] ml-2">proxy-auth.js</span>
+                    <span class="ml-auto text-[11px] px-2 py-0.5 rounded-full bg-teal-400/10 text-teal-400"
+                        >JavaScript</span
+                    >
                 </div>
                 <pre
-                    class="code-snippet"
-                ><code class="language-js"><span class="line-num">01</span>  <span class="token tag">&lt;script</span> <span class="token attr-name">type</span>=<span class="token string">"text/javascript"</span><span class="token tag">&gt;</span>
-<span class="line-num">02</span>    <span class="token keyword">var</span> <span class="token variable">configuration</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
-<span class="line-num">03</span>      <span class="token property">referenceId:</span> <span class="token string">'4512365a176770...'</span>,
-<span class="line-num">04</span>      <span class="token property">type:</span> <span class="token string">'authorization'</span>,
-<span class="line-num">05</span>      <span class="token property">success:</span> <span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">&#123;</span>
-<span class="line-num">06</span>        <span class="token comment">// get verified token in response</span>
-<span class="line-num">07</span>        <span class="token object">console</span>.<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'success response'</span>, data<span class="token punctuation">)</span>;
-<span class="line-num">08</span>      <span class="token punctuation">&#125;</span>,
-<span class="line-num">09</span>      <span class="token property">failure:</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">&#123;</span>
-<span class="line-num">10</span>        <span class="token comment">// handle error</span>
-<span class="line-num">11</span>        <span class="token object">console</span>.<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'failure reason'</span>, error<span class="token punctuation">)</span>;
-<span class="line-num">12</span>      <span class="token punctuation">&#125;</span>,
-<span class="line-num">13</span>    <span class="token punctuation">&#125;</span>;
-<span class="line-num">14</span>  <span class="token tag">&lt;/script&gt;</span>
-<span class="line-num">15</span>  <span class="token tag">&lt;script</span>
-<span class="line-num">16</span>    <span class="token attr-name">type</span>=<span class="token string">"text/javascript"</span>
-<span class="line-num">17</span>    <span class="token attr-name">onload</span>=<span class="token string">"initVerification(configuration)"</span>
-<span class="line-num">18</span>    <span class="token attr-name">src</span>=<span class="token string">"https://proxy.msg91.com/..."</span><span class="token tag">&gt;</span>
-<span class="line-num">19</span>  <span class="token tag">&lt;/script&gt;</span></code></pre>
-                <div class="code-footer-badge">
-                    <mat-icon>bolt</mat-icon>
-                    5 min setup
-                </div>
-            </div>
+                    class="m-0 bg-transparent border-0 overflow-x-auto px-6 py-5 text-sm leading-[1.8]"
+                    role="region"
+                    aria-label="JavaScript integration snippet"
+                ><code class="block font-mono">@for (line of codeSnippetLines; track line.num) {<span class="text-[#484f58] mr-5 select-none">{{ line.num }}</span><span [innerHTML]="line.html"></span>
+}@empty {}</code></pre>
+                <figcaption
+                    class="flex items-center justify-between mx-5 mb-5 px-4 py-2.5 rounded-xl text-[#c9d1d9] text-[13px] font-medium bg-teal-400/10 border border-teal-400/20"
+                >
+                    <span class="flex items-center gap-1.5">
+                        <mat-icon class="!text-base !w-4 text-teal-400" aria-hidden="true">bolt</mat-icon>
+                        5 min setup
+                    </span>
+                    <span class="flex items-center gap-1 text-teal-400/70 text-[11px]">
+                        <mat-icon class="!text-xs !w-3 !h-3" aria-hidden="true">verified</mat-icon>
+                        Production ready
+                    </span>
+                </figcaption>
+            </figure>
         </div>
     </main>
 
-    <!-- Second Section: Customizable Auth Forms -->
-    <section class="forms-section">
-        <div class="forms-preview">
-            <!-- Color Picker -->
-            <div class="control-card color-picker">
-                <span class="control-label">Colour</span>
-                <div class="color-dots">
-                    <span class="color-dot red active"></span>
-                    <span class="color-dot orange"></span>
-                    <span class="color-dot blue"></span>
-                    <span class="color-dot green"></span>
+    <!-- ─── SECTION: Customizable Auth Forms ─────────────── -->
+    <section
+        class="section-forms-grid relative z-[1] grid items-center gap-16 max-w-[1400px] mx-auto px-18 py-24 md:grid-cols-1 md:px-8 md:py-16 md:gap-12 sm:px-5 sm:py-12"
+        aria-labelledby="forms-heading"
+    >
+        <div class="orb orb-teal-sm top-20 right-0 pointer-events-none" aria-hidden="true"></div>
+
+        <div class="form-preview-grid relative grid items-start gap-4" aria-hidden="true">
+            <div class="col1-row1 themed-card border rounded-xl px-4 py-3">
+                <span class="block text-xs themed-text-secondary mb-2.5">Colour</span>
+                <div class="flex gap-2">
+                    @for (color of themeColors; track color.hex) {
+                        <span
+                            class="w-6 h-6 rounded-[6px] cursor-pointer transition-all duration-200"
+                            [style.background-color]="color.hex"
+                            [style.outline]="selectedColor === color.hex ? '2px solid ' + color.hex : 'none'"
+                            [style.outline-offset]="selectedColor === color.hex ? '2px' : '0'"
+                            [style.transform]="selectedColor !== color.hex ? 'scale(1.1)' : 'scale(1)'"
+                            (click)="selectColor(color.hex)"
+                        ></span>
+                    }
                 </div>
             </div>
 
-            <!-- Login Form Mockup -->
-            <div class="login-form-wrapper">
-                <div class="login-form-card">
-                    <div class="form-logo">C</div>
-                    <h3>Sign in to SuperApp</h3>
-
-                    <div class="form-field">
-                        <label>Email</label>
-                        <div class="input-mock">Your email address</div>
+            <div
+                class="col2-rows relative"
+                [style.--bg-page]="themeVars['--bg-page']"
+                [style.--bg-card]="themeVars['--bg-card']"
+                [style.--bg-card2]="themeVars['--bg-card2']"
+                [style.--border]="themeVars['--border']"
+                [style.--text-primary]="themeVars['--text-primary']"
+                [style.--text-secondary]="themeVars['--text-secondary']"
+                [style.--text-body]="themeVars['--text-body']"
+            >
+                <div
+                    class="text-center themed-card border rounded-2xl p-8 min-w-[280px] shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+                >
+                    <div
+                        class="grid place-items-center w-12 h-12 text-[#0d1117] font-bold text-2xl mx-auto mb-5"
+                        [style.background-color]="selectedColor"
+                        [style.border-radius.px]="borderRadius"
+                    >
+                        S
                     </div>
-
-                    <div class="form-field">
-                        <label>Password</label>
-                        <div class="input-mock">Enter your password</div>
-                    </div>
-
-                    <button class="form-btn-primary">Continue</button>
-
-                    <div class="divider">
-                        <span>OR</span>
-                    </div>
-
-                    <button class="form-btn-google">
-                        <span class="google-icon">G</span>
-                        Continue with Google
+                    <h3 class="m-0 mb-6 themed-text-primary text-xl font-semibold">Sign in to SuperApp</h3>
+                    @for (field of mockFormFields; track field.label) {
+                        <div class="text-left mb-4">
+                            <label class="block text-[13px] themed-text-body mb-2">{{ field.label }}</label>
+                            <div
+                                class="px-3.5 py-3 themed-card border themed-text-secondary text-sm"
+                                [style.border-radius.px]="borderRadius"
+                            >
+                                {{ field.placeholder }}
+                            </div>
+                        </div>
+                    }
+                    <button
+                        class="w-full cursor-pointer border-0 py-3 text-[#0d1117] font-semibold text-[15px] mb-5 transition-all duration-200"
+                        [style.background-color]="selectedColor"
+                        [style.border-radius.px]="borderRadius"
+                        tabindex="-1"
+                    >
+                        Continue
                     </button>
-
-                    <p class="signup-link">Don't have an account? <span class="accent-link">Sign up</span></p>
+                    <div
+                        class="or-divider flex items-center gap-3 mb-5 themed-text-secondary text-[13px]"
+                        [style.--divider-color]="themeVars['--border']"
+                    >
+                        OR
+                    </div>
+                    <button
+                        class="w-full flex items-center justify-center gap-2.5 bg-transparent border py-3 themed-text-body font-medium text-sm mb-5 cursor-pointer"
+                        [style.border-color]="themeVars['--border']"
+                        [style.border-radius.px]="borderRadius"
+                        tabindex="-1"
+                    >
+                        <span class="font-bold text-base">G</span> Continue with Google
+                    </button>
+                    <p class="m-0 text-[13px] themed-text-secondary">
+                        Don't have an account? <span class="cursor-pointer" [style.color]="selectedColor">Sign up</span>
+                    </p>
                 </div>
             </div>
 
-            <!-- Logo Icon Control -->
-            <div class="control-card logo-control">
-                <span class="control-label">Logo icon</span>
-                <div class="logo-options">
-                    <div class="logo-option active">C</div>
-                    <div class="logo-option">
-                        <mat-icon>tune</mat-icon>
+            <div class="col3-row1 themed-card border rounded-xl px-4 py-3">
+                <span class="block text-xs themed-text-secondary mb-2.5">Logo icon</span>
+                <div class="flex gap-2">
+                    <div
+                        class="grid place-items-center w-10 h-10 rounded-[10px] text-[#0d1117] font-semibold cursor-pointer border"
+                        [style.background-color]="selectedColor"
+                        [style.border-color]="selectedColor"
+                    >
+                        S
+                    </div>
+                    <div
+                        class="grid place-items-center w-10 h-10 rounded-[10px] themed-card border themed-text-body cursor-pointer"
+                    >
+                        <mat-icon class="!text-xl !w-5 !h-5">tune</mat-icon>
                     </div>
                 </div>
             </div>
 
-            <!-- Appearance Control - Below Logo Icon -->
-            <div class="control-card appearance-control">
-                <span class="control-label">Appearance</span>
-                <div class="appearance-toggle">
-                    <button class="toggle-btn">System</button>
-                    <button class="toggle-btn">Light</button>
-                    <button class="toggle-btn active">Dark</button>
+            <div class="col1-row3 themed-card border rounded-xl px-4 py-3">
+                <span class="block text-xs themed-text-secondary mb-2.5">Radius — {{ borderRadius }}px</span>
+                <input
+                    type="range"
+                    min="0"
+                    max="24"
+                    [value]="borderRadius"
+                    (input)="onRadiusChange($event)"
+                    class="radius-slider w-full cursor-pointer"
+                    [style.accent-color]="selectedColor"
+                    tabindex="-1"
+                />
+                <div class="flex justify-between mt-1">
+                    <span class="w-6 h-2 rounded-none" [style.background-color]="themeVars['--bg-card2']"></span>
+                    <span class="w-6 h-2 rounded-full" [style.background-color]="themeVars['--bg-card2']"></span>
                 </div>
             </div>
 
-            <!-- Radius Control -->
-            <div class="control-card radius-control">
-                <span class="control-label">Radius</span>
-                <div class="slider-mock">
-                    <div class="slider-track">
-                        <div class="slider-fill"></div>
-                        <div class="slider-thumb"></div>
-                    </div>
-                </div>
-                <div class="slider-labels">
-                    <span></span>
-                    <span></span>
+            <div class="col3-row3 self-end themed-card border rounded-xl px-4 py-3">
+                <span class="block text-xs themed-text-secondary mb-2.5">Appearance</span>
+                <div class="flex themed-card border rounded-lg p-1">
+                    @for (mode of appearanceModes; track mode.value) {
+                        <button
+                            class="cursor-pointer border-0 px-3 py-1.5 rounded-md text-xs transition-all duration-200"
+                            [style.background-color]="
+                                selectedAppearance === mode.value ? themeVars['--bg-card2'] : 'transparent'
+                            "
+                            [style.color]="
+                                selectedAppearance === mode.value
+                                    ? themeVars['--text-body']
+                                    : themeVars['--text-secondary']
+                            "
+                            (click)="selectAppearance(mode.value)"
+                            tabindex="-1"
+                        >
+                            {{ mode.label }}
+                        </button>
+                    }
                 </div>
             </div>
         </div>
 
-        <div class="forms-content">
-            <div class="badge-pill">
-                <span class="badge-dot"></span>
+        <div class="flex flex-col gap-7">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium w-fit"
+                [class]="accent.pillBadge"
+                aria-hidden="true"
+            >
+                <span class="w-2 h-2 rounded-full animate-pulse bg-teal-400"></span>
                 Beautiful UI Components
             </div>
-
-            <h2>Customizable <span class="accent-text">Auth Forms</span> <br />Ready to Deploy</h2>
-
-            <p class="section-lead">
+            <h2
+                id="forms-heading"
+                class="text-5xl leading-[1.08] font-bold themed-text-primary m-0 tracking-[-1.5px] sm:text-4xl"
+            >
+                Customizable <span class="shimmer-text">Auth Forms</span><br />Ready to Deploy
+            </h2>
+            <p class="text-[17px] leading-relaxed themed-text-secondary max-w-[400px] m-0">
                 Pre-built, beautiful authentication components that match your brand. Customize colors, radius, logos,
                 and more with our visual editor.
             </p>
-
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <mat-icon>brush</mat-icon>
-                    </div>
-                    <h4>Theme Editor</h4>
-                    <p>Match your brand colors</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <mat-icon>dashboard</mat-icon>
-                    </div>
-                    <h4>Layout Options</h4>
-                    <p>Multiple form layouts</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <mat-icon>smartphone</mat-icon>
-                    </div>
-                    <h4>Responsive</h4>
-                    <p>Works on all devices</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <mat-icon>translate</mat-icon>
-                    </div>
-                    <h4>i18n Ready</h4>
-                    <p>30+ languages</p>
-                </div>
-            </div>
+            <ul
+                class="grid grid-cols-2 list-none p-0 m-0 gap-4 mt-2 sm:grid-cols-1"
+                aria-label="UI customisation features"
+                role="list"
+            >
+                @for (card of uiFeatureCards; track card.title) {
+                    <li class="feature-card themed-card border rounded-xl p-4" role="listitem">
+                        <div
+                            class="grid place-items-center w-8 h-8 rounded-lg mb-2.5 bg-teal-400/10 border border-teal-400/20"
+                        >
+                            <mat-icon class="!text-base !w-4 !h-4 text-teal-400" aria-hidden="true">{{
+                                card.icon
+                            }}</mat-icon>
+                        </div>
+                        <h3 class="m-0 mb-1 themed-text-primary text-[13px] font-semibold">{{ card.title }}</h3>
+                        <p class="m-0 themed-text-secondary text-[12px] leading-snug">{{ card.desc }}</p>
+                    </li>
+                }
+            </ul>
         </div>
     </section>
 
-    <!-- Third Section: Features Grid -->
-    <section class="features-section">
-        <div class="section-header">
-            <h2>
-                Everything You Need to Manage Users
-                <br /><span class="accent-text">Securely</span>
+    <!-- ─── SECTIONS: Features + What You Can Build (unified) ─ -->
+    @for (section of cardSections; track section.id) {
+        <section
+            class="relative z-[1] text-center max-w-[1400px] mx-auto px-18 py-24 md:px-8 md:py-16 sm:px-5 sm:py-12"
+            [attr.aria-labelledby]="section.headingId"
+        >
+            <div class="orb orb-teal-sm -top-20 left-1/2 -translate-x-1/2 pointer-events-none" aria-hidden="true"></div>
+            <div class="mb-16 relative z-[1]">
+                <h2
+                    [id]="section.headingId"
+                    class="text-[44px] leading-[1.12] font-bold themed-text-primary m-0 mb-5 tracking-[-1.5px] sm:text-[32px]"
+                >
+                    {{ section.label }} <span class="shimmer-text">{{ section.accentWord }}</span>
+                </h2>
+                @if (section.desc) {
+                    <p class="text-[17px] leading-relaxed themed-text-secondary max-w-[560px] mx-auto m-0">
+                        {{ section.desc }}
+                    </p>
+                }
+            </div>
+            <ul
+                class="grid list-none p-0 m-0 gap-5 relative z-[1]"
+                [class]="section.gridCols"
+                [attr.aria-label]="section.headingId"
+                role="list"
+            >
+                @for (card of section.cards; track card.title) {
+                    <li
+                        class="feature-card text-left themed-card border rounded-xl p-4"
+                        [class.border-teal-400]="card.highlight"
+                        role="listitem"
+                    >
+                        <div
+                            class="grid place-items-center w-8 h-8 rounded-lg mb-3 bg-teal-400/10 border border-teal-400/20"
+                        >
+                            <mat-icon class="!text-base !w-4 !h-4 text-teal-400" aria-hidden="true">{{
+                                card.icon
+                            }}</mat-icon>
+                        </div>
+                        <h3 class="m-0 mb-1 themed-text-primary text-[14px] font-semibold">{{ card.title }}</h3>
+                        <p class="m-0 themed-text-secondary text-[12px] leading-snug">{{ card.desc }}</p>
+                    </li>
+                }
+            </ul>
+        </section>
+    }
+
+    <!-- ─── CTA ──────────────────────────────────────────── -->
+    <section
+        class="relative z-[1] text-center max-w-[1400px] mx-auto px-18 py-28 md:px-8 md:py-20 sm:px-5 sm:py-16 overflow-hidden"
+        aria-labelledby="cta-heading"
+    >
+        <div class="dot-grid opacity-40" aria-hidden="true"></div>
+        <div
+            class="orb orb-teal-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            aria-hidden="true"
+        ></div>
+        <div class="relative z-[1]">
+            <h2
+                id="cta-heading"
+                class="text-[48px] leading-[1.15] font-bold themed-text-primary m-0 mb-5 tracking-[-2px] sm:text-[32px]"
+            >
+                Stop Building Authentication.<br /><span class="shimmer-text">Start Building Your Product.</span>
             </h2>
-            <p class="section-description">
-                Replace months of custom authentication development with production-ready components built for security,
-                scale, and speed.
+            <p class="text-[18px] leading-relaxed themed-text-secondary max-w-[540px] mx-auto m-0 mb-10">
+                Handle user signup, login, security, and access control with a modern authentication and user management
+                platform.
             </p>
-        </div>
-
-        <div class="features-main-grid">
-            <div class="feature-main-card">
-                <div class="feature-main-icon">
-                    <mat-icon>link</mat-icon>
-                </div>
-                <h4>Plug and Play</h4>
-                <p>Pre-built signup, login, profile, and access control components.</p>
-            </div>
-
-            <div class="feature-main-card">
-                <div class="feature-main-icon">
-                    <mat-icon>security</mat-icon>
-                </div>
-                <h4>Secure with hCaptcha</h4>
-                <p>Bot protection to prevent fake signups and abuse.</p>
-            </div>
-
-            <div class="feature-main-card">
-                <div class="feature-main-icon">
-                    <mat-icon>group</mat-icon>
-                </div>
-                <h4>Multiple Login Options</h4>
-                <p>Google, Apple, OTP, and username-password authentication.</p>
-            </div>
-
-            <div class="feature-main-card">
-                <div class="feature-main-icon">
-                    <mat-icon>bar_chart</mat-icon>
-                </div>
-                <h4>User Analytics</h4>
-                <p>Track total users, active users, and login trends.</p>
-            </div>
-
-            <div class="feature-main-card">
-                <div class="feature-main-icon">
-                    <mat-icon>contactless</mat-icon>
-                </div>
-                <h4>Social & OTP Login</h4>
-                <p>Passwordless and social authentication for better conversion.</p>
-            </div>
-
-            <div class="feature-main-card">
-                <div class="feature-main-icon">
-                    <mat-icon>lock</mat-icon>
-                </div>
-                <h4>Role-Based Access</h4>
-                <p>Fine-grained permissions using RBAC.</p>
-            </div>
-
-            <div class="feature-main-card">
-                <div class="feature-main-icon">
-                    <mat-icon>trending_up</mat-icon>
-                </div>
-                <h4>Activity Tracking</h4>
-                <p>Audit logs and user activity monitoring.</p>
-            </div>
-
-            <div class="feature-main-card">
-                <div class="feature-main-icon">
-                    <mat-icon>schedule</mat-icon>
-                </div>
-                <h4>Secure Sessions</h4>
-                <p>Token-based authentication with session expiry.</p>
-            </div>
-
-            <div class="feature-main-card">
-                <div class="feature-main-icon">
-                    <mat-icon>menu_book</mat-icon>
-                </div>
-                <h4>Developer Documentation</h4>
-                <p>Clear APIs, SDKs, and step-by-step guides.</p>
-            </div>
+            <button
+                class="cursor-pointer border-0 px-12 py-4 rounded-xl font-bold text-[17px] bg-teal-400 text-[#0d1117] btn-cta-glow"
+                (click)="login()"
+                aria-label="Get started with 36Blocks for free"
+            >
+                Get Started Free
+                <mat-icon class="!text-lg !w-[18px] ml-1 align-middle" aria-hidden="true">arrow_forward</mat-icon>
+            </button>
         </div>
     </section>
 
-    <!-- Fourth Section: What You Can Build -->
-    <section class="build-section">
-        <div class="section-header">
-            <h2>What You Can <span class="accent-text">Build</span></h2>
-        </div>
-
-        <div class="build-grid">
-            <div class="build-card">
-                <div class="build-icon">
-                    <mat-icon>edit</mat-icon>
-                </div>
-                <h4>SaaS Applications</h4>
-                <p>Launch faster with secure authentication and access control.</p>
-            </div>
-
-            <div class="build-card">
-                <div class="build-icon">
-                    <mat-icon>business</mat-icon>
-                </div>
-                <h4>Enterprise Tools</h4>
-                <p>Manage teams, roles, and permissions at scale.</p>
-            </div>
-
-            <div class="build-card highlighted">
-                <div class="build-icon">
-                    <mat-icon>smartphone</mat-icon>
-                </div>
-                <h4>Consumer Apps</h4>
-                <p>Seamless social login and OTP authentication.</p>
-            </div>
-
-            <div class="build-card">
-                <div class="build-icon">
-                    <mat-icon>settings</mat-icon>
-                </div>
-                <h4>Internal Admin Panels</h4>
-                <p>Track activity and control access across tools.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Fifth Section: CTA -->
-    <section class="cta-section">
-        <h2>
-            Stop Building Authentication.
-            <br /><span class="accent-text">Start Building Your Product.</span>
-        </h2>
-        <p class="cta-description">
-            Handle user signup, login, security, and access control with a modern authentication and user management
-            platform.
-        </p>
-        <button class="cta-button" (click)="login()">Get Started Free</button>
-    </section>
-
-    <!-- Footer -->
-    <footer class="page-footer">
-        <div class="footer-copyright">© 2026 Your Company. All rights reserved.</div>
-        <nav class="footer-nav">
-            <a href="#">Product</a>
-            <a href="#">Documentation</a>
-            <a href="#">Pricing</a>
-            <a href="#">Security</a>
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
+    <!-- ─── FOOTER ────────────────────────────────────────── -->
+    <footer
+        class="flex items-center justify-between px-18 py-6 border-t md:flex-col md:text-center md:px-8 md:gap-4 md:py-5 sm:px-5"
+        role="contentinfo"
+    >
+        <small class="text-sm themed-text-secondary">&copy; 2026 36Blocks. All rights reserved.</small>
+        <nav class="flex items-center gap-8 md:flex-wrap md:justify-center md:gap-5" aria-label="Footer navigation">
+            @for (link of footerLinks; track link.label) {
+                <a
+                    href="#"
+                    class="text-sm themed-text-secondary no-underline transition-colors duration-200 hover:text-teal-400"
+                    [attr.aria-label]="link.ariaLabel"
+                    >{{ link.label }}</a
+                >
+            }
         </nav>
     </footer>
 </div>
