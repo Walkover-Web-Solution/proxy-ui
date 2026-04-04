@@ -18,13 +18,13 @@ export function app(): express.Express {
         '**',
         express.static(browserDistFolder, {
             maxAge: '1y',
-            index: 'index.html',
+            index: false,
         })
     );
 
     server.get('**', (req, res, next) => {
         angularApp
-            .handle(req, { server: res })
+            .handle(req)
             .then((response) => {
                 if (response) {
                     writeResponseToNodeResponse(response, res);
@@ -39,7 +39,7 @@ export function app(): express.Express {
 }
 
 function run(): void {
-    const port = process.env['SERVER_PORT'] || 4000;
+    const port = process.env['PORT'] || 4000;
     const server = app();
     server.listen(port, () => {
         console.log(`Node Express server listening on http://localhost:${port}`);
