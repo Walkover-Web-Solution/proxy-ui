@@ -40,7 +40,7 @@
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
         <path
             d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
-            [attr.fill]="isDarkTheme ? '#ffffff' : '#5D6164'"
+            [attr.fill]="isDarkTheme() ? '#ffffff' : '#5D6164'"
         />
     </svg>
 </button>
@@ -113,7 +113,7 @@
      ══════════════════════════════════════════════════════════════ -->
 @if (dialogOpen()) {
 <!-- Fake dialog -->
-<div #dialogWrap [class.dark]="isDarkTheme">
+<div #dialogWrap [class.dark]="isDarkTheme()">
     <!-- Backdrop -->
     <div
         class="fixed inset-0 z-40 bg-black/50 dark:bg-black/70 backdrop-blur-sm"
@@ -323,7 +323,7 @@
 
         <!-- hCaptcha -->
         <div class="flex w-full justify-center">
-            @if (isDarkTheme) {
+            @if (isDarkTheme()) {
             <ng-hcaptcha
                 #hCaptcha
                 (verify)="onHCaptchaVerify($event)"
@@ -332,7 +332,7 @@
                 theme="dark"
                 size="normal"
             ></ng-hcaptcha>
-            } @if (!isDarkTheme) {
+            } @if (!isDarkTheme()) {
             <ng-hcaptcha
                 #hCaptcha
                 (verify)="onHCaptchaVerify($event)"
@@ -594,7 +594,7 @@
                 [alt]="widgetData.text"
                 class="size-6 object-contain"
                 loading="lazy"
-                [class.invert]="isDarkTheme && widgetData.text?.toLowerCase()?.includes('apple')"
+                [class.invert]="isDarkTheme() && widgetData.text?.toLowerCase()?.includes('apple')"
             />
         </button>
         } } }
@@ -619,7 +619,7 @@
                 [alt]="widgetData.text"
                 class="size-5 object-contain"
                 loading="lazy"
-                [class.invert]="isDarkTheme && widgetData.text?.toLowerCase()?.includes('apple')"
+                [class.invert]="isDarkTheme() && widgetData.text?.toLowerCase()?.includes('apple')"
             />
             <span class="w-[180px] text-left whitespace-nowrap">{{ widgetData.text }}</span>
         </button>

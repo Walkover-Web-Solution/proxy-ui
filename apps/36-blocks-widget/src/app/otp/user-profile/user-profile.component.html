@@ -1,4 +1,4 @@
-<div class="h-full flex-col bg-transparent overflow-y-auto" [class.dark]="isDark">
+<div class="h-full flex-col bg-transparent overflow-y-auto" [class.dark]="isDark()">
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
         <!-- ── USER DETAILS CARD ── -->
         <div class="w-card-section">
@@ -126,7 +126,8 @@
                                 clientForm.get('mobile')?.value &&
                                 clientForm.get('mobile')?.value !== '--Not Provided--'
                             "
-                            [class.dark:text-white]="
+                            [class.text-white]="
+                                isDark() &&
                                 clientForm.get('mobile')?.value &&
                                 clientForm.get('mobile')?.value !== '--Not Provided--'
                             "
@@ -201,22 +202,22 @@
                         <div
                             class="w-avatar size-8 text-xs"
                             [class.bg-indigo-100]="companyDetails?.currentCompany?.company_uname === org.company_uname"
-                            [class.dark:bg-indigo-900]="
-                                companyDetails?.currentCompany?.company_uname === org.company_uname
+                            [class.bg-indigo-900]="
+                                isDark() && companyDetails?.currentCompany?.company_uname === org.company_uname
                             "
                             [class.text-indigo-700]="
                                 companyDetails?.currentCompany?.company_uname === org.company_uname
                             "
-                            [class.dark:text-indigo-300]="
-                                companyDetails?.currentCompany?.company_uname === org.company_uname
+                            [class.text-indigo-300]="
+                                isDark() && companyDetails?.currentCompany?.company_uname === org.company_uname
                             "
                             [class.bg-gray-100]="companyDetails?.currentCompany?.company_uname !== org.company_uname"
-                            [class.dark:bg-gray-700]="
-                                companyDetails?.currentCompany?.company_uname !== org.company_uname
+                            [class.bg-gray-700]="
+                                isDark() && companyDetails?.currentCompany?.company_uname !== org.company_uname
                             "
                             [class.text-gray-600]="companyDetails?.currentCompany?.company_uname !== org.company_uname"
-                            [class.dark:text-gray-300]="
-                                companyDetails?.currentCompany?.company_uname !== org.company_uname
+                            [class.text-gray-300]="
+                                isDark() && companyDetails?.currentCompany?.company_uname !== org.company_uname
                             "
                         >
                             {{ org.name | slice: 0:2 | uppercase }}
@@ -231,7 +232,7 @@
                                     companyDetails?.currentCompany?.company_uname !== org.company_uname
                                 "
                                 [class.text-gray-900]="true"
-                                [class.dark:text-white]="true"
+                                [class.text-white]="isDark()"
                             >
                                 {{ org.name }}
                             </p>
@@ -259,11 +260,11 @@
     </div>
 </div>
 @if (isEditing) {
-<div #editDialogPortal [class.dark]="isDark">
+<div #editDialogPortal [class.dark]="isDark()">
     <div class="w-dialog-backdrop" (click)="cancelEdit()" aria-hidden="true"></div>
     <div role="dialog" aria-labelledby="edit-profile-title" aria-modal="true" class="w-dialog-panel">
         <div class="w-dialog-header">
-            <h2 id="edit-profile-title" class="text-base font-semibold text-gray-900 dark:text-white">Edit Profile</h2>
+            <h2 id="edit-profile-title" class="w-dialog-title">Edit Profile</h2>
             <button type="button" (click)="cancelEdit()" aria-label="Close dialog" class="w-btn-close">
                 <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path
@@ -338,13 +339,13 @@
     </div>
 </div>
 } @if (confirmDialogCompanyId()) {
-<div #confirmDialogPortal [class.dark]="isDark">
+<div #confirmDialogPortal [class.dark]="isDark()">
     <proxy-confirm-dialog
         title="Leave Company"
         message="Are you sure you want to leave this company? This action cannot be undone."
         confirmLabel="Leave"
         cancelLabel="Cancel"
-        [isDark]="isDark"
+        [isDark]="isDark()"
         (confirmed)="confirmLeave()"
         (cancelled)="confirmDialogCompanyId.set(null)"
     ></proxy-confirm-dialog>

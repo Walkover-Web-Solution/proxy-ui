@@ -14,6 +14,7 @@ import {
     OnInit,
     ViewChild,
     ElementRef,
+    computed,
     effect,
     inject,
     input,
@@ -152,9 +153,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     private otpUtilityService = inject(OtpUtilityService);
     private cdr = inject(ChangeDetectorRef);
     private readonly themeService = inject(WidgetThemeService);
-    get isDarkTheme(): boolean {
-        return this.themeService.isDark(this.theme() as WidgetTheme);
-    }
+    readonly isDarkTheme = computed(() => this.themeService.isDark$());
 
     constructor() {
         super();

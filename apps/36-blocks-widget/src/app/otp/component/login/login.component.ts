@@ -4,6 +4,7 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
+    computed,
     effect,
     inject,
     input,
@@ -42,9 +43,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
     private readonly themeService = inject(WidgetThemeService);
-    get isDark(): boolean {
-        return this.themeService.isDark(this.theme() as WidgetTheme);
-    }
+    readonly isDark = computed(() => this.themeService.isDark$());
     public togglePopUp = output<void>();
     public closePopUp = output<void>();
     public openPopUp = output<any>();

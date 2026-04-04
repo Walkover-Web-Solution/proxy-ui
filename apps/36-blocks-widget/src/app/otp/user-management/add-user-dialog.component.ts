@@ -35,9 +35,7 @@ import { WidgetDialogRef } from '../service/widget-dialog.service';
         <div role="dialog" aria-labelledby="add-user-dialog-title" aria-modal="true" class="w-dialog-panel">
             <!-- Header -->
             <div class="w-dialog-header">
-                <h2 id="add-user-dialog-title" class="text-base font-semibold text-gray-900 dark:text-white">
-                    Add Member
-                </h2>
+                <h2 id="add-user-dialog-title" class="w-dialog-title">Add Member</h2>
                 <button type="button" (click)="close()" class="w-btn-close" aria-label="Close dialog">
                     <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path
@@ -106,7 +104,10 @@ import { WidgetDialogRef } from '../service/widget-dialog.service';
                     </div>
                     <div>
                         <label for="au-mobile" class="w-label">
-                            Mobile <span class="font-normal text-gray-400 dark:text-gray-500">(optional)</span>
+                            Mobile
+                            <span class="font-normal" [class.text-gray-400]="!isDark()" [class.text-gray-500]="isDark()"
+                                >(optional)</span
+                            >
                         </label>
                         <input
                             id="au-mobile"
@@ -118,7 +119,7 @@ import { WidgetDialogRef } from '../service/widget-dialog.service';
                         @if (form.get('mobileNumber')?.touched && form.get('mobileNumber')?.hasError('pattern')) {
                         <p role="alert" class="w-field-error">Enter a valid mobile with country code</p>
                         }
-                        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                        <p class="mt-1.5 text-xs" [class.text-gray-500]="!isDark()" [class.text-gray-400]="isDark()">
                             Include country code, e.g. 917001002003
                         </p>
                     </div>

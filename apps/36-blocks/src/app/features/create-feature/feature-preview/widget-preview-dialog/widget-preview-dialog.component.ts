@@ -1,17 +1,33 @@
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, inject, NgZone, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
+import {
+    AfterViewInit,
+    Component,
+    inject,
+    NgZone,
+    signal,
+    computed,
+    ChangeDetectionStrategy,
+    ViewChild,
+} from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatDrawer } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PROXY_DOM_ID, PublicScriptType, WidgetTheme } from '@proxy/constant';
-import { ProxyAuthScriptUrl } from '@proxy/models/features-model';
+import { ProxyAuthScript, ProxyAuthScriptUrl } from '@proxy/models/features-model';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { environment } from '../../../../../environments/environment';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MarkdownModule } from 'ngx-markdown';
+import { CopyButtonComponent } from '@proxy/ui/copy-button';
+import { buildCodeSnippet } from './widget-code-snippet';
+import { A11yModule } from '@angular/cdk/a11y';
 
 export type PreviewTab =
     | PublicScriptType.Authorization
@@ -21,7 +37,19 @@ export type PreviewTab =
 
 @Component({
     selector: 'blocks-widget-preview',
-    imports: [CommonModule, MatButtonModule, MatButtonToggleModule, MatIconModule, MatTooltipModule, MatListModule],
+    imports: [
+        CommonModule,
+        NgTemplateOutlet,
+        MatButtonModule,
+        MatButtonToggleModule,
+        MatIconModule,
+        MatTooltipModule,
+        MatListModule,
+        MatSidenavModule,
+        MarkdownModule,
+        CopyButtonComponent,
+        A11yModule,
+    ],
     templateUrl: './widget-preview-dialog.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -31,6 +59,11 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     private location = inject(Location);
     private toast = inject(PrimeNgToastService);
     private ngZone = inject(NgZone);
+    private breakpointObserver = inject(BreakpointObserver);
+
+    @ViewChild('drawer') drawer!: MatDrawer;
+
+    public readonly isMobile = signal<boolean>(false);
 
     protected readonly PublicScriptType = PublicScriptType;
     protected readonly WidgetTheme = WidgetTheme;
@@ -40,8 +73,22 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     private scriptLoaded = false;
 
     public activeTab = signal<PreviewTab>(PublicScriptType.Authorization);
+    public readonly activeTabLabel = computed(() => this.tabs.find((t) => t.id === this.activeTab())?.label ?? '');
     public theme = signal<WidgetTheme>(WidgetTheme.System);
     public authToken = signal<string>('');
+    public viewMode = signal<'preview' | 'code'>('preview');
+
+    public readonly demoDiv = computed(() =>
+        this.referenceId ? `<div id="${this.referenceId}"></div>` : '<div id="<reference_id>"></div>'
+    );
+
+    public readonly proxyAuthScript = computed(() =>
+        ProxyAuthScript(environment.proxyServer, this.referenceId ?? '<reference_id>', this.activeTab())
+    );
+
+    public readonly codeSnippet = computed(() =>
+        buildCodeSnippet(this.referenceId ?? '<reference_id>', this.activeTab())
+    );
 
     private readonly systemDark = signal(
         typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -61,6 +108,11 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     ];
 
     constructor() {
+        this.breakpointObserver
+            .observe([Breakpoints.XSmall, Breakpoints.Small])
+            .pipe(takeUntilDestroyed())
+            .subscribe((result) => this.isMobile.set(result.matches));
+
         if (typeof window !== 'undefined') {
             const mq = window.matchMedia('(prefers-color-scheme: dark)');
             const handler = (e: MediaQueryListEvent) => this.systemDark.set(e.matches);
@@ -94,7 +146,11 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     }
 
     public goBack(): void {
-        this.location.back();
+        if (window.history.length > 1) {
+            this.location.back();
+        } else {
+            this.router.navigate(['/app/features']);
+        }
     }
 
     public selectTab(tab: PreviewTab): void {
@@ -102,6 +158,10 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
             return;
         }
         this.activeTab.set(tab);
+        if (this.drawer?.mode === 'over') {
+            this.drawer.close();
+        }
+        this.viewMode.set('preview');
         this.router.navigate([], {
             relativeTo: this.route,
             queryParams: { tab },
@@ -164,6 +224,7 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
             config['type'] = tab;
             config['authToken'] = this.authToken()?.trim();
             if (tab === PublicScriptType.UserManagement) {
+                // Enables the Role & Permission tab in the User Management widget
                 config['isRolePermission'] = true;
             }
         }

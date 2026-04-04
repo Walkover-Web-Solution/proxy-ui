@@ -32,18 +32,9 @@
 
 ## Base Script Loader
 
-Add this **once** per page. Replace `SCRIPT_URL` with the actual hosted path of `proxy-auth.js`.
+The widget uses a **2-script pattern**. The first script defines the `configuration` object; the second loads `proxy-auth.js` and calls `initVerification(configuration)` via the `onload` attribute.
 
-```html
-<script type="text/javascript">
-  var scriptElement = document.createElement('script');
-  scriptElement.src = 'SCRIPT_URL'; // e.g. https://yourdomain.com/assets/proxy-auth/proxy-auth.js
-  scriptElement.onload = function () {
-    initVerification(configuration);
-  };
-  document.body.appendChild(scriptElement);
-</script>
-```
+Replace `SCRIPT_URL` with the actual hosted URL of `proxy-auth.js` (e.g. `https://yourdomain.com/assets/proxy-auth/proxy-auth.js`).
 
 ---
 
@@ -56,28 +47,24 @@ Default widget type. Shows OTP, social login, and/or password login buttons base
 <div id="YOUR_REFERENCE_ID"></div>
 
 <script type="text/javascript">
-  var configuration = {
-    referenceId: 'YOUR_REFERENCE_ID',   // required
-    theme: 'system',                     // 'system' | 'light' | 'dark'
-    target: '_self',                     // '_self' | '_blank'
-    // loginRedirectUrl: 'https://example.com/dashboard',
-    success: function (data) {
-      // data contains the verified auth token
-      console.log('Login success', data);
-    },
-    failure: function (error) {
-      console.error('Login failed', error);
-    },
-  };
+    var configuration = {
+        referenceId: 'YOUR_REFERENCE_ID',
+        type: 'authorization',
+        success: (data) => {
+            // get verified token in response
+            console.log('success response', data);
+        },
+        failure: (error) => {
+            // handle error
+            console.log('failure reason', error);
+        },
+    };
 </script>
-
-<!-- Base script loader -->
-<script type="text/javascript">
-  var scriptElement = document.createElement('script');
-  scriptElement.src = 'SCRIPT_URL';
-  scriptElement.onload = function () { initVerification(configuration); };
-  document.body.appendChild(scriptElement);
-</script>
+<script
+    type="text/javascript"
+    onload="initVerification(configuration)"
+    src="SCRIPT_URL"
+></script>
 ```
 
 ---
@@ -90,27 +77,25 @@ Displays the authenticated user's profile. Requires an `authToken` obtained from
 <div id="YOUR_REFERENCE_ID"></div>
 
 <script type="text/javascript">
-  var configuration = {
-    referenceId: 'YOUR_REFERENCE_ID',
-    authToken: 'ENCRYPTED_AUTH_TOKEN',  // from login success callback
-    type: 'user-profile',
-    theme: 'system',
-    target: '_self',
-    success: function (data) {
-      console.log('Profile action success', data);
-    },
-    failure: function (error) {
-      console.error('Profile error', error);
-    },
-  };
+    var configuration = {
+        referenceId: 'YOUR_REFERENCE_ID',
+        type: 'user-profile',
+        authToken: 'ENCRYPTED_AUTH_TOKEN',
+        success: (data) => {
+            // get verified token in response
+            console.log('success response', data);
+        },
+        failure: (error) => {
+            // handle error
+            console.log('failure reason', error);
+        },
+    };
 </script>
-
-<script type="text/javascript">
-  var scriptElement = document.createElement('script');
-  scriptElement.src = 'SCRIPT_URL';
-  scriptElement.onload = function () { initVerification(configuration); };
-  document.body.appendChild(scriptElement);
-</script>
+<script
+    type="text/javascript"
+    onload="initVerification(configuration)"
+    src="SCRIPT_URL"
+></script>
 ```
 
 ---
@@ -123,31 +108,26 @@ Shows a role & user management panel. Requires an `authToken`. Use `isRolePermis
 <div id="YOUR_REFERENCE_ID"></div>
 
 <script type="text/javascript">
-  var configuration = {
-    referenceId: 'YOUR_REFERENCE_ID',
-    authToken: 'ENCRYPTED_AUTH_TOKEN',
-    type: 'user-management',
-    theme: 'system',
-    isRolePermission: true,             // show role-based permission UI
-    isHidden: false,                    // set true to mount widget hidden initially
-    // exclude_role_ids: [1, 2],        // role IDs to hide
-    // include_role_ids: [3, 4],        // role IDs to show
-    target: '_self',
-    success: function (data) {
-      console.log('User management success', data);
-    },
-    failure: function (error) {
-      console.error('User management error', error);
-    },
-  };
+    var configuration = {
+        referenceId: 'YOUR_REFERENCE_ID',
+        type: 'user-management',
+        authToken: 'ENCRYPTED_AUTH_TOKEN',
+        isRolePermission: true,
+        success: (data) => {
+            // get verified token in response
+            console.log('success response', data);
+        },
+        failure: (error) => {
+            // handle error
+            console.log('failure reason', error);
+        },
+    };
 </script>
-
-<script type="text/javascript">
-  var scriptElement = document.createElement('script');
-  scriptElement.src = 'SCRIPT_URL';
-  scriptElement.onload = function () { initVerification(configuration); };
-  document.body.appendChild(scriptElement);
-</script>
+<script
+    type="text/javascript"
+    onload="initVerification(configuration)"
+    src="SCRIPT_URL"
+></script>
 ```
 
 ---
@@ -160,28 +140,26 @@ Renders the organization details view. Use `showCompanyDetails` to include the c
 <div id="YOUR_REFERENCE_ID"></div>
 
 <script type="text/javascript">
-  var configuration = {
-    referenceId: 'YOUR_REFERENCE_ID',
-    authToken: 'ENCRYPTED_AUTH_TOKEN',
-    type: 'organization-details',
-    showCompanyDetails: true,           // include company details section
-    theme: 'system',
-    target: '_self',
-    success: function (data) {
-      console.log('Org details success', data);
-    },
-    failure: function (error) {
-      console.error('Org details error', error);
-    },
-  };
+    var configuration = {
+        referenceId: 'YOUR_REFERENCE_ID',
+        type: 'organization-details',
+        authToken: 'ENCRYPTED_AUTH_TOKEN',
+        showCompanyDetails: true,
+        success: (data) => {
+            // get verified token in response
+            console.log('success response', data);
+        },
+        failure: (error) => {
+            // handle error
+            console.log('failure reason', error);
+        },
+    };
 </script>
-
-<script type="text/javascript">
-  var scriptElement = document.createElement('script');
-  scriptElement.src = 'SCRIPT_URL';
-  scriptElement.onload = function () { initVerification(configuration); };
-  document.body.appendChild(scriptElement);
-</script>
+<script
+    type="text/javascript"
+    onload="initVerification(configuration)"
+    src="SCRIPT_URL"
+></script>
 ```
 
 ---
@@ -194,29 +172,25 @@ Shows subscription plans. Set `isLogin: true` to display a login flow alongside 
 <div id="YOUR_REFERENCE_ID"></div>
 
 <script type="text/javascript">
-  var configuration = {
-    referenceId: 'YOUR_REFERENCE_ID',
-    type: 'subscription',
-    theme: 'system',
-    isPreview: false,                   // true = preview mode, no real purchases
-    isLogin: true,                      // true = show login UI alongside plans
-    // loginRedirectUrl: 'https://example.com/dashboard',
-    target: '_self',
-    success: function (data) {
-      console.log('Subscription success', data);
-    },
-    failure: function (error) {
-      console.error('Subscription error', error);
-    },
-  };
+    var configuration = {
+        referenceId: 'YOUR_REFERENCE_ID',
+        type: 'subscription',
+        isLogin: true,
+        success: (data) => {
+            // get verified token in response
+            console.log('success response', data);
+        },
+        failure: (error) => {
+            // handle error
+            console.log('failure reason', error);
+        },
+    };
 </script>
-
-<script type="text/javascript">
-  var scriptElement = document.createElement('script');
-  scriptElement.src = 'SCRIPT_URL';
-  scriptElement.onload = function () { initVerification(configuration); };
-  document.body.appendChild(scriptElement);
-</script>
+<script
+    type="text/javascript"
+    onload="initVerification(configuration)"
+    src="SCRIPT_URL"
+></script>
 ```
 
 ---
@@ -229,31 +203,29 @@ Uses `version: 'v2'` UI, icon-only social buttons, custom input field position, 
 <div id="YOUR_REFERENCE_ID"></div>
 
 <script type="text/javascript">
-  var configuration = {
-    referenceId: 'YOUR_REFERENCE_ID',
-    theme: 'dark',
-    version: 'v2',                      // 'v1' (default) | 'v2' (new UI)
-    input_fields: 'top',                // 'top' | 'bottom' — input position
-    show_social_login_icons: true,      // icon-only social login buttons
-    isRegisterFormOnly: false,          // true = show only the registration form
-    target: '_blank',
-    // Pre-fill registration form via URL query params:
-    //   ?first_name=John&last_name=Doe&email=a@b.com&signup_service_id=6
-    success: function (data) {
-      console.log('Success', data);
-    },
-    failure: function (error) {
-      console.error('Failure', error);
-    },
-  };
+    var configuration = {
+        referenceId: 'YOUR_REFERENCE_ID',
+        type: 'authorization',
+        version: 'v2',
+        input_fields: 'top',
+        show_social_login_icons: true,
+        isRegisterFormOnly: false,
+        target: '_blank',
+        success: (data) => {
+            // get verified token in response
+            console.log('success response', data);
+        },
+        failure: (error) => {
+            // handle error
+            console.log('failure reason', error);
+        },
+    };
 </script>
-
-<script type="text/javascript">
-  var scriptElement = document.createElement('script');
-  scriptElement.src = 'SCRIPT_URL';
-  scriptElement.onload = function () { initVerification(configuration); };
-  document.body.appendChild(scriptElement);
-</script>
+<script
+    type="text/javascript"
+    onload="initVerification(configuration)"
+    src="SCRIPT_URL"
+></script>
 ```
 
 ---

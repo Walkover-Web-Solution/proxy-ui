@@ -1,4 +1,4 @@
-<div class="h-full flex-col bg-transparent overflow-y-auto" [class.dark]="isDark">
+<div class="h-full flex-col bg-transparent overflow-y-auto" [class.dark]="isDark()">
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
         <!-- ── Organization Details Card ── -->
         <div class="w-card-section">
@@ -151,12 +151,12 @@
 
     <!-- ── Edit Organization Dialog ── -->
     @if (isEditing) {
-    <div #editDialogPortal [class.dark]="isDark">
+    <div #editDialogPortal [class.dark]="isDark()">
         <div class="w-dialog-backdrop" (click)="cancelEdit()" aria-hidden="true"></div>
         <div role="dialog" aria-labelledby="org-edit-dialog-title" aria-modal="true" class="w-dialog-panel">
             <!-- Header -->
             <div class="w-dialog-header">
-                <h2 id="org-edit-dialog-title" class="text-base font-semibold text-gray-900 dark:text-white">
+                <h2 id="org-edit-dialog-title" class="w-dialog-title">
                     Edit Organization
                 </h2>
                 <button type="button" (click)="cancelEdit()" class="w-btn-close" aria-label="Close dialog">

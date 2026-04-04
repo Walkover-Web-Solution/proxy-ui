@@ -6,7 +6,7 @@ import { WidgetTheme, PublicScriptType, WidgetConfig, PROXY_DOM_ID } from '@prox
 import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 const REFERENCE_ID = '4512365c177425472369c0fa8351a15';
-const THEME: WidgetTheme = WidgetTheme.System;
+const THEME: WidgetTheme = WidgetTheme.Dark;
 const TYPE: PublicScriptType = PublicScriptType.UserManagement;
 const AUTH_TOKEN =
     'eTdRN2licE5LV3JIZE55NVE3cHFPTHRLVEMwVW5SckxtbVRlcmpkNmtZMTRYWmxpUjhGTkRpRXBud3BaVXRCSE04bWNzdVVVVVpIYTZGMkNrd2kxeFNxNTJ6Wm9IdkhzVE5qR3hpcC9EMVgwaGd5L1FlN0RVNzlnSmNSakxNSFhoZ0IvZk9FZ25xUk1jVXo1MklRZGVIN2s0N1BOalk0OUhTbGkvZUc2M0g5ZUU4WVpyYXd3dElPQlFnWDF4dlZVc0pzMUc4WUR0Y3dzRzlocTF5c29NZz09';
@@ -22,7 +22,7 @@ const AUTH_TOKEN =
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     private readonly themeService = inject(WidgetThemeService);
 
-    protected readonly showAuthentication: boolean = false;
+    protected readonly showAuthentication: boolean = true;
     protected readonly referenceId: string = REFERENCE_ID;
     protected readonly theme: WidgetTheme = THEME;
     protected readonly authToken: string = AUTH_TOKEN;
@@ -82,7 +82,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                 }
             } else {
                 // Optional: Path to redirect after login (e.g., '/login') only used get proxy_auth_token in admin panel while preview
-                widgetConfig['redirect_path'] = '/login';
+                // widgetConfig['redirect_path'] = '/login';
             }
             if (THEME) {
                 widgetConfig['theme'] = THEME;

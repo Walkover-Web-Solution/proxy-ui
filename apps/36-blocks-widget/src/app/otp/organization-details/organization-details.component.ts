@@ -8,6 +8,7 @@ import {
     OnInit,
     ViewChild,
     ViewEncapsulation,
+    computed,
     effect,
     inject,
     input,
@@ -38,9 +39,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     public theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
     private readonly themeService = inject(WidgetThemeService);
-    get isDark(): boolean {
-        return this.themeService.isDark(this.theme() as WidgetTheme);
-    }
+    readonly isDark = computed(() => this.themeService.isDark$());
 
     public organizationForm = new FormGroup({
         companyName: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),

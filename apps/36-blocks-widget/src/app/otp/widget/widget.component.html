@@ -2,7 +2,7 @@
 <div
     [class.h-full]="viewMode() !== PublicScriptType.Authorization"
     [class.authorization-container]="referenceId && !authToken"
-    [class.dark]="isDarkTheme"
+    [class.dark]="isDarkTheme()"
 >
     @switch (viewMode()) { @case (PublicScriptType.UserManagement) {
     <user-management
@@ -26,7 +26,7 @@
     <user-profile [authToken]="authToken" [theme]="theme"></user-profile>
     } @case (PublicScriptType.Authorization) {
     <div
-        [class.dark-theme]="isDarkTheme"
+        [class.dark-theme]="isDarkTheme()"
         [style.border-radius]="dialogBorderRadius || null"
         [style.display]="(showRegistration() || showLogin()) && referenceElement ? 'none' : null"
     >
@@ -53,7 +53,7 @@
     } }
 </div>
 } @if (showRegistration() || showLogin() || showForgotPassword()) {
-<div #dialogPortal [class.dark]="isDarkTheme">
+<div #dialogPortal [class.dark]="isDarkTheme()">
     <div class="w-dialog-backdrop" (click)="closeOverlayDialog()" aria-hidden="true"></div>
     <div
         role="dialog"
