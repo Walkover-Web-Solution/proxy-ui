@@ -111,9 +111,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         return PublicScriptType.Authorization;
     });
 
-    get isDarkTheme(): boolean {
-        return this.themeService.isDark(this.theme as WidgetTheme);
-    }
+    readonly isDarkTheme = computed(() => this.themeService.isDark$());
 
     @Input() public version: string = WidgetVersion.V1;
     @Input() public exclude_role_ids: any[] = [];
@@ -202,7 +200,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         this.store
             .pipe(select(selectWidgetTheme), filter(Boolean), takeUntil(this.destroy$))
             .subscribe((theme: any) => {
-                if (theme?.ui_preferences?.theme !== WidgetTheme.System) {
+                if (!this.theme && theme?.ui_preferences?.theme !== WidgetTheme.System) {
                     this.themeService.setThemeOverride(theme?.ui_preferences?.theme || theme);
                 }
                 this.loginWidgetData = theme?.registerState;

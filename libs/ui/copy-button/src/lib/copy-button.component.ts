@@ -33,7 +33,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class CopyButtonComponent {
     copyData = input<any>();
-    btnClass = input<string>('icon-btn-md');
+    btnClass = input<string>('icon-btn-md !inline-flex justify-center items-center');
     iconClass = input<string>('');
     iconChangeDelay = input<number>(1000);
     tooltip = input<string>('');

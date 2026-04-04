@@ -1,23 +1,23 @@
-<div #container [class.dark]="isDark" class="flex h-full flex-col bg-transparent overflow-y-auto">
+<div #container [class.dark]="isDark()" class="flex h-full flex-col bg-transparent overflow-y-auto">
     <!-- ── Top header bar (hidden when only Members tab is available) ───── -->
     @if (hasMultipleTabs()) {
-    <header
-        class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800"
-        [style.height]="'var(--header-height)'"
-    >
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="flex h-12 items-center gap-3">
-                <div class="flex size-7 items-center justify-center rounded-md bg-indigo-600">
-                    <svg class="size-3.5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path
-                            d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625a3.375 3.375 0 1 1 6.75 0 3.375 3.375 0 0 1-6.75 0ZM1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM17.25 19.128l-.001.144a2.25 2.25 0 0 1-.233.96 10.088 10.088 0 0 0 5.06-1.01.75.75 0 0 0 .42-.643 4.875 4.875 0 0 0-6.957-4.611 8.586 8.586 0 0 1 1.71 5.157v.003Z"
-                        />
-                    </svg>
+        <header
+            class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800"
+            [style.height]="'var(--header-height)'"
+        >
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="flex h-12 items-center gap-3">
+                    <div class="flex size-7 items-center justify-center rounded-md bg-indigo-600">
+                        <svg class="size-3.5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path
+                                d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625a3.375 3.375 0 1 1 6.75 0 3.375 3.375 0 0 1-6.75 0ZM1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM17.25 19.128l-.001.144a2.25 2.25 0 0 1-.233.96 10.088 10.088 0 0 0 5.06-1.01.75.75 0 0 0 .42-.643 4.875 4.875 0 0 0-6.957-4.611 8.586 8.586 0 0 1 1.71 5.157v.003Z"
+                            />
+                        </svg>
+                    </div>
+                    <h1 class="text-xs font-semibold text-gray-900 dark:text-white">Team Settings</h1>
                 </div>
-                <h1 class="text-xs font-semibold text-gray-900 dark:text-white">Team Settings</h1>
             </div>
-        </div>
-    </header>
+        </header>
     }
 
     <!-- ── Main layout: sidebar + content ───────────────────────────────── -->
@@ -28,393 +28,214 @@
         <div class="flex flex-col lg:flex-row gap-x-6 h-full py-5">
             <!-- ── Nav: only rendered when multiple tabs exist ── -->
             @if (hasMultipleTabs()) {
-
-            <!-- Mobile: underline tab bar (hidden on lg) -->
-            <div class="lg:hidden border-b border-gray-200 dark:border-gray-700 mb-4">
-                <nav aria-label="Tabs" class="-mb-px flex space-x-1 overflow-x-auto">
-                    <!-- Members -->
-                    <button
-                        type="button"
-                        (click)="tabChange(UserManagementTab.Members)"
-                        [attr.aria-current]="activeTab === UserManagementTab.Members ? ariaCurrent : null"
-                        [ngClass]="
-                            activeTab === UserManagementTab.Members
-                                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
-                                : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200'
-                        "
-                        class="w-nav-tab"
-                    >
-                        <svg
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
+                <!-- Mobile: underline tab bar (hidden on lg) -->
+                <div class="lg:hidden border-b border-gray-200 dark:border-gray-700 mb-4">
+                    <nav aria-label="Tabs" class="-mb-px flex space-x-1 overflow-x-auto">
+                        <!-- Members -->
+                        <button
+                            type="button"
+                            (click)="tabChange(UserManagementTab.Members)"
+                            [attr.aria-current]="activeTab === UserManagementTab.Members ? ariaCurrent : null"
                             [ngClass]="
                                 activeTab === UserManagementTab.Members
-                                    ? 'text-indigo-500 dark:text-indigo-400'
-                                    : 'text-gray-400 hover:text-gray-500'
+                                    ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
+                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200'
                             "
-                            class="-ml-0.5 size-4"
+                            class="w-nav-tab"
                         >
-                            <path
-                                d="M7 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM14.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM1.615 16.428a1.224 1.224 0 0 1-.569-1.175 6.002 6.002 0 0 1 11.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 0 1 7 18a9.953 9.953 0 0 1-5.385-1.572ZM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 0 0-1.588-3.755 4.502 4.502 0 0 1 5.874 2.636.818.818 0 0 1-.36.98A7.465 7.465 0 0 1 14.5 16Z"
-                            />
-                        </svg>
-                        Members
-                    </button>
-                    <!-- Roles -->
-                    <button
-                        type="button"
-                        (click)="tabChange(UserManagementTab.Roles)"
-                        [attr.aria-current]="activeTab === UserManagementTab.Roles ? ariaCurrent : null"
-                        [ngClass]="
-                            activeTab === UserManagementTab.Roles
-                                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
-                                : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200'
-                        "
-                        class="w-nav-tab"
-                    >
-                        <svg
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
+                            <svg
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                aria-hidden="true"
+                                [ngClass]="
+                                    activeTab === UserManagementTab.Members
+                                        ? 'text-indigo-500 dark:text-indigo-400'
+                                        : 'text-gray-400 hover:text-gray-500'
+                                "
+                                class="-ml-0.5 size-4"
+                            >
+                                <path
+                                    d="M7 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM14.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM1.615 16.428a1.224 1.224 0 0 1-.569-1.175 6.002 6.002 0 0 1 11.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 0 1 7 18a9.953 9.953 0 0 1-5.385-1.572ZM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 0 0-1.588-3.755 4.502 4.502 0 0 1 5.874 2.636.818.818 0 0 1-.36.98A7.465 7.465 0 0 1 14.5 16Z"
+                                />
+                            </svg>
+                            Members
+                        </button>
+                        <!-- Roles -->
+                        <button
+                            type="button"
+                            (click)="tabChange(UserManagementTab.Roles)"
+                            [attr.aria-current]="activeTab === UserManagementTab.Roles ? ariaCurrent : null"
                             [ngClass]="
                                 activeTab === UserManagementTab.Roles
-                                    ? 'text-indigo-500 dark:text-indigo-400'
-                                    : 'text-gray-400 hover:text-gray-500'
+                                    ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
+                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200'
                             "
-                            class="-ml-0.5 size-4"
+                            class="w-nav-tab"
                         >
-                            <path
-                                d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
-                            />
-                        </svg>
-                        Roles
-                    </button>
-                    <!-- Permissions -->
-                    <button
-                        type="button"
-                        (click)="tabChange(UserManagementTab.Permissions)"
-                        [attr.aria-current]="activeTab === UserManagementTab.Permissions ? ariaCurrent : null"
-                        [ngClass]="
-                            activeTab === UserManagementTab.Permissions
-                                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
-                                : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200'
-                        "
-                        class="w-nav-tab"
-                    >
-                        <svg
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
+                            <svg
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                aria-hidden="true"
+                                [ngClass]="
+                                    activeTab === UserManagementTab.Roles
+                                        ? 'text-indigo-500 dark:text-indigo-400'
+                                        : 'text-gray-400 hover:text-gray-500'
+                                "
+                                class="-ml-0.5 size-4"
+                            >
+                                <path
+                                    d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
+                                />
+                            </svg>
+                            Roles
+                        </button>
+                        <!-- Permissions -->
+                        <button
+                            type="button"
+                            (click)="tabChange(UserManagementTab.Permissions)"
+                            [attr.aria-current]="activeTab === UserManagementTab.Permissions ? ariaCurrent : null"
                             [ngClass]="
                                 activeTab === UserManagementTab.Permissions
-                                    ? 'text-indigo-500 dark:text-indigo-400'
-                                    : 'text-gray-400 hover:text-gray-500'
+                                    ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
+                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200'
                             "
-                            class="-ml-0.5 size-4"
+                            class="w-nav-tab"
                         >
-                            <path
-                                d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
-                                clip-rule="evenodd"
-                                fill-rule="evenodd"
-                            />
-                        </svg>
-                        Permissions
-                    </button>
-                </nav>
-            </div>
+                            <svg
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                aria-hidden="true"
+                                [ngClass]="
+                                    activeTab === UserManagementTab.Permissions
+                                        ? 'text-indigo-500 dark:text-indigo-400'
+                                        : 'text-gray-400 hover:text-gray-500'
+                                "
+                                class="-ml-0.5 size-4"
+                            >
+                                <path
+                                    d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
+                                    clip-rule="evenodd"
+                                    fill-rule="evenodd"
+                                />
+                            </svg>
+                            Permissions
+                        </button>
+                    </nav>
+                </div>
 
-            <!-- Desktop: vertical sidebar (hidden below lg) -->
-            <aside
-                class="hidden lg:block w-44 shrink-0 self-start bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-2"
-            >
-                <nav class="flex flex-col gap-1" aria-label="Settings sections">
-                    <!-- Members -->
-                    <button
-                        type="button"
-                        (click)="tabChange(UserManagementTab.Members)"
-                        [attr.aria-current]="activeTab === UserManagementTab.Members ? ariaCurrent : null"
-                        [ngClass]="
-                            activeTab === UserManagementTab.Members
-                                ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
-                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400'
-                        "
-                        class="w-nav-item"
-                    >
-                        <svg
-                            class="size-5 shrink-0"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            aria-hidden="true"
+                <!-- Desktop: vertical sidebar (hidden below lg) -->
+                <aside
+                    class="hidden lg:block w-44 shrink-0 self-start bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-2"
+                >
+                    <nav class="flex flex-col gap-1" aria-label="Settings sections">
+                        <!-- Members -->
+                        <button
+                            type="button"
+                            (click)="tabChange(UserManagementTab.Members)"
+                            [attr.aria-current]="activeTab === UserManagementTab.Members ? ariaCurrent : null"
+                            [ngClass]="
+                                activeTab === UserManagementTab.Members
+                                    ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
+                                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400'
+                            "
+                            class="w-nav-item"
                         >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
-                            />
-                        </svg>
-                        Members
-                    </button>
-                    <!-- Roles -->
-                    <button
-                        type="button"
-                        (click)="tabChange(UserManagementTab.Roles)"
-                        [attr.aria-current]="activeTab === UserManagementTab.Roles ? ariaCurrent : null"
-                        [ngClass]="
-                            activeTab === UserManagementTab.Roles
-                                ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
-                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400'
-                        "
-                        class="w-nav-item"
-                    >
-                        <svg
-                            class="size-5 shrink-0"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            aria-hidden="true"
+                            <svg
+                                class="size-5 shrink-0"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
+                                />
+                            </svg>
+                            Members
+                        </button>
+                        <!-- Roles -->
+                        <button
+                            type="button"
+                            (click)="tabChange(UserManagementTab.Roles)"
+                            [attr.aria-current]="activeTab === UserManagementTab.Roles ? ariaCurrent : null"
+                            [ngClass]="
+                                activeTab === UserManagementTab.Roles
+                                    ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
+                                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400'
+                            "
+                            class="w-nav-item"
                         >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
-                            />
-                        </svg>
-                        Roles
-                    </button>
-                    <!-- Permissions -->
-                    <button
-                        type="button"
-                        (click)="tabChange(UserManagementTab.Permissions)"
-                        [attr.aria-current]="activeTab === UserManagementTab.Permissions ? ariaCurrent : null"
-                        [ngClass]="
-                            activeTab === UserManagementTab.Permissions
-                                ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
-                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400'
-                        "
-                        class="w-nav-item"
-                    >
-                        <svg
-                            class="size-5 shrink-0"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            aria-hidden="true"
+                            <svg
+                                class="size-5 shrink-0"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
+                                />
+                            </svg>
+                            Roles
+                        </button>
+                        <!-- Permissions -->
+                        <button
+                            type="button"
+                            (click)="tabChange(UserManagementTab.Permissions)"
+                            [attr.aria-current]="activeTab === UserManagementTab.Permissions ? ariaCurrent : null"
+                            [ngClass]="
+                                activeTab === UserManagementTab.Permissions
+                                    ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
+                                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400'
+                            "
+                            class="w-nav-item"
                         >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
-                            />
-                        </svg>
-                        Permissions
-                    </button>
-                </nav>
-            </aside>
-
+                            <svg
+                                class="size-5 shrink-0"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+                                />
+                            </svg>
+                            Permissions
+                        </button>
+                    </nav>
+                </aside>
             }
 
             <!-- ── Main content ─────────────────────────────────────────── -->
             <main class="flex-1 min-w-0 overflow-y-auto lg:px-4 pt-3 lg:pt-0">
                 <!-- ══ MEMBERS ══════════════════════════════════════════ -->
                 @if (activeTab === UserManagementTab.Members) {
-                <!-- Header -->
-                <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
-                    <div>
-                        <h2 class="text-sm font-bold text-gray-900 dark:text-white">Team members</h2>
-                        <p class="w-section-subtitle">Manage who has access to this workspace.</p>
-                    </div>
-                    @if (canAddUser) {
-                    <button type="button" (click)="addUser()" class="w-btn-primary-sm">
-                        <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path
-                                d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
-                            />
-                        </svg>
-                        Invite member
-                    </button>
-                    }
-                </div>
-
-                <!-- Search -->
-                <div class="relative mb-6 px-px">
-                    <svg class="w-search-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path
-                            fill-rule="evenodd"
-                            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-                            clip-rule="evenodd"
-                        />
-                    </svg>
-                    <input
-                        type="search"
-                        [(ngModel)]="searchTerm"
-                        (input)="applyFilter()"
-                        placeholder="Search members..."
-                        autocomplete="off"
-                        class="w-input-search"
-                    />
-                </div>
-
-                <!-- Skeletons -->
-                @if (isUsersLoading && !skipSkeletonLoading) {
-                <div class="flex flex-col gap-3">
-                    @for (s of [1,2,3]; track s) {
-                    <div class="w-card px-5 py-4 flex items-center justify-between gap-4 animate-pulse">
-                        <div class="flex min-w-0 items-center gap-x-3">
-                            <div class="size-10 flex-none rounded-full bg-gray-200 dark:bg-gray-700"></div>
-                            <div class="min-w-0 flex-auto space-y-1.5">
-                                <div class="h-3 w-32 rounded bg-gray-200 dark:bg-gray-700"></div>
-                                <div class="h-2.5 w-44 rounded bg-gray-200 dark:bg-gray-700"></div>
-                            </div>
-                        </div>
-                        <div class="flex shrink-0 items-center gap-x-2">
-                            <div class="h-2.5 w-14 rounded bg-gray-200 dark:bg-gray-700"></div>
-                            <div class="h-7 w-12 rounded-md bg-gray-200 dark:bg-gray-700"></div>
-                            <div class="h-7 w-14 rounded-md bg-gray-200 dark:bg-gray-700"></div>
-                        </div>
-                    </div>
-                    }
-                </div>
-                }
-
-                <!-- Empty state -->
-                @if (!isUsersLoading || skipSkeletonLoading) { @if (userData.length === 0) {
-                <div class="flex flex-col items-center justify-center py-16 text-center">
-                    <svg
-                        class="size-12 text-gray-300 dark:text-gray-600 mb-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        stroke-width="1"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
-                        />
-                    </svg>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">No team members yet</p>
-                    <p class="w-section-subtitle">Invite someone to get started.</p>
-                </div>
-                }
-
-                <!-- Member cards -->
-                <div class="flex flex-col gap-3">
-                    @for (user of userData; track user; let i = $index) {
-                    <div
-                        class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3"
-                    >
-                        <div class="flex min-w-0 items-center gap-x-3">
-                            <div class="w-avatar size-9">
-                                {{ (user.name || user.email || '?').charAt(0).toUpperCase() }}
-                            </div>
-                            <div class="min-w-0 flex-auto overflow-hidden">
-                                <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                                    {{ user.name || '—' }}
-                                </p>
-                                <p
-                                    class="mt-0.5 flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 truncate"
-                                >
-                                    <svg class="size-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                        <path
-                                            d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z"
-                                        />
-                                        <path
-                                            d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z"
-                                        />
-                                    </svg>
-                                    {{ user.email }}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="flex shrink-0 items-center gap-x-2 pl-12 sm:pl-0">
-                            <span class="w-badge-green inline-flex">
-                                {{ user.role || 'Member' }}
-                            </span>
-                            @if (canEditUser) {
-                            <button type="button" (click)="editUser(user, i)" class="w-btn-secondary-sm px-2.5 py-1">
-                                Edit<span class="sr-only">, {{ user.name }}</span>
-                            </button>
-                            } @if (canRemoveUser) {
-                            <button type="button" (click)="deleteUser(user, i)" class="w-btn-danger-sm px-2.5 py-1">
-                                Remove<span class="sr-only">, {{ user.name }}</span>
-                            </button>
-                            }
-                        </div>
-                    </div>
-                    }
-                </div>
-                }
-
-                <!-- Pagination -->
-                @if (totalUsers > currentPageSize) {
-                <nav
-                    class="flex flex-col lg:flex-row items-center justify-between gap-3 border-t border-gray-200 dark:border-gray-700 pt-4 mt-2"
-                    aria-label="Pagination"
-                >
-                    <p class="text-xs text-gray-700 dark:text-gray-300 text-center lg:text-left">
-                        Showing <span class="font-medium">{{ currentPageIndex * currentPageSize + 1 }}</span
-                        >–<span class="font-medium">{{
-                            (currentPageIndex + 1) * currentPageSize > totalUsers
-                                ? totalUsers
-                                : (currentPageIndex + 1) * currentPageSize
-                        }}</span>
-                        of <span class="font-medium">{{ totalUsers }}</span>
-                    </p>
-                    <div class="flex gap-2">
-                        <button
-                            type="button"
-                            (click)="
-                                onUsersPageChange({
-                                    pageIndex: currentPageIndex - 1,
-                                    pageSize: currentPageSize,
-                                    length: totalUsers
-                                })
-                            "
-                            [disabled]="currentPageIndex === 0"
-                            class="w-btn-secondary"
-                        >
-                            Previous
-                        </button>
-                        <button
-                            type="button"
-                            (click)="
-                                onUsersPageChange({
-                                    pageIndex: currentPageIndex + 1,
-                                    pageSize: currentPageSize,
-                                    length: totalUsers
-                                })
-                            "
-                            [disabled]="(currentPageIndex + 1) * currentPageSize >= totalUsers"
-                            class="w-btn-secondary"
-                        >
-                            Next
-                        </button>
-                    </div>
-                </nav>
-                } }
-
-                <!-- ══ ROLES ══════════════════════════════════════════ -->
-                @if (activeTab === UserManagementTab.Roles && pass()) {
-                <div>
                     <!-- Header -->
                     <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
                         <div>
-                            <h2 class="text-sm font-bold text-gray-900 dark:text-white">Roles</h2>
-                            <p class="w-section-subtitle">Define roles and their associated permissions.</p>
+                            <h2 class="text-sm font-bold text-gray-900 dark:text-white">Team members</h2>
+                            <p class="w-section-subtitle">Manage who has access to this workspace.</p>
                         </div>
-                        <button type="button" (click)="addRole()" class="w-btn-primary-sm">
-                            <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path
-                                    d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
-                                />
-                            </svg>
-                            Add role
-                        </button>
+                        @if (canAddUser) {
+                            <button type="button" (click)="addUser()" class="w-btn-primary-sm">
+                                <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path
+                                        d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
+                                    />
+                                </svg>
+                                Invite member
+                            </button>
+                        }
                     </div>
 
                     <!-- Search -->
@@ -428,192 +249,398 @@
                         </svg>
                         <input
                             type="search"
-                            [(ngModel)]="roleSearchTerm"
-                            (input)="applyRoleFilter()"
-                            placeholder="Search roles..."
+                            [(ngModel)]="searchTerm"
+                            (input)="applyFilter()"
+                            placeholder="Search members..."
                             autocomplete="off"
                             class="w-input-search"
                         />
                     </div>
 
                     <!-- Skeletons -->
-                    @if (isRolesLoading) {
-                    <div class="flex flex-col gap-3">
-                        @for (s of [1,2,3]; track s) {
-                        <div class="w-card px-5 py-4 animate-pulse">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center gap-2">
-                                    <div class="h-3.5 w-24 rounded bg-gray-200 dark:bg-gray-700"></div>
-                                    <div class="h-5 w-14 rounded-md bg-gray-200 dark:bg-gray-700"></div>
+                    @if (isUsersLoading && !skipSkeletonLoading) {
+                        <div class="flex flex-col gap-3">
+                            @for (s of [1, 2, 3]; track s) {
+                                <div class="w-card px-5 py-4 flex items-center justify-between gap-4 animate-pulse">
+                                    <div class="flex min-w-0 items-center gap-x-3">
+                                        <div class="size-10 flex-none rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                                        <div class="min-w-0 flex-auto space-y-1.5">
+                                            <div class="h-3 w-32 rounded bg-gray-200 dark:bg-gray-700"></div>
+                                            <div class="h-2.5 w-44 rounded bg-gray-200 dark:bg-gray-700"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex shrink-0 items-center gap-x-2">
+                                        <div class="h-2.5 w-14 rounded bg-gray-200 dark:bg-gray-700"></div>
+                                        <div class="h-7 w-12 rounded-md bg-gray-200 dark:bg-gray-700"></div>
+                                        <div class="h-7 w-14 rounded-md bg-gray-200 dark:bg-gray-700"></div>
+                                    </div>
                                 </div>
-                                <div class="h-7 w-12 rounded-md bg-gray-200 dark:bg-gray-700"></div>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5">
-                                @for (t of [1,2,3,4,5]; track t) {
-                                <div
-                                    class="h-5 rounded-full bg-gray-200 dark:bg-gray-700"
-                                    [style.width.px]="50 + t * 8"
-                                ></div>
-                                }
-                            </div>
-                        </div>
-                        }
-                    </div>
-                    }
-
-                    <!-- Role cards -->
-                    @if (!isRolesLoading) { @if (filteredRolesData.length === 0) {
-                    <div class="py-12 text-center text-sm text-gray-500 dark:text-gray-400">No roles found</div>
-                    }
-                    <div class="flex flex-col gap-3">
-                        @for (role of filteredRolesData; track role; let i = $index) {
-                        <div class="w-card px-5 py-4">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">{{
-                                        role.name
-                                    }}</span>
-                                    @if (role.is_default) {
-                                    <span class="w-badge">Default</span>
-                                    }
-                                </div>
-                                <button
-                                    type="button"
-                                    (click)="editRole(role, i)"
-                                    [disabled]="role.is_default"
-                                    class="w-btn-secondary-sm"
-                                >
-                                    Edit
-                                </button>
-                            </div>
-                            @if (role.c_permissions?.length) {
-                            <div class="flex flex-wrap gap-1.5">
-                                @for (p of role.c_permissions; track p.id; let pi = $index) {
-                                <span
-                                    class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
-                                    [class]="
-                                        [
-                                            pi % 6 === 0
-                                                ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300'
-                                                : pi % 6 === 1
-                                                ? 'bg-teal-50 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300'
-                                                : pi % 6 === 2
-                                                ? 'bg-orange-50 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300'
-                                                : pi % 6 === 3
-                                                ? 'bg-green-50 text-green-700 dark:bg-green-900/40 dark:text-green-300'
-                                                : pi % 6 === 4
-                                                ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300'
-                                                : 'bg-rose-50 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300'
-                                        ].join(' ')
-                                    "
-                                >
-                                    <svg class="size-3 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                        <path
-                                            fill-rule="evenodd"
-                                            d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
-                                            clip-rule="evenodd"
-                                        />
-                                    </svg>
-                                    {{ p.name }}
-                                </span>
-                                }
-                            </div>
-                            } @else {
-                            <p class="text-xs italic text-gray-400 dark:text-gray-500">No permissions assigned</p>
                             }
                         </div>
+                    }
+
+                    <!-- Empty state -->
+                    @if (!isUsersLoading || skipSkeletonLoading) {
+                        @if (userData.length === 0) {
+                            <div class="flex flex-col items-center justify-center py-16 text-center">
+                                <svg
+                                    class="size-12 text-gray-300 dark:text-gray-600 mb-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="1"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
+                                    />
+                                </svg>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">No team members yet</p>
+                                <p class="w-section-subtitle">Invite someone to get started.</p>
+                            </div>
+                        }
+
+                        <!-- Member cards -->
+                        <div class="flex flex-col gap-3">
+                            @for (user of userData; track user; let i = $index) {
+                                <div
+                                    class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3"
+                                >
+                                    <div class="flex min-w-0 items-center gap-x-3">
+                                        <div class="w-avatar size-9">
+                                            {{ (user.name || user.email || '?').charAt(0).toUpperCase() }}
+                                        </div>
+                                        <div class="min-w-0 flex-auto overflow-hidden">
+                                            <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                                                {{ user.name || '—' }}
+                                            </p>
+                                            <p
+                                                class="mt-0.5 flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 truncate"
+                                            >
+                                                <svg class="size-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path
+                                                        d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z"
+                                                    />
+                                                    <path
+                                                        d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z"
+                                                    />
+                                                </svg>
+                                                {{ user.email }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="flex shrink-0 items-center gap-x-2 pl-12 sm:pl-0">
+                                        <span class="w-badge-green inline-flex">
+                                            {{ user.role || 'Member' }}
+                                        </span>
+                                        @if (canEditUser) {
+                                            <button
+                                                type="button"
+                                                (click)="editUser(user, i)"
+                                                class="w-btn-secondary-sm px-2.5 py-1"
+                                            >
+                                                Edit<span class="sr-only">, {{ user.name }}</span>
+                                            </button>
+                                        }
+                                        @if (canRemoveUser) {
+                                            <button
+                                                type="button"
+                                                (click)="deleteUser(user, i)"
+                                                class="w-btn-danger-sm px-2.5 py-1"
+                                            >
+                                                Remove<span class="sr-only">, {{ user.name }}</span>
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <!-- Pagination -->
+                    @if (totalUsers > currentPageSize) {
+                        <nav
+                            class="flex flex-col lg:flex-row items-center justify-between gap-3 border-t border-gray-200 dark:border-gray-700 pt-4 mt-2"
+                            aria-label="Pagination"
+                        >
+                            <p class="text-xs text-gray-700 dark:text-gray-300 text-center lg:text-left">
+                                Showing <span class="font-medium">{{ currentPageIndex * currentPageSize + 1 }}</span
+                                >–<span class="font-medium">{{
+                                    (currentPageIndex + 1) * currentPageSize > totalUsers
+                                        ? totalUsers
+                                        : (currentPageIndex + 1) * currentPageSize
+                                }}</span>
+                                of <span class="font-medium">{{ totalUsers }}</span>
+                            </p>
+                            <div class="flex gap-2">
+                                <button
+                                    type="button"
+                                    (click)="
+                                        onUsersPageChange({
+                                            pageIndex: currentPageIndex - 1,
+                                            pageSize: currentPageSize,
+                                            length: totalUsers,
+                                        })
+                                    "
+                                    [disabled]="currentPageIndex === 0"
+                                    class="w-btn-secondary"
+                                >
+                                    Previous
+                                </button>
+                                <button
+                                    type="button"
+                                    (click)="
+                                        onUsersPageChange({
+                                            pageIndex: currentPageIndex + 1,
+                                            pageSize: currentPageSize,
+                                            length: totalUsers,
+                                        })
+                                    "
+                                    [disabled]="(currentPageIndex + 1) * currentPageSize >= totalUsers"
+                                    class="w-btn-secondary"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </nav>
+                    }
+                }
+
+                <!-- ══ ROLES ══════════════════════════════════════════ -->
+                @if (activeTab === UserManagementTab.Roles && pass()) {
+                    <div>
+                        <!-- Header -->
+                        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+                            <div>
+                                <h2 class="text-sm font-bold text-gray-900 dark:text-white">Roles</h2>
+                                <p class="w-section-subtitle">Define roles and their associated permissions.</p>
+                            </div>
+                            <button type="button" (click)="addRole()" class="w-btn-primary-sm">
+                                <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path
+                                        d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
+                                    />
+                                </svg>
+                                Add role
+                            </button>
+                        </div>
+
+                        <!-- Search -->
+                        <div class="relative mb-6 px-px">
+                            <svg class="w-search-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                                    clip-rule="evenodd"
+                                />
+                            </svg>
+                            <input
+                                type="search"
+                                [(ngModel)]="roleSearchTerm"
+                                (input)="applyRoleFilter()"
+                                placeholder="Search roles..."
+                                autocomplete="off"
+                                class="w-input-search"
+                            />
+                        </div>
+
+                        <!-- Skeletons -->
+                        @if (isRolesLoading) {
+                            <div class="flex flex-col gap-3">
+                                @for (s of [1, 2, 3]; track s) {
+                                    <div class="w-card px-5 py-4 animate-pulse">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <div class="flex items-center gap-2">
+                                                <div class="h-3.5 w-24 rounded bg-gray-200 dark:bg-gray-700"></div>
+                                                <div class="h-5 w-14 rounded-md bg-gray-200 dark:bg-gray-700"></div>
+                                            </div>
+                                            <div class="h-7 w-12 rounded-md bg-gray-200 dark:bg-gray-700"></div>
+                                        </div>
+                                        <div class="flex flex-wrap gap-1.5">
+                                            @for (t of [1, 2, 3, 4, 5]; track t) {
+                                                <div
+                                                    class="h-5 rounded-full bg-gray-200 dark:bg-gray-700"
+                                                    [style.width.px]="50 + t * 8"
+                                                ></div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <!-- Role cards -->
+                        @if (!isRolesLoading) {
+                            @if (filteredRolesData.length === 0) {
+                                <div class="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
+                                    No roles found
+                                </div>
+                            }
+                            <div class="flex flex-col gap-3">
+                                @for (role of filteredRolesData; track role; let i = $index) {
+                                    <div class="w-card px-5 py-4">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <div class="flex items-center gap-2 flex-wrap">
+                                                <span class="text-sm font-semibold text-gray-900 dark:text-white">{{
+                                                    role.name
+                                                }}</span>
+                                                @if (role.is_default) {
+                                                    <span class="w-badge">Default</span>
+                                                }
+                                            </div>
+                                            <button
+                                                type="button"
+                                                (click)="editRole(role, i)"
+                                                [disabled]="role.is_default"
+                                                class="w-btn-secondary-sm"
+                                            >
+                                                Edit
+                                            </button>
+                                        </div>
+                                        @if (role.c_permissions?.length) {
+                                            <div class="flex flex-wrap gap-1.5">
+                                                @for (p of role.c_permissions; track p.id; let pi = $index) {
+                                                    <span
+                                                        class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
+                                                        [class]="
+                                                            [
+                                                                pi % 6 === 0
+                                                                    ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300'
+                                                                    : pi % 6 === 1
+                                                                      ? 'bg-teal-50 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300'
+                                                                      : pi % 6 === 2
+                                                                        ? 'bg-orange-50 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300'
+                                                                        : pi % 6 === 3
+                                                                          ? 'bg-green-50 text-green-700 dark:bg-green-900/40 dark:text-green-300'
+                                                                          : pi % 6 === 4
+                                                                            ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300'
+                                                                            : 'bg-rose-50 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300',
+                                                            ].join(' ')
+                                                        "
+                                                    >
+                                                        <svg
+                                                            class="size-3 shrink-0"
+                                                            viewBox="0 0 20 20"
+                                                            fill="currentColor"
+                                                        >
+                                                            <path
+                                                                fill-rule="evenodd"
+                                                                d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
+                                                                clip-rule="evenodd"
+                                                            />
+                                                        </svg>
+                                                        {{ p.name }}
+                                                    </span>
+                                                }
+                                            </div>
+                                        } @else {
+                                            <p class="text-xs italic text-gray-400 dark:text-gray-500">
+                                                No permissions assigned
+                                            </p>
+                                        }
+                                    </div>
+                                }
+                            </div>
                         }
                     </div>
-                    }
-                </div>
                 }
 
                 <!-- ══ PERMISSIONS ═══════════════════════════════════════ -->
                 @if (activeTab === UserManagementTab.Permissions && pass()) {
-                <div>
-                    <!-- Header -->
-                    <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
-                        <div>
-                            <h2 class="text-sm font-bold text-gray-900 dark:text-white">Permissions</h2>
-                            <p class="w-section-subtitle">Granular access controls that can be assigned to roles.</p>
-                        </div>
-                        <button type="button" (click)="openAddPermissionDialog()" class="w-btn-primary-sm">
-                            <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path
-                                    d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
-                                />
-                            </svg>
-                            Add permission
-                        </button>
-                    </div>
-
-                    <!-- Search -->
-                    <div class="relative mb-6 px-px">
-                        <svg class="w-search-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path
-                                fill-rule="evenodd"
-                                d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-                                clip-rule="evenodd"
-                            />
-                        </svg>
-                        <input
-                            type="search"
-                            [(ngModel)]="permissionSearchTerm"
-                            (input)="applyPermissionFilter()"
-                            placeholder="Search permissions..."
-                            autocomplete="off"
-                            class="w-input-search"
-                        />
-                    </div>
-
-                    <!-- Skeletons -->
-                    @if (isPermissionsLoading) {
-                    <div class="flex flex-col gap-3">
-                        @for (s of [1,2,3,4,5]; track s) {
-                        <div class="w-card px-5 py-4 flex items-center justify-between gap-4 animate-pulse">
-                            <div class="flex min-w-0 items-center gap-3">
-                                <div class="size-8 flex-none rounded-lg bg-gray-200 dark:bg-gray-700"></div>
-                                <div class="h-3 w-36 rounded bg-gray-200 dark:bg-gray-700"></div>
-                            </div>
-                            <div class="h-7 w-12 rounded-md bg-gray-200 dark:bg-gray-700"></div>
-                        </div>
-                        }
-                    </div>
-                    }
-
-                    <!-- Permission cards -->
-                    @if (!isPermissionsLoading) { @if (filteredPermissionsData.length === 0) {
-                    <div class="py-12 text-center text-sm text-gray-500 dark:text-gray-400">No permissions found</div>
-                    }
-                    <div class="flex flex-col gap-3">
-                        @for (permission of filteredPermissionsData; track permission; let i = $index) {
-                        <div class="w-card px-5 py-4 flex items-center justify-between gap-4">
-                            <div class="flex items-center gap-3 min-w-0">
-                                <div class="w-icon-box bg-indigo-50 dark:bg-indigo-900/30">
-                                    <svg
-                                        class="size-4 text-indigo-600 dark:text-indigo-400"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                    >
-                                        <path
-                                            fill-rule="evenodd"
-                                            d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
-                                            clip-rule="evenodd"
-                                        />
-                                    </svg>
-                                </div>
-                                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
-                                    {{ permission.name }}
+                    <div>
+                        <!-- Header -->
+                        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+                            <div>
+                                <h2 class="text-sm font-bold text-gray-900 dark:text-white">Permissions</h2>
+                                <p class="w-section-subtitle">
+                                    Granular access controls that can be assigned to roles.
                                 </p>
                             </div>
-                            <button type="button" (click)="editPermission(permission, i)" class="w-btn-secondary-sm">
-                                Edit
+                            <button type="button" (click)="openAddPermissionDialog()" class="w-btn-primary-sm">
+                                <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path
+                                        d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
+                                    />
+                                </svg>
+                                Add permission
                             </button>
                         </div>
+
+                        <!-- Search -->
+                        <div class="relative mb-6 px-px">
+                            <svg class="w-search-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                                    clip-rule="evenodd"
+                                />
+                            </svg>
+                            <input
+                                type="search"
+                                [(ngModel)]="permissionSearchTerm"
+                                (input)="applyPermissionFilter()"
+                                placeholder="Search permissions..."
+                                autocomplete="off"
+                                class="w-input-search"
+                            />
+                        </div>
+
+                        <!-- Skeletons -->
+                        @if (isPermissionsLoading) {
+                            <div class="flex flex-col gap-3">
+                                @for (s of [1, 2, 3, 4, 5]; track s) {
+                                    <div class="w-card px-5 py-4 flex items-center justify-between gap-4 animate-pulse">
+                                        <div class="flex min-w-0 items-center gap-3">
+                                            <div class="size-8 flex-none rounded-lg bg-gray-200 dark:bg-gray-700"></div>
+                                            <div class="h-3 w-36 rounded bg-gray-200 dark:bg-gray-700"></div>
+                                        </div>
+                                        <div class="h-7 w-12 rounded-md bg-gray-200 dark:bg-gray-700"></div>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <!-- Permission cards -->
+                        @if (!isPermissionsLoading) {
+                            @if (filteredPermissionsData.length === 0) {
+                                <div class="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
+                                    No permissions found
+                                </div>
+                            }
+                            <div class="flex flex-col gap-3">
+                                @for (permission of filteredPermissionsData; track permission; let i = $index) {
+                                    <div class="w-card px-5 py-4 flex items-center justify-between gap-4">
+                                        <div class="flex items-center gap-3 min-w-0">
+                                            <div class="w-icon-box bg-indigo-50 dark:bg-indigo-900/30">
+                                                <svg
+                                                    class="size-4 text-indigo-600 dark:text-indigo-400"
+                                                    viewBox="0 0 20 20"
+                                                    fill="currentColor"
+                                                >
+                                                    <path
+                                                        fill-rule="evenodd"
+                                                        d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
+                                                        clip-rule="evenodd"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                                {{ permission.name }}
+                                            </p>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            (click)="editPermission(permission, i)"
+                                            class="w-btn-secondary-sm"
+                                        >
+                                            Edit
+                                        </button>
+                                    </div>
+                                }
+                            </div>
                         }
                     </div>
-                    }
-                </div>
                 }
             </main>
         </div>
@@ -621,321 +648,385 @@
 
     <!-- ══ MODAL DIALOG ════════════════════════════════════════════════════ -->
     @if (showDialog()) {
-    <div #mainDialogPortal [class.dark]="isDark">
-        <div class="w-dialog-backdrop" (click)="closeDialog()" aria-hidden="true"></div>
-        <div role="dialog" aria-labelledby="dialog-title" aria-modal="true" class="w-dialog-panel">
-            <!-- Header -->
-            <div class="w-dialog-header">
-                <h2 id="dialog-title" class="text-base font-semibold text-gray-900 dark:text-white">
-                    {{ getDialogTitle() }}
-                </h2>
-                <button type="button" (click)="closeDialog()" class="w-btn-close" aria-label="Close dialog">
-                    <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path
-                            d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
-                        />
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Body -->
-            <div class="w-dialog-body space-y-5">
-                <!-- Role form -->
-                @if (isEditRole) {
-                <form [formGroup]="addRoleForm" class="space-y-5">
-                    <div>
-                        <label for="role-name" class="w-label"
-                            >Role name <span class="text-red-500" aria-hidden="true">*</span></label
-                        >
-                        <input
-                            id="role-name"
-                            formControlName="roleName"
-                            type="text"
-                            placeholder="e.g. Editor, Viewer"
-                            aria-describedby="role-name-error"
-                            class="w-input"
-                        />
-                        @if (addRoleForm.get('roleName')?.touched && addRoleForm.get('roleName')?.hasError('required'))
-                        {
-                        <p id="role-name-error" role="alert" class="w-field-error">Role name is required</p>
-                        }
-                    </div>
-                    <div>
-                        <label id="role-permissions-label" class="w-label"
-                            >Permissions <span class="text-red-500" aria-hidden="true">*</span></label
-                        >
-                        <div role="group" aria-labelledby="role-permissions-label" class="w-checkbox-group">
-                            @if (permissions.length === 0) {
-                            <p class="px-3.5 py-3 text-sm text-gray-500 dark:text-gray-400 italic">
-                                No permissions available
-                            </p>
-                            } @if (permissions.length > 0) {
-                            <label
-                                class="w-checkbox-row border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50"
-                            >
-                                <input
-                                    type="checkbox"
-                                    [checked]="allRolePermissionsSelected()"
-                                    [indeterminate]="someRolePermissionsSelected()"
-                                    (change)="toggleAllRolePermissions($event)"
-                                    class="w-checkbox"
-                                    aria-label="Select all permissions"
-                                />
-                                <span class="text-sm font-medium text-gray-900 dark:text-white">Select all</span>
-                            </label>
-                            } @for (p of permissions; track p.id) {
-                            <label class="w-checkbox-row">
-                                <input
-                                    type="checkbox"
-                                    [value]="p.id"
-                                    [checked]="addRoleForm.get('permission')?.value?.includes(p.id)"
-                                    (change)="onPermissionCheckboxChange('addRoleForm', p.id, $event)"
-                                    class="w-checkbox"
-                                />
-                                <span class="text-sm text-gray-900 dark:text-white">{{ p.name }}</span>
-                            </label>
-                            }
-                        </div>
-                        @if (addRoleForm.get('permission')?.touched &&
-                        addRoleForm.get('permission')?.hasError('required')) {
-                        <p role="alert" class="w-field-error">At least one permission is required</p>
-                        }
-                    </div>
-                    <div>
-                        <label class="w-label"
-                            >Description
-                            <span class="font-normal text-gray-400 dark:text-gray-500">(optional)</span></label
-                        >
-                        <textarea
-                            formControlName="description"
-                            placeholder="Describe this role…"
-                            rows="3"
-                            class="w-textarea"
-                        ></textarea>
-                    </div>
-                </form>
-                }
-
-                <!-- Permission form -->
-                @if (isEditPermission) {
-                <form [formGroup]="addPermissionTabForm" class="space-y-5">
-                    <div>
-                        <label for="permission-name" class="w-label"
-                            >Permission name <span class="text-red-500" aria-hidden="true">*</span></label
-                        >
-                        <input
-                            id="permission-name"
-                            formControlName="permission"
-                            type="text"
-                            placeholder="e.g. create:reports"
-                            aria-describedby="permission-name-error"
-                            class="w-input"
-                        />
-                        @if (addPermissionTabForm.get('permission')?.touched &&
-                        addPermissionTabForm.get('permission')?.hasError('required')) {
-                        <p id="permission-name-error" role="alert" class="w-field-error">Permission name is required</p>
-                        }
-                    </div>
-                    <div>
-                        <label class="w-label"
-                            >Description
-                            <span class="font-normal text-gray-400 dark:text-gray-500">(optional)</span></label
-                        >
-                        <textarea
-                            formControlName="description"
-                            placeholder="Describe this permission…"
-                            rows="3"
-                            class="w-textarea"
-                        ></textarea>
-                    </div>
-                </form>
-                }
-
-                <!-- User / member form -->
-                @if (isEditUser || (!isEditRole && !isEditPermission)) {
-                <form [formGroup]="addUserForm" class="space-y-5">
-                    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                        <div>
-                            <label for="user-name" class="w-label"
-                                >Full name <span class="text-red-500" aria-hidden="true">*</span></label
-                            >
-                            <input
-                                id="user-name"
-                                formControlName="name"
-                                type="text"
-                                placeholder="Jane Smith"
-                                [attr.readonly]="isEditUser || null"
-                                [attr.aria-readonly]="isEditUser ? 'true' : null"
-                                aria-describedby="user-name-error"
-                                class="w-input-readonly"
+        <div #mainDialogPortal [class.dark]="isDark()">
+            <div class="w-dialog-backdrop" (click)="closeDialog()" aria-hidden="true"></div>
+            <div role="dialog" aria-labelledby="dialog-title" aria-modal="true" class="w-dialog-panel">
+                <!-- Header -->
+                <div class="w-dialog-header">
+                    <h2 id="dialog-title" class="w-dialog-title">
+                        {{ getDialogTitle() }}
+                    </h2>
+                    <button type="button" (click)="closeDialog()" class="w-btn-close" aria-label="Close dialog">
+                        <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path
+                                d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
                             />
-                            @if (addUserForm.get('name')?.touched && addUserForm.get('name')?.hasError('required')) {
-                            <p id="user-name-error" role="alert" class="w-field-error">Name is required</p>
-                            }
-                        </div>
-                        <div>
-                            <label for="user-role" class="w-label">Role</label>
-                            <div class="relative">
-                                <select id="user-role" formControlName="role" class="w-select">
-                                    <option value="">Select role</option>
-                                    @for (role of roles; track role.id) {
-                                    <option [value]="role.id.toString()">{{ role.name }}</option>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Body -->
+                <div class="w-dialog-body space-y-5">
+                    <!-- Role form -->
+                    @if (isEditRole) {
+                        <form [formGroup]="addRoleForm" class="space-y-5">
+                            <div>
+                                <label for="role-name" class="w-label"
+                                    >Role name <span class="text-red-500" aria-hidden="true">*</span></label
+                                >
+                                <input
+                                    id="role-name"
+                                    formControlName="roleName"
+                                    type="text"
+                                    placeholder="e.g. Editor, Viewer"
+                                    aria-describedby="role-name-error"
+                                    class="w-input"
+                                />
+                                @if (
+                                    addRoleForm.get('roleName')?.touched &&
+                                    addRoleForm.get('roleName')?.hasError('required')
+                                ) {
+                                    <p id="role-name-error" role="alert" class="w-field-error">Role name is required</p>
+                                }
+                            </div>
+                            <div>
+                                <label id="role-permissions-label" class="w-label"
+                                    >Permissions <span class="text-red-500" aria-hidden="true">*</span></label
+                                >
+                                <div role="group" aria-labelledby="role-permissions-label" class="w-checkbox-group">
+                                    @if (permissions.length === 0) {
+                                        <p
+                                            class="px-3.5 py-3 text-sm italic"
+                                            [class.text-gray-500]="!isDark()"
+                                            [class.text-gray-400]="isDark()"
+                                        >
+                                            No permissions available
+                                        </p>
                                     }
-                                </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
-                                    <svg
-                                        class="size-4 text-gray-400 dark:text-gray-500"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
+                                    @if (permissions.length > 0) {
+                                        <div
+                                            class="w-checkbox-row border-b"
+                                            [class.border-gray-200]="!isDark()"
+                                            [class.border-gray-700]="isDark()"
+                                            [class.bg-gray-50]="!isDark()"
+                                            [class.bg-gray-700/50]="isDark()"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                id="select-all-permissions"
+                                                [checked]="allRolePermissionsSelected()"
+                                                [indeterminate]="someRolePermissionsSelected()"
+                                                (change)="toggleAllRolePermissions($event)"
+                                                class="w-checkbox"
+                                            />
+                                            <label
+                                                for="select-all-permissions"
+                                                class="text-sm font-medium cursor-pointer"
+                                                [class.text-white]="isDark()"
+                                                [class.text-gray-900]="!isDark()"
+                                                >Select all</label
+                                            >
+                                        </div>
+                                        @for (p of permissions; track p.id) {
+                                            <div class="w-checkbox-row">
+                                                <input
+                                                    type="checkbox"
+                                                    [id]="'perm-' + p.id"
+                                                    [value]="p.id"
+                                                    [checked]="addRoleForm.get('permission')?.value?.includes(p.id)"
+                                                    (change)="onPermissionCheckboxChange('addRoleForm', p.id, $event)"
+                                                    class="w-checkbox"
+                                                />
+                                                <label
+                                                    [for]="'perm-' + p.id"
+                                                    class="text-sm cursor-pointer"
+                                                    [class.text-white]="isDark()"
+                                                    [class.text-gray-900]="!isDark()"
+                                                    >{{ p.name }}</label
+                                                >
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                                @if (
+                                    addRoleForm.get('permission')?.touched &&
+                                    addRoleForm.get('permission')?.hasError('required')
+                                ) {
+                                    <p role="alert" class="w-field-error">At least one permission is required</p>
+                                }
+                            </div>
+                            <div>
+                                <label class="w-label"
+                                    >Description
+                                    <span class="font-normal text-gray-400 dark:text-gray-500">(optional)</span></label
+                                >
+                                <textarea
+                                    formControlName="description"
+                                    placeholder="Describe this role…"
+                                    rows="3"
+                                    class="w-textarea"
+                                ></textarea>
+                            </div>
+                        </form>
+                    }
+
+                    <!-- Permission form -->
+                    @if (isEditPermission) {
+                        <form [formGroup]="addPermissionTabForm" class="space-y-5">
+                            <div>
+                                <label for="permission-name" class="w-label"
+                                    >Permission name <span class="text-red-500" aria-hidden="true">*</span></label
+                                >
+                                <input
+                                    id="permission-name"
+                                    formControlName="permission"
+                                    type="text"
+                                    placeholder="e.g. create:reports"
+                                    aria-describedby="permission-name-error"
+                                    class="w-input"
+                                />
+                                @if (
+                                    addPermissionTabForm.get('permission')?.touched &&
+                                    addPermissionTabForm.get('permission')?.hasError('required')
+                                ) {
+                                    <p id="permission-name-error" role="alert" class="w-field-error">
+                                        Permission name is required
+                                    </p>
+                                }
+                            </div>
+                            <div>
+                                <label class="w-label"
+                                    >Description
+                                    <span class="font-normal text-gray-400 dark:text-gray-500">(optional)</span></label
+                                >
+                                <textarea
+                                    formControlName="description"
+                                    placeholder="Describe this permission…"
+                                    rows="3"
+                                    class="w-textarea"
+                                ></textarea>
+                            </div>
+                        </form>
+                    }
+
+                    <!-- User / member form -->
+                    @if (isEditUser || (!isEditRole && !isEditPermission)) {
+                        <form [formGroup]="addUserForm" class="space-y-5">
+                            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                                <div>
+                                    <label for="user-name" class="w-label"
+                                        >Full name <span class="text-red-500" aria-hidden="true">*</span></label
                                     >
-                                        <path
-                                            fill-rule="evenodd"
-                                            d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                                            clip-rule="evenodd"
-                                        />
-                                    </svg>
+                                    <input
+                                        id="user-name"
+                                        formControlName="name"
+                                        type="text"
+                                        placeholder="Jane Smith"
+                                        [attr.readonly]="isEditUser || null"
+                                        [attr.aria-readonly]="isEditUser ? 'true' : null"
+                                        aria-describedby="user-name-error"
+                                        class="w-input-readonly"
+                                    />
+                                    @if (
+                                        addUserForm.get('name')?.touched &&
+                                        addUserForm.get('name')?.hasError('required')
+                                    ) {
+                                        <p id="user-name-error" role="alert" class="w-field-error">Name is required</p>
+                                    }
+                                </div>
+                                <div>
+                                    <label for="user-role" class="w-label">Role</label>
+                                    <div class="relative">
+                                        <select id="user-role" formControlName="role" class="w-select">
+                                            <option value="">Select role</option>
+                                            @for (role of roles; track role.id) {
+                                                <option [value]="role.id.toString()">{{ role.name }}</option>
+                                            }
+                                        </select>
+                                        <div
+                                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5"
+                                        >
+                                            <svg
+                                                class="size-4 text-gray-400 dark:text-gray-500"
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                                    clip-rule="evenodd"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="user-email" class="w-label"
-                            >Email address <span class="text-red-500" aria-hidden="true">*</span></label
-                        >
-                        <input
-                            id="user-email"
-                            formControlName="email"
-                            type="email"
-                            placeholder="jane@company.com"
-                            [attr.readonly]="isEditUser || null"
-                            [attr.aria-readonly]="isEditUser ? 'true' : null"
-                            aria-describedby="user-email-error"
-                            class="w-input-readonly"
-                        />
-                        @if (addUserForm.get('email')?.touched && addUserForm.get('email')?.hasError('required')) {
-                        <p id="user-email-error" role="alert" class="w-field-error">Email is required</p>
-                        } @if (addUserForm.get('email')?.touched && addUserForm.get('email')?.hasError('email')) {
-                        <p role="alert" class="w-field-error">Enter a valid email address</p>
-                        }
-                    </div>
-                    <div>
-                        <label for="user-mobile" class="w-label">
-                            Mobile <span class="font-normal text-gray-400 dark:text-gray-500">(optional)</span>
-                        </label>
-                        <input
-                            id="user-mobile"
-                            formControlName="mobileNumber"
-                            type="tel"
-                            placeholder="917001002003"
-                            [attr.readonly]="isEditUser || null"
-                            [attr.aria-readonly]="isEditUser ? 'true' : null"
-                            aria-describedby="user-mobile-hint user-mobile-error"
-                            class="w-input-readonly"
-                        />
-                        @if (addUserForm.get('mobileNumber')?.touched &&
-                        addUserForm.get('mobileNumber')?.hasError('pattern')) {
-                        <p id="user-mobile-error" role="alert" class="w-field-error">
-                            Enter a valid mobile with country code
-                        </p>
-                        }
-                        <p id="user-mobile-hint" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
-                            Include country code, e.g. 917001002003
-                        </p>
-                    </div>
-                    @if (isEditUser && getAvailableAdditionalPermissions().length > 0) {
-                    <div>
-                        <label id="user-extra-perms-label" class="w-label">Additional permissions</label>
-                        <div role="group" aria-labelledby="user-extra-perms-label" class="w-checkbox-group">
-                            @if (getAvailableAdditionalPermissions().length > 0) {
-                            <label
-                                class="w-checkbox-row border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50"
-                            >
+                            <div>
+                                <label for="user-email" class="w-label"
+                                    >Email address <span class="text-red-500" aria-hidden="true">*</span></label
+                                >
                                 <input
-                                    type="checkbox"
-                                    [checked]="allUserPermissionsSelected()"
-                                    [indeterminate]="someUserPermissionsSelected()"
-                                    (change)="toggleAllUserPermissions($event)"
-                                    class="w-checkbox"
-                                    aria-label="Select all additional permissions"
+                                    id="user-email"
+                                    formControlName="email"
+                                    type="email"
+                                    placeholder="jane@company.com"
+                                    [attr.readonly]="isEditUser || null"
+                                    [attr.aria-readonly]="isEditUser ? 'true' : null"
+                                    aria-describedby="user-email-error"
+                                    class="w-input-readonly"
                                 />
-                                <span class="text-sm font-medium text-gray-900 dark:text-white">Select all</span>
-                            </label>
-                            } @for (p of getAvailableAdditionalPermissions(); track p.id) {
-                            <label class="w-checkbox-row">
+                                @if (
+                                    addUserForm.get('email')?.touched && addUserForm.get('email')?.hasError('required')
+                                ) {
+                                    <p id="user-email-error" role="alert" class="w-field-error">Email is required</p>
+                                }
+                                @if (addUserForm.get('email')?.touched && addUserForm.get('email')?.hasError('email')) {
+                                    <p role="alert" class="w-field-error">Enter a valid email address</p>
+                                }
+                            </div>
+                            <div>
+                                <label for="user-mobile" class="w-label">
+                                    Mobile <span class="font-normal text-gray-400 dark:text-gray-500">(optional)</span>
+                                </label>
                                 <input
-                                    type="checkbox"
-                                    [value]="p.id"
-                                    [checked]="addUserForm.get('permission')?.value?.includes(p.id)"
-                                    (change)="onPermissionCheckboxChange('addUserForm', p.id, $event)"
-                                    class="w-checkbox"
+                                    id="user-mobile"
+                                    formControlName="mobileNumber"
+                                    type="tel"
+                                    placeholder="917001002003"
+                                    [attr.readonly]="isEditUser || null"
+                                    [attr.aria-readonly]="isEditUser ? 'true' : null"
+                                    aria-describedby="user-mobile-hint user-mobile-error"
+                                    class="w-input-readonly"
                                 />
-                                <span class="text-sm text-gray-900 dark:text-white">{{ p.name }}</span>
-                            </label>
+                                @if (
+                                    addUserForm.get('mobileNumber')?.touched &&
+                                    addUserForm.get('mobileNumber')?.hasError('pattern')
+                                ) {
+                                    <p id="user-mobile-error" role="alert" class="w-field-error">
+                                        Enter a valid mobile with country code
+                                    </p>
+                                }
+                                <p
+                                    id="user-mobile-hint"
+                                    class="mt-1.5 text-xs"
+                                    [class.text-gray-500]="!isDark()"
+                                    [class.text-gray-400]="isDark()"
+                                >
+                                    Include country code, e.g. 917001002003
+                                </p>
+                            </div>
+                            @if (isEditUser && getAvailableAdditionalPermissions().length > 0) {
+                                <div>
+                                    <label id="user-extra-perms-label" class="w-label">Additional permissions</label>
+                                    <div role="group" aria-labelledby="user-extra-perms-label" class="w-checkbox-group">
+                                        @if (getAvailableAdditionalPermissions().length > 0) {
+                                            <label
+                                                class="w-checkbox-row border-b"
+                                                [class.border-gray-200]="!isDark()"
+                                                [class.border-gray-700]="isDark()"
+                                                [class.bg-gray-50]="!isDark()"
+                                                [class.bg-gray-700/50]="isDark()"
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    [checked]="allUserPermissionsSelected()"
+                                                    [indeterminate]="someUserPermissionsSelected()"
+                                                    (change)="toggleAllUserPermissions($event)"
+                                                    class="w-checkbox"
+                                                    aria-label="Select all additional permissions"
+                                                />
+                                                <span
+                                                    class="text-sm font-medium"
+                                                    [class.text-white]="isDark()"
+                                                    [class.text-gray-900]="!isDark()"
+                                                    >Select all</span
+                                                >
+                                            </label>
+                                        }
+                                        @for (p of getAvailableAdditionalPermissions(); track p.id) {
+                                            <label class="w-checkbox-row">
+                                                <input
+                                                    type="checkbox"
+                                                    [value]="p.id"
+                                                    [checked]="addUserForm.get('permission')?.value?.includes(p.id)"
+                                                    (change)="onPermissionCheckboxChange('addUserForm', p.id, $event)"
+                                                    class="w-checkbox"
+                                                />
+                                                <span
+                                                    class="text-sm"
+                                                    [class.text-white]="isDark()"
+                                                    [class.text-gray-900]="!isDark()"
+                                                    >{{ p.name }}</span
+                                                >
+                                            </label>
+                                        }
+                                    </div>
+                                </div>
                             }
-                        </div>
-                    </div>
+                        </form>
                     }
-                </form>
-                }
-            </div>
+                </div>
 
-            <!-- Footer -->
-            <div class="w-dialog-footer">
-                <button type="button" (click)="closeDialog()" class="w-btn-secondary">Cancel</button>
-                <button type="button" (click)="getSaveAction()" [disabled]="getFormInvalid()" class="w-btn-primary">
-                    {{ getSaveButtonText() }}
-                </button>
+                <!-- Footer -->
+                <div class="w-dialog-footer">
+                    <button type="button" (click)="closeDialog()" class="w-btn-secondary">Cancel</button>
+                    <button type="button" (click)="getSaveAction()" [disabled]="getFormInvalid()" class="w-btn-primary">
+                        {{ getSaveButtonText() }}
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
     }
 
     <!-- ══ CONFIRM DELETE DIALOG ══════════════════════════════════════════ -->
     @if (showConfirmDialog()) {
-    <div #confirmDialogPortal [class.dark]="isDark">
-        <div class="w-dialog-backdrop" (click)="cancelDelete()" aria-hidden="true"></div>
-        <div
-            role="alertdialog"
-            aria-labelledby="confirm-delete-title"
-            aria-describedby="confirm-delete-desc"
-            aria-modal="true"
-            class="w-dialog-panel sm:max-w-md p-6"
-        >
-            <div class="flex items-start gap-4">
-                <div
-                    class="flex size-10 shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30"
-                    aria-hidden="true"
-                >
-                    <svg
-                        class="size-5 text-red-600 dark:text-red-400"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+        <div #confirmDialogPortal [class.dark]="isDark()">
+            <div class="w-dialog-backdrop" (click)="cancelDelete()" aria-hidden="true"></div>
+            <div
+                role="alertdialog"
+                aria-labelledby="confirm-delete-title"
+                aria-describedby="confirm-delete-desc"
+                aria-modal="true"
+                class="w-dialog-panel sm:max-w-md p-6"
+            >
+                <div class="flex items-start gap-4">
+                    <div
+                        class="flex size-10 shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30"
                         aria-hidden="true"
                     >
-                        <path
-                            fill-rule="evenodd"
-                            d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                            clip-rule="evenodd"
-                        />
-                    </svg>
+                        <svg
+                            class="size-5 text-red-600 dark:text-red-400"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                                clip-rule="evenodd"
+                            />
+                        </svg>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <h3 id="confirm-delete-title" class="w-dialog-title">Remove member</h3>
+                        <p id="confirm-delete-desc" class="w-section-subtitle">
+                            Are you sure you want to remove
+                            <span
+                                class="font-semibold"
+                                [class.text-white]="isDark()"
+                                [class.text-gray-900]="!isDark()"
+                                >{{ pendingDeleteUser?.name }}</span
+                            >
+                            ? This action cannot be undone.
+                        </p>
+                    </div>
                 </div>
-                <div class="min-w-0 flex-1">
-                    <h3 id="confirm-delete-title" class="text-base font-semibold text-gray-900 dark:text-white">
-                        Remove member
-                    </h3>
-                    <p id="confirm-delete-desc" class="w-section-subtitle">
-                        Are you sure you want to remove
-                        <span class="font-semibold text-gray-900 dark:text-white">{{ pendingDeleteUser?.name }}</span
-                        >? This action cannot be undone.
-                    </p>
+                <div class="mt-5 flex justify-end gap-3">
+                    <button type="button" (click)="cancelDelete()" class="w-btn-secondary">Cancel</button>
+                    <button type="button" (click)="confirmDelete()" class="w-btn-danger">Remove</button>
                 </div>
-            </div>
-            <div class="mt-5 flex justify-end gap-3">
-                <button type="button" (click)="cancelDelete()" class="w-btn-secondary">Cancel</button>
-                <button type="button" (click)="confirmDelete()" class="w-btn-danger">Remove</button>
             </div>
         </div>
-    </div>
     }
 </div>
 <div #toastPortal>

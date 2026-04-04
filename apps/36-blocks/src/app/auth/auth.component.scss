@@ -11,15 +11,19 @@
     --text-body: #c9d1d9;
 
     background-color: var(--bg-page);
-    background-image: radial-gradient(
-            ellipse 80% 50% at 50% -20%,
-            var(--theme-glow-strong, rgba(45, 212, 191, 0.15)),
-            transparent
-        ),
+    background-image:
+        radial-gradient(ellipse 80% 50% at 50% -20%, var(--theme-glow-strong, rgba(45, 212, 191, 0.15)), transparent),
         radial-gradient(ellipse 60% 40% at 100% 100%, var(--theme-glow-soft, rgba(45, 212, 191, 0.08)), transparent);
-    font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+    font-family:
+        'Space Grotesk',
+        'Inter',
+        system-ui,
+        -apple-system,
+        sans-serif;
     color: var(--text-body);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
 
     &.theme-light {
         --bg-page: #f6f8fa;
@@ -42,13 +46,17 @@
     footer {
         background-color: var(--bg-card);
         border-color: var(--border);
-        transition: background-color 0.3s ease, border-color 0.3s ease;
+        transition:
+            background-color 0.3s ease,
+            border-color 0.3s ease;
     }
 
     .themed-card {
         background-color: var(--bg-card);
         border-color: var(--border);
-        transition: background-color 0.3s ease, border-color 0.3s ease;
+        transition:
+            background-color 0.3s ease,
+            border-color 0.3s ease;
     }
 
     .themed-text-primary {
@@ -252,7 +260,9 @@
 
 // ─── Stat card ───────────────────────────────────────────────────────────────
 .stat-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
     &:hover {
         transform: translateY(-2px);
         box-shadow: 0 0 20px rgba(45, 212, 191, 0.18);
@@ -261,7 +271,10 @@
 
 // ─── Feature card ────────────────────────────────────────────────────────────
 .feature-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
     &:hover {
         transform: translateY(-4px);
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
@@ -271,7 +284,9 @@
 
 // ─── CTA glow button ─────────────────────────────────────────────────────────
 .btn-cta-glow {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
     animation: borderGlow 3s ease-in-out infinite;
     &:hover {
         transform: translateY(-2px);

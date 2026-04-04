@@ -17,8 +17,10 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
     standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
+        <div [class.dark]="isDark()">
         <div
-            class="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm"
+            class="fixed inset-0 backdrop-blur-sm"
+            [class.bg-black/50]="!isDark()" [class.bg-black/70]="isDark()"
             style="z-index:2147483646"
             (click)="cancelled.emit()"
             aria-hidden="true"
@@ -28,17 +30,20 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
             [attr.aria-labelledby]="'confirm-title-' + _id"
             [attr.aria-describedby]="'confirm-desc-' + _id"
             aria-modal="true"
-            [class.dark]="isDark()"
             style="z-index:2147483647"
-            class="fixed inset-x-4 top-1/2 -translate-y-1/2 sm:inset-x-auto sm:left-1/2 sm:w-full sm:max-w-md sm:-translate-x-1/2 rounded-xl bg-white dark:bg-gray-900 shadow-2xl ring-1 ring-gray-900/5 dark:ring-white/10 p-6"
+            class="fixed inset-x-4 top-1/2 -translate-y-1/2 sm:inset-x-auto sm:left-1/2 sm:w-full sm:max-w-md sm:-translate-x-1/2 rounded-xl shadow-2xl ring-1 p-6"
+            [class.bg-white]="!isDark()" [class.bg-gray-900]="isDark()"
+            [class.ring-gray-900/5]="!isDark()" [class.ring-white/10]="isDark()"
         >
             <div class="flex items-start gap-4">
                 <div
-                    class="flex size-10 shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30"
+                    class="flex size-10 shrink-0 items-center justify-center rounded-full"
+                    [class.bg-red-100]="!isDark()" [class.bg-red-900/30]="isDark()"
                     aria-hidden="true"
                 >
                     <svg
-                        class="size-5 text-red-600 dark:text-red-400"
+                        class="size-5"
+                        [class.text-red-600]="!isDark()" [class.text-red-400]="isDark()"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -53,10 +58,10 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
                     </svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <h3 [id]="'confirm-title-' + _id" class="text-base font-semibold text-gray-900 dark:text-white">
+                    <h3 [id]="'confirm-title-' + _id" class="w-dialog-title">
                         {{ title() }}
                     </h3>
-                    <p [id]="'confirm-desc-' + _id" class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    <p [id]="'confirm-desc-' + _id" class="w-section-subtitle">
                         {{ message() }}
                     </p>
                 </div>
@@ -65,7 +70,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
                 <button
                     type="button"
                     (click)="cancelled.emit()"
-                    class="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 bg-white dark:bg-gray-800 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
+                    class="w-btn-secondary"
                 >
                     {{ cancelLabel() }}
                 </button>
@@ -77,6 +82,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
                     {{ confirmLabel() }}
                 </button>
             </div>
+        </div>
         </div>
     `,
 })

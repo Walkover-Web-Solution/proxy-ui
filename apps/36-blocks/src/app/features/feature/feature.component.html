@@ -1,158 +1,188 @@
 @if (loading$ | async; as loading) {
-<div class="flex flex-col h-full">
-    @if (loading.dataLoading && (hasSomeFeatures$ | async) === null) { <proxy-loader></proxy-loader> }
-
-    <!-- Action Bar -->
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-        @if ((hasSomeFeatures$ | async) === false) {
-        <h4 class="my-0 text-secondary mat-body-1 font-semibold">Blocks</h4>
-        } @if ((hasSomeFeatures$ | async) === true) {
-        <div class="flex flex-wrap items-center grow gap-4">
-            <proxy-lib-search
-                [matFormFieldClass]="'no-padding w-xs-100'"
-                [placeholder]="'Search Blocks'"
-                (inputChanges)="search($event)"
-                class="w-xs-100"
-            ></proxy-lib-search>
-        </div>
+    <div class="flex flex-col h-full">
+        @if (loading.dataLoading && (hasSomeFeatures$ | async) === null) {
+            <proxy-loader></proxy-loader>
         }
-        <div class="flex items-center gap-4 ml-auto flex-wrap">
-            <button matButton="filled" class="mat-btn-xs" [routerLink]="['/app', 'features', 'create']">
-                <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
-                <span class="hide-xs">Add New Block</span>
-            </button>
-            <button
-                matButton="filled"
-                class="flat-icon-btn flat-default !min-w-0 !p-3"
-                (click)="getFeatures()"
-                matTooltip="Refresh"
-                matTooltipPosition="above"
-            >
-                <mat-icon class="mat-icon-18 !m-0">refresh</mat-icon>
-            </button>
+
+        <!-- Action Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            @if ((hasSomeFeatures$ | async) === false) {
+                <h4 class="my-0 text-secondary mat-body-1 font-semibold">Blocks</h4>
+            }
+            @if ((hasSomeFeatures$ | async) === true) {
+                <div class="flex flex-wrap items-center grow gap-4">
+                    <proxy-lib-search
+                        [matFormFieldClass]="'no-padding w-xs-100'"
+                        [placeholder]="'Search Blocks'"
+                        (inputChanges)="search($event)"
+                        class="w-xs-100"
+                    ></proxy-lib-search>
+                </div>
+            }
+            <div class="flex items-center gap-4 ml-auto flex-wrap">
+                <button matButton="filled" class="mat-btn-xs" [routerLink]="['/app', 'features', 'create']">
+                    <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
+                    <span class="hide-xs">Add New Block</span>
+                </button>
+                <button
+                    matButton="filled"
+                    class="flat-icon-btn flat-default !min-w-0 !p-3"
+                    (click)="getFeatures()"
+                    matTooltip="Refresh"
+                    matTooltipPosition="above"
+                >
+                    <mat-icon class="mat-icon-18 !m-0">refresh</mat-icon>
+                </button>
+            </div>
         </div>
+
+        @if ((hasSomeFeatures$ | async) === false) {
+            <p class="mat-body-2 text-secondary w-1/2">
+                The "Features" component in the Proxy Server is a dynamic tool that offers versatile authentication and
+                subscription plan options. It supports various authentication methods like OTP and social logins (e.g.,
+                Google, Microsoft) while providing flexible subscription plans. Users benefit from enhanced security,
+                cost-efficient resource allocation, and a user-friendly dashboard for easy configuration.
+            </p>
+        }
+        @if ((hasSomeFeatures$ | async) === true) {
+            <div class="table-scroll">
+                <table
+                    mat-table
+                    [dataSource]="
+                        (feature$ | async)?.data?.length
+                            ? (feature$ | async)?.data
+                            : loading.dataLoading
+                              ? [1, 2, 3, 4, 5]
+                              : []
+                    "
+                    class="default-table responsive-table"
+                >
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
+                        <td mat-cell *matCellDef="let element" data-label="Name">
+                            @if (!loading.dataLoading) {
+                                <span>{{ element.name }}</span>
+                            } @else {
+                                <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
+                            }
+                        </td>
+                    </ng-container>
+
+                    <!-- reference_id Column -->
+                    <ng-container matColumnDef="reference_id">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Reference Id</th>
+                        <td mat-cell *matCellDef="let element" data-label="Reference Id">
+                            @if (!loading.dataLoading) {
+                                <div class="flex items-center gap-2 max-md:flex-col max-md:items-end">
+                                    <span
+                                        [matTooltip]="element.reference_id"
+                                        matTooltipPosition="above"
+                                        class="cursor-pointer font-mono text-xs px-2 py-0.5 rounded-4 min-w-[150px]"
+                                    >
+                                        {{
+                                            element.reference_id?.length > 15
+                                                ? (element.reference_id | slice: 0 : 10) +
+                                                  '...' +
+                                                  (element.reference_id | slice: -5)
+                                                : element.reference_id
+                                        }}
+                                    </span>
+                                    <proxy-copy-button
+                                        [copyData]="element.reference_id"
+                                        tooltip="Copy Reference Id"
+                                    ></proxy-copy-button>
+                                </div>
+                            } @else {
+                                <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
+                            }
+                        </td>
+                    </ng-container>
+
+                    <!-- Method Column -->
+                    <ng-container matColumnDef="method">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Method</th>
+                        <td mat-cell *matCellDef="let element" data-label="Method">
+                            @if (!loading.dataLoading) {
+                                @if (element.method?.name) {
+                                    {{ element.method?.name }}
+                                }
+                            } @else {
+                                <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
+                            }
+                        </td>
+                    </ng-container>
+
+                    <!-- Type Column -->
+                    <ng-container matColumnDef="type">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Type</th>
+                        <td mat-cell *matCellDef="let element" data-label="Type">
+                            @if (!loading.dataLoading) {
+                                @if (element.feature?.name) {
+                                    {{ element.feature?.name }}
+                                }
+                            } @else {
+                                <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
+                            }
+                        </td>
+                    </ng-container>
+
+                    <!-- Manage Column -->
+                    <ng-container matColumnDef="manage">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let element" data-label="Manage">
+                            @if (!loading.dataLoading) {
+                                <div class="actions flex justify-end gap-3 pr-3">
+                                    <button
+                                        matButton="outlined"
+                                        [routerLink]="['/widget-preview', element.reference_id]"
+                                        class="mat-btn-md"
+                                    >
+                                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
+                                            >play_circle</mat-icon
+                                        >
+                                        Preview
+                                    </button>
+                                    <button
+                                        matButton="outlined"
+                                        [routerLink]="['manage', element.id]"
+                                        class="mat-btn-md"
+                                    >
+                                        <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
+                                            >settings</mat-icon
+                                        >
+                                        Manage
+                                    </button>
+                                </div>
+                            }
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                    <tr
+                        mat-row
+                        *matRowDef="let row; columns: displayedColumns; let i = index"
+                        class="hover-action"
+                        [class.last-child]="i + 1 === pageSizeOptions[0]"
+                    ></tr>
+
+                    <tr *matNoDataRow>
+                        <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
+                            <proxy-no-record-found [title]="'blocks'" [showBtn]="false"></proxy-no-record-found>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <mat-paginator-goto
+                [length]="(feature$ | async)?.totalEntityCount"
+                [pageSize]="(feature$ | async)?.itemsPerPage || 25"
+                [pageSizeOptions]="pageSizeOptions"
+                (page)="pageChange($event)"
+                [pageIndex]="(feature$ | async)?.pageNumber - 1"
+                class="box-shadow-none"
+            ></mat-paginator-goto>
+        }
     </div>
-
-    @if ((hasSomeFeatures$ | async) === false) {
-    <p class="mat-body-2 text-secondary w-1/2">
-        The "Features" component in the Proxy Server is a dynamic tool that offers versatile authentication and
-        subscription plan options. It supports various authentication methods like OTP and social logins (e.g., Google,
-        Microsoft) while providing flexible subscription plans. Users benefit from enhanced security, cost-efficient
-        resource allocation, and a user-friendly dashboard for easy configuration.
-    </p>
-    } @if ((hasSomeFeatures$ | async) === true) {
-    <div class="table-scroll">
-        <table
-            mat-table
-            [dataSource]="
-                (feature$ | async)?.data?.length ? (feature$ | async)?.data : loading.dataLoading ? [1, 2, 3, 4, 5] : []
-            "
-            class="default-table responsive-table"
-        >
-            <!-- Name Column -->
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
-                <td mat-cell *matCellDef="let element" data-label="Name">
-                    @if (!loading.dataLoading) {
-                    <span>{{ element.name }}</span>
-                    } @else {
-                    <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
-                    }
-                </td>
-            </ng-container>
-
-            <!-- reference_id Column -->
-            <ng-container matColumnDef="reference_id">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Reference Id</th>
-                <td mat-cell *matCellDef="let element" data-label="Reference Id">
-                    @if (!loading.dataLoading) {
-                    <div class="flex items-center gap-2 max-md:flex-col max-md:items-end">
-                        <span
-                            [matTooltip]="element.reference_id"
-                            matTooltipPosition="above"
-                            class="cursor-pointer font-mono text-xs px-2 py-0.5 rounded-4 min-w-[150px]"
-                        >
-                            {{
-                                element.reference_id?.length > 15
-                                    ? (element.reference_id | slice: 0:10) + '...' + (element.reference_id | slice: -5)
-                                    : element.reference_id
-                            }}
-                        </span>
-                        <proxy-copy-button
-                            [copyData]="element.reference_id"
-                            tooltip="Copy Reference Id"
-                        ></proxy-copy-button>
-                    </div>
-                    } @else {
-                    <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
-                    }
-                </td>
-            </ng-container>
-
-            <!-- Method Column -->
-            <ng-container matColumnDef="method">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Method</th>
-                <td mat-cell *matCellDef="let element" data-label="Method">
-                    @if (!loading.dataLoading) { @if (element.method?.name) {
-                    {{ element.method?.name }}
-                    } } @else {
-                    <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
-                    }
-                </td>
-            </ng-container>
-
-            <!-- Type Column -->
-            <ng-container matColumnDef="type">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-200">Type</th>
-                <td mat-cell *matCellDef="let element" data-label="Type">
-                    @if (!loading.dataLoading) { @if (element.feature?.name) {
-                    {{ element.feature?.name }}
-                    } } @else {
-                    <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
-                    }
-                </td>
-            </ng-container>
-
-            <!-- Manage Column -->
-            <ng-container matColumnDef="manage">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let element" data-label="Manage">
-                    @if (!loading.dataLoading) {
-                    <div class="actions flex justify-end pr-3">
-                        <button matButton="outlined" [routerLink]="['manage', element.id]" class="mat-btn-md">
-                            <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix">settings</mat-icon>
-                            Manage
-                        </button>
-                    </div>
-                    }
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-            <tr
-                mat-row
-                *matRowDef="let row; columns: displayedColumns; let i = index"
-                class="hover-action"
-                [class.last-child]="i + 1 === pageSizeOptions[0]"
-            ></tr>
-
-            <tr *matNoDataRow>
-                <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
-                    <proxy-no-record-found [title]="'blocks'" [showBtn]="false"></proxy-no-record-found>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <mat-paginator-goto
-        [length]="(feature$ | async)?.totalEntityCount"
-        [pageSize]="(feature$ | async)?.itemsPerPage || 25"
-        [pageSizeOptions]="pageSizeOptions"
-        (page)="pageChange($event)"
-        [pageIndex]="(feature$ | async)?.pageNumber - 1"
-        class="box-shadow-none"
-    ></mat-paginator-goto>
-    }
-</div>
 }
 <ng-template #loadingRef>
     <div *skeleton="true; width: '200px'; className: ['rounded-4']"></div>

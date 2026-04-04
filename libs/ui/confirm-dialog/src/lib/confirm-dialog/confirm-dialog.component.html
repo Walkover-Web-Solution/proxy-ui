@@ -4,27 +4,28 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="gap-2" [class]="footerButtonPosition()">
     @if (showCancelButton()) {
-    <button
-        cdkFocusRegionStart
-        type="reset"
-        [class]="cancelButtonClass()"
-        matDialogClose
-        matButton
-        [color]="cancelButtonColor()"
-    >
-        {{ cancelButtonText() }}
-    </button>
-    } @if (showConfirmButton()) {
-    <button
-        type="button"
-        matButton="filled"
-        cdkFocusRegionEnd
-        cdkFocusInitial
-        [class]="confirmButtonClass()"
-        [color]="confirmButtonColor()"
-        (click)="closeDialog('yes')"
-    >
-        {{ confirmButtonText() }}
-    </button>
+        <button
+            cdkFocusRegionStart
+            type="reset"
+            [class]="cancelButtonClass()"
+            matDialogClose
+            matButton
+            [color]="cancelButtonColor()"
+        >
+            {{ cancelButtonText() }}
+        </button>
+    }
+    @if (showConfirmButton()) {
+        <button
+            type="button"
+            matButton="filled"
+            cdkFocusRegionEnd
+            cdkFocusInitial
+            [class]="confirmButtonClass()"
+            [color]="confirmButtonColor()"
+            (click)="closeDialog('yes')"
+        >
+            {{ confirmButtonText() }}
+        </button>
     }
 </mat-dialog-actions>

@@ -10,10 +10,12 @@
 .card-with-header {
     @apply rounded-xl border overflow-hidden;
     border-color: var(--color-common-border);
+    background-color: var(--color-common-bg) !important;
 
     &--header {
         @apply flex items-center gap-2 px-4 py-3 border-b;
         background-color: var(--color-common-bg) !important;
         border-color: inherit !important;
+        min-height: 50px;
     }
 }

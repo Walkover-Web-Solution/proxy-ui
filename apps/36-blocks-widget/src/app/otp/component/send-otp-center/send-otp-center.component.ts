@@ -11,6 +11,7 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
+    computed,
     effect,
     inject,
     input,
@@ -93,9 +94,7 @@ export class SendOtpCenterComponent extends BaseComponent implements OnInit, OnD
     public closePopUp = output<void>();
 
     private readonly themeService = inject(WidgetThemeService);
-    get isDarkTheme(): boolean {
-        return this.themeService.isDark(this.theme() as WidgetTheme);
-    }
+    readonly isDarkTheme = computed(() => this.themeService.isDark$());
     public steps = 1;
     public phoneForm = new FormGroup({
         phone: new FormControl<string>('', [Validators.required]),

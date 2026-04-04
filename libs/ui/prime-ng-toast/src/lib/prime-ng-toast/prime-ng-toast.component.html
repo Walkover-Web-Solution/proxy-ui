@@ -7,20 +7,20 @@
             >
                 {{ message.detail?.customAction ? message.detail?.message : message.detail }}
                 @if (message.detail?.customAction && undoTimer > 0) {
-                <span class="mr-2 text-danger"> undo in {{ undoTimer }} </span>
+                    <span class="mr-2 text-danger"> undo in {{ undoTimer }} </span>
                 }
             </p>
             @if ((message.detail?.customAction && undoTimer > 0) || !message.detail?.customAction) {
-            <button
-                matIconButton
-                disableRipple
-                class="mat-icon-default mat-icon-18"
-                style="margin-right: -21px; margin-top: 1px"
-                [matTooltip]="message.detail?.customAction ? 'Undo' : ''"
-                matTooltipPosition="above"
-            >
-                <mat-icon>{{ !message.detail?.customAction ? 'close' : 'undo' }}</mat-icon>
-            </button>
+                <button
+                    matIconButton
+                    disableRipple
+                    class="mat-icon-default mat-icon-18"
+                    style="margin-right: -21px; margin-top: 1px"
+                    [matTooltip]="message.detail?.customAction ? 'Undo' : ''"
+                    matTooltipPosition="above"
+                >
+                    <mat-icon>{{ !message.detail?.customAction ? 'close' : 'undo' }}</mat-icon>
+                </button>
             }
         </div>
     </ng-template>

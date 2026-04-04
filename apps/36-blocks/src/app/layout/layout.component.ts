@@ -112,8 +112,9 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
             const container = document.getElementById('ChatbotContainer');
             if (container) {
                 container.style.display = this.showContainer ? 'block' : 'none';
-            } else {
-                console.error('Element with ID "chatbotContainer" not found');
+            }
+            if (event?.url?.startsWith('/widget-preview')) {
+                (window as any).closeChatbot?.();
             }
             this.cdr.markForCheck();
         });
@@ -151,6 +152,9 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
                     scriptElement.setAttribute('hideCloseButton', 'true');
 
                     scriptElement.onload = () => {
+                        if (this.router.url.startsWith('/widget-preview')) {
+                            return;
+                        }
                         const payload = {
                             variables: {
                                 variables: JSON.stringify({
