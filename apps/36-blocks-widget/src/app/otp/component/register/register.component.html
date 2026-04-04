@@ -34,7 +34,7 @@
     <p class="text-sm font-semibold text-gray-900 dark:text-white" [style.color]="primaryColor || null">User Details</p>
 
     <!-- First Name + Last Name -->
-    <div class="grid grid-cols-2 gap-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <ng-container
             *ngTemplateOutlet="
                 formField;
@@ -135,7 +135,7 @@
     <!-- OTP entry boxes -->
     @if (isOtpSent && !isOtpVerified) {
         <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-3" [formGroup]="otpForm">
+            <div class="flex items-center flex-wrap gap-3" [formGroup]="otpForm">
                 <input
                     type="text"
                     maxlength="1"
@@ -194,7 +194,7 @@
     }
 
     <!-- Password + Confirm Password -->
-    <div class="grid grid-cols-2 gap-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <ng-container
             *ngTemplateOutlet="
                 formField;
@@ -256,7 +256,7 @@
     }
 
     <!-- API Errors + Submit -->
-    <div class="flex items-end justify-between gap-3 mt-1">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mt-1">
         <div class="text-xs text-red-600 dark:text-red-400">
             @if (apiError | async; as apiErrorList) {
                 <span class="font-semibold">Error: </span>
@@ -268,7 +268,7 @@
         <button
             #submitBtn
             type="button"
-            class="w-btn-primary shrink-0"
+            class="w-btn-primary shrink-0 justify-center sm:justify-start"
             [class.has-hover-color]="!!buttonHoverColor"
             [style.--btn-hover-color]="buttonHoverColor"
             [style.background-color]="buttonColor || null"

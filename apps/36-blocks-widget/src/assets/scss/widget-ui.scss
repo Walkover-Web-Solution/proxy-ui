@@ -232,7 +232,12 @@
 // Semi-transparent backdrop
 // z-index: 2147483646 = max-int - 1 to always appear above any client sidebar/overlay
 .w-dialog-backdrop {
-    @apply fixed inset-0 bg-black/50 backdrop-blur-sm;
+    @apply bg-black/50 backdrop-blur-sm;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     z-index: 2147483646;
 
     .dark & {
@@ -242,10 +247,17 @@
 
 // Dialog panel (centered, responsive)
 // z-index: 2147483647 = max-int to always appear above any client sidebar/overlay
+// Uses left/top 50% + translate for centering — works correctly inside Shadow DOM
+// with isolation:isolate. Mobile width = calc(100vw - 24px), capped at 28rem on larger screens.
 .w-dialog-panel {
-    @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-           flex flex-col max-h-[85vh] min-w-[500px]
-           rounded-xl bg-white shadow-2xl ring-1 ring-gray-900/5;
+    @apply flex flex-col rounded-xl bg-white shadow-2xl ring-1 ring-gray-900/5;
+    position: fixed;
+    left: 50vw;
+    top: 50vh;
+    transform: translate(-50%, -50%);
+    width: calc(100vw - 1.5rem);
+    max-width: 28rem;
+    max-height: min(90vh, 90dvh);
     z-index: 2147483647;
 
     .dark & {
@@ -253,9 +265,19 @@
     }
 }
 
+// Wider panel variant — registration form (up to 38rem on larger screens)
+.w-dialog-panel--lg {
+    max-width: 38rem;
+}
+
+// Medium-wide panel variant — forgot password / simple forms (up to 32rem)
+.w-dialog-panel--md {
+    max-width: 32rem;
+}
+
 // Dialog header bar
 .w-dialog-header {
-    @apply flex items-center justify-between px-6 py-4 border-b border-gray-200;
+    @apply flex items-center justify-between px-4 py-3 border-b border-gray-200 sm:px-6 sm:py-4;
 
     .dark & {
         @apply border-gray-700;
@@ -273,7 +295,7 @@
 
 // Dialog scrollable body
 .w-dialog-body {
-    @apply flex-1 overflow-y-auto min-h-0 px-6 py-5 w-full;
+    @apply flex-1 overflow-y-auto min-h-0 px-4 py-4 w-full sm:px-6 sm:py-5;
 }
 
 // Forgot-password dialog: hide send-otp-center's own absolute close button + h2 heading
@@ -292,7 +314,7 @@
 
 // Dialog footer action bar
 .w-dialog-footer {
-    @apply flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200;
+    @apply flex items-center justify-end gap-3 px-4 py-3 border-t border-gray-200 sm:px-6 sm:py-4;
 
     .dark & {
         @apply border-gray-700;
