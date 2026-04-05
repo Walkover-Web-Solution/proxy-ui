@@ -1,0 +1,93 @@
+@if (showIconsOnly) {
+    <div
+        data-icons-container="true"
+        [style.display]="'flex'"
+        [style.flex-direction]="'row'"
+        [style.align-items]="'center'"
+        [style.justify-content]="'center'"
+        [style.gap]="layout.iconOnlyGap"
+        [style.margin]="layout.buttonMargin"
+        [style.width]="layout.widthV2"
+    >
+        @for (btn of buttons; track btn.service_id) {
+            <button
+                data-paw-button="true"
+                data-paw-icon-only="true"
+                [attr.data-service-id]="isOtpButton(btn) ? btn.service_id : null"
+                [style.outline]="'none'"
+                [style.padding]="'12px'"
+                [style.display]="'flex'"
+                [style.align-items]="'center'"
+                [style.justify-content]="'center'"
+                [style.font-size]="layout.buttonFontSize"
+                [style.background-color]="'transparent'"
+                [style.border]="buttonBorderIconOnly"
+                [style.border-radius]="borderRadius"
+                [style.cursor]="'pointer'"
+                [style.visibility]="isOtpButton(btn) && !otpButtonVisible ? 'hidden' : 'visible'"
+                (click)="onButtonClick(btn)"
+            >
+                <img
+                    [src]="btn.icon"
+                    [alt]="btn.text"
+                    loading="lazy"
+                    [style.height]="layout.iconSizeLarge"
+                    [style.width]="layout.iconSizeLarge"
+                    [style.filter]="shouldInvertIcon(btn) ? 'invert(1)' : 'none'"
+                />
+            </button>
+        }
+    </div>
+} @else {
+    @for (btn of buttons; track btn.service_id) {
+        <button
+            data-paw-button="true"
+            [attr.data-service-id]="isOtpButton(btn) ? btn.service_id : null"
+            [style.outline]="'none'"
+            [style.padding]="'0 16px'"
+            [style.display]="'flex'"
+            [style.align-items]="'center'"
+            [style.justify-content]="'center'"
+            [style.font-size]="layout.buttonFontSize"
+            [style.background-color]="'transparent'"
+            [style.border]="buttonBorder"
+            [style.border-radius]="borderRadius"
+            [style.height]="layout.buttonHeight"
+            [style.color]="buttonText"
+            [style.margin]="layout.buttonMargin"
+            [style.cursor]="'pointer'"
+            [style.width]="buttonWidth"
+            [style.visibility]="isOtpButton(btn) && !otpButtonVisible ? 'hidden' : 'visible'"
+            (click)="onButtonClick(btn)"
+        >
+            @if (useDiv) {
+                <div
+                    [style.display]="'flex'"
+                    [style.align-items]="'center'"
+                    [style.justify-content]="'flex-start'"
+                    [style.gap]="'12px'"
+                >
+                    <img
+                        [src]="btn.icon"
+                        [alt]="btn.text"
+                        loading="lazy"
+                        [style.height]="layout.iconSizeSmall"
+                        [style.width]="layout.iconSizeSmall"
+                        [style.filter]="shouldInvertIcon(btn) ? 'invert(1)' : 'none'"
+                    />
+                    <span [style.color]="buttonText" [style.font-weight]="'600'">{{ btn.text }}</span>
+                </div>
+            } @else {
+                <img
+                    [src]="btn.icon"
+                    [alt]="btn.text"
+                    loading="lazy"
+                    [style.height]="layout.iconSizeSmall"
+                    [style.width]="layout.iconSizeSmall"
+                    [style.filter]="shouldInvertIcon(btn) ? 'invert(1)' : 'none'"
+                />
+                <span [style.color]="buttonText" [style.font-weight]="'600'">{{ btn.text }}</span>
+            }
+        </button>
+    }
+}
