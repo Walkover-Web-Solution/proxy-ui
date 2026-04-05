@@ -66,9 +66,8 @@
             role="dialog"
             aria-modal="true"
             class="w-dialog-panel"
-            [style.max-width]="showRegistration() ? '40rem' : showForgotPassword() ? '30rem' : '26rem'"
-            [style.min-width]="showForgotPassword() ? '400px' : null"
-            [style.width]="showForgotPassword() ? '30rem' : null"
+            [class.w-dialog-panel--lg]="showRegistration()"
+            [class.w-dialog-panel--md]="showForgotPassword()"
         >
             @if (isOtpLoading()) {
                 <proxy-progress-bar></proxy-progress-bar>
@@ -86,7 +85,7 @@
                     </button>
                 </div>
             }
-            <div [class]="showForgotPassword() ? 'px-6 pb-6 pt-0 w-full' : 'w-dialog-body'">
+            <div [class]="showForgotPassword() ? 'px-4 sm:px-6 pb-6 pt-0 w-full' : 'w-dialog-body'">
                 @if (showRegistration()) {
                     <proxy-register
                         [referenceId]="referenceId"

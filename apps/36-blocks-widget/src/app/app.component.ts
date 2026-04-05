@@ -7,9 +7,9 @@ import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 const REFERENCE_ID = '4512365c177425472369c0fa8351a15';
 const THEME: WidgetTheme = WidgetTheme.Dark;
-const TYPE: PublicScriptType = PublicScriptType.UserManagement;
+const TYPE: PublicScriptType = PublicScriptType.OrganizationDetails;
 const AUTH_TOKEN =
-    'eTdRN2licE5LV3JIZE55NVE3cHFPTHRLVEMwVW5SckxtbVRlcmpkNmtZMTRYWmxpUjhGTkRpRXBud3BaVXRCSE04bWNzdVVVVVpIYTZGMkNrd2kxeFNxNTJ6Wm9IdkhzVE5qR3hpcC9EMVgwaGd5L1FlN0RVNzlnSmNSakxNSFhoZ0IvZk9FZ25xUk1jVXo1MklRZGVIN2s0N1BOalk0OUhTbGkvZUc2M0g5ZUU4WVpyYXd3dElPQlFnWDF4dlZVc0pzMUc4WUR0Y3dzRzlocTF5c29NZz09';
+    'aklLUzlaSHhIMWFWYy9DM3RlcEtlUkJwNmNxb3pDK1ZuK0FBdlpNaGcybTNkeGY5TzVTNTV4Sk1JVUJSV0tja1BGQXgwSm12Y0JaMEkvNjIrZU95a1A1a3ZFQ1hwYnhXN21lbUg0OWhOVTh1TmxXMFkwaFRpeTJLa1pITjE1NHAzamJvNTFIaGxQaUFGRXFqdVpnMFgySVZZekJ1SzJVV3o1bmhSdFFjR2tHOWNNMFJ2ZGdDY25XWUdEeVZEYWZoRmpjWlJNaDZsZk9lSWhXWm9QRWxMZz09';
 
 @Component({
     selector: 'proxy-root',
@@ -22,7 +22,7 @@ const AUTH_TOKEN =
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     private readonly themeService = inject(WidgetThemeService);
 
-    protected readonly showAuthentication: boolean = true;
+    protected readonly showAuthentication: boolean = false;
     protected readonly referenceId: string = REFERENCE_ID;
     protected readonly theme: WidgetTheme = THEME;
     protected readonly authToken: string = AUTH_TOKEN;

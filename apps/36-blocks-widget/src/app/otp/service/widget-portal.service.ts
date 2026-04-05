@@ -11,6 +11,34 @@ function getWidgetCSS(): string | null {
     return (window as any).__proxyAuth?.inlinedStyles ?? null;
 }
 
+/**
+ * Dev-mode fallback: extract compiled CSS from the shadow root that owns `element`.
+ * In production, __proxyAuth.inlinedStyles is populated by build-elements.js.
+ * In development, each Angular Shadow DOM component has its CSS in its own shadow root's
+ * adoptedStyleSheets — we copy those directly into the portal shadow root.
+ */
+function adoptStylesFromSourceShadowRoot(element: HTMLElement, targetShadowRoot: ShadowRoot): void {
+    const sourceShadowRoot = element.getRootNode();
+    if (!(sourceShadowRoot instanceof ShadowRoot)) return;
+
+    // Copy adoptedStyleSheets (compiled Angular component CSS including widget-ui + Tailwind)
+    if (sourceShadowRoot.adoptedStyleSheets?.length) {
+        targetShadowRoot.adoptedStyleSheets = [...sourceShadowRoot.adoptedStyleSheets];
+        return;
+    }
+
+    // Fallback: copy <style> elements from the source shadow root
+    const parts: string[] = [];
+    sourceShadowRoot.querySelectorAll('style').forEach((s) => {
+        if (s.textContent) parts.push(s.textContent);
+    });
+    if (parts.length) {
+        const style = document.createElement('style');
+        style.textContent = parts.join('\n');
+        targetShadowRoot.appendChild(style);
+    }
+}
+
 function getOrCreateSharedSheet(): CSSStyleSheet | null {
     if (_sharedSheet) return _sharedSheet;
     const css = getWidgetCSS();
@@ -145,8 +173,14 @@ export class WidgetPortalService {
         // Inherited properties are reset via the host's inline style above.
         const shadowRoot = shadowHost.attachShadow({ mode: 'open' });
 
-        // Inject widget CSS into the shadow root
-        adoptWidgetStyles(shadowRoot);
+        // Inject widget CSS into the shadow root.
+        // Production: adoptWidgetStyles uses __proxyAuth.inlinedStyles set by build-elements.js.
+        // Dev mode: fall back to copying adoptedStyleSheets from the element's own shadow root.
+        if (getWidgetCSS()) {
+            adoptWidgetStyles(shadowRoot);
+        } else {
+            adoptStylesFromSourceShadowRoot(element, shadowRoot);
+        }
 
         // Inner slot where Angular will render the portal content.
         // An extra all:initial reset here covers any inherited properties that
