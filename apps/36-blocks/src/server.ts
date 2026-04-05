@@ -18,13 +18,13 @@ export function app(): express.Express {
         '**',
         express.static(browserDistFolder, {
             maxAge: '1y',
-            index: false,
+            index: 'index.html',
         })
     );
 
     server.get('**', (req, res, next) => {
         angularApp
-            .handle(req)
+            .handle(req, { server: res })
             .then((response) => {
                 if (response) {
                     writeResponseToNodeResponse(response, res);
