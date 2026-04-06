@@ -769,11 +769,11 @@
                         >
                             <div class="flex items-center gap-2 min-w-0">
                                 <span class="mat-body-2 font-medium truncate">{{ row.name }}</span>
-                                @if (row.index === 0) {
+                                @if (row.index === 1) {
                                     <span
-                                        class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold text-[var(--color-common-primary)] leading-none"
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold text-[var(--color-common-primary)] bg-[var(--proxy-primary-90)] leading-none"
                                     >
-                                        default
+                                        Default
                                     </span>
                                 }
                             </div>
@@ -821,13 +821,15 @@
             @if (featureForm.get('brandingDetails.version')?.value === 'v2') {
                 <div class="flex flex-col items-center gap-2">
                     @if (
-                        (logoInputMode === 'file' && logoUrl) ||
+                        (logoInputMode === 'file' && logoUrl()) ||
                         (logoInputMode === 'url' &&
                             featureForm.get('brandingDetails.logo_url')?.value?.startsWith('http'))
                     ) {
                         <img
                             [src]="
-                                logoInputMode === 'file' ? logoUrl : featureForm.get('brandingDetails.logo_url')?.value
+                                logoInputMode === 'file'
+                                    ? logoUrl()
+                                    : featureForm.get('brandingDetails.logo_url')?.value
                             "
                             alt="Logo"
                             class="branding-preview-logo mb-2"
@@ -1119,7 +1121,8 @@
                     <div class="flex px-4 py-3 items-center border-t border-color text-color">
                         <mat-icon class="!text-base">info</mat-icon>
                         <p class="mat-body-2 m-0 text-xs">
-                            JSON format you will receive after login as JWT in Authorization key
+                            JSON format you will receive after login as JWT in
+                            {{ featureForm.get('authorizationDetails.authorizationKey').value }} key
                         </p>
                     </div>
                 </div>
@@ -2052,19 +2055,31 @@
                                 type="button"
                                 matButton="outlined"
                                 (click)="logoFileInput.click()"
-                                [disabled]="isLogoUploading"
+                                [disabled]="isLogoUploading()"
                             >
-                                <mat-icon class="material-icons-outlined mat-icon-18">
-                                    {{ isLogoUploading ? 'hourglass_empty' : 'upload_file' }}
-                                </mat-icon>
-                                {{ isLogoUploading ? 'Uploading...' : 'Upload logo' }}
+                                @if (isLogoUploading()) {
+                                    <mat-progress-spinner
+                                        mode="indeterminate"
+                                        diameter="16"
+                                        class="!inline-block align-middle"
+                                    ></mat-progress-spinner>
+                                } @else {
+                                    <mat-icon class="material-icons-outlined mat-icon-18">upload_file</mat-icon>
+                                }
+                                {{ isLogoUploading() ? 'Uploading...' : 'Upload logo' }}
                             </button>
-                            @if (logoUrl && !isLogoUploading) {
-                                <span class="mat-body-2 text-color truncate max-w-[160px]">{{
-                                    logoFileInput.files?.[0]?.name || 'Logo selected'
+                            @if (logoUrl() && !isLogoUploading()) {
+                                <span class="mat-body-2 text-color truncate max-w-[20vw]">{{
+                                    logoFileName || 'Logo selected'
                                 }}</span>
-                                <button type="button" matIconButton (click)="logoUrl = null; logoFileInput.value = ''">
-                                    <mat-icon class="material-icons-outlined mb-1 text-danger">close</mat-icon>
+                                <button
+                                    type="button"
+                                    matIconButton
+                                    (click)="logoUrl.set(null); logoFileName = null; logoFileInput.value = ''"
+                                >
+                                    <mat-icon class="material-icons-outlined mb-1 text-danger mat-icon-18"
+                                        >delete</mat-icon
+                                    >
                                 </button>
                             }
                         </div>
