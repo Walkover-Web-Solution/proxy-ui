@@ -64,6 +64,7 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     @ViewChild('drawer') drawer!: MatDrawer;
 
     public readonly isMobile = signal<boolean>(false);
+    private readonly originUrl: string | null;
 
     protected readonly PublicScriptType = PublicScriptType;
     protected readonly WidgetTheme = WidgetTheme;
@@ -108,6 +109,7 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     ];
 
     constructor() {
+        this.originUrl = this.resolveOriginUrl();
         this.breakpointObserver
             .observe([Breakpoints.XSmall, Breakpoints.Small])
             .pipe(takeUntilDestroyed())
@@ -145,9 +147,31 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
         setTimeout(() => this.launchWidget());
     }
 
+    private resolveOriginUrl(): string | null {
+        const refId = this.route.snapshot.paramMap.get('referenceId');
+        const storageKey = refId ? `widget_preview_origin_${refId}` : null;
+
+        const fromState = this.router.getCurrentNavigation()?.extras?.state?.['originUrl'] as string | undefined;
+        if (fromState) {
+            if (storageKey) {
+                sessionStorage.setItem(storageKey, fromState);
+            }
+            return fromState;
+        }
+
+        if (storageKey) {
+            return sessionStorage.getItem(storageKey);
+        }
+        return null;
+    }
+
     public goBack(): void {
-        if (window.history.length > 1) {
-            this.location.back();
+        const refId = this.route.snapshot.paramMap.get('referenceId');
+        if (refId) {
+            sessionStorage.removeItem(`widget_preview_origin_${refId}`);
+        }
+        if (this.originUrl) {
+            this.router.navigateByUrl(this.originUrl);
         } else {
             this.router.navigate(['/app/features']);
         }
