@@ -207,6 +207,44 @@
     border-radius: var(--branding-border-radius, 8px) !important;
     // mat-form-field and other elements use --border-common-radius-4; override with branding radius
     --border-common-radius-4: var(--branding-border-radius, 8px);
+
+    // Light mode — always white card regardless of admin panel theme
+    --color-common-white: #ffffff;
+    --color-common-smoke: #d5d9dc;
+    --color-common-cloud: #c1c5c8;
+    --color-common-grey: #8f9396;
+    --color-common-rock: #5d6164;
+    --color-common-slate: #3f4346;
+    --color-common-dark: #212528;
+    --color-common-silver: rgba(123, 127, 130, 0.07);
+    --color-common-bg: #ffffff;
+    --color-common-text: #3f4346;
+    --color-common-text-2: #5d6164;
+    --color-common-border: #d5d9dc;
+    --color-common-placeholder: #8f9396;
+    --color-common-icon: #5d6164;
+    --color-common-input-border: #d5d9dc;
+    // Material system tokens — force light mode for form fields
+    --mat-sys-on-surface: var(--proxy-neutral-20);
+    --mat-sys-outline: var(--color-common-border);
+    background-color: #ffffff;
+    color: #3f4346;
+
+    // Dark mode override — only when .dark class is present
+    &.dark {
+        --color-common-bg: #212528;
+        --color-common-text: #d5d9dc;
+        --color-common-text-2: #c1c5c8;
+        --color-common-border: #8f9396;
+        --color-common-placeholder: #8f9396;
+        --color-common-icon: #c1c5c8;
+        --color-common-input-border: #3f4346;
+        // Material system tokens — force dark mode for form fields
+        --mat-sys-on-surface: var(--proxy-neutral-80);
+        --mat-sys-outline: var(--color-common-border);
+        background-color: #212528;
+        color: #d5d9dc;
+    }
 }
 .auth-credentials .branding-preview-btn {
     background-color: var(--branding-button-color, #19e6ce) !important;

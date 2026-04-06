@@ -808,7 +808,7 @@
 <ng-template #previewAuthorization let-authorizationDetails="authorizationDetails" let-previewVersion="previewVersion">
     <div
         class="auth-credentials px-6 w-[350px] border border-color rounded-8 max-h-[650px] overflow-y-auto max-lg:w-full"
-        [class.dark]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
+        [class.dark]="isPreviewDark"
         [style.--branding-primary-color]="getEffectivePrimaryColor()"
         [style.--branding-button-color]="featureForm.get('brandingDetails.button_color')?.value || '#19E6CE'"
         [style.--branding-button-text-color]="featureForm.get('brandingDetails.button_text_color')?.value || '#000000'"
@@ -917,10 +917,7 @@
             featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
             featureForm.get('brandingDetails.version')?.value === 'v2'
         ) {
-            <div
-                class="flex flex-col items-center gap-1 w-full"
-                [class.dark-theme-login]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
-            >
+            <div class="flex flex-col items-center gap-1 w-full" [class.dark-theme-login]="isPreviewDark">
                 <mat-form-field appearance="outline" class="w-[85%]">
                     <mat-label>Email or Phone</mat-label>
                     <input matInput type="text" placeholder="Enter email or phone" />
@@ -957,9 +954,9 @@
                 <hr style="flex: 1; border: none; border-top: 1px solid var(--color-common-border); margin: 0" />
                 <span
                     class="mat-body-2"
-                    [class.text-color]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
+                    [class.text-color]="isPreviewDark"
                     style="white-space: nowrap"
-                    [class.bg-dark]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
+                    [class.bg-dark]="isPreviewDark"
                     [style.color]="getEffectivePrimaryColor() + ' !important'"
                     >Or continue with</span
                 >
@@ -993,50 +990,26 @@
     <ng-template #buttonsSection>
         <div class="flex flex-col items-center gap-6 w-full">
             @if (featureForm.get('serviceDetails')?.at(0)?.controls?.is_enable?.value) {
-                <button
-                    type="button"
-                    class="auth-option-btn border border-color"
-                    [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
-                >
+                <button type="button" class="auth-option-btn border border-color" [class.dark-theme]="isPreviewDark">
                     <div class="auth-option-content">
                         <mat-icon class="material-icons-outlined auth-option-icon">phone_android</mat-icon>
-                        <span
-                            class="auth-option-text"
-                            [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
-                            >Login With OTP</span
-                        >
+                        <span class="auth-option-text" [class.dark-theme]="isPreviewDark">Login With OTP</span>
                     </div>
                 </button>
             }
             @if (featureForm.get('serviceDetails')?.at(2)?.controls?.is_enable?.value) {
-                <button
-                    type="button"
-                    class="auth-option-btn border border-color"
-                    [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
-                >
+                <button type="button" class="auth-option-btn border border-color" [class.dark-theme]="isPreviewDark">
                     <div class="auth-option-content">
                         <mat-icon class="material-icons-outlined auth-option-icon">apple</mat-icon>
-                        <span
-                            class="auth-option-text"
-                            [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
-                            >Continue with Apple</span
-                        >
+                        <span class="auth-option-text" [class.dark-theme]="isPreviewDark">Continue with Apple</span>
                     </div>
                 </button>
             }
             @if (featureForm.get('serviceDetails')?.at(1)?.controls?.is_enable?.value) {
-                <button
-                    type="button"
-                    class="auth-option-btn border border-color"
-                    [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
-                >
+                <button type="button" class="auth-option-btn border border-color" [class.dark-theme]="isPreviewDark">
                     <div class="auth-option-content">
                         <img src="https://www.google.com/favicon.ico" alt="Google" class="auth-option-icon" />
-                        <span
-                            class="auth-option-text"
-                            [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
-                            >Continue with Google</span
-                        >
+                        <span class="auth-option-text" [class.dark-theme]="isPreviewDark">Continue with Google</span>
                     </div>
                 </button>
             }
@@ -1044,18 +1017,10 @@
                 featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
                 featureForm.get('brandingDetails.version')?.value === 'v1'
             ) {
-                <button
-                    type="button"
-                    class="auth-option-btn border border-color"
-                    [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
-                >
+                <button type="button" class="auth-option-btn border border-color" [class.dark-theme]="isPreviewDark">
                     <div class="auth-option-content">
                         <mat-icon class="material-icons-outlined auth-option-icon">password</mat-icon>
-                        <span
-                            class="auth-option-text"
-                            [class.dark-theme]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
-                            >Continue with Password</span
-                        >
+                        <span class="auth-option-text" [class.dark-theme]="isPreviewDark">Continue with Password</span>
                     </div>
                 </button>
             }
