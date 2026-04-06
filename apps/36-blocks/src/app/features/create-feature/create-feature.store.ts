@@ -31,6 +31,7 @@ export interface ICreateFeatureInitialState {
     updatePaymentDetails: any;
     webhookEvents: any;
     uploadLogo: any;
+    uploadLogoUrl: string | null;
     errorInUploadLogo: boolean;
 }
 
@@ -65,6 +66,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             updatePaymentDetails: null,
             webhookEvents: null,
             uploadLogo: null,
+            uploadLogoUrl: null,
             errorInUploadLogo: false,
         });
     }
@@ -116,6 +118,8 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly webhookEvents$: Observable<any> = this.select((state) => state.webhookEvents);
     /** Selector for upload logo data */
     readonly uploadLogo$: Observable<any> = this.select((state) => state.uploadLogo);
+    /** Selector for upload logo URL */
+    readonly uploadLogoUrl$: Observable<string | null> = this.select((state) => state.uploadLogoUrl);
     /** Selector for error in upload logo data */
     readonly errorInUploadLogo$: Observable<boolean> = this.select((state) => state.errorInUploadLogo);
     /** Get feature type data */
@@ -705,20 +709,24 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly uploadLogo = this.effect((data: Observable<{ id: string | number; formData: FormData }>) => {
         return data.pipe(
             switchMap((req) => {
-                this.patchState({ isLoading: true, uploadLogo: null, errorInUploadLogo: false });
+                this.patchState({ errorInUploadLogo: false, uploadLogoUrl: null });
                 return this.service.uploadLogo(req.id, req.formData).pipe(
                     tapResponse(
                         (res: BaseResponse<any, void>) => {
                             if (res?.hasError) {
                                 this.showError(res.errors);
-                                return this.patchState({ isLoading: false });
+                                return this.patchState({ uploadLogo: {}, uploadLogoUrl: '' });
                             }
+                            const url = res?.data?.logo_url ?? res?.data?.url ?? res?.data ?? null;
                             this.toast.success('Logo uploaded successfully');
-                            return this.patchState({ isLoading: false, uploadLogo: res.data });
+                            return this.patchState({
+                                uploadLogo: res.data,
+                                uploadLogoUrl: typeof url === 'string' ? url : null,
+                            });
                         },
                         (error: any) => {
                             this.showError(error.errors);
-                            this.patchState({ isLoading: false, errorInUploadLogo: true });
+                            this.patchState({ errorInUploadLogo: true });
                         }
                     ),
                     catchError((err) => EMPTY)

@@ -225,7 +225,7 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
             config['authToken'] = this.authToken()?.trim();
             if (tab === PublicScriptType.UserManagement) {
                 // Enables the Role & Permission tab in the User Management widget
-                config['isRolePermission'] = true;
+                config['isRolePermission'] = false;
             }
         }
 

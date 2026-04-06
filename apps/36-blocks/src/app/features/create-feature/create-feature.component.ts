@@ -215,6 +215,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public updatePaymentDetails$: Observable<any> = this.componentStore.updatePaymentDetails$;
     public webhookEvents$: Observable<any> = this.componentStore.webhookEvents$;
     public uploadLogo$: Observable<any> = this.componentStore.uploadLogo$;
+    public uploadLogoUrl$: Observable<string | null> = this.componentStore.uploadLogoUrl$;
     public errorInUploadLogo$: Observable<boolean> = this.componentStore.errorInUploadLogo$;
     public isEditMode = false;
     public previewInputPosition: 'top' | 'bottom' = 'top';
@@ -271,11 +272,12 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     /** Logo input: 'url' = enter URL, 'file' = upload file */
     public logoInputMode: 'url' | 'file' = 'url';
 
-    public isLogoUploading = false;
+    public isLogoUploading = signal(false);
 
     // Options cache for select fields
     private optionsCache: { [key: string]: any[] } = {};
-    public logoUrl: string = null;
+    public logoUrl = signal<string>(null);
+    public logoFileName: string = null;
 
     public featureForm = new FormGroup({
         primaryDetails: new FormGroup({
@@ -459,8 +461,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     is_enable: new FormControl<boolean>(
                         this.isEditMode
                             ? serviceValues?.is_enable
-                            : FeatureServiceIds.GoogleAuthentication === service.service_id ||
-                                  FeatureServiceIds.Msg91OtpService === service.service_id
+                            : FeatureServiceIds.GoogleAuthentication === service.service_id
                     ),
                 });
                 if (service.requirements) {
@@ -648,20 +649,19 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 }
             }
         });
-        this.uploadLogo$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((data) => {
-            const url = data?.logo_url ?? data?.url;
-            if (url) {
-                // this.featureForm.get('brandingDetails.logo_url')?.setValue(url);
-                this.logoUrl = url;
-            }
-            this.isLogoUploading = false;
-            this.cdr.markForCheck();
-        });
-        this.errorInUploadLogo$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe((error) => {
-            if (error) {
-                this.isLogoUploading = false;
-            }
-            this.cdr.markForCheck();
+        this.uploadLogoUrl$
+            .pipe(
+                filter((url) => url !== null),
+                takeUntil(this.destroy$)
+            )
+            .subscribe((url: string) => {
+                if (url) {
+                    this.logoUrl.set(url);
+                }
+                this.isLogoUploading.set(false);
+            });
+        this.errorInUploadLogo$.pipe(filter(Boolean), takeUntil(this.destroy$)).subscribe(() => {
+            this.isLogoUploading.set(false);
         });
     }
 
@@ -739,11 +739,11 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         const input = event.target as HTMLInputElement;
         const file = input?.files?.[0];
         if (!file || !this.featureId) return;
+        this.logoFileName = file.name;
         input.value = '';
         const formData = new FormData();
         formData.append('logo', file);
-        this.isLogoUploading = true;
-        this.cdr.markForCheck();
+        this.isLogoUploading.set(true);
         this.componentStore.uploadLogo({ id: this.featureId, formData });
     }
 
@@ -860,7 +860,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             ...cleanedUiPrefs,
                             ...brandingDetailsForm.value,
                             input_fields: this.previewInputPosition,
-                            logo_url: this.logoInputMode === 'file' ? this.logoUrl : brandingDetailsForm.value.logo_url,
+                            logo_url:
+                                this.logoInputMode === 'file' ? this.logoUrl() : brandingDetailsForm.value.logo_url,
                         },
                     };
                 } else {

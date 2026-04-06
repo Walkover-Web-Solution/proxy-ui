@@ -12,7 +12,7 @@ html {
     @include mat.system-level-colors(theme.$light-theme);
     @include mat.system-level-typography(theme.$light-theme);
     --mat-sys-outline: var(--color-common-border);
-    --mat-sys-on-surface: var(--proxy-neutral-40);
+    --mat-sys-on-surface: var(--proxy-neutral-20);
     --mat-list-list-item-label-text-size: 0.875rem;
 }
 
@@ -41,6 +41,6 @@ body.light-theme {
     @include mat.all-component-colors(theme.$light-theme);
     @include mat.system-level-colors(theme.$light-theme);
     --mat-sys-outline: var(--color-common-border);
-    --mat-sys-on-surface: var(--proxy-neutral-40);
+    --mat-sys-on-surface: var(--proxy-neutral-20);
     --mat-list-list-item-label-text-size: 0.875rem;
 }
