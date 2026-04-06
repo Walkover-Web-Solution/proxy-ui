@@ -68,6 +68,7 @@ import { CreateTaxDialogComponent } from './create-tax-dialog/create-tax-dialog.
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { ServiceListComponent, ServiceListItem } from '@proxy/ui/service-list';
 import { UiSettingsService } from '../../layout/ui-settings.service';
+import { WidgetThemeService } from 'apps/36-blocks-widget/src/app/otp/service/widget-theme.service';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FeaturePreviewComponent } from './feature-preview/feature-preview.component';
 type ServiceFormGroup = FormGroup<{
@@ -141,7 +142,7 @@ export interface PeriodicElement {
     ],
     templateUrl: './create-feature.component.html',
     styleUrls: ['./create-feature.component.scss'],
-    providers: [CreateFeatureComponentStore],
+    providers: [CreateFeatureComponentStore, WidgetThemeService],
 })
 export class CreateFeatureComponent extends BaseComponent implements OnDestroy, OnInit, AfterViewInit {
     @ViewChildren('stepper') stepper: QueryList<MatStepper>;
@@ -158,6 +159,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     private dialog = inject(MatDialog);
     private http = inject(HttpClient);
     private uiSettings = inject(UiSettingsService);
+    private themeService = inject(WidgetThemeService);
 
     public taxes: any[] = [];
     public createPlanForm: any;
@@ -339,6 +341,13 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public keepOrder = () => 0;
 
     ngOnInit(): void {
+        this.themeService.setInputTheme(this.featureForm.get('brandingDetails.theme')?.value);
+        this.featureForm
+            .get('brandingDetails.theme')
+            ?.valueChanges.pipe(takeUntil(this.destroy$))
+            .subscribe((theme) => {
+                this.themeService.setInputTheme(theme);
+            });
         this.componentStore.getWebhookEvents();
         this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
             if (params?.id) {
@@ -703,6 +712,11 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         return true;
     }
 
+    /** Returns true if the branding preview should render in dark mode */
+    public get isPreviewDark(): boolean {
+        return this.themeService.isDark(this.featureForm.get('brandingDetails.theme')?.value as WidgetTheme);
+    }
+
     /** Default primary color: black in light theme, white in dark theme */
     public getDefaultPrimaryColor(): string {
         return this.uiSettings.theme === 'dark-theme' ? '#ffffff' : '#000000';
@@ -710,10 +724,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     /** Returns the effective primary color based on the selected branding theme */
     public getEffectivePrimaryColor(): string {
-        const theme = this.featureForm.get('brandingDetails.theme')?.value;
-        const isDark =
-            theme === WidgetTheme.Dark || (theme === WidgetTheme.System && this.uiSettings.theme === 'dark-theme');
-        if (isDark) {
+        if (this.isPreviewDark) {
             return this.featureForm.get('brandingDetails.dark_theme_primary_color')?.value || '#ffffff';
         }
         return this.featureForm.get('brandingDetails.light_theme_primary_color')?.value || '#000000';
