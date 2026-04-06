@@ -1,21 +1,9 @@
 import { cloneDeep } from 'lodash-es';
-import { NgModule, Inject, Injectable, ModuleWithProviders } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
-@NgModule({
-    imports: [CommonModule],
-})
-export class ServicesHttpWrapperModule {
-    public static forRoot(): ModuleWithProviders<ServicesHttpWrapperModule> {
-        return {
-            ngModule: ServicesHttpWrapperModule,
-            providers: [HttpWrapperService],
-        };
-    }
-}
 
 export const DEFAULT_OPTIONS = {
     withCredentials: false,

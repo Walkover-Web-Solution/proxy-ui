@@ -1,0 +1,15 @@
+{
+    "name": "ui-service-list",
+    "projectType": "library",
+    "sourceRoot": "libs/ui/service-list/src",
+    "prefix": "proxy",
+    "targets": {
+        "lint": {
+            "executor": "@nx/eslint:lint",
+            "options": {
+                "lintFilePatterns": ["libs/ui/service-list/**/*.ts", "libs/ui/service-list/**/*.html"]
+            }
+        }
+    },
+    "tags": []
+}

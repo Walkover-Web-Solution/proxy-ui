@@ -1,6 +1,6 @@
 export default {
     projects: [
-        '<rootDir>/apps/proxy',
+        '<rootDir>/apps/36-blocks',
         '<rootDir>/libs/models',
         '<rootDir>/libs/service',
         '<rootDir>/libs/ngrx',

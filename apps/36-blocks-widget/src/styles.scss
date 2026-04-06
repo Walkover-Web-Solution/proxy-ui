@@ -1,0 +1,56 @@
+/* Components*/
+@use '../../shared/scss/global';
+
+/* Widget shared UI utilities */
+@use 'assets/scss/widget-ui';
+
+/* intl-tel-input custom overrides — global so dropdown applies outside Shadow DOM */
+@use '../../shared/assets/utils/intl-tel-input-custom';
+
+:root {
+    color-scheme: light dark;
+    --color-common-dark: #030712;
+    --color-common-slate: #333333;
+    --color-common-rock: #5d6164;
+    --color-common-grey: #333333;
+    --color-common-cloud: #c1c5c8;
+    --color-common-smoke: #d5d9dc;
+    --color-common-white: #ffffff;
+    --color-common-black: #000000;
+    --border-common-radius-4: 4px;
+    --font-size-12: 12px;
+    --font-size-14: 14px;
+    --font-size-16: 16px;
+    --font-size-18: 18px;
+    --font-size-24: 24px;
+    --font-size-28: 28px;
+    --font-size-30: 30px;
+    --font-size-36: 36px;
+}
+
+/* You can add global styles to this file, and also import other style files */
+body.\33 6-blocks-widget {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    &.light-theme {
+        background-color: var(--color-common-white) !important;
+        color: var(--color-common-dark);
+    }
+    &.dark-theme {
+        background-color: var(--color-common-dark) !important;
+        color: var(--color-common-white);
+    }
+    &.system-theme {
+        background-color: light-dark(var(--color-common-white), var(--color-common-dark)) !important;
+        color: light-dark(var(--color-common-dark), var(--color-common-white));
+    }
+}
+
+*,
+proxy-auth,
+.iti__country-list {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}

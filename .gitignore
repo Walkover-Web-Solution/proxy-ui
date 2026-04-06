@@ -52,6 +52,10 @@ Thumbs.db
 # dotenv environment variables file
 .env
 
+# Generated environment variable files (created by tools/set-env.js from .env)
+apps/36-blocks/src/environments/env-variables.ts
+apps/36-blocks-widget/src/environments/env-variables.ts
+
 # Nx cache
 .nx/cache
 .nx/workspace-data

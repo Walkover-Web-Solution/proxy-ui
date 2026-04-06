@@ -1,1 +1,1 @@
-export * from './lib/pipes-time-token-pipe.module';
+export { TimeTokenPipe } from './lib/pipes-time-token-pipe.module';

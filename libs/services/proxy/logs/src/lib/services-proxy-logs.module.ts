@@ -1,21 +1,17 @@
-import { Inject, Injectable, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { BaseResponse, IPaginatedResponse, IReqParams, ProxyBaseUrls } from '@proxy/models/root-models';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { Observable } from 'rxjs';
 import { IEnvironments, ILogDetailRes, ILogsReq, ILogsRes, IProjects } from '@proxy/models/logs-models';
 import { LogsUrls } from '@proxy/urls/logs-urls';
-
-@NgModule({
-    imports: [CommonModule],
-})
-export class ServicesProxyLogsModule {}
-
 @Injectable({
-    providedIn: ServicesProxyLogsModule,
+    providedIn: 'root',
 })
 export class LogsService {
-    constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.ProxyLogsUrl) private proxyLogsUrl: any) {}
+    constructor(
+        private http: HttpWrapperService,
+        @Inject(ProxyBaseUrls.ProxyLogsUrl) private proxyLogsUrl: any
+    ) {}
 
     // Fetch Proxy logs
     public getProxyLogs(params): Observable<BaseResponse<IPaginatedResponse<ILogsRes[]>, ILogsReq>> {

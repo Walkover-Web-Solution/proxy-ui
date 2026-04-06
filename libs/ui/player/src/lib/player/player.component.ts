@@ -3,54 +3,68 @@ import {
     ChangeDetectorRef,
     Component,
     ElementRef,
-    EventEmitter,
-    Input,
-    OnChanges,
     OnInit,
-    Output,
-    SimpleChanges,
     ViewChild,
     ViewEncapsulation,
+    effect,
+    inject,
+    input,
+    output,
 } from '@angular/core';
-import * as dayjs from 'dayjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import dayjs from 'dayjs';
 import { Observable } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 
 @Component({
-    standalone: false,
     selector: 'proxy-lib-audio-player',
+    imports: [MatProgressSpinnerModule, MatButtonModule, MatIconModule],
     templateUrl: './player.component.html',
     styleUrls: ['./player.component.scss'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PlayerComponent implements OnInit, OnChanges {
-    @Input() public playDirect = false;
-    @Input() public filename: string;
-    @Input() public isLoading: boolean;
-    @Input() public isPlaying: boolean;
-    @Input() public showDelete = true;
-    @Input() public showDownload;
-    @Input() public showPlay = true;
-    @Input() public showTime = true;
-    @Input() public totalDuration = '00:00';
-    @Input() public duration = '00:00';
-    @Input() public seconds = 0;
-    @Input() public total = 0;
-    @Input() public getBuffer: () => Blob | Observable<Blob>;
-    @Input() public blobUrl: string;
-    @Output() public play = new EventEmitter();
-    @Output() public pause = new EventEmitter();
-    @Output() public remove = new EventEmitter();
-    @Output() public seek = new EventEmitter();
+export class PlayerComponent implements OnInit {
+    public playDirect = input<boolean>(false);
+    public filename = input<string>();
+    public showDelete = input<boolean>(true);
+    public showDownload = input<unknown>();
+    public showPlay = input<boolean>(true);
+    public showTime = input<boolean>(true);
+    public getBuffer = input<() => Blob | Observable<Blob>>();
+
+    public play = output<void>();
+    public pause = output<void>();
+    public remove = output<void>();
+    public seek = output<number>();
+    public loadingInProcess = output<boolean>();
+
     @ViewChild('audio', { static: true }) public audio: ElementRef<HTMLAudioElement>;
     public isSeeking: boolean;
     public unsafeBlobUrl: string;
+    public isLoading: boolean;
+    public isPlaying: boolean;
+    public totalDuration = '00:00';
+    public duration = '00:00';
+    public seconds = 0;
+    public total = 0;
+    public blobUrl: string;
     private isError: boolean;
-    @Output() public loadingInProcess = new EventEmitter();
 
-    constructor(private sanitizer: DomSanitizer, private toast: PrimeNgToastService, private cdr: ChangeDetectorRef) {}
+    private sanitizer = inject(DomSanitizer);
+    private toast = inject(PrimeNgToastService);
+    private cdr = inject(ChangeDetectorRef);
+
+    constructor() {
+        effect(() => {
+            if (this.playDirect()) {
+                this.playAudio();
+            }
+        });
+    }
 
     /**
      * Initializes the component
@@ -59,19 +73,6 @@ export class PlayerComponent implements OnInit, OnChanges {
      */
     public ngOnInit(): void {
         this.totalDuration = this.secondsToDuration(this.total);
-    }
-
-    /**
-     * Initializes the component
-     *
-     * @memberof PlayerComponent
-     */
-    public ngOnChanges(simpleChanges: SimpleChanges): void {
-        if (simpleChanges.hasOwnProperty('playDirect')) {
-            if (simpleChanges.playDirect.currentValue) {
-                this.playAudio();
-            }
-        }
     }
 
     /**

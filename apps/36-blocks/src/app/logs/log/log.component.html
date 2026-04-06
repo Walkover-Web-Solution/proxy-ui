@@ -1,0 +1,311 @@
+<div class="flex flex-col h-full">
+    @if (isLoading$ | async) {
+        <proxy-loader></proxy-loader>
+    }
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <form [formGroup]="engProjectFormGroup" class="flex flex-wrap items-start grow gap-4">
+            <mat-form-field appearance="outline" class="no-padding w-xs-100">
+                <mat-label>Select Project</mat-label>
+                <input
+                    type="text"
+                    matInput
+                    [matAutocomplete]="matAutoCompleteProject"
+                    formControlName="projects"
+                    placeholder="Select Project"
+                    (keydown)="(false)"
+                    (paste)="(false)"
+                    style="caret-color: transparent"
+                    class="cursor-pointer"
+                />
+                <mat-autocomplete
+                    #matAutoCompleteProject="matAutocomplete"
+                    (optionSelected)="selectEnvProject('projects')"
+                    [displayWith]="envProjectDisplayFunc"
+                    class="mat-autocomplete-panel"
+                >
+                    <proxy-cdk-scroll (fetchNextPage)="fetchNextPage('projects')" scrollableElementId="projects">
+                        <mat-option [value]="''" class="mat-body-2">All</mat-option>
+                        @for (
+                            project of engProjectFormGroup.value?.environments?.projects ?? (projects$ | async)?.data;
+                            track project.id
+                        ) {
+                            <mat-option [value]="project" class="mat-body-2">{{ project.name }}</mat-option>
+                        }
+                    </proxy-cdk-scroll>
+                </mat-autocomplete>
+                <mat-icon matSuffix>arrow_drop_down</mat-icon>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="no-padding w-xs-100">
+                <mat-label>Select Environment</mat-label>
+                <input
+                    type="text"
+                    matInput
+                    [matAutocomplete]="matAutoCompleteEnvironment"
+                    formControlName="environments"
+                    placeholder="Select Environment"
+                    (keydown)="(false)"
+                    (paste)="(false)"
+                    style="caret-color: transparent"
+                    class="cursor-pointer"
+                />
+                <mat-autocomplete
+                    #matAutoCompleteEnvironment="matAutocomplete"
+                    (optionSelected)="selectEnvProject('environments')"
+                    [displayWith]="envProjectDisplayFunc"
+                    class="mat-autocomplete-panel"
+                >
+                    <proxy-cdk-scroll
+                        (fetchNextPage)="fetchNextPage('environments')"
+                        scrollableElementId="environments"
+                    >
+                        <mat-option [value]="''" class="mat-body-2">All</mat-option>
+                        @for (
+                            environment of engProjectFormGroup.value?.projects?.environments ??
+                                (environments$ | async)?.data;
+                            track environment.id
+                        ) {
+                            <mat-option [value]="environment" class="mat-body-2">{{ environment.name }}</mat-option>
+                        }
+                    </proxy-cdk-scroll>
+                </mat-autocomplete>
+                <mat-icon matSuffix>arrow_drop_down</mat-icon>
+            </mat-form-field>
+            <proxy-lib-search
+                [matFormFieldClass]="'w-xs-100 w-100'"
+                [placeholder]="'Hit Enter to Search'"
+                (inputChanges)="onEnter($event)"
+                [emitOnEnter]="true"
+                hint="Use field: to search specific fields (endpoint, request_body, response, headers)."
+            ></proxy-lib-search>
+        </form>
+        <div class="flex items-center gap-4 ml-auto flex-wrap">
+            <date-range-picker
+                (selectedRangeValueChange)="setDateRange($event)"
+                [(selectedRangeValue)]="selectedRangeValue"
+                [selectedDefaultDateRange]="selectedDefaultDateRange.CurrentMonth"
+            ></date-range-picker>
+            <button matButton="filled" class="flat-default mat-btn-xs" [matMenuTriggerFor]="emailExportButtonMenu">
+                <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">filter_alt</mat-icon>
+                <span class="hide-xs">Filter</span>
+            </button>
+            <mat-menu #emailExportButtonMenu="matMenu" class="filter-menu" xPosition="before">
+                <div (click)="$event.stopPropagation(); (false)">
+                    <div class="pb-0 pt-6 px-6" [formGroup]="logsFilterForm">
+                        <mat-form-field appearance="outline" floatLabel="always" class="w-full">
+                            <mat-label>Select request type</mat-label>
+                            <mat-select placeholder="Select request types" formControlName="requestType" multiple>
+                                <mat-checkbox
+                                    class="px-1.5 w-full"
+                                    [disableRipple]="true"
+                                    [indeterminate]="
+                                        logsFilterForm.controls.requestType.value.length > 0 &&
+                                        requestTypes.length > logsFilterForm.controls.requestType.value.length
+                                    "
+                                    [checked]="requestTypes.length === logsFilterForm.controls.requestType.value.length"
+                                    (click)="$event.stopPropagation()"
+                                    (change)="toggleSelectAllReqType($event)"
+                                >
+                                    All
+                                </mat-checkbox>
+                                @for (type of requestTypes; track type) {
+                                    <mat-option [value]="type">{{ type }}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" floatLabel="always" class="w-full">
+                            <mat-label>Select range type</mat-label>
+                            <mat-select
+                                placeholder="Select range type"
+                                formControlName="range"
+                                (selectionChange)="changeRangeType($event.value)"
+                            >
+                                <mat-option [value]="''">None</mat-option>
+                                <mat-option [value]="'response_time'">Response Time</mat-option>
+                                <mat-option [value]="'status_code'">Status Code</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        @if (logsFilterForm.controls.range.value) {
+                            <div class="flex gap-4">
+                                <mat-form-field appearance="outline" class="w-full" floatLabel="always">
+                                    <mat-label>From</mat-label>
+                                    <input
+                                        matInput
+                                        placeholder="From"
+                                        autocomplete="off"
+                                        formControlName="from"
+                                        proxyRemoveCharacter
+                                        [charactersToRemove]="['e', '+', '-', '.', ' ']"
+                                    />
+                                    @if (logsFilterForm.controls.from.invalid) {
+                                        @if (logsFilterForm.get('from').errors?.pattern) {
+                                            <mat-error>Invalid Number</mat-error>
+                                        }
+                                        @if (logsFilterForm.get('from').errors?.limitExceeded) {
+                                            <mat-error><b>From</b> should be less than or equal to <b>To</b></mat-error>
+                                        }
+                                        @if (logsFilterForm.get('from').errors?.maxlength; as maxlengthError) {
+                                            <mat-error
+                                                >Max {{ maxlengthError.requiredLength }} number are allowed</mat-error
+                                            >
+                                        }
+                                    }
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="w-full" floatLabel="always">
+                                    <mat-label>To</mat-label>
+                                    <input
+                                        matInput
+                                        placeholder="To"
+                                        autocomplete="off"
+                                        formControlName="to"
+                                        proxyRemoveCharacter
+                                        [charactersToRemove]="['e', '+', '-', '.', ' ']"
+                                    />
+                                    @if (logsFilterForm.controls.to.invalid) {
+                                        @if (logsFilterForm.get('to').errors?.pattern) {
+                                            <mat-error>Invalid Number</mat-error>
+                                        }
+                                        @if (logsFilterForm.get('to').errors?.maxlength; as maxlengthError) {
+                                            <mat-error
+                                                >Max {{ maxlengthError.requiredLength }} number are allowed</mat-error
+                                            >
+                                        }
+                                    }
+                                </mat-form-field>
+                            </div>
+                        }
+                    </div>
+                    <mat-divider></mat-divider>
+                    <div class="flex items-center gap-x-4 action-button p-6">
+                        <button matButton="filled" (click)="applyFilter()" [disabled]="logsFilterForm.invalid">
+                            Apply
+                        </button>
+                        <button matButton="filled" class="flat-default" (click)="resetParam()">Reset</button>
+                        <button matButton (click)="closeMyMenu()">Cancel</button>
+                    </div>
+                </div>
+            </mat-menu>
+            <button
+                matButton="filled"
+                class="flat-icon-btn flat-default !min-w-0 !p-3"
+                (click)="getLogs()"
+                matTooltip="Refresh"
+                matTooltipPosition="above"
+            >
+                <mat-icon class="mat-icon-18 !m-0">refresh</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <div class="table-scroll">
+        <table
+            mat-table
+            [dataSource]="(logs$ | async)?.data"
+            class="default-table responsive-table"
+            matSort
+            (matSortChange)="sortLogs($event)"
+        >
+            <!-- Time Column -->
+            <ng-container matColumnDef="created_at">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time</th>
+                <td mat-cell *matCellDef="let element" data-label="Date/Time">
+                    <div class="flex flex-col gap-0.5">
+                        <span class="text-sm text-color">{{ element?.created_at | date: 'd MMM y' }}</span>
+                        <span class="text-xs text-grey">{{ element?.created_at | date: 'shortTime' }}</span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Project name Column -->
+            <ng-container matColumnDef="project_name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Project</th>
+                <td mat-cell *matCellDef="let element" data-label="Project">
+                    <div class="flex flex-col gap-0.5">
+                        <span class="text-sm font-semibold text-color">{{ element.project_name }}</span>
+                        <span class="text-xs text-grey">{{ element.environment_name }}</span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- User IP Column -->
+            <ng-container matColumnDef="user_ip">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>User IP</th>
+                <td mat-cell *matCellDef="let element" data-label="User IP">
+                    <span class="font-mono text-xs px-2 py-0.5 rounded-4">{{ element.user_ip }}</span>
+                </td>
+            </ng-container>
+
+            <!-- Endpoint Column -->
+            <ng-container matColumnDef="endpoint">
+                <th mat-header-cell *matHeaderCellDef>Endpoint</th>
+                <td mat-cell *matCellDef="let element" class="w-b-hyphens" data-label="Endpoint">
+                    <span class="font-mono text-xs">{{ element.endpoint }}</span>
+                </td>
+            </ng-container>
+
+            <!-- Request Type Column -->
+            <ng-container matColumnDef="request_type">
+                <th mat-header-cell *matHeaderCellDef>Method</th>
+                <td mat-cell *matCellDef="let element" data-label="Method">
+                    @if (element.request_type) {
+                        <span
+                            class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-semibold uppercase tracking-wide"
+                            [class]="getMethodBadgeClass(element.request_type)"
+                            >{{ element.request_type }}</span
+                        >
+                    }
+                </td>
+            </ng-container>
+
+            <!-- Status Code Column -->
+            <ng-container matColumnDef="status_code">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let element" data-label="Status">
+                    @if (element.status_code) {
+                        <span
+                            class="inline-flex items-center px-2 py-0.5 rounded-4 text-xs font-semibold tabular-nums"
+                            [class]="getStatusBadgeClass(element.status_code)"
+                            >{{ element.status_code }}</span
+                        >
+                    }
+                </td>
+            </ng-container>
+
+            <!-- Response Time Column -->
+            <ng-container matColumnDef="response_time">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Response time</th>
+                <td mat-cell *matCellDef="let element" data-label="Response time">
+                    @if (element.response_time != null) {
+                        <span class="text-sm"
+                            >{{ element.response_time }}<span class="text-xs text-grey ml-0.5">ms</span></span
+                        >
+                    }
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr
+                mat-row
+                *matRowDef="let row; columns: displayedColumns; let i = index"
+                (click)="viewLogsDetails(row?._id)"
+                class="cursor-pointer"
+                [class.highlight]="(reqLogs$ | async)?.id === row._id"
+                [class.last-child]="i + 1 === pageSizeOptions[0]"
+                title="Click here to view logs details"
+            ></tr>
+
+            <tr *matNoDataRow>
+                <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
+                    <proxy-no-record-found [title]="'logs'" [showBtn]="false"></proxy-no-record-found>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <mat-paginator-goto
+        [length]="(logs$ | async)?.totalEntityCount"
+        [pageSize]="(logs$ | async)?.itemsPerPage || 25"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="pageChange($event)"
+        [pageIndex]="(logs$ | async)?.pageNumber - 1"
+        class="box-shadow-none"
+    ></mat-paginator-goto>
+</div>

@@ -1,1 +1,1 @@
-export * from './lib/pipes-typeof.module';
+export { TypeOf } from './lib/pipes-typeof.module';

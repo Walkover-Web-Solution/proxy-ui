@@ -1,0 +1,142 @@
+<mat-drawer-container class="h-screen bg-color!" autosize="false" [hasBackdrop]="isMobile()">
+    <!-- Sidebar drawer -->
+    <mat-drawer
+        #drawer
+        [mode]="isMobile() ? 'over' : 'side'"
+        [opened]="!isMobile()"
+        class="!w-[260px] border-r border-color !rounded-none"
+    >
+        <div class="flex flex-col h-full overflow-hidden">
+            <!-- Sidebar header: Back + title -->
+            <div class="flex items-center gap-1 px-4 py-4">
+                <button matIconButton type="button" (click)="goBack()" aria-label="Go back" class="flex leading-1">
+                    <mat-icon aria-hidden="true">arrow_back</mat-icon>
+                </button>
+                <h1 class="text-base font-semibold text-color leading-tight">Widget Preview</h1>
+            </div>
+
+            <!-- Nav items -->
+            <mat-nav-list class="!pt-3 !px-3 flex-1 overflow-y-auto service-list">
+                @for (tab of tabs; track tab.id) {
+                    <button
+                        mat-list-item
+                        [class.mdc-list-item--activated]="activeTab() === tab.id"
+                        (click)="selectTab(tab.id)"
+                        [matTooltip]="tab.requiresAuth && !authToken() ? 'Complete Authorization first to unlock' : ''"
+                        matTooltipPosition="right"
+                        [class.!cursor-not-allowed]="tab.requiresAuth && !authToken()"
+                    >
+                        <mat-icon matListItemIcon class="material-icons-outlined">{{ tab.icon }}</mat-icon>
+                        <span matListItemTitle class="font-14 flex items-center justify-between w-full">
+                            {{ tab.label }}
+                            @if (tab.requiresAuth && !authToken()) {
+                                <mat-icon class="material-icons-outlined mat-icon-18 shrink-0 secondary-text-color"
+                                    >lock</mat-icon
+                                >
+                            } @else {
+                                <mat-icon class="material-icons-outlined mat-icon-18 shrink-0">navigate_next</mat-icon>
+                            }
+                        </span>
+                    </button>
+                }
+            </mat-nav-list>
+        </div>
+    </mat-drawer>
+
+    <!-- Reusable: theme toggle -->
+    <ng-template #themeTpl>
+        <mat-button-toggle-group [value]="theme()" (change)="onThemeChange($event.value)" aria-label="Select theme">
+            <mat-button-toggle [value]="WidgetTheme.Light" matTooltip="Light theme">
+                <mat-icon aria-hidden="true">light_mode</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle [value]="WidgetTheme.System" matTooltip="System theme">
+                <mat-icon aria-hidden="true">contrast</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle [value]="WidgetTheme.Dark" matTooltip="Dark theme">
+                <mat-icon aria-hidden="true">dark_mode</mat-icon>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </ng-template>
+
+    <!-- Reusable: view mode toggle -->
+    <ng-template #viewModeTpl>
+        <mat-button-toggle-group
+            [value]="viewMode()"
+            (change)="viewMode.set($event.value)"
+            aria-label="View mode"
+            hideSingleSelectionIndicator
+        >
+            <mat-button-toggle value="preview" matTooltip="Widget preview">
+                <mat-icon aria-hidden="true" class="mat-icon-18">visibility</mat-icon>
+                <span class="ml-1 text-xs">Preview</span>
+            </mat-button-toggle>
+            <mat-button-toggle value="code" matTooltip="Integration code">
+                <mat-icon aria-hidden="true" class="mat-icon-18">code</mat-icon>
+                <span class="ml-1 text-xs">Code</span>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </ng-template>
+
+    <!-- Main content -->
+    <mat-drawer-content class="!flex flex-col overflow-hidden bg-color!">
+        <!-- Mobile top bar -->
+        @if (isMobile()) {
+            <div class="flex flex-col border-b border-color shrink-0">
+                <!-- Row 1: hamburger + tab name -->
+                <div class="flex items-center gap-2 px-3 pt-2 pb-1">
+                    <button matIconButton type="button" (click)="drawer.toggle()" aria-label="Open menu">
+                        <mat-icon aria-hidden="true">menu</mat-icon>
+                    </button>
+                    <span class="flex-1 text-sm font-semibold text-color truncate">{{ activeTabLabel() }}</span>
+                </div>
+                <!-- Row 2: theme toggle + view mode toggle -->
+                <div class="flex items-center justify-between px-3 pb-2 gap-2">
+                    <ng-container *ngTemplateOutlet="themeTpl"></ng-container>
+                    <ng-container *ngTemplateOutlet="viewModeTpl"></ng-container>
+                </div>
+            </div>
+        }
+
+        <!-- Desktop top bar -->
+        @if (!isMobile()) {
+            <div class="flex items-center justify-between px-4 py-3 shrink-0">
+                <ng-container *ngTemplateOutlet="viewModeTpl"></ng-container>
+                <ng-container *ngTemplateOutlet="themeTpl"></ng-container>
+            </div>
+        }
+
+        <!-- Preview content -->
+        @for (tab of tabs; track tab.id) {
+            @if (activeTab() === tab.id) {
+                <div [class]="viewMode() !== 'preview' ? 'hidden' : 'flex'" class="flex-1 flex-col overflow-hidden">
+                    <div
+                        class="flex-1 flex justify-center overflow-auto transition-colors duration-300"
+                        [class]="isDark() ? 'bg-gray-950' : 'bg-white'"
+                        [class.items-center]="tab.id == PublicScriptType.Authorization"
+                    >
+                        <div
+                            [id]="tab.id === PublicScriptType.Authorization ? referenceId : proxyDomId"
+                            [class.w-full]="tab.id != PublicScriptType.Authorization"
+                        ></div>
+                    </div>
+                </div>
+            }
+        }
+
+        <!-- Code view -->
+        <div [hidden]="viewMode() !== 'code'" class="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+            <div class="card-with-header">
+                <div class="card-with-header--header justify-between">
+                    <div class="flex items-center gap-2">
+                        <mat-icon class="!text-base !w-4 text-color" aria-hidden="true">code</mat-icon>
+                        <span class="mat-body-2 font-semibold">Integration Code</span>
+                    </div>
+                    <proxy-copy-button [copyData]="codeSnippet()" tooltip="Copy Code"></proxy-copy-button>
+                </div>
+                <div class="overflow-auto code-snippet-view">
+                    <markdown [data]="codeSnippet() | language: 'html'"></markdown>
+                </div>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

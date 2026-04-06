@@ -1,0 +1,14 @@
+@use 'tailwindcss';
+@use '../../../assets/scss/widget-ui' as *;
+@custom-variant dark (&:where(.dark, .dark *));
+
+:host {
+    all: initial;
+    display: block !important;
+    height: inherit !important;
+    min-height: inherit !important;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    box-sizing: border-box;
+}

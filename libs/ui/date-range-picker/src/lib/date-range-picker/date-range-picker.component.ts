@@ -1,54 +1,116 @@
 import {
+    ChangeDetectionStrategy,
     Component,
-    EventEmitter,
-    Input,
-    OnChanges,
     OnDestroy,
     OnInit,
-    Output,
-    SimpleChanges,
     ViewChild,
+    effect,
+    input,
+    model,
+    output,
 } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatListModule } from '@angular/material/list';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateRange, MatCalendar } from '@angular/material/datepicker';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { DEFAULT_SELECTED_DATE_RANGE, JS_START_DATE, SelectDateRange } from '@proxy/constant';
 import { DATE_FORMAT_REGEX } from '@proxy/regex';
-import * as dayjs from 'dayjs';
-import * as quarterOfYear from 'dayjs/plugin/quarterOfYear';
-import * as advancedFormat from 'dayjs/plugin/advancedFormat';
+import dayjs from 'dayjs';
+import quarterOfYear from 'dayjs/plugin/quarterOfYear';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { cloneDeep } from 'lodash-es';
 import { Subject } from 'rxjs';
 dayjs.extend(quarterOfYear);
 dayjs.extend(advancedFormat);
 
 @Component({
-    standalone: false,
     selector: 'date-range-picker',
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatMenuModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatListModule,
+        MatFormFieldModule,
+        MatInputModule,
+    ],
     templateUrl: './date-range-picker.component.html',
     styleUrls: ['./date-range-picker.component.scss'],
     host: {
         '(window:resize)': 'onResize($event)',
     },
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DateRangePickerComponent implements OnInit, OnChanges, OnDestroy {
+export class DateRangePickerComponent implements OnInit, OnDestroy {
     @ViewChild('calendar', { static: false }) calendar: MatCalendar<Date>;
     @ViewChild('trigger') trigger: MatMenuTrigger;
-    @Input() selectedRangeValue: DateRange<Date> | undefined;
-    @Input() placeholder = 'Date range';
-    @Input() selectedDefaultDateRange: SelectDateRange = null;
-    @Output() selectedRangeValueChange: any = new EventEmitter<DateRange<Date>>();
-    @Output() menuClosedEvent = new EventEmitter<boolean>();
-    @Input() floatLabelBackground: string = '#ffffff';
-    @Input() minDate: Date = JS_START_DATE;
-    @Input() public customOptionActive: boolean = true;
-    @Input() public openMenu: boolean = false;
-    @Input() public cssClass: string = '';
+
+    selectedRangeValue = model<DateRange<Date> | undefined>(undefined);
+    placeholder = input<string>('Date range');
+    selectedDefaultDateRange = input<SelectDateRange>(null);
+    menuClosedEvent = output<boolean>();
+    floatLabelBackground = input<string>('#ffffff');
+    minDate = input<Date>(JS_START_DATE);
+    public customOptionActive = input<boolean>(true);
+    public openMenu = input<boolean>(false);
+    public cssClass = input<string>('');
+
+    constructor() {
+        effect(() => {
+            if (this.openMenu()) {
+                this.trigger?.openMenu();
+            }
+        });
+
+        effect(() => {
+            switch (this.selectedDefaultDateRange()) {
+                case SelectDateRange.CurrentMonth:
+                    this.selectThisMonth();
+                    break;
+                case SelectDateRange.PreviousMonth:
+                    this.selectLastMonth();
+                    break;
+                case SelectDateRange.CurrentQuarter:
+                    this.selectThisQuarter();
+                    break;
+                case SelectDateRange.PreviousQuarter:
+                    this.selectLastQuarter();
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        effect(() => {
+            const rv = this.selectedRangeValue();
+            if (rv) {
+                if (
+                    new Date(rv.start).getTime() === new Date(DEFAULT_SELECTED_DATE_RANGE.start).getTime() &&
+                    new Date(rv.end).getTime() === new Date(DEFAULT_SELECTED_DATE_RANGE.end).getTime()
+                ) {
+                    this.monthSelected = 'current';
+                    this.quarterSelected = null;
+                }
+                this.setInputDate();
+            }
+        });
+    }
     private _destroy$: Subject<any>;
     public showRangePicker: boolean = false;
-    public range = new UntypedFormGroup({
-        start: new UntypedFormControl('', [Validators.required, Validators.pattern(DATE_FORMAT_REGEX)]),
-        end: new UntypedFormControl('', [Validators.required, Validators.pattern(DATE_FORMAT_REGEX)]),
+    public range = new FormGroup({
+        start: new FormControl<string>('', [Validators.required, Validators.pattern(DATE_FORMAT_REGEX)]),
+        end: new FormControl<string>('', [Validators.required, Validators.pattern(DATE_FORMAT_REGEX)]),
     });
     public today: Date = new Date();
     public startDate: any;
@@ -67,48 +129,13 @@ export class DateRangePickerComponent implements OnInit, OnChanges, OnDestroy {
     };
 
     public ngOnInit(): void {
-        if (!this.selectedRangeValue || !this.selectedRangeValue.start) {
+        const rv = this.selectedRangeValue();
+        if (!rv || !rv.start) {
             this.setDateRange(dayjs(), dayjs());
             this.selectedDateValue = 'Select Date Range';
         }
         this.innerWidth = window.innerWidth;
-        this.initialSelectedDateRange = cloneDeep(this.selectedRangeValue);
-    }
-
-    public ngOnChanges(changes: SimpleChanges): void {
-        if (changes && changes['selectedRangeValue']) {
-            if (
-                new Date(this.selectedRangeValue.start).getTime() ===
-                    new Date(DEFAULT_SELECTED_DATE_RANGE.start).getTime() &&
-                new Date(this.selectedRangeValue.end).getTime() === new Date(DEFAULT_SELECTED_DATE_RANGE.end).getTime()
-            ) {
-                this.monthSelected = 'current';
-                this.quarterSelected = null;
-            }
-            this.setInputDate();
-        }
-
-        if (changes && changes['openMenu']?.currentValue) {
-            this.trigger?.openMenu();
-        }
-        if (changes?.selectedDefaultDateRange) {
-            switch (this.selectedDefaultDateRange) {
-                case SelectDateRange.CurrentMonth:
-                    this.selectThisMonth();
-                    break;
-                case SelectDateRange.PreviousMonth:
-                    this.selectLastMonth();
-                    break;
-                case SelectDateRange.CurrentQuarter:
-                    this.selectThisQuarter();
-                    break;
-                case SelectDateRange.PreviousQuarter:
-                    this.selectLastQuarter();
-                    break;
-                default:
-                    break;
-            }
-        }
+        this.initialSelectedDateRange = cloneDeep(rv);
     }
 
     public ngOnDestroy(): void {
@@ -123,12 +150,10 @@ export class DateRangePickerComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     public setInputDate(): void {
-        this.calenderDateRange =
-            this.selectedRangeValue && this.selectedRangeValue.start
-                ? cloneDeep(this.selectedRangeValue)
-                : new DateRange<Date>(new Date(), new Date());
+        const rv = this.selectedRangeValue();
+        this.calenderDateRange = rv && rv.start ? cloneDeep(rv) : new DateRange<Date>(new Date(), new Date());
         this.setDateRange(this.calenderDateRange.start, this.calenderDateRange.end);
-        if (this.selectedRangeValue && this.selectedRangeValue.start) {
+        if (rv && rv.start) {
             this.selectedDateValue =
                 dayjs(this.calenderDateRange.start).format('Do MMM YY') +
                 ' - ' +
@@ -265,8 +290,7 @@ export class DateRangePickerComponent implements OnInit, OnChanges, OnDestroy {
             dayjs(this.calenderDateRange.start).format('Do MMM YY') +
             ' - ' +
             dayjs(this.calenderDateRange.end).format('Do MMM YY');
-        this.selectedRangeValue = cloneDeep(this.calenderDateRange);
-        this.selectedRangeValueChange.emit(this.calenderDateRange);
+        this.selectedRangeValue.set(cloneDeep(this.calenderDateRange));
         this.showRangePicker = false;
         this.trigger?.closeMenu();
     }
@@ -276,13 +300,13 @@ export class DateRangePickerComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     public resetDate(): void {
-        this.selectedRangeValue = cloneDeep(this.initialSelectedDateRange);
+        this.selectedRangeValue.set(cloneDeep(this.initialSelectedDateRange));
         if (this.initialSelectedDateRange.start) {
             this.setInputDate();
             this.applyDateRange();
         } else {
             this.selectedDateValue = 'Select Date Range';
-            this.selectedRangeValueChange.emit(this.selectedDateValue);
+            this.selectedRangeValue.set(undefined);
             this.showRangePicker = false;
             this.trigger.closeMenu();
         }
@@ -302,7 +326,7 @@ export class DateRangePickerComponent implements OnInit, OnChanges, OnDestroy {
                 this.selectedDateIsGreaterThenToday = true;
                 return;
             }
-            if (startDate < this.minDate || endDate < this.minDate) {
+            if (startDate < this.minDate() || endDate < this.minDate()) {
                 this.selectedDateIsSmallerThenMinDate = true;
                 return;
             }
