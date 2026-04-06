@@ -135,7 +135,7 @@
                                 <div class="actions flex justify-end gap-3 pr-3">
                                     <button
                                         matButton="outlined"
-                                        [routerLink]="['/widget-preview', element.reference_id]"
+                                        (click)="navigateToPreview(element.reference_id)"
                                         class="mat-btn-md"
                                     >
                                         <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
