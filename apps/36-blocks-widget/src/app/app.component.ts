@@ -7,9 +7,9 @@ import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 const REFERENCE_ID = '4512365c177425472369c0fa8351a15';
 const THEME: WidgetTheme = WidgetTheme.Dark;
-const TYPE: PublicScriptType = PublicScriptType.OrganizationDetails;
+const TYPE: PublicScriptType = PublicScriptType.UserProfile;
 const AUTH_TOKEN =
-    'aklLUzlaSHhIMWFWYy9DM3RlcEtlUkJwNmNxb3pDK1ZuK0FBdlpNaGcybTNkeGY5TzVTNTV4Sk1JVUJSV0tja1BGQXgwSm12Y0JaMEkvNjIrZU95a1A1a3ZFQ1hwYnhXN21lbUg0OWhOVTh1TmxXMFkwaFRpeTJLa1pITjE1NHAzamJvNTFIaGxQaUFGRXFqdVpnMFgySVZZekJ1SzJVV3o1bmhSdFFjR2tHOWNNMFJ2ZGdDY25XWUdEeVZEYWZoRmpjWlJNaDZsZk9lSWhXWm9QRWxMZz09';
+    'dGRjOE0wSlhuNWwyOFRrNzkvMzYyZVBwTnBTQythNmdScXl2VmtGNnZScDdCdXhsSGdBb2hPam5mWkg0RnoyN040cGlQbnJueWhUZEx4TVg4cU0wQ1pQSGdtQjVZVjVYUng2cUU5Q2R2eUl5V2p4aGlBZGEyUlVLM0tnS016ZXdXTnZ6MEJnYU9QRFNHR2pFa29OMmlmT2VqczdEUU5MRzR5MElKMklCK3JUU2w2Qmt0b1V6L0dpclJYTVJBVzk3YjE4L3RtUk15NVk3Z0RmY2g5Rm50QT09';
 
 @Component({
     selector: 'proxy-root',

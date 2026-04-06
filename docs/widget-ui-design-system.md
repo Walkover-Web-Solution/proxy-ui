@@ -467,7 +467,7 @@ Horizontal tabs. Always add `group` as a separate class alongside `w-nav-tab` so
           [class.text-gray-500]="activeTab !== 'users'"
           [attr.aria-current]="activeTab === 'users' ? 'page' : null"
           (click)="activeTab = 'users'">
-    <svg class="size-4 group-[aria-current=page]:text-indigo-600" aria-hidden="true">...</svg>
+    <svg class="size-4" aria-hidden="true">...</svg>
     Users
   </button>
 </div>

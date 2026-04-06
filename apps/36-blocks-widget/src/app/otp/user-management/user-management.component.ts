@@ -66,7 +66,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
     readonly theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
     protected readonly UserManagementTab = UserManagementTab;
-    protected readonly ariaCurrent = ['p', 'a', 'g', 'e'].join('');
+    protected readonly navCurrentVal = ['p', 'a', 'g', 'e'].join('');
     readonly exclude_role_ids = input<any[]>([]);
     readonly include_role_ids = input<any[]>([]);
     readonly showDialog = signal(false);

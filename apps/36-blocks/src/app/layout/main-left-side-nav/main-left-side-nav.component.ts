@@ -30,9 +30,9 @@ export class MainLeftSideNavComponent extends BaseComponent {
 
     protected readonly navItems = [
         { route: 'dashboard', icon: 'dashboard', label: 'Dashboard' },
-        // { route: 'logs', icon: 'description', label: 'Logs' },//  Temporary hide this page
         { route: 'features', icon: 'featured_play_list', label: 'Blocks' },
         { route: 'users', icon: 'person', label: 'User' },
+        { route: 'logs', icon: 'description', label: 'Logs' }, //  Temporary hide this page
         { route: 'chatbot', icon: 'face', label: 'Ask Ai' },
     ];
 }

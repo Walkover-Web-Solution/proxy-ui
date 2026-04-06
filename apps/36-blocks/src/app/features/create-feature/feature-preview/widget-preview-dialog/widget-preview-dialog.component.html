@@ -45,7 +45,12 @@
 
     <!-- Reusable: theme toggle -->
     <ng-template #themeTpl>
-        <mat-button-toggle-group [value]="theme()" (change)="onThemeChange($event.value)" aria-label="Select theme">
+        <mat-button-toggle-group
+            hideSingleSelectionIndicator
+            [value]="theme()"
+            (change)="onThemeChange($event.value)"
+            aria-label="Select theme"
+        >
             <mat-button-toggle [value]="WidgetTheme.Light" matTooltip="Light theme">
                 <mat-icon aria-hidden="true">light_mode</mat-icon>
             </mat-button-toggle>
@@ -116,7 +121,7 @@
                     >
                         <div
                             [id]="tab.id === PublicScriptType.Authorization ? referenceId : proxyDomId"
-                            [class.w-full]="tab.id != PublicScriptType.Authorization"
+                            [class]="tab.id != PublicScriptType.Authorization ? 'w-full h-full' : ''"
                         ></div>
                     </div>
                 </div>
