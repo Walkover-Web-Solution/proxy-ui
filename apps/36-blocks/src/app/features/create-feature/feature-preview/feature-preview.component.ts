@@ -16,7 +16,9 @@ export class FeaturePreviewComponent {
 
     public openPreview(): void {
         if (this.referenceId) {
-            this.router.navigate(['/widget-preview', this.referenceId]);
+            this.router.navigate(['/widget-preview', this.referenceId], {
+                state: { originUrl: this.router.url },
+            });
         }
     }
 }

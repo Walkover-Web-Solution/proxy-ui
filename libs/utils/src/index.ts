@@ -40,15 +40,9 @@ export function addSubTractDependOnTimeZone(
     format: string = 'YYYY-M-DD HH:mm:ss'
 ) {
     if (add) {
-        return dayjs(datetime)
-            .add(+timeZone[0], 'h')
-            .add(+timeZone[1], 'm')
-            .format(format);
+        return dayjs(datetime).add(+timeZone[0], 'h').add(+timeZone[1], 'm').format(format);
     } else {
-        return dayjs(datetime)
-            .subtract(+timeZone[0], 'h')
-            .subtract(+timeZone[1], 'm')
-            .format(format);
+        return dayjs(datetime).subtract(+timeZone[0], 'h').subtract(+timeZone[1], 'm').format(format);
     }
 }
 

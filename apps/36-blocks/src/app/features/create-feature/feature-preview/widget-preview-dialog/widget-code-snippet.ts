@@ -6,7 +6,7 @@ const SCRIPT_URL = `${environment.proxyServer}/assets/proxy-auth/proxy-auth.js`;
 export function buildCodeSnippet(referenceId: string, type: string): string {
     const isAuth = type === PublicScriptType.Authorization;
 
-    const refId = isAuth ? referenceId ?? '<reference_id>' : PROXY_DOM_ID;
+    const refId = isAuth ? (referenceId ?? '<reference_id>') : PROXY_DOM_ID;
     const referenceIdLine = isAuth ? `\n        referenceId: '${refId}',` : '';
     const authTokenLine = isAuth ? '' : `\n        authToken: 'ENCRYPTED_AUTH_TOKEN',`;
 

@@ -8,7 +8,10 @@ import { FeaturesUrls } from '@proxy/urls/features-url';
     providedIn: 'root',
 })
 export class FeaturesService {
-    constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseURL: any) {}
+    constructor(
+        private http: HttpWrapperService,
+        @Inject(ProxyBaseUrls.BaseURL) private baseURL: any
+    ) {}
 
     // Fetch All Feature
     public getFeature(params): Observable<BaseResponse<IPaginatedResponse<IFeature[]>, IFeatureReq>> {

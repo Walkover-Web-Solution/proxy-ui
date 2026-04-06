@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -55,6 +55,7 @@ import { IPaginatedResponse } from '@proxy/models/root-models';
 })
 export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit {
     private componentStore = inject(FeatureComponentStore);
+    private router = inject(Router);
 
     /** Store Feature Data */
     public feature$: Observable<IPaginatedResponse<IFeature[]>> = this.componentStore.feature$;
@@ -112,5 +113,11 @@ export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit
      */
     public getFeatures(): void {
         this.componentStore.getFeature({ ...this.params });
+    }
+
+    public navigateToPreview(referenceId: string): void {
+        this.router.navigate(['/widget-preview', referenceId], {
+            state: { originUrl: this.router.url },
+        });
     }
 }

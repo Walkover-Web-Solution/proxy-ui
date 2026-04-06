@@ -61,7 +61,7 @@ import { WidgetDialogRef } from '../service/widget-dialog.service';
                                 class="w-input"
                             />
                             @if (form.get('name')?.touched && form.get('name')?.hasError('required')) {
-                            <p role="alert" class="w-field-error">Name is required</p>
+                                <p role="alert" class="w-field-error">Name is required</p>
                             }
                         </div>
                         <div>
@@ -70,7 +70,7 @@ import { WidgetDialogRef } from '../service/widget-dialog.service';
                                 <select id="au-role" formControlName="role" class="w-select">
                                     <option value="">Select role</option>
                                     @for (r of roles(); track r.id) {
-                                    <option [value]="r.id.toString()">{{ r.name }}</option>
+                                        <option [value]="r.id.toString()">{{ r.name }}</option>
                                     }
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5">
@@ -97,9 +97,10 @@ import { WidgetDialogRef } from '../service/widget-dialog.service';
                             class="w-input"
                         />
                         @if (form.get('email')?.touched && form.get('email')?.hasError('required')) {
-                        <p role="alert" class="w-field-error">Email is required</p>
-                        } @if (form.get('email')?.touched && form.get('email')?.hasError('email')) {
-                        <p role="alert" class="w-field-error">Enter a valid email address</p>
+                            <p role="alert" class="w-field-error">Email is required</p>
+                        }
+                        @if (form.get('email')?.touched && form.get('email')?.hasError('email')) {
+                            <p role="alert" class="w-field-error">Enter a valid email address</p>
                         }
                     </div>
                     <div>
@@ -117,7 +118,7 @@ import { WidgetDialogRef } from '../service/widget-dialog.service';
                             class="w-input"
                         />
                         @if (form.get('mobileNumber')?.touched && form.get('mobileNumber')?.hasError('pattern')) {
-                        <p role="alert" class="w-field-error">Enter a valid mobile with country code</p>
+                            <p role="alert" class="w-field-error">Enter a valid mobile with country code</p>
                         }
                         <p class="mt-1.5 text-xs" [class.text-gray-500]="!isDark()" [class.text-gray-400]="isDark()">
                             Include country code, e.g. 917001002003

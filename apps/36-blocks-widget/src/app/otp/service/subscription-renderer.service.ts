@@ -45,8 +45,8 @@ export class SubscriptionRendererService {
             @media(max-width:768px){.plans-grid{flex-direction:column;align-items:center;gap:20px;overflow-x:visible;overflow-y:auto}}
 
             .plan-card{background:${isDark ? 'transparent' : '#ffffff'};border:${
-            isDark ? '1px solid #e6e6e6' : '2px solid #e6e6e6'
-        };border-radius:4px;padding:26px 24px;min-width:290px;max-width:350px;width:350px;flex:1;min-height:348px;font-family:'Outfit',sans-serif;position:relative;margin-top:30px}
+                isDark ? '1px solid #e6e6e6' : '2px solid #e6e6e6'
+            };border-radius:4px;padding:26px 24px;min-width:290px;max-width:350px;width:350px;flex:1;min-height:348px;font-family:'Outfit',sans-serif;position:relative;margin-top:30px}
             .plan-card.highlighted{border:${isDark ? '2px solid #ffffff' : '2px solid #000000'}}
             @media(max-width:768px){.plan-card{min-width:50%;max-width:400px;width:100%;padding:30px 20px}}
 
@@ -106,8 +106,8 @@ export class SubscriptionRendererService {
                 <button class="plan-button primary upgrade-btn${
                     isDisabled ? ' plan-button-disabled' : ''
                 }" data-plan-id="${plan.id}" data-plan-data='${JSON.stringify(plan)}' ${disabledAttrs} style="opacity:${
-            isDisabled ? 0.7 : 1
-        };${disabledStyle}">${buttonLabel}</button>
+                    isDisabled ? 0.7 : 1
+                };${disabledStyle}">${buttonLabel}</button>
                 <div class="divider w-100 my-3"></div>
             </div>
             ${this.buildMetricsHTML(plan)}

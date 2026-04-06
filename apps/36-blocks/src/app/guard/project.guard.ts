@@ -14,7 +14,10 @@ import { IProjects } from '@proxy/models/logs-models';
 export class ProjectGuard {
     public getProject$: Observable<IPaginatedResponse<IProjects[]>>;
 
-    constructor(private router: Router, private store: Store<IAppState>) {
+    constructor(
+        private router: Router,
+        private store: Store<IAppState>
+    ) {
         this.getProject$ = this.store.pipe(select(selectAllProjectList));
     }
 

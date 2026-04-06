@@ -14,7 +14,10 @@ export interface IFeatureInitialState {
 
 @Injectable()
 export class FeatureComponentStore extends ComponentStore<IFeatureInitialState> {
-    constructor(private service: FeaturesService, private toast: PrimeNgToastService) {
+    constructor(
+        private service: FeaturesService,
+        private toast: PrimeNgToastService
+    ) {
         super({
             features: null,
             isLoading: false,

@@ -180,11 +180,11 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     }
 
     public getTimezoneValue(tz): string {
-        return typeof tz === 'string' ? tz : tz.label ?? '';
+        return typeof tz === 'string' ? tz : (tz.label ?? '');
     }
 
     public getTimezoneLabel(tz): string {
-        return typeof tz === 'string' ? tz : tz.label ?? '';
+        return typeof tz === 'string' ? tz : (tz.label ?? '');
     }
 
     public onSubmit(): void {

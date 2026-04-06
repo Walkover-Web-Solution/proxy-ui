@@ -8,7 +8,10 @@ import { LogsUrls } from '@proxy/urls/logs-urls';
     providedIn: 'root',
 })
 export class LogsService {
-    constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.ProxyLogsUrl) private proxyLogsUrl: any) {}
+    constructor(
+        private http: HttpWrapperService,
+        @Inject(ProxyBaseUrls.ProxyLogsUrl) private proxyLogsUrl: any
+    ) {}
 
     // Fetch Proxy logs
     public getProxyLogs(params): Observable<BaseResponse<IPaginatedResponse<ILogsRes[]>, ILogsReq>> {
