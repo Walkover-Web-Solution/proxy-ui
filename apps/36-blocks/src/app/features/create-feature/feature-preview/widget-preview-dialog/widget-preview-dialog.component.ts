@@ -147,28 +147,47 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
         setTimeout(() => this.launchWidget());
     }
 
-    private resolveOriginUrl(): string | null {
+    private originStorageKey(): string | null {
         const refId = this.route.snapshot.paramMap.get('referenceId');
-        const storageKey = refId ? `widget_preview_origin_${refId}` : null;
+        return refId ? `widget_preview_origin_${refId}` : null;
+    }
+
+    private resolveOriginUrl(): string | null {
+        const storageKey = this.originStorageKey();
 
         const fromState = this.router.getCurrentNavigation()?.extras?.state?.['originUrl'] as string | undefined;
         if (fromState) {
-            if (storageKey) {
-                sessionStorage.setItem(storageKey, fromState);
+            try {
+                if (storageKey) {
+                    sessionStorage.setItem(storageKey, fromState);
+                }
+            } catch {
+                // sessionStorage unavailable (e.g. private browsing with storage blocked)
+                console.error('sessionStorage unavailable');
             }
             return fromState;
         }
 
-        if (storageKey) {
-            return sessionStorage.getItem(storageKey);
+        try {
+            if (storageKey) {
+                return sessionStorage.getItem(storageKey);
+            }
+        } catch {
+            // sessionStorage unavailable
+            console.error('sessionStorage unavailable');
         }
         return null;
     }
 
     public goBack(): void {
-        const refId = this.route.snapshot.paramMap.get('referenceId');
-        if (refId) {
-            sessionStorage.removeItem(`widget_preview_origin_${refId}`);
+        const storageKey = this.originStorageKey();
+        try {
+            if (storageKey) {
+                sessionStorage.removeItem(storageKey);
+            }
+        } catch {
+            // sessionStorage unavailable
+            console.error('sessionStorage unavailable');
         }
         if (this.originUrl) {
             this.router.navigateByUrl(this.originUrl);
