@@ -450,7 +450,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         const formData = removeEmptyKeys(cloneDeep(this.registrationForm.getRawValue()), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
-                this.registrationViaLogin() ? this.loginServiceData().state : this.serviceData()?.state ?? '',
+                this.registrationViaLogin() ? this.loginServiceData().state : (this.serviceData()?.state ?? ''),
                 environment.uiEncodeKey,
                 environment.uiIvKey,
                 true

@@ -350,8 +350,8 @@ export class CustomValidators {
                         ? null
                         : { checkTextType: true, invalidCharacters: nonLatinCharacters }
                     : type === 'Normal'
-                    ? null
-                    : { checkTextType: true };
+                      ? null
+                      : { checkTextType: true };
             }
             return null;
         };

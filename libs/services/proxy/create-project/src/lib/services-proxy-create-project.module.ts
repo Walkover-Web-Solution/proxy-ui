@@ -10,7 +10,10 @@ import { IClientData } from '@proxy/models/users-model';
     providedIn: 'root',
 })
 export class CreateProjectService {
-    constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseURL: any) {}
+    constructor(
+        private http: HttpWrapperService,
+        @Inject(ProxyBaseUrls.BaseURL) private baseURL: any
+    ) {}
 
     public createProject(body): Observable<BaseResponse<IProjects[], void>> {
         return this.http.post<BaseResponse<IProjects[], void>>(CreatProjectUrl.createProject(this.baseURL), body);

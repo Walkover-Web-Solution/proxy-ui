@@ -2285,7 +2285,7 @@
                 featureForm.get('brandingDetails.version')?.value === 'v2'
             ) {
                 <section class="mb-6 flex items-center justify-center">
-                    <mat-button-toggle-group>
+                    <mat-button-toggle-group hideSingleSelectionIndicator aria-label="Input position">
                         <mat-button-toggle
                             [class.mat-button-toggle-checked]="previewInputPosition !== 'bottom'"
                             (click)="previewInputPosition = 'top'"

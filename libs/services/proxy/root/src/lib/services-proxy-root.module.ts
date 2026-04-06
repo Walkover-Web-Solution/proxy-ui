@@ -8,7 +8,10 @@ import { IProjects } from '@proxy/models/logs-models';
     providedIn: 'root',
 })
 export class RootService {
-    constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any) {}
+    constructor(
+        private http: HttpWrapperService,
+        @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any
+    ) {}
 
     // Fetch Client Settings
     public getClientSettings(): Observable<BaseResponse<IClientSettings, void>> {

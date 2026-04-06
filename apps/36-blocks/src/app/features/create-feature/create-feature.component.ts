@@ -460,7 +460,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                         this.isEditMode
                             ? serviceValues?.is_enable
                             : FeatureServiceIds.GoogleAuthentication === service.service_id ||
-                              FeatureServiceIds.Msg91OtpService === service.service_id
+                                  FeatureServiceIds.Msg91OtpService === service.service_id
                     ),
                 });
                 if (service.requirements) {

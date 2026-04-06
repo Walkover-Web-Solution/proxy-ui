@@ -17,7 +17,10 @@ export const DEFAULT_OPTIONS = {
     providedIn: 'root',
 })
 export class HttpWrapperService {
-    constructor(private http: HttpClient, @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any) {}
+    constructor(
+        private http: HttpClient,
+        @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any
+    ) {}
 
     public createUrl = (url: string): string => {
         return `${this.baseUrl}/${url}`;

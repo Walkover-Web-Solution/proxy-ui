@@ -66,7 +66,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
     readonly theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
     protected readonly UserManagementTab = UserManagementTab;
-    protected readonly ariaCurrent = ['p', 'a', 'g', 'e'].join('');
+    protected readonly navCurrentVal = ['p', 'a', 'g', 'e'].join('');
     readonly exclude_role_ids = input<any[]>([]);
     readonly include_role_ids = input<any[]>([]);
     readonly showDialog = signal(false);
@@ -468,7 +468,9 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     public onRoleChange(roleId: number): void {
-        const perms = roleId ? this.roles.find((r) => r.id === roleId)?.c_permissions?.map((p: any) => p.id) ?? [] : [];
+        const perms = roleId
+            ? (this.roles.find((r) => r.id === roleId)?.c_permissions?.map((p: any) => p.id) ?? [])
+            : [];
         this.addUserForm.get('permission')?.setValue(perms);
     }
 

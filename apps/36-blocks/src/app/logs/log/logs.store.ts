@@ -20,7 +20,10 @@ export interface ILogsInitialState {
 
 @Injectable()
 export class LogsComponentStore extends ComponentStore<ILogsInitialState> {
-    constructor(private service: LogsService, private toast: PrimeNgToastService) {
+    constructor(
+        private service: LogsService,
+        private toast: PrimeNgToastService
+    ) {
         super({
             logs: null,
             logsInProcess: false,
