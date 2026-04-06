@@ -74,33 +74,31 @@
 .hero-grid {
     grid-template-columns: 1fr 1fr;
 }
-.section-forms-grid {
-    grid-template-columns: 1.1fr 0.9fr;
-}
+@media (min-width: 768px) {
+    .form-preview-grid {
+        grid-template-columns: auto 1fr auto;
+        grid-template-rows: auto 1fr auto;
 
-.form-preview-grid {
-    grid-template-columns: auto 1fr auto;
-    grid-template-rows: auto 1fr auto;
-
-    .col1-row1 {
-        grid-column: 1;
-        grid-row: 1;
-    }
-    .col3-row1 {
-        grid-column: 3;
-        grid-row: 1;
-    }
-    .col2-rows {
-        grid-column: 2;
-        grid-row: 1 / 4;
-    }
-    .col1-row3 {
-        grid-column: 1;
-        grid-row: 3;
-    }
-    .col3-row3 {
-        grid-column: 3;
-        grid-row: 3;
+        .col1-row1 {
+            grid-column: 1;
+            grid-row: 1;
+        }
+        .col3-row1 {
+            grid-column: 3;
+            grid-row: 1;
+        }
+        .col2-rows {
+            grid-column: 2;
+            grid-row: 1 / 4;
+        }
+        .col1-row3 {
+            grid-column: 1;
+            grid-row: 3;
+        }
+        .col3-row3 {
+            grid-column: 3;
+            grid-row: 3;
+        }
     }
 }
 
@@ -111,7 +109,7 @@
         content: '';
         flex: 1;
         height: 1px;
-        background-color: var(--divider-color, var(--border, #21262d));
+        background-color: var(--divider-color, #21262d);
     }
 }
 
@@ -219,45 +217,6 @@
     animation: shimmer 3s linear infinite;
 }
 
-// ─── Decorative orbs ─────────────────────────────────────────────────────────
-.orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-    z-index: 0;
-
-    &-teal-lg {
-        width: 520px;
-        height: 520px;
-        background: radial-gradient(circle, rgba(45, 212, 191, 0.12) 0%, transparent 70%);
-        animation: glowPulse 6s ease-in-out infinite;
-    }
-    &-teal-sm {
-        width: 260px;
-        height: 260px;
-        background: radial-gradient(circle, rgba(45, 212, 191, 0.09) 0%, transparent 70%);
-        animation: glowPulse 8s ease-in-out infinite reverse;
-    }
-    &-blue {
-        width: 380px;
-        height: 380px;
-        background: radial-gradient(circle, rgba(59, 130, 246, 0.07) 0%, transparent 70%);
-        animation: glowPulse 10s ease-in-out infinite;
-    }
-}
-
-// ─── Dot-grid pattern ────────────────────────────────────────────────────────
-.dot-grid {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background-image: radial-gradient(circle, rgba(45, 212, 191, 0.12) 1px, transparent 1px);
-    background-size: 32px 32px;
-    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
-}
-
 // ─── Stat card ───────────────────────────────────────────────────────────────
 .stat-card {
     transition:
@@ -294,9 +253,29 @@
     }
 }
 
+// ─── Section forms-grid: text before preview on xs ─────────────────────────
+.section-forms-grid {
+    grid-template-columns: 1fr 1fr;
+
+    @media (max-width: 1200px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// ─── Hero code card: constrain on xs ─────────────────────────────────────────
+@media (max-width: 639px) {
+    figure pre {
+        font-size: 0.72rem !important;
+    }
+}
+
 // ─── Spinning ring ───────────────────────────────────────────────────────────
 .ring-spin {
     animation: spin-slow 18s linear infinite;
+    z-index: -1;
+    @media (max-width: 639px) {
+        display: none;
+    }
 }
 
 // ─── Skip link focus ─────────────────────────────────────────────────────────
