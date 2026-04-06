@@ -70,12 +70,12 @@ export class AuthComponent extends BaseComponent implements OnInit {
     ];
 
     public readonly themeColors: { name: string; hex: string }[] = [
+        { name: 'teal', hex: '#2dd4bf' }, // Default
         { name: 'red', hex: '#ef4444' },
         { name: 'orange', hex: '#f97316' },
         { name: 'blue', hex: '#3b82f6' },
-        { name: 'teal', hex: '#2dd4bf' },
     ];
-    public selectedColor = '#ef4444';
+    public selectedColor = this.themeColors[0].hex;
     public selectedAppearance: 'dark' | 'light' | 'system' = 'dark';
     public borderRadius = 8;
     private readonly themeService = inject(WidgetThemeService);
@@ -185,8 +185,6 @@ export class AuthComponent extends BaseComponent implements OnInit {
     public readonly heroStats: { value: string; label: string }[] = [
         { value: '5 min', label: 'Integration time' },
         { value: '99.9%', label: 'Uptime SLA' },
-        { value: '30+', label: 'Languages' },
-        { value: '10M+', label: 'Auth events/day' },
     ];
 
     public readonly mockFormFields: { label: string; placeholder: string }[] = [
@@ -216,7 +214,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
             label: 'Everything You Need to Manage Users',
             accentWord: 'Securely',
             desc: 'Replace months of custom authentication development with production-ready components built for security, scale, and speed.',
-            gridCols: 'grid-cols-4 md:grid-cols-3 sm:grid-cols-2',
+            gridCols: 'grid-cols-1 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4',
             cards: this.platformFeatures,
         },
         {
@@ -225,7 +223,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
             label: 'What You Can',
             accentWord: 'Build',
             desc: '',
-            gridCols: 'grid-cols-5 md:grid-cols-3 sm:grid-cols-2',
+            gridCols: 'grid-cols-1 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4',
             cards: this.buildCards,
         },
     ];
