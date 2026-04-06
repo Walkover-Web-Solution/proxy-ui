@@ -64,6 +64,7 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     @ViewChild('drawer') drawer!: MatDrawer;
 
     public readonly isMobile = signal<boolean>(false);
+    private readonly originUrl: string | null;
 
     protected readonly PublicScriptType = PublicScriptType;
     protected readonly WidgetTheme = WidgetTheme;
@@ -108,6 +109,7 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     ];
 
     constructor() {
+        this.originUrl = this.resolveOriginUrl();
         this.breakpointObserver
             .observe([Breakpoints.XSmall, Breakpoints.Small])
             .pipe(takeUntilDestroyed())
@@ -145,9 +147,50 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
         setTimeout(() => this.launchWidget());
     }
 
+    private originStorageKey(): string | null {
+        const refId = this.route.snapshot.paramMap.get('referenceId');
+        return refId ? `widget_preview_origin_${refId}` : null;
+    }
+
+    private resolveOriginUrl(): string | null {
+        const storageKey = this.originStorageKey();
+
+        const fromState = this.router.getCurrentNavigation()?.extras?.state?.['originUrl'] as string | undefined;
+        if (fromState) {
+            try {
+                if (storageKey) {
+                    sessionStorage.setItem(storageKey, fromState);
+                }
+            } catch {
+                // sessionStorage unavailable (e.g. private browsing with storage blocked)
+                console.error('sessionStorage unavailable');
+            }
+            return fromState;
+        }
+
+        try {
+            if (storageKey) {
+                return sessionStorage.getItem(storageKey);
+            }
+        } catch {
+            // sessionStorage unavailable
+            console.error('sessionStorage unavailable');
+        }
+        return null;
+    }
+
     public goBack(): void {
-        if (window.history.length > 1) {
-            this.location.back();
+        const storageKey = this.originStorageKey();
+        try {
+            if (storageKey) {
+                sessionStorage.removeItem(storageKey);
+            }
+        } catch {
+            // sessionStorage unavailable
+            console.error('sessionStorage unavailable');
+        }
+        if (this.originUrl) {
+            this.router.navigateByUrl(this.originUrl);
         } else {
             this.router.navigate(['/app/features']);
         }
@@ -225,7 +268,7 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
             config['authToken'] = this.authToken()?.trim();
             if (tab === PublicScriptType.UserManagement) {
                 // Enables the Role & Permission tab in the User Management widget
-                config['isRolePermission'] = true;
+                config['isRolePermission'] = false;
             }
         }
 

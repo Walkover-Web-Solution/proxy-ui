@@ -48,15 +48,15 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
                         <p class="heading"><strong>Plan Details</strong></p>
                         <div class="form-grid">
                             @for (fieldKey of getPlanFormFields(); track fieldKey) {
-                            <ng-container
-                                *ngTemplateOutlet="
-                                    inputField;
-                                    context: {
-                                        fieldControl: planForm.get('createPlanForm').get(fieldKey),
-                                        fieldConfig: getFieldConfig(fieldKey)
-                                    }
-                                "
-                            ></ng-container>
+                                <ng-container
+                                    *ngTemplateOutlet="
+                                        inputField;
+                                        context: {
+                                            fieldControl: planForm.get('createPlanForm').get(fieldKey),
+                                            fieldConfig: getFieldConfig(fieldKey),
+                                        }
+                                    "
+                                ></ng-container>
                             }
                         </div>
                     </div>
@@ -69,15 +69,15 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
                         <mat-card-content>
                             <div class="form-grid">
                                 @for (fieldKey of getChargesFormFields(); track fieldKey) {
-                                <ng-container
-                                    *ngTemplateOutlet="
-                                        inputField;
-                                        context: {
-                                            fieldControl: planForm.get('chargesForm').get(fieldKey),
-                                            fieldConfig: getFieldConfig(fieldKey)
-                                        }
-                                    "
-                                ></ng-container>
+                                    <ng-container
+                                        *ngTemplateOutlet="
+                                            inputField;
+                                            context: {
+                                                fieldControl: planForm.get('chargesForm').get(fieldKey),
+                                                fieldConfig: getFieldConfig(fieldKey),
+                                            }
+                                        "
+                                    ></ng-container>
                                 }
                                 <div>
                                     <button mat-flat-button color="primary" (click)="addCharge()" type="button">
@@ -87,50 +87,50 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
                             </div>
 
                             <!-- Charges List -->
-                            @if (chargesList && chargesList.length > 0){
-                            <div class="charges-table-container">
-                                <h4>Added Charges:</h4>
-                                <table mat-table [dataSource]="chargesList" class="charges-table">
-                                    <!-- Metric Column -->
-                                    <ng-container matColumnDef="metric">
-                                        <th mat-header-cell *matHeaderCellDef>Metric</th>
-                                        <td mat-cell *matCellDef="let charge">
-                                            {{
-                                                getBillableMetricName(
-                                                    charge.billable_metric_id || charge.lago_billable_metric_id
-                                                ) || 'N/A'
-                                            }}
-                                        </td>
-                                    </ng-container>
+                            @if (chargesList && chargesList.length > 0) {
+                                <div class="charges-table-container">
+                                    <h4>Added Charges:</h4>
+                                    <table mat-table [dataSource]="chargesList" class="charges-table">
+                                        <!-- Metric Column -->
+                                        <ng-container matColumnDef="metric">
+                                            <th mat-header-cell *matHeaderCellDef>Metric</th>
+                                            <td mat-cell *matCellDef="let charge">
+                                                {{
+                                                    getBillableMetricName(
+                                                        charge.billable_metric_id || charge.lago_billable_metric_id
+                                                    ) || 'N/A'
+                                                }}
+                                            </td>
+                                        </ng-container>
 
-                                    <!-- Min Amount Column -->
-                                    <ng-container matColumnDef="maxLimit">
-                                        <th mat-header-cell *matHeaderCellDef>Max Limit</th>
-                                        <td mat-cell *matCellDef="let charge">
-                                            {{ charge.max_limit || 'N/A' }}
-                                        </td>
-                                    </ng-container>
+                                        <!-- Min Amount Column -->
+                                        <ng-container matColumnDef="maxLimit">
+                                            <th mat-header-cell *matHeaderCellDef>Max Limit</th>
+                                            <td mat-cell *matCellDef="let charge">
+                                                {{ charge.max_limit || 'N/A' }}
+                                            </td>
+                                        </ng-container>
 
-                                    <!-- Actions Column -->
-                                    <ng-container matColumnDef="actions">
-                                        <th mat-header-cell *matHeaderCellDef>Actions</th>
-                                        <td mat-cell *matCellDef="let charge; let i = index">
-                                            <button
-                                                mat-icon-button
-                                                color="warn"
-                                                (click)="removeCharge(i)"
-                                                matTooltip="Remove Charge"
-                                                type="button"
-                                            >
-                                                <mat-icon>delete</mat-icon>
-                                            </button>
-                                        </td>
-                                    </ng-container>
+                                        <!-- Actions Column -->
+                                        <ng-container matColumnDef="actions">
+                                            <th mat-header-cell *matHeaderCellDef>Actions</th>
+                                            <td mat-cell *matCellDef="let charge; let i = index">
+                                                <button
+                                                    mat-icon-button
+                                                    color="warn"
+                                                    (click)="removeCharge(i)"
+                                                    matTooltip="Remove Charge"
+                                                    type="button"
+                                                >
+                                                    <mat-icon>delete</mat-icon>
+                                                </button>
+                                            </td>
+                                        </ng-container>
 
-                                    <tr mat-header-row *matHeaderRowDef="chargesDisplayedColumns"></tr>
-                                    <tr mat-row *matRowDef="let row; columns: chargesDisplayedColumns"></tr>
-                                </table>
-                            </div>
+                                        <tr mat-header-row *matHeaderRowDef="chargesDisplayedColumns"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: chargesDisplayedColumns"></tr>
+                                    </table>
+                                </div>
                             }
                         </mat-card-content>
                     </mat-card>
@@ -147,94 +147,112 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
         <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
             @if (fieldConfig?.type === 'checkbox') {
-            <div class="mb-3">
-                <mat-slide-toggle [formControl]="fieldControl" [required]="fieldConfig?.is_required">
-                    {{ fieldConfig?.label }}
-                </mat-slide-toggle>
-                @if (fieldConfig?.hint) {<mat-hint class="d-block">{{ fieldConfig?.hint }}</mat-hint
-                >} @if (getFieldError(fieldControl, fieldConfig)) {
-                <mat-error class="d-block">{{ getFieldError(fieldControl, fieldConfig) }}</mat-error>
-                }
-            </div>
-            } @if (fieldConfig?.type !== 'checkbox') {
-            <mat-form-field appearance="outline" class="w-full mb-3">
-                <mat-label>
-                    {{ fieldConfig?.label }}
-                </mat-label>
+                <div class="mb-3">
+                    <mat-slide-toggle [formControl]="fieldControl" [required]="fieldConfig?.is_required">
+                        {{ fieldConfig?.label }}
+                    </mat-slide-toggle>
+                    @if (fieldConfig?.hint) {
+                        <mat-hint class="d-block">{{ fieldConfig?.hint }}</mat-hint>
+                    }
+                    @if (getFieldError(fieldControl, fieldConfig)) {
+                        <mat-error class="d-block">{{ getFieldError(fieldControl, fieldConfig) }}</mat-error>
+                    }
+                </div>
+            }
+            @if (fieldConfig?.type !== 'checkbox') {
+                <mat-form-field appearance="outline" class="w-full mb-3">
+                    <mat-label>
+                        {{ fieldConfig?.label }}
+                    </mat-label>
 
-                <!-- Text Input -->
-                @if (fieldConfig?.type === 'text' || fieldConfig?.type === 'number') {
-                <input
-                    matInput
-                    [formControl]="fieldControl"
-                    [type]="fieldConfig?.type === 'number' ? 'number' : 'text'"
-                    [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
-                    [required]="fieldConfig?.is_required"
-                />
-                }
+                    <!-- Text Input -->
+                    @if (fieldConfig?.type === 'text' || fieldConfig?.type === 'number') {
+                        <input
+                            matInput
+                            [formControl]="fieldControl"
+                            [type]="fieldConfig?.type === 'number' ? 'number' : 'text'"
+                            [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
+                            [required]="fieldConfig?.is_required"
+                        />
+                    }
 
-                <!-- Chip List -->
-                @if(fieldConfig?.type === 'chipList'){ @if(fieldConfig?.label){
-                <mat-chip-grid #chipList [formControl]="fieldControl" aria-label="{{ fieldConfig?.label }}">
-                    @for (item of getChipListArray(fieldConfig?.label + '_0'); track item) {
-                    <mat-chip-row
-                        (removed)="updateChipListValues('delete', fieldConfig?.label + '_0', fieldControl, item)"
-                        [removable]="!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)"
-                        disableRipple
-                    >
-                        {{ item }}
-                        @if(!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)){
-                        <button type="button" matChipRemove>
-                            <mat-icon>cancel</mat-icon>
-                        </button>
+                    <!-- Chip List -->
+                    @if (fieldConfig?.type === 'chipList') {
+                        @if (fieldConfig?.label) {
+                            <mat-chip-grid #chipList [formControl]="fieldControl" aria-label="{{ fieldConfig?.label }}">
+                                @for (item of getChipListArray(fieldConfig?.label + '_0'); track item) {
+                                    <mat-chip-row
+                                        (removed)="
+                                            updateChipListValues(
+                                                'delete',
+                                                fieldConfig?.label + '_0',
+                                                fieldControl,
+                                                item
+                                            )
+                                        "
+                                        [removable]="!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)"
+                                        disableRipple
+                                    >
+                                        {{ item }}
+                                        @if (!getChipListReadOnlySet(fieldConfig?.label + '_0')?.has(item)) {
+                                            <button type="button" matChipRemove>
+                                                <mat-icon>cancel</mat-icon>
+                                            </button>
+                                        }
+                                    </mat-chip-row>
+                                }
+                                <input
+                                    matChipInput
+                                    type="text"
+                                    [placeholder]="
+                                        (getChipListArray(fieldConfig?.label + '_0')?.length || 0) > 0
+                                            ? ''
+                                            : 'Enter ' + fieldConfig?.label
+                                    "
+                                    autocomplete="off"
+                                    [matChipInputFor]="chipList"
+                                    [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
+                                    (matChipInputTokenEnd)="
+                                        updateChipListValues(
+                                            'add',
+                                            fieldConfig?.label + '_0',
+                                            fieldControl,
+                                            $event.value
+                                        )
+                                    "
+                                />
+                            </mat-chip-grid>
                         }
-                    </mat-chip-row>
                     }
-                    <input
-                        matChipInput
-                        type="text"
-                        [placeholder]="
-                            (getChipListArray(fieldConfig?.label + '_0')?.length || 0) > 0
-                                ? ''
-                                : 'Enter ' + fieldConfig?.label
-                        "
-                        autocomplete="off"
-                        [matChipInputFor]="chipList"
-                        [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
-                        (matChipInputTokenEnd)="
-                            updateChipListValues('add', fieldConfig?.label + '_0', fieldControl, $event.value)
-                        "
-                    />
-                </mat-chip-grid>
-                } }
 
-                <!-- Textarea -->
-                @if(fieldConfig?.type === 'textarea'){
-                <textarea
-                    matInput
-                    [formControl]="fieldControl"
-                    [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
-                    rows="3"
-                    [required]="fieldConfig?.is_required"
-                ></textarea>
-                }
-
-                <!-- Select -->
-                @if(fieldConfig?.type === 'select'){
-                <mat-select [formControl]="fieldControl" [required]="fieldConfig?.is_required">
-                    @for (option of getSelectOptions(fieldConfig); track option.value) {
-                    <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                    <!-- Textarea -->
+                    @if (fieldConfig?.type === 'textarea') {
+                        <textarea
+                            matInput
+                            [formControl]="fieldControl"
+                            [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
+                            rows="3"
+                            [required]="fieldConfig?.is_required"
+                        ></textarea>
                     }
-                </mat-select>
-                }
 
-                <!-- Chip List -->
-                @if(fieldConfig?.hint) {
-                <mat-hint>{{ fieldConfig?.hint }}</mat-hint>
-                } @if(getFieldError(fieldControl, fieldConfig)) {
-                <mat-error>{{ getFieldError(fieldControl, fieldConfig) }}</mat-error>
-                }
-            </mat-form-field>
+                    <!-- Select -->
+                    @if (fieldConfig?.type === 'select') {
+                        <mat-select [formControl]="fieldControl" [required]="fieldConfig?.is_required">
+                            @for (option of getSelectOptions(fieldConfig); track option.value) {
+                                <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                            }
+                        </mat-select>
+                    }
+
+                    <!-- Chip List -->
+                    @if (fieldConfig?.hint) {
+                        <mat-hint>{{ fieldConfig?.hint }}</mat-hint>
+                    }
+                    @if (getFieldError(fieldControl, fieldConfig)) {
+                        <mat-error>{{ getFieldError(fieldControl, fieldConfig) }}</mat-error>
+                    }
+                </mat-form-field>
             }
         </ng-template>
     `,

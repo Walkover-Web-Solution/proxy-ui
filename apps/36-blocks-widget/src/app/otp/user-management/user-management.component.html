@@ -1,4 +1,4 @@
-<div #container [class.dark]="isDark()" class="flex h-full flex-col bg-transparent overflow-y-auto">
+<div #container [class.dark]="isDark()" class="flex h-full flex-col dark:bg-gray-900 overflow-y-auto">
     <!-- ── Top header bar (hidden when only Members tab is available) ───── -->
     @if (hasMultipleTabs()) {
         <header
@@ -35,7 +35,7 @@
                         <button
                             type="button"
                             (click)="tabChange(UserManagementTab.Members)"
-                            [attr.aria-current]="activeTab === UserManagementTab.Members ? ariaCurrent : null"
+                            [attr.aria-current]="activeTab === UserManagementTab.Members ? navCurrentVal : null"
                             [ngClass]="
                                 activeTab === UserManagementTab.Members
                                     ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
@@ -64,7 +64,7 @@
                         <button
                             type="button"
                             (click)="tabChange(UserManagementTab.Roles)"
-                            [attr.aria-current]="activeTab === UserManagementTab.Roles ? ariaCurrent : null"
+                            [attr.aria-current]="activeTab === UserManagementTab.Roles ? navCurrentVal : null"
                             [ngClass]="
                                 activeTab === UserManagementTab.Roles
                                     ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
@@ -93,7 +93,7 @@
                         <button
                             type="button"
                             (click)="tabChange(UserManagementTab.Permissions)"
-                            [attr.aria-current]="activeTab === UserManagementTab.Permissions ? ariaCurrent : null"
+                            [attr.aria-current]="activeTab === UserManagementTab.Permissions ? navCurrentVal : null"
                             [ngClass]="
                                 activeTab === UserManagementTab.Permissions
                                     ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400'
@@ -132,7 +132,7 @@
                         <button
                             type="button"
                             (click)="tabChange(UserManagementTab.Members)"
-                            [attr.aria-current]="activeTab === UserManagementTab.Members ? ariaCurrent : null"
+                            [attr.aria-current]="activeTab === UserManagementTab.Members ? navCurrentVal : null"
                             [ngClass]="
                                 activeTab === UserManagementTab.Members
                                     ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
@@ -160,7 +160,7 @@
                         <button
                             type="button"
                             (click)="tabChange(UserManagementTab.Roles)"
-                            [attr.aria-current]="activeTab === UserManagementTab.Roles ? ariaCurrent : null"
+                            [attr.aria-current]="activeTab === UserManagementTab.Roles ? navCurrentVal : null"
                             [ngClass]="
                                 activeTab === UserManagementTab.Roles
                                     ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'
@@ -188,7 +188,7 @@
                         <button
                             type="button"
                             (click)="tabChange(UserManagementTab.Permissions)"
-                            [attr.aria-current]="activeTab === UserManagementTab.Permissions ? ariaCurrent : null"
+                            [attr.aria-current]="activeTab === UserManagementTab.Permissions ? navCurrentVal : null"
                             [ngClass]="
                                 activeTab === UserManagementTab.Permissions
                                     ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold'

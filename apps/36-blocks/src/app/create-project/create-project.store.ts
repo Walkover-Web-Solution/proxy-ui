@@ -23,7 +23,11 @@ export interface ICreateProjectInitialState {
 
 @Injectable()
 export class CreateProjectComponentStore extends ComponentStore<ICreateProjectInitialState> {
-    constructor(private service: CreateProjectService, private toast: PrimeNgToastService, private router: Router) {
+    constructor(
+        private service: CreateProjectService,
+        private toast: PrimeNgToastService,
+        private router: Router
+    ) {
         super({
             projects: null,
             environments: null,

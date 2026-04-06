@@ -31,17 +31,19 @@ import { HttpClient } from '@angular/common/http';
         <h2 matDialogTitle>{{ dialogTitle }}</h2>
         <mat-dialog-content>
             <form [formGroup]="metricForm" class="metric-form">
-                @for (fieldKey of getFormFields(); track fieldKey) { @if (!isFieldHidden(fieldKey)) {
-                <ng-container
-                    *ngTemplateOutlet="
-                        inputField;
-                        context: {
-                            fieldControl: metricForm.get(fieldKey),
-                            fieldConfig: getFieldConfig(fieldKey)
-                        }
-                    "
-                ></ng-container>
-                } }
+                @for (fieldKey of getFormFields(); track fieldKey) {
+                    @if (!isFieldHidden(fieldKey)) {
+                        <ng-container
+                            *ngTemplateOutlet="
+                                inputField;
+                                context: {
+                                    fieldControl: metricForm.get(fieldKey),
+                                    fieldConfig: getFieldConfig(fieldKey),
+                                }
+                            "
+                        ></ng-container>
+                    }
+                }
             </form>
         </mat-dialog-content>
 
@@ -54,57 +56,61 @@ import { HttpClient } from '@angular/common/http';
 
         <ng-template #inputField let-fieldControl="fieldControl" let-fieldConfig="fieldConfig">
             @if (fieldConfig?.type === 'checkbox') {
-            <div class="mb-1">
-                <mat-slide-toggle [formControl]="fieldControl" [required]="fieldConfig?.is_required">
-                    {{ fieldConfig?.label }}
-                </mat-slide-toggle>
-                @if (fieldConfig?.hint) {
-                <mat-hint class="d-block">{{ fieldConfig?.hint }}</mat-hint>
-                } @if (getFieldError(fieldControl, fieldConfig)) {
-                <mat-error class="d-block">{{ getFieldError(fieldControl, fieldConfig) }}</mat-error>
-                }
-            </div>
-            } @if (fieldConfig?.type !== 'checkbox') {
-            <mat-form-field appearance="outline" class="w-full mb-1">
-                <mat-label>
-                    {{ fieldConfig?.label }}
-                </mat-label>
-
-                <!-- Text Input -->
-                @if (fieldConfig?.type === 'text' || fieldConfig?.type === 'number') {
-                <input
-                    matInput
-                    [formControl]="fieldControl"
-                    [type]="fieldConfig?.type === 'number' ? 'number' : 'text'"
-                    [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
-                    [required]="fieldConfig?.is_required"
-                />
-                }
-
-                <!-- Textarea -->
-                @if (fieldConfig?.type === 'textarea') {
-                <textarea
-                    matInput
-                    [formControl]="fieldControl"
-                    [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
-                    rows="3"
-                    [required]="fieldConfig?.is_required"
-                ></textarea>
-                }
-
-                <!-- Select -->
-                @if (fieldConfig?.type === 'select') {
-                <mat-select [formControl]="fieldControl" [required]="fieldConfig?.is_required">
-                    @for (option of getSelectOptions(fieldConfig); track option.value) {
-                    <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                <div class="mb-1">
+                    <mat-slide-toggle [formControl]="fieldControl" [required]="fieldConfig?.is_required">
+                        {{ fieldConfig?.label }}
+                    </mat-slide-toggle>
+                    @if (fieldConfig?.hint) {
+                        <mat-hint class="d-block">{{ fieldConfig?.hint }}</mat-hint>
                     }
-                </mat-select>
-                } @if (fieldConfig?.hint) {
-                <mat-hint>{{ fieldConfig?.hint }}</mat-hint>
-                } @if (getFieldError(fieldControl, fieldConfig)) {
-                <mat-error>{{ getFieldError(fieldControl, fieldConfig) }}</mat-error>
-                }
-            </mat-form-field>
+                    @if (getFieldError(fieldControl, fieldConfig)) {
+                        <mat-error class="d-block">{{ getFieldError(fieldControl, fieldConfig) }}</mat-error>
+                    }
+                </div>
+            }
+            @if (fieldConfig?.type !== 'checkbox') {
+                <mat-form-field appearance="outline" class="w-full mb-1">
+                    <mat-label>
+                        {{ fieldConfig?.label }}
+                    </mat-label>
+
+                    <!-- Text Input -->
+                    @if (fieldConfig?.type === 'text' || fieldConfig?.type === 'number') {
+                        <input
+                            matInput
+                            [formControl]="fieldControl"
+                            [type]="fieldConfig?.type === 'number' ? 'number' : 'text'"
+                            [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
+                            [required]="fieldConfig?.is_required"
+                        />
+                    }
+
+                    <!-- Textarea -->
+                    @if (fieldConfig?.type === 'textarea') {
+                        <textarea
+                            matInput
+                            [formControl]="fieldControl"
+                            [placeholder]="fieldConfig?.placeholder || 'Enter ' + fieldConfig?.label"
+                            rows="3"
+                            [required]="fieldConfig?.is_required"
+                        ></textarea>
+                    }
+
+                    <!-- Select -->
+                    @if (fieldConfig?.type === 'select') {
+                        <mat-select [formControl]="fieldControl" [required]="fieldConfig?.is_required">
+                            @for (option of getSelectOptions(fieldConfig); track option.value) {
+                                <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                            }
+                        </mat-select>
+                    }
+                    @if (fieldConfig?.hint) {
+                        <mat-hint>{{ fieldConfig?.hint }}</mat-hint>
+                    }
+                    @if (getFieldError(fieldControl, fieldConfig)) {
+                        <mat-error>{{ getFieldError(fieldControl, fieldConfig) }}</mat-error>
+                    }
+                </mat-form-field>
             }
         </ng-template>
     `,

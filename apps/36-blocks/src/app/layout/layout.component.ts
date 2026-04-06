@@ -152,9 +152,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
                     scriptElement.setAttribute('hideCloseButton', 'true');
 
                     scriptElement.onload = () => {
-                        if (this.router.url.startsWith('/widget-preview')) {
-                            return;
-                        }
                         const payload = {
                             variables: {
                                 variables: JSON.stringify({
@@ -167,6 +164,9 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
                             fullScreen: true,
                         };
                         setTimeout(() => {
+                            if (this.router.url.startsWith('/widget-preview')) {
+                                return;
+                            }
                             (window as any).SendDataToChatbot(payload);
                             (window as any).openChatbot();
                         }, 2000);
@@ -204,6 +204,9 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
         document.body.classList.remove('dark-theme', 'light-theme');
         document.body.classList.add(hostClass);
         this.isDarkMode.set(isDarkMode);
+
+        // This GTWY chatbot config for forced theme
+        (window as any).Chatbot?.sendData({ theme: isDarkMode ? 'dark' : 'light' });
     }
 
     public isMobileDevice() {

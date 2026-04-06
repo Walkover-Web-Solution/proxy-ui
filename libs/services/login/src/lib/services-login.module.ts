@@ -7,7 +7,10 @@ import { Observable } from 'rxjs';
     providedIn: 'root',
 })
 export class LoginService {
-    constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any) {}
+    constructor(
+        private http: HttpWrapperService,
+        @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any
+    ) {}
 
     public googleLogin(authToken: string): Observable<BaseResponse<ILoginResponse, void>> {
         const options = Object.assign({}, DEFAULT_OPTIONS);

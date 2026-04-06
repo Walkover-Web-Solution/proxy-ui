@@ -6,7 +6,11 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CanActivateRouteGuard {
-    constructor(private cookieService: CookieService, private authService: AuthService, private router: Router) {}
+    constructor(
+        private cookieService: CookieService,
+        private authService: AuthService,
+        private router: Router
+    ) {}
 
     canActivate(
         route: ActivatedRouteSnapshot,

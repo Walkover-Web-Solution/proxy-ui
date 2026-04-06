@@ -8,7 +8,11 @@ import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 
 @Injectable()
 export class RootEffects {
-    constructor(private actions$: Actions, private toast: PrimeNgToastService, private rootService: RootService) {}
+    constructor(
+        private actions$: Actions,
+        private toast: PrimeNgToastService,
+        private rootService: RootService
+    ) {}
 
     getClientSettings$ = createEffect(() =>
         this.actions$.pipe(

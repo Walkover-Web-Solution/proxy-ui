@@ -29,6 +29,11 @@
                     "apps/36-blocks-widget/src/favicon.ico",
                     "apps/36-blocks-widget/src/assets",
                     {
+                        "glob": "**/*",
+                        "input": "apps/shared/assets/images",
+                        "output": "assets/images"
+                    },
+                    {
                         "glob": "intl-tel-input-custom.css",
                         "input": "apps/shared/assets/utils",
                         "output": "assets/utils"
