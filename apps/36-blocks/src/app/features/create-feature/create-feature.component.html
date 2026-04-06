@@ -806,6 +806,28 @@
     }
 </ng-template>
 <ng-template #previewAuthorization let-authorizationDetails="authorizationDetails" let-previewVersion="previewVersion">
+    @if (
+        isEditMode &&
+        featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
+        featureForm.get('brandingDetails.version')?.value === 'v2'
+    ) {
+        <section class="mb-6 flex items-center justify-center">
+            <mat-button-toggle-group class="w-full" hideSingleSelectionIndicator aria-label="Input position">
+                <mat-button-toggle
+                    class="w-1/2"
+                    [class.mat-button-toggle-checked]="previewInputPosition !== 'bottom'"
+                    (click)="previewInputPosition = 'top'"
+                    >Input on Top</mat-button-toggle
+                >
+                <mat-button-toggle
+                    class="w-1/2"
+                    [class.mat-button-toggle-checked]="previewInputPosition === 'bottom'"
+                    (click)="previewInputPosition = 'bottom'"
+                    >Input on Bottom</mat-button-toggle
+                >
+            </mat-button-toggle-group>
+        </section>
+    }
     <div
         class="auth-credentials px-6 w-[350px] border border-color rounded-8 max-h-[650px] overflow-y-auto max-lg:w-full"
         [class.dark]="featureForm.get('brandingDetails.theme')?.value === WidgetTheme.Dark"
@@ -2294,26 +2316,6 @@
         </div>
         <!-- Right: Preview -->
         <div class="branding-preview position-sticky top-0">
-            @if (
-                isEditMode &&
-                featureForm.get('serviceDetails')?.at(3)?.controls?.is_enable?.value &&
-                featureForm.get('brandingDetails.version')?.value === 'v2'
-            ) {
-                <section class="mb-6 flex items-center justify-center">
-                    <mat-button-toggle-group hideSingleSelectionIndicator aria-label="Input position">
-                        <mat-button-toggle
-                            [class.mat-button-toggle-checked]="previewInputPosition !== 'bottom'"
-                            (click)="previewInputPosition = 'top'"
-                            >Input on Top</mat-button-toggle
-                        >
-                        <mat-button-toggle
-                            [class.mat-button-toggle-checked]="previewInputPosition === 'bottom'"
-                            (click)="previewInputPosition = 'bottom'"
-                            >Input on Bottom</mat-button-toggle
-                        >
-                    </mat-button-toggle-group>
-                </section>
-            }
             @if (!isEditMode) {
                 <ng-container
                     *ngTemplateOutlet="previewAuthorization; context: { previewVersion: 'v2' }"
