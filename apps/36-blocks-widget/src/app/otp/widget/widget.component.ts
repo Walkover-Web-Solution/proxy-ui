@@ -149,6 +149,14 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     public readonly showRegistration = signal<boolean>(false);
     public readonly showForgotPassword = signal<boolean>(false);
     public readonly animate = signal<boolean>(false);
+
+    public readonly forgotPasswordStep = signal<1 | 2>(1);
+    public readonly forgotPasswordPrefillEmail = signal<string>('');
+    public readonly forgotPasswordUser = signal<string>('');
+    public readonly forgotPasswordLoading = signal<boolean>(false);
+    public readonly forgotPasswordError = signal<string>('');
+    public readonly forgotPasswordResendSeconds = signal<number>(0);
+    private forgotPasswordResendTimer: any = null;
     public isCreateAccountTextAppended: boolean = false;
     public otpWidgetData;
     public loginWidgetData;
@@ -310,6 +318,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     public closeOverlayDialog(): void {
         this.dialogPortalRef?.detach();
         this.dialogPortalRef = null;
+        if (this.forgotPasswordResendTimer) {
+            clearInterval(this.forgotPasswordResendTimer);
+            this.forgotPasswordResendTimer = null;
+        }
         this.ngZone.run(() => {
             this.showRegistration.set(false);
             this.showForgotPassword.set(false);
@@ -827,8 +839,13 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
      */
     private openForgotPasswordDialog(prefillEmail: string = ''): void {
         this.ngZone.run(() => {
+            this.forgotPasswordStep.set(1);
+            this.forgotPasswordPrefillEmail.set(prefillEmail);
+            this.forgotPasswordUser.set('');
+            this.forgotPasswordLoading.set(false);
+            this.forgotPasswordError.set('');
+            this.forgotPasswordResendSeconds.set(0);
             this.showForgotPassword.set(true);
-            this.otpWidgetService.openForgotPassword(prefillEmail);
             this.cdr.detectChanges();
             setTimeout(() => {
                 if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
@@ -838,485 +855,130 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         });
     }
 
-    /**
-     * Shows the forgot password form (Step 2: Send OTP)
-     */
-    private showForgotPasswordForm(loginContainer: HTMLElement, buttonsData: any, prefillEmail: string = ''): void {
-        // Clear the login container
-        loginContainer.innerHTML = '';
-
-        const selectWidgetTheme = this.widgetTheme() as any;
-        const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
-        const isDarkFP = this.themeService.isDark();
-
-        // Create back button
-        const backButton: HTMLButtonElement = this.renderer.createElement('button');
-        backButton.type = 'button';
-        backButton.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#5f6368">
-                <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/>
-            </svg>
-        `;
-        backButton.style.cssText = `
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-        `;
-        backButton.addEventListener('click', () => {
-            this.restoreLoginForm(loginContainer, buttonsData);
-        });
-
-        // Create title
-        const title: HTMLElement = this.renderer.createElement('div');
-        title.textContent = 'Reset Password';
-        title.style.cssText = `
-            font-size: 16px;
-            line-height: 20px;
-            font-weight: 600;
-            color: ${isDarkFP ? '#ffffff' : '#1f2937'};
-            margin-bottom: 16px;
-        `;
-
-        // Create email/mobile input
-        const inputField = this.renderer.createElement('div');
-        inputField.style.cssText = `
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 16px;
-        `;
-
-        const emailInput: HTMLInputElement = this.renderer.createElement('input');
-        emailInput.type = 'text';
-        emailInput.placeholder = 'Email or Mobile';
-        emailInput.autocomplete = 'off';
-        emailInput.value = prefillEmail;
-        emailInput.style.cssText = `
-            width: 100%;
-            height: 44px;
-            padding: 0 16px;
-            border: ${isDarkFP ? '1px solid #ffffff' : '1px solid #cbd5e1'};
-            border-radius: ${borderRadius};
-            background: ${isDarkFP ? 'transparent' : '#ffffff'};
-            color: ${isDarkFP ? '#ffffff' : '#1f2937'};
-            font-size: 14px;
-            outline: none;
-            box-sizing: border-box;
-        `;
-
-        // Create error text
-        const errorText: HTMLElement = this.renderer.createElement('div');
-        errorText.style.cssText = `
-            color: #d14343;
-            font-size: 14px;
-            min-height: 16px;
-            display: none;
-            margin-top: 4px;
-        `;
-
-        // Create send OTP button
-        const sendOtpButton: HTMLButtonElement = this.renderer.createElement('button');
-        sendOtpButton.textContent = 'Send OTP';
-        sendOtpButton.style.cssText = `
-            height: 44px;
-            padding: 0 12px;
-            background-color: #3f51b5;
-            color: #ffffff;
-            border: none;
-            border-radius: ${borderRadius};
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-            margin-top: 8px;
-        `;
-
-        const handleSendOtp = () => {
-            const userDetails = emailInput.value?.trim();
-            if (!userDetails) {
-                this.domBuilder.setInlineError(errorText, 'Email or Mobile is required.');
-                return;
-            }
-
-            this.domBuilder.setInlineError(errorText, '');
-            const originalText = sendOtpButton.textContent || 'Send OTP';
-            sendOtpButton.disabled = true;
-            sendOtpButton.textContent = 'Please wait...';
-
-            const payload = {
-                state: buttonsData?.state || this.loginWidgetData?.state,
-                user: userDetails,
-            };
-
-            this.otpService.resetPassword(payload).subscribe(
-                (res) => {
-                    sendOtpButton.disabled = false;
-                    sendOtpButton.textContent = originalText;
-
-                    if (res?.hasError) {
-                        this.domBuilder.setInlineError(
-                            errorText,
-                            res?.errors?.[0] || 'Unable to send OTP. Please try again.'
-                        );
-                        return;
-                    }
-
-                    // Move to step 3: Change Password
-                    this.showChangePasswordForm(loginContainer, buttonsData, userDetails);
-                },
-                (error) => {
-                    sendOtpButton.disabled = false;
-                    sendOtpButton.textContent = originalText;
-                    this.domBuilder.setInlineError(
-                        errorText,
-                        error?.error?.errors?.[0] || 'Failed to send OTP. Please try again.'
-                    );
-                }
-            );
-        };
-
-        sendOtpButton.addEventListener('click', handleSendOtp);
-        emailInput.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                handleSendOtp();
-            }
-        });
-
-        // Append elements
-        this.renderer.appendChild(inputField, emailInput);
-        this.renderer.appendChild(loginContainer, backButton);
-        this.renderer.appendChild(loginContainer, title);
-        this.renderer.appendChild(loginContainer, inputField);
-        this.renderer.appendChild(loginContainer, errorText);
-        this.renderer.appendChild(loginContainer, sendOtpButton);
+    public closeForgotPasswordDialog(): void {
+        if (this.forgotPasswordResendTimer) {
+            clearInterval(this.forgotPasswordResendTimer);
+            this.forgotPasswordResendTimer = null;
+        }
+        this.showForgotPassword.set(false);
+        this.forgotPasswordError.set('');
+        this.cdr.detectChanges();
     }
 
-    /**
-     * Shows the change password form (Step 3: Enter OTP and new password)
-     */
-    private showChangePasswordForm(loginContainer: HTMLElement, buttonsData: any, userDetails: string): void {
-        // Clear the login container
-        loginContainer.innerHTML = '';
+    public goToForgotPasswordStep1(): void {
+        this.forgotPasswordStep.set(1);
+        this.forgotPasswordError.set('');
+    }
 
-        const selectWidgetTheme = this.widgetTheme() as any;
-        const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
-        const isDarkCP = this.themeService.isDark();
-
-        let remainingSeconds = 15;
-        let timerInterval: any = null;
-
-        // Create back button
-        const backButton: HTMLButtonElement = this.renderer.createElement('button');
-        backButton.type = 'button';
-        backButton.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#5f6368">
-                <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/>
-            </svg>
-        `;
-        backButton.style.cssText = `
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-        `;
-        backButton.addEventListener('click', () => {
-            if (timerInterval) clearInterval(timerInterval);
-            this.showForgotPasswordForm(loginContainer, buttonsData, userDetails);
-        });
-
-        // Create title
-        const title: HTMLElement = this.renderer.createElement('div');
-        title.textContent = 'Change Password';
-        title.style.cssText = `
-            font-size: 16px;
-            line-height: 20px;
-            font-weight: 600;
-            color: ${isDarkCP ? '#ffffff' : '#1f2937'};
-            margin-bottom: 8px;
-        `;
-
-        // User info with change link
-        const userInfo: HTMLElement = this.renderer.createElement('p');
-        userInfo.style.cssText = `
-            font-size: 14px;
-            color: ${isDarkCP ? '#e5e7eb' : '#5d6164'};
-            margin: 0 0 8px 0;
-        `;
-        userInfo.innerHTML = `${userDetails} <a href="javascript:void(0)" style="color: #1976d2; text-decoration: none;">Change</a>`;
-        userInfo.querySelector('a')?.addEventListener('click', () => {
-            if (timerInterval) clearInterval(timerInterval);
-            this.showForgotPasswordForm(loginContainer, buttonsData, userDetails);
-        });
-
-        // Resend OTP button
-        const resendButton: HTMLButtonElement = this.renderer.createElement('button');
-        resendButton.type = 'button';
-        resendButton.style.cssText = `
-            background: transparent;
-            border: none;
-            color: #1976d2;
-            font-size: 14px;
-            cursor: pointer;
-            padding: 4px 0;
-            margin-bottom: 12px;
-        `;
-
-        const updateResendButton = () => {
-            if (remainingSeconds > 0) {
-                resendButton.textContent = `Resend OTP ${remainingSeconds}`;
-                resendButton.disabled = true;
-                resendButton.style.opacity = '0.6';
-            } else {
-                resendButton.textContent = 'Resend OTP';
-                resendButton.disabled = false;
-                resendButton.style.opacity = '1';
+    public sendForgotPasswordOtp(emailValue: string, buttonsData: any): void {
+        const userDetails = emailValue?.trim();
+        if (!userDetails) {
+            this.forgotPasswordError.set('Email or Mobile is required.');
+            return;
+        }
+        this.forgotPasswordError.set('');
+        this.forgotPasswordLoading.set(true);
+        const payload = { state: buttonsData?.state || this.loginWidgetData?.state, user: userDetails };
+        this.otpService.resetPassword(payload).subscribe(
+            (res) => {
+                this.forgotPasswordLoading.set(false);
+                if (res?.hasError) {
+                    this.forgotPasswordError.set(res?.errors?.[0] || 'Unable to send OTP. Please try again.');
+                    return;
+                }
+                this.forgotPasswordUser.set(userDetails);
+                this.forgotPasswordStep.set(2);
+                this.forgotPasswordError.set('');
+                this.startForgotPasswordResendTimer();
+            },
+            (error) => {
+                this.forgotPasswordLoading.set(false);
+                this.forgotPasswordError.set(error?.error?.errors?.[0] || 'Failed to send OTP. Please try again.');
             }
-        };
-        updateResendButton();
+        );
+    }
 
-        // Start timer
-        timerInterval = setInterval(() => {
-            if (remainingSeconds > 0) {
-                remainingSeconds--;
-                updateResendButton();
+    public resendForgotPasswordOtp(buttonsData: any): void {
+        if (this.forgotPasswordResendSeconds() > 0) return;
+        const payload = { state: buttonsData?.state || this.loginWidgetData?.state, user: this.forgotPasswordUser() };
+        this.otpService.resetPassword(payload).subscribe(
+            (res) => {
+                if (!res?.hasError) {
+                    this.startForgotPasswordResendTimer();
+                }
+            },
+            () => {}
+        );
+    }
+
+    private startForgotPasswordResendTimer(): void {
+        if (this.forgotPasswordResendTimer) clearInterval(this.forgotPasswordResendTimer);
+        this.forgotPasswordResendSeconds.set(15);
+        this.forgotPasswordResendTimer = setInterval(() => {
+            const remainingSeconds = this.forgotPasswordResendSeconds() - 1;
+            if (remainingSeconds <= 0) {
+                clearInterval(this.forgotPasswordResendTimer);
+                this.forgotPasswordResendTimer = null;
+                this.forgotPasswordResendSeconds.set(0);
             } else {
-                clearInterval(timerInterval);
+                this.forgotPasswordResendSeconds.set(remainingSeconds);
             }
         }, 1000);
+    }
 
-        resendButton.addEventListener('click', () => {
-            if (remainingSeconds > 0) return;
-
-            resendButton.disabled = true;
-            const payload = {
-                state: buttonsData?.state || this.loginWidgetData?.state,
-                user: userDetails,
-            };
-
-            this.otpService.resetPassword(payload).subscribe(
-                (res) => {
-                    if (!res?.hasError) {
-                        remainingSeconds = 15;
-                        updateResendButton();
-                        timerInterval = setInterval(() => {
-                            if (remainingSeconds > 0) {
-                                remainingSeconds--;
-                                updateResendButton();
-                            } else {
-                                clearInterval(timerInterval);
-                            }
-                        }, 1000);
-                    }
-                    resendButton.disabled = remainingSeconds > 0;
-                },
-                () => {
-                    resendButton.disabled = false;
-                }
-            );
-        });
-
-        // Create OTP input
-        const otpInput: HTMLInputElement = this.renderer.createElement('input');
-        otpInput.type = 'number';
-        otpInput.placeholder = 'Enter OTP';
-        otpInput.autocomplete = 'off';
-        otpInput.style.cssText = `
-            width: 100%;
-            height: 44px;
-            padding: 0 16px;
-            border: ${isDarkCP ? '1px solid #ffffff' : '1px solid #cbd5e1'};
-            border-radius: ${borderRadius};
-            background: ${isDarkCP ? 'transparent' : '#ffffff'};
-            color: ${isDarkCP ? '#ffffff' : '#1f2937'};
-            font-size: 14px;
-            outline: none;
-            box-sizing: border-box;
-            margin-bottom: 12px;
-        `;
-
-        // Create password input
-        const passwordInput: HTMLInputElement = this.renderer.createElement('input');
-        passwordInput.type = 'password';
-        passwordInput.placeholder = 'New Password';
-        passwordInput.autocomplete = 'off';
-        passwordInput.style.cssText = otpInput.style.cssText;
-
-        // Create confirm password input
-        const confirmPasswordInput: HTMLInputElement = this.renderer.createElement('input');
-        confirmPasswordInput.type = 'password';
-        confirmPasswordInput.placeholder = 'Confirm Password';
-        confirmPasswordInput.autocomplete = 'off';
-        confirmPasswordInput.style.cssText = otpInput.style.cssText;
-
-        // Password hint
-        const passwordHint: HTMLElement = this.renderer.createElement('p');
-        passwordHint.textContent =
-            'Password should contain at least one Capital Letter, one Small Letter, one Digit and one Symbol (min 8 characters)';
-        passwordHint.style.cssText = `
-            font-size: 12px;
-            color: ${isDarkCP ? '#9ca3af' : '#6b7280'};
-            margin: -8px 0 12px 0;
-        `;
-
-        // Create error text
-        const errorText: HTMLElement = this.renderer.createElement('div');
-        errorText.style.cssText = `
-            color: #d14343;
-            font-size: 14px;
-            min-height: 16px;
-            display: none;
-            margin-bottom: 8px;
-        `;
-
-        // Create submit button
-        const submitButton: HTMLButtonElement = this.renderer.createElement('button');
-        submitButton.textContent = 'Submit';
-        submitButton.style.cssText = `
-            height: 44px;
-            padding: 0 12px;
-            background-color: #3f51b5;
-            color: #ffffff;
-            border: none;
-            border-radius: ${borderRadius};
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-        `;
-
+    public submitForgotPasswordChange(otp: string, password: string, confirmPassword: string, buttonsData: any): void {
         const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-
-        const handleSubmit = () => {
-            const otp = otpInput.value?.trim();
-            const password = passwordInput.value;
-            const confirmPassword = confirmPasswordInput.value;
-
-            if (!otp) {
-                this.domBuilder.setInlineError(errorText, 'OTP is required.');
-                return;
-            }
-            if (!password) {
-                this.domBuilder.setInlineError(errorText, 'Password is required.');
-                return;
-            }
-            if (password.length < 8) {
-                this.domBuilder.setInlineError(errorText, 'Password must be at least 8 characters.');
-                return;
-            }
-            if (!PASSWORD_REGEX.test(password)) {
-                this.domBuilder.setInlineError(
-                    errorText,
-                    'Password should contain at least one Capital Letter, one Small Letter, one Digit and one Symbol.'
-                );
-                return;
-            }
-            if (password !== confirmPassword) {
-                this.domBuilder.setInlineError(errorText, 'Passwords do not match.');
-                return;
-            }
-
-            this.domBuilder.setInlineError(errorText, '');
-            const originalText = submitButton.textContent || 'Submit';
-            submitButton.disabled = true;
-            submitButton.textContent = 'Please wait...';
-
-            const encodedPassword = this.encryptPassword(password);
-            const payload = {
-                state: buttonsData?.state || this.loginWidgetData?.state,
-                user: userDetails,
-                password: encodedPassword,
-                otp: parseInt(otp, 10),
-            };
-
-            this.otpService.verfyResetPasswordOtp(payload).subscribe(
-                (res) => {
-                    submitButton.disabled = false;
-                    submitButton.textContent = originalText;
-
-                    if (res?.hasError) {
-                        this.domBuilder.setInlineError(
-                            errorText,
-                            res?.errors?.[0] || 'Unable to reset password. Please try again.'
-                        );
-                        return;
-                    }
-
-                    // Clear timer and go back to login form
-                    if (timerInterval) clearInterval(timerInterval);
-                    this.restoreLoginForm(loginContainer, buttonsData);
-                },
-                (error) => {
-                    submitButton.disabled = false;
-                    submitButton.textContent = originalText;
-                    this.domBuilder.setInlineError(
-                        errorText,
-                        error?.error?.errors?.[0] || 'Failed to reset password. Please try again.'
-                    );
-                }
-            );
-        };
-
-        submitButton.addEventListener('click', handleSubmit);
-
-        // Append elements
-        this.renderer.appendChild(loginContainer, backButton);
-        this.renderer.appendChild(loginContainer, title);
-        this.renderer.appendChild(loginContainer, userInfo);
-        this.renderer.appendChild(loginContainer, resendButton);
-        this.renderer.appendChild(loginContainer, otpInput);
-        this.renderer.appendChild(loginContainer, passwordInput);
-        this.renderer.appendChild(loginContainer, confirmPasswordInput);
-        this.renderer.appendChild(loginContainer, passwordHint);
-        this.renderer.appendChild(loginContainer, errorText);
-        this.renderer.appendChild(loginContainer, submitButton);
-    }
-
-    /**
-     * Restores the login form after forgot password flow
-     */
-    private restoreLoginForm(loginContainer: HTMLElement, buttonsData: any): void {
-        // Clear the container and rebuild the login form content
-        loginContainer.innerHTML = '';
-
-        // Rebuild the login form content within the same container
-        this.buildLoginFormContent(loginContainer, buttonsData);
-    }
-
-    private buildLoginFormContent(loginContainer: HTMLElement, buttonsData: any): void {
-        const selectWidgetTheme = this.widgetTheme() as any;
-        const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
-        const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
-
-        const title: HTMLElement = this.renderer.createElement('div');
-        title.textContent = 'Login';
-        title.style.cssText = `font-size:16px;line-height:20px;font-weight:600;color:${
-            this.themeService.isDark() ? '#ffffff' : '#1f2937'
-        };margin-bottom:0;text-align:center;`;
-
-        const loginButton: HTMLButtonElement = this.renderer.createElement('button');
-        loginButton.textContent = 'Login';
-        loginButton.style.cssText = `height:44px;padding:0 12px;background-color:#3f51b5;color:#ffffff;border:none;border-radius:${borderRadius};font-size:14px;font-weight:600;cursor:pointer;width:100%;box-shadow:0 1px 2px rgba(0,0,0,0.08);margin-top:4px;`;
-
-        const onForgotPassword = (email: string) => this.showForgotPasswordForm(loginContainer, buttonsData, email);
-
-        const logoUrl = selectWidgetTheme?.ui_preferences?.logo_url;
-        const logoElement = this.domBuilder.createLogoElement(this.renderer, logoUrl);
-        if (logoElement) {
-            this.renderer.appendChild(loginContainer, logoElement);
+        if (!otp?.trim()) {
+            this.forgotPasswordError.set('OTP is required.');
+            return;
         }
-        this.renderer.appendChild(loginContainer, title);
-
-        this.buildLoginFields(loginContainer, buttonsData, loginButton, borderRadius, primaryColor, onForgotPassword);
+        if (!password) {
+            this.forgotPasswordError.set('Password is required.');
+            return;
+        }
+        if (password.length < 8) {
+            this.forgotPasswordError.set('Password must be at least 8 characters.');
+            return;
+        }
+        if (!PASSWORD_REGEX.test(password)) {
+            this.forgotPasswordError.set(
+                'Password should contain at least one Capital Letter, one Small Letter, one Digit and one Symbol.'
+            );
+            return;
+        }
+        if (password !== confirmPassword) {
+            this.forgotPasswordError.set('Passwords do not match.');
+            return;
+        }
+        this.forgotPasswordError.set('');
+        this.forgotPasswordLoading.set(true);
+        const encodedPassword = this.encryptPassword(password);
+        const payload = {
+            state: buttonsData?.state || this.loginWidgetData?.state,
+            user: this.forgotPasswordUser(),
+            password: encodedPassword,
+            otp: parseInt(otp, 10),
+        };
+        this.otpService.verfyResetPasswordOtp(payload).subscribe(
+            (res) => {
+                this.forgotPasswordLoading.set(false);
+                if (res?.hasError) {
+                    this.forgotPasswordError.set(res?.errors?.[0] || 'Unable to reset password. Please try again.');
+                    return;
+                }
+                if (this.forgotPasswordResendTimer) {
+                    clearInterval(this.forgotPasswordResendTimer);
+                    this.forgotPasswordResendTimer = null;
+                }
+                this.closeForgotPasswordDialog();
+            },
+            (error) => {
+                this.forgotPasswordLoading.set(false);
+                this.forgotPasswordError.set(
+                    error?.error?.errors?.[0] || 'Failed to reset password. Please try again.'
+                );
+            }
+        );
     }
 
     private buildLoginFields(
