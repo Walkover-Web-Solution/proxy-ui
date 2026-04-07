@@ -45,7 +45,9 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     constructor() {
         super();
 
-        this._store.dispatch(logInActions.getUserAction());
+        if (isPlatformBrowser(this.platformId)) {
+            this._store.dispatch(logInActions.getUserAction());
+        }
         this.router.events
             .pipe(
                 filter((event) => event instanceof NavigationEnd),
@@ -98,7 +100,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
             }
         });
 
-        if (environment.env !== 'local') {
+        if (environment.env !== 'local' && isPlatformBrowser(this.platformId)) {
             this.versionCheckService.initVersionCheck(environment.proxyServer + '/version.json');
 
             this.versionCheckService.onVersionChange$.pipe(takeUntil(this.destroy$)).subscribe((isChanged: boolean) => {
