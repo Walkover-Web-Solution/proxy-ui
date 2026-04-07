@@ -33,6 +33,11 @@ mat-form-field {
                 }
             }
         }
+        .mat-mdc-form-field-subscript-wrapper {
+            .mat-mdc-form-field-error-wrapper {
+                padding-inline: 4px !important;
+            }
+        }
         &.no-padding {
             .mat-mdc-form-field-subscript-wrapper {
                 display: none;

@@ -73,7 +73,7 @@
                 </div>
                 <div class="drp-calendar" [class.show-calendar]="showRangePicker">
                     <div class="drp-inputs">
-                        <form [formGroup]="range">
+                        <form [formGroup]="range" class="ml-1">
                             <mat-form-field appearance="outline" class="mat-form-custom">
                                 <mat-label>From</mat-label>
                                 <input
@@ -129,7 +129,7 @@
                         </button>
                         <div class="flex gap-x-4">
                             <button matButton (click)="closeDialog()">Cancel</button>
-                            <button matButton="filled" class="flat-default" (click)="resetDate()">Reset</button>
+                            <button matButton="outlined" (click)="resetDate()">Reset</button>
                             <button
                                 matButton="filled"
                                 [disabled]="

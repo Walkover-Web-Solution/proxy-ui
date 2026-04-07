@@ -90,7 +90,7 @@
             </button>
             <mat-menu #emailExportButtonMenu="matMenu" class="filter-menu" xPosition="before">
                 <div (click)="$event.stopPropagation(); (false)">
-                    <div class="pb-0 pt-6 px-6" [formGroup]="logsFilterForm">
+                    <div class="p-4" [formGroup]="logsFilterForm">
                         <mat-form-field appearance="outline" floatLabel="always" class="w-full">
                             <mat-label>Select request type</mat-label>
                             <mat-select placeholder="Select request types" formControlName="requestType" multiple>
@@ -125,7 +125,7 @@
                             </mat-select>
                         </mat-form-field>
                         @if (logsFilterForm.controls.range.value) {
-                            <div class="flex gap-4">
+                            <div class="flex gap-2">
                                 <mat-form-field appearance="outline" class="w-full" floatLabel="always">
                                     <mat-label>From</mat-label>
                                     <input
@@ -161,26 +161,25 @@
                                         [charactersToRemove]="['e', '+', '-', '.', ' ']"
                                     />
                                     @if (logsFilterForm.controls.to.invalid) {
-                                        @if (logsFilterForm.get('to').errors?.pattern) {
-                                            <mat-error>Invalid Number</mat-error>
-                                        }
-                                        @if (logsFilterForm.get('to').errors?.maxlength; as maxlengthError) {
-                                            <mat-error
-                                                >Max {{ maxlengthError.requiredLength }} number are allowed</mat-error
-                                            >
-                                        }
+                                        <mat-error>
+                                            @if (logsFilterForm.get('to').errors?.pattern) {
+                                                Invalid Number
+                                            } @else if (logsFilterForm.get('to').errors?.maxlength; as maxlengthError) {
+                                                Max {{ maxlengthError.requiredLength }} number allowed
+                                            }
+                                        </mat-error>
                                     }
                                 </mat-form-field>
                             </div>
                         }
                     </div>
                     <mat-divider></mat-divider>
-                    <div class="flex items-center gap-x-4 action-button p-6">
+                    <div class="flex items-center gap-x-4 action-button px-4">
+                        <button matButton (click)="closeMyMenu()">Cancel</button>
+                        <button matButton="outlined" class="flat-default" (click)="resetParam()">Reset</button>
                         <button matButton="filled" (click)="applyFilter()" [disabled]="logsFilterForm.invalid">
                             Apply
                         </button>
-                        <button matButton="filled" class="flat-default" (click)="resetParam()">Reset</button>
-                        <button matButton (click)="closeMyMenu()">Cancel</button>
                     </div>
                 </div>
             </mat-menu>

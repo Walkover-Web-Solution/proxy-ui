@@ -300,9 +300,9 @@ export class DateRangePickerComponent implements OnInit, OnDestroy {
     }
 
     public resetDate(): void {
-        this.selectedRangeValue.set(cloneDeep(this.initialSelectedDateRange));
         if (this.initialSelectedDateRange.start) {
-            this.setInputDate();
+            this.calenderDateRange = cloneDeep(this.initialSelectedDateRange);
+            this.setDateRange(this.initialSelectedDateRange.start, this.initialSelectedDateRange.end);
             this.applyDateRange();
         } else {
             this.selectedDateValue = 'Select Date Range';
