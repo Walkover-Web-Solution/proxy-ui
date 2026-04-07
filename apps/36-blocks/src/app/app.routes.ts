@@ -4,9 +4,9 @@ import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/comp
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
 export const appRoutes: Route[] = [
-    // { path: '', redirectTo: '', pathMatch: 'full' },
     {
         path: '',
+        pathMatch: 'full',
         loadComponent: () => import('./auth/auth.component').then((c) => c.AuthComponent),
     },
     {

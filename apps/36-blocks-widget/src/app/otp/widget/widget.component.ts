@@ -33,7 +33,7 @@ import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { distinctUntilChanged, filter, skip, take, takeUntil } from 'rxjs/operators';
 
-import { getSubscriptionPlans, getWidgetData, upgradeSubscription } from '../store/actions/otp.action';
+import { getSubscriptionPlans, getWidgetData, resetAll, upgradeSubscription } from '../store/actions/otp.action';
 import { IAppState } from '../store/app.state';
 import {
     selectGetOtpInProcess,
@@ -214,6 +214,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     ngOnInit() {
+        this.store.dispatch(resetAll());
         this._authToken$.set(this.authToken);
         this._type$.set(this.type);
         this.themeService.setInputTheme(this.theme);

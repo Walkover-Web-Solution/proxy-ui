@@ -324,6 +324,8 @@ const _otpReducer = createReducer(
     on(otpActions.getWidgetData, (state) => {
         return {
             ...state,
+            widgetData: null,
+            theme: null,
             widgetDataInProcess: true,
             widgetDataSuccess: false,
             errors: null,

@@ -2,6 +2,8 @@ import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import {
     AfterViewInit,
     Component,
+    Injector,
+    afterNextRender,
     inject,
     NgZone,
     signal,
@@ -60,6 +62,7 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     private toast = inject(PrimeNgToastService);
     private ngZone = inject(NgZone);
     private breakpointObserver = inject(BreakpointObserver);
+    private readonly _injector = inject(Injector);
 
     @ViewChild('drawer') drawer!: MatDrawer;
 
@@ -70,7 +73,7 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     protected readonly WidgetTheme = WidgetTheme;
     protected readonly proxyDomId = PROXY_DOM_ID;
 
-    protected readonly referenceId: string | null = this.route.snapshot.paramMap.get('referenceId');
+    protected readonly referenceId = signal<string | null>(this.route.snapshot.paramMap.get('referenceId'));
     private scriptLoaded = false;
 
     public activeTab = signal<PreviewTab>(PublicScriptType.Authorization);
@@ -80,15 +83,15 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     public viewMode = signal<'preview' | 'code'>('preview');
 
     public readonly demoDiv = computed(() =>
-        this.referenceId ? `<div id="${this.referenceId}"></div>` : '<div id="<reference_id>"></div>'
+        this.referenceId() ? `<div id="${this.referenceId()}"></div>` : '<div id="<reference_id>"></div>'
     );
 
     public readonly proxyAuthScript = computed(() =>
-        ProxyAuthScript(environment.proxyServer, this.referenceId ?? '<reference_id>', this.activeTab())
+        ProxyAuthScript(environment.proxyServer, this.referenceId() ?? '<reference_id>', this.activeTab())
     );
 
     public readonly codeSnippet = computed(() =>
-        buildCodeSnippet(this.referenceId ?? '<reference_id>', this.activeTab())
+        buildCodeSnippet(this.referenceId() ?? '<reference_id>', this.activeTab())
     );
 
     private readonly systemDark = signal(
@@ -121,6 +124,17 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
             mq.addEventListener('change', handler);
         }
 
+        this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
+            const newRefId = params.get('referenceId');
+            if (newRefId && newRefId !== this.referenceId()) {
+                this.referenceId.set(newRefId);
+                this.activeTab.set(PublicScriptType.Authorization);
+                this.authToken.set('');
+                this.viewMode.set('preview');
+                afterNextRender(() => this.launchWidget(), { injector: this._injector });
+            }
+        });
+
         this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
             const token = params.get('proxy_auth_token');
             const explicitTab = params.get('tab') as PreviewTab | null;
@@ -148,8 +162,7 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     }
 
     private originStorageKey(): string | null {
-        const refId = this.route.snapshot.paramMap.get('referenceId');
-        return refId ? `widget_preview_origin_${refId}` : null;
+        return this.referenceId() ? `widget_preview_origin_${this.referenceId()}` : null;
     }
 
     private resolveOriginUrl(): string | null {
@@ -228,14 +241,18 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     public launchWidget(): void {
         const tab = this.activeTab();
         const isAuthTab = tab === PublicScriptType.Authorization;
-        const domId = isAuthTab ? this.referenceId : this.proxyDomId;
+        const domId = isAuthTab ? this.referenceId() : this.proxyDomId;
+
+        // Remove any stale proxy-auth element left over from a previous widget
+        document.querySelectorAll('proxy-auth').forEach((el) => el.remove());
+
         const el = document.getElementById(domId);
         if (!el) return;
 
         el.innerHTML = '';
 
         const config: Record<string, any> = {
-            referenceId: this.referenceId,
+            referenceId: this.referenceId(),
             theme: this.theme(),
             target: '_blank',
             success: (data: unknown) => {

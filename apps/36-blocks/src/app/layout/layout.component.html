@@ -113,7 +113,7 @@
                         <ng-container *ngTemplateOutlet="displayPicture; context: { user: user }"></ng-container>
                     </button>
                 }
-                <mat-menu #menu="matMenu" class="profile-menu ml-1">
+                <mat-menu #menu="matMenu" class="profile-menu ml-1 w-[260px]">
                     <h4 class="m-0 py-2 px-6 text-dark font-medium">{{ user.displayName }}</h4>
                     <div mat-menu-item class="flex items-center gap-2" (click)="switchedDarkMode(!isDarkMode())">
                         <mat-icon class="mat-icon-18 material-icons-outlined">{{

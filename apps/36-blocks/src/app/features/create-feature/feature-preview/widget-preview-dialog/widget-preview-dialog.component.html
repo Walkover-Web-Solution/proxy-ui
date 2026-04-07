@@ -120,7 +120,7 @@
                         [class.items-center]="tab.id == PublicScriptType.Authorization"
                     >
                         <div
-                            [id]="tab.id === PublicScriptType.Authorization ? referenceId : proxyDomId"
+                            [id]="tab.id === PublicScriptType.Authorization ? referenceId() : proxyDomId"
                             [class]="tab.id != PublicScriptType.Authorization ? 'w-full h-full' : ''"
                         ></div>
                     </div>
