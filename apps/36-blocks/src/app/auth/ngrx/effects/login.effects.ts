@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, switchMap, take } from 'rxjs/operators';
 import { from, of } from 'rxjs';
@@ -10,6 +11,8 @@ import { LoginService } from '@proxy/services/login';
 
 @Injectable()
 export class LogInEffects {
+    private platformId = inject(PLATFORM_ID);
+
     constructor(
         private actions$: Actions,
         private authService: AuthService,
@@ -20,8 +23,11 @@ export class LogInEffects {
     getUserAction$ = createEffect(() =>
         this.actions$.pipe(
             ofType(logInActions.getUserAction),
-            exhaustMap(() =>
-                this.afAuth.authState.pipe(
+            exhaustMap(() => {
+                if (!isPlatformBrowser(this.platformId)) {
+                    return of(logInActions.NotAuthenticatedAction({ response: null }));
+                }
+                return this.afAuth.authState.pipe(
                     take(1),
                     switchMap((user) => {
                         if (user) {
@@ -47,8 +53,8 @@ export class LogInEffects {
                             return [logInActions.NotAuthenticatedAction({ response: null })];
                         }
                     })
-                )
-            )
+                );
+            })
         )
     );
 
@@ -118,7 +124,9 @@ export class LogInEffects {
             ofType(logInActions.logoutActionComplete),
             switchMap((p) => {
                 this.authService.clearTokenSync();
-                window.location.href = '/';
+                if (isPlatformBrowser(this.platformId)) {
+                    window.location.href = '/';
+                }
                 return this.loginService.logout().pipe(
                     switchMap((action) => {
                         return [];
