@@ -20,10 +20,7 @@ import {
     SimpleChanges,
     ViewChild,
     ViewEncapsulation,
-    ApplicationRef,
-    EnvironmentInjector,
     computed,
-    createComponent,
     effect,
     inject,
     signal,
@@ -33,7 +30,7 @@ import { META_TAG_ID, WidgetTheme, PublicScriptType } from '@proxy/constant';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
-import { distinctUntilChanged, filter, skip, take, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, take, takeUntil } from 'rxjs/operators';
 
 import { getSubscriptionPlans, getWidgetData, upgradeSubscription } from '../store/actions/otp.action';
 import { IAppState } from '../store/app.state';
@@ -58,7 +55,7 @@ import { environment } from 'apps/36-blocks-widget/src/environments/environment'
 import { InputFields, WidgetVersion } from './utility/model';
 import { WidgetPortalRef, WidgetPortalService } from '../service/widget-portal.service';
 
-import { THEME_COLORS, WIDGET_LAYOUT } from './theme.constants';
+import { THEME_COLORS } from './theme.constants';
 import { AuthButtonsComponent } from './auth-buttons/auth-buttons.component';
 import { AuthFooterComponent } from './auth-footer/auth-footer.component';
 import { InlineLoginComponent } from './inline-login/inline-login.component';
@@ -74,6 +71,9 @@ import { InlineLoginComponent } from './inline-login/inline-login.component';
         UserProfileComponent,
         UserManagementComponent,
         OrganizationDetailsComponent,
+        AuthButtonsComponent,
+        InlineLoginComponent,
+        AuthFooterComponent,
     ],
     templateUrl: './widget.component.html',
     encapsulation: ViewEncapsulation.ShadowDom,
@@ -98,6 +98,9 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     private readonly themeService = inject(WidgetThemeService);
     protected readonly WidgetTheme = WidgetTheme;
     protected readonly PublicScriptType = PublicScriptType;
+    protected readonly FeatureServiceIds = FeatureServiceIds;
+    protected readonly WidgetVersion = WidgetVersion;
+    protected readonly InputFields = InputFields;
 
     readonly viewMode = computed<PublicScriptType>(() => {
         const authToken = this._authToken$();
@@ -155,10 +158,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     private readonly otpUtilityService = inject(OtpUtilityService);
     private readonly subscriptionRenderer = inject(SubscriptionRendererService);
     private readonly domBuilder = inject(ProxyAuthDomBuilderService);
-    private readonly appRef = inject(ApplicationRef);
-    private readonly envInjector = inject(EnvironmentInjector);
-    private readonly mountedComponentRefs: any[] = [];
-    private iconOnlyButtonsRef: any = null;
     private readonly otpService = inject(OtpService);
 
     readonly isOtpInProcess = toSignal(this.store.pipe(select(selectGetOtpInProcess), distinctUntilChanged(isEqual)), {
@@ -176,9 +175,80 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         () => this.isOtpInProcess() || this.isResendOtpInProcess() || this.isVerifyOtpInProcess()
     );
     readonly showLogin = toSignal(this.otpWidgetService.showlogin, { initialValue: false });
+    readonly otpScriptReady = toSignal(this.otpWidgetService.scriptLoading.pipe(map((loading) => !loading)), {
+        initialValue: false,
+    });
 
     readonly widgetTheme = toSignal(this.store.pipe(select(selectWidgetTheme), distinctUntilChanged(isEqual)), {
         initialValue: null,
+    });
+
+    readonly widgetData = toSignal(this.store.pipe(select(selectWidgetData), distinctUntilChanged(isEqual)), {
+        initialValue: null,
+    });
+
+    readonly isAuthorizationMode = computed(
+        () => !this._authToken$() && this.viewMode() === PublicScriptType.Authorization
+    );
+
+    readonly authButtonTheme = computed(() => {
+        const theme = this.widgetTheme() as any;
+        const prefs = theme?.ui_preferences;
+        const isDark = this.themeService.isDark$();
+        const isV2 = this.version === WidgetVersion.V2;
+        return {
+            borderRadius: this.getBorderRadiusCssValue(prefs?.border_radius),
+            primaryColor: this.getPrimaryColorForCurrentTheme(prefs),
+            buttonColor: isV2 ? prefs?.button_color || '#3f51b5' : '#3f51b5',
+            buttonHoverColor: isV2 ? prefs?.button_hover_color || '#303f9f' : '#303f9f',
+            buttonTextColor: isV2 ? prefs?.button_text_color || '#ffffff' : '#ffffff',
+            signUpButtonText: prefs?.sign_up_button_text || 'Create an account',
+            isDark,
+        };
+    });
+
+    readonly sortedAuthButtons = computed(() => {
+        const data = this.widgetData();
+        if (!data?.length) return [];
+        const hasPasswordAuth = data.some(
+            (b: any) => b?.service_id === FeatureServiceIds.PasswordAuthentication && this.version !== WidgetVersion.V1
+        );
+        if (!hasPasswordAuth) return data;
+        const isTop = this.input_fields === InputFields.TOP;
+        return [...data].sort((a: any, b: any) => {
+            const aPw = a?.service_id === FeatureServiceIds.PasswordAuthentication;
+            const bPw = b?.service_id === FeatureServiceIds.PasswordAuthentication;
+            if (aPw === bPw) return 0;
+            return isTop ? (aPw ? -1 : 1) : aPw ? 1 : -1;
+        });
+    });
+
+    readonly hasPasswordAuthButton = computed(
+        () =>
+            this.widgetData()?.some(
+                (b: any) =>
+                    b?.service_id === FeatureServiceIds.PasswordAuthentication && this.version !== WidgetVersion.V1
+            ) ?? false
+    );
+
+    readonly socialButtons = computed(() =>
+        this.sortedAuthButtons().filter((b: any) => b?.service_id !== FeatureServiceIds.PasswordAuthentication)
+    );
+
+    readonly passwordAuthButton = computed(
+        () =>
+            this.sortedAuthButtons().find(
+                (b: any) =>
+                    b?.service_id === FeatureServiceIds.PasswordAuthentication && this.version !== WidgetVersion.V1
+            ) ?? null
+    );
+
+    readonly widgetHeader = computed(() => {
+        const theme = this.widgetTheme() as any;
+        return {
+            logoUrl: theme?.ui_preferences?.logo_url || '',
+            titleText: theme?.ui_preferences?.title || '',
+        };
     });
 
     private showSkeleton: boolean = false;
@@ -296,11 +366,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             this.clearSubscriptionPlans(this.referenceElement);
         }
         super.ngOnDestroy();
-        this.mountedComponentRefs.forEach((ref) => {
-            ref.destroy();
-        });
-        this.mountedComponentRefs.length = 0;
-        this.iconOnlyButtonsRef = null;
     }
 
     public closeOverlayDialog(): void {
@@ -349,25 +414,17 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         } else {
             this.setShowLogin(false);
             this.isUserProxyContainer = false;
-            this.show.set(false);
             this.animate.set(false);
             this.createAccountTextAppended = false;
 
             if (intial) {
                 if (this.type === PublicScriptType.Subscription) {
+                    this.show.set(false);
                     if (!this.isPreview && this.referenceElement) {
                         this.appendSubscriptionButton(this.referenceElement);
                     }
                 } else {
-                    this.showSkeleton = true;
-                    this.domBuilder.appendSkeletonLoader(this.renderer, this.referenceElement);
-                    this.addButtonsToReferenceElement(this.referenceElement);
-                    setTimeout(() => {
-                        if (this.showSkeleton) {
-                            this.showSkeleton = false;
-                            this.domBuilder.forceRemoveAllSkeletonLoaders(this.renderer, this.referenceElement);
-                        }
-                    }, 10000);
+                    this.show.set(true);
                 }
             }
         }
@@ -458,191 +515,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         this.subscriptionRenderer.injectSubscriptionStyles(this.themeService.isDark());
     }
 
-    private addButtonsToReferenceElement(element): void {
-        this.store
-            .pipe(
-                select(selectWidgetData),
-                filter((e) => !!e),
-                take(1)
-            )
-            .subscribe((widgetDataArray) => {
-                let buttonsProcessed = 0;
-                const totalButtons = widgetDataArray.length;
-
-                if (totalButtons > 0 && this.showSkeleton) {
-                    this.domBuilder.removeSkeletonLoader(this.renderer, element);
-                    this.domBuilder.appendSkeletonLoader(this.renderer, element);
-                } else if (totalButtons > 0 && !this.showSkeleton) {
-                    this.domBuilder.removeSkeletonLoader(this.renderer, element);
-                }
-
-                if (totalButtons === 0) {
-                    if (this.showSkeleton) {
-                        this.showSkeleton = false;
-                        this.domBuilder.removeSkeletonLoader(this.renderer, element);
-                    }
-                    if (!this.createAccountTextAppended) {
-                        this.appendCreateAccountText(element);
-                    }
-                    return;
-                }
-
-                // Pre-render logo + title at the very top before any buttons,
-                // so they always appear above all buttons.
-                const hasPasswordAuth = widgetDataArray.some(
-                    (b) => b?.service_id === FeatureServiceIds.PasswordAuthentication && this.version !== 'v1'
-                );
-                if (hasPasswordAuth) {
-                    this.prependLogoAndTitle(element);
-                }
-
-                // Sort so PasswordAuthentication is rendered in correct DOM position:
-                //   input_fields='top'    → form first, social buttons after  → sort PasswordAuth to front
-                //   input_fields='bottom' → social buttons first, form after  → sort PasswordAuth to back
-                const isInputFieldsTop = this.input_fields === 'top';
-                const sortedDataArray = hasPasswordAuth
-                    ? [...widgetDataArray].sort((a, b) => {
-                          const aPw = a?.service_id === FeatureServiceIds.PasswordAuthentication;
-                          const bPw = b?.service_id === FeatureServiceIds.PasswordAuthentication;
-                          if (aPw === bPw) return 0;
-                          return isInputFieldsTop ? (aPw ? -1 : 1) : aPw ? 1 : -1;
-                      })
-                    : widgetDataArray;
-
-                let otpButtonProcessed = false;
-                let otpTimeout: any = null;
-
-                const fallbackTimeout = setTimeout(() => {
-                    if (this.showSkeleton && !this.createAccountTextAppended) {
-                        this.showSkeleton = false;
-                        this.domBuilder.removeSkeletonLoader(this.renderer, element);
-                        const allButtons = element.querySelectorAll('button');
-                        allButtons.forEach((button) => {
-                            button.style.visibility = 'visible';
-                        });
-                        if (otpButtonProcessed || !this.hasOtpButton(widgetDataArray)) {
-                            this.appendCreateAccountText(element);
-                        }
-                    }
-                }, 8000);
-
-                const immediateFallback = setTimeout(() => {
-                    if (this.showSkeleton && !this.createAccountTextAppended) {
-                        this.showSkeleton = false;
-                        this.domBuilder.removeSkeletonLoader(this.renderer, element);
-                        this.domBuilder.forceRemoveAllSkeletonLoaders(this.renderer, this.referenceElement);
-                        const allButtons = element.querySelectorAll('button');
-                        allButtons.forEach((button) => {
-                            button.style.visibility = 'visible';
-                        });
-                        if (otpButtonProcessed || !this.hasOtpButton(widgetDataArray)) {
-                            this.appendCreateAccountText(element);
-                        }
-                    }
-                }, 3000);
-
-                for (const buttonsData of sortedDataArray) {
-                    if (buttonsData?.service_id === FeatureServiceIds.Msg91OtpService) {
-                        otpTimeout = setTimeout(() => {
-                            if (!otpButtonProcessed) {
-                                this.appendButton(element, buttonsData);
-
-                                const otpButtons = element.querySelectorAll(
-                                    'button[data-service-id="' + FeatureServiceIds.Msg91OtpService + '"]'
-                                );
-                                otpButtons.forEach((btn: HTMLElement) => {
-                                    btn.style.visibility = 'visible';
-                                });
-
-                                buttonsProcessed++;
-                                otpButtonProcessed = true;
-                                this.checkAndAppendCreateAccountText(
-                                    element,
-                                    buttonsProcessed,
-                                    totalButtons,
-                                    fallbackTimeout,
-                                    immediateFallback,
-                                    otpTimeout
-                                );
-                            }
-                        }, 4000);
-
-                        setTimeout(() => {
-                            const otpButtons = element.querySelectorAll(
-                                'button[data-service-id="' + FeatureServiceIds.Msg91OtpService + '"]'
-                            );
-                            otpButtons.forEach((btn: HTMLElement) => {
-                                if (btn.style.visibility === 'hidden') {
-                                    btn.style.visibility = 'visible';
-                                }
-                            });
-                        }, 3000);
-
-                        this.otpWidgetService.scriptLoading
-                            .pipe(
-                                skip(1),
-                                filter((e) => !e),
-                                take(1)
-                            )
-                            .subscribe(() => {
-                                if (!otpButtonProcessed) {
-                                    if (otpTimeout) {
-                                        clearTimeout(otpTimeout);
-                                    }
-                                    this.appendButton(element, buttonsData);
-
-                                    const otpButtons = element.querySelectorAll(
-                                        'button[data-service-id="' + FeatureServiceIds.Msg91OtpService + '"]'
-                                    );
-                                    otpButtons.forEach((btn: HTMLElement) => {
-                                        btn.style.visibility = 'visible';
-                                    });
-
-                                    buttonsProcessed++;
-                                    otpButtonProcessed = true;
-                                    this.checkAndAppendCreateAccountText(
-                                        element,
-                                        buttonsProcessed,
-                                        totalButtons,
-                                        fallbackTimeout,
-                                        immediateFallback,
-                                        otpTimeout
-                                    );
-                                }
-                            });
-                    } else {
-                        if (
-                            buttonsData?.service_id !== FeatureServiceIds.PasswordAuthentication ||
-                            (buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication &&
-                                this.version === 'v1')
-                        ) {
-                            this.appendButton(element, buttonsData);
-                            buttonsProcessed++;
-                            this.checkAndAppendCreateAccountText(
-                                element,
-                                buttonsProcessed,
-                                totalButtons,
-                                fallbackTimeout,
-                                immediateFallback,
-                                otpTimeout
-                            );
-                        } else {
-                            this.appendPasswordAuthenticationButtonV2(element, buttonsData, totalButtons);
-                            buttonsProcessed++;
-                            this.checkAndAppendCreateAccountText(
-                                element,
-                                buttonsProcessed,
-                                totalButtons,
-                                fallbackTimeout,
-                                immediateFallback,
-                                otpTimeout
-                            );
-                        }
-                    }
-                }
-            });
-    }
-
     /**
      * Maps ui_preferences.border_radius to CSS value.
      * Values: 'none' | 'small' | 'medium' | 'large' -> 0 | 4px | 8px | 12px
@@ -666,37 +538,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     /**
-     * Renders logo + title at the very top of the reference element
-     * before any social/OTP/password buttons are appended.
-     * This ensures logo and title always appear above all buttons.
-     */
-    private prependLogoAndTitle(element: HTMLElement): void {
-        const selectWidgetTheme = this.widgetTheme() as any;
-        const logoUrl: string = selectWidgetTheme?.ui_preferences?.logo_url || '';
-        const titleText: string = selectWidgetTheme?.ui_preferences?.title || '';
-        const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
-
-        if (logoUrl) {
-            const logoWrapper: HTMLDivElement = this.renderer.createElement('div');
-            logoWrapper.style.cssText = `width:${WIDGET_LAYOUT.widthV2};display:flex;justify-content:center;margin:${WIDGET_LAYOUT.gutterH} ${WIDGET_LAYOUT.gutterH} 4px ${WIDGET_LAYOUT.gutterH};`;
-            const logoEl: HTMLImageElement = this.renderer.createElement('img');
-            logoEl.src = logoUrl;
-            logoEl.alt = 'logo';
-            logoEl.style.cssText = 'max-height:64px;width:auto;display:block;';
-            logoWrapper.appendChild(logoEl);
-            element.appendChild(logoWrapper);
-        }
-
-        if (titleText) {
-            const titleEl: HTMLDivElement = this.renderer.createElement('div');
-            titleEl.textContent = titleText;
-            titleEl.setAttribute('data-widget-title', 'true');
-            titleEl.style.cssText = `font-size:16px;line-height:20px;font-weight:600;color:${primaryColor};margin:0 ${WIDGET_LAYOUT.gutterH} 20px ${WIDGET_LAYOUT.gutterH};text-align:center;width:${WIDGET_LAYOUT.widthV2};font-family:${WIDGET_LAYOUT.fontFamily};`;
-            element.appendChild(titleEl);
-        }
-    }
-
-    /**
      * Returns primary color from ui_preferences for the current effective theme.
      * If theme is 'system', resolves via prefers-color-scheme.
      */
@@ -714,164 +555,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             : (uiPreferences?.light_theme_primary_color ?? colors.primaryColorFallback);
     }
 
-    public appendPasswordAuthenticationButtonV2(element: HTMLElement, buttonsData: any, totalButtons: number): void {
-        if (this.showSkeleton) {
-            this.showSkeleton = false;
-            this.domBuilder.removeSkeletonLoader(this.renderer, element);
-        }
-        const selectWidgetTheme = this.widgetTheme() as any;
-        const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
-        const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
-        const isV2 = this.version === WidgetVersion.V2;
-        const buttonColor = isV2 ? selectWidgetTheme?.ui_preferences?.button_color || '#3f51b5' : '#3f51b5';
-        const buttonHoverColor = isV2 ? selectWidgetTheme?.ui_preferences?.button_hover_color || '#303f9f' : '#303f9f';
-        const buttonTextColor = isV2 ? selectWidgetTheme?.ui_preferences?.button_text_color || '#ffffff' : '#ffffff';
-        const isInputFieldsTop = this.input_fields === 'top';
-
-        const ref = createComponent(InlineLoginComponent, { environmentInjector: this.envInjector });
-        ref.setInput('buttonsData', buttonsData);
-        ref.setInput('loginWidgetData', this.loginWidgetData);
-        ref.setInput('version', this.version);
-        ref.setInput('borderRadius', borderRadius);
-        ref.setInput('primaryColor', primaryColor);
-        ref.setInput('buttonColor', buttonColor);
-        ref.setInput('buttonHoverColor', buttonHoverColor);
-        ref.setInput('buttonTextColor', buttonTextColor);
-        ref.setInput('totalButtons', totalButtons);
-        ref.setInput('inputFieldsPosition', this.input_fields);
-        ref.instance.forgotPasswordClicked.subscribe((_email: string) => this.setShowLogin(true));
-        ref.instance.loginSuccess.subscribe((res: any) => this.returnSuccessObj(res));
-        ref.instance.loginFailure.subscribe((err: any) => this.returnFailureObj(err));
-        ref.instance.registrationRequired.subscribe((username: string) => this.setShowRegistration(true, username));
-        this.appRef.attachView(ref.hostView);
-        this.mountedComponentRefs.push(ref);
-        const domNode = (ref.hostView as any).rootNodes[0] as HTMLElement;
-
-        // Logo+title are pre-rendered at top via prependLogoAndTitle().
-        // input_fields='top'    → form goes right after logo/title, divider after form, social buttons after divider
-        // input_fields='bottom' → social buttons appended first (via appendButton), form appended last, divider before form
-        if (isInputFieldsTop) {
-            // Insert form right after logo/title (which are the only children so far when sorted first)
-            element.appendChild(domNode);
-        } else {
-            // Social buttons were appended first; form goes at the end
-            element.appendChild(domNode);
-        }
-        ref.changeDetectorRef.detectChanges();
-
-        if (totalButtons > 1) {
-            const dividerContainer = this.domBuilder.createOrDivider(this.renderer, primaryColor);
-            if (isInputFieldsTop) {
-                // Divider goes AFTER the form (social buttons will insert before divider via appendButton)
-                const nextSibling = domNode.nextSibling;
-                if (nextSibling) {
-                    element.insertBefore(dividerContainer, nextSibling);
-                } else {
-                    element.appendChild(dividerContainer);
-                }
-            } else {
-                // Divider goes BEFORE the form (social buttons were already appended before form)
-                element.insertBefore(dividerContainer, domNode);
-            }
-        }
-    }
-    private checkAndAppendCreateAccountText(
-        element,
-        buttonsProcessed,
-        totalButtons,
-        fallbackTimeout?,
-        immediateFallback?,
-        otpTimeout?
-    ): void {
-        if (buttonsProcessed === totalButtons) {
-            if (fallbackTimeout) {
-                clearTimeout(fallbackTimeout);
-            }
-            if (immediateFallback) {
-                clearTimeout(immediateFallback);
-            }
-            if (otpTimeout) {
-                clearTimeout(otpTimeout);
-            }
-
-            if (this.showSkeleton) {
-                this.showSkeleton = false;
-                this.domBuilder.removeSkeletonLoader(this.renderer, element);
-                this.domBuilder.forceRemoveAllSkeletonLoaders(this.renderer, this.referenceElement);
-
-                const allButtons = element.querySelectorAll('button');
-                allButtons.forEach((button) => {
-                    button.style.visibility = 'visible';
-                });
-            }
-
-            setTimeout(() => {
-                this.appendCreateAccountText(element);
-            }, 100);
-        }
-    }
-
-    private appendButton(element: HTMLElement, buttonsData: any): void {
-        if (this.showSkeleton) {
-            this.showSkeleton = false;
-            this.domBuilder.removeSkeletonLoader(this.renderer, element);
-        }
-
-        const selectWidgetTheme = this.widgetTheme() as any;
-        const borderRadius = this.getBorderRadiusCssValue(selectWidgetTheme?.ui_preferences?.border_radius);
-        const isOtpButton = buttonsData?.service_id === FeatureServiceIds.Msg91OtpService;
-        const isInputFieldsTop = this.input_fields === 'top';
-
-        if (this.show_social_login_icons) {
-            // All icon-only buttons share one AuthButtonsComponent instance (single row)
-            if (this.iconOnlyButtonsRef) {
-                const current: any[] = this.iconOnlyButtonsRef.instance.buttons ?? [];
-                this.iconOnlyButtonsRef.setInput('buttons', [...current, buttonsData]);
-                this.iconOnlyButtonsRef.changeDetectorRef.detectChanges();
-            } else {
-                const ref = createComponent(AuthButtonsComponent, { environmentInjector: this.envInjector });
-                ref.setInput('buttons', [buttonsData]);
-                ref.setInput('version', this.version);
-                ref.setInput('inputFields', this.input_fields);
-                ref.setInput('showIconsOnly', true);
-                ref.setInput('borderRadius', borderRadius);
-                ref.setInput('otpButtonVisible', !isOtpButton);
-                ref.instance.buttonClicked.subscribe((btn: any) => this.onButtonClick(btn));
-                this.appRef.attachView(ref.hostView);
-                this.mountedComponentRefs.push(ref);
-                this.iconOnlyButtonsRef = ref;
-                const domNode = (ref.hostView as any).rootNodes[0] as HTMLElement;
-                element.appendChild(domNode);
-                ref.changeDetectorRef.detectChanges();
-            }
-            return;
-        }
-
-        const ref = createComponent(AuthButtonsComponent, { environmentInjector: this.envInjector });
-        ref.setInput('buttons', [buttonsData]);
-        ref.setInput('version', this.version);
-        ref.setInput('inputFields', this.input_fields);
-        ref.setInput('showIconsOnly', false);
-        ref.setInput('borderRadius', borderRadius);
-        ref.setInput('otpButtonVisible', !isOtpButton);
-        ref.instance.buttonClicked.subscribe((btn: any) => this.onButtonClick(btn));
-        this.appRef.attachView(ref.hostView);
-        this.mountedComponentRefs.push(ref);
-        const domNode = (ref.hostView as any).rootNodes[0] as HTMLElement;
-        // Logo+title are pre-rendered at top. Social buttons always append after them.
-        // For input_fields='top': form was inserted at top of element before social buttons
-        //   → buttons append after the form node (which is firstChild after logo/title).
-        // For input_fields='bottom': social buttons appear between logo/title and the form.
-        //   → buttons just append; form will be appended last.
-        const orDivider = element.querySelector('[data-or-divider]');
-        if (orDivider) {
-            element.insertBefore(domNode, orDivider);
-        } else {
-            element.appendChild(domNode);
-        }
-        ref.changeDetectorRef.detectChanges();
-    }
-    private onButtonClick(btn: any): void {
+    public onAuthButtonClick(btn: any): void {
         if (btn?.urlLink) {
             window.open(btn.urlLink, this.target);
         } else if (btn?.service_id === FeatureServiceIds.Msg91OtpService) {
@@ -881,39 +565,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         }
     }
 
-    private hasOtpButton(widgetDataArray: any[]): boolean {
-        return widgetDataArray.some((widget) => widget?.service_id === FeatureServiceIds.Msg91OtpService);
-    }
-
-    private appendCreateAccountText(element: HTMLElement): void {
-        if (!this.isCreateAccountTextAppended) {
-            return;
-        }
-        const existingCreateAccountText = element.querySelector('p[data-create-account="true"]');
-        if (existingCreateAccountText || this.createAccountTextAppended) {
-            return;
-        }
-        this.createAccountTextAppended = true;
-
-        const selectWidgetTheme = this.widgetTheme() as any;
-        const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
-        const signUpButtonText = selectWidgetTheme?.ui_preferences?.sign_up_button_text || 'Create an account';
-
-        const ref = createComponent(AuthFooterComponent, { environmentInjector: this.envInjector });
-        ref.setInput('version', this.version);
-        ref.setInput('primaryColor', primaryColor);
-        ref.setInput('signUpButtonText', signUpButtonText);
-        ref.setInput('showCreateAccount', true);
-        ref.instance.createAccount.subscribe(() => {
-            this.cameFromLogin = false;
-            this.setShowRegistration(true);
-        });
-        this.appRef.attachView(ref.hostView);
-        this.mountedComponentRefs.push(ref);
-        const domNode = (ref.hostView as any).rootNodes[0] as HTMLElement;
-        element.appendChild(domNode);
-        ref.changeDetectorRef.detectChanges();
-    }
     public hitCallbackUrl(callbackUrl: string, payload: { [key: string]: any }) {
         this.otpService.callBackUrl(callbackUrl, payload).subscribe(
             (res) => {
@@ -1058,7 +709,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     private reapplyInjectedButtonTheme(_dark: boolean): void {
-        // Components react to isDark signal automatically; trigger re-render.
-        this.mountedComponentRefs.forEach((ref) => ref.changeDetectorRef.markForCheck());
+        // Components react to isDark signal automatically via computed signals.
     }
 }

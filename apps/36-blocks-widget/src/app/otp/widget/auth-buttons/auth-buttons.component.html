@@ -16,7 +16,6 @@
                 [attr.data-service-id]="isOtpButton(btn) ? btn.service_id : null"
                 [style.outline]="'none'"
                 [style.padding]="'12px'"
-                [style.display]="'flex'"
                 [style.align-items]="'center'"
                 [style.justify-content]="'center'"
                 [style.font-size]="layout.buttonFontSize"
@@ -24,7 +23,7 @@
                 [style.border]="buttonBorderIconOnly"
                 [style.border-radius]="borderRadius"
                 [style.cursor]="'pointer'"
-                [style.visibility]="isOtpButton(btn) && !otpButtonVisible ? 'hidden' : 'visible'"
+                [style.display]="isOtpButton(btn) && !otpButtonVisible ? 'none' : 'flex'"
                 (click)="onButtonClick(btn)"
             >
                 <img
@@ -45,7 +44,6 @@
             [attr.data-service-id]="isOtpButton(btn) ? btn.service_id : null"
             [style.outline]="'none'"
             [style.padding]="'0 16px'"
-            [style.display]="'flex'"
             [style.align-items]="'center'"
             [style.justify-content]="'center'"
             [style.font-size]="layout.buttonFontSize"
@@ -57,7 +55,7 @@
             [style.margin]="layout.buttonMargin"
             [style.cursor]="'pointer'"
             [style.width]="buttonWidth"
-            [style.visibility]="isOtpButton(btn) && !otpButtonVisible ? 'hidden' : 'visible'"
+            [style.display]="isOtpButton(btn) && !otpButtonVisible ? 'none' : 'flex'"
             (click)="onButtonClick(btn)"
         >
             @if (useDiv) {

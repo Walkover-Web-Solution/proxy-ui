@@ -1,36 +1,100 @@
 @if (show()) {
-    <div
-        [class.h-full]="viewMode() !== PublicScriptType.Authorization"
-        [class.authorization-container]="referenceId && !authToken"
-        [class.dark]="isDarkTheme()"
-    >
-        @switch (viewMode()) {
-            @case (PublicScriptType.UserManagement) {
-                <user-management
-                    [userToken]="authToken"
-                    [pass]="isRolePermission"
-                    [theme]="theme"
-                    [exclude_role_ids]="exclude_role_ids"
-                    [include_role_ids]="include_role_ids"
-                ></user-management>
+    <!-- Login/Signup Widget run without authToken only required referenceId -->
+    @if (isAuthorizationMode()) {
+        <section class="authorization-container" [class.dark]="isDarkTheme()">
+            @if (widgetHeader().logoUrl || widgetHeader().titleText) {
+                <div class="widget-header">
+                    @if (widgetHeader().logoUrl) {
+                        <div class="widget-header__logo-wrap">
+                            <img [src]="widgetHeader().logoUrl" alt="logo" class="widget-header__logo" />
+                        </div>
+                    }
+                    @if (widgetHeader().titleText) {
+                        <p class="widget-header__title">{{ widgetHeader().titleText }}</p>
+                    }
+                </div>
             }
-            @case (PublicScriptType.Subscription) {
-                <proxy-subscription-center
-                    [referenceId]="referenceId"
-                    [isPreview]="isPreview"
-                    [isLogin]="isLogin"
-                    [loginRedirectUrl]="loginRedirectUrl"
-                    (togglePopUp)="handleSubscriptionToggle($event)"
-                ></proxy-subscription-center>
+            @if (sortedAuthButtons().length > 0) {
+                @for (btn of sortedAuthButtons(); track btn.service_id) {
+                    @if (btn.service_id !== FeatureServiceIds.PasswordAuthentication || version === WidgetVersion.V1) {
+                        <proxy-auth-buttons
+                            [buttons]="[btn]"
+                            [version]="version"
+                            [inputFields]="input_fields"
+                            [showIconsOnly]="show_social_login_icons"
+                            [borderRadius]="authButtonTheme().borderRadius"
+                            [otpButtonVisible]="
+                                btn.service_id === FeatureServiceIds.Msg91OtpService ? otpScriptReady() : true
+                            "
+                            (buttonClicked)="onAuthButtonClick($event)"
+                        ></proxy-auth-buttons>
+                    }
+                }
+                @if (hasPasswordAuthButton()) {
+                    @if (socialButtons().length > 0) {
+                        <div class="auth-or-divider" [style.color]="authButtonTheme().primaryColor" data-or-divider>
+                            <span>or</span>
+                        </div>
+                    }
+                    <proxy-inline-login
+                        [buttonsData]="passwordAuthButton()"
+                        [loginWidgetData]="loginWidgetData"
+                        [version]="version"
+                        [borderRadius]="authButtonTheme().borderRadius"
+                        [primaryColor]="authButtonTheme().primaryColor"
+                        [buttonColor]="authButtonTheme().buttonColor"
+                        [buttonHoverColor]="authButtonTheme().buttonHoverColor"
+                        [buttonTextColor]="authButtonTheme().buttonTextColor"
+                        [totalButtons]="sortedAuthButtons().length"
+                        [inputFieldsPosition]="input_fields"
+                        (forgotPasswordClicked)="setShowLogin(true)"
+                        (loginSuccess)="returnSuccessObj($event)"
+                        (loginFailure)="returnFailureObj($event)"
+                        (registrationRequired)="setShowRegistration(true, $event)"
+                    ></proxy-inline-login>
+                }
+                @if (isCreateAccountTextAppended) {
+                    <proxy-auth-footer
+                        [version]="version"
+                        [primaryColor]="authButtonTheme().primaryColor"
+                        [signUpButtonText]="authButtonTheme().signUpButtonText"
+                        [showCreateAccount]="true"
+                        (createAccount)="setShowRegistration(true)"
+                    ></proxy-auth-footer>
+                }
             }
-            @case (PublicScriptType.OrganizationDetails) {
-                <organization-details [authToken]="authToken" [theme]="theme"></organization-details>
+        </section>
+    } @else {
+        <!-- Other Widgets (User Management, Subscription, User Profile and Organization Management)  required authToken -->
+        <section [class.h-full]="viewMode() !== PublicScriptType.Authorization" [class.dark]="isDarkTheme()">
+            @switch (viewMode()) {
+                @case (PublicScriptType.UserManagement) {
+                    <user-management
+                        [userToken]="authToken"
+                        [pass]="isRolePermission"
+                        [theme]="theme"
+                        [exclude_role_ids]="exclude_role_ids"
+                        [include_role_ids]="include_role_ids"
+                    ></user-management>
+                }
+                @case (PublicScriptType.Subscription) {
+                    <proxy-subscription-center
+                        [referenceId]="referenceId"
+                        [isPreview]="isPreview"
+                        [isLogin]="isLogin"
+                        [loginRedirectUrl]="loginRedirectUrl"
+                        (togglePopUp)="handleSubscriptionToggle($event)"
+                    ></proxy-subscription-center>
+                }
+                @case (PublicScriptType.OrganizationDetails) {
+                    <organization-details [authToken]="authToken" [theme]="theme"></organization-details>
+                }
+                @case (PublicScriptType.UserProfile) {
+                    <user-profile [authToken]="authToken" [theme]="theme"></user-profile>
+                }
             }
-            @case (PublicScriptType.UserProfile) {
-                <user-profile [authToken]="authToken" [theme]="theme"></user-profile>
-            }
-        }
-    </div>
+        </section>
+    }
 }
 @if (showRegistration() || showLogin()) {
     <div #dialogPortal [class.dark]="isDarkTheme()">

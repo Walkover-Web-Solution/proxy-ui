@@ -28,5 +28,31 @@
 }
 
 .authorization-container {
-    @apply h-full flex justify-center items-center;
+    @apply h-full inline-flex flex-col justify-center items-center;
+}
+
+.auth-or-divider {
+    @apply flex items-center gap-2 text-xs font-medium text-center px-4 my-2 w-full;
+
+    &::before,
+    &::after {
+        content: '';
+        @apply block flex-1 border-t border-gray-200 dark:border-gray-700;
+    }
+}
+
+.widget-header {
+    @apply flex flex-col items-center gap-3 w-full px-4 pt-4 pb-2 text-center;
+
+    &__logo-wrap {
+        @apply flex justify-center;
+    }
+
+    &__logo {
+        @apply max-h-16 w-auto block;
+    }
+
+    &__title {
+        @apply text-base font-semibold text-gray-900 dark:text-white m-0;
+    }
 }
