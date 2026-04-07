@@ -88,7 +88,6 @@ Likely remaining (not yet verified):
 |---|---|
 | `AppComponent` | `apps/proxy-auth/src/app/app.component.ts` |
 | `SendOtpComponent` | `apps/proxy-auth/src/app/otp/send-otp/send-otp.component.ts` |
-| `SendOtpCenterComponent` | `apps/proxy-auth/src/app/otp/component/send-otp-center/send-otp-center.component.ts` |
 | `RegisterComponent` | `apps/proxy-auth/src/app/otp/component/register/register.component.ts` |
 | `LoginComponent` | `apps/proxy-auth/src/app/otp/component/login/login.component.ts` |
 | `SubscriptionCenterComponent` | `apps/proxy-auth/src/app/otp/component/subscription-center/subscription-center.component.ts` |

@@ -7,7 +7,7 @@ import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 const REFERENCE_ID = '4512365c177425472369c0fa8351a15';
 const THEME: WidgetTheme = WidgetTheme.Dark;
-const TYPE: PublicScriptType = PublicScriptType.UserProfile;
+const TYPE: PublicScriptType = PublicScriptType.Authorization;
 const AUTH_TOKEN =
     'dGRjOE0wSlhuNWwyOFRrNzkvMzYyZVBwTnBTQythNmdScXl2VmtGNnZScDdCdXhsSGdBb2hPam5mWkg0RnoyN040cGlQbnJueWhUZEx4TVg4cU0wQ1pQSGdtQjVZVjVYUng2cUU5Q2R2eUl5V2p4aGlBZGEyUlVLM0tnS016ZXdXTnZ6MEJnYU9QRFNHR2pFa29OMmlmT2VqczdEUU5MRzR5MElKMklCK3JUU2w2Qmt0b1V6L0dpclJYTVJBVzk3YjE4L3RtUk15NVk3Z0RmY2g5Rm50QT09';
 
@@ -22,12 +22,11 @@ const AUTH_TOKEN =
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     private readonly themeService = inject(WidgetThemeService);
 
-    protected readonly showAuthentication: boolean = false;
     protected readonly referenceId: string = REFERENCE_ID;
     protected readonly theme: WidgetTheme = THEME;
     protected readonly authToken: string = AUTH_TOKEN;
     get containerId(): string {
-        return this.showAuthentication ? REFERENCE_ID : PROXY_DOM_ID;
+        return TYPE === PublicScriptType.Authorization ? REFERENCE_ID : PROXY_DOM_ID;
     }
 
     constructor() {
@@ -55,34 +54,37 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         if (!environment.production) {
             const widgetConfig: WidgetConfig = {
                 referenceId: REFERENCE_ID, // Always pass referenceId
-                // showCompanyDetails: false,
-                // loginRedirectUrl: 'https://www.google.com',
-                target: '_self',
+                target: '_self', // '_blank' | '_self'
                 success: (data: unknown) => {
-                    console.log('success response', data);
+                    console.log('Success response:', data);
                 },
                 failure: (error: unknown) => {
-                    console.log('failure reason', error);
+                    console.log('Failure reason:', error);
                 },
             };
-            if (!this.showAuthentication) {
-                if (TYPE) {
-                    widgetConfig['type'] = TYPE;
-                    if (TYPE === PublicScriptType.Authorization) {
-                        // Opens the widget directly in a dialog; used for Block Preview in the admin panel's Design & Code section
-                        widgetConfig['isPreview'] = true;
-                    } else {
-                        widgetConfig['authToken'] = AUTH_TOKEN;
+            if (TYPE) {
+                widgetConfig['type'] = TYPE;
 
-                        if (TYPE === PublicScriptType.UserManagement) {
-                            // Enables the Role & Permission tab in the User Management widget
-                            widgetConfig['isRolePermission'] = false;
-                        }
+                if (TYPE === PublicScriptType.Authorization) {
+                    // Optional: Path to redirect after login (e.g., '/login') only used get proxy_auth_token in admin panel while preview
+                    // widgetConfig['redirect_path'] = '/login';
+                    // Used to show Company details in the signup/registration form, default is true
+                    // showCompanyDetails: false,
+                } else {
+                    widgetConfig['authToken'] = AUTH_TOKEN;
+
+                    if (TYPE === PublicScriptType.UserManagement) {
+                        // Enables the Role & Permission tab in the User Management widget
+                        widgetConfig['isRolePermission'] = false;
+                    }
+
+                    // Note: Currently Subscription widget is not in use.
+                    if (TYPE === PublicScriptType.Subscription) {
+                        // Use in Subscription widget to redirect
+                        // loginRedirectUrl: 'https://www.google.com',
+                        // widgetConfig['isPreview'] = true;
                     }
                 }
-            } else {
-                // Optional: Path to redirect after login (e.g., '/login') only used get proxy_auth_token in admin panel while preview
-                // widgetConfig['redirect_path'] = '/login';
             }
             if (THEME) {
                 widgetConfig['theme'] = THEME;

@@ -63,45 +63,39 @@ The outer wrapper rendered by the Angular Element. Contains:
 - Router outlet for inner views
 - Overlay/modal container
 
-### 2. `send-otp-center` — `send-otp-center.component.html`
-First screen: enter phone number or email to receive OTP.
-- Input field + send button
-- Social login buttons (optional)
-- "Already have an account" link
-
-### 3. `login` — `login.component.html`
+### 2. `login` — `login.component.html`
 Email + password form.
 - Input fields (email, password with show/hide toggle)
 - "Forgot password" link
 - Submit button
 - Switch to OTP/register
 
-### 4. `register` — `register.component.html`
+### 3. `register` — `register.component.html`
 Multi-step registration:
 - Step 1: name, email, phone
 - Step 2: OTP verification (4 boxes)
 - Step 3: password setup
 
-### 5. `subscription-center` — `subscription-center.component.html`
+### 4. `subscription-center` — `subscription-center.component.html`
 Plan selection:
 - Plan cards (title, price, features list)
 - CTA button per card
 - Current plan highlight
 
-### 6. `user-profile` — `user-profile.component.html`
+### 5. `user-profile` — `user-profile.component.html`
 Authenticated user view/edit:
 - Avatar + name + email banner
 - View mode: read-only field rows
 - Edit mode: form fields
 - Organizations list / table
 
-### 7. `user-management` — `user-management.component.html`
+### 6. `user-management` — `user-management.component.html`
 Admin panel:
 - Members tab: search, user rows, edit/remove buttons
 - Roles tab: roles table with permissions
 - Permissions tab
 
-### 8. `organization-details` — `organization-details.component.html`
+### 7. `organization-details` — `organization-details.component.html`
 Org settings form:
 - Name, timezone, logo upload
 - Save/cancel buttons
@@ -109,14 +103,13 @@ Org settings form:
 ---
 
 ## Migration Order (tell me which to start)
-1. `send-otp-center`
-2. `login`
-3. `register`
-4. `subscription-center`
-5. `user-profile`
-6. `user-management`
-7. `organization-details`
-8. `widget-shell` (last — depends on inner views)
+1. `login`
+2. `register`
+3. `subscription-center`
+4. `user-profile`
+5. `user-management`
+6. `organization-details`
+7. `widget-shell` (last — depends on inner views)
 
 ---
 

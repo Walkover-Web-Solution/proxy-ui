@@ -1,7 +1,6 @@
 import { OtpService } from './../service/otp.service';
 import { CommonModule } from '@angular/common';
 import { ProgressBarComponent } from '../ui/progress-bar.component';
-import { SendOtpCenterComponent } from '../component';
 import { RegisterComponent } from '../component/register/register.component';
 import { LoginComponent } from '../component/login/login.component';
 import { UserProfileComponent } from '../user-profile/user-profile.component';
@@ -70,7 +69,6 @@ import { InlineLoginComponent } from './inline-login/inline-login.component';
         CommonModule,
         ProgressBarComponent,
         SubscriptionCenterComponent,
-        SendOtpCenterComponent,
         RegisterComponent,
         LoginComponent,
         UserProfileComponent,
@@ -138,7 +136,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
     public readonly show = signal<boolean>(false);
     public readonly showRegistration = signal<boolean>(false);
-    public readonly showForgotPassword = signal<boolean>(false);
     public readonly animate = signal<boolean>(false);
     public isCreateAccountTextAppended: boolean = false;
     public otpWidgetData;
@@ -146,7 +143,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     public registrationViaLogin: boolean = true;
     public prefillDetails: string;
     public cameFromLogin: boolean = false;
-    public cameFromSendOtpCenter: boolean = false;
     public referenceElement: HTMLElement = null;
     public subscriptionPlans: any[] = [];
 
@@ -312,14 +308,11 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         this.dialogPortalRef = null;
         this.ngZone.run(() => {
             this.showRegistration.set(false);
-            this.showForgotPassword.set(false);
             this.otpWidgetService.openLogin(false);
-            this.otpWidgetService.closeForgotPassword();
             if (this.referenceElement) {
                 this.show.set(false);
             }
             this.cameFromLogin = false;
-            this.cameFromSendOtpCenter = false;
         });
     }
 
@@ -913,7 +906,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         ref.setInput('showCreateAccount', true);
         ref.instance.createAccount.subscribe(() => {
             this.cameFromLogin = false;
-            this.cameFromSendOtpCenter = false;
             this.setShowRegistration(true);
         });
         this.appRef.attachView(ref.hostView);
@@ -959,11 +951,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                         // If user came from login, go back to login
                         this.setShowLogin(true);
                         this.show.set(true);
-                    } else if (this.cameFromSendOtpCenter) {
-                        // If user came from send-otp-center, go back to send-otp-center
-                        // Only close login without affecting show - avoid race condition
-                        this.otpWidgetService.openLogin(false);
-                        this.show.set(true);
                     } else {
                         // If user came from dynamically appended buttons, just close without opening anything
                         this.setShowLogin(false);
@@ -971,7 +958,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     }
                     // Reset the flags
                     this.cameFromLogin = false;
-                    this.cameFromSendOtpCenter = false;
                 }
             } else {
                 this.setShowLogin(false);
@@ -1011,13 +997,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
     public setShowRegistrationFromLogin(data?: string) {
         this.cameFromLogin = true; // Set flag to track that user came from login
-        this.cameFromSendOtpCenter = false; // Reset other flags
-        this.setShowRegistration(true, data);
-    }
-
-    public setShowRegistrationFromSendOtpCenter(data?: string) {
-        this.cameFromSendOtpCenter = true; // Set flag to track that user came from send-otp-center
-        this.cameFromLogin = false; // Reset other flags
         this.setShowRegistration(true, data);
     }
     public returnSuccessObj(obj) {
