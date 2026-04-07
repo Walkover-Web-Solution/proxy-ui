@@ -55,7 +55,7 @@
         ></div>
 
         <!-- Left: Copy -->
-        <div class="relative z-[1] flex flex-col gap-7 items-center">
+        <div class="relative z-[1] flex flex-col gap-7 items-center lg:items-start">
             <div
                 class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium w-fit anim-fade-up stagger-1"
                 [class]="accent.pillBadge"
@@ -66,12 +66,14 @@
             </div>
 
             <h1
-                class="text-[32px] leading-[1.08] text-center font-bold text-[#f0f6fc] m-0 tracking-[-2px] md:text-[44px] sm:text-[36px] anim-fade-up stagger-2"
+                class="leading-[1.08] text-center lg:text-left font-bold text-[#f0f6fc] m-0 tracking-[-2px] text-[36px] md:text-[44px] lg:text-[48px] anim-fade-up stagger-2"
             >
                 <span class="shimmer-text">Secure Auth</span> &amp; User<br />Management for<br />Modern Apps
             </h1>
 
-            <p class="text-[17px] leading-relaxed text-[#8b949e] text-center max-w-[460px] m-0 anim-fade-up stagger-3">
+            <p
+                class="text-[17px] leading-relaxed text-[#8b949e] text-center lg:text-left max-w-[460px] m-0 anim-fade-up stagger-3"
+            >
                 Launch secure user signup, login, roles, and access control in minutes — without building complex
                 authentication systems from scratch.
             </p>
@@ -124,7 +126,7 @@
 
             <!-- Stats row -->
             <ul
-                class="grid w-full list-none p-0 m-0 gap-3 pt-2 border-t border-teal-400/10 anim-fade-up stagger-7 grid-cols-2"
+                class="grid w-full sm:w-1/2 list-none p-0 m-0 gap-3 pt-2 border-t border-teal-400/10 anim-fade-up stagger-7 grid-cols-2"
                 aria-label="Platform statistics"
                 role="list"
             >
@@ -334,7 +336,7 @@
                     @for (mode of appearanceModes; track mode.value) {
                         <button
                             [class]="
-                                'cursor-pointer border-0 px-3 py-1.5 !rounded-sm text-xs transition-all duration-200' +
+                                'cursor-pointer border-0 px-3 py-1.5 grow !rounded-sm text-xs transition-all duration-200' +
                                 (selectedAppearance === mode.value ? ' bg-teal-400 text-dark' : '')
                             "
                             (click)="selectAppearance(mode.value)"
@@ -347,7 +349,7 @@
             </div>
         </div>
 
-        <div class="flex flex-col gap-7 items-center">
+        <div class="flex flex-col gap-7 items-center lg:items-start">
             <div
                 class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium md:w-fit"
                 [class]="accent.pillBadge"
@@ -358,7 +360,7 @@
             </div>
             <h2
                 id="forms-heading"
-                class="leading-[1.08] font-bold text-center text-[#f0f6fc] m-0 tracking-[-1.5px] text-[32px] md:text-[40px] lg:text-[48px]"
+                class="leading-[1.08] font-bold text-center lg:text-left text-[#f0f6fc] m-0 tracking-[-1.5px] text-[32px] md:text-[40px] lg:text-[44px]"
             >
                 Customizable <span class="shimmer-text">Auth Forms</span><br />Ready to Deploy
             </h2>
@@ -374,7 +376,7 @@
                 @for (card of uiFeatureCards; track card.title) {
                     <li class="feature-card bg-[#161b22] border border-[#21262d] rounded-xl p-4" role="listitem">
                         <div class="feature-main-icon">
-                            <mat-icon aria-hidden="true">{{ card.icon }}</mat-icon>
+                            <mat-icon aria-hidden="true" class="!text-teal-400">{{ card.icon }}</mat-icon>
                         </div>
                         <h3 class="m-0 mb-1 text-[#f0f6fc] text-[16px] font-semibold">{{ card.title }}</h3>
                         <p class="m-0 text-[#8b949e] text-[12px] leading-snug">{{ card.desc }}</p>
@@ -412,11 +414,10 @@
                 @for (card of section.cards; track card.title) {
                     <li
                         class="feature-card text-left bg-[#161b22] border border-[#21262d] rounded-xl p-4"
-                        [class.border-teal-400]="card.highlight"
                         role="listitem"
                     >
                         <div class="feature-main-icon">
-                            <mat-icon aria-hidden="true">{{ card.icon }}</mat-icon>
+                            <mat-icon aria-hidden="true" class="!text-teal-400">{{ card.icon }}</mat-icon>
                         </div>
                         <h3 class="m-0 mb-1 text-[#f0f6fc] text-[16px] font-semibold">{{ card.title }}</h3>
                         <p class="m-0 text-[#8b949e] text-[12px] leading-snug">{{ card.desc }}</p>
@@ -442,7 +443,7 @@
         <div class="relative z-[1]">
             <h2
                 id="cta-heading"
-                class="text-[32px] leading-[1.15] font-bold text-[#f0f6fc] m-0 mb-5 tracking-[-2px] md:text-[38px] lg:text-[48px]"
+                class="text-[32px] leading-[1.15] font-bold text-[#f0f6fc] m-0 mb-5 tracking-[-2px] md:text-[30px] lg:text-[44px]"
             >
                 Stop Building Authentication.<br /><span class="shimmer-text">Start Building Your Product.</span>
             </h2>
