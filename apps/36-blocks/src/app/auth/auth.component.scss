@@ -35,13 +35,13 @@
         --text-body: #24292f;
     }
 
-    header {
-        background: transparent;
-        backdrop-filter: blur(12px);
-        background-color: color-mix(in srgb, var(--bg-page) 80%, transparent);
-        border-bottom: 1px solid var(--border);
-        transition: background-color 0.3s ease;
-    }
+    // header {
+    //     background: transparent;
+    //     backdrop-filter: blur(12px);
+    //     background-color: color-mix(in srgb, var(--bg-page) 80%, transparent);
+    //     border-bottom: 1px solid var(--border);
+    //     transition: background-color 0.3s ease;
+    // }
 
     footer {
         background-color: var(--bg-card);
