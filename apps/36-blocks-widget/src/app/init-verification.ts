@@ -92,10 +92,7 @@ if (!window.initVerification) {
 
                 // Determine the target container id:
                 const FALLBACK_CONTAINER_ID = PROXY_DOM_ID;
-                const targetId: string =
-                    config?.authToken || config?.type === PublicScriptType.Authorization
-                        ? FALLBACK_CONTAINER_ID
-                        : config?.referenceId;
+                const targetId: string = config?.authToken ? PROXY_DOM_ID : config?.referenceId;
 
                 const resolveContainer = (): HTMLElement | null => document.getElementById(targetId);
 
