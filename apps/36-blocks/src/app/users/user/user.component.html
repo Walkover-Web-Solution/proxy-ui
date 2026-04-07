@@ -34,7 +34,7 @@
                             </button>
                             <mat-menu #userFilterMenu="matMenu" class="filter-menu" xPosition="before">
                                 <div (click)="$event.stopPropagation(); (false)">
-                                    <div class="flex flex-col gap-1 pt-6 px-6 pb-0 w-72" [formGroup]="userFilterForm">
+                                    <div class="flex flex-col gap-1 p-4" [formGroup]="userFilterForm">
                                         <mat-form-field appearance="outline" floatLabel="always" class="w-full">
                                             <mat-label>Company Name</mat-label>
                                             <input
@@ -44,7 +44,11 @@
                                                 formControlName="company_name"
                                             />
                                         </mat-form-field>
-                                        <mat-form-field appearance="outline" floatLabel="always" class="w-full">
+                                        <mat-form-field
+                                            appearance="outline"
+                                            floatLabel="always"
+                                            class="w-full no-padding"
+                                        >
                                             <mat-label>Block</mat-label>
                                             <mat-select placeholder="Select Block" formControlName="feature_id">
                                                 <mat-option [value]="null">None</mat-option>
@@ -57,7 +61,9 @@
                                         </mat-form-field>
                                     </div>
                                     <mat-divider></mat-divider>
-                                    <div class="flex items-center gap-3 p-6">
+                                    <div class="flex items-center gap-3 px-4">
+                                        <button matButton (click)="closeMyMenu()">Cancel</button>
+                                        <button matButton="outlined" (click)="resetParam()">Reset</button>
                                         <button
                                             matButton="filled"
                                             (click)="applyFilter()"
@@ -65,10 +71,6 @@
                                         >
                                             Apply
                                         </button>
-                                        <button matButton="filled" class="flat-default" (click)="resetParam()">
-                                            Reset
-                                        </button>
-                                        <button matButton (click)="closeMyMenu()">Cancel</button>
                                     </div>
                                 </div>
                             </mat-menu>
@@ -140,7 +142,7 @@
                                             <span
                                                 [matTooltip]="element?.id"
                                                 matTooltipPosition="above"
-                                                class="cursor-pointer font-mono text-xs px-2 py-0.5 rounded-4 min-w-[120px]"
+                                                class="cursor-pointer font-mono text-xs px-2 py-0.5 rounded-4 max-w-[120px] truncate"
                                             >
                                                 {{
                                                     element?.id?.length > 15

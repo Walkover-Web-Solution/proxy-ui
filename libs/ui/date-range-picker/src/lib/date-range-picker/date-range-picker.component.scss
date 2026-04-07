@@ -11,7 +11,7 @@
         max-width: 300px !important;
         min-width: 300px !important;
     }
-    .mat-menu-content {
+    .mat-mdc-menu-content {
         padding: 0px !important;
     }
     .drp-content {
@@ -20,7 +20,7 @@
             flex-direction: column;
         }
         .drp-calendar {
-            flex: 1;
+            // flex: 1;
             @media only screen and (max-width: 600px) {
                 display: none;
                 &.show-calendar {
@@ -33,9 +33,14 @@
                 justify-content: center;
                 padding: 10px 0px 0px 0px;
                 .mat-mdc-form-field {
-                    width: 124px;
-                    margin: 0px 10px;
+                    width: 138px;
+                    margin: 0px 4px;
                     font-size: 14px;
+                    .mat-mdc-form-field-icon-suffix {
+                        .mat-icon {
+                            padding-left: 0 !important;
+                        }
+                    }
                 }
             }
             .drp-calendar-actions {
