@@ -90,9 +90,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        const theme = this.uiSettings.theme;
-        document.body.classList.remove('dark-theme', 'light-theme');
-        document.body.classList.add(theme);
+        this.uiSettings.setTheme(this.uiSettings.theme);
 
         this.logoutActionComplete$.subscribe((res) => {
             if (res) {

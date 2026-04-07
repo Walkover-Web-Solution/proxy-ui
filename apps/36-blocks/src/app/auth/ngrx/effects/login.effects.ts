@@ -117,9 +117,10 @@ export class LogInEffects {
         this.actions$.pipe(
             ofType(logInActions.logoutActionComplete),
             switchMap((p) => {
+                this.authService.clearTokenSync();
+                window.location.href = '/';
                 return this.loginService.logout().pipe(
                     switchMap((action) => {
-                        this.authService.clearTokenSync();
                         return [];
                     }),
                     catchError((err) => {

@@ -2,6 +2,8 @@ import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import {
     AfterViewInit,
     Component,
+    Injector,
+    afterNextRender,
     inject,
     NgZone,
     signal,
@@ -21,6 +23,15 @@ import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import { Observable, distinctUntilChanged } from 'rxjs';
+import { isEqual } from 'lodash-es';
+import { IFirebaseUserModel } from '@proxy/models/root-models';
+import { selectLogInData } from '../../../../auth/ngrx/selector/login.selector';
+import { ILogInFeatureStateWithRootState } from '../../../../auth/ngrx/store/login.state';
+import * as logInActions from '../../../../auth/ngrx/actions/login.action';
+import { SidebarUserMenuComponent } from '../../../../layout/sidebar-user-menu/sidebar-user-menu.component';
+import { UiSettingsService } from '../../../../layout/ui-settings.service';
 import { Location } from '@angular/common';
 import { environment } from '../../../../../environments/environment';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -49,28 +60,34 @@ export type PreviewTab =
         MarkdownModule,
         CopyButtonComponent,
         A11yModule,
+        SidebarUserMenuComponent,
     ],
-    templateUrl: './widget-preview-dialog.component.html',
+    templateUrl: './widget-preview.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WidgetPreviewDialogComponent implements AfterViewInit {
+export class WidgetPreviewComponent implements AfterViewInit {
     private router = inject(Router);
     private route = inject(ActivatedRoute);
     private location = inject(Location);
     private toast = inject(PrimeNgToastService);
     private ngZone = inject(NgZone);
     private breakpointObserver = inject(BreakpointObserver);
+    private readonly _injector = inject(Injector);
+    private readonly store = inject<Store<ILogInFeatureStateWithRootState>>(Store);
+    private readonly uiSettings = inject(UiSettingsService);
 
     @ViewChild('drawer') drawer!: MatDrawer;
 
     public readonly isMobile = signal<boolean>(false);
+    public readonly isDarkMode = signal<boolean>(false);
+    public readonly logInData$: Observable<IFirebaseUserModel>;
     private readonly originUrl: string | null;
 
     protected readonly PublicScriptType = PublicScriptType;
     protected readonly WidgetTheme = WidgetTheme;
     protected readonly proxyDomId = PROXY_DOM_ID;
 
-    protected readonly referenceId: string | null = this.route.snapshot.paramMap.get('referenceId');
+    protected readonly referenceId = signal<string | null>(this.route.snapshot.paramMap.get('referenceId'));
     private scriptLoaded = false;
 
     public activeTab = signal<PreviewTab>(PublicScriptType.Authorization);
@@ -80,15 +97,15 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     public viewMode = signal<'preview' | 'code'>('preview');
 
     public readonly demoDiv = computed(() =>
-        this.referenceId ? `<div id="${this.referenceId}"></div>` : '<div id="<reference_id>"></div>'
+        this.referenceId() ? `<div id="${this.referenceId()}"></div>` : '<div id="<reference_id>"></div>'
     );
 
     public readonly proxyAuthScript = computed(() =>
-        ProxyAuthScript(environment.proxyServer, this.referenceId ?? '<reference_id>', this.activeTab())
+        ProxyAuthScript(environment.proxyServer, this.referenceId() ?? '<reference_id>', this.activeTab())
     );
 
     public readonly codeSnippet = computed(() =>
-        buildCodeSnippet(this.referenceId ?? '<reference_id>', this.activeTab())
+        buildCodeSnippet(this.referenceId() ?? '<reference_id>', this.activeTab())
     );
 
     private readonly systemDark = signal(
@@ -110,6 +127,8 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
 
     constructor() {
         this.originUrl = this.resolveOriginUrl();
+        this.logInData$ = this.store.pipe(select(selectLogInData), distinctUntilChanged(isEqual));
+        this.isDarkMode.set(this.uiSettings.theme === 'dark-theme');
         this.breakpointObserver
             .observe([Breakpoints.XSmall, Breakpoints.Small])
             .pipe(takeUntilDestroyed())
@@ -120,6 +139,17 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
             const handler = (e: MediaQueryListEvent) => this.systemDark.set(e.matches);
             mq.addEventListener('change', handler);
         }
+
+        this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
+            const newRefId = params.get('referenceId');
+            if (newRefId && newRefId !== this.referenceId()) {
+                this.referenceId.set(newRefId);
+                this.activeTab.set(PublicScriptType.Authorization);
+                this.authToken.set('');
+                this.viewMode.set('preview');
+                afterNextRender(() => this.launchWidget(), { injector: this._injector });
+            }
+        });
 
         this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
             const token = params.get('proxy_auth_token');
@@ -148,8 +178,7 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     }
 
     private originStorageKey(): string | null {
-        const refId = this.route.snapshot.paramMap.get('referenceId');
-        return refId ? `widget_preview_origin_${refId}` : null;
+        return this.referenceId() ? `widget_preview_origin_${this.referenceId()}` : null;
     }
 
     private resolveOriginUrl(): string | null {
@@ -225,17 +254,31 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
         setTimeout(() => this.launchWidget(), 50);
     }
 
+    public logOut(): void {
+        this.store.dispatch(logInActions.logoutAction());
+    }
+
+    public switchedDarkMode(isDark: boolean): void {
+        const hostClass = isDark ? 'dark-theme' : 'light-theme';
+        this.uiSettings.setTheme(hostClass);
+        this.isDarkMode.set(isDark);
+    }
+
     public launchWidget(): void {
         const tab = this.activeTab();
         const isAuthTab = tab === PublicScriptType.Authorization;
-        const domId = isAuthTab ? this.referenceId : this.proxyDomId;
+        const domId = isAuthTab ? this.referenceId() : this.proxyDomId;
+
+        // Remove any stale proxy-auth element left over from a previous widget
+        document.querySelectorAll('proxy-auth').forEach((el) => el.remove());
+
         const el = document.getElementById(domId);
         if (!el) return;
 
         el.innerHTML = '';
 
         const config: Record<string, any> = {
-            referenceId: this.referenceId,
+            referenceId: this.referenceId(),
             theme: this.theme(),
             target: '_blank',
             success: (data: unknown) => {

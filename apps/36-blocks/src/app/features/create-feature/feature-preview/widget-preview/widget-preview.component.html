@@ -4,7 +4,7 @@
         #drawer
         [mode]="isMobile() ? 'over' : 'side'"
         [opened]="!isMobile()"
-        class="!w-[260px] border-r border-color !rounded-none"
+        class="!w-[260px] border-r border-color !rounded-none p-2"
     >
         <div class="flex flex-col h-full overflow-hidden">
             <!-- Sidebar header: Back + title -->
@@ -16,7 +16,7 @@
             </div>
 
             <!-- Nav items -->
-            <mat-nav-list class="!pt-3 !px-3 flex-1 overflow-y-auto service-list">
+            <mat-nav-list class="flex-1 overflow-y-auto service-list">
                 @for (tab of tabs; track tab.id) {
                     <button
                         mat-list-item
@@ -40,6 +40,16 @@
                     </button>
                 }
             </mat-nav-list>
+
+            <!-- User menu footer — consistent with main layout sidebar -->
+            @if (logInData$ | async; as user) {
+                <proxy-sidebar-user-menu
+                    [user]="user"
+                    [isDarkMode]="isDarkMode()"
+                    (darkModeToggled)="switchedDarkMode($event)"
+                    (loggedOut)="logOut()"
+                ></proxy-sidebar-user-menu>
+            }
         </div>
     </mat-drawer>
 
@@ -120,7 +130,7 @@
                         [class.items-center]="tab.id == PublicScriptType.Authorization"
                     >
                         <div
-                            [id]="tab.id === PublicScriptType.Authorization ? referenceId : proxyDomId"
+                            [id]="tab.id === PublicScriptType.Authorization ? referenceId() : proxyDomId"
                             [class]="tab.id != PublicScriptType.Authorization ? 'w-full h-full' : ''"
                         ></div>
                     </div>

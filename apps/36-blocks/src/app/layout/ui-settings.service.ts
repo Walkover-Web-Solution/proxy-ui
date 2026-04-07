@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 export type AppTheme = 'light-theme' | 'dark-theme';
 
@@ -19,6 +20,7 @@ const DEFAULTS: Omit<UiSettings, '_savedAt'> = {
 @Injectable({ providedIn: 'root' })
 export class UiSettingsService {
     private _settings: UiSettings;
+    private readonly platformId = inject(PLATFORM_ID);
 
     constructor() {
         this._settings = this._load();
@@ -35,6 +37,10 @@ export class UiSettingsService {
     setTheme(value: AppTheme): void {
         this._settings.theme = value;
         this._save();
+        if (isPlatformBrowser(this.platformId)) {
+            document.body.classList.remove('dark-theme', 'light-theme');
+            document.body.classList.add(value);
+        }
     }
 
     setSideNavOpen(value: boolean): void {
@@ -43,6 +49,9 @@ export class UiSettingsService {
     }
 
     private _load(): UiSettings {
+        if (!isPlatformBrowser(this.platformId)) {
+            return { ...DEFAULTS, _savedAt: Date.now() };
+        }
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
             if (raw) {
@@ -58,6 +67,7 @@ export class UiSettingsService {
     }
 
     private _save(): void {
+        if (!isPlatformBrowser(this.platformId)) return;
         this._settings._savedAt = Date.now();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(this._settings));
     }

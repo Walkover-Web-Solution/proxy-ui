@@ -174,7 +174,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
     ];
 
     public readonly footerLinks: { label: string; ariaLabel: string }[] = [
-        { label: 'Product', ariaLabel: '36Blocks Product overview' },
+        // { label: 'Product', ariaLabel: '36Blocks Product overview' },
         { label: 'Documentation', ariaLabel: '36Blocks Documentation' },
         { label: 'Pricing', ariaLabel: '36Blocks Pricing plans' },
         { label: 'Security', ariaLabel: '36Blocks Security information' },
