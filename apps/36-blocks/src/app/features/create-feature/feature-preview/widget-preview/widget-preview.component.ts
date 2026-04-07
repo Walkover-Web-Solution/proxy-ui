@@ -23,6 +23,15 @@ import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import { Observable, distinctUntilChanged } from 'rxjs';
+import { isEqual } from 'lodash-es';
+import { IFirebaseUserModel } from '@proxy/models/root-models';
+import { selectLogInData } from '../../../../auth/ngrx/selector/login.selector';
+import { ILogInFeatureStateWithRootState } from '../../../../auth/ngrx/store/login.state';
+import * as logInActions from '../../../../auth/ngrx/actions/login.action';
+import { SidebarUserMenuComponent } from '../../../../layout/sidebar-user-menu/sidebar-user-menu.component';
+import { UiSettingsService } from '../../../../layout/ui-settings.service';
 import { Location } from '@angular/common';
 import { environment } from '../../../../../environments/environment';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -51,11 +60,12 @@ export type PreviewTab =
         MarkdownModule,
         CopyButtonComponent,
         A11yModule,
+        SidebarUserMenuComponent,
     ],
-    templateUrl: './widget-preview-dialog.component.html',
+    templateUrl: './widget-preview.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WidgetPreviewDialogComponent implements AfterViewInit {
+export class WidgetPreviewComponent implements AfterViewInit {
     private router = inject(Router);
     private route = inject(ActivatedRoute);
     private location = inject(Location);
@@ -63,10 +73,14 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
     private ngZone = inject(NgZone);
     private breakpointObserver = inject(BreakpointObserver);
     private readonly _injector = inject(Injector);
+    private readonly store = inject<Store<ILogInFeatureStateWithRootState>>(Store);
+    private readonly uiSettings = inject(UiSettingsService);
 
     @ViewChild('drawer') drawer!: MatDrawer;
 
     public readonly isMobile = signal<boolean>(false);
+    public readonly isDarkMode = signal<boolean>(false);
+    public readonly logInData$: Observable<IFirebaseUserModel>;
     private readonly originUrl: string | null;
 
     protected readonly PublicScriptType = PublicScriptType;
@@ -113,6 +127,8 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
 
     constructor() {
         this.originUrl = this.resolveOriginUrl();
+        this.logInData$ = this.store.pipe(select(selectLogInData), distinctUntilChanged(isEqual));
+        this.isDarkMode.set(this.uiSettings.theme === 'dark-theme');
         this.breakpointObserver
             .observe([Breakpoints.XSmall, Breakpoints.Small])
             .pipe(takeUntilDestroyed())
@@ -236,6 +252,16 @@ export class WidgetPreviewDialogComponent implements AfterViewInit {
             replaceUrl: true,
         });
         setTimeout(() => this.launchWidget(), 50);
+    }
+
+    public logOut(): void {
+        this.store.dispatch(logInActions.logoutAction());
+    }
+
+    public switchedDarkMode(isDark: boolean): void {
+        const hostClass = isDark ? 'dark-theme' : 'light-theme';
+        this.uiSettings.setTheme(hostClass);
+        this.isDarkMode.set(isDark);
     }
 
     public launchWidget(): void {

@@ -18,8 +18,8 @@ export const appRoutes: Route[] = [
     {
         path: 'widget-preview/:referenceId',
         loadComponent: () =>
-            import('./features/create-feature/feature-preview/widget-preview-dialog/widget-preview-dialog.component').then(
-                (c) => c.WidgetPreviewDialogComponent
+            import('./features/create-feature/feature-preview/widget-preview/widget-preview.component').then(
+                (c) => c.WidgetPreviewComponent
             ),
         data: { authGuardPipe: redirectUnauthorizedToLogin },
         canActivate: [AngularFireAuthGuard],
