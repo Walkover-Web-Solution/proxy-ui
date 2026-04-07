@@ -14,15 +14,10 @@ export class IntlPhoneLib {
      */
     constructor(inputElement, parentDom, customCssStyleURL, changeFlagZIndex = false, intlOptions: object = {}) {
         this.inputElement = inputElement;
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js';
         const initIntlTelInput = () => {
             this.intl = window.intlTelInput(inputElement, { ...INTL_INPUT_OPTION, ...intlOptions });
             this.checkMobileFlag(parentDom, changeFlagZIndex);
         };
-
-        script.onload = () => initIntlTelInput();
 
         const intlStyleElement = document.createElement('link');
         intlStyleElement.rel = 'stylesheet';
@@ -32,18 +27,28 @@ export class IntlPhoneLib {
         customIntlStyleElement.rel = 'stylesheet';
         customIntlStyleElement.href = `${customCssStyleURL}`;
 
-        if (parentDom) {
-            parentDom.appendChild(script);
-            parentDom.appendChild(intlStyleElement);
-            parentDom.appendChild(customIntlStyleElement);
-        }
-        setTimeout(() => {
-            document.head.appendChild(script);
+        if (!document.head.querySelector('link[href*="intlTelInput.css"]')) {
             document.head.appendChild(intlStyleElement);
-        }, 200);
+        }
+        if (customCssStyleURL && !document.head.querySelector(`link[href="${customCssStyleURL}"]`)) {
+            document.head.appendChild(customIntlStyleElement);
+        }
 
         if (window.intlTelInput) {
             initIntlTelInput();
+        } else {
+            const existingScript = document.head.querySelector(
+                'script[src*="intlTelInput.min.js"]'
+            ) as HTMLScriptElement;
+            if (existingScript) {
+                existingScript.addEventListener('load', () => initIntlTelInput());
+            } else {
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js';
+                script.onload = () => initIntlTelInput();
+                document.head.appendChild(script);
+            }
         }
 
         let ulEl = document.getElementById('iti-0__country-listbox');
@@ -99,13 +104,21 @@ export class IntlPhoneLib {
         return this.intl?.getExtension();
     }
 
+    private getItiWrapper(parentDom: HTMLElement): HTMLElement {
+        let el: HTMLElement = this.inputElement?.parentElement;
+        while (el && !el.classList?.contains('iti')) {
+            el = el.parentElement;
+        }
+        return el || this.inputElement?.closest?.('.iti') || parentDom;
+    }
+
     private checkMobileFlag(parentDom, changeFlagZIndex): void {
         let count = 0;
         let interval = setInterval(() => {
             let mobileViewInit = document.querySelector('body.iti-mobile');
             let childCount = 0;
             let flagDropDownElInterval = setInterval(() => {
-                const itiWrapper = this.inputElement?.closest?.('.iti') || parentDom;
+                const itiWrapper = this.getItiWrapper(parentDom);
                 let flagDropdownView = itiWrapper.querySelector('.iti__flag-container');
                 if (changeFlagZIndex) {
                     this.changeFlagZIndexInterval = setInterval(() => {
@@ -137,7 +150,7 @@ export class IntlPhoneLib {
      * @memberof IntlPhoneLib
      */
     private showCountryDropdown(inputElement: HTMLElement, parentDom: HTMLElement) {
-        const getItiScope = () => inputElement?.closest?.('.iti') || parentDom;
+        const getItiScope = () => this.getItiWrapper(parentDom);
         const attachListener = (attempt = 0) => {
             const itiScope = getItiScope();
             let flagContainer = itiScope.querySelector('.iti__flag-container');

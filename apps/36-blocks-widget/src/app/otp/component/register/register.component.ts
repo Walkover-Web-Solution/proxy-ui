@@ -153,6 +153,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     private otpUtilityService = inject(OtpUtilityService);
     private cdr = inject(ChangeDetectorRef);
     private readonly themeService = inject(WidgetThemeService);
+    private readonly el = inject(ElementRef);
     readonly isDarkTheme = computed(() => this.themeService.isDark$());
 
     constructor() {
@@ -275,14 +276,28 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             let count = 0;
             const interval = setInterval(() => {
                 const userIntlWrapper =
+                    this.el.nativeElement.querySelector('#init-contact-wrapper-user') ||
                     document.querySelector('proxy-auth')?.shadowRoot?.querySelector('#init-contact-wrapper-user') ||
                     document.getElementById('init-contact-wrapper-user');
                 if (count > 6 || userIntlWrapper?.querySelector('.iti__selected-flag')?.getAttribute('title')) {
                     this.initIntl('company');
+                    this.applyFlagImages();
                     clearInterval(interval);
                 }
                 count += 1;
             }, 500);
+        });
+    }
+
+    private applyFlagImages(): void {
+        const flagsUrl = 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags.png';
+        const flags2xUrl = 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags@2x.png';
+        const isHiDpi = window.devicePixelRatio >= 2;
+        const url = isHiDpi ? flags2xUrl : flagsUrl;
+        const shadowRoot = document.querySelector('proxy-auth')?.shadowRoot;
+        const scope = shadowRoot ?? document;
+        scope.querySelectorAll<HTMLElement>('.iti__flag').forEach((el) => {
+            el.style.backgroundImage = `url('${url}')`;
         });
     }
 
@@ -344,7 +359,8 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     public initIntl(key: string): void {
-        const input = (document.querySelector('proxy-auth')?.shadowRoot?.getElementById('init-contact-' + key) ||
+        const input = (this.el.nativeElement.querySelector('#init-contact-' + key) ||
+            document.querySelector('proxy-auth')?.shadowRoot?.getElementById('init-contact-' + key) ||
             document.getElementById('init-contact-' + key)) as HTMLElement;
         const customCssStyleURL = `${window.location.origin}/assets/utils/intl-tel-input-custom.css`;
         if (input) {
