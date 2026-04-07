@@ -32,46 +32,255 @@
         }
     </div>
 }
-@if (showRegistration() || showLogin()) {
+@if (showRegistration() || showLogin() || showForgotPassword()) {
     <div #dialogPortal [class.dark]="isDarkTheme()">
-        <div class="w-dialog-backdrop" (click)="closeOverlayDialog()" aria-hidden="true"></div>
-        <div role="dialog" aria-modal="true" class="w-dialog-panel" [class.w-dialog-panel--lg]="showRegistration()">
-            @if (isOtpLoading()) {
-                <proxy-progress-bar></proxy-progress-bar>
-            }
-            <div class="w-dialog-body">
-                @if (showRegistration()) {
-                    <proxy-register
-                        [referenceId]="referenceId"
-                        [serviceData]="otpWidgetData"
-                        [loginServiceData]="loginWidgetData"
-                        [registrationViaLogin]="registrationViaLogin"
-                        [showCompanyDetails]="showCompanyDetails"
-                        [version]="version"
-                        [theme]="theme"
-                        [prefillDetails]="prefillDetails"
-                        [firstName]="otherData?.firstName"
-                        [lastName]="otherData?.lastName"
-                        [email]="otherData?.email"
-                        [signupServiceId]="otherData?.signupServiceId"
-                        [isRegisterFormOnly]="isRegisterFormOnly"
-                        (togglePopUp)="closeOverlayDialog()"
-                        (successReturn)="closeOverlayDialog()"
-                        (failureReturn)="returnFailureObj($event)"
-                    ></proxy-register>
+        <div
+            class="w-dialog-backdrop"
+            (click)="showForgotPassword() ? closeForgotPasswordDialog() : closeOverlayDialog()"
+            aria-hidden="true"
+        ></div>
+
+        @if (showForgotPassword()) {
+            <div
+                role="dialog"
+                aria-labelledby="fp-dialog-title"
+                aria-modal="true"
+                class="w-dialog-panel w-dialog-panel--md"
+            >
+                <!-- Header -->
+                <div class="w-dialog-header">
+                    @if (forgotPasswordStep() === 2) {
+                        <button
+                            type="button"
+                            class="w-btn-close mr-2"
+                            (click)="goToForgotPasswordStep1()"
+                            aria-label="Back to step 1"
+                        >
+                            <svg class="size-4" aria-hidden="true" viewBox="0 -960 960 960" fill="currentColor">
+                                <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
+                            </svg>
+                        </button>
+                    }
+                    <h2 id="fp-dialog-title" class="w-dialog-title flex-1">
+                        {{ forgotPasswordStep() === 1 ? 'Reset Password' : 'Change Password' }}
+                    </h2>
+                    <button
+                        type="button"
+                        class="w-btn-close"
+                        (click)="closeForgotPasswordDialog()"
+                        aria-label="Close dialog"
+                    >
+                        <svg
+                            class="size-5"
+                            aria-hidden="true"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Step 1: Email / Mobile input -->
+                @if (forgotPasswordStep() === 1) {
+                    <div class="w-dialog-body space-y-4">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            Enter your email or mobile number to receive an OTP.
+                        </p>
+                        <div>
+                            <label for="fp-email" class="w-label">Email or Mobile</label>
+                            <input
+                                #fpEmailInput
+                                id="fp-email"
+                                type="text"
+                                autocomplete="off"
+                                [value]="forgotPasswordPrefillEmail()"
+                                placeholder="Email or Mobile"
+                                class="w-input"
+                                (keydown.enter)="sendForgotPasswordOtp(fpEmailInput.value, loginWidgetData)"
+                                aria-describedby="fp-email-error"
+                            />
+                            @if (forgotPasswordError()) {
+                                <p id="fp-email-error" role="alert" class="w-field-error">
+                                    {{ forgotPasswordError() }}
+                                </p>
+                            }
+                        </div>
+                    </div>
+                    <div class="w-dialog-footer">
+                        <button type="button" class="w-btn-secondary" (click)="closeForgotPasswordDialog()">
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            class="w-btn-primary"
+                            [disabled]="forgotPasswordLoading()"
+                            (click)="sendForgotPasswordOtp(fpEmailInput.value, loginWidgetData)"
+                        >
+                            @if (forgotPasswordLoading()) {
+                                <svg class="w-spinner" aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                                    <circle
+                                        class="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        stroke-width="4"
+                                    />
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                </svg>
+                                Sending...
+                            } @else {
+                                Send OTP
+                            }
+                        </button>
+                    </div>
                 }
-                @if (showLogin()) {
-                    <proxy-login
-                        [loginServiceData]="loginWidgetData"
-                        [theme]="theme"
-                        (togglePopUp)="closeOverlayDialog()"
-                        (closePopUp)="closeOverlayDialog()"
-                        (openPopUp)="setShowRegistrationFromLogin($event)"
-                        (failureReturn)="returnFailureObj($event)"
-                    ></proxy-login>
+
+                <!-- Step 2: OTP + new password -->
+                @if (forgotPasswordStep() === 2) {
+                    <div class="w-dialog-body space-y-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-500 dark:text-gray-400"
+                                >OTP sent to
+                                <span class="font-medium text-gray-900 dark:text-white">{{
+                                    forgotPasswordUser()
+                                }}</span></span
+                            >
+                            <button
+                                type="button"
+                                class="w-link"
+                                [disabled]="forgotPasswordResendSeconds() > 0"
+                                (click)="resendForgotPasswordOtp(loginWidgetData)"
+                            >
+                                {{
+                                    forgotPasswordResendSeconds() > 0
+                                        ? 'Resend in ' + forgotPasswordResendSeconds() + 's'
+                                        : 'Resend OTP'
+                                }}
+                            </button>
+                        </div>
+                        <div>
+                            <label for="fp-otp" class="w-label">OTP</label>
+                            <input
+                                #fpOtpInput
+                                id="fp-otp"
+                                type="number"
+                                autocomplete="off"
+                                placeholder="Enter OTP"
+                                class="w-input"
+                                aria-describedby="fp-change-error"
+                            />
+                        </div>
+                        <div>
+                            <label for="fp-password" class="w-label">New Password</label>
+                            <input
+                                #fpPasswordInput
+                                id="fp-password"
+                                type="password"
+                                autocomplete="new-password"
+                                placeholder="New Password"
+                                class="w-input"
+                            />
+                        </div>
+                        <div>
+                            <label for="fp-confirm" class="w-label">Confirm Password</label>
+                            <input
+                                #fpConfirmInput
+                                id="fp-confirm"
+                                type="password"
+                                autocomplete="new-password"
+                                placeholder="Confirm Password"
+                                class="w-input"
+                            />
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                            Min 8 chars · uppercase · lowercase · number · symbol
+                        </p>
+                        @if (forgotPasswordError()) {
+                            <p id="fp-change-error" role="alert" class="w-field-error">{{ forgotPasswordError() }}</p>
+                        }
+                    </div>
+                    <div class="w-dialog-footer">
+                        <button type="button" class="w-btn-secondary" (click)="closeForgotPasswordDialog()">
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            class="w-btn-primary"
+                            [disabled]="forgotPasswordLoading()"
+                            (click)="
+                                submitForgotPasswordChange(
+                                    fpOtpInput.value,
+                                    fpPasswordInput.value,
+                                    fpConfirmInput.value,
+                                    loginWidgetData
+                                )
+                            "
+                        >
+                            @if (forgotPasswordLoading()) {
+                                <svg class="w-spinner" aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                                    <circle
+                                        class="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        stroke-width="4"
+                                    />
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                </svg>
+                                Saving...
+                            } @else {
+                                Change Password
+                            }
+                        </button>
+                    </div>
                 }
             </div>
-        </div>
+        }
+
+        @if (!showForgotPassword()) {
+            <div role="dialog" aria-modal="true" class="w-dialog-panel" [class.w-dialog-panel--lg]="showRegistration()">
+                @if (isOtpLoading()) {
+                    <proxy-progress-bar></proxy-progress-bar>
+                }
+                <div class="w-dialog-body">
+                    @if (showRegistration()) {
+                        <proxy-register
+                            [referenceId]="referenceId"
+                            [serviceData]="otpWidgetData"
+                            [loginServiceData]="loginWidgetData"
+                            [registrationViaLogin]="registrationViaLogin"
+                            [showCompanyDetails]="showCompanyDetails"
+                            [version]="version"
+                            [theme]="theme"
+                            [prefillDetails]="prefillDetails"
+                            [firstName]="otherData?.firstName"
+                            [lastName]="otherData?.lastName"
+                            [email]="otherData?.email"
+                            [signupServiceId]="otherData?.signupServiceId"
+                            [isRegisterFormOnly]="isRegisterFormOnly"
+                            (togglePopUp)="closeOverlayDialog()"
+                            (successReturn)="closeOverlayDialog()"
+                            (failureReturn)="returnFailureObj($event)"
+                        ></proxy-register>
+                    }
+                    @if (showLogin()) {
+                        <proxy-login
+                            [loginServiceData]="loginWidgetData"
+                            [theme]="theme"
+                            (togglePopUp)="closeOverlayDialog()"
+                            (closePopUp)="closeOverlayDialog()"
+                            (openPopUp)="setShowRegistrationFromLogin($event)"
+                            (failureReturn)="returnFailureObj($event)"
+                        ></proxy-login>
+                    }
+                </div>
+            </div>
+        }
     </div>
 }
 
