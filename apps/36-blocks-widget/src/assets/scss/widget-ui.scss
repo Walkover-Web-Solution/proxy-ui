@@ -298,20 +298,6 @@
     @apply flex-1 overflow-y-auto min-h-0 px-4 py-4 w-full sm:px-6 sm:py-5;
 }
 
-// Forgot-password dialog: hide send-otp-center's own absolute close button + h2 heading
-// (both are replaced by the w-dialog-header rendered in widget.component.html)
-.fp-dialog-content {
-    > authorization,
-    > authorization > send-otp-center {
-        button[aria-label='Close'] {
-            display: none !important;
-        }
-        h2 {
-            display: none !important;
-        }
-    }
-}
-
 // Dialog footer action bar
 .w-dialog-footer {
     @apply flex items-center justify-end gap-3 px-4 py-3 border-t border-gray-200 sm:px-6 sm:py-4;

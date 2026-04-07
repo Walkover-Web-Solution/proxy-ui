@@ -16,24 +16,54 @@ export class ProxyAuthDomBuilderService {
         return wrapper;
     }
 
-    appendSkeletonLoader(renderer: Renderer2, element: HTMLElement): void {
+    appendSkeletonLoader(renderer: Renderer2, element: HTMLElement, isDark = false): void {
         if (element.querySelector('#skeleton-loader')) return;
+
+        const shadowRoot = element.closest('proxy-auth')?.shadowRoot ?? null;
+        const styleTarget: HTMLElement = (shadowRoot as any) ?? document.head;
+        const styleId = 'proxy-skeleton-animation';
+
+        if (!styleTarget.querySelector(`#${styleId}`)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = [
+                '@keyframes proxy-shimmer-light{',
+                '0%{background-position:200% 0}',
+                '100%{background-position:-200% 0}',
+                '}',
+                '@keyframes proxy-shimmer-dark{',
+                '0%{background-position:200% 0}',
+                '100%{background-position:-200% 0}',
+                '}',
+            ].join('');
+            styleTarget.appendChild(style);
+        }
+
+        const base = isDark ? '#2a2a2a' : '#e8e8e8';
+        const highlight = isDark ? '#3d3d3d' : '#d0d0d0';
+        const anim = isDark ? 'proxy-shimmer-dark' : 'proxy-shimmer-light';
+
         const container = renderer.createElement('div');
         container.id = 'skeleton-loader';
-        container.style.cssText = 'display:block;width:100%;';
-        if (!document.getElementById('skeleton-animation')) {
-            const style = renderer.createElement('style');
-            style.id = 'skeleton-animation';
-            style.textContent =
-                '@keyframes skeleton-loading{0%{background-position:200% 0}100%{background-position:-200% 0}}';
-            document.head.appendChild(style);
-        }
+        container.style.cssText =
+            'display:flex;flex-direction:column;align-items:center;width:100%;padding:8px 0;box-sizing:border-box;';
+
         for (let i = 0; i < 3; i++) {
             const bone = renderer.createElement('div');
-            bone.style.cssText =
-                'width:230px;height:40px;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:skeleton-loading 1.5s infinite;border-radius:4px;margin:8px 8px 16px 8px;display:block;box-sizing:border-box;';
+            bone.style.cssText = [
+                'width:316px;',
+                'height:44px;',
+                `background:linear-gradient(90deg,${base} 25%,${highlight} 50%,${base} 75%);`,
+                'background-size:200% 100%;',
+                `animation:${anim} 1.5s ease-in-out infinite;`,
+                `animation-delay:${i * 0.15}s;`,
+                'border-radius:6px;',
+                'margin:0 8px 16px 8px;',
+                'box-sizing:border-box;',
+            ].join('');
             renderer.appendChild(container, bone);
         }
+
         renderer.appendChild(element, container);
     }
 

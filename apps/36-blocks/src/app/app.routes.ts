@@ -4,9 +4,9 @@ import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/comp
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
 export const appRoutes: Route[] = [
-    // { path: '', redirectTo: '', pathMatch: 'full' },
     {
         path: '',
+        pathMatch: 'full',
         loadComponent: () => import('./auth/auth.component').then((c) => c.AuthComponent),
     },
     {
@@ -18,8 +18,8 @@ export const appRoutes: Route[] = [
     {
         path: 'widget-preview/:referenceId',
         loadComponent: () =>
-            import('./features/create-feature/feature-preview/widget-preview-dialog/widget-preview-dialog.component').then(
-                (c) => c.WidgetPreviewDialogComponent
+            import('./features/create-feature/feature-preview/widget-preview/widget-preview.component').then(
+                (c) => c.WidgetPreviewComponent
             ),
         data: { authGuardPipe: redirectUnauthorizedToLogin },
         canActivate: [AngularFireAuthGuard],

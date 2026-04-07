@@ -21,6 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MainLeftSideNavComponent } from './main-left-side-nav/main-left-side-nav.component';
+import { SidebarUserMenuComponent } from './sidebar-user-menu/sidebar-user-menu.component';
 import { IClient, IClientSettings, IFirebaseUserModel, IPaginatedResponse } from '@proxy/models/root-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store, select } from '@ngrx/store';
@@ -55,6 +56,7 @@ import { UiSettingsService } from './ui-settings.service';
         MatSlideToggleModule,
         ScrollingModule,
         MainLeftSideNavComponent,
+        SidebarUserMenuComponent,
     ],
     host: { class: 'flex w-full h-screen' },
     templateUrl: './layout.component.html',
@@ -201,8 +203,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     switchedDarkMode(isDarkMode: boolean) {
         const hostClass = isDarkMode ? 'dark-theme' : 'light-theme';
         this.uiSettings.setTheme(hostClass);
-        document.body.classList.remove('dark-theme', 'light-theme');
-        document.body.classList.add(hostClass);
         this.isDarkMode.set(isDarkMode);
 
         // This GTWY chatbot config for forced theme

@@ -1,7 +1,6 @@
 import { OtpService } from './../service/otp.service';
 import { CommonModule } from '@angular/common';
 import { ProgressBarComponent } from '../ui/progress-bar.component';
-import { SendOtpCenterComponent } from '../component';
 import { RegisterComponent } from '../component/register/register.component';
 import { LoginComponent } from '../component/login/login.component';
 import { UserProfileComponent } from '../user-profile/user-profile.component';
@@ -33,7 +32,7 @@ import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { distinctUntilChanged, filter, skip, take, takeUntil } from 'rxjs/operators';
 
-import { getSubscriptionPlans, getWidgetData, upgradeSubscription } from '../store/actions/otp.action';
+import { getSubscriptionPlans, getWidgetData, resetAll, upgradeSubscription } from '../store/actions/otp.action';
 import { IAppState } from '../store/app.state';
 import {
     selectGetOtpInProcess,
@@ -81,7 +80,6 @@ const THEME_COLORS = {
         CommonModule,
         ProgressBarComponent,
         SubscriptionCenterComponent,
-        SendOtpCenterComponent,
         RegisterComponent,
         LoginComponent,
         UserProfileComponent,
@@ -157,7 +155,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     public registrationViaLogin: boolean = true;
     public prefillDetails: string;
     public cameFromLogin: boolean = false;
-    public cameFromSendOtpCenter: boolean = false;
     public referenceElement: HTMLElement = null;
     public subscriptionPlans: any[] = [];
 
@@ -214,6 +211,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     ngOnInit() {
+        this.store.dispatch(resetAll());
         this._authToken$.set(this.authToken);
         this._type$.set(this.type);
         this.themeService.setInputTheme(this.theme);
@@ -321,7 +319,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 this.show.set(false);
             }
             this.cameFromLogin = false;
-            this.cameFromSendOtpCenter = false;
         });
     }
 
@@ -369,7 +366,11 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     }
                 } else {
                     this.showSkeleton = true;
-                    this.domBuilder.appendSkeletonLoader(this.renderer, this.referenceElement);
+                    this.domBuilder.appendSkeletonLoader(
+                        this.renderer,
+                        this.referenceElement,
+                        this.themeService.isDark()
+                    );
                     this.addButtonsToReferenceElement(this.referenceElement);
                     setTimeout(() => {
                         if (this.showSkeleton) {
@@ -480,7 +481,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
                 if (totalButtons > 0 && this.showSkeleton) {
                     this.domBuilder.removeSkeletonLoader(this.renderer, element);
-                    this.domBuilder.appendSkeletonLoader(this.renderer, element);
+                    this.domBuilder.appendSkeletonLoader(this.renderer, element, this.themeService.isDark());
                 } else if (totalButtons > 0 && !this.showSkeleton) {
                     this.domBuilder.removeSkeletonLoader(this.renderer, element);
                 }
@@ -1643,7 +1644,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 color: ${this.themeService.isDark() ? '#ffffff' : '#111827'};
                 margin: 8px 8px 16px 8px;
                 cursor: pointer;
-                width: ${useDiv ? '316px' : '260px'};
+                width: 316px;
                 visibility: ${isOtpButton ? 'hidden' : 'visible'}; // Hide only OTP buttons until ready
             `;
             const invertIcon = this.shouldInvertIcon(buttonsData);
@@ -1740,7 +1741,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     gap: 8px !important;
     color: ${primaryColor} !important;
     cursor: pointer !important;
-    width: ${this.version === 'v1' ? '260px' : '316px'} !important;
+    width: 316px !important;
 `;
 
         // Style the link
@@ -1759,7 +1760,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         link.addEventListener('click', (event) => {
             event.preventDefault();
             this.cameFromLogin = false; // Set flag to indicate user came from dynamically appended buttons
-            this.cameFromSendOtpCenter = false; // Reset other flags
             this.setShowRegistration(true);
         });
 
@@ -1780,7 +1780,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             justify-content: center !important;
             gap: 4px !important;
             color: ${this.themeService.isDark() ? THEME_COLORS.dark.poweredByLabel : THEME_COLORS.light.poweredByLabel} !important;
-            width: ${this.version === 'v1' ? '260px' : '316px'} !important;
+            width: 316px !important;
         `;
 
         const poweredByText = this.renderer.createText('Powered by');
@@ -1835,11 +1835,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                         // If user came from login, go back to login
                         this.setShowLogin(true);
                         this.show.set(true);
-                    } else if (this.cameFromSendOtpCenter) {
-                        // If user came from send-otp-center, go back to send-otp-center
-                        // Only close login without affecting show - avoid race condition
-                        this.otpWidgetService.openLogin(false);
-                        this.show.set(true);
                     } else {
                         // If user came from dynamically appended buttons, just close without opening anything
                         this.setShowLogin(false);
@@ -1847,7 +1842,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     }
                     // Reset the flags
                     this.cameFromLogin = false;
-                    this.cameFromSendOtpCenter = false;
                 }
             } else {
                 this.setShowLogin(false);
@@ -1887,15 +1881,9 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
     public setShowRegistrationFromLogin(data?: string) {
         this.cameFromLogin = true; // Set flag to track that user came from login
-        this.cameFromSendOtpCenter = false; // Reset other flags
         this.setShowRegistration(true, data);
     }
 
-    public setShowRegistrationFromSendOtpCenter(data?: string) {
-        this.cameFromSendOtpCenter = true; // Set flag to track that user came from send-otp-center
-        this.cameFromLogin = false; // Reset other flags
-        this.setShowRegistration(true, data);
-    }
     public returnSuccessObj(obj) {
         if (typeof this.successReturn === 'function') {
             this.successReturn(obj);
