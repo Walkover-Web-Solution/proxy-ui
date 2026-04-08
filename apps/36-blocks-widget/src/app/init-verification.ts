@@ -50,7 +50,13 @@ function validateWidgetConfig(config: any): void {
 
 if (!window.initVerification) {
     window['initVerification'] = (config: any) => {
+        // Validate widget config and show error in console
         validateWidgetConfig(config);
+
+        // In case of no type, set default to Authorization
+        if (!config?.type) {
+            config = { ...config, type: PublicScriptType.Authorization };
+        }
         const initFn = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const isRegisterFormOnlyFromParams = urlParams.get('isRegisterFormOnly') === 'true';
