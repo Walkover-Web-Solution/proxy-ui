@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { WidgetEvent } from '@proxy/constant';
 import { AddUserDialogComponent } from '../user-management/add-user-dialog.component';
 import { WidgetDialogRef, WidgetDialogService } from './widget-dialog.service';
+import { WidgetThemeService } from './widget-theme.service';
 
 export interface OpenAddUserConfig {
     authToken: string;
@@ -35,6 +36,7 @@ export class UserManagementBridgeService {
     readonly openAddUser$ = new Subject<OpenAddUserConfig>();
 
     private readonly _dialogService = inject(WidgetDialogService);
+    private readonly _themeService = inject(WidgetThemeService);
 
     /** Prevents multiple simultaneous standalone dialogs. */
     private _activeRef: WidgetDialogRef<AddUserDialogComponent> | null = null;
@@ -71,7 +73,7 @@ export class UserManagementBridgeService {
         const detail = (e as CustomEvent).detail ?? {};
         return {
             authToken: detail.authToken ?? '',
-            theme: detail.theme ?? undefined,
+            theme: detail.theme ?? this._themeService.resolvedTheme() ?? undefined,
         };
     }
 

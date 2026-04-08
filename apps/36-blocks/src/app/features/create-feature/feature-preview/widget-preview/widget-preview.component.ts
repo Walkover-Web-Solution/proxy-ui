@@ -279,6 +279,7 @@ export class WidgetPreviewComponent implements AfterViewInit {
 
         const config: Record<string, any> = {
             referenceId: this.referenceId(),
+            type: tab,
             theme: this.theme(),
             target: '_blank',
             success: (data: unknown) => {
@@ -307,7 +308,6 @@ export class WidgetPreviewComponent implements AfterViewInit {
         if (isAuthTab) {
             config['redirect_path'] = this.location.path().split('?')[0];
         } else {
-            config['type'] = tab;
             config['authToken'] = this.authToken()?.trim();
             if (tab === PublicScriptType.UserManagement) {
                 // Enables the Role & Permission tab in the User Management widget

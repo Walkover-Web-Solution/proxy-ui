@@ -9,6 +9,7 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
 import { NgHcaptchaModule } from 'ng-hcaptcha';
 import { ProxyAuthWidgetComponent } from './app/otp/widget/widget.component';
+import { UserManagementBridgeService } from './app/otp/service/user-management-bridge.service';
 import { reducers } from './app/otp/store/app.state';
 import { OtpEffects } from './app/otp/store/effects';
 import { OtpService } from './app/otp/service/otp.service';
@@ -66,5 +67,13 @@ if ((window as any).__proxyAuthLoaded) {
         } catch (e) {
             console.warn('[36Blocks] Custom element registration failed:', e);
         }
+
+        // Eagerly instantiate UserManagementBridgeService so its constructor runs
+        // immediately after bootstrap. This registers the window event listener for
+        // WidgetEvent.OpenInviteMemberDialog and drains any events that were buffered
+        // in window.__proxyAuth.pendingDialogEvents before Angular bootstrapped.
+        // Without this, the service is created lazily only when UserManagementComponent
+        // is first mounted, causing the event to be silently swallowed.
+        injector.get(UserManagementBridgeService);
     });
 }

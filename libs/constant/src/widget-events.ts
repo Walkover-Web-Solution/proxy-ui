@@ -16,5 +16,5 @@ export enum WidgetEvent {
      *
      * detail: { authToken: string; theme?: 'dark' | 'light' | 'system' }
      */
-    OpenInviteMemberDialog = 'openInviteMemberDialogAt36Blocks',
+    OpenInviteMemberDialog = 'openAddUserDialog',
 }
