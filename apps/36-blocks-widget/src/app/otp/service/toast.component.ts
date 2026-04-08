@@ -11,7 +11,7 @@ import { WidgetThemeService } from './widget-theme.service';
         @if (toastService.toast()) {
             <div
                 aria-live="assertive"
-                class="pointer-events-none fixed inset-0 flex items-start justify-end px-4 py-6 sm:p-6 z-[9999]"
+                class="pointer-events-none fixed inset-0 flex items-start justify-end px-4 py-6 sm:p-6 z-[2147483620]"
             >
                 <div
                     class="pointer-events-auto w-full max-w-sm rounded-lg shadow-lg ring-1"

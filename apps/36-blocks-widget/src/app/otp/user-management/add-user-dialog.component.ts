@@ -2,7 +2,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    DestroyRef,
+    OnDestroy,
     OnInit,
     computed,
     inject,
@@ -10,15 +10,17 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Actions, ofType } from '@ngrx/effects';
 import { Store, select } from '@ngrx/store';
-import { distinctUntilChanged } from 'rxjs';
+import { Subject, distinctUntilChanged, takeUntil } from 'rxjs';
 import { isEqual } from 'lodash-es';
 import { IAppState } from '../store/app.state';
 import { otpActions } from '../store/actions';
-import { rolesData, addUserData } from '../store/selectors';
+import { rolesData, addUserSuccess } from '../store/selectors';
 import { WidgetTheme } from '@proxy/constant';
 import { WidgetDialogRef } from '../service/widget-dialog.service';
+import { ToastService } from '../service/toast.service';
+import { ToastComponent } from '../service/toast.component';
 
 /**
  * Standalone Add-User dialog.
@@ -28,10 +30,11 @@ import { WidgetDialogRef } from '../service/widget-dialog.service';
 @Component({
     selector: 'add-user-dialog',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, ToastComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <div class="w-dialog-backdrop" (click)="close()" aria-hidden="true"></div>
+        <proxy-toast />
         <div role="dialog" aria-labelledby="add-user-dialog-title" aria-modal="true" class="w-dialog-panel">
             <!-- Header -->
             <div class="w-dialog-header">
@@ -63,12 +66,16 @@ import { WidgetDialogRef } from '../service/widget-dialog.service';
                             @if (form.get('name')?.touched && form.get('name')?.hasError('required')) {
                                 <p role="alert" class="w-field-error">Name is required</p>
                             }
+                            @if (form.get('name')?.touched && form.get('name')?.hasError('pattern')) {
+                                <p role="alert" class="w-field-error">
+                                    Name must contain only letters, spaces, hyphens or apostrophes
+                                </p>
+                            }
                         </div>
                         <div>
                             <label for="au-role" class="w-label">Role</label>
                             <div class="relative">
                                 <select id="au-role" formControlName="role" class="w-select">
-                                    <option value="">Select role</option>
                                     @for (r of roles(); track r.id) {
                                         <option [value]="r.id.toString()">{{ r.name }}</option>
                                     }
@@ -137,7 +144,7 @@ import { WidgetDialogRef } from '../service/widget-dialog.service';
         </div>
     `,
 })
-export class AddUserDialogComponent implements OnInit {
+export class AddUserDialogComponent implements OnInit, OnDestroy {
     /** Set by WidgetDialogService before onInit via setup callback. */
     authToken = '';
     theme = '';
@@ -150,7 +157,9 @@ export class AddUserDialogComponent implements OnInit {
     private readonly store = inject<Store<IAppState>>(Store);
     private readonly fb = inject(FormBuilder);
     private readonly cdr = inject(ChangeDetectorRef);
-    private readonly destroyRef = inject(DestroyRef);
+    private readonly actions$ = inject(Actions);
+    private readonly toastService = inject(ToastService);
+    private readonly _destroy$ = new Subject<void>();
 
     private readonly _systemDark = signal(
         typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -170,7 +179,7 @@ export class AddUserDialogComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            name: ['', Validators.required],
+            name: ['', [Validators.required, Validators.pattern(/^[\p{L}\s'-]+$/u)]],
             email: ['', [Validators.required, Validators.email]],
             mobileNumber: ['', [Validators.pattern(/^(\+?[1-9]\d{1,14}|[0-9]{10})$/)]],
             role: [''],
@@ -180,33 +189,56 @@ export class AddUserDialogComponent implements OnInit {
         this.store.dispatch(otpActions.getRoles({ authToken: this.authToken, itemsPerPage: 1000 }));
 
         this.store
-            .pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntilDestroyed(this.destroyRef))
+            .pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntil(this._destroy$))
             .subscribe((res) => {
-                if (res?.data?.data) {
+                if (res?.data?.data?.length) {
                     this.roles.set(res.data.data);
+                    // Default to the first role if the control has no value yet
+                    if (!this.form.get('role')?.value) {
+                        this.form.get('role')?.setValue(res.data.data[0].id.toString());
+                    }
                     this.cdr.markForCheck();
                 }
             });
 
-        // Close on success
+        // Close only on confirmed success
         this.store
-            .pipe(select(addUserData), distinctUntilChanged(isEqual), takeUntilDestroyed(this.destroyRef))
-            .subscribe((res) => {
-                if (res) {
+            .pipe(select(addUserSuccess), distinctUntilChanged(), takeUntil(this._destroy$))
+            .subscribe((success) => {
+                if (success) {
                     this.close();
                 }
+            });
+
+        // Show error toast without closing the dialog
+        this.actions$
+            .pipe(ofType(otpActions.addUserError), takeUntil(this._destroy$))
+            .subscribe(({ errorResponse }) => {
+                const errorMessage: string =
+                    errorResponse?.error?.errors?.message ||
+                    errorResponse?.error?.data?.message ||
+                    errorResponse?.errors?.message ||
+                    errorResponse?.data?.message ||
+                    errorResponse?.message ||
+                    'Something went wrong. Please try again.';
+                this.toastService.error(errorMessage);
             });
 
         // System dark mode changes
         if (typeof window !== 'undefined') {
             const mq = window.matchMedia('(prefers-color-scheme: dark)');
-            const listener = (e: MediaQueryListEvent) => {
-                this._systemDark.set(e.matches);
+            const listener = (mediaQueryEvent: MediaQueryListEvent) => {
+                this._systemDark.set(mediaQueryEvent.matches);
                 this.cdr.markForCheck();
             };
             mq.addEventListener('change', listener);
-            this.destroyRef.onDestroy(() => mq.removeEventListener('change', listener));
+            this._destroy$.subscribe({ complete: () => mq.removeEventListener('change', listener) });
         }
+    }
+
+    ngOnDestroy(): void {
+        this._destroy$.next();
+        this._destroy$.complete();
     }
 
     save(): void {
@@ -214,12 +246,12 @@ export class AddUserDialogComponent implements OnInit {
             this.form.markAllAsTouched();
             return;
         }
-        const v = this.form.value;
+        const formValue = this.form.value;
         this.store.dispatch(
             otpActions.addUser({
                 payload: {
-                    user: { name: v.name, email: v.email, mobile: v.mobileNumber || '' },
-                    role_id: v.role,
+                    user: { name: formValue.name, email: formValue.email, mobile: formValue.mobileNumber || '' },
+                    role_id: formValue.role,
                 },
                 authToken: this.authToken,
             })
