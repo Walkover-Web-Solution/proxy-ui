@@ -26,19 +26,32 @@ window.addEventListener(WidgetEvent.OpenInviteMemberDialog, (e: Event) => {
     (window.__proxyAuth.pendingDialogEvents as Event[]).push(e);
 });
 
-function documentReady(fn: any) {
-    // see if DOM is already available
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        // call on next available tick
-        setTimeout(fn, 1);
-    } else {
-        document.addEventListener('DOMContentLoaded', fn);
+function validateWidgetConfig(config: any): void {
+    const validTypes = Object.values(PublicScriptType).filter((type) => type !== PublicScriptType.Subscription); // Subscription is deprecated
+    if (!config?.type || !validTypes.includes(config.type)) {
+        console.error(
+            '[36Blocks] Invalid or missing "type" attribute.\n' +
+                `  Received: ${JSON.stringify(config?.type)}\n` +
+                `  Expected one of: ${validTypes.map((value) => `"${value}"`).join(', ')}`
+        );
+    }
+    const authTokenRequiredTypes = [
+        PublicScriptType.UserProfile,
+        PublicScriptType.UserManagement,
+        PublicScriptType.OrganizationDetails,
+    ];
+    if (authTokenRequiredTypes.includes(config?.type) && !config?.authToken) {
+        console.error(
+            `[36Blocks] "authToken" is required when type is "${config?.type}".\n` +
+                `  Types that require authToken: ${authTokenRequiredTypes.map((value) => `"${value}"`).join(', ')}`
+        );
     }
 }
 
 if (!window.initVerification) {
     window['initVerification'] = (config: any) => {
-        documentReady(() => {
+        validateWidgetConfig(config);
+        const initFn = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const isRegisterFormOnlyFromParams = urlParams.get('isRegisterFormOnly') === 'true';
             const paramsData = {
@@ -91,8 +104,8 @@ if (!window.initVerification) {
                 widgetElement.otherData = { ...paramsData, ...omit(config, RESERVED_KEYS) };
 
                 // Determine the target container id:
-                const FALLBACK_CONTAINER_ID = PROXY_DOM_ID;
-                const targetId: string = config?.authToken ? PROXY_DOM_ID : config?.referenceId;
+                const targetId: string =
+                    config?.type === PublicScriptType.Authorization ? config?.referenceId : PROXY_DOM_ID;
 
                 const resolveContainer = (): HTMLElement | null => document.getElementById(targetId);
 
@@ -140,7 +153,7 @@ if (!window.initVerification) {
                             resolved = true;
                             cleanup(observer, intervalId);
                             console.error(
-                                `[proxy-auth] Container element with id="${targetId}" was not found in the document ` +
+                                `[36Blocks] Container element with id="${targetId}" was not found in the document ` +
                                     `after ${TIMEOUT_MS / 1000} s. ` +
                                     `Ensure the element exists in the DOM before calling window.initVerification().`
                             );
@@ -174,6 +187,11 @@ if (!window.initVerification) {
                     throw Error('Something went wrong!');
                 }
             }
-        });
+        };
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            setTimeout(initFn, 1);
+        } else {
+            document.addEventListener('DOMContentLoaded', initFn);
+        }
     };
 }

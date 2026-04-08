@@ -165,7 +165,7 @@ export class WidgetDialogService {
     private _adoptStyles(shadowRoot: ShadowRoot): void {
         const css: string | null = (window as any).__proxyAuth?.inlinedStyles ?? null;
         if (!css) {
-            console.warn('[proxy-auth] Widget styles not found. Dialog may render without styles.');
+            console.warn('[36Blocks] Widget styles not found. Dialog may render without styles.');
             return;
         }
 

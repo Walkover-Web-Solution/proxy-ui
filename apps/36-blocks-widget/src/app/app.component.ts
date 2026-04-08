@@ -6,10 +6,10 @@ import { WidgetTheme, PublicScriptType, WidgetConfig, PROXY_DOM_ID } from '@prox
 import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 const REFERENCE_ID = '4512365c177425472369c0fa8351a15';
-const THEME: WidgetTheme = WidgetTheme.Dark;
+const THEME: WidgetTheme = WidgetTheme.System;
 const TYPE: PublicScriptType = PublicScriptType.Authorization;
 const AUTH_TOKEN =
-    'ZlhTM2c2a1ZPZXhsVVFPOXpWelJrNTlLU0s4WWd3bGJ3MGFOTkl1WVFrVFhhalFLam1FaVhMdXdyREt5cHZqOVhHbnBpNGVHRjEyV0VBcWh1MnRwd0d2MWVOV1RKNFpkZHROY2RBTmdzd2pxeUpWVkF3aHhVcUFMdXBWSkFaZnN1dmFZVzRQQTRWUkhKVXMvaVBLalp4Z3I0TVhkOUtzdFRxZDA0alAxWEZSSjRHeCtTTkdnd3piNTRJK2ZaTXZ3blJ4UWw2Unc0QzAvU08rMDdBTUtIZz09';
+    'K1lMOGtDVmpHejd1TDFtL29QQjFVbzhlV29HLzE3YVdNRjM1bW56cjYrSXljbVM2L0toZUhhS252Z0FGMUZaei92NEo5WkM1YmI1aTg5Kzk2dmtnM2REYWhUZXdQSm1qaWdsdXNiZVB4eElYZzJNTGFiMGRneHJkVUhuK1R2enFtWkZhOHFKZytIcjJFWGh1OEpDejJHMTZEYnVRUVlZc2pKOTlrNTg0UWw4bUQ1YVZPNExTb3pLZDJFVzUxb1NhUmphUU03dWpiWWpZTFc2dzA0bnlYZz09';
 
 @Component({
     selector: 'proxy-root',

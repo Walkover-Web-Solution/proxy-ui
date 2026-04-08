@@ -2,7 +2,6 @@ import { cloneDeep } from 'lodash-es';
 import { WidgetTheme } from '@proxy/constant';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
 import { OtpService } from './../../service/otp.service';
 import { environment } from './../../../../environments/environment';
 import {
@@ -47,7 +46,7 @@ import { IGetOtpRes } from '../../model/otp';
 
 @Component({
     selector: 'proxy-register',
-    imports: [CommonModule, ReactiveFormsModule, MarkAllAsTouchedDirective],
+    imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -67,7 +66,6 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public email = input<string>();
     public signupServiceId = input<string | number>();
     public isRegisterFormOnly = input<boolean>(false);
-    public isInDialog = input<boolean>(false);
     public showPassword: boolean = false;
     public showConfirmPassword: boolean = false;
     public togglePopUp = output<void>();
@@ -455,6 +453,14 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
     public returnSuccess(successResponse: any) {
         this.successReturn.emit(successResponse);
+    }
+
+    public onSubmitClick(): void {
+        this.registrationForm.markAllAsTouched();
+        if (this.registrationForm.invalid) {
+            return;
+        }
+        this.submit();
     }
 
     public submit(): void {

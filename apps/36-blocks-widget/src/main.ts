@@ -23,7 +23,7 @@ import './app/init-verification';
 
 // Double-load protection — prevents duplicate Angular app if script is loaded twice
 if ((window as any).__proxyAuthLoaded) {
-    console.warn('[proxy-auth] Script already loaded — skipping bootstrap.');
+    console.warn('[36Blocks] Script already loaded — skipping bootstrap.');
 } else {
     (window as any).__proxyAuthLoaded = true;
 
@@ -64,7 +64,7 @@ if ((window as any).__proxyAuthLoaded) {
                 customElements.define('proxy-auth', el);
             }
         } catch (e) {
-            console.warn('[proxy-auth] Custom element registration failed:', e);
+            console.warn('[36Blocks] Custom element registration failed:', e);
         }
     });
 }

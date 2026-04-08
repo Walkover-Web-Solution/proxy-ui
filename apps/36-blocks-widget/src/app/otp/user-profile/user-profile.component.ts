@@ -230,8 +230,8 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
                 this.editDialogRef?.detach();
                 this.editDialogRef = null;
                 this.isEditing = false;
-                this.cdr.detectChanges();
                 this.previousName = enteredName;
+                this.cdr.detectChanges();
                 this.toastService.success('Information successfully updated');
             }
         });

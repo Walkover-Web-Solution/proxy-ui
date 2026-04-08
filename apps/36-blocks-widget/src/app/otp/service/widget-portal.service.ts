@@ -61,7 +61,7 @@ function getOrCreateSharedSheet(): CSSStyleSheet | null {
 function adoptWidgetStyles(shadowRoot: ShadowRoot): void {
     const css = getWidgetCSS();
     if (!css) {
-        console.warn('[proxy-auth] Widget overlay styles not found in bundle. Dialogs may not render correctly.');
+        console.warn('[36Blocks] Widget overlay styles not found in bundle. Dialogs may not render correctly.');
         return;
     }
 
