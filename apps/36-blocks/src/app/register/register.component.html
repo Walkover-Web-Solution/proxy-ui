@@ -2,7 +2,7 @@
     <mat-card class="outline-card min-w-[720px] max-tablet:min-w-[80%]">
         <h2 class="flex justify-center">Register</h2>
         <div>
-            <div [formGroup]="registrationForm" proxyMarkAllAsTouched (valid)="submit()">
+            <div [formGroup]="registrationForm">
                 <ng-container
                     [ngTemplateOutlet]="formField"
                     [ngTemplateOutletContext]="{
@@ -75,7 +75,13 @@
                 </div>
 
                 <div class="mt-6 flex justify-center items-center">
-                    <button matButton="filled" class="text-base w-[250px]" (click)="submit()">Submit</button>
+                    <button
+                        matButton="filled"
+                        class="text-base w-[250px]"
+                        (click)="registrationForm.markAllAsTouched(); registrationForm.valid && submit()"
+                    >
+                        Submit
+                    </button>
                 </div>
             </div>
         </div>

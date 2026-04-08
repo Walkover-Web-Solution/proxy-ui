@@ -14,7 +14,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CopyButtonComponent } from '@proxy/ui/copy-button';
-import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
@@ -54,7 +53,6 @@ import { IClientData } from '@proxy/models/users-model';
         MatTooltipModule,
         MatFormFieldModule,
         CopyButtonComponent,
-        MarkAllAsTouchedDirective,
     ],
     templateUrl: './create-project.component.html',
     styleUrls: ['./create-project.component.scss'],

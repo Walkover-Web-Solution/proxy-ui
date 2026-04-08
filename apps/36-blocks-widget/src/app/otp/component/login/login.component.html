@@ -1,6 +1,6 @@
-<!-- Header: Back + Close -->
-<div class="flex items-center justify-between mb-4">
-    @if (step > 1) {
+<!-- Header: Back navigation for sub-steps -->
+@if (step > 1) {
+    <div class="flex items-center gap-2 mb-4">
         <button
             type="button"
             (click)="changeStep(step - 1)"
@@ -13,37 +13,23 @@
                 viewBox="0 -960 960 960"
                 width="16px"
                 aria-hidden="true"
-                [attr.fill]="isDark ? '#ffffff' : '#5f6368'"
+                [attr.fill]="isDark() ? '#ffffff' : '#5f6368'"
             >
                 <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
             </svg>
         </button>
-    } @else {
-        <div></div>
-    }
-    <button
-        type="button"
-        (click)="close(true)"
-        class="flex size-6 items-center justify-center rounded text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 cursor-pointer transition-colors duration-150"
-        aria-label="Close"
-    >
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <path
-                d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
-                [attr.fill]="isDark ? '#ffffff' : '#5D6164'"
-            />
-        </svg>
-    </button>
-</div>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+            @if (step === 2) {
+                Forgot Password
+            } @else if (step === 3) {
+                Change Password
+            }
+        </h2>
+    </div>
+}
 @if (step === 1) {
-    <div
-        class="flex flex-col gap-3 w-full"
-        [formGroup]="loginForm"
-        proxyMarkAllAsTouched
-        [buttonRef]="loginBtn"
-        (valid)="login()"
-    >
-        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Login</h2>
+    <div class="flex flex-col gap-3 w-full" [formGroup]="loginForm">
+        <!-- <h2 class="text-base font-semibold text-gray-900 dark:text-white">Login</h2> -->
 
         <!-- Email or Mobile -->
         @if (loginForm.get('username'); as userNameControl) {
@@ -104,7 +90,7 @@
 
         <!-- hCaptcha -->
         <div class="w-full flex justify-center py-1">
-            @if (isDark) {
+            @if (isDark()) {
                 <ng-hcaptcha
                     #hCaptcha
                     (verify)="onHCaptchaVerify($event)"
@@ -114,7 +100,7 @@
                     size="normal"
                 ></ng-hcaptcha>
             }
-            @if (!isDark) {
+            @if (!isDark()) {
                 <ng-hcaptcha
                     #hCaptcha
                     (verify)="onHCaptchaVerify($event)"
@@ -134,7 +120,12 @@
             <div class="flex justify-end">
                 <a href="javascript:void(0)" (click)="changeStep(2)" class="w-link">Forgot Password?</a>
             </div>
-            <button #loginBtn type="button" [disabled]="isLoading$ | async" class="w-btn-primary w-full justify-center">
+            <button
+                type="button"
+                [disabled]="isLoading$ | async"
+                (click)="loginForm.markAllAsTouched(); loginForm.valid && login()"
+                class="w-btn-primary w-full justify-center"
+            >
                 @if (isLoading$ | async) {
                     <svg
                         class="animate-spin size-4 text-white"
@@ -173,15 +164,7 @@
     </div>
 }
 @if (step === 2) {
-    <div
-        class="flex flex-col gap-3 w-full"
-        [formGroup]="sendOtpForm"
-        [buttonRef]="sendOtpBtn"
-        (valid)="sendOtp()"
-        proxyMarkAllAsTouched
-    >
-        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Reset Password</h2>
-
+    <div class="flex flex-col gap-3 w-full" [formGroup]="sendOtpForm">
         <ng-container
             *ngTemplateOutlet="
                 formField;
@@ -197,7 +180,12 @@
             <p class="text-xs text-red-600 dark:text-red-400" role="alert">{{ errorMsg }}</p>
         }
 
-        <button #sendOtpBtn type="button" [disabled]="isLoading$ | async" class="w-btn-primary w-full justify-center">
+        <button
+            type="button"
+            [disabled]="isLoading$ | async"
+            (click)="sendOtpForm.markAllAsTouched(); sendOtpForm.valid && sendOtp()"
+            class="w-btn-primary w-full justify-center"
+        >
             @if (isLoading$ | async) {
                 <svg
                     class="animate-spin size-4 text-white"
@@ -215,15 +203,7 @@
     </div>
 }
 @if (step === 3) {
-    <div
-        class="flex flex-col gap-3 w-full"
-        [formGroup]="resetPasswordForm"
-        proxyMarkAllAsTouched
-        [buttonRef]="verifyOtpBtn"
-        (valid)="verfiyOtp()"
-    >
-        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Change Password</h2>
-
+    <div class="flex flex-col gap-3 w-full" [formGroup]="resetPasswordForm">
         <div class="flex items-center justify-between text-sm">
             <span class="text-gray-700 dark:text-gray-300">{{ sendOtpForm.get('userDetails').value }}</span>
             <a href="javascript:void(0)" (click)="changeStep(2)" class="w-link">Change</a>
@@ -309,7 +289,12 @@
             <p class="text-xs text-red-600 dark:text-red-400" role="alert">{{ errorMsg }}</p>
         }
 
-        <button #verifyOtpBtn type="button" [disabled]="isLoading$ | async" class="w-btn-primary w-full justify-center">
+        <button
+            type="button"
+            [disabled]="isLoading$ | async"
+            (click)="resetPasswordForm.markAllAsTouched(); resetPasswordForm.valid && verfiyOtp()"
+            class="w-btn-primary w-full justify-center"
+        >
             @if (isLoading$ | async) {
                 <svg
                     class="animate-spin size-4 text-white"
