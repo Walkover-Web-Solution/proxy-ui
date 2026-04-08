@@ -6,13 +6,13 @@
     "prefix": "proxy",
     "targets": {
         "lint": {
-            "executor": "@nrwl/linter:eslint",
+            "executor": "@nx/eslint:lint",
             "options": {
                 "lintFilePatterns": ["libs/pipes/chart-date-add/src/**/*.ts", "libs/pipes/chart-date-add/src/**/*.html"]
             }
         },
         "test": {
-            "executor": "@nrwl/jest:jest",
+            "executor": "@nx/jest:jest",
             "outputs": ["{workspaceRoot}/coverage/libs/pipes/chart-date-add"],
             "options": {
                 "tsConfig": "libs/pipes/chart-date-add/tsconfig.lib.json",

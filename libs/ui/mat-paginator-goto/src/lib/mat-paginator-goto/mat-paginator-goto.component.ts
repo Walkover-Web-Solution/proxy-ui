@@ -1,13 +1,20 @@
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, effect, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSelect, MAT_SELECT_CONFIG } from '@angular/material/select';
 import { SHOW_PAGINATOR_LENGTH } from '@proxy/constant';
 
 @Component({
     selector: 'mat-paginator-goto',
+    imports: [CommonModule, MatPaginatorModule, MatFormFieldModule, MatSelectModule, FormsModule, ScrollingModule],
     templateUrl: './mat-paginator-goto.component.html',
     styleUrls: ['./mat-paginator-goto.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
             provide: MAT_SELECT_CONFIG,
@@ -24,31 +31,46 @@ export class MatPaginatorGotoComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(CdkVirtualScrollViewport, { static: false }) cdkVirtualScrollViewPort: CdkVirtualScrollViewport;
     @ViewChild('goToDropdown', { read: MatSelect, static: false }) goToDropdown: MatSelect;
-    @Input() disabled: boolean = false;
-    @Input() hidePageSize: boolean = false;
-    @Input() pageSizeOptions: number[];
-    @Input() showFirstLastButtons: boolean = false;
-    @Input() enableVirtualScroll: boolean;
-    @Input() itemSize: number = 35;
-    @Input() hidePaginationArrows: boolean = false;
-    @Output() page = new EventEmitter<PageEvent>();
+    disabled = input<boolean>(false);
+    hidePageSize = input<boolean>(false);
+    pageSizeOptions = input<number[]>();
+    showFirstLastButtons = input<boolean>(false);
+    enableVirtualScroll: boolean;
+    itemSize = input<number>(35);
+    hidePaginationArrows = input<boolean>(false);
+    page = output<PageEvent>();
     minWidth: number = 64;
     public showPaginatorLength = SHOW_PAGINATOR_LENGTH;
 
-    @Input('pageIndex') set pageIndexChanged(pageIndex: number) {
-        this.pageIndex = pageIndex;
-        this.updateGoto(!this.enableVirtualScroll);
+    constructor() {
+        effect(() => {
+            const pageIndex = this.pageIndexInput();
+            if (pageIndex !== undefined) {
+                this.pageIndex = pageIndex;
+                this.updateGoto(!this.enableVirtualScroll);
+            }
+        });
+
+        effect(() => {
+            const length = this.lengthInput();
+            if (length !== undefined) {
+                this.length = length;
+                this.updateGoto();
+            }
+        });
+
+        effect(() => {
+            const pageSize = this.pageSizeInput();
+            if (pageSize !== undefined) {
+                this.pageSize = pageSize;
+                this.updateGoto();
+            }
+        });
     }
 
-    @Input('length') set lengthChanged(length: number) {
-        this.length = length;
-        this.updateGoto();
-    }
-
-    @Input('pageSize') set pageSizeChanged(pageSize: number) {
-        this.pageSize = pageSize;
-        this.updateGoto();
-    }
+    pageIndexInput = input<number>(undefined, { alias: 'pageIndex' });
+    lengthInput = input<number>(undefined, { alias: 'length' });
+    pageSizeInput = input<number>(undefined, { alias: 'pageSize' });
 
     ngOnInit() {
         this.updateGoto();
@@ -122,7 +144,7 @@ export class MatPaginatorGotoComponent implements OnInit {
     }
 
     emitPageEvent(pageEvent: PageEvent) {
-        this.page.next(pageEvent);
+        this.page.emit(pageEvent);
     }
 
     openChange(event: boolean): void {

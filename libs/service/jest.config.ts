@@ -2,10 +2,6 @@
 export default {
     displayName: 'service',
     preset: '../../jest.preset.js',
-    globals: {
-        'ts-jest': {
-            tsconfig: '<rootDir>/tsconfig.spec.json',
-        },
-    },
+    globals: {},
     coverageDirectory: '../../coverage/libs/service',
 };

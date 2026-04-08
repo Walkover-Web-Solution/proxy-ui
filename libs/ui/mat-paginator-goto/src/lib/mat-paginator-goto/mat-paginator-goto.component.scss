@@ -1,0 +1,18 @@
+$border: 1px solid var(--color-common-border);
+$border-radius: 0 0 var(--border-common-radius-4) var(--border-common-radius-4);
+
+:host ::ng-deep .go-to-pagination {
+    border-left: $border;
+    border-right: $border;
+    border-bottom: $border;
+    border-radius: $border-radius;
+
+    @media screen and (max-width: 768px) {
+        border-top: $border;
+        padding-block: 10px;
+    }
+
+    .mat-mdc-paginator {
+        border-radius: $border-radius;
+    }
+}

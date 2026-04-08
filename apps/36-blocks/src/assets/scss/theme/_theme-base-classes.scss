@@ -1,0 +1,14 @@
+body {
+    &.default-theme,
+    &.dark-theme {
+        // Filter for Image
+        --filter-image-color-white: brightness(0) invert(1);
+        // Use this class on black color image (icon) to  change color in dark theme
+        --color-image-filter-quaternary: invert(100%) sepia(1%) saturate(2%) hue-rotate(1deg) brightness(33%)
+            contrast(100%);
+    }
+
+    &.dark-theme {
+        --color-image-filter-quaternary: brightness(0) invert(1);
+    }
+}

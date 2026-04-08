@@ -1,0 +1,402 @@
+<div class="h-full flex flex-col gap-6">
+    <mat-form-field appearance="outline" class="no-padding w-full mt-6">
+        <mat-label>Block</mat-label>
+        <mat-select [formControl]="roleForm.get('feature_id')" placeholder="Select Block">
+            @for (feature of features; track feature.reference_id) {
+                <mat-option [value]="feature.reference_id">{{ feature.name }}</mat-option>
+            }
+        </mat-select>
+        @if (roleForm.get('feature_id')?.hasError('required')) {
+            <mat-error>Block is required</mat-error>
+        }
+    </mat-form-field>
+    @if (!roleForm.get('feature_id')?.value) {
+        <!-- Empty state: centered block selector -->
+        <div class="flex-1 flex flex-col items-center justify-center gap-5 text-center">
+            <div
+                class="flex items-center justify-center w-16 h-16 rounded-full"
+                style="background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent)"
+            >
+                <mat-icon class="mat-icon-36 material-icons-outlined" style="color: var(--mat-sys-primary)"
+                    >featured_play_list</mat-icon
+                >
+            </div>
+            <div>
+                <p class="font-semibold text-base m-0 mb-1">Select a Block to get started</p>
+                <p class="text-sm secondary-text-color m-0">
+                    Choose a block from the dropdown below to manage its roles, permissions, and settings.
+                </p>
+            </div>
+        </div>
+    } @else {
+        <!-- Main Content Area -->
+        <div class="flex max-xl:flex-col gap-6 grow min-h-[400px]">
+            <!-- Sidebar Nav -->
+            <proxy-service-list
+                class="w-[200px] shrink-0 self-start max-xl:w-full"
+                [classList]="'max-xl:!flex max-xl:gap-2 max-md:!block'"
+                [services]="managementSections"
+                [selectedIndex]="selectedSectionIndex"
+                (serviceSelect)="selectedSectionIndex = $event"
+                [iconClass]="'max-xl:rotate-90'"
+            ></proxy-service-list>
+
+            <!-- Content Panel -->
+            <div class="grow">
+                <!-- ── Roles Tab ── -->
+                @if (selectedSectionIndex === 0) {
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                        <div class="flex flex-wrap items-center grow gap-4">
+                            <proxy-lib-search
+                                [matFormFieldClass]="'no-padding w-xs-100'"
+                                [placeholder]="'Search Roles'"
+                                (inputChanges)="search($event)"
+                                class="w-xs-100"
+                            ></proxy-lib-search>
+                        </div>
+                        <button matButton="filled" class="mat-btn-xs" (click)="addRole()">
+                            <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
+                            Add Role
+                        </button>
+                    </div>
+
+                    <div class="table-scroll">
+                        <table mat-table [dataSource]="rolesDataSource" class="default-table responsive-table">
+                            <!-- Roles Column -->
+                            <ng-container matColumnDef="role">
+                                <th mat-header-cell *matHeaderCellDef>Role</th>
+                                <td mat-cell *matCellDef="let element" data-label="Role">
+                                    <span>{{ element.role }}</span>
+                                </td>
+                            </ng-container>
+
+                            <!-- Permissions Column -->
+                            <ng-container matColumnDef="permissions">
+                                <th mat-header-cell *matHeaderCellDef>Permissions</th>
+                                <td mat-cell *matCellDef="let element" data-label="Permissions">
+                                    <mat-chip-set>
+                                        @for (permission of element.permissionsList; track permission.name) {
+                                            <mat-chip>
+                                                {{ permission.name }}
+                                            </mat-chip>
+                                        }
+                                    </mat-chip-set>
+                                </td>
+                            </ng-container>
+
+                            <!-- Actions Column -->
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef></th>
+                                <td mat-cell *matCellDef="let element" data-label="Actions">
+                                    <div class="actions flex gap-3 justify-end">
+                                        <span
+                                            [matTooltip]="
+                                                !element.feature_configuration_id ? 'Default Role is not editable' : ''
+                                            "
+                                            matTooltipPosition="above"
+                                        >
+                                            <button
+                                                matButton="outlined"
+                                                (click)="editRole(element)"
+                                                class="mat-btn-md"
+                                                [disabled]="!element.feature_configuration_id"
+                                            >
+                                                <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
+                                                    >edit</mat-icon
+                                                >
+                                                Edit
+                                            </button>
+                                        </span>
+                                        <span
+                                            [matTooltip]="
+                                                !element.feature_configuration_id
+                                                    ? 'Default role are not deletable'
+                                                    : ''
+                                            "
+                                            matTooltipPosition="above"
+                                        >
+                                            <button
+                                                matButton="outlined"
+                                                (click)="deleteRole(element)"
+                                                class="mat-btn-md"
+                                                [disabled]="!element.feature_configuration_id"
+                                            >
+                                                <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
+                                                    >delete</mat-icon
+                                                >
+                                                Delete
+                                            </button>
+                                        </span>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="rolesDisplayedColumns; sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: rolesDisplayedColumns" class="hover-action"></tr>
+
+                            <tr *matNoDataRow>
+                                <td class="mat-cell border-0" [attr.colspan]="rolesDisplayedColumns.length">
+                                    <proxy-no-record-found [title]="'roles'" [showBtn]="false"></proxy-no-record-found>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <mat-paginator-goto
+                        [length]="rolesTotalCount"
+                        [pageSize]="rolesPageSize"
+                        [pageSizeOptions]="pageSizeOptions"
+                        (page)="onRolesPageChange($event)"
+                        [pageIndex]="rolesPageIndex"
+                        class="box-shadow-none"
+                    ></mat-paginator-goto>
+                }
+
+                <!-- ── Permissions Tab ── -->
+                @if (selectedSectionIndex === 1) {
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                        <div class="flex flex-wrap items-center grow gap-4">
+                            <proxy-lib-search
+                                [matFormFieldClass]="'no-padding w-xs-100'"
+                                [placeholder]="'Search Permissions'"
+                                (inputChanges)="searchPermission($event)"
+                                class="w-xs-100"
+                            ></proxy-lib-search>
+                        </div>
+                        <button matButton="filled" class="mat-btn-xs" (click)="addPermission()">
+                            <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
+                            Add Permission
+                        </button>
+                    </div>
+
+                    <div class="table-scroll">
+                        <table mat-table [dataSource]="permissionsDataSource" class="default-table responsive-table">
+                            <!-- Permission Column -->
+                            <ng-container matColumnDef="permission">
+                                <th mat-header-cell *matHeaderCellDef>Permission</th>
+                                <td mat-cell *matCellDef="let element" data-label="Permission">
+                                    <p class="m-0">{{ element.name }}</p>
+                                    @if (element.description) {
+                                        <p class="text-xs mt-0.5 m-0">
+                                            {{ element.description }}
+                                        </p>
+                                    }
+                                </td>
+                            </ng-container>
+
+                            <!-- Actions Column -->
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef></th>
+                                <td mat-cell *matCellDef="let element" data-label="Actions">
+                                    <div class="actions flex gap-3 justify-end">
+                                        <button
+                                            matButton="outlined"
+                                            (click)="editPermission(element)"
+                                            class="mat-btn-md"
+                                            [disabled]="element.is_default"
+                                        >
+                                            <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
+                                                >edit</mat-icon
+                                            >
+                                            Edit
+                                        </button>
+                                        <button
+                                            matButton="outlined"
+                                            (click)="deletePermission(element)"
+                                            class="mat-btn-md"
+                                            [disabled]="element.is_default"
+                                        >
+                                            <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
+                                                >delete</mat-icon
+                                            >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="permissionsDisplayedColumns; sticky: true"></tr>
+                            <tr
+                                mat-row
+                                *matRowDef="let row; columns: permissionsDisplayedColumns"
+                                class="hover-action"
+                            ></tr>
+
+                            <tr *matNoDataRow>
+                                <td class="mat-cell border-0" [attr.colspan]="permissionsDisplayedColumns.length">
+                                    <proxy-no-record-found
+                                        [title]="'permissions'"
+                                        [showBtn]="false"
+                                    ></proxy-no-record-found>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <mat-paginator-goto
+                        [length]="permissionsTotalCount"
+                        [pageSize]="permissionsPageSize"
+                        [pageSizeOptions]="pageSizeOptions"
+                        (page)="onPermissionsPageChange($event)"
+                        [pageIndex]="permissionsPageIndex"
+                        class="box-shadow-none"
+                    ></mat-paginator-goto>
+                }
+
+                <!-- ── Snippet Tab ── -->
+                @if (selectedSectionIndex === 2) {
+                    <div class="flex flex-col gap-4">
+                        <div class="card-with-header">
+                            <div class="card-with-header--header justify-between">
+                                <div class="flex items-center gap-2">
+                                    <mat-icon class="!text-base !w-4 mt-1">code</mat-icon>
+                                    <span class="mat-body-2 font-semibold">Integration Script</span>
+                                </div>
+                                <proxy-copy-button
+                                    [copyData]="userManagementScript"
+                                    tooltip="Copy Script"
+                                ></proxy-copy-button>
+                            </div>
+                            <div class="overflow-auto code-snippet-view">
+                                <markdown [data]="userManagementScript | language: 'javascript'"></markdown>
+                            </div>
+                            <p class="mat-body-2 text-color px-4 py-3 m-0 text-xs">
+                                Add this script to your page to integrate the user management component.
+                            </p>
+                        </div>
+                        <div class="card-with-header">
+                            <div class="card-with-header--header justify-between">
+                                <div class="flex items-center gap-2">
+                                    <mat-icon>html</mat-icon>
+                                    <span class="mat-body-2 font-semibold">Container HTML</span>
+                                </div>
+                                <proxy-copy-button
+                                    [copyData]="userProxyContainerHtml"
+                                    tooltip="Copy Code"
+                                ></proxy-copy-button>
+                            </div>
+                            <div class="overflow-auto code-snippet-view">
+                                <markdown [data]="userProxyContainerHtml | language: 'html'"></markdown>
+                            </div>
+                        </div>
+                        <div [id]="proxyDomId"></div>
+                    </div>
+                }
+
+                <!-- ── Settings Tab ── -->
+                @if (selectedSectionIndex === 3) {
+                    <div class="w-full">
+                        <p class="mat-body-2 font-medium mb-6">Default Roles</p>
+                        <form [formGroup]="defaultRolesForm">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                @for (card of roleCards; track card.controlName) {
+                                    <mat-card>
+                                        <mat-card-content class="!flex flex-col gap-3">
+                                            <div class="flex flex-col gap-3">
+                                                <div class="flex items-center gap-3">
+                                                    <mat-icon class="material-icons-outlined mat-icon-18">{{
+                                                        card.icon
+                                                    }}</mat-icon>
+                                                    <p class="mat-body-2 font-semibold">{{ card.title }}</p>
+                                                </div>
+                                                <p class="text-grey text-xs">{{ card.desc }}</p>
+                                            </div>
+                                            <mat-form-field appearance="outline" class="w-full">
+                                                <mat-label>{{ card.label }}</mat-label>
+                                                <mat-select
+                                                    [formControlName]="card.controlName"
+                                                    [multiple]="card.multiple"
+                                                >
+                                                    @if (card.options) {
+                                                        @for (opt of card.options; track opt.value) {
+                                                            <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                                                        }
+                                                    } @else {
+                                                        @for (role of rolesDataSource.data; track role.id) {
+                                                            <mat-option [value]="role.id">{{ role.role }}</mat-option>
+                                                        }
+                                                    }
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </mat-card-content>
+                                    </mat-card>
+                                }
+                            </div>
+                            <div class="flex gap-3 w-full mt-3">
+                                <button
+                                    matButton="filled"
+                                    (click)="saveDefaultRoles()"
+                                    [disabled]="!defaultRolesForm.valid"
+                                >
+                                    Save Changes
+                                </button>
+                                <button matButton (click)="cancelDefaultRoles()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Add Role Dialog Template -->
+<ng-template #addRoleDialogTemplate>
+    <h2 matDialogTitle>{{ isEditMode ? 'Edit Role' : 'Add Role' }}</h2>
+    <mat-dialog-content>
+        <form [formGroup]="dialogRoleForm" class="flex flex-col gap-1">
+            <mat-form-field appearance="outline" class="w-full mt-2">
+                <mat-label>Role Name</mat-label>
+                <input matInput formControlName="roleName" placeholder="Enter role name" />
+                @if (dialogRoleForm.get('roleName')?.hasError('required')) {
+                    <mat-error>Role name is required</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Permissions</mat-label>
+                <mat-select formControlName="permissions" multiple>
+                    @for (permission of availablePermissions; track permission.name) {
+                        <mat-option [value]="permission.name">{{ permission.name }}</mat-option>
+                    }
+                </mat-select>
+                <mat-hint>Select one or more permissions</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full mt-2">
+                <mat-label>Description</mat-label>
+                <textarea matInput formControlName="description" placeholder="Enter description" rows="3"></textarea>
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button matButton (click)="closeDialog()">Close</button>
+        <button matButton="filled" (click)="submitDialog()" [disabled]="!dialogRoleForm.valid">
+            {{ isEditMode ? 'Update Role' : 'Add Role' }}
+        </button>
+    </mat-dialog-actions>
+</ng-template>
+
+<!-- Add Permission Dialog Template -->
+<ng-template #addPermissionDialogTemplate>
+    <h2 matDialogTitle>{{ isEditPermissionMode ? 'Edit Permission' : 'Add Permission' }}</h2>
+    <mat-dialog-content>
+        <form [formGroup]="dialogPermissionForm" class="flex flex-col gap-1">
+            <mat-form-field appearance="outline" class="w-full mt-2">
+                <mat-label>Permission Name</mat-label>
+                <input matInput formControlName="permissionName" placeholder="Enter permission name" />
+                @if (dialogPermissionForm.get('permissionName')?.hasError('required')) {
+                    <mat-error>Permission name is required</mat-error>
+                }
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Description</mat-label>
+                <textarea matInput formControlName="description" placeholder="Enter description" rows="3"></textarea>
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button matButton (click)="closePermissionDialog()">Close</button>
+        <button matButton="filled" (click)="submitPermissionDialog()" [disabled]="!dialogPermissionForm.valid">
+            {{ isEditPermissionMode ? 'Update Permission' : 'Add Permission' }}
+        </button>
+    </mat-dialog-actions>
+</ng-template>

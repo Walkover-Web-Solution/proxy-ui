@@ -1,0 +1,323 @@
+<div class="h-full flex-col dark:bg-gray-900 overflow-y-auto" [class.dark]="isDark()">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
+        <!-- ── Organization Details Card ── -->
+        <div class="w-card-section">
+            <!-- Card header -->
+            <div class="w-dialog-header px-5 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-icon-box">
+                        <svg
+                            class="size-4 text-indigo-600 dark:text-indigo-400"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <path d="M9 9h1m5 0h1M9 13h1m5 0h1M9 17h1m5 0h1" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Organization Details</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Manage your organization information</p>
+                    </div>
+                </div>
+                @if (!isEditing) {
+                    <button
+                        type="button"
+                        (click)="startEdit()"
+                        [disabled]="!allowedUpdatePermissions"
+                        [title]="!allowedUpdatePermissions ? 'No permission' : ''"
+                        class="w-btn-secondary-sm inline-flex items-center gap-1.5"
+                    >
+                        <svg
+                            class="size-3"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            aria-hidden="true"
+                        >
+                            <path d="M11 2l3 3-8 8H3v-3l8-8z" />
+                        </svg>
+                        Edit
+                    </button>
+                }
+            </div>
+
+            <!-- ── View Mode ── -->
+            @if (!isEditing) {
+                <div
+                    class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-gray-800"
+                >
+                    <!-- Company Name -->
+                    <div class="flex items-start gap-2.5 px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+                        <svg
+                            class="mt-0.5 size-4 shrink-0 text-gray-400 dark:text-gray-500"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <path d="M9 9h1m5 0h1M9 13h1m5 0h1M9 17h1m5 0h1" />
+                        </svg>
+                        <div class="min-w-0">
+                            <p class="w-micro-label">Company Name</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                {{ organizationForm.get('companyName')?.value || '—' }}
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Email -->
+                    <div class="flex items-start gap-2.5 px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+                        <svg
+                            class="mt-0.5 size-4 shrink-0 text-gray-400 dark:text-gray-500"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <rect x="2" y="4" width="20" height="16" rx="2" />
+                            <path d="M2 7l10 7 10-7" />
+                        </svg>
+                        <div class="min-w-0">
+                            <p class="w-micro-label">Email</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                {{ organizationForm.get('email')?.value || '—' }}
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Phone -->
+                    <div
+                        class="flex items-start gap-2.5 px-5 py-4 border-t lg:border-t-0 border-gray-100 dark:border-gray-800"
+                    >
+                        <svg
+                            class="mt-0.5 size-4 shrink-0 text-gray-400 dark:text-gray-500"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 012 4.18 2 2 0 014 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"
+                            />
+                        </svg>
+                        <div class="min-w-0">
+                            <p class="w-micro-label">Phone Number</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                {{ organizationForm.get('phoneNumber')?.value || '—' }}
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Timezone -->
+                    <div class="flex items-start gap-2.5 px-5 py-4 border-t border-gray-100 dark:border-gray-800">
+                        <svg
+                            class="mt-0.5 size-4 shrink-0 text-gray-400 dark:text-gray-500"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 6v6l4 2" />
+                        </svg>
+                        <div class="min-w-0">
+                            <p class="w-micro-label">Timezone</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                {{ organizationForm.get('timeZoneName')?.value || '—' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- ── Edit Organization Dialog ── -->
+    @if (isEditing) {
+        <div #editDialogPortal [class.dark]="isDark()">
+            <div class="w-dialog-backdrop" (click)="cancelEdit()" aria-hidden="true"></div>
+            <div role="dialog" aria-labelledby="org-edit-dialog-title" aria-modal="true" class="w-dialog-panel">
+                <!-- Header -->
+                <div class="w-dialog-header">
+                    <h2 id="org-edit-dialog-title" class="w-dialog-title">Edit Organization</h2>
+                    <button type="button" (click)="cancelEdit()" class="w-btn-close" aria-label="Close dialog">
+                        <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path
+                                d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"
+                            />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Scrollable body -->
+                <form [formGroup]="organizationForm" (ngSubmit)="onSubmit()" id="org-edit-form" class="w-dialog-body">
+                    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                        <!-- Company Name -->
+                        <div class="sm:col-span-2">
+                            <label for="org-company-name" class="w-label"
+                                >Company Name <span class="text-red-500" aria-hidden="true">*</span></label
+                            >
+                            <input
+                                id="org-company-name"
+                                type="text"
+                                formControlName="companyName"
+                                placeholder="Enter company name"
+                                aria-describedby="org-company-name-error"
+                                class="w-input"
+                            />
+                            @if (
+                                organizationForm.get('companyName')?.touched &&
+                                organizationForm.get('companyName')?.hasError('required')
+                            ) {
+                                <p id="org-company-name-error" role="alert" class="w-field-error">
+                                    Company name is required.
+                                </p>
+                            } @else if (
+                                organizationForm.get('companyName')?.touched &&
+                                organizationForm.get('companyName')?.hasError('minlength')
+                            ) {
+                                <p id="org-company-name-error" role="alert" class="w-field-error">
+                                    Company name must be at least 3 characters.
+                                </p>
+                            }
+                        </div>
+                        <!-- Email -->
+                        <div class="sm:col-span-2">
+                            <label for="org-email" class="w-label"
+                                >Email <span class="text-red-500" aria-hidden="true">*</span></label
+                            >
+                            <input
+                                id="org-email"
+                                type="email"
+                                formControlName="email"
+                                placeholder="Enter email"
+                                aria-describedby="org-email-error"
+                                class="w-input"
+                            />
+                            @if (
+                                organizationForm.get('email')?.touched &&
+                                organizationForm.get('email')?.hasError('required')
+                            ) {
+                                <p id="org-email-error" role="alert" class="w-field-error">Email is required.</p>
+                            } @else if (
+                                organizationForm.get('email')?.touched &&
+                                organizationForm.get('email')?.hasError('pattern')
+                            ) {
+                                <p id="org-email-error" role="alert" class="w-field-error">
+                                    Please enter a valid email.
+                                </p>
+                            }
+                        </div>
+                        <!-- Phone Number -->
+                        <div>
+                            <label for="org-phone" class="w-label">Phone Number</label>
+                            <input
+                                id="org-phone"
+                                type="tel"
+                                formControlName="phoneNumber"
+                                placeholder="Enter phone number"
+                                aria-describedby="org-phone-error"
+                                class="w-input"
+                            />
+                            @if (
+                                organizationForm.get('phoneNumber')?.touched &&
+                                organizationForm.get('phoneNumber')?.hasError('pattern')
+                            ) {
+                                <p id="org-phone-error" role="alert" class="w-field-error">
+                                    Phone number must be 10–15 digits.
+                                </p>
+                            }
+                        </div>
+                        <!-- Timezone -->
+                        <div>
+                            <label for="org-timezone" class="w-label">Timezone</label>
+                            <div class="relative">
+                                <select id="org-timezone" formControlName="timeZoneName" class="w-select">
+                                    <option value="" disabled>Select timezone</option>
+                                    @for (tz of timezones; track tz) {
+                                        <option [value]="getTimezoneValue(tz)">{{ getTimezoneLabel(tz) }}</option>
+                                    }
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5"
+                                    aria-hidden="true"
+                                >
+                                    <svg
+                                        class="size-4 text-gray-400 dark:text-gray-500"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Footer -->
+                <div class="w-dialog-footer">
+                    <button type="button" (click)="cancelEdit()" [disabled]="updateInProgress" class="w-btn-secondary">
+                        Cancel
+                    </button>
+                    <button type="submit" form="org-edit-form" [disabled]="updateInProgress" class="w-btn-primary">
+                        @if (updateInProgress) {
+                            <svg class="size-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <circle
+                                    class="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    stroke-width="4"
+                                ></circle>
+                                <path
+                                    class="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                ></path>
+                            </svg>
+                            Saving…
+                        } @else {
+                            <svg
+                                class="size-3.5"
+                                viewBox="0 0 16 16"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.2"
+                                aria-hidden="true"
+                            >
+                                <path d="M3 8l4 4 6-6" />
+                            </svg>
+                            Save Changes
+                        }
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div #toastPortal>
+    <proxy-toast [theme]="theme()"></proxy-toast>
+</div>

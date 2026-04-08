@@ -1,0 +1,140 @@
+$border: 1px solid var(--color-common-border);
+$border-radius: var(--border-common-radius-4);
+.table-scroll {
+    @apply w-full overflow-x-auto;
+    &:has(proxy-no-record-found) {
+        flex-grow: 1;
+    }
+    @media screen and (min-width: 768px) {
+        border: $border;
+        border-radius: $border-radius;
+
+        &:has(+ mat-paginator-goto .go-to-pagination) {
+            border-radius: $border-radius $border-radius 0 0;
+        }
+    }
+}
+
+.default-table {
+    box-shadow: none;
+    @apply w-full h-full;
+
+    &:has(.mat-no-data-row) {
+        height: 100%;
+    }
+
+    .mat-mdc-header-row {
+        .mat-mdc-header-cell {
+            font-weight: 600;
+            color: var(--color-table-head) !important;
+        }
+    }
+
+    .mat-mdc-row {
+        // .mat-mdc-cell {
+        //     border-bottom-color: var(--color-table-cell-border) !important;
+        // }
+
+        &.highlight {
+            background-color: var(--color-common-bg-lighter);
+        }
+
+        &:hover:not(.mat-mdc-no-data-row) {
+            background: var(--color-common-silver);
+        }
+
+        &.last-child .mat-mdc-cell {
+            border-bottom: 0;
+        }
+
+        &.hover-action {
+            .actions {
+                opacity: 0;
+            }
+
+            @media (hover: hover) {
+                &:hover .actions {
+                    opacity: 1;
+                }
+            }
+
+            @media (hover: none) {
+                .actions {
+                    opacity: 1;
+                }
+            }
+        }
+        .mat-no-data-cell {
+            padding-inline: 0 !important;
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .default-table.responsive-table {
+        display: block !important;
+        tbody {
+            display: block !important;
+            width: 100%;
+        }
+
+        // Hide the header row
+        tr.mat-mdc-header-row {
+            display: none !important;
+        }
+
+        // Each data row becomes a card
+        tr.mat-mdc-row {
+            display: block !important;
+            height: auto !important;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            // background-color: var(--color-common-bg);
+            border: $border;
+            box-shadow: 0 1px 4px rgb(0 0 0 / 6%);
+            padding: 4px 0;
+        }
+
+        // No-data row stays as a block but without card styling
+        tr.mat-mdc-no-data-row {
+            display: block !important;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            margin-bottom: 0;
+            padding: 0;
+        }
+
+        // Each cell: label on left, value on right
+        td.mat-mdc-cell {
+            display: flex !important;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 40px;
+            height: auto !important;
+            width: 100%;
+            padding: 8px 16px !important;
+            // border-bottom: 1px solid var(--color-table-cell-border) !important;
+            box-sizing: border-box;
+            font-size: 13px;
+            word-break: break-word;
+
+            &::before {
+                content: attr(data-label);
+                font-weight: 600;
+                font-size: 11px;
+                text-transform: uppercase;
+                color: var(--color-table-head);
+                letter-spacing: 0.04em;
+                white-space: nowrap;
+                flex-shrink: 0;
+                margin-right: 12px;
+            }
+
+            &:last-child {
+                border-bottom: 0 !important;
+            }
+        }
+    }
+}

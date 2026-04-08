@@ -1,0 +1,17 @@
+<!-- Menus::START -->
+<mat-nav-list class="service-list">
+    @for (item of navItems; track item.route) {
+        <a
+            mat-list-item
+            [routerLink]="[item.route]"
+            routerLinkActive="mdc-list-item--activated"
+            [matTooltipPosition]="'right'"
+            [matTooltip]="isSideNavOpen() ? item.label : ''"
+            [style.padding]="isSideNavOpen() ? '8px' : ''"
+        >
+            <mat-icon matListIcon [class.mr-3]="!isSideNavOpen()" aria-hidden="false">{{ item.icon }}</mat-icon>
+            <span [class.hidden]="isSideNavOpen()" matLine>{{ item.label }}</span>
+        </a>
+    }
+</mat-nav-list>
+<!-- Menus::END -->
