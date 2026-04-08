@@ -22,7 +22,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
                 class="fixed inset-0 backdrop-blur-sm"
                 [class.bg-black/50]="!isDark()"
                 [class.bg-black/70]="isDark()"
-                style="z-index:2147483646"
+                style="z-index:2147483600"
                 (click)="cancelled.emit()"
                 aria-hidden="true"
             ></div>
@@ -31,7 +31,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
                 [attr.aria-labelledby]="'confirm-title-' + _id"
                 [attr.aria-describedby]="'confirm-desc-' + _id"
                 aria-modal="true"
-                style="z-index:2147483647"
+                style="z-index:2147483610"
                 class="fixed inset-x-4 top-1/2 -translate-y-1/2 sm:inset-x-auto sm:left-1/2 sm:w-full sm:max-w-md sm:-translate-x-1/2 rounded-xl shadow-2xl ring-1 p-6"
                 [class.bg-white]="!isDark()"
                 [class.bg-gray-900]="isDark()"

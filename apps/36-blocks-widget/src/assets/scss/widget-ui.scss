@@ -238,7 +238,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 2147483646;
+    z-index: 2147483600;
 
     .dark & {
         @apply bg-black/70;
@@ -258,7 +258,7 @@
     width: calc(100vw - 1.5rem);
     max-width: 28rem;
     max-height: min(90vh, 90dvh);
-    z-index: 2147483647;
+    z-index: 2147483610;
 
     .dark & {
         @apply bg-gray-900 ring-white/10;
