@@ -44,7 +44,7 @@ jobs:
       - name: Install Node.js & NPM
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "20"
 
       # Runs npm i
       - uses: bahmutov/npm-install@v1
@@ -53,7 +53,7 @@ jobs:
         with:
           useRollingCache: true
           working-directory: .
-          install-command: npm ci --audit false
+          install-command: npm ci --audit false --legacy-peer-deps
 
       - name: Starting build check
         shell: bash
@@ -65,3 +65,16 @@ jobs:
         run: npx nx affected --target=build --base='origin/production' --configuration=local
       - if: ${{github.event.pull_request.base.ref == 'development'}}
         run: npx nx affected --target=build --base='origin/development' --configuration=local
+
+      - name: Check widget bundle size
+        if: always()
+        run: |
+          WIDGET_FILE="apps/36-blocks/src/assets/proxy-auth/proxy-auth.js"
+          if [ -f "$WIDGET_FILE" ]; then
+            SIZE=$(stat -c%s "$WIDGET_FILE")
+            echo "proxy-auth.js size: $((SIZE / 1024)) KB"
+            if [ $SIZE -gt 3145728 ]; then
+              echo "::error::proxy-auth.js exceeds 3 MB ($((SIZE / 1024)) KB) — check for bundle bloat!"
+              exit 1
+            fi
+          fi

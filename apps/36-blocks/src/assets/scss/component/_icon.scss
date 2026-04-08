@@ -1,0 +1,62 @@
+// Material Icons
+
+@mixin mat-icon-size($size) {
+    font-size: $size !important;
+    width: $size !important;
+    height: $size !important;
+    line-height: $size !important;
+}
+
+$mat-icon-sizes: (
+    14: 14px,
+    16: 16px,
+    18: 18px,
+    20: 20px,
+    22: 22px,
+    24: 24px,
+    32: 32px,
+);
+
+@each $key, $size in $mat-icon-sizes {
+    .mat-icon-#{$key} {
+        @include mat-icon-size($size);
+    }
+}
+.mat-icon-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+
+    &.failed {
+        background-color: var(--color-email-primary-light);
+    }
+    &.delivered {
+        background-color: var(--color-whatsApp-primary-light);
+    }
+    &.bounced {
+        background-color: var(--color-common-graph-bg);
+    }
+    &.unsubscribe {
+        background-color: var(--color-common-graph-bg);
+    }
+    &.ip-count {
+        background-color: var(--color-voice-primary-light);
+    }
+    &.domain {
+        background-color: var(--color-short-url-primary-light);
+    }
+    &.total-users {
+        background-color: var(--color-common-primary-light);
+    }
+    &.source {
+        background-color: var(--color-whatsApp-primary-light);
+    }
+    &.email-stop {
+        background-color: var(--color-email-primary-light);
+    }
+}
+
+// Only works for button (suffix icon positioning inside mat-button)
+.mat-icon-suffix {
+    @apply order-1 !mr-0 !ml-2;
+}

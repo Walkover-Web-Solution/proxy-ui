@@ -1,0 +1,19 @@
+<mat-nav-list [class]="classList()" class="!pt-0 service-list">
+    @for (service of services(); track service; let i = $index) {
+        <button mat-list-item [class.mdc-list-item--activated]="selectedIndex() === i" (click)="serviceSelect.emit(i)">
+            @if (service.icon) {
+                <mat-icon matListItemIcon class="material-icons-outlined">{{ service.icon }}</mat-icon>
+            }
+            <span matListItemTitle class="font-14 flex items-center justify-between w-full">
+                {{ service.name }}
+                @if (isInvalid(i)) {
+                    <mat-icon class="material-icons-outlined mat-icon-18 text-danger shrink-0">error</mat-icon>
+                } @else {
+                    <mat-icon [class]="iconClass()" class="material-icons-outlined mat-icon-18 shrink-0"
+                        >navigate_next</mat-icon
+                    >
+                }
+            </span>
+        </button>
+    }
+</mat-nav-list>

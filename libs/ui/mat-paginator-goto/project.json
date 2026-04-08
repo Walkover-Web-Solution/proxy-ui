@@ -5,7 +5,7 @@
     "prefix": "proxy",
     "targets": {
         "lint": {
-            "executor": "@nrwl/linter:eslint",
+            "executor": "@nx/eslint:lint",
             "options": {
                 "lintFilePatterns": ["libs/ui/mat-paginator-goto/**/*.ts", "libs/ui/mat-paginator-goto/**/*.html"]
             }

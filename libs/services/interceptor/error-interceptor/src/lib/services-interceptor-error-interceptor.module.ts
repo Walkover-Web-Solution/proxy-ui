@@ -1,27 +1,13 @@
-import { NgModule, Injectable } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-    HttpErrorResponse,
-    HttpEvent,
-    HttpHandler,
-    HttpInterceptor,
-    HttpRequest,
-    HttpResponse,
-} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { EMPTY, Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { CookieService } from 'ngx-cookie-service';
-
-@NgModule({
-    imports: [CommonModule],
-})
-export class ServicesErrorInterceptorModule {}
-
 @Injectable({
-    providedIn: ServicesErrorInterceptorModule,
+    providedIn: 'root',
 })
 export class ErrorInterceptor implements HttpInterceptor {
     constructor(
@@ -38,7 +24,6 @@ export class ErrorInterceptor implements HttpInterceptor {
             this.cookieService.get('authToken')
         ) {
             return next.handle(request).pipe(
-                tap((resp: HttpResponse<any>) => {}),
                 catchError((err) => {
                     if (err instanceof HttpErrorResponse) {
                         if (err.status === 401) {

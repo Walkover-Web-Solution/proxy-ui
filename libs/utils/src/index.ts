@@ -4,7 +4,7 @@ export * from './rename-key-recursively';
 export * from './convert-to-utc';
 
 import { Result, getHostNameDetail } from '@proxy/ui/handle-domain';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { cloneDeep, pickBy, uniqBy } from 'lodash-es';
 import { sha256Encrypt } from './crypto';
 
@@ -40,15 +40,9 @@ export function addSubTractDependOnTimeZone(
     format: string = 'YYYY-M-DD HH:mm:ss'
 ) {
     if (add) {
-        return dayjs(datetime)
-            .add(+timeZone[0], 'h')
-            .add(+timeZone[1], 'm')
-            .format(format);
+        return dayjs(datetime).add(+timeZone[0], 'h').add(+timeZone[1], 'm').format(format);
     } else {
-        return dayjs(datetime)
-            .subtract(+timeZone[0], 'h')
-            .subtract(+timeZone[1], 'm')
-            .format(format);
+        return dayjs(datetime).subtract(+timeZone[0], 'h').subtract(+timeZone[1], 'm').format(format);
     }
 }
 

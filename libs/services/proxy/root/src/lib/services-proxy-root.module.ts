@@ -1,21 +1,17 @@
-import { Inject, Injectable, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { BaseResponse, IClientSettings, IClient, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { Observable } from 'rxjs';
 import { RootUrls } from '@proxy/urls/root-urls';
 import { IProjects } from '@proxy/models/logs-models';
-
-@NgModule({
-    imports: [CommonModule],
-})
-export class ServicesProxyRootModule {}
-
 @Injectable({
-    providedIn: ServicesProxyRootModule,
+    providedIn: 'root',
 })
 export class RootService {
-    constructor(private http: HttpWrapperService, @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any) {}
+    constructor(
+        private http: HttpWrapperService,
+        @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any
+    ) {}
 
     // Fetch Client Settings
     public getClientSettings(): Observable<BaseResponse<IClientSettings, void>> {

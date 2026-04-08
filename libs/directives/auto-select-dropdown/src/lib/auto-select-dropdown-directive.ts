@@ -1,22 +1,23 @@
-import { Directive, Optional, AfterViewInit, Output, EventEmitter, Input } from '@angular/core';
+import { Directive, AfterViewInit, input, output, inject } from '@angular/core';
 import { NgControl } from '@angular/forms';
-import { MatAutocomplete, _MatAutocompleteBase } from '@angular/material/autocomplete';
+import { MatAutocomplete } from '@angular/material/autocomplete';
 import { MatSelect } from '@angular/material/select';
 
-@Directive({ selector: '[proxyAutoSelectDropdown]' })
+@Directive({
+    selector: '[proxyAutoSelectDropDown]',
+    standalone: true,
+    imports: [MatAutocomplete, MatSelect, NgControl],
+})
 export class AutoSelectDropDownDirective implements AfterViewInit {
-    @Input() public disableAutoSelectDirective: boolean = false;
-    @Output() public setControlValue = new EventEmitter<any>();
+    public disableAutoSelectDirective = input<boolean>(false);
+    public setControlValue = output<any>();
     private autoCompleteInterval: any;
-
-    constructor(
-        @Optional() private autoCompleteSelect: MatAutocomplete,
-        @Optional() private matSelect: MatSelect,
-        @Optional() private formControl: NgControl
-    ) {}
+    private autoCompleteSelect = inject(MatAutocomplete, { optional: true });
+    private matSelect = inject(MatSelect, { optional: true });
+    private formControl = inject(NgControl, { optional: true });
 
     public ngAfterViewInit(): void {
-        if (!this.disableAutoSelectDirective) {
+        if (!this.disableAutoSelectDirective()) {
             if (this.matSelect) {
                 setTimeout(() => {
                     if (this.matSelect.options?.length === 1) {

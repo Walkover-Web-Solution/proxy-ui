@@ -1,0 +1,35 @@
+:root {
+    // Border
+    --border-common-radius-4: 4px;
+
+    // Form field
+    --custom-mat-form-field-height: 48px;
+
+    // Common color
+    --color-common-green: #008000;
+    --color-common-scrollbar: 0, 0, 0;
+    --color-common-hover: var(--color-common-silver);
+
+    // New design color variables
+    --color-dark-accent: #19e6ce;
+    --color-dark-accent-light: #19e6ce1a;
+
+    // #2 - Email
+    --color-email-primary: #cc5229;
+    --color-email-primary-light: rgba(204, 82, 41, 0.12);
+
+    // #3 - WhatsApp
+    --color-whatsApp-primary: #29a653;
+    --color-whatsApp-primary-light: rgba(111, 202, 113, 0.16);
+
+    // #7 - Voice
+    --color-voice-primary-light: rgba(105, 107, 239, 0.12);
+
+    // #8 - ShortURL
+    --color-short-url-primary: #de8644;
+    --color-short-url-primary-light: rgba(229, 142, 34, 0.12);
+
+    // #10 - OTP
+    --color-otp-primary: #1157a6;
+    --color-otp-primary-light: rgba(56, 146, 224, 0.12);
+}

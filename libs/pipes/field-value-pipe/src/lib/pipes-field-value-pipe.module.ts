@@ -1,10 +1,10 @@
-import { ModuleWithProviders, NgModule, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
 type KeyValue = { [key: string]: any };
 type ReturnValue = string | KeyValue;
 type DataType = KeyValue | Array<KeyValue>;
 
-@Pipe({ name: 'fieldValuePipe' })
+@Pipe({ name: 'fieldValuePipe', standalone: true })
 export class FieldValuePipe implements PipeTransform {
     /**
      *
@@ -34,18 +34,5 @@ export class FieldValuePipe implements PipeTransform {
             p = p[c];
             return p;
         }, item);
-    }
-}
-
-@NgModule({
-    declarations: [FieldValuePipe],
-    exports: [FieldValuePipe],
-})
-export class PipesFieldValuePipeModule {
-    public static forRoot(): ModuleWithProviders<PipesFieldValuePipeModule> {
-        return {
-            ngModule: PipesFieldValuePipeModule,
-            providers: [FieldValuePipe],
-        };
     }
 }
