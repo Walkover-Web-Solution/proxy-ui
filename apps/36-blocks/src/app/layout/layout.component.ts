@@ -171,6 +171,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
                             }
                             (window as any).SendDataToChatbot(payload);
                             (window as any).openChatbot();
+                            this.sendThemeToChatbot();
                         }, 2000);
                     };
 
@@ -200,13 +201,17 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
         this.switchedDarkMode(this.uiSettings.theme === 'dark-theme');
     }
 
-    switchedDarkMode(isDarkMode: boolean) {
+    public switchedDarkMode(isDarkMode: boolean) {
         const hostClass = isDarkMode ? 'dark-theme' : 'light-theme';
         this.uiSettings.setTheme(hostClass);
         this.isDarkMode.set(isDarkMode);
 
         // This GTWY chatbot config for forced theme
-        (window as any).Chatbot?.sendData({ theme: isDarkMode ? 'dark' : 'light' });
+        this.sendThemeToChatbot();
+    }
+
+    private sendThemeToChatbot() {
+        (window as any).Chatbot?.sendData({ theme: this.isDarkMode() ? 'dark' : 'light' });
     }
 
     public isMobileDevice() {
