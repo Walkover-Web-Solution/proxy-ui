@@ -305,7 +305,7 @@
                         <div class="flex flex-col gap-3">
                             @for (user of userData; track user; let i = $index) {
                                 <div
-                                    class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3"
+                                    class="group rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3"
                                 >
                                     <div class="flex min-w-0 items-center gap-x-3">
                                         <div class="w-avatar size-9">
@@ -334,24 +334,28 @@
                                         <span class="w-badge-green inline-flex">
                                             {{ user.role || 'Member' }}
                                         </span>
-                                        @if (canEditUser) {
-                                            <button
-                                                type="button"
-                                                (click)="editUser(user, i)"
-                                                class="w-btn-secondary-sm px-2.5 py-1"
-                                            >
-                                                Edit<span class="sr-only">, {{ user.name }}</span>
-                                            </button>
-                                        }
-                                        @if (canRemoveUser) {
-                                            <button
-                                                type="button"
-                                                (click)="deleteUser(user, i)"
-                                                class="w-btn-danger-sm px-2.5 py-1"
-                                            >
-                                                Remove<span class="sr-only">, {{ user.name }}</span>
-                                            </button>
-                                        }
+                                        <div
+                                            class="flex items-center gap-x-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-150"
+                                        >
+                                            @if (canEditUser) {
+                                                <button
+                                                    type="button"
+                                                    (click)="editUser(user, i)"
+                                                    class="w-btn-secondary-sm px-2.5 py-1"
+                                                >
+                                                    Edit<span class="sr-only">, {{ user.name }}</span>
+                                                </button>
+                                            }
+                                            @if (canRemoveUser) {
+                                                <button
+                                                    type="button"
+                                                    (click)="deleteUser(user, i)"
+                                                    class="w-btn-danger-sm px-2.5 py-1"
+                                                >
+                                                    Remove<span class="sr-only">, {{ user.name }}</span>
+                                                </button>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             }

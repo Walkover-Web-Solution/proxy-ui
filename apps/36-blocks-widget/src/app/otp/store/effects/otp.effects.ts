@@ -22,22 +22,13 @@ export class OtpEffects {
                 return this.otpService.getWidgetData(p.referenceId, p.payload).pipe(
                     map((res: any) => {
                         if (res) {
-                            console.log(
-                                '[ProxyAuth] API response received, ciphered length:',
-                                res?.data?.ciphered?.length
-                            );
                             const decrypted = this.otpUtilityService.aesDecrypt(
                                 res?.data?.ciphered ?? '',
                                 environment.apiEncodeKey,
                                 environment.apiIvKey,
                                 true
                             );
-                            console.log(
-                                '[ProxyAuth] Decrypted result:',
-                                decrypted ? 'OK (' + decrypted.length + ' chars)' : 'EMPTY'
-                            );
                             const parsed = JSON.parse(decrypted);
-                            console.log('[ProxyAuth] Parsed widget data:', parsed);
                             return otpActions.getWidgetDataComplete({
                                 response: parsed,
                                 theme: res?.data,
@@ -45,9 +36,9 @@ export class OtpEffects {
                         }
                     }),
                     catchError((err) => {
-                        console.error('[ProxyAuth] getWidgetData failed:', err);
-                        console.error('[ProxyAuth] apiEncodeKey defined:', !!environment.apiEncodeKey);
-                        console.error('[ProxyAuth] apiIvKey defined:', !!environment.apiIvKey);
+                        console.error('[36Blocks] getWidgetData failed:', err);
+                        console.error('[36Blocks] apiEncodeKey defined:', !!environment.apiEncodeKey);
+                        console.error('[36Blocks] apiIvKey defined:', !!environment.apiIvKey);
                         return of(
                             otpActions.getWidgetDataError({
                                 errors: errorResolver(err.errors),

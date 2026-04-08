@@ -1,6 +1,6 @@
 export enum PublicScriptType {
     Authorization = 'authorization',
-    UserProfile = 'user-profile', // Default
+    UserProfile = 'user-profile',
     UserManagement = 'user-management',
     OrganizationDetails = 'organization-details',
     Subscription = 'subscription',

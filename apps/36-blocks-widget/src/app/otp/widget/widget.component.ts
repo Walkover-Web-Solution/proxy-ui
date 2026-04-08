@@ -266,7 +266,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             }
         }
         this.loadExternalFonts();
-        if (!this.authToken) {
+        if (this.type === PublicScriptType.Authorization) {
             if (this.referenceId) {
                 this.store.dispatch(
                     getWidgetData({

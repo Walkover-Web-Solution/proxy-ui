@@ -1,37 +1,7 @@
-<!-- Header: Register title + Close button — hidden when rendered inside a dialog -->
-@if (!isInDialog()) {
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-base font-semibold text-gray-900 dark:text-white" [style.color]="primaryColor || null">
-            Register
-        </h2>
-        @if (!isRegisterFormOnly()) {
-            <button
-                type="button"
-                (click)="close(true)"
-                class="flex size-6 items-center justify-center rounded text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500"
-                aria-label="Close"
-            >
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                    <path
-                        d="M11.8334 1.34163L10.6584 0.166626L6.00008 4.82496L1.34175 0.166626L0.166748 1.34163L4.82508 5.99996L0.166748 10.6583L1.34175 11.8333L6.00008 7.17496L10.6584 11.8333L11.8334 10.6583L7.17508 5.99996L11.8334 1.34163Z"
-                        [attr.fill]="isDarkTheme() ? '#ffffff' : '#5D6164'"
-                    />
-                </svg>
-            </button>
-        }
-    </div>
-}
-
 <!-- Form -->
-<div
-    class="flex flex-col gap-3 w-full"
-    [formGroup]="registrationForm"
-    proxyMarkAllAsTouched
-    [buttonRef]="submitBtn"
-    (valid)="submit()"
->
+<div class="flex flex-col gap-3 w-full" [formGroup]="registrationForm">
     <!-- Section: User Details -->
-    <p class="text-sm font-semibold text-gray-900 dark:text-white" [style.color]="primaryColor || null">User Details</p>
+    <p class="text-sm font-semibold text-gray-900 dark:text-white">User Details</p>
 
     <!-- First Name + Last Name -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -220,17 +190,15 @@
     </div>
 
     <!-- Password note -->
-    <p class="text-xs text-gray-600 dark:text-gray-400" [style.color]="primaryColor || null">
-        <span class="font-semibold">Note: </span>Password should contain atleast one Capital Letter, one Small Letter,
+    <p class="text-xs text-gray-600 dark:text-gray-400">
+        <span class="font-semibold">Note: </span>Password should contain at least one Capital Letter, one Small Letter,
         one Digit and one Symbol
     </p>
 
     <!-- Company Details -->
     @if (showCompanyDetail) {
         <hr class="my-1 border-gray-200 dark:border-gray-700" />
-        <p class="text-sm font-semibold text-gray-900 dark:text-white" [style.color]="primaryColor || null">
-            Company Details (Optional)
-        </p>
+        <p class="text-sm font-semibold text-gray-900 dark:text-white">Company Details (Optional)</p>
         <ng-container
             *ngTemplateOutlet="
                 formField;
@@ -266,8 +234,8 @@
             }
         </div>
         <button
-            #submitBtn
             type="button"
+            (click)="onSubmitClick()"
             class="w-btn-primary shrink-0 justify-center sm:justify-start"
             [class.has-hover-color]="!!buttonHoverColor"
             [style.--btn-hover-color]="buttonHoverColor"
@@ -381,7 +349,7 @@
     let-formControl="formControl"
     let-isFieldFocused="isFieldFocused"
 >
-    <div [attr.id]="'init-contact-wrapper-' + key" class="w-full" style="position: relative; margin-bottom: 4px">
+    <div [attr.id]="'init-contact-wrapper-' + key" class="w-full relative">
         <input
             type="tel"
             autocomplete="off"
@@ -399,13 +367,13 @@
             "
             [disabled]="isFieldFocused"
         />
-        @if (formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']) {
-            <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">Please enter valid mobile number.</p>
-        }
-        @if (formControl.errors?.['otpVerificationFailed']) {
-            <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">Please verify the mobile number.</p>
-        }
     </div>
+    @if (formControl.touched && !intlClass?.[key]?.[required ? 'isRequiredValidNumber' : 'isValidNumber']) {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">Please enter valid mobile number.</p>
+    }
+    @if (formControl.errors?.['otpVerificationFailed']) {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">Please verify the mobile number.</p>
+    }
 </ng-template>
 
 <!-- ── Visibility Icon Template ── -->
