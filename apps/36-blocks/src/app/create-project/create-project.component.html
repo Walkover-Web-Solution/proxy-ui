@@ -1,17 +1,14 @@
 <div class="flex justify-center h-screen">
     <div class="w-3/4 border rounded-8 bg-gray" labelPosition="bottom">
         @if (currentstep === 1) {
-            <div
-                class="flex flex-col h-full pl-6 items-start"
-                [formGroup]="primaryDetailsForm"
-                proxyMarkAllAsTouched
-                [buttonRef]="createProjectBtn"
-                (valid)="onNextClick()"
-            >
+            <div class="flex flex-col h-full pl-6 items-start" [formGroup]="primaryDetailsForm">
                 <h4 class="font-medium text-secondary mat-body-1">Create Project</h4>
                 <ng-container *ngTemplateOutlet="createProject"></ng-container>
 
-                <button matButton="filled" #createProjectBtn>
+                <button
+                    matButton="filled"
+                    (click)="primaryDetailsForm.markAllAsTouched(); primaryDetailsForm.valid && onNextClick()"
+                >
                     Next
                     <mat-icon matSuffix class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                         >navigate_next</mat-icon
@@ -20,13 +17,7 @@
             </div>
         }
         @if (currentstep == 2) {
-            <div
-                class="flex flex-col h-full pl-6 items-start"
-                [formGroup]="gatewayUrlDetailsForm"
-                proxyMarkAllAsTouched
-                [buttonRef]="gatewayUrlBtn"
-                (valid)="changeStep(3)"
-            >
+            <div class="flex flex-col h-full pl-6 items-start" [formGroup]="gatewayUrlDetailsForm">
                 <h4 class="font-medium text-secondary mat-body-1 mb-1">Add Gateway URL</h4>
                 <p class="font-14 m-0">
                     The Gateway URL is the entry point through which incoming requests are received and forwarded to the
@@ -35,7 +26,10 @@
 
                 <ng-container *ngTemplateOutlet="gateWayUrl"></ng-container>
 
-                <button matButton="filled" #gatewayUrlBtn>
+                <button
+                    matButton="filled"
+                    (click)="gatewayUrlDetailsForm.markAllAsTouched(); gatewayUrlDetailsForm.valid && changeStep(3)"
+                >
                     Next
                     <mat-icon matSuffix class="material-icons-outlined mat-icon-18 mat-icon-suffix"
                         >navigate_next</mat-icon
@@ -44,13 +38,7 @@
             </div>
         }
         @if (currentstep == 3) {
-            <div
-                class="flex flex-col h-full pl-6 items-start"
-                proxyMarkAllAsTouched
-                [formGroup]="gatewayUrlDetailsForm"
-                [buttonRef]="submitBtn"
-                (valid)="submit()"
-            >
+            <div class="flex flex-col h-full pl-6 items-start" [formGroup]="gatewayUrlDetailsForm">
                 <h4 class="font-medium text-secondary mat-body-1 mb-1">Add Destination Url</h4>
                 <p class="font-14 m-0">
                     The destination URL refers to the targeted URL or endpoint where the request will be forwarded by
@@ -64,7 +52,13 @@
                             >navigate_before</mat-icon
                         >Back
                     </button>
-                    <button matButton="filled" matSuffix #submitBtn>Submit</button>
+                    <button
+                        matButton="filled"
+                        matSuffix
+                        (click)="gatewayUrlDetailsForm.markAllAsTouched(); gatewayUrlDetailsForm.valid && submit()"
+                    >
+                        Submit
+                    </button>
                 </div>
             </div>
         }

@@ -6,7 +6,7 @@ import { WidgetTheme, PublicScriptType, WidgetConfig, PROXY_DOM_ID } from '@prox
 import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 const REFERENCE_ID = '4512365c177425472369c0fa8351a15';
-const THEME: WidgetTheme = WidgetTheme.System;
+const THEME: WidgetTheme = WidgetTheme.Light;
 const TYPE: PublicScriptType = PublicScriptType.Authorization;
 const AUTH_TOKEN =
     'K1lMOGtDVmpHejd1TDFtL29QQjFVbzhlV29HLzE3YVdNRjM1bW56cjYrSXljbVM2L0toZUhhS252Z0FGMUZaei92NEo5WkM1YmI1aTg5Kzk2dmtnM2REYWhUZXdQSm1qaWdsdXNiZVB4eElYZzJNTGFiMGRneHJkVUhuK1R2enFtWkZhOHFKZytIcjJFWGh1OEpDejJHMTZEYnVRUVlZc2pKOTlrNTg0UWw4bUQ1YVZPNExTb3pLZDJFVzUxb1NhUmphUU03dWpiWWpZTFc2dzA0bnlYZz09';

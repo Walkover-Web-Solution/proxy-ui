@@ -7,7 +7,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -32,7 +31,6 @@ import { IntlPhoneLib } from '@proxy/utils';
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-        MarkAllAsTouchedDirective,
     ],
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],

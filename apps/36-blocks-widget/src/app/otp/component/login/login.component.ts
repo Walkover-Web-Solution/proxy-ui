@@ -12,7 +12,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MarkAllAsTouchedDirective } from '@proxy/directives/mark-all-as-touched';
 import { LoginComponentStore } from './login.store';
 import { BehaviorSubject, filter, interval, Observable, Subscription, takeUntil } from 'rxjs';
 import { IAppState } from '../../store/app.state';
@@ -28,11 +27,11 @@ import { META_TAG_ID, WidgetTheme } from '@proxy/constant';
 import { environment } from 'apps/36-blocks-widget/src/environments/environment';
 import { OtpUtilityService } from '../../service/otp-utility.service';
 import { WidgetThemeService } from '../../service/widget-theme.service';
-import { NgHcaptchaComponent } from 'ng-hcaptcha';
+import { NgHcaptchaModule } from 'ng-hcaptcha';
 
 @Component({
     selector: 'proxy-login',
-    imports: [CommonModule, ReactiveFormsModule, MarkAllAsTouchedDirective],
+    imports: [CommonModule, ReactiveFormsModule, NgHcaptchaModule],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     providers: [LoginComponentStore],
@@ -57,7 +56,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     private apiError = new BehaviorSubject<any>(null);
     public hCaptchaToken: string = '';
     public hCaptchaVerified: boolean = false;
-    @ViewChild(NgHcaptchaComponent) hCaptchaComponent: NgHcaptchaComponent;
+    @ViewChild('hCaptcha') hCaptchaComponent: any;
     private componentStore = inject(LoginComponentStore);
     private store = inject<Store<IAppState>>(Store);
     private otpUtilityService = inject(OtpUtilityService);
