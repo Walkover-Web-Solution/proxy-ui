@@ -1,0 +1,46 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+@use './custom-palette' as theme;
+
+/* Include Material core styles (only once) */
+@include mat.core();
+
+/* Base: light theme for all components + typography */
+html {
+    @include theme.emit-design-tokens();
+    @include mat.all-component-themes(theme.$light-theme);
+    @include mat.system-level-colors(theme.$light-theme);
+    @include mat.system-level-typography(theme.$light-theme);
+    --mat-sys-outline: var(--color-common-border);
+    --mat-sys-on-surface: var(--proxy-neutral-20);
+    --mat-list-list-item-label-text-size: 0.875rem;
+}
+
+/* System default: follow OS dark mode when body has no theme class */
+@media (prefers-color-scheme: dark) {
+    html:not(body.light-theme *):not(body.dark-theme *) {
+        @include mat.all-component-colors(theme.$dark-theme);
+        @include mat.system-level-colors(theme.$dark-theme);
+        --mat-sys-outline: var(--color-common-border);
+        --mat-sys-on-surface: var(--proxy-neutral-80);
+        --mat-list-list-item-label-text-size: 0.875rem;
+    }
+}
+
+/* Force dark theme */
+body.dark-theme {
+    @include mat.all-component-colors(theme.$dark-theme);
+    @include mat.system-level-colors(theme.$dark-theme);
+    --mat-sys-outline: var(--color-common-border);
+    --mat-sys-on-surface: var(--proxy-neutral-80);
+    --mat-list-list-item-label-text-size: 0.875rem;
+}
+
+/* Force light theme (overrides OS dark preference) */
+body.light-theme {
+    @include mat.all-component-colors(theme.$light-theme);
+    @include mat.system-level-colors(theme.$light-theme);
+    --mat-sys-outline: var(--color-common-border);
+    --mat-sys-on-surface: var(--proxy-neutral-20);
+    --mat-list-list-item-label-text-size: 0.875rem;
+}

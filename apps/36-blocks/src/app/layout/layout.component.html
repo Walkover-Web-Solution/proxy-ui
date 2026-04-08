@@ -1,0 +1,95 @@
+<div class="flex w-full h-full" [class.collapsed-sidebar]="!sideNavService.isSideNavOpen()">
+    <div
+        class="flex flex-col transition-all duration-200 mat-drawer-content max-desktop:fixed max-desktop:z-[999] max-desktop:top-0 max-desktop:bottom-0 bg-color p-2"
+        [class.mat-drawer-toggle-btn-hover]="sideNavService.isSideNavOpen()"
+        [class]="!sideNavService.isSideNavOpen() ? 'overflow-hidden !w-[56px] p-1.5' : 'w-[260px]'"
+    >
+        @let clientSettings = clientSettings$ | async; @let clientList = clients$ | async;
+        @let isMultipleClients = (clientList?.data?.length ?? 0) > 1;
+        <div
+            class="flex items-center pt-2"
+            [class.flex-col]="!sideNavService.isSideNavOpen()"
+            [class.gap-2]="!sideNavService.isSideNavOpen()"
+        >
+            <div
+                class="flex items-center grow gap-2 mat-drawer-header-title pr-2"
+                #clientsMenuTrigger="matMenuTrigger"
+                [matMenuTriggerFor]="isMultipleClients ? clientsMenu : null"
+                [class.pl-2]="!sideNavService.isSideNavOpen()"
+                [class.pl-4]="sideNavService.isSideNavOpen()"
+            >
+                @if (sideNavService.isSideNavOpen()) {
+                    <div class="flex items-center gap-x-1 mat-drawer-header-subtitle cursor-pointer">
+                        <span
+                            class="font-16 font-semibold max-w-[162px] overflow-hidden whitespace-nowrap text-ellipsis"
+                        >
+                            {{ clientSettings?.client?.name }}
+                        </span>
+                        @if (isMultipleClients) {
+                            <mat-icon>{{
+                                clientsMenuTrigger?.menuOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
+                            }}</mat-icon>
+                        }
+                    </div>
+                } @else {
+                    <mat-icon class="mat-icon-22" [matTooltip]="clientSettings?.client?.name" matTooltipPosition="right"
+                        >apps</mat-icon
+                    >
+                }
+            </div>
+            <mat-menu #clientsMenu="matMenu" class="w-[240px]" xPosition="after">
+                @for (client of clientList?.data; track client.id) {
+                    <button
+                        mat-menu-item
+                        (click)="switchClient(client.id)"
+                        [disabled]="clientSettings?.client?.id === client.id"
+                    >
+                        <span class="flex items-center justify-between w-full gap-3">
+                            {{ client.name }}
+                            @if (clientSettings?.client?.id === client.id) {
+                                <span
+                                    class="text-[10px] font-medium px-1.5 py-0.5 rounded leading-none text-white"
+                                    style="background: var(--mat-sys-primary)"
+                                    >Active</span
+                                >
+                            }
+                        </span>
+                    </button>
+                }
+            </mat-menu>
+            <button
+                matIconButton
+                class="sidebar-toggle-btn"
+                (click)="toggleSideBarEvent()"
+                [matTooltip]="sideNavService.isSideNavOpen() ? 'Collapse Menu' : 'Expand Menu'"
+                matTooltipPosition="right"
+                type="button"
+            >
+                <mat-icon>{{
+                    sideNavService.isSideNavOpen() ? 'keyboard_double_arrow_left' : 'keyboard_double_arrow_right'
+                }}</mat-icon>
+            </button>
+        </div>
+        <!-- Proxy Sidenav::START -->
+        <proxy-main-left-side-nav
+            class="mat-drawer-nav proxy-left-menu flex-1"
+            [isSideNavOpen]="!sideNavService.isSideNavOpen()"
+        ></proxy-main-left-side-nav>
+        <!-- Proxy Sidenav::END -->
+        @if (logInData$ | async; as user) {
+            <proxy-sidebar-user-menu
+                class="mt-auto"
+                [user]="user"
+                [isDarkMode]="isDarkMode()"
+                (darkModeToggled)="switchedDarkMode($event)"
+                (loggedOut)="logOut()"
+            ></proxy-sidebar-user-menu>
+        }
+    </div>
+    <div class="flex-1 flex flex-col" [class.app-content]="!showContainer">
+        <!-- Content::START -->
+        <router-outlet></router-outlet>
+        <div id="ChatbotContainer" class="h-screen w-full"></div>
+        <!-- Content::END -->
+    </div>
+</div>

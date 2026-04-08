@@ -1,0 +1,268 @@
+:host {
+    display: block;
+    height: 100%;
+}
+.code-snippet-view {
+    transition: min-height 0.2s linear;
+    min-width: 500px;
+}
+
+.active {
+    background-color: var(--color-dark-accent-light) !important;
+    border-color: var(--color-dark-accent) !important;
+}
+
+.organization-details-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    align-items: start;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .heading {
+        font-size: 16px;
+        line-height: 20px;
+        font-weight: 600;
+    }
+    textarea {
+        width: 100%;
+        resize: vertical;
+        min-height: 50px;
+    }
+}
+
+.single-form-layout {
+    .form-section {
+        .form-grid {
+            grid-template-columns: repeat(2, 1fr);
+
+            @media (max-width: 768px) {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            textarea {
+                width: 100%;
+                resize: vertical;
+                min-height: 80px;
+            }
+        }
+    }
+}
+
+.charges-card {
+    margin-top: 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    border: 2px solid var(--color-common-border);
+    border-radius: 12px;
+    background-color: var(--color-common-bg);
+    animation: slideInUp 0.5s ease-out;
+
+    mat-card-header {
+        border-radius: 12px 12px 0 0;
+    }
+
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .button-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 16px;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.charges-table-container {
+    margin-top: 24px;
+    border: 1px solid var(--color-common-border);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+
+    .charges-table {
+        width: 100% !important;
+        min-width: 100% !important;
+        table-layout: fixed;
+        margin: 0;
+    }
+
+    .add-plan-edit {
+        height: calc(100vh - 650px);
+        overflow: auto;
+    }
+}
+
+.info-icon {
+    // font-size: 17px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease-in-out;
+    position: absolute;
+    right: 4px;
+    // top: 4px;
+    z-index: 1;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.code-block {
+    background-color: #000000;
+    color: #ffffff;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    max-height: 350px;
+    overflow-y: auto;
+    margin: 0;
+
+    code {
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+}
+
+.bg-dark {
+    background-color: #616161 !important;
+    color: #ffffff !important;
+}
+.text-link {
+    color: var(--color-common-primary) !important;
+}
+
+.social-login-icon-box {
+    border: 1px solid var(--color-common-border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.auth-option-btn {
+    width: 85%;
+    height: 44px;
+    // border: 1px solid var(--color-common-border) !important;
+    border-radius: 8px !important;
+    font-size: 14px;
+    font-weight: 600;
+    // background-color: var(--color-common-white) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-option-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 180px;
+}
+
+.auth-option-icon {
+    height: 24px;
+    width: 24px;
+    min-width: 24px;
+    margin-right: 12px;
+
+    &.dark-theme {
+        filter: invert(1);
+    }
+}
+
+.auth-option-text {
+    white-space: nowrap;
+
+    &.dark-theme {
+        color: #ffffff;
+    }
+}
+
+.auth-credentials {
+    border-radius: var(--branding-border-radius, 8px) !important;
+    // mat-form-field and other elements use --border-common-radius-4; override with branding radius
+    --border-common-radius-4: var(--branding-border-radius, 8px);
+
+    // Light mode — always white card regardless of admin panel theme
+    --color-common-white: #ffffff;
+    --color-common-smoke: #d5d9dc;
+    --color-common-cloud: #c1c5c8;
+    --color-common-grey: #8f9396;
+    --color-common-rock: #5d6164;
+    --color-common-slate: #3f4346;
+    --color-common-dark: #212528;
+    --color-common-silver: rgba(123, 127, 130, 0.07);
+    --color-common-bg: #ffffff;
+    --color-common-text: #3f4346;
+    --color-common-text-2: #5d6164;
+    --color-common-border: #d5d9dc;
+    --color-common-placeholder: #8f9396;
+    --color-common-icon: #5d6164;
+    --color-common-input-border: #d5d9dc;
+    // Material system tokens — force light mode for form fields
+    --mat-sys-on-surface: var(--proxy-neutral-20);
+    --mat-sys-outline: var(--color-common-border);
+    background-color: #ffffff;
+    color: #3f4346;
+
+    // Dark mode override — only when .dark class is present
+    &.dark {
+        --color-common-bg: #212528;
+        --color-common-text: #d5d9dc;
+        --color-common-text-2: #c1c5c8;
+        --color-common-border: #8f9396;
+        --color-common-placeholder: #8f9396;
+        --color-common-icon: #c1c5c8;
+        --color-common-input-border: #3f4346;
+        // Material system tokens — force dark mode for form fields
+        --mat-sys-on-surface: var(--proxy-neutral-80);
+        --mat-sys-outline: var(--color-common-border);
+        background-color: #212528;
+        color: #d5d9dc;
+    }
+}
+.auth-credentials .branding-preview-btn {
+    background-color: var(--branding-button-color, #19e6ce) !important;
+    color: var(--branding-button-text-color, #000000) !important;
+    border-radius: var(--branding-border-radius, 8px) !important;
+}
+.auth-credentials .branding-preview-btn:hover {
+    background-color: var(--branding-button-hover-color, #19e6ce) !important;
+}
+.auth-credentials .auth-option-btn {
+    border-radius: var(--branding-border-radius, 8px) !important;
+}
+.auth-credentials .social-login-icon-box {
+    border-radius: var(--branding-border-radius, 8px) !important;
+}
+
+.branding-preview-logo {
+    max-height: 48px;
+    max-width: 160px;
+    object-fit: contain;
+}

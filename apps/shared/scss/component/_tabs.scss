@@ -1,0 +1,7 @@
+mat-tab-group {
+    &.h-full {
+        .mat-mdc-tab-body-wrapper {
+            height: 100%;
+        }
+    }
+}

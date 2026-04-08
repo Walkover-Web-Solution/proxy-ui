@@ -5,6 +5,7 @@ declare var window;
 export class IntlPhoneLib {
     private intl: any;
     private changeFlagZIndexInterval: any;
+    private inputElement: any;
     /**
      * Creates an instance of IntlPhoneLib.
      * @param {*} inputElement
@@ -12,10 +13,8 @@ export class IntlPhoneLib {
      * @memberof IntlPhoneLib
      */
     constructor(inputElement, parentDom, customCssStyleURL, changeFlagZIndex = false, intlOptions: object = {}) {
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/js/intlTelInput.min.js';
-        script.onload = () => {
+        this.inputElement = inputElement;
+        const initIntlTelInput = () => {
             this.intl = window.intlTelInput(inputElement, { ...INTL_INPUT_OPTION, ...intlOptions });
             this.checkMobileFlag(parentDom, changeFlagZIndex);
         };
@@ -28,22 +27,36 @@ export class IntlPhoneLib {
         customIntlStyleElement.rel = 'stylesheet';
         customIntlStyleElement.href = `${customCssStyleURL}`;
 
-        if (parentDom) {
-            parentDom.appendChild(script);
-            parentDom.appendChild(intlStyleElement);
-            parentDom.appendChild(customIntlStyleElement);
-        }
-        setTimeout(() => {
-            document.head.appendChild(script);
+        if (!document.head.querySelector('link[href*="intlTelInput.css"]')) {
             document.head.appendChild(intlStyleElement);
-        }, 200);
+        }
+        if (customCssStyleURL && !document.head.querySelector(`link[href="${customCssStyleURL}"]`)) {
+            document.head.appendChild(customIntlStyleElement);
+        }
+
+        if (window.intlTelInput) {
+            initIntlTelInput();
+        } else {
+            const existingScript = document.head.querySelector(
+                'script[src*="intlTelInput.min.js"]'
+            ) as HTMLScriptElement;
+            if (existingScript) {
+                existingScript.addEventListener('load', () => initIntlTelInput());
+            } else {
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js';
+                script.onload = () => initIntlTelInput();
+                document.head.appendChild(script);
+            }
+        }
 
         let ulEl = document.getElementById('iti-0__country-listbox');
         if (ulEl) {
             let flagEl = Array.from(document.getElementsByClassName('iti__flag') as HTMLCollectionOf<HTMLElement>);
             for (let i = 0; i < flagEl.length; i++) {
                 flagEl[i].style.backgroundImage =
-                    'url(https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/img/flags@2x.png)';
+                    'url(https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags.png)';
             }
         }
 
@@ -56,7 +69,7 @@ export class IntlPhoneLib {
                 }
             }, 100);
         });
-        this.showCountryDropdown(parentDom);
+        this.showCountryDropdown(inputElement, parentDom);
     }
 
     set phoneNumber(number: string) {
@@ -91,13 +104,22 @@ export class IntlPhoneLib {
         return this.intl?.getExtension();
     }
 
+    private getItiWrapper(parentDom: HTMLElement): HTMLElement {
+        let el: HTMLElement = this.inputElement?.parentElement;
+        while (el && !el.classList?.contains('iti')) {
+            el = el.parentElement;
+        }
+        return el || this.inputElement?.closest?.('.iti') || parentDom;
+    }
+
     private checkMobileFlag(parentDom, changeFlagZIndex): void {
         let count = 0;
         let interval = setInterval(() => {
             let mobileViewInit = document.querySelector('body.iti-mobile');
             let childCount = 0;
             let flagDropDownElInterval = setInterval(() => {
-                let flagDropdownView = parentDom.querySelector('.iti__flag-container');
+                const itiWrapper = this.getItiWrapper(parentDom);
+                let flagDropdownView = itiWrapper.querySelector('.iti__flag-container');
                 if (changeFlagZIndex) {
                     this.changeFlagZIndexInterval = setInterval(() => {
                         let flagDropDown = document.querySelector('.iti--container');
@@ -123,27 +145,35 @@ export class IntlPhoneLib {
      * showCountryDropdown in fixed position
      *
      * @private
+     * @param {HTMLElement} inputElement
      * @param {HTMLElement} parentDom
      * @memberof IntlPhoneLib
      */
-    private showCountryDropdown(parentDom: HTMLElement) {
-        setTimeout(() => {
-            let shadowRoot = parentDom.querySelector('.iti__flag-container');
-            let flagDropdownView = parentDom.querySelector('.iti__country-list');
-            if (flagDropdownView) {
-                shadowRoot.addEventListener('click', (event: PointerEvent) => {
-                    // Get Clicked button coordinates
-                    const rect = shadowRoot.getBoundingClientRect();
-                    // Add current input height form top position
-                    const top = rect.top + 34;
-                    // Add styles on country dropdown
-                    flagDropdownView.setAttribute(
+    private showCountryDropdown(inputElement: HTMLElement, parentDom: HTMLElement) {
+        const getItiScope = () => this.getItiWrapper(parentDom);
+        const attachListener = (attempt = 0) => {
+            const itiScope = getItiScope();
+            let flagContainer = itiScope.querySelector('.iti__flag-container');
+            let flagDropdownView = itiScope.querySelector('.iti__country-list');
+            if (flagDropdownView && flagContainer) {
+                flagContainer.addEventListener('click', (event: PointerEvent) => {
+                    const scope = getItiScope();
+                    const btn = scope.querySelector('.iti__flag-container') as HTMLElement;
+                    const list = scope.querySelector('.iti__country-list') as HTMLElement;
+                    if (!btn || !list) return;
+                    const rect = btn.getBoundingClientRect();
+                    const top = rect.bottom;
+                    const left = rect.left;
+                    list.setAttribute(
                         'style',
-                        'position: fixed;top:' + top + 'px; left:' + rect.left + 'px'
+                        'position: fixed; top:' + top + 'px; left:' + left + 'px; z-index: 9999;'
                     );
                 });
+            } else if (attempt < 20) {
+                setTimeout(() => attachListener(attempt + 1), 200);
             }
-        }, 700);
+        };
+        setTimeout(() => attachListener(), 700);
     }
 
     public onlyPhoneNumber(e: KeyboardEvent): void {

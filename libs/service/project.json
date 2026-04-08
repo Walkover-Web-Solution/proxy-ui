@@ -6,7 +6,7 @@
     "prefix": "proxy",
     "targets": {
         "test": {
-            "executor": "@nrwl/jest:jest",
+            "executor": "@nx/jest:jest",
             "outputs": ["{workspaceRoot}/coverage/libs/service"],
             "options": {
                 "tsConfig": "libs/service/tsconfig.lib.json",

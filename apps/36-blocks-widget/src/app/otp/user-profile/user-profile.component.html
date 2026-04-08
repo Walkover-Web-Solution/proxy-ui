@@ -1,0 +1,365 @@
+<div class="h-full flex-col dark:bg-gray-900 overflow-y-auto" [class.dark]="isDark()">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
+        <!-- ── USER DETAILS CARD ── -->
+        <div class="w-card-section">
+            <div class="w-dialog-header px-5 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-icon-box">
+                        <svg
+                            class="size-4 text-indigo-600 dark:text-indigo-400"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            aria-hidden="true"
+                        >
+                            <circle cx="8" cy="5.5" r="3" />
+                            <path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-gray-900 dark:text-white">User Details</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Manage your personal information</p>
+                    </div>
+                </div>
+                @if (!isEditing) {
+                    <button
+                        type="button"
+                        (click)="openEditDialog()"
+                        class="w-btn-secondary-sm inline-flex items-center gap-1.5"
+                    >
+                        <svg
+                            class="size-3"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            aria-hidden="true"
+                        >
+                            <path d="M11 2l3 3-8 8H3v-3l8-8z" />
+                        </svg>
+                        Edit
+                    </button>
+                }
+            </div>
+
+            <!-- Profile banner -->
+            <div class="flex items-center gap-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-900/20">
+                <div class="w-avatar size-14 text-lg">
+                    {{ previousName || 'U' | slice: 0 : 2 | uppercase }}
+                </div>
+                <div class="min-w-0">
+                    <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                        {{ previousName || 'User' }}
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        {{ clientForm.get('email')?.value }}
+                    </p>
+                    <span
+                        class="mt-1 inline-flex items-center gap-1 rounded-full bg-indigo-100 dark:bg-indigo-900/50 px-2 py-0.5 text-xs font-medium text-indigo-700 dark:text-indigo-300"
+                    >
+                        <svg
+                            class="size-3"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            aria-hidden="true"
+                        >
+                            <rect x="2" y="6" width="12" height="8" rx="1" />
+                            <path d="M5 6V4a3 3 0 016 0v2" />
+                        </svg>
+                        {{ (userDetails$ | async)?.c_companies?.length || 0 }} Organizations
+                    </span>
+                </div>
+            </div>
+
+            <!-- View mode — stacks to 1-col on mobile, 3-col on sm+ -->
+            @if (!isEditing) {
+                <div
+                    class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-gray-800 border-t border-gray-200 dark:border-gray-700"
+                >
+                    <div class="flex items-start gap-2.5 px-5 py-4">
+                        <svg
+                            class="mt-0.5 size-4 shrink-0 text-gray-400 dark:text-gray-500"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            aria-hidden="true"
+                        >
+                            <circle cx="8" cy="5" r="3" />
+                            <path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+                        </svg>
+                        <div class="min-w-0">
+                            <p class="w-micro-label">Full Name</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white break-all">
+                                {{ previousName || '—' }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2.5 px-5 py-4">
+                        <svg
+                            class="mt-0.5 size-4 shrink-0 text-gray-400 dark:text-gray-500"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            aria-hidden="true"
+                        >
+                            <rect x="2" y="3" width="12" height="10" rx="1.5" />
+                            <path d="M5 7h6M5 10h4" />
+                        </svg>
+                        <div class="min-w-0">
+                            <p class="w-micro-label">Mobile</p>
+                            <p
+                                class="text-sm font-medium"
+                                [class.text-gray-400]="
+                                    !clientForm.get('mobile')?.value ||
+                                    clientForm.get('mobile')?.value === '--Not Provided--'
+                                "
+                                [class.italic]="
+                                    !clientForm.get('mobile')?.value ||
+                                    clientForm.get('mobile')?.value === '--Not Provided--'
+                                "
+                                [class.text-gray-900]="
+                                    clientForm.get('mobile')?.value &&
+                                    clientForm.get('mobile')?.value !== '--Not Provided--'
+                                "
+                                [class.text-white]="
+                                    isDark() &&
+                                    clientForm.get('mobile')?.value &&
+                                    clientForm.get('mobile')?.value !== '--Not Provided--'
+                                "
+                            >
+                                {{
+                                    clientForm.get('mobile')?.value === '--Not Provided--'
+                                        ? 'Not provided'
+                                        : clientForm.get('mobile')?.value || 'Not provided'
+                                }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2.5 px-5 py-4">
+                        <svg
+                            class="mt-0.5 size-4 shrink-0 text-gray-400 dark:text-gray-500"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            aria-hidden="true"
+                        >
+                            <rect x="2" y="4" width="12" height="9" rx="1" />
+                            <path d="M2 5l6 5 6-5" />
+                        </svg>
+                        <div class="min-w-0">
+                            <p class="w-micro-label">Email Address</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white break-all">
+                                {{ clientForm.get('email')?.value }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- ── ORGANIZATIONS CARD ── -->
+        <div class="w-card-section">
+            <div class="w-dialog-header px-5 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-icon-box bg-teal-100 dark:bg-teal-900/50">
+                        <svg
+                            class="size-4 text-teal-600 dark:text-teal-400"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            aria-hidden="true"
+                        >
+                            <rect x="2" y="7" width="12" height="7" rx="1" />
+                            <path d="M5 7V5a3 3 0 016 0v2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Organizations</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Workspaces you're a member of</p>
+                    </div>
+                </div>
+                <span class="w-badge"> {{ (userDetails$ | async)?.c_companies?.length || 0 }} total </span>
+            </div>
+
+            @if ((userDetails$ | async)?.c_companies?.length) {
+                <div class="divide-y divide-gray-100 dark:divide-gray-800">
+                    <div
+                        class="hidden lg:grid grid-cols-[1fr_auto] px-5 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide"
+                    >
+                        <span>Organization</span>
+                        <span>Actions</span>
+                    </div>
+                    @for (org of (userDetails$ | async)?.c_companies; track org.id) {
+                        <div class="flex flex-wrap items-center justify-between gap-3 px-4 lg:px-5 py-3">
+                            <div class="flex min-w-0 items-center gap-3">
+                                <div
+                                    class="w-avatar size-8 text-xs"
+                                    [class.bg-indigo-100]="
+                                        companyDetails?.currentCompany?.company_uname === org.company_uname
+                                    "
+                                    [class.bg-indigo-900]="
+                                        isDark() && companyDetails?.currentCompany?.company_uname === org.company_uname
+                                    "
+                                    [class.text-indigo-700]="
+                                        companyDetails?.currentCompany?.company_uname === org.company_uname
+                                    "
+                                    [class.text-indigo-300]="
+                                        isDark() && companyDetails?.currentCompany?.company_uname === org.company_uname
+                                    "
+                                    [class.bg-gray-100]="
+                                        companyDetails?.currentCompany?.company_uname !== org.company_uname
+                                    "
+                                    [class.bg-gray-700]="
+                                        isDark() && companyDetails?.currentCompany?.company_uname !== org.company_uname
+                                    "
+                                    [class.text-gray-600]="
+                                        companyDetails?.currentCompany?.company_uname !== org.company_uname
+                                    "
+                                    [class.text-gray-300]="
+                                        isDark() && companyDetails?.currentCompany?.company_uname !== org.company_uname
+                                    "
+                                >
+                                    {{ org.name | slice: 0 : 2 | uppercase }}
+                                </div>
+                                <div class="min-w-0 flex items-center gap-2 flex-wrap">
+                                    <p
+                                        class="text-sm truncate"
+                                        [class.font-semibold]="
+                                            companyDetails?.currentCompany?.company_uname === org.company_uname
+                                        "
+                                        [class.font-medium]="
+                                            companyDetails?.currentCompany?.company_uname !== org.company_uname
+                                        "
+                                        [class.text-gray-900]="true"
+                                        [class.text-white]="isDark()"
+                                    >
+                                        {{ org.name }}
+                                    </p>
+                                    @if (companyDetails?.currentCompany?.company_uname === org.company_uname) {
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/40 px-2 py-0.5 text-[10px] font-bold uppercase tracking-normal text-green-700 dark:text-green-400"
+                                        >
+                                            ● Current
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                            @if (companyDetails?.currentCompany?.company_uname !== org.company_uname) {
+                                <button type="button" (click)="openModal(org?.id)" class="w-btn-danger-sm">
+                                    ↗ Leave
+                                </button>
+                            }
+                        </div>
+                    }
+                </div>
+            } @else {
+                <p class="px-5 py-6 text-sm italic text-gray-400 dark:text-gray-500">
+                    Nothing here — there are no companies to show
+                </p>
+            }
+        </div>
+    </div>
+</div>
+@if (isEditing) {
+    <div #editDialogPortal [class.dark]="isDark()">
+        <div class="w-dialog-backdrop" (click)="cancelEdit()" aria-hidden="true"></div>
+        <div role="dialog" aria-labelledby="edit-profile-title" aria-modal="true" class="w-dialog-panel">
+            <div class="w-dialog-header">
+                <h2 id="edit-profile-title" class="w-dialog-title">Edit Profile</h2>
+                <button type="button" (click)="cancelEdit()" aria-label="Close dialog" class="w-btn-close">
+                    <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path
+                            d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
+                        />
+                    </svg>
+                </button>
+            </div>
+
+            <form [formGroup]="clientForm" class="w-dialog-body">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label for="profile-name" class="w-label">
+                            Full Name <span class="text-red-500" aria-hidden="true">*</span>
+                        </label>
+                        <input
+                            id="profile-name"
+                            type="text"
+                            formControlName="name"
+                            placeholder="Enter your name"
+                            class="w-input"
+                        />
+                        @if (clientForm.get('name')?.touched && clientForm.get('name')?.hasError('required')) {
+                            <p role="alert" class="w-field-error">Name is required.</p>
+                        } @else if (clientForm.get('name')?.touched && clientForm.get('name')?.hasError('pattern')) {
+                            <p role="alert" class="w-field-error">Invalid name format.</p>
+                        }
+                    </div>
+                    <div>
+                        <label for="profile-mobile" class="w-label">Mobile</label>
+                        <input
+                            id="profile-mobile"
+                            type="text"
+                            formControlName="mobile"
+                            placeholder="Not provided"
+                            readonly
+                            aria-readonly="true"
+                            class="w-input-readonly"
+                        />
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label for="profile-email" class="w-label">Email Address</label>
+                        <input
+                            id="profile-email"
+                            type="email"
+                            formControlName="email"
+                            placeholder="Enter your email"
+                            readonly
+                            aria-readonly="true"
+                            class="w-input-readonly"
+                        />
+                    </div>
+                </div>
+            </form>
+
+            <div class="w-dialog-footer">
+                <button type="button" (click)="cancelEdit()" class="w-btn-secondary">Cancel</button>
+                <button type="button" (click)="updateUser()" [disabled]="clientForm.invalid" class="w-btn-primary">
+                    <svg
+                        class="size-3.5"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.2"
+                        aria-hidden="true"
+                    >
+                        <path d="M3 8l4 4 6-6" />
+                    </svg>
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+}
+@if (confirmDialogCompanyId()) {
+    <div #confirmDialogPortal [class.dark]="isDark()">
+        <proxy-confirm-dialog
+            title="Leave Company"
+            message="Are you sure you want to leave this company? This action cannot be undone."
+            confirmLabel="Leave"
+            cancelLabel="Cancel"
+            [isDark]="isDark()"
+            (confirmed)="confirmLeave()"
+            (cancelled)="confirmDialogCompanyId.set(null)"
+        ></proxy-confirm-dialog>
+    </div>
+}
+<div #toastPortal>
+    <proxy-toast [theme]="theme()"></proxy-toast>
+</div>

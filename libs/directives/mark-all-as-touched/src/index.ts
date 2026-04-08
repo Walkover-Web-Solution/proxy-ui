@@ -1,1 +1,1 @@
-export * from './lib/directives-mark-all-as-touched.module';
+export { MarkAllAsTouchedDirective } from './lib/directives-mark-all-as-touched.module';

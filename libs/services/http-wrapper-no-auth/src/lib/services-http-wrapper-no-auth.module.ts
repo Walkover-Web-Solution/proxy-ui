@@ -1,20 +1,9 @@
-import { Inject, Injectable, ModuleWithProviders, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { cloneDeep } from 'lodash-es';
 import { Observable, finalize, tap } from 'rxjs';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
 
-@NgModule({
-    imports: [CommonModule],
-})
-export class ServicesHttpWrapperNoAuthModule {
-    public static forRoot(): ModuleWithProviders<ServicesHttpWrapperNoAuthModule> {
-        return {
-            ngModule: ServicesHttpWrapperNoAuthModule,
-        };
-    }
-}
 export const DEFAULT_OPTIONS = {
     withCredentials: false,
     headers: {
@@ -25,10 +14,13 @@ export const DEFAULT_OPTIONS = {
 };
 
 @Injectable({
-    providedIn: ServicesHttpWrapperNoAuthModule,
+    providedIn: 'root',
 })
 export class HttpWrapperService {
-    constructor(private http: HttpClient, @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any) {}
+    constructor(
+        private http: HttpClient,
+        @Inject(ProxyBaseUrls.BaseURL) private baseUrl: any
+    ) {}
 
     public createUrl = (url: string): string => {
         return `${this.baseUrl}/${url}`;
