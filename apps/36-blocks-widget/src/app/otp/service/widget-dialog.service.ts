@@ -98,14 +98,24 @@ export class WidgetDialogService {
             setup?: (instance: T, ref: WidgetDialogRef<T>) => void;
         } = {}
     ): WidgetDialogRef<T> {
-        const shadowHost = this._createHost(options.theme);
+        const isDark = this._resolveDark(options.theme);
+        const shadowHost = this._createHost(isDark);
         const shadowRoot = shadowHost.attachShadow({ mode: 'open' });
         this._adoptStyles(shadowRoot);
+
+        // This wrapper sits INSIDE the shadow root and carries the .dark class so
+        // that Tailwind's `dark:` variant selectors (e.g. `.dark .w-dialog-panel`)
+        // can match. The shadow boundary prevents the host's .dark class from being
+        // seen by CSS inside the shadow root, so we must duplicate it here.
+        const themeWrapper = document.createElement('div');
+        themeWrapper.style.cssText = 'display:contents;';
+        if (isDark) themeWrapper.classList.add('dark');
+        shadowRoot.appendChild(themeWrapper);
 
         const inner = document.createElement('div');
         inner.style.cssText =
             'all:initial;display:contents;font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:16px;line-height:1.5;text-transform:none;';
-        shadowRoot.appendChild(inner);
+        themeWrapper.appendChild(inner);
 
         const componentRef = createComponent(component, {
             environmentInjector: this._injector,
@@ -124,7 +134,7 @@ export class WidgetDialogService {
         return dialogRef;
     }
 
-    private _createHost(theme?: string): HTMLElement {
+    private _createHost(isDark: boolean): HTMLElement {
         const host = document.createElement('div');
         host.setAttribute('data-widget-dialog', '');
         // Reset inherited CSS on the host so they don't propagate into the shadow root.
@@ -141,7 +151,6 @@ export class WidgetDialogService {
             'color:inherit',
         ].join(';');
 
-        const isDark = this._resolveDark(theme);
         if (isDark) host.classList.add('dark');
 
         document.body.appendChild(host);

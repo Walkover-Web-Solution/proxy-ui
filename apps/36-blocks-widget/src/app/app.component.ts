@@ -42,7 +42,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.initOtpProvider();
         // Add class in body 36-blocks-widget
-        document.body.classList.add('36-blocks-widget');
+        document.body.classList.add('blocks-widget');
     }
 
     public initOtpProvider(): void {
@@ -96,7 +96,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         // Remove class in body 36-blocks-widget
-        document.body.classList.remove('36-blocks-widget');
+        document.body.classList.remove('blocks-widget');
         super.ngOnDestroy();
     }
 }
