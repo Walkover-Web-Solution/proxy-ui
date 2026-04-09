@@ -17,6 +17,7 @@ const path = require('path');
     }
 
     // Dynamic discovery with priority-based ordering — future-proof against Angular output changes
+    // Handles both plain (outputHashing: none) and hashed (outputHashing: all) filenames
     const allFiles = await fs.readdir(distDir);
     const priority = ['polyfills', 'vendor', 'scripts', 'main'];
     const jsFiles = allFiles
@@ -41,10 +42,11 @@ const path = require('path');
         contents.push(await fs.readFile(path.join(distDir, file), 'utf8'));
     }
 
-    // Inline styles.css if it exists
-    const stylesPath = path.join(distDir, 'styles.css');
-    if (await fs.pathExists(stylesPath)) {
-        console.info('Inlining styles.css...');
+    // Inline styles CSS — supports both styles.css (no hash) and styles-XXXXXXXX.css (outputHashing: all)
+    const stylesCssFile = allFiles.find((f) => f.startsWith('styles') && f.endsWith('.css'));
+    const stylesPath = stylesCssFile ? path.join(distDir, stylesCssFile) : null;
+    if (stylesPath && (await fs.pathExists(stylesPath))) {
+        console.info(`Inlining ${stylesCssFile}...`);
         const cssContent = await fs.readFile(stylesPath, 'utf8');
         // Escape backticks and backslashes for JS template literal
         const escapedCSS = cssContent.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
