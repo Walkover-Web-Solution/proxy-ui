@@ -12,7 +12,6 @@
             }
         },
         "build": {
-            "dependsOn": ["set-env"],
             "executor": "@angular-devkit/build-angular:application",
             "outputs": ["{options.outputPath}"],
             "options": {
@@ -120,7 +119,6 @@
             "defaultConfiguration": "production"
         },
         "serve": {
-            "dependsOn": ["set-env"],
             "executor": "@angular-devkit/build-angular:dev-server",
             "options": {
                 "buildTarget": "36-blocks-widget:build:development"
