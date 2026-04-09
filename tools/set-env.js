@@ -13,9 +13,16 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load .env file if present (same logic as webpack.config.js used dotenv)
+// Load .env file if present — use explicit path to guarantee correct resolution in AWS Amplify CI
+// where process.cwd() may differ from the repo root where .env is written.
+// Object.assign ensures .env values override any stale/dev env vars pre-set by Amplify.
 try {
-    require('dotenv').config();
+    const dotenvResult = require('dotenv').config({
+        path: path.resolve(__dirname, '../.env')
+    });
+    if (dotenvResult.parsed) {
+        Object.assign(process.env, dotenvResult.parsed);
+    }
 } catch (e) {
     // dotenv not available, rely solely on process.env
 }
