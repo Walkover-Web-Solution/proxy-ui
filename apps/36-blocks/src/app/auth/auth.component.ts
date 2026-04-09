@@ -48,7 +48,7 @@ export class AuthComponent extends BaseComponent implements OnInit {
     private platformId = inject(PLATFORM_ID);
     private document = inject(DOCUMENT);
     private sanitizer = inject(DomSanitizer);
-
+    // temp chagnes
     public readonly accent = {
         text: 'text-teal-400',
         bg: 'bg-teal-400',
