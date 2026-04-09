@@ -46,6 +46,9 @@
         ]
     },
     "targetDefaults": {
+        "set-env": {
+            "cache": false
+        },
         "build": {
             "inputs": ["production", "^production"]
         },

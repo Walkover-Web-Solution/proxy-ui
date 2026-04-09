@@ -18,12 +18,12 @@ const path = require('path');
 
     // Dynamic discovery with priority-based ordering — future-proof against Angular output changes
     const allFiles = await fs.readdir(distDir);
-    const priority = ['polyfills', 'vendor', 'main'];
+    const priority = ['polyfills', 'vendor', 'scripts', 'main'];
     const jsFiles = allFiles
-        .filter((f) => f.endsWith('.js'))
+        .filter((f) => f.endsWith('.js') && !f.startsWith('chunk-'))
         .sort((a, b) => {
             const getPriority = (f) => {
-                const index = priority.findIndex((p) => f.includes(p));
+                const index = priority.findIndex((p) => f.startsWith(p) || f.includes(`/${p}`));
                 return index === -1 ? priority.length : index;
             };
             return getPriority(a) - getPriority(b);

@@ -26,8 +26,32 @@ const root = path.resolve(__dirname, '..');
 const isCI = env['CI'] === 'true' || env['NODE_ENV'] === 'production' || !!env['AWS_BRANCH'];
 const missingKeys = [];
 
+// Debug logging for AWS build troubleshooting
+const DEBUG = isCI || env['DEBUG_SET_ENV'] === 'true';
+if (DEBUG) {
+    console.log('[set-env DEBUG] Environment detection:');
+    console.log(`  CI: ${env['CI']}`);
+    console.log(`  NODE_ENV: ${env['NODE_ENV']}`);
+    console.log(`  AWS_BRANCH: ${env['AWS_BRANCH']}`);
+    console.log(`  isCI: ${isCI}`);
+}
+
 function get(key, fallback = undefined) {
     const value = env[key] !== undefined ? env[key] : fallback;
+    
+    // Debug logging to track credential source
+    if (DEBUG) {
+        if (value !== undefined) {
+            // Show first 8 chars for verification without exposing full secrets
+            const preview = typeof value === 'string' && value.length > 8 
+                ? `${value.substring(0, 8)}...` 
+                : '***SET***';
+            console.log(`[set-env DEBUG] ${key} = ${preview}`);
+        } else {
+            console.log(`[set-env DEBUG] ${key} = MISSING`);
+        }
+    }
+    
     if (value === undefined) {
         if (isCI) missingKeys.push(key);
         else console.warn(`[set-env] WARNING: env var "${key}" is not set`);
