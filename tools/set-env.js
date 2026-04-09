@@ -23,8 +23,23 @@ try {
 const env = process.env;
 const root = path.resolve(__dirname, '..');
 
+const isCI = env['CI'] === 'true' || env['NODE_ENV'] === 'production' || !!env['AWS_BRANCH'];
+const missingKeys = [];
+
 function get(key, fallback = undefined) {
-    return env[key] !== undefined ? env[key] : fallback;
+    const value = env[key] !== undefined ? env[key] : fallback;
+    if (value === undefined) {
+        if (isCI) missingKeys.push(key);
+        else console.warn(`[set-env] WARNING: env var "${key}" is not set`);
+    }
+    return value;
+}
+
+function assertNoMissingKeys() {
+    if (missingKeys.length > 0) {
+        console.error(`[set-env] FATAL: missing required env vars: ${missingKeys.join(', ')}`);
+        process.exit(1);
+    }
 }
 
 // ── proxy app ──────────────────────────────────────────────────────────────
@@ -71,3 +86,4 @@ const onlyAuth = args.includes('--auth');
 
 if (!onlyAuth) writeProxyEnv();
 if (!onlyProxy) writeProxyAuthEnv();
+assertNoMissingKeys();
