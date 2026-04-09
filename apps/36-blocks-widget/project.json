@@ -7,12 +7,12 @@
     "targets": {
         "set-env": {
             "executor": "nx:run-commands",
+            "cache": false,
             "options": {
                 "command": "node tools/set-env --auth"
             }
         },
         "build": {
-            "dependsOn": ["set-env"],
             "executor": "@angular-devkit/build-angular:application",
             "outputs": ["{options.outputPath}"],
             "options": {
@@ -41,7 +41,8 @@
                 ],
                 "styles": ["apps/36-blocks-widget/src/styles.scss"],
                 "scripts": [],
-                "outputHashing": "none",
+                "outputHashing": "all",
+                "namedChunks": false,
                 "allowedCommonJsDependencies": ["crypto-js", "dayjs"]
             },
             "configurations": {
@@ -64,6 +65,7 @@
                         "styles": true,
                         "fonts": true
                     },
+                    "outputHashing": "all",
                     "namedChunks": false,
                     "extractLicenses": false,
                     "sourceMap": false
@@ -82,7 +84,13 @@
                             "with": "apps/36-blocks-widget/src/environments/environment.test.ts"
                         }
                     ],
-                    "optimization": true,
+                    "optimization": {
+                        "scripts": true,
+                        "styles": true,
+                        "fonts": true
+                    },
+                    "outputHashing": "all",
+                    "namedChunks": false,
                     "extractLicenses": false,
                     "sourceMap": false
                 },
@@ -100,7 +108,13 @@
                             "with": "apps/36-blocks-widget/src/environments/environment.stage.ts"
                         }
                     ],
-                    "optimization": true,
+                    "optimization": {
+                        "scripts": true,
+                        "styles": true,
+                        "fonts": true
+                    },
+                    "outputHashing": "all",
+                    "namedChunks": false,
                     "extractLicenses": false,
                     "sourceMap": false
                 },
@@ -120,7 +134,6 @@
             "defaultConfiguration": "production"
         },
         "serve": {
-            "dependsOn": ["set-env"],
             "executor": "@angular-devkit/build-angular:dev-server",
             "options": {
                 "buildTarget": "36-blocks-widget:build:development"

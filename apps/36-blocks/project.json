@@ -7,12 +7,12 @@
     "targets": {
         "set-env": {
             "executor": "nx:run-commands",
+            "cache": false,
             "options": {
                 "command": "node tools/set-env --proxy"
             }
         },
         "build": {
-            "dependsOn": ["set-env"],
             "executor": "@angular-devkit/build-angular:application",
             "outputs": ["{options.outputPath}"],
             "options": {
@@ -76,7 +76,8 @@
                             "with": "apps/36-blocks/src/environments/environment.prod.ts"
                         }
                     ],
-                    "outputHashing": "all"
+                    "outputHashing": "all",
+                    "namedChunks": false
                 },
                 "stage": {
                     "budgets": [
@@ -97,7 +98,8 @@
                             "with": "apps/36-blocks/src/environments/environment.stage.ts"
                         }
                     ],
-                    "outputHashing": "all"
+                    "outputHashing": "all",
+                    "namedChunks": false
                 },
                 "test": {
                     "budgets": [
@@ -118,7 +120,8 @@
                             "with": "apps/36-blocks/src/environments/environment.test.ts"
                         }
                     ],
-                    "outputHashing": "all"
+                    "outputHashing": "all",
+                    "namedChunks": false
                 },
                 "development": {
                     "optimization": false,
@@ -134,7 +137,6 @@
             "defaultConfiguration": "production"
         },
         "serve": {
-            "dependsOn": ["set-env"],
             "executor": "@angular-devkit/build-angular:dev-server",
             "options": {
                 "host": "0.0.0.0"

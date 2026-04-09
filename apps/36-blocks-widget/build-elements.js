@@ -10,13 +10,14 @@ const path = require('path');
     }
 
     // Dynamic discovery with priority-based ordering — future-proof against Angular output changes
+    // Handles both plain (outputHashing: none) and hashed (outputHashing: all) filenames
     const allFiles = await fs.readdir(distDir);
-    const priority = ['polyfills', 'vendor', 'main'];
+    const priority = ['polyfills', 'vendor', 'scripts', 'main'];
     const jsFiles = allFiles
-        .filter((f) => f.endsWith('.js'))
+        .filter((f) => f.endsWith('.js') && !f.startsWith('chunk-'))
         .sort((a, b) => {
             const getPriority = (f) => {
-                const index = priority.findIndex((p) => f.includes(p));
+                const index = priority.findIndex((p) => f.startsWith(p) || f.includes(`/${p}`));
                 return index === -1 ? priority.length : index;
             };
             return getPriority(a) - getPriority(b);
@@ -34,14 +35,15 @@ const path = require('path');
         contents.push(await fs.readFile(path.join(distDir, file), 'utf8'));
     }
 
-    // Inline styles.css if it exists
-    const stylesPath = path.join(distDir, 'styles.css');
-    if (await fs.pathExists(stylesPath)) {
-        console.info('Inlining styles.css...');
+    // Inline styles CSS — supports both styles.css (no hash) and styles-XXXXXXXX.css (outputHashing: all)
+    const stylesCssFile = allFiles.find((f) => f.startsWith('styles') && f.endsWith('.css'));
+    const stylesPath = stylesCssFile ? path.join(distDir, stylesCssFile) : null;
+    if (stylesPath && (await fs.pathExists(stylesPath))) {
+        console.info(`Inlining ${stylesCssFile}...`);
         const cssContent = await fs.readFile(stylesPath, 'utf8');
         // Escape backticks and backslashes for JS template literal
         const escapedCSS = cssContent.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
-        
+
         // Create a self-executing function that injects styles into document.head
         const styleInjector = `
 (function() {
@@ -66,22 +68,24 @@ const path = require('path');
     }
 
     await fs.ensureDir(outDir);
+
+    // Write the fresh build as proxy-auth.js
     const outPath = path.join(outDir, 'proxy-auth.js');
     await fs.writeFile(outPath, contents.join('\n'));
 
-    // Copy to dist output directory as well
-    const distOutDir = './dist/apps/36-blocks/browser/assets/proxy-auth';
-    await fs.ensureDir(distOutDir);
-    await fs.copyFile(outPath, path.join(distOutDir, 'proxy-auth.js'));
-
-    // Bundle size check — warn if unexpectedly large
     const stats = await fs.stat(outPath);
     const sizeMB = (stats.size / 1048576).toFixed(2);
-    console.info(`proxy-auth.js created: ${sizeMB} MB`);
-    console.info(`Copied to: ${distOutDir}/proxy-auth.js`);
+    console.info(`✓ proxy-auth.js created: ${sizeMB} MB`);
     if (stats.size > 3 * 1048576) {
         console.warn('WARNING: proxy-auth.js exceeds 3 MB — check for bundle bloat!');
     }
 
-    console.info('Elements created successfully!');
+    // Copy to dist output directory
+    const distOutDir = './dist/apps/36-blocks/browser/assets/proxy-auth';
+    await fs.ensureDir(distOutDir);
+    await fs.copyFile(outPath, path.join(distOutDir, 'proxy-auth.js'));
+    console.info(`✓ Copied proxy-auth.js to: ${distOutDir}/`);
+
+    console.info('\n🎉 Elements created successfully!');
+    console.info(`   • proxy-auth.js → LATEST BUILD (${sizeMB} MB)`);
 })();
