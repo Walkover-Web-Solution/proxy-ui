@@ -253,14 +253,65 @@ When making changes to the build process:
 3. Update this documentation if behavior changes
 4. Keep stable-builds in sync with tested releases
 
-## 📞 Support
+## � Troubleshooting
+
+### Issue: proxy-auth-new.js has wrong credentials
+
+If `proxy-auth-new.js` is built with TEST credentials on production:
+
+#### **Step 1: Enable Debug Logging**
+
+The `tools/set-env.js` script automatically logs debug info when running in CI (AWS Amplify). Look for these lines in AWS build logs:
+
+```
+[set-env DEBUG] Environment detection:
+  CI: true
+  NODE_ENV: production
+  AWS_BRANCH: production
+  isCI: true
+[set-env DEBUG] AUTH_UI_ENCODE_KEY = 6bd88de3...
+[set-env DEBUG] AUTH_UI_IV_KEY = 9df117bc...
+```
+
+The first 8 characters help you verify which credentials are being read **without exposing secrets**.
+
+#### **Step 2: Compare Values**
+
+Check if the preview matches your **production** or **test** credentials:
+- Production `AUTH_UI_ENCODE_KEY` starts with: `6bd88de3` → ✅ Correct
+- Test `AUTH_UI_ENCODE_KEY` starts with: `XXXXXXXX` → ❌ Wrong environment
+
+#### **Step 3: Common Fixes**
+
+**If AWS shows wrong values:**
+1. Check AWS Amplify environment variables are set correctly
+2. Verify the branch-specific env vars use correct suffix (`_PROD` vs `_TEST`)
+3. Ensure `.env` file is created before `npm run build:prod` runs
+
+**If set-env reads wrong values:**
+1. Check `.env` file creation in AWS YML
+2. Verify `dotenv` is loading the file correctly
+3. Check for environment variable conflicts in AWS settings
+
+#### **Step 4: Manual Verification**
+
+Add this to AWS YML **after** creating `.env`:
+
+```yaml
+- cat .env  # Shows what's in .env file (secrets will be visible in logs!)
+```
+
+⚠️ **Warning**: This exposes secrets in build logs. Remove after debugging.
+
+## �📞 Support
 
 If you encounter issues:
 
 1. Check the build script output for warnings
 2. Verify `stable-builds/{env}/proxy-auth.js` exists
 3. Ensure build script receives correct environment argument
-4. Review the build logs for detailed information
+4. Review the **debug logs** from `set-env` for credential verification
+5. Compare first 8 chars of credentials in logs vs expected values
 
 ---
 
