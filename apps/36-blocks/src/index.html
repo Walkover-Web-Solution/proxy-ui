@@ -17,49 +17,8 @@
             rel="stylesheet"
         />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet" />
-
-        <!-- Blocking render until auth state and theme are resolved to prevent any visual flash -->
-        <style>
-            html.auth-loading body {
-                visibility: hidden;
-            }
-        </style>
-        <script>
-            (function () {
-                // Block paint immediately — removed once auth decision + theme are applied
-                document.documentElement.classList.add('auth-loading');
-
-                // ── AUTH ───────────────────────────────────────────────────────────────
-                // Theme is intentionally NOT applied here.
-                // body is invisible (auth-loading) until Angular bootstraps, so
-                // UiSettingsService applies the theme class to <body> at startup — no flash.
-                // ONLY the cookie is synchronous and reliable at this point.
-                // Firebase / NgRx are async and must not be used here.
-                var isAuthenticated = false;
-                try {
-                    isAuthenticated = document.cookie.indexOf('authToken=') !== -1;
-                } catch (cookieError) {}
-
-                var currentPath = window.location.pathname;
-
-                // Authenticated user on landing page → send to app
-                if (currentPath === '/' && isAuthenticated) {
-                    window.location.replace('/app/dashboard');
-                    return; // page is navigating away; do not unblock paint
-                }
-
-                // Unauthenticated user on any protected /app route → send to landing
-                if (currentPath.startsWith('/app') && !isAuthenticated) {
-                    window.location.replace('/');
-                    return; // page is navigating away; do not unblock paint
-                }
-
-                // Correct page — unblock paint
-                document.documentElement.classList.remove('auth-loading');
-            })();
-        </script>
     </head>
-    <body>
+    <body class="light-theme">
         <proxy-root></proxy-root>
     </body>
 </html>
