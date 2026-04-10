@@ -13,10 +13,10 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { appRoutes } from './app.routes';
 import { environment } from '../environments/environment';
-import { reducers, clearStateMetaReducer } from './ngrx/store/app.state';
-import { loginsReducer } from './auth/ngrx/store/login.state';
-import { RootEffects } from './ngrx/effects/root';
-import { LogInEffects } from './auth/ngrx/effects/login.effects';
+import { reducers, clearStateMetaReducer } from './core/ngrx/store/app.state';
+import { loginsReducer } from './website/auth/ngrx/store/login.state';
+import { RootEffects } from './core/ngrx/effects/root';
+import { LogInEffects } from './website/auth/ngrx/effects/login.effects';
 import { ErrorInterceptor } from '@proxy/services/interceptor/errorInterceptor';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
 

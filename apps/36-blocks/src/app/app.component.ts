@@ -4,18 +4,18 @@ import { RouterModule } from '@angular/router';
 import { PrimeNgToastComponent } from '@proxy/ui/prime-ng-toast';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { VersionCheckService } from '@proxy/service';
-import { UiSettingsService } from './layout/ui-settings.service';
+import { UiSettingsService } from './panel/layout/ui-settings.service';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { selectLogInData, selectLogOutSuccess } from './auth/ngrx/selector/login.selector';
-import { ILogInFeatureStateWithRootState } from './auth/ngrx/store/login.state';
-import { IAppState, selectClientSettings } from './ngrx';
-import { rootActions } from './ngrx/actions';
-import * as logInActions from './auth/ngrx/actions/login.action';
+import { selectLogInData, selectLogOutSuccess } from './website/auth/ngrx/selector/login.selector';
+import { ILogInFeatureStateWithRootState } from './website/auth/ngrx/store/login.state';
+import { IAppState, selectClientSettings } from './core/ngrx';
+import { rootActions } from './core/ngrx/actions';
+import * as logInActions from './website/auth/ngrx/actions/login.action';
 import { IClientSettings, IFirebaseUserModel } from '@proxy/models/root-models';
 
 @Component({
