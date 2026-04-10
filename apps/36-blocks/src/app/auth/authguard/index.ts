@@ -21,6 +21,6 @@ export class CanActivateRouteGuard {
             this.authService.setTokenSync(authToken);
             return true;
         }
-        return false;
+        return this.router.createUrlTree(['/']);
     }
 }
