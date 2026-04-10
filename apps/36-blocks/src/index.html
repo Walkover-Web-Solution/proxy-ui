@@ -17,55 +17,49 @@
             rel="stylesheet"
         />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet" />
-    </head>
-    <body>
+
+        <!-- Blocking render until auth state and theme are resolved to prevent any visual flash -->
+        <style>
+            html.auth-loading body {
+                visibility: hidden;
+            }
+        </style>
         <script>
             (function () {
-                // Theme initialization
-                var theme = 'light-theme';
+                // Block paint immediately — removed once auth decision + theme are applied
+                document.documentElement.classList.add('auth-loading');
+
+                // ── AUTH ───────────────────────────────────────────────────────────────
+                // Theme is intentionally NOT applied here.
+                // body is invisible (auth-loading) until Angular bootstraps, so
+                // UiSettingsService applies the theme class to <body> at startup — no flash.
+                // ONLY the cookie is synchronous and reliable at this point.
+                // Firebase / NgRx are async and must not be used here.
+                var isAuthenticated = false;
                 try {
-                    var stored = localStorage.getItem('ui-settings');
-                    if (stored) {
-                        var settings = JSON.parse(stored);
-                        var ttl = 30 * 24 * 60 * 60 * 1000;
-                        if (settings._savedAt && Date.now() - settings._savedAt < ttl && settings.theme) {
-                            theme = settings.theme;
-                        }
-                    }
-                } catch (e) {}
-                document.body.classList.add(theme);
+                    isAuthenticated = document.cookie.indexOf('authToken=') !== -1;
+                } catch (cookieError) {}
 
-                // Auth redirect check - only on root path
-                if (window.location.pathname === '/') {
-                    try {
-                        // Check for authToken cookie
-                        var hasAuthCookie = document.cookie.split(';').some(function (item) {
-                            return item.trim().indexOf('authToken=') === 0;
-                        });
+                var currentPath = window.location.pathname;
 
-                        // Check for Firebase auth in localStorage
-                        var hasFirebaseAuth = false;
-                        for (var i = 0; i < localStorage.length; i++) {
-                            var key = localStorage.key(i);
-                            if (key && key.indexOf('firebase:authUser:') === 0) {
-                                var authData = localStorage.getItem(key);
-                                if (authData && authData !== 'null') {
-                                    hasFirebaseAuth = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        // Redirect if authenticated
-                        if (hasAuthCookie || hasFirebaseAuth) {
-                            window.location.replace('/app/dashboard');
-                        }
-                    } catch (e) {
-                        console.error('Failed to check authentication state:', e);
-                    }
+                // Authenticated user on landing page → send to app
+                if (currentPath === '/' && isAuthenticated) {
+                    window.location.replace('/app/dashboard');
+                    return; // page is navigating away; do not unblock paint
                 }
+
+                // Unauthenticated user on any protected /app route → send to landing
+                if (currentPath.startsWith('/app') && !isAuthenticated) {
+                    window.location.replace('/');
+                    return; // page is navigating away; do not unblock paint
+                }
+
+                // Correct page — unblock paint
+                document.documentElement.classList.remove('auth-loading');
             })();
         </script>
+    </head>
+    <body>
         <proxy-root></proxy-root>
     </body>
 </html>
