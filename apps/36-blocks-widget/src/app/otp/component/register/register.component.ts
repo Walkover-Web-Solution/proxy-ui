@@ -244,12 +244,28 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             }
         });
 
-        // Handle OTP verification errors
-        this.selectApiErrorResponse$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
-            if (res && this.isOtpSent && !this.isOtpVerified) {
-                this.otpError = 'Please enter valid OTP';
-                // Clear OTP form to allow user to retry
-                this.otpForm.reset();
+        // Handle API errors (OTP verification, getOtp, resendOtp)
+        this.selectApiErrorResponse$.pipe(takeUntil(this.destroy$)).subscribe((errorResponse) => {
+            if (errorResponse) {
+                // Extract error message from the response - handle HTTP error wrapping
+                const errorMessage =
+                    errorResponse?.error?.errors?.message ||
+                    errorResponse?.error?.data?.message ||
+                    errorResponse?.error?.message ||
+                    errorResponse?.errors?.message ||
+                    errorResponse?.data?.message ||
+                    errorResponse?.message ||
+                    'An error occurred';
+
+                // Display error inline in the dialog
+                this.apiError.next([errorMessage]);
+
+                // If OTP was sent and error occurs during verification, also show inline error
+                if (this.isOtpSent && !this.isOtpVerified) {
+                    this.otpError = 'Please enter valid OTP';
+                    // Clear OTP form to allow user to retry
+                    this.otpForm.reset();
+                }
             }
             this.cdr.markForCheck();
         });
