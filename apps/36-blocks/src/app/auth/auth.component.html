@@ -469,12 +469,21 @@
         <small class="text-sm text-[#8b949e]">&copy; 2026 36Blocks. All rights reserved.</small>
         <nav class="flex items-center gap-4 flex-wrap justify-center" aria-label="Footer navigation">
             @for (link of footerLinks; track link.label) {
-                <a
-                    href="#"
-                    class="text-sm text-[#8b949e] no-underline transition-colors duration-200 hover:text-teal-400"
-                    [attr.aria-label]="link.ariaLabel"
-                    >{{ link.label }}</a
-                >
+                @if (link.route) {
+                    <a
+                        [routerLink]="link.route"
+                        class="text-sm text-[#8b949e] no-underline transition-colors duration-200 hover:text-teal-400"
+                        [attr.aria-label]="link.ariaLabel"
+                        >{{ link.label }}</a
+                    >
+                } @else {
+                    <a
+                        href="#"
+                        class="text-sm text-[#8b949e] no-underline transition-colors duration-200 hover:text-teal-400"
+                        [attr.aria-label]="link.ariaLabel"
+                        >{{ link.label }}</a
+                    >
+                }
             }
         </nav>
     </footer>

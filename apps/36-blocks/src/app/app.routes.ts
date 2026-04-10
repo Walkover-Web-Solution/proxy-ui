@@ -31,6 +31,10 @@ export const appRoutes: Route[] = [
         canActivate: [AngularFireAuthGuard],
     },
     {
+        path: 'pricing',
+        loadComponent: () => import('./pricing/pricing.component').then((c) => c.PricingComponent),
+    },
+    {
         path: 'p',
         loadChildren: () => import('./public.routes').then((r) => r.publicRoutes),
     },

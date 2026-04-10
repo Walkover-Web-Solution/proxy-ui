@@ -173,10 +173,10 @@ export class AuthComponent extends BaseComponent implements OnInit {
         { icon: 'settings', title: 'Internal Admin Panels', desc: 'Track activity and control access across tools.' },
     ];
 
-    public readonly footerLinks: { label: string; ariaLabel: string }[] = [
+    public readonly footerLinks: { label: string; ariaLabel: string; route?: string }[] = [
         // { label: 'Product', ariaLabel: '36Blocks Product overview' },
         { label: 'Documentation', ariaLabel: '36Blocks Documentation' },
-        { label: 'Pricing', ariaLabel: '36Blocks Pricing plans' },
+        { label: 'Pricing', ariaLabel: '36Blocks Pricing plans', route: '/pricing' },
         { label: 'Security', ariaLabel: '36Blocks Security information' },
         { label: 'Privacy', ariaLabel: '36Blocks Privacy policy' },
         { label: 'Terms', ariaLabel: '36Blocks Terms of service' },
