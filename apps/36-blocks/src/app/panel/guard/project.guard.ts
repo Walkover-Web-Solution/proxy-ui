@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { UrlTree, Router } from '@angular/router';
 import { Observable, filter } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { rootActions } from '../ngrx/actions';
+import { rootActions } from '../../core/ngrx/actions';
 import { select, Store } from '@ngrx/store';
-import { IAppState, selectAllProjectList } from '../ngrx';
+import { IAppState, selectAllProjectList } from '../../core/ngrx';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import { IProjects } from '@proxy/models/logs-models';
 

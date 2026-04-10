@@ -1,5 +1,5 @@
 import { Action, ActionReducer, ActionReducerMap } from '@ngrx/store';
-import { logoutAction } from '../../auth/ngrx/actions';
+import { logoutAction } from '../../../website/auth/ngrx/actions';
 import * as rootReducer from './reducer/root.reducer';
 
 export interface IAppState {

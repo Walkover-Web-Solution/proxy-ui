@@ -1,4 +1,4 @@
-import * as fromEmail from '../../../ngrx/store';
+import * as fromEmail from '../../../../core/ngrx/store';
 import * as loginReducer from './login.reducer';
 
 export interface ILogInFeatureState {
