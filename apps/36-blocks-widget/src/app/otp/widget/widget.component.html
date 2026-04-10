@@ -1,8 +1,10 @@
-<!-- Button container for Authorization mode - buttons injected here -->
-<div #buttonContainer [class.dark]="isDarkTheme()" style="display: contents"></div>
+@if (viewMode() === PublicScriptType.Authorization) {
+    <!-- Button container for Authorization mode - buttons injected here -->
+    <div #buttonContainer [class.dark]="isDarkTheme()" class="contents"></div>
+}
 
 @if (show()) {
-    <div [class.dark]="isDarkTheme()">
+    <div [class.dark]="isDarkTheme()" [class.h-full]="viewMode() !== PublicScriptType.Authorization">
         @switch (viewMode()) {
             @case (PublicScriptType.UserManagement) {
                 <user-management
