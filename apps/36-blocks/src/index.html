@@ -18,7 +18,54 @@
         />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet" />
     </head>
-    <body class="light-theme">
+    <body>
+        <script>
+            (function () {
+                // Theme initialization
+                var theme = 'light-theme';
+                try {
+                    var stored = localStorage.getItem('ui-settings');
+                    if (stored) {
+                        var settings = JSON.parse(stored);
+                        var ttl = 30 * 24 * 60 * 60 * 1000;
+                        if (settings._savedAt && Date.now() - settings._savedAt < ttl && settings.theme) {
+                            theme = settings.theme;
+                        }
+                    }
+                } catch (e) {}
+                document.body.classList.add(theme);
+
+                // Auth redirect check - only on root path
+                if (window.location.pathname === '/') {
+                    try {
+                        // Check for authToken cookie
+                        var hasAuthCookie = document.cookie.split(';').some(function (item) {
+                            return item.trim().indexOf('authToken=') === 0;
+                        });
+
+                        // Check for Firebase auth in localStorage
+                        var hasFirebaseAuth = false;
+                        for (var i = 0; i < localStorage.length; i++) {
+                            var key = localStorage.key(i);
+                            if (key && key.indexOf('firebase:authUser:') === 0) {
+                                var authData = localStorage.getItem(key);
+                                if (authData && authData !== 'null') {
+                                    hasFirebaseAuth = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        // Redirect if authenticated
+                        if (hasAuthCookie || hasFirebaseAuth) {
+                            window.location.replace('/app/dashboard');
+                        }
+                    } catch (e) {
+                        console.error('Failed to check authentication state:', e);
+                    }
+                }
+            })();
+        </script>
         <proxy-root></proxy-root>
     </body>
 </html>

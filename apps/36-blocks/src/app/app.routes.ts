@@ -1,13 +1,17 @@
 import { Route } from '@angular/router';
-import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
+import { AngularFireAuthGuard, redirectUnauthorizedTo, redirectLoggedInTo } from '@angular/fire/compat/auth-guard';
 
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['']);
+const redirectLoggedInToApp = () => redirectLoggedInTo(['app']);
+const redirectToDashboardOrLanding = () => redirectLoggedInTo(['app', 'dashboard']);
 
 export const appRoutes: Route[] = [
     {
         path: '',
         pathMatch: 'full',
         loadComponent: () => import('./auth/auth.component').then((c) => c.AuthComponent),
+        data: { authGuardPipe: redirectLoggedInToApp },
+        canActivate: [AngularFireAuthGuard],
     },
     {
         path: 'app',
@@ -37,5 +41,11 @@ export const appRoutes: Route[] = [
     {
         path: 'client',
         loadChildren: () => import('./client.routes').then((r) => r.clientRoutes),
+    },
+    {
+        path: '**',
+        loadComponent: () => import('./auth/auth.component').then((c) => c.AuthComponent),
+        data: { authGuardPipe: redirectToDashboardOrLanding },
+        canActivate: [AngularFireAuthGuard],
     },
 ];
