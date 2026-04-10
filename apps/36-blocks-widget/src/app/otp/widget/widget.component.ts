@@ -167,6 +167,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     public subscriptionPlans: any[] = [];
 
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly elementRef = inject(ElementRef);
 
     private readonly otpWidgetService = inject(OtpWidgetService);
     private readonly store = inject<Store<IAppState>>(Store);
@@ -209,6 +210,19 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         effect(() => {
             const dark = this.themeService.isDark$();
             this.reapplyInjectedButtonTheme(dark);
+        });
+
+        // Add/remove remove-height class based on viewMode
+        effect(() => {
+            const currentViewMode = this.viewMode();
+            const hostElement = this.elementRef.nativeElement as HTMLElement;
+            if (!hostElement) return;
+
+            if (currentViewMode !== PublicScriptType.Authorization) {
+                this.renderer.setStyle(hostElement, 'height', 'inherit !important');
+            } else {
+                this.renderer.removeStyle(hostElement, 'height');
+            }
         });
     }
 
@@ -697,11 +711,11 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         const buttonTextColor = isV2 ? selectWidgetTheme?.ui_preferences?.button_text_color || '#ffffff' : '#ffffff';
 
         const loginContainer: HTMLElement = this.renderer.createElement('div');
-        loginContainer.style.cssText = `width:316px;padding:0;margin:0 8px 16px 8px;display:flex;flex-direction:column;gap:8px;box-sizing:border-box;font-family:'Inter',sans-serif;border-radius:${borderRadius};`;
+        loginContainer.style.cssText = `width:316px;max-width:100%;padding:0;margin:0 8px 16px 8px;display:flex;flex-direction:column;gap:8px;box-sizing:border-box;font-family:'Inter',sans-serif;border-radius:${borderRadius};`;
 
         const title: HTMLElement = this.renderer.createElement('div');
         title.textContent = selectWidgetTheme?.ui_preferences?.title;
-        title.style.cssText = `font-size:16px;line-height:20px;font-weight:600;color:${primaryColor};margin:0 8px 20px 8px;text-align:center;width:316px;`;
+        title.style.cssText = `font-size:16px;line-height:20px;font-weight:600;color:${primaryColor};margin:0 8px 20px 8px;text-align:center;width:316px;max-width:100%;`;
 
         const loginButton: HTMLButtonElement = this.renderer.createElement('button');
         loginButton.textContent = 'Sign in';
@@ -1229,6 +1243,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     gap: 35px;
                     margin: 8px 8px 16px 8px;
                     width: 316px;
+                    max-width:100%;
                 `;
                 // Position icons container based on input_fields
                 if (isInputFieldsTop) {
@@ -1272,7 +1287,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             image.alt = buttonsData.text;
             image.loading = 'lazy';
 
-            if (isOtpButton) {
+            if (buttonsData?.service_id) {
                 button.setAttribute('data-service-id', buttonsData.service_id);
             }
             button.addEventListener('click', () => {
@@ -1307,6 +1322,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 margin: 8px 8px 16px 8px;
                 cursor: pointer;
                 width: 316px;
+                max-width:100%;
                 visibility: ${isOtpButton ? 'hidden' : 'visible'}; // Hide only OTP buttons until ready
             `;
             const invertIcon = this.shouldInvertIcon(buttonsData);
@@ -1318,13 +1334,15 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             span.style.cssText = `
                 color: ${this.themeService.isDark() ? '#ffffff' : '#111827'};
                 font-weight: 600;
+                text-align: left;
+                min-width: 170px
             `;
             image.src = buttonsData.icon;
             image.alt = buttonsData.text;
             image.loading = 'lazy';
             span.innerText = buttonsData.text;
 
-            if (isOtpButton) {
+            if (buttonsData?.service_id) {
                 button.setAttribute('data-service-id', buttonsData.service_id);
             }
             button.addEventListener('click', () => {
@@ -1389,22 +1407,24 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
 
         const paragraph: HTMLParagraphElement = this.renderer.createElement('p');
+        const span: HTMLSpanElement = this.renderer.createElement('span');
         const link: HTMLAnchorElement = this.renderer.createElement('a');
 
         paragraph.setAttribute('data-create-account', 'true');
 
         paragraph.style.cssText = `
-    margin: 20px 8px 8px 8px !important;
-    font-size: 14px !important;
-    outline: none !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 8px !important;
-    color: ${primaryColor} !important;
-    cursor: pointer !important;
-    width: 316px !important;
-`;
+            margin: 20px 8px 8px 8px !important;
+            font-size: 14px !important;
+            outline: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+            color: ${primaryColor} !important;
+            cursor: pointer !important;
+            width: 316px !important;
+            max-width:100%;
+        `;
 
         // Style the link
         link.style.cssText = `
@@ -1415,7 +1435,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         `;
 
         // Set the text content
-        paragraph.innerHTML = 'Are you a new user? ';
+        span.textContent = 'Are you a new user? ';
         link.textContent = selectWidgetTheme?.ui_preferences?.sign_up_button_text || 'Create an account';
 
         // Add click event to the link
@@ -1426,11 +1446,15 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         });
 
         // Append elements
+        this.renderer.appendChild(paragraph, span);
         this.renderer.appendChild(paragraph, link);
         this.renderer.appendChild(element, paragraph);
 
         // Powered by footer
-        const poweredBy: HTMLParagraphElement = this.renderer.createElement('p');
+        const poweredBy: HTMLParagraphElement = this.renderer.createElement('a');
+        poweredBy.setAttribute('href', 'https://proxy.msg91.com');
+        poweredBy.setAttribute('target', '_blank');
+        poweredBy.setAttribute('rel', 'noopener noreferrer');
         poweredBy.setAttribute('data-powered-by', 'true');
         poweredBy.style.cssText = `
             margin: 12px 8px 12px 8px !important;
@@ -1443,6 +1467,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             gap: 4px !important;
             color: ${this.themeService.isDark() ? THEME_COLORS.dark.poweredByLabel : THEME_COLORS.light.poweredByLabel} !important;
             width: 316px !important;
+            max-width:100%;
         `;
 
         const poweredByText = this.renderer.createText('Powered by');

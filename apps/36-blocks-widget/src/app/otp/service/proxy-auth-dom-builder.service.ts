@@ -6,7 +6,7 @@ export class ProxyAuthDomBuilderService {
     createLogoElement(renderer: Renderer2, logoUrl: string): HTMLElement | null {
         if (!logoUrl) return null;
         const wrapper: HTMLElement = renderer.createElement('div');
-        wrapper.style.cssText = 'width:316px;display:flex;justify-content:center;margin:0 8px 12px 8px;';
+        wrapper.style.cssText = 'width:316px;max-width:100%;display:flex;justify-content:center;margin:0 8px 12px 8px;';
         const img: HTMLImageElement = renderer.createElement('img');
         img.src = logoUrl;
         img.alt = 'Logo';
@@ -52,6 +52,7 @@ export class ProxyAuthDomBuilderService {
             const bone = renderer.createElement('div');
             bone.style.cssText = [
                 'width:316px;',
+                'max-width:100%;',
                 'height:44px;',
                 `background:linear-gradient(90deg,${base} 25%,${highlight} 50%,${base} 75%);`,
                 'background-size:200% 100%;',
@@ -143,7 +144,7 @@ export class ProxyAuthDomBuilderService {
     createOrDivider(renderer: Renderer2, primaryColor: string): HTMLElement {
         const container: HTMLElement = renderer.createElement('div');
         container.setAttribute('data-or-divider', 'true');
-        container.style.cssText = 'display:flex;align-items:center;margin:8px 8px 12px 8px;width:316px;';
+        container.style.cssText = 'display:flex;align-items:center;margin:8px 8px 12px 8px;width:316px;max-width:100%;';
         const lineStyle = 'flex:1;height:1px;background-color:#e0e0e0;';
         const left: HTMLElement = renderer.createElement('div');
         left.style.cssText = lineStyle;
