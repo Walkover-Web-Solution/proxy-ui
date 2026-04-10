@@ -9,7 +9,6 @@
     // but these resets guard against any CSS that targets :host from outside.
     all: initial;
     display: block !important;
-    height: inherit !important;
     min-height: inherit !important;
     max-height: inherit !important;
     background: transparent !important;
