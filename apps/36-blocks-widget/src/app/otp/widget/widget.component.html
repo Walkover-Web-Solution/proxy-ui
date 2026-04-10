@@ -1,9 +1,8 @@
+<!-- Button container for Authorization mode - buttons injected here -->
+<div #buttonContainer [class.dark]="isDarkTheme()" style="display: contents"></div>
+
 @if (show()) {
-    <div
-        [class.h-full]="viewMode() !== PublicScriptType.Authorization"
-        [class.authorization-container]="referenceId && !authToken"
-        [class.dark]="isDarkTheme()"
-    >
+    <div [class.dark]="isDarkTheme()">
         @switch (viewMode()) {
             @case (PublicScriptType.UserManagement) {
                 <user-management
@@ -32,6 +31,7 @@
         }
     </div>
 }
+
 @if (showRegistration() || showLogin() || showForgotPassword()) {
     <div #dialogPortal [class.dark]="isDarkTheme()">
         <div
