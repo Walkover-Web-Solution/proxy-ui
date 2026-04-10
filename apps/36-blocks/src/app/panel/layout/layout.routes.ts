@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { CanActivateRouteGuard } from '../auth/authguard';
+import { CanActivateRouteGuard } from '../../website/auth/authguard';
 import { redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { ProjectGuard } from '../guard/project.guard';
 

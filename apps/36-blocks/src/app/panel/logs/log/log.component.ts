@@ -54,7 +54,7 @@ import { CustomValidators } from '@proxy/custom-validator';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Store, select } from '@ngrx/store';
-import { IAppState, selectClientSettings } from '../../ngrx';
+import { IAppState, selectClientSettings } from '../../../core/ngrx';
 
 type FilterTypes = 'environments' | 'projects';
 

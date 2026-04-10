@@ -17,15 +17,15 @@ import { CopyButtonComponent } from '@proxy/ui/copy-button';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex';
 import { CustomValidators } from '@proxy/custom-validator';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { CreateProjectComponentStore } from './create-project.store';
 import { filter, Observable, takeUntil } from 'rxjs';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import { IEnvironments, IProjects } from '@proxy/models/logs-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
-import { IAppState, selectAllProjectList } from '../ngrx';
-import { rootActions } from '../ngrx/actions';
+import { IAppState, selectAllProjectList } from '../../core/ngrx';
+import { rootActions } from '../../core/ngrx/actions';
 import {
     IDestinationUrlForm,
     IFormArray,

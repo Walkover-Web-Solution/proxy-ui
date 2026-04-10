@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { ProxyAuthScriptUrl } from '@proxy/models/features-model';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
