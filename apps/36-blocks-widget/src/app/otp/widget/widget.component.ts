@@ -167,6 +167,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     public subscriptionPlans: any[] = [];
 
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly elementRef = inject(ElementRef);
 
     private readonly otpWidgetService = inject(OtpWidgetService);
     private readonly store = inject<Store<IAppState>>(Store);
@@ -209,6 +210,19 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         effect(() => {
             const dark = this.themeService.isDark$();
             this.reapplyInjectedButtonTheme(dark);
+        });
+
+        // Add/remove remove-height class based on viewMode
+        effect(() => {
+            const currentViewMode = this.viewMode();
+            const hostElement = this.elementRef.nativeElement as HTMLElement;
+            if (!hostElement) return;
+
+            if (currentViewMode !== PublicScriptType.Authorization) {
+                this.renderer.setStyle(hostElement, 'height', 'inherit !important');
+            } else {
+                this.renderer.removeStyle(hostElement, 'height');
+            }
         });
     }
 
