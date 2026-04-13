@@ -25,11 +25,11 @@ import { SidebarUserMenuComponent } from './sidebar-user-menu/sidebar-user-menu.
 import { IClient, IClientSettings, IFirebaseUserModel, IPaginatedResponse } from '@proxy/models/root-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store, select } from '@ngrx/store';
-import { selectLogInData } from '../../website/auth/ngrx/selector/login.selector';
+import { selectLogInData } from '../../website/home/ngrx/selector/login.selector';
 import { isEqual } from 'lodash-es';
 import { Observable, distinctUntilChanged, filter, takeUntil, combineLatest } from 'rxjs';
-import { ILogInFeatureStateWithRootState } from '../../website/auth/ngrx/store/login.state';
-import * as logInActions from '../../website/auth/ngrx/actions/login.action';
+import { ILogInFeatureStateWithRootState } from '../../website/home/ngrx/store/login.state';
+import * as logInActions from '../../website/home/ngrx/actions/login.action';
 import { rootActions } from '../../core/ngrx/actions';
 import { selectAllClient, selectClientSettings, selectSwitchClientSuccess } from '../../core/ngrx';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';

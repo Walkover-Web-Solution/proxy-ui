@@ -1,5 +1,5 @@
 import { PROXY_DOM_ID, PublicScriptType } from '@proxy/constant';
-import { environment } from '../../../../../environments/environment';
+import { environment } from '../../../../../../environments/environment';
 
 const SCRIPT_URL = `${environment.proxyServer}/assets/proxy-auth/proxy-auth.js`;
 

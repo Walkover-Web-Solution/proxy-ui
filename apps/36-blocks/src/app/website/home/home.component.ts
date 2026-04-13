@@ -27,13 +27,13 @@ import * as logInActions from './ngrx/actions/login.action';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
-    selector: 'proxy-auth',
+    selector: 'proxy-home',
     imports: [RouterModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule],
-    templateUrl: './auth.component.html',
-    styleUrls: ['./auth.component.scss'],
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
     providers: [WidgetThemeService],
 })
-export class AuthComponent extends BaseComponent implements OnInit {
+export class HomeComponent extends BaseComponent implements OnInit {
     public selectLogInErrors$: Observable<string[]>;
     public logInData$: Observable<IFirebaseUserModel>;
     public logInDataInProcess$: Observable<boolean>;
@@ -171,15 +171,6 @@ export class AuthComponent extends BaseComponent implements OnInit {
             highlight: true,
         },
         { icon: 'settings', title: 'Internal Admin Panels', desc: 'Track activity and control access across tools.' },
-    ];
-
-    public readonly footerLinks: { label: string; ariaLabel: string; route?: string }[] = [
-        // { label: 'Product', ariaLabel: '36Blocks Product overview' },
-        { label: 'Documentation', ariaLabel: '36Blocks Documentation' },
-        { label: 'Pricing', ariaLabel: '36Blocks Pricing plans', route: '/pricing' },
-        { label: 'Security', ariaLabel: '36Blocks Security information' },
-        { label: 'Privacy', ariaLabel: '36Blocks Privacy policy' },
-        { label: 'Terms', ariaLabel: '36Blocks Terms of service' },
     ];
 
     public readonly heroStats: { value: string; label: string }[] = [

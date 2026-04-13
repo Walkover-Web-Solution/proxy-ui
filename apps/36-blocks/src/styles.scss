@@ -12,11 +12,46 @@
 @use 'assets/scss/component/icon';
 @use 'assets/scss/component/animation';
 @use 'assets/scss/component/utility-classes';
+@use 'assets/scss/component/website-animations';
 @use '../../shared/scss/global';
+
+/* Website layout dimensions */
+:root {
+    --website-header-height: 60px;
+    --website-footer-height: 72px;
+}
+
+/* Smooth scroll for the whole document */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
 body {
     background: var(--mat-sys-surface);
     color: var(--mat-sys-on-surface);
     font-size: 0.875rem;
+
+    &.website-active {
+        background-color: #0d1117;
+        background-image:
+            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(45, 212, 191, 0.15), transparent),
+            radial-gradient(ellipse 60% 40% at 100% 100%, rgba(45, 212, 191, 0.08), transparent);
+        color: #c9d1d9;
+    }
 }
 .text-color {
     color: var(--mat-sys-on-surface);
