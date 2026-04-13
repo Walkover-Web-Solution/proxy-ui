@@ -92,7 +92,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
         email: new FormControl({ value: '', disabled: true }),
     });
 
-    public isEditing = false;
+    public readonly isEditing = signal(false);
 
     private store = inject<Store<IAppState>>(Store);
     readonly toastService = inject(ToastService);
@@ -170,9 +170,15 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     openModal(companyId: number): void {
         this.confirmDialogCompanyId.set(companyId);
         this.cdr.detectChanges();
-        if (this.confirmDialogPortalEl?.nativeElement) {
-            this.confirmDialogPortalRef = this.widgetPortal.attach(this.confirmDialogPortalEl.nativeElement);
-        }
+        setTimeout(() => {
+            if (this.confirmDialogPortalEl?.nativeElement) {
+                this.confirmDialogPortalRef = this.widgetPortal.attach(this.confirmDialogPortalEl.nativeElement);
+                this.confirmDialogPortalRef.onDetach(() => {
+                    this.confirmDialogPortalRef = null;
+                    this.confirmDialogCompanyId.set(null);
+                });
+            }
+        });
     }
 
     confirmLeave(): void {
@@ -191,17 +197,23 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     }
 
     public openEditDialog(): void {
-        this.isEditing = true;
+        this.isEditing.set(true);
         this.cdr.detectChanges();
-        if (this.editDialogPortalEl?.nativeElement) {
-            this.editDialogRef = this.widgetPortal.attach(this.editDialogPortalEl.nativeElement);
-        }
+        setTimeout(() => {
+            if (this.editDialogPortalEl?.nativeElement) {
+                this.editDialogRef = this.widgetPortal.attach(this.editDialogPortalEl.nativeElement);
+                this.editDialogRef.onDetach(() => {
+                    this.editDialogRef = null;
+                    this.cancelEdit();
+                });
+            }
+        });
     }
 
     public cancelEdit() {
         this.editDialogRef?.detach();
         this.editDialogRef = null;
-        this.isEditing = false;
+        this.isEditing.set(false);
         this.clientForm.get('name').setValue(this.previousName);
     }
 
@@ -211,7 +223,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
         if (enteredName === this.previousName) {
             this.editDialogRef?.detach();
             this.editDialogRef = null;
-            this.isEditing = false;
+            this.isEditing.set(false);
             return;
         }
 
@@ -229,7 +241,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
             if (res) {
                 this.editDialogRef?.detach();
                 this.editDialogRef = null;
-                this.isEditing = false;
+                this.isEditing.set(false);
                 this.previousName = enteredName;
                 this.cdr.detectChanges();
                 this.toastService.success('Information successfully updated');
