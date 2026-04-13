@@ -9,4 +9,8 @@ export const appRoutes: Route[] = [
         path: '',
         loadChildren: () => import('./panel/panel.routes').then((r) => r.panelRoutes),
     },
+    {
+        path: '**',
+        redirectTo: '',
+    },
 ];

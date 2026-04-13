@@ -15,7 +15,12 @@ import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { Store, select } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { Observable, distinctUntilChanged, takeUntil, debounceTime } from 'rxjs';
-import { selectLogInErrors, selectLogInDataInProcess, selectLogInDataSuccess } from './ngrx/selector/login.selector';
+import {
+    selectLogInErrors,
+    selectLogInData,
+    selectLogInDataInProcess,
+    selectLogInDataSuccess,
+} from './ngrx/selector/login.selector';
 import { ILogInFeatureStateWithRootState } from './ngrx/store/login.state';
 import * as logInActions from './ngrx/actions/login.action';
 
@@ -29,6 +34,7 @@ import * as logInActions from './ngrx/actions/login.action';
 })
 export class HomeComponent extends BaseComponent implements OnInit {
     public selectLogInErrors$: Observable<string[]>;
+    public logInData$: Observable<any>;
     public logInDataInProcess$: Observable<boolean>;
     public logInDataSuccess$: Observable<boolean>;
 
@@ -288,6 +294,11 @@ export class HomeComponent extends BaseComponent implements OnInit {
             distinctUntilChanged(isEqual),
             takeUntil(this.destroy$)
         );
+        this.logInData$ = this._store.pipe(
+            select(selectLogInData),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
         this.logInDataInProcess$ = this._store.pipe(
             select(selectLogInDataInProcess),
             debounceTime(200),
@@ -343,10 +354,16 @@ export class HomeComponent extends BaseComponent implements OnInit {
         this.injectJsonLdSchema();
 
         if (isPlatformBrowser(this.platformId)) {
-            this.selectLogInErrors$.subscribe((res) => {
-                res?.forEach((r) => {
-                    this.toast.error(r);
+            this.selectLogInErrors$.subscribe((errors) => {
+                errors?.forEach((errorMessage) => {
+                    this.toast.error(errorMessage);
                 });
+            });
+
+            this.logInData$.subscribe((userData) => {
+                if (userData) {
+                    this.router.navigate(['/app/dashboard']);
+                }
             });
 
             this.startTypewriter();

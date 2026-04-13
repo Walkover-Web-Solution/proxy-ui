@@ -4,12 +4,12 @@ import { LoggedInGuard } from './home/authguard/logged-in.guard';
 export const websiteRoutes: Route[] = [
     {
         path: '',
-        canActivate: [LoggedInGuard],
         loadComponent: () => import('./layout/website-layout.component').then((c) => c.WebsiteLayoutComponent),
         children: [
             {
                 path: '',
                 pathMatch: 'full',
+                canActivate: [LoggedInGuard],
                 loadComponent: () => import('./home/home.component').then((c) => c.HomeComponent),
             },
             {
