@@ -112,16 +112,11 @@
                     <div class="px-7 pb-7">
                         <button
                             class="w-full py-3 px-6 !rounded-sm font-semibold text-sm transition-all duration-200 cursor-pointer hover:-translate-y-0.5 active:translate-y-0 border"
-                            [class.bg-teal-400]="plan.highlight"
-                            [class.text-\[\#0d1117\]]="plan.highlight"
-                            [class.border-teal-400]="plan.highlight"
-                            [class.shadow-\[0_4px_20px_rgba\(45\,212\,191\,0\.35\)\]]="plan.highlight"
-                            [class.hover\:bg-teal-300]="plan.highlight"
-                            [class.bg-transparent]="!plan.highlight"
-                            [class.border-teal-400\/30]="!plan.highlight"
-                            [class.text-teal-400]="!plan.highlight"
-                            [class.hover\:border-teal-400\/60]="!plan.highlight"
-                            [class.hover\:bg-teal-400\/5]="!plan.highlight"
+                            [ngClass]="
+                                plan.highlight
+                                    ? 'bg-teal-400 text-[#0d1117] border-teal-400 hover:bg-teal-300'
+                                    : 'bg-transparent text-teal-400 border-teal-400/30 hover:border-teal-400/60 hover:bg-teal-400/5'
+                            "
                             [attr.aria-label]="plan.cta + ' — ' + plan.name + ' plan'"
                         >
                             {{ plan.cta }}
@@ -164,11 +159,11 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" role="list" aria-label="Trust features">
             @for (item of trustItems; track item.title) {
                 <div
-                    class="flex flex-col gap-3 p-6 rounded-xl border border-[#21262d] bg-[#161b22] hover:border-[#30363d] transition-colors duration-200"
+                    class="flex flex-col items-center text-center sm:items-start sm:text-left gap-3 p-6 rounded-xl border border-[#21262d] bg-[#161b22] hover:border-[#30363d] transition-colors duration-200"
                     role="listitem"
                 >
                     <div
-                        class="w-10 h-10 rounded-lg bg-teal-400/10 border border-teal-400/20 flex items-center justify-center flex-shrink-0"
+                        class="w-10 h-10 rounded-lg bg-teal-400/10 border border-teal-400/20 flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0"
                     >
                         <mat-icon class="text-teal-400 !text-xl" aria-hidden="true">{{ item.icon }}</mat-icon>
                     </div>
