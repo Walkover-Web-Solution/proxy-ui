@@ -197,7 +197,7 @@
                         <span>Actions</span>
                     </div>
                     @for (org of (userDetails$ | async)?.c_companies; track org.id) {
-                        <div class="flex flex-wrap items-center justify-between gap-3 px-4 lg:px-5 py-3">
+                        <div class="group flex flex-wrap items-center justify-between gap-3 px-4 lg:px-5 py-3">
                             <div class="flex min-w-0 items-center gap-3">
                                 <div
                                     class="w-avatar size-8 text-xs"
@@ -252,7 +252,11 @@
                                 </div>
                             </div>
                             @if (companyDetails?.currentCompany?.company_uname !== org.company_uname) {
-                                <button type="button" (click)="openModal(org?.id)" class="w-btn-danger-sm">
+                                <button
+                                    type="button"
+                                    (click)="openModal(org?.id)"
+                                    class="w-btn-danger-sm opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                                >
                                     ↗ Leave
                                 </button>
                             }
