@@ -125,6 +125,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
         this.getClients();
         this.getClientSettings();
         this.getCurrentTheme();
+        document.body.classList.remove('website-active');
 
         if (this.isMobileDevice()) {
             this.sideNavService.close();
@@ -171,7 +172,13 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
                             }
                             (window as any).SendDataToChatbot(payload);
                             (window as any).openChatbot();
-                            this.sendThemeToChatbot();
+                            console.log('Chatbot opened');
+                            // Body have class light-theme
+                            if (document.body.classList.contains('light-theme')) {
+                                this.sendThemeToChatbot('light');
+                            } else {
+                                this.sendThemeToChatbot('dark');
+                            }
                         }, 2000);
                     };
 
@@ -207,11 +214,11 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
         this.isDarkMode.set(isDarkMode);
 
         // This GTWY chatbot config for forced theme
-        this.sendThemeToChatbot();
+        this.sendThemeToChatbot(this.isDarkMode() ? 'dark' : 'light');
     }
 
-    private sendThemeToChatbot() {
-        (window as any).Chatbot?.sendData({ theme: this.isDarkMode() ? 'dark' : 'light' });
+    private sendThemeToChatbot(theme: 'light' | 'dark'): void {
+        (window as any).Chatbot?.sendData({ theme });
     }
 
     public isMobileDevice() {
