@@ -36,7 +36,7 @@ import { FeatureComponentStore } from '../../features/feature/feature.store';
 import { Observable, of, Subject, takeUntil } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { IFeature, ProxyUserManagementScript } from '@proxy/models/features-model';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 import { IPaginatedResponse } from '@proxy/models/root-models';
 import { UserComponentStore } from '../user/user.store';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';

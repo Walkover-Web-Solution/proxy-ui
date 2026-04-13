@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
 import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
-import { CanActivateRouteGuard } from '../website/auth/authguard';
+import { CanActivateRouteGuard } from '../website/home/authguard';
 import { ProjectGuard } from './guard/project.guard';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);

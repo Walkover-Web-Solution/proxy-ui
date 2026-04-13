@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { Meta, Title } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -38,7 +39,26 @@ export interface TrustItem {
     imports: [CommonModule, MatIconModule],
     templateUrl: './pricing.component.html',
 })
-export class PricingComponent {
+export class PricingComponent implements OnInit {
+    private readonly titleService = inject(Title);
+    private readonly metaService = inject(Meta);
+
+    public ngOnInit(): void {
+        this.titleService.setTitle('Pricing — 36Blocks');
+        this.metaService.updateTag({
+            name: 'description',
+            content:
+                'Simple, transparent pricing for 36Blocks. Start free with 1,000 MAU. Upgrade as you grow. No hidden fees, no contracts.',
+        });
+        this.metaService.updateTag({ name: 'robots', content: 'index, follow' });
+        this.metaService.updateTag({ property: 'og:title', content: 'Pricing — 36Blocks' });
+        this.metaService.updateTag({
+            property: 'og:description',
+            content: 'Start free. Scale with confidence. Transparent usage-based pricing.',
+        });
+        this.metaService.updateTag({ property: 'og:type', content: 'website' });
+    }
+
     public readonly plans: PricingPlan[] = [
         {
             name: 'Starter',

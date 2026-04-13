@@ -1,6 +1,6 @@
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideRouter, withEnabledBlockingInitialNavigation } from '@angular/router';
+import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { provideStore, provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
@@ -14,9 +14,9 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { appRoutes } from './app.routes';
 import { environment } from '../environments/environment';
 import { reducers, clearStateMetaReducer } from './core/ngrx/store/app.state';
-import { loginsReducer } from './website/auth/ngrx/store/login.state';
+import { loginsReducer } from './website/home/ngrx/store/login.state';
 import { RootEffects } from './core/ngrx/effects/root';
-import { LogInEffects } from './website/auth/ngrx/effects/login.effects';
+import { LogInEffects } from './website/home/ngrx/effects/login.effects';
 import { ErrorInterceptor } from '@proxy/services/interceptor/errorInterceptor';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
 
@@ -24,7 +24,11 @@ export const appConfig: ApplicationConfig = {
     providers: [
         provideZoneChangeDetection({ eventCoalescing: true }),
         provideAnimations(),
-        provideRouter(appRoutes, withEnabledBlockingInitialNavigation()),
+        provideRouter(
+            appRoutes,
+            withEnabledBlockingInitialNavigation(),
+            withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })
+        ),
         provideHttpClient(withFetch(), withInterceptorsFromDi()),
         provideStore(reducers, { metaReducers: [clearStateMetaReducer] }),
         provideState('auth', loginsReducer),
