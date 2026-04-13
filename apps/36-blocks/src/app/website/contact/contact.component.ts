@@ -96,18 +96,6 @@ export class ContactComponent implements OnInit {
             sourceUrl: environment.proxyServer,
         };
 
-        console.group('%c📬 Contact Form Submission', 'color: #2dd4bf; font-weight: bold; font-size: 14px;');
-        console.log('%cName:       ', 'color: #8b949e; font-weight: bold;', payload.name);
-        console.log('%cEmail:      ', 'color: #8b949e; font-weight: bold;', payload.email);
-        console.log('%cCategory:   ', 'color: #8b949e; font-weight: bold;', payload.category);
-        console.log('%cSubject:    ', 'color: #8b949e; font-weight: bold;', payload.subject);
-        console.log('%cMessage:    ', 'color: #8b949e; font-weight: bold;', payload.message);
-        console.log('%cTimestamp:  ', 'color: #8b949e; font-weight: bold;', payload.submittedAt);
-        console.log('%cEnvironment:', 'color: #8b949e; font-weight: bold;', payload.environment);
-        console.log('%cSource URL: ', 'color: #8b949e; font-weight: bold;', payload.sourceUrl);
-        console.log('%cFull payload:', 'color: #8b949e; font-weight: bold;', payload);
-        console.groupEnd();
-
         this.isSubmitting.set(true);
         this.submitError.set(false);
 
