@@ -22,7 +22,7 @@
                         <p class="text-xs text-gray-500 dark:text-gray-400">Manage your personal information</p>
                     </div>
                 </div>
-                @if (!isEditing) {
+                @if (!isEditing()) {
                     <button
                         type="button"
                         (click)="openEditDialog()"
@@ -75,7 +75,7 @@
             </div>
 
             <!-- View mode — stacks to 1-col on mobile, 3-col on sm+ -->
-            @if (!isEditing) {
+            @if (!isEditing()) {
                 <div
                     class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-gray-800 border-t border-gray-200 dark:border-gray-700"
                 >
@@ -267,7 +267,7 @@
         </div>
     </div>
 </div>
-@if (isEditing) {
+@if (isEditing()) {
     <div #editDialogPortal [class.dark]="isDark()">
         <div class="w-dialog-backdrop" (click)="cancelEdit()" aria-hidden="true"></div>
         <div role="dialog" aria-labelledby="edit-profile-title" aria-modal="true" class="w-dialog-panel">

@@ -83,6 +83,9 @@ export function ensureAddUserDialogStyles(): void {}
  * Call detach() to move the element back to its original DOM position.
  */
 export class WidgetPortalRef {
+    private _detached = false;
+    private readonly _detachCallbacks: (() => void)[] = [];
+
     constructor(
         private readonly _portal: DomPortal,
         private readonly _outlet: DomPortalOutlet,
@@ -90,7 +93,14 @@ export class WidgetPortalRef {
         private readonly _shadowHost: HTMLElement
     ) {}
 
+    onDetach(callback: () => void): void {
+        this._detachCallbacks.push(callback);
+    }
+
     detach(): void {
+        if (this._detached) return;
+        this._detached = true;
+        this._detachCallbacks.forEach((callback) => callback());
         if (this._outlet.hasAttached()) {
             this._outlet.detach();
         }
@@ -195,6 +205,16 @@ export class WidgetPortalService {
         const portal = new DomPortal(element);
         outlet.attach(portal);
 
-        return new WidgetPortalRef(portal, outlet, placeholder, shadowHost);
+        const portalRef = new WidgetPortalRef(portal, outlet, placeholder, shadowHost);
+
+        const escapeKeyListener = (keyboardEvent: KeyboardEvent) => {
+            if (keyboardEvent.key === 'Escape') {
+                portalRef.detach();
+            }
+        };
+        document.addEventListener('keydown', escapeKeyListener);
+        portalRef.onDetach(() => document.removeEventListener('keydown', escapeKeyListener));
+
+        return portalRef;
     }
 }
