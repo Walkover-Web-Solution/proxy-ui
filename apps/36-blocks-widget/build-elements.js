@@ -3,7 +3,7 @@ const path = require('path');
 
 (async function build() {
     const distDir = './dist/apps/36-blocks-widget/browser';
-    const outDir = './apps/36-blocks/src/assets/proxy-auth';
+    const distOutDir = './dist/apps/36-blocks/browser/assets/proxy-auth';
 
     if (!(await fs.pathExists(distDir))) {
         throw new Error(`Widget dist not found: ${distDir}`);
@@ -67,10 +67,10 @@ const path = require('path');
         console.warn('styles.css not found - skipping CSS inlining');
     }
 
-    await fs.ensureDir(outDir);
+    await fs.ensureDir(distOutDir);
 
-    // Write the fresh build as proxy-auth.js
-    const outPath = path.join(outDir, 'proxy-auth.js');
+    // Write the fresh build directly to dist — no intermediate src/assets copy needed
+    const outPath = path.join(distOutDir, 'proxy-auth.js');
     await fs.writeFile(outPath, contents.join('\n'));
 
     const stats = await fs.stat(outPath);
@@ -79,13 +79,8 @@ const path = require('path');
     if (stats.size > 3 * 1048576) {
         console.warn('WARNING: proxy-auth.js exceeds 3 MB — check for bundle bloat!');
     }
-
-    // Copy to dist output directory
-    const distOutDir = './dist/apps/36-blocks/browser/assets/proxy-auth';
-    await fs.ensureDir(distOutDir);
-    await fs.copyFile(outPath, path.join(distOutDir, 'proxy-auth.js'));
-    console.info(`✓ Copied proxy-auth.js to: ${distOutDir}/`);
+    console.info(`✓ Written to: ${distOutDir}/`);
 
     console.info('\n🎉 Elements created successfully!');
-    console.info(`   • proxy-auth.js → LATEST BUILD (${sizeMB} MB)`);
+    console.info(`   • ${distOutDir}/proxy-auth.js → LATEST BUILD (${sizeMB} MB)`);
 })();

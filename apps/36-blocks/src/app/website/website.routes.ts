@@ -1,8 +1,10 @@
 import { Route } from '@angular/router';
+import { LoggedInGuard } from './home/authguard/logged-in.guard';
 
 export const websiteRoutes: Route[] = [
     {
         path: '',
+        canActivate: [LoggedInGuard],
         loadComponent: () => import('./layout/website-layout.component').then((c) => c.WebsiteLayoutComponent),
         children: [
             {
