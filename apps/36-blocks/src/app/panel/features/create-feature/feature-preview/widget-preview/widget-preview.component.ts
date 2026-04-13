@@ -32,6 +32,7 @@ import { ILogInFeatureStateWithRootState } from '../../../../../website/home/ngr
 import * as logInActions from '../../../../../website/home/ngrx/actions/login.action';
 import { SidebarUserMenuComponent } from '../../../../layout/sidebar-user-menu/sidebar-user-menu.component';
 import { UiSettingsService } from '../../../../layout/ui-settings.service';
+import { SideNavService } from '../../../../layout/side-nav.service';
 import { Location } from '@angular/common';
 import { environment } from '../../../../../../environments/environment';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -75,6 +76,7 @@ export class WidgetPreviewComponent implements AfterViewInit {
     private readonly _injector = inject(Injector);
     private readonly store = inject<Store<ILogInFeatureStateWithRootState>>(Store);
     private readonly uiSettings = inject(UiSettingsService);
+    private readonly sideNavService = inject(SideNavService);
 
     @ViewChild('drawer') drawer!: MatDrawer;
 
@@ -174,6 +176,7 @@ export class WidgetPreviewComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
+        this.sideNavService.open();
         setTimeout(() => this.launchWidget());
     }
 
