@@ -1,6 +1,6 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideRouter, withEnabledBlockingInitialNavigation } from '@angular/router';
+import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { provideStore, provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
@@ -13,24 +13,35 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { appRoutes } from './app.routes';
 import { environment } from '../environments/environment';
-import { reducers, clearStateMetaReducer } from './ngrx/store/app.state';
-import { loginsReducer } from './auth/ngrx/store/login.state';
-import { RootEffects } from './ngrx/effects/root';
-import { LogInEffects } from './auth/ngrx/effects/login.effects';
+import { reducers, clearStateMetaReducer } from './core/ngrx/store/app.state';
+import { loginsReducer } from './website/home/ngrx/store/login.state';
+import { RootEffects } from './core/ngrx/effects/root';
+import { LogInEffects } from './website/home/ngrx/effects/login.effects';
 import { ErrorInterceptor } from '@proxy/services/interceptor/errorInterceptor';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
+import { AuthInitializerService } from './core/auth-initializer.service';
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideZoneChangeDetection({ eventCoalescing: true }),
         provideAnimations(),
-        provideRouter(appRoutes, withEnabledBlockingInitialNavigation()),
+        provideRouter(
+            appRoutes,
+            withEnabledBlockingInitialNavigation(),
+            withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })
+        ),
         provideHttpClient(withFetch(), withInterceptorsFromDi()),
         provideStore(reducers, { metaReducers: [clearStateMetaReducer] }),
         provideState('auth', loginsReducer),
         provideEffects([RootEffects, LogInEffects]),
         ...(!environment.production ? [provideStoreDevtools({ maxAge: 25, serialize: true })] : []),
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+        {
+            provide: APP_INITIALIZER,
+            useFactory: (authInitializerService: AuthInitializerService) => () => authInitializerService.initialize(),
+            deps: [AuthInitializerService],
+            multi: true,
+        },
         importProvidersFrom(AngularFireModule.initializeApp(environment.firebaseConfig), AngularFireAuthModule),
         { provide: ProxyBaseUrls.FirebaseConfig, useValue: environment.firebaseConfig },
         { provide: ProxyBaseUrls.IToken, useValue: { token: null, companyId: null } },

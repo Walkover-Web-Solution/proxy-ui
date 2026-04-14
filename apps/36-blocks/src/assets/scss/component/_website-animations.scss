@@ -1,0 +1,225 @@
+// ─── Website page-entry & scroll-reveal animations ──────────────────────────
+
+// ── Keyframes ────────────────────────────────────────────────────────────────
+
+@keyframes ws-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes ws-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ws-fade-down {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ws-fade-left {
+    from {
+        opacity: 0;
+        transform: translateX(28px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes ws-fade-right {
+    from {
+        opacity: 0;
+        transform: translateX(-28px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes ws-scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes ws-page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ws-glow-pulse {
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.08);
+    }
+}
+
+@keyframes ws-shimmer-text {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+@keyframes ws-float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+// ── Page-entry (router-outlet content) ───────────────────────────────────────
+
+.ws-page-enter {
+    animation: ws-page-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+// ── Scroll-reveal base: hidden until IntersectionObserver fires .is-visible ──
+
+.ws-reveal {
+    opacity: 0;
+    transition:
+        opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+
+    &.ws-reveal--up {
+        transform: translateY(32px);
+    }
+    &.ws-reveal--down {
+        transform: translateY(-20px);
+    }
+    &.ws-reveal--left {
+        transform: translateX(32px);
+    }
+    &.ws-reveal--right {
+        transform: translateX(-32px);
+    }
+    &.ws-reveal--scale {
+        transform: scale(0.92);
+    }
+
+    &.is-visible {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+// ── Stagger delays (apply alongside .ws-reveal) ───────────────────────────────
+@for $staggerIndex from 1 through 8 {
+    .ws-stagger-#{$staggerIndex} {
+        transition-delay: #{$staggerIndex * 0.08}s;
+    }
+}
+
+// ── Hover lift utility ────────────────────────────────────────────────────────
+.ws-hover-lift {
+    transition:
+        transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.25s ease;
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    }
+}
+
+// ── Teal glow on hover ────────────────────────────────────────────────────────
+.ws-hover-glow {
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+    &:hover {
+        border-color: rgba(45, 212, 191, 0.4);
+        box-shadow: 0 0 24px rgba(45, 212, 191, 0.12);
+    }
+}
+
+// ── Shimmer text ──────────────────────────────────────────────────────────────
+.ws-shimmer-text {
+    background: linear-gradient(90deg, #2dd4bf 0%, #a5f3fc 40%, #2dd4bf 60%, #5eead4 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: ws-shimmer-text 3s linear infinite;
+}
+
+// ── Floating glow orb ────────────────────────────────────────────────────────
+.ws-glow-orb {
+    animation: ws-glow-pulse 6s ease-in-out infinite;
+}
+
+// ── Floating element ─────────────────────────────────────────────────────────
+.ws-float {
+    animation: ws-float 4s ease-in-out infinite;
+}
+
+// ── Feature icon box — shared across all website pages (same as home page) ───
+.feature-main-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(45, 212, 191, 0.1);
+    border: 1px solid rgba(45, 212, 191, 0.2);
+    display: grid;
+    place-items: center;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+// ── Reduced motion overrides ─────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+    .ws-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+    .ws-page-enter,
+    .ws-shimmer-text,
+    .ws-glow-orb,
+    .ws-float {
+        animation: none;
+    }
+    .ws-hover-lift:hover {
+        transform: none;
+    }
+}

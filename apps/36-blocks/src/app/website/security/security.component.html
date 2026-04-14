@@ -1,0 +1,253 @@
+<main class="max-w-[860px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20">
+    <!-- Hero -->
+    <section class="mb-14 text-center" aria-labelledby="security-heading" wsReveal="up">
+        <div
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6 bg-teal-400/10 border border-teal-400/30 text-teal-400"
+            aria-hidden="true"
+        >
+            <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
+                />
+            </svg>
+            Security
+        </div>
+        <h1
+            id="security-heading"
+            class="text-4xl sm:text-5xl font-bold text-[#f0f6fc] tracking-tight mb-5 leading-[1.1]"
+        >
+            Security at 36Blocks
+        </h1>
+        <p class="text-lg text-[#8b949e] max-w-xl mx-auto leading-relaxed">
+            We take security seriously. Every layer of 36Blocks is designed with your users' data and trust in mind.
+        </p>
+        <p class="text-sm text-[#484f58] mt-3">Last updated: January 2026</p>
+    </section>
+
+    <!-- Sections -->
+    <div class="flex flex-col gap-10">
+        <!-- Card -->
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-lift ws-hover-glow ws-stagger-1"
+            aria-labelledby="sec-infra"
+            wsReveal="up"
+        >
+            <div class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-left gap-4 mb-4">
+                <div class="feature-main-icon flex-shrink-0 mx-auto sm:mx-0" aria-hidden="true">
+                    <svg
+                        class="w-5 h-5 text-teal-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        aria-hidden="true"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 id="sec-infra" class="text-xl font-bold text-[#f0f6fc] mb-2">Infrastructure &amp; Hosting</h2>
+                    <p class="text-sm text-[#8b949e] leading-relaxed">
+                        36Blocks runs on enterprise-grade cloud infrastructure with automatic failover, redundancy, and
+                        geographic distribution. All services are containerised and isolated to prevent cross-tenant
+                        data leakage.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-lift ws-hover-glow"
+            aria-labelledby="sec-data"
+            wsReveal="up"
+        >
+            <div class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-left gap-4 mb-4">
+                <div class="feature-main-icon flex-shrink-0 mx-auto sm:mx-0" aria-hidden="true">
+                    <svg
+                        class="w-5 h-5 text-teal-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        aria-hidden="true"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                        />
+                    </svg>
+                </div>
+                <div>
+                    <h2 id="sec-data" class="text-xl font-bold text-[#f0f6fc] mb-2">Data Encryption</h2>
+                    <p class="text-sm text-[#8b949e] leading-relaxed mb-4">
+                        All data is encrypted both in transit and at rest. We use TLS 1.2+ for all network communication
+                        and AES-256 for data stored on disk. Passwords are hashed using bcrypt and are never stored in
+                        plaintext.
+                    </p>
+                    <ul class="flex flex-col gap-2">
+                        @for (
+                            item of [
+                                'TLS 1.2+ for all API and dashboard traffic',
+                                'AES-256 encryption at rest',
+                                'bcrypt password hashing',
+                                'Encrypted database backups',
+                            ];
+                            track item
+                        ) {
+                            <li class="flex items-center gap-2 text-sm text-[#c9d1d9]">
+                                <svg
+                                    class="w-4 h-4 text-teal-400 flex-shrink-0"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    aria-hidden="true"
+                                >
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                                {{ item }}
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-lift ws-hover-glow"
+            aria-labelledby="sec-auth"
+            wsReveal="up"
+        >
+            <div class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-left gap-4 mb-4">
+                <div class="feature-main-icon flex-shrink-0 mx-auto sm:mx-0" aria-hidden="true">
+                    <svg
+                        class="w-5 h-5 text-teal-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        aria-hidden="true"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                        />
+                    </svg>
+                </div>
+                <div>
+                    <h2 id="sec-auth" class="text-xl font-bold text-[#f0f6fc] mb-2">Authentication Security</h2>
+                    <p class="text-sm text-[#8b949e] leading-relaxed mb-4">
+                        36Blocks implements industry best practices for authentication flows including OTP expiry, rate
+                        limiting, brute-force protection, and bot prevention via hCaptcha.
+                    </p>
+                    <ul class="flex flex-col gap-2">
+                        @for (
+                            item of [
+                                'hCaptcha bot protection on all public endpoints',
+                                'OTP codes expire within 10 minutes',
+                                'Rate limiting on login and OTP requests',
+                                'Session tokens with configurable expiry',
+                                'Secure, HttpOnly cookies where applicable',
+                            ];
+                            track item
+                        ) {
+                            <li class="flex items-center gap-2 text-sm text-[#c9d1d9]">
+                                <svg
+                                    class="w-4 h-4 text-teal-400 flex-shrink-0"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    aria-hidden="true"
+                                >
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                                {{ item }}
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-lift ws-hover-glow"
+            aria-labelledby="sec-access"
+            wsReveal="up"
+        >
+            <div class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-left gap-4">
+                <div class="feature-main-icon flex-shrink-0 mx-auto sm:mx-0" aria-hidden="true">
+                    <svg
+                        class="w-5 h-5 text-teal-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        aria-hidden="true"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                    </svg>
+                </div>
+                <div>
+                    <h2 id="sec-access" class="text-xl font-bold text-[#f0f6fc] mb-2">
+                        Access Control &amp; Audit Logs
+                    </h2>
+                    <p class="text-sm text-[#8b949e] leading-relaxed">
+                        Role-Based Access Control (RBAC) is built into the core of 36Blocks. Every action is logged with
+                        a full audit trail so you can see who did what, when. Logs are retained per your plan and are
+                        tamper-evident.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-lift ws-hover-glow"
+            aria-labelledby="sec-disclosure"
+            wsReveal="up"
+        >
+            <div class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-left gap-4">
+                <div class="feature-main-icon flex-shrink-0 mx-auto sm:mx-0" aria-hidden="true">
+                    <svg
+                        class="w-5 h-5 text-teal-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        aria-hidden="true"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        />
+                    </svg>
+                </div>
+                <div>
+                    <h2 id="sec-disclosure" class="text-xl font-bold text-[#f0f6fc] mb-2">Responsible Disclosure</h2>
+                    <p class="text-sm text-[#8b949e] leading-relaxed">
+                        If you discover a security vulnerability, please contact us at
+                        <a href="mailto:security@36blocks.com" class="text-teal-400 hover:underline"
+                            >security&#64;36blocks.com</a
+                        >. We will respond within 48 hours and work with you to resolve the issue responsibly.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>

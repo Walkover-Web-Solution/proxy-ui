@@ -1,0 +1,178 @@
+<main class="max-w-[860px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20">
+    <!-- Hero -->
+    <section class="mb-14 text-center" aria-labelledby="terms-heading" wsReveal="up">
+        <div
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6 bg-teal-400/10 border border-teal-400/30 text-teal-400"
+            aria-hidden="true"
+        >
+            <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+            </svg>
+            Terms
+        </div>
+        <h1 id="terms-heading" class="text-4xl sm:text-5xl font-bold text-[#f0f6fc] tracking-tight mb-5 leading-[1.1]">
+            Terms of Service
+        </h1>
+        <p class="text-lg text-[#8b949e] max-w-xl mx-auto leading-relaxed">
+            Please read these terms carefully before using 36Blocks.
+        </p>
+        <p class="text-sm text-[#484f58] mt-3">Last updated: January 2026</p>
+    </section>
+
+    <div class="flex flex-col gap-8 text-sm text-[#8b949e] leading-relaxed">
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-glow"
+            aria-labelledby="terms-accept"
+            wsReveal="up"
+        >
+            <h2 id="terms-accept" class="text-xl font-bold text-[#f0f6fc] mb-3">1. Acceptance of Terms</h2>
+            <p>
+                By accessing or using the 36Blocks platform, APIs, SDKs, or any related services (collectively, the
+                "Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree, do not use
+                the Service.
+            </p>
+        </section>
+
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-glow"
+            aria-labelledby="terms-service"
+            wsReveal="up"
+        >
+            <h2 id="terms-service" class="text-xl font-bold text-[#f0f6fc] mb-3">2. Description of Service</h2>
+            <p>
+                36Blocks provides a developer authentication and user management platform, including plug-and-play login
+                widgets, role-based access control, user analytics, and session management. The Service is provided on a
+                subscription basis with tiered plans as described on our Pricing page.
+            </p>
+        </section>
+
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-glow"
+            aria-labelledby="terms-accounts"
+            wsReveal="up"
+        >
+            <h2 id="terms-accounts" class="text-xl font-bold text-[#f0f6fc] mb-3">3. Accounts &amp; Registration</h2>
+            <p class="mb-3">
+                You must provide accurate, complete information when creating an account. You are responsible for
+                maintaining the confidentiality of your credentials and all activity under your account. You must
+                immediately notify us of any unauthorised use.
+            </p>
+            <p>Accounts may not be shared between organisations. Each account represents a single legal entity.</p>
+        </section>
+
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-glow"
+            aria-labelledby="terms-use"
+            wsReveal="up"
+        >
+            <h2 id="terms-use" class="text-xl font-bold text-[#f0f6fc] mb-3">4. Acceptable Use</h2>
+            <p class="mb-3">You agree not to use the Service to:</p>
+            <ul class="flex flex-col gap-2">
+                @for (
+                    item of [
+                        'Violate any applicable law or regulation',
+                        'Send spam or unsolicited communications',
+                        'Attempt to reverse-engineer or circumvent security measures',
+                        'Engage in scraping, crawling, or automated abuse of the API beyond your plan limits',
+                        'Store or process data in violation of applicable privacy laws',
+                        'Impersonate 36Blocks or any third party',
+                    ];
+                    track item
+                ) {
+                    <li class="flex items-center gap-2">
+                        <svg
+                            class="w-4 h-4 text-[#6e7681] flex-shrink-0"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            aria-hidden="true"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        {{ item }}
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-glow"
+            aria-labelledby="terms-billing"
+            wsReveal="up"
+        >
+            <h2 id="terms-billing" class="text-xl font-bold text-[#f0f6fc] mb-3">5. Billing &amp; Payment</h2>
+            <p class="mb-3">
+                Paid plans are billed monthly in advance. Usage-based charges (MAU overages, SMS) are billed in arrears
+                at the end of each billing cycle. All prices are in USD and exclusive of applicable taxes.
+            </p>
+            <p>
+                Failure to pay may result in service suspension. You may cancel at any time; cancellation takes effect
+                at the end of the current billing period with no pro-rata refund.
+            </p>
+        </section>
+
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-glow"
+            aria-labelledby="terms-ip"
+            wsReveal="up"
+        >
+            <h2 id="terms-ip" class="text-xl font-bold text-[#f0f6fc] mb-3">6. Intellectual Property</h2>
+            <p>
+                The Service and its original content, features, and functionality are and remain the exclusive property
+                of 36Blocks. You retain all ownership of your application data. You grant us a limited licence to
+                process your data solely to provide the Service.
+            </p>
+        </section>
+
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-glow"
+            aria-labelledby="terms-disclaimer"
+            wsReveal="up"
+        >
+            <h2 id="terms-disclaimer" class="text-xl font-bold text-[#f0f6fc] mb-3">
+                7. Disclaimer &amp; Limitation of Liability
+            </h2>
+            <p class="mb-3">
+                The Service is provided "as is" without warranty of any kind. We do not warrant uninterrupted,
+                error-free operation. Our aggregate liability to you for any claim shall not exceed the fees paid by you
+                in the 3 months preceding the claim.
+            </p>
+            <p>
+                We are not liable for indirect, incidental, consequential, or punitive damages arising from your use of
+                the Service.
+            </p>
+        </section>
+
+        <section
+            class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-glow"
+            aria-labelledby="terms-changes"
+            wsReveal="up"
+        >
+            <h2 id="terms-changes" class="text-xl font-bold text-[#f0f6fc] mb-3">8. Changes to Terms</h2>
+            <p>
+                We may update these Terms at any time. We will provide at least 14 days' notice of material changes via
+                email or in-dashboard notice. Continued use of the Service after changes take effect constitutes
+                acceptance.
+            </p>
+        </section>
+
+        <!-- <section class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 ws-hover-glow" aria-labelledby="terms-contact" wsReveal="up">
+            <h2 id="terms-contact" class="text-xl font-bold text-[#f0f6fc] mb-3">9. Contact</h2>
+            <p>
+                Questions about these Terms? Email us at <a href="mailto:legal@36blocks.com" class="text-teal-400 hover:underline">legal&#64;36blocks.com</a>.
+            </p>
+        </section> -->
+    </div>
+</main>

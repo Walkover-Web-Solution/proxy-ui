@@ -26,6 +26,7 @@ export abstract class WidgetDialogBase {
  */
 export class WidgetDialogRef<T> {
     private _destroyed = false;
+    private readonly _closeCallbacks: (() => void)[] = [];
 
     constructor(
         private readonly _componentRef: ComponentRef<T>,
@@ -37,9 +38,14 @@ export class WidgetDialogRef<T> {
         return this._componentRef.instance;
     }
 
+    onClose(callback: () => void): void {
+        this._closeCallbacks.push(callback);
+    }
+
     close(): void {
         if (this._destroyed) return;
         this._destroyed = true;
+        this._closeCallbacks.forEach((callback) => callback());
         this._appRef.detachView(this._componentRef.hostView);
         this._componentRef.destroy();
         this._shadowHost.parentNode?.removeChild(this._shadowHost);
@@ -130,6 +136,14 @@ export class WidgetDialogService {
 
         this._appRef.attachView(componentRef.hostView);
         componentRef.changeDetectorRef.detectChanges();
+
+        const escapeKeyListener = (keyboardEvent: KeyboardEvent) => {
+            if (keyboardEvent.key === 'Escape') {
+                dialogRef.close();
+            }
+        };
+        document.addEventListener('keydown', escapeKeyListener);
+        dialogRef.onClose(() => document.removeEventListener('keydown', escapeKeyListener));
 
         return dialogRef;
     }

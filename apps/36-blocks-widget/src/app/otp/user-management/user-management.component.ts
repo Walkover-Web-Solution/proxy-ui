@@ -385,9 +385,15 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
         this.pendingDeleteIndex = index;
         this.showConfirmDialog.set(true);
         this.cdr.detectChanges();
-        if (this.confirmDialogPortalEl?.nativeElement) {
-            this.confirmDialogRef = this.widgetPortal.attach(this.confirmDialogPortalEl.nativeElement);
-        }
+        setTimeout(() => {
+            if (this.confirmDialogPortalEl?.nativeElement) {
+                this.confirmDialogRef = this.widgetPortal.attach(this.confirmDialogPortalEl.nativeElement);
+                this.confirmDialogRef.onDetach(() => {
+                    this.confirmDialogRef = null;
+                    this.cancelDelete();
+                });
+            }
+        });
     }
 
     public confirmDelete(): void {
@@ -495,9 +501,15 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
     private openDialog(): void {
         this.showDialog.set(true);
         this.cdr.detectChanges();
-        if (this.mainDialogPortalEl?.nativeElement) {
-            this.mainDialogRef = this.widgetPortal.attach(this.mainDialogPortalEl.nativeElement);
-        }
+        setTimeout(() => {
+            if (this.mainDialogPortalEl?.nativeElement) {
+                this.mainDialogRef = this.widgetPortal.attach(this.mainDialogPortalEl.nativeElement);
+                this.mainDialogRef.onDetach(() => {
+                    this.mainDialogRef = null;
+                    this.closeDialog();
+                });
+            }
+        });
     }
 
     public addUser(): void {

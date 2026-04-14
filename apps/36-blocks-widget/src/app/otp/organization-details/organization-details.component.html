@@ -25,7 +25,7 @@
                         <p class="text-xs text-gray-500 dark:text-gray-400">Manage your organization information</p>
                     </div>
                 </div>
-                @if (!isEditing) {
+                @if (!isEditing()) {
                     <button
                         type="button"
                         (click)="startEdit()"
@@ -49,7 +49,7 @@
             </div>
 
             <!-- ── View Mode ── -->
-            @if (!isEditing) {
+            @if (!isEditing()) {
                 <div
                     class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-gray-800"
                 >
@@ -150,7 +150,7 @@
     </div>
 
     <!-- ── Edit Organization Dialog ── -->
-    @if (isEditing) {
+    @if (isEditing()) {
         <div #editDialogPortal [class.dark]="isDark()">
             <div class="w-dialog-backdrop" (click)="cancelEdit()" aria-hidden="true"></div>
             <div role="dialog" aria-labelledby="org-edit-dialog-title" aria-modal="true" class="w-dialog-panel">

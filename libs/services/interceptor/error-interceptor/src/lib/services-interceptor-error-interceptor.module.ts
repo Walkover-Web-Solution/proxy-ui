@@ -21,6 +21,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         if (
             request.url.includes('api/register') ||
             request.url.includes('api/googleLogin') ||
+            request.url.includes('flow.sokt.io') ||
             this.cookieService.get('authToken')
         ) {
             return next.handle(request).pipe(

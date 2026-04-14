@@ -56,6 +56,9 @@ Thumbs.db
 apps/36-blocks/src/environments/env-variables.ts
 apps/36-blocks-widget/src/environments/env-variables.ts
 
+# Generated widget bundle — written directly to dist/ by build-elements.js
+apps/36-blocks/src/assets/proxy-auth/proxy-auth.js
+
 # Nx cache
 .nx/cache
 .nx/workspace-data

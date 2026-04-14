@@ -1,0 +1,137 @@
+<main class="max-w-[960px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20">
+    <!-- Hero -->
+    <section class="mb-16 text-center" aria-labelledby="about-heading" wsReveal="up">
+        <div
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6 bg-teal-400/10 border border-teal-400/30 text-teal-400"
+            aria-hidden="true"
+        >
+            <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+            </svg>
+            About Us
+        </div>
+        <h1
+            id="about-heading"
+            class="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#f0f6fc] tracking-tight mb-6 leading-[1.1]"
+        >
+            Built for developers.<br />
+            <span class="text-teal-400">Trusted by SaaS teams.</span>
+        </h1>
+        <p class="text-lg text-[#8b949e] max-w-2xl mx-auto leading-relaxed">
+            36Blocks was created to remove the burden of building authentication from scratch. We believe every
+            developer deserves a production-ready, secure auth stack they can drop in within minutes — not months.
+        </p>
+    </section>
+
+    <!-- Mission -->
+    <section
+        class="rounded-2xl border border-teal-400/20 bg-[#0f1f1e] p-10 mb-10 text-center ws-hover-glow"
+        aria-labelledby="about-mission"
+        wsReveal="scale"
+    >
+        <h2 id="about-mission" class="text-2xl font-bold text-[#f0f6fc] mb-4">Our Mission</h2>
+        <p class="text-[#8b949e] text-base leading-relaxed max-w-2xl mx-auto">
+            To make secure user authentication and access management a solved problem — so SaaS founders, indie
+            developers, and engineering teams can focus on what actually differentiates their products.
+        </p>
+    </section>
+
+    <!-- Values -->
+    <section class="mb-14" aria-labelledby="about-values">
+        <h2 id="about-values" class="text-2xl font-bold text-[#f0f6fc] mb-8 text-center">What We Stand For</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            @for (value of values; track value.title) {
+                <div
+                    class="rounded-xl border border-[#21262d] bg-[#161b22] p-6 ws-hover-lift ws-hover-glow text-center sm:text-left"
+                    wsReveal="up"
+                >
+                    <div class="feature-main-icon mx-auto sm:mx-0" aria-hidden="true">
+                        <svg
+                            class="w-5 h-5 text-teal-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            aria-hidden="true"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="value.iconPath" />
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-bold text-[#f0f6fc] mb-2">{{ value.title }}</h3>
+                    <p class="text-sm text-[#8b949e] leading-relaxed">{{ value.description }}</p>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-14" aria-label="36Blocks by the numbers">
+        @for (stat of stats; track stat.label) {
+            <div class="rounded-xl border border-[#21262d] bg-[#161b22] p-6 text-center ws-hover-lift" wsReveal="up">
+                <p class="text-3xl font-extrabold text-teal-400 tracking-tight">{{ stat.value }}</p>
+                <p class="text-xs text-[#8b949e] mt-1">{{ stat.label }}</p>
+            </div>
+        }
+    </section>
+
+    <!-- What we build -->
+    <section
+        class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 mb-10 ws-hover-glow"
+        aria-labelledby="about-product"
+        wsReveal="up"
+    >
+        <h2 id="about-product" class="text-xl font-bold text-[#f0f6fc] mb-4">What We Build</h2>
+        <p class="text-sm text-[#8b949e] leading-relaxed mb-5">
+            36Blocks is a complete authentication infrastructure layer. Drop our widget into any web app and get instant
+            support for:
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            @for (feature of productFeatures; track feature) {
+                <div class="flex items-center gap-2 text-sm text-[#c9d1d9]">
+                    <svg
+                        class="w-4 h-4 text-teal-400 flex-shrink-0"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        aria-hidden="true"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                    {{ feature }}
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="text-center py-8" aria-labelledby="about-cta" wsReveal="up">
+        <h2 id="about-cta" class="text-2xl font-bold text-[#f0f6fc] mb-4">Ready to get started?</h2>
+        <p class="text-[#8b949e] mb-6">Ship auth in 5 minutes. Free forever on the Starter plan.</p>
+        <div class="flex items-center justify-center gap-4 flex-wrap">
+            <a
+                routerLink="/"
+                class="px-6 py-2.5 rounded-sm font-bold text-sm bg-teal-400 text-[#0d1117] no-underline transition-all duration-200 hover:-translate-y-px"
+            >
+                Get Started Free
+            </a>
+            <a
+                routerLink="/pricing"
+                class="px-6 py-2.5 rounded-sm font-semibold text-sm border border-teal-400/40 text-teal-400 no-underline transition-all duration-200 hover:border-teal-400 hover:-translate-y-px"
+            >
+                View Pricing
+            </a>
+        </div>
+    </section>
+</main>

@@ -12,6 +12,7 @@ import {
     effect,
     inject,
     input,
+    signal,
 } from '@angular/core';
 import { WidgetPortalRef, WidgetPortalService } from '../service/widget-portal.service';
 import { ToastService } from '../service/toast.service';
@@ -55,7 +56,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     public timezones: any[] = [];
 
     // ── NEW: controls view vs edit mode ──────────────────────────
-    public isEditing = false;
+    public readonly isEditing = signal(false);
     // ─────────────────────────────────────────────────────────────
 
     private initialFormValue: {
@@ -160,11 +161,17 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     // ── NEW: enter edit mode ──────────────────────────────────────
     public startEdit(): void {
         this.editSnapshot = { ...this.organizationForm.value } as typeof this.initialFormValue;
-        this.isEditing = true;
+        this.isEditing.set(true);
         this.cdr.detectChanges();
-        if (this.editDialogPortalEl?.nativeElement) {
-            this.editDialogRef = this.widgetPortal.attach(this.editDialogPortalEl.nativeElement);
-        }
+        setTimeout(() => {
+            if (this.editDialogPortalEl?.nativeElement) {
+                this.editDialogRef = this.widgetPortal.attach(this.editDialogPortalEl.nativeElement);
+                this.editDialogRef.onDetach(() => {
+                    this.editDialogRef = null;
+                    this.cancelEdit();
+                });
+            }
+        });
     }
 
     // ── NEW: cancel and restore form to pre-edit state ────────────
@@ -176,7 +183,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
         }
         this.organizationForm.markAsPristine();
         this.organizationForm.markAsUntouched();
-        this.isEditing = false;
+        this.isEditing.set(false);
     }
 
     public getTimezoneValue(tz): string {
@@ -213,7 +220,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
         ) {
             this.editDialogRef?.detach();
             this.editDialogRef = null;
-            this.isEditing = false;
+            this.isEditing.set(false);
             return;
         }
 
@@ -239,7 +246,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
                     this.initialFormValue = { ...current };
                     this.editDialogRef?.detach();
                     this.editDialogRef = null;
-                    this.isEditing = false;
+                    this.isEditing.set(false);
                     this.showToast(res?.data?.message, 'success');
                     this.cdr.markForCheck();
                     window.dispatchEvent(
