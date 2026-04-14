@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
+import { redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { CanActivateRouteGuard } from '../website/home/authguard';
 import { ProjectGuard } from './guard/project.guard';
 
@@ -7,7 +7,7 @@ const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
 export const panelRoutes: Route[] = [
     {
-        path: 'app',
+        path: '',
         loadComponent: () => import('./layout/layout.component').then((c) => c.LayoutComponent),
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -34,30 +34,5 @@ export const panelRoutes: Route[] = [
         ],
         data: { authGuardPipe: redirectUnauthorizedToLogin },
         canActivate: [CanActivateRouteGuard, ProjectGuard],
-    },
-    {
-        path: 'widget-preview/:referenceId',
-        loadComponent: () =>
-            import('./features/create-feature/feature-preview/widget-preview/widget-preview.component').then(
-                (c) => c.WidgetPreviewComponent
-            ),
-        data: { authGuardPipe: redirectUnauthorizedToLogin },
-        canActivate: [AngularFireAuthGuard],
-    },
-    {
-        path: 'project',
-        loadComponent: () => import('./create-project/create-project.component').then((c) => c.CreateProjectComponent),
-        data: { authGuardPipe: redirectUnauthorizedToLogin },
-        canActivate: [AngularFireAuthGuard],
-    },
-    {
-        path: 'client',
-        children: [
-            {
-                path: 'registration',
-                loadComponent: () =>
-                    import('../core/registration/registration.component').then((c) => c.RegistrationComponent),
-            },
-        ],
     },
 ];
