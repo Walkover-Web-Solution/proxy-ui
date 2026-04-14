@@ -1,5 +1,4 @@
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { AuthService } from '@proxy/services/proxy/auth';
 
@@ -7,12 +6,8 @@ import { AuthService } from '@proxy/services/proxy/auth';
 export class AuthInitializerService {
     private readonly cookieService = inject(CookieService);
     private readonly authService = inject(AuthService);
-    private readonly platformId = inject(PLATFORM_ID);
 
     initialize(): void {
-        if (!isPlatformBrowser(this.platformId)) {
-            return;
-        }
         const existingToken = this.cookieService.get('authToken');
         if (existingToken) {
             this.authService.setTokenSync(existingToken);
