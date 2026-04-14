@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DOCUMENT, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PrimeNgToastComponent } from '@proxy/ui/prime-ng-toast';
@@ -9,13 +9,14 @@ import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, mergeMap, takeUntil } from 'rxjs/operators';
+import { Actions, ofType } from '@ngrx/effects';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { selectLogInData, selectLogOutSuccess } from './website/home/ngrx/selector/login.selector';
+import * as logInActions from './website/home/ngrx/actions/login.action';
 import { ILogInFeatureStateWithRootState } from './website/home/ngrx/store/login.state';
 import { IAppState, selectClientSettings } from './core/ngrx';
 import { rootActions } from './core/ngrx/actions';
-import * as logInActions from './website/home/ngrx/actions/login.action';
 import { IClientSettings, IFirebaseUserModel } from '@proxy/models/root-models';
 
 @Component({
@@ -41,6 +42,8 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     private versionCheckService = inject(VersionCheckService);
     private uiSettings = inject(UiSettingsService);
     private platformId = inject(PLATFORM_ID);
+    private document = inject(DOCUMENT);
+    private actions$ = inject(Actions);
 
     constructor() {
         super();
@@ -48,6 +51,18 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         if (isPlatformBrowser(this.platformId)) {
             this._store.dispatch(logInActions.getUserAction());
         }
+        this.router.events
+            .pipe(
+                filter((event) => event instanceof NavigationEnd),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(() => {
+                const splash = this.document.getElementById('app-splash-screen');
+                if (splash) {
+                    splash.classList.add('splash-hidden');
+                    setTimeout(() => splash.remove(), 300);
+                }
+            });
         this.router.events
             .pipe(
                 filter((event) => event instanceof NavigationEnd),
@@ -99,6 +114,24 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                 this.router.navigate(['']);
             }
         });
+
+        if (isPlatformBrowser(this.platformId)) {
+            this.actions$.pipe(ofType(logInActions.authenticatedAction), takeUntil(this.destroy$)).subscribe(() => {
+                const currentUrl = this.router.url;
+                const isOnWebsiteRoute =
+                    currentUrl === '/' ||
+                    currentUrl === '' ||
+                    currentUrl.startsWith('/pricing') ||
+                    currentUrl.startsWith('/about') ||
+                    currentUrl.startsWith('/contact') ||
+                    currentUrl.startsWith('/security') ||
+                    currentUrl.startsWith('/privacy') ||
+                    currentUrl.startsWith('/terms');
+                if (isOnWebsiteRoute) {
+                    this.router.navigate(['/app/dashboard']);
+                }
+            });
+        }
 
         if (environment.env !== 'local' && isPlatformBrowser(this.platformId)) {
             this.versionCheckService.initVersionCheck(environment.proxyServer + '/version.json');

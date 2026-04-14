@@ -360,12 +360,6 @@ export class HomeComponent extends BaseComponent implements OnInit {
                 });
             });
 
-            this.logInData$.subscribe((userData) => {
-                if (userData) {
-                    this.router.navigate(['/app/dashboard']);
-                }
-            });
-
             this.startTypewriter();
         }
     }
