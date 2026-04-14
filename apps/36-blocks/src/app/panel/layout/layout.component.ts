@@ -172,7 +172,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
                             }
                             (window as any).SendDataToChatbot(payload);
                             (window as any).openChatbot();
-                            console.log('Chatbot opened');
                             // Body have class light-theme
                             if (document.body.classList.contains('light-theme')) {
                                 this.sendThemeToChatbot('light');
