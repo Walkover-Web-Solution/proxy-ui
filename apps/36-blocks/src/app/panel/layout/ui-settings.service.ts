@@ -29,11 +29,8 @@ export class UiSettingsService {
 
     private _initTheme(): void {
         if (!isPlatformBrowser(this.platformId)) return;
-        const hasThemeClass =
-            document.body.classList.contains('dark-theme') || document.body.classList.contains('light-theme');
-        if (!hasThemeClass) {
-            document.body.classList.add(this._settings.theme);
-        }
+        document.body.classList.remove('dark-theme', 'light-theme');
+        document.body.classList.add(this._settings.theme);
     }
 
     get theme(): AppTheme {
@@ -45,10 +42,9 @@ export class UiSettingsService {
     }
 
     setTheme(value: AppTheme): void {
-        const previousTheme = this._settings.theme;
         this._settings.theme = value;
         this._save();
-        if (isPlatformBrowser(this.platformId) && previousTheme !== value) {
+        if (isPlatformBrowser(this.platformId)) {
             document.body.classList.remove('dark-theme', 'light-theme');
             document.body.classList.add(value);
         }

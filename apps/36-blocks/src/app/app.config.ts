@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -19,6 +19,7 @@ import { RootEffects } from './core/ngrx/effects/root';
 import { LogInEffects } from './website/home/ngrx/effects/login.effects';
 import { ErrorInterceptor } from '@proxy/services/interceptor/errorInterceptor';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
+import { AuthInitializerService } from './core/auth-initializer.service';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -35,6 +36,12 @@ export const appConfig: ApplicationConfig = {
         provideEffects([RootEffects, LogInEffects]),
         ...(!environment.production ? [provideStoreDevtools({ maxAge: 25, serialize: true })] : []),
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+        {
+            provide: APP_INITIALIZER,
+            useFactory: (authInitializerService: AuthInitializerService) => () => authInitializerService.initialize(),
+            deps: [AuthInitializerService],
+            multi: true,
+        },
         importProvidersFrom(AngularFireModule.initializeApp(environment.firebaseConfig), AngularFireAuthModule),
         { provide: ProxyBaseUrls.FirebaseConfig, useValue: environment.firebaseConfig },
         { provide: ProxyBaseUrls.IToken, useValue: { token: null, companyId: null } },
