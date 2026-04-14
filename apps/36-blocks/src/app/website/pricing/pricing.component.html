@@ -1,0 +1,166 @@
+<main class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Hero -->
+    <section class="text-center pt-20 pb-16 sm:pt-24 sm:pb-20" aria-labelledby="pricing-heading">
+        <div
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6 bg-teal-400/10 border border-teal-400/30 text-teal-400"
+            aria-hidden="true"
+        >
+            <span class="w-2 h-2 rounded-full animate-pulse bg-teal-400"></span>
+            Simple, Transparent Pricing
+        </div>
+        <h1
+            id="pricing-heading"
+            class="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#f0f6fc] tracking-tight mb-5 leading-[1.1]"
+        >
+            Simple pricing.<br class="hidden sm:block" />
+            <span class="text-teal-400">No enterprise drama.</span>
+        </h1>
+        <p class="text-lg text-[#8b949e] max-w-xl mx-auto leading-relaxed">
+            Built for SaaS founders who want authentication done — without complexity.
+        </p>
+    </section>
+
+    <!-- Pricing Cards -->
+    <section aria-labelledby="plans-heading" class="pb-20">
+        <h2 id="plans-heading" class="sr-only">Pricing plans</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch" aria-label="Pricing plans">
+            @for (plan of plans; track plan.name) {
+                <article
+                    class="relative flex flex-col rounded-2xl border text-left transition-all duration-300 group bg-[#161b22]"
+                    [class.border-teal-400\/60]="plan.highlight"
+                    [class.shadow-\[0_0_0_1px_rgba\(45\,212\,191\,0\.25\)\,0_8px_48px_rgba\(45\,212\,191\,0\.12\)\]]="
+                        plan.highlight
+                    "
+                    [class.bg-\[\#0f1f1e\]]="plan.highlight"
+                    [class.border-\[\#21262d\]]="!plan.highlight"
+                    [class.hover\:border-\[\#30363d\]]="!plan.highlight"
+                >
+                    @if (plan.badge) {
+                        <span
+                            class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold whitespace-nowrap bg-[#0d1117] text-teal-400 border border-teal-400/50 shadow-[0_0_12px_rgba(45,212,191,0.3)]"
+                        >
+                            {{ plan.badge }}
+                        </span>
+                    }
+
+                    <!-- Card Header -->
+                    <div
+                        class="p-7 pb-6 border-b"
+                        [class.border-teal-400\/15]="plan.highlight"
+                        [class.border-\[\#21262d\]]="!plan.highlight"
+                    >
+                        <h3
+                            class="text-xl font-bold mb-1"
+                            [class.text-teal-400]="plan.highlight"
+                            [class.text-\[\#f0f6fc\]]="!plan.highlight"
+                        >
+                            {{ plan.name }}
+                        </h3>
+                        <p class="text-sm mb-5 leading-snug text-[#8b949e]">
+                            {{ plan.description }}
+                        </p>
+                        <div class="flex items-end gap-1.5">
+                            <span
+                                class="text-[42px] font-extrabold leading-none tracking-tight"
+                                [class.text-teal-400]="plan.highlight"
+                                [class.text-\[\#f0f6fc\]]="!plan.highlight"
+                            >
+                                {{ plan.price }}
+                            </span>
+                            <span class="text-sm font-medium pb-1.5 text-[#8b949e]">
+                                {{ plan.period }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Features -->
+                    <ul
+                        class="flex-1 list-none p-7 pt-5 m-0 flex flex-col gap-3"
+                        [attr.aria-label]="'Features included in ' + plan.name + ' plan'"
+                    >
+                        @for (feature of plan.features; track feature.text) {
+                            <li
+                                class="flex items-start gap-3 text-sm leading-snug"
+                                [class.opacity-40]="!feature.included"
+                            >
+                                <mat-icon
+                                    class="!text-[18px] !w-[18px] !h-[18px] flex-shrink-0 mt-px text-teal-400"
+                                    [class.!text-\[\#6e7681\]]="!feature.included"
+                                    aria-hidden="true"
+                                >
+                                    {{ feature.included ? 'check_circle' : 'remove_circle_outline' }}
+                                </mat-icon>
+                                <span
+                                    [class.font-semibold]="feature.bold"
+                                    [class.text-\[\#c9d1d9\]]="!feature.bold"
+                                    [class.text-\[\#8b949e\]]="feature.bold"
+                                >
+                                    {{ feature.text }}
+                                </span>
+                            </li>
+                        }
+                    </ul>
+
+                    <!-- CTA -->
+                    <div class="px-7 pb-7">
+                        <button
+                            class="w-full py-3 px-6 !rounded-sm font-semibold text-sm transition-all duration-200 cursor-pointer hover:-translate-y-0.5 active:translate-y-0 border"
+                            [ngClass]="
+                                plan.highlight
+                                    ? 'bg-teal-400 text-[#0d1117] border-teal-400 hover:bg-teal-300'
+                                    : 'bg-transparent text-teal-400 border-teal-400/30 hover:border-teal-400/60 hover:bg-teal-400/5'
+                            "
+                            [attr.aria-label]="plan.cta + ' — ' + plan.name + ' plan'"
+                        >
+                            {{ plan.cta }}
+                        </button>
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
+
+    <!-- Info Banners -->
+    <section class="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-4" aria-label="Pricing information">
+        @for (banner of infoBanners; track banner.title) {
+            <div
+                class="flex items-start gap-5 rounded-2xl border border-[#21262d] bg-[#161b22] p-6 hover:border-[#30363d] transition-colors duration-200"
+            >
+                <div class="feature-main-icon">
+                    <mat-icon aria-hidden="true" class="!text-teal-400">{{ banner.icon }}</mat-icon>
+                </div>
+                <div>
+                    <h2 class="text-sm font-semibold text-[#f0f6fc] mb-1">{{ banner.title }}</h2>
+                    <p class="text-sm text-[#8b949e] leading-relaxed m-0">{{ banner.description }}</p>
+                </div>
+            </div>
+        }
+    </section>
+
+    <!-- Trust Section -->
+    <section class="pb-20" aria-labelledby="trust-heading">
+        <div class="text-center mb-10">
+            <h2 id="trust-heading" class="text-2xl sm:text-3xl font-bold text-[#f0f6fc] mb-3 tracking-tight">
+                Built for serious SaaS teams
+            </h2>
+            <p class="text-[#8b949e] text-base max-w-md mx-auto">
+                Everything you need to ship auth fast and scale confidently.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" aria-label="Trust features">
+            @for (item of trustItems; track item.title) {
+                <div
+                    class="flex flex-col items-center text-center sm:items-start sm:text-left gap-3 p-6 rounded-xl border border-[#21262d] bg-[#161b22] hover:border-[#30363d] transition-colors duration-200"
+                >
+                    <div class="feature-main-icon mx-auto sm:mx-0">
+                        <mat-icon aria-hidden="true" class="!text-teal-400">{{ item.icon }}</mat-icon>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-[#f0f6fc] mb-1">{{ item.title }}</p>
+                        <p class="text-xs text-[#8b949e] leading-relaxed m-0">{{ item.description }}</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+</main>

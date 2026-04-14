@@ -1,0 +1,26 @@
+:host {
+    display: contents;
+}
+.website-header {
+    height: var(--website-header-height);
+}
+
+.website-main {
+    min-height: calc(100dvh - var(--website-header-height) - var(--website-footer-height));
+
+    &--no-footer {
+        min-height: calc(100dvh - var(--website-header-height));
+    }
+
+    &--no-header {
+        min-height: calc(100dvh - var(--website-footer-height));
+    }
+
+    &--no-header-no-footer {
+        min-height: 100dvh;
+    }
+}
+
+.website-footer {
+    min-height: var(--website-footer-height);
+}

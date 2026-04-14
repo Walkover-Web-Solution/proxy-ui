@@ -141,6 +141,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     @Input() public failureReturn: (arg: any) => any;
     @Input() public otherData: { [key: string]: any } = {};
 
+    @ViewChild('buttonContainer') private buttonContainerEl?: ElementRef<HTMLElement>;
     @ViewChild('dialogPortal') private dialogPortalEl?: ElementRef<HTMLElement>;
     private dialogPortalRef: WidgetPortalRef | null = null;
     private readonly widgetPortal = inject(WidgetPortalService);
@@ -320,12 +321,20 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     ngOnDestroy() {
         this.dialogPortalRef?.detach();
         this.dialogPortalRef = null;
-        if (this.referenceElement) {
+
+        // Clean up subscription plans if using external container (Subscription mode)
+        if (this.referenceElement && this.type === PublicScriptType.Subscription) {
             this.clearSubscriptionPlans(this.referenceElement);
         }
-        if (this.referenceElement) {
-            this.clearSubscriptionPlans(this.referenceElement);
+
+        // Clean up internal button container for Authorization mode
+        if (this.buttonContainerEl?.nativeElement && this.type === PublicScriptType.Authorization) {
+            const container = this.buttonContainerEl.nativeElement;
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
         }
+
         super.ngOnDestroy();
     }
 
@@ -341,7 +350,8 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             this.showForgotPassword.set(false);
             this.otpWidgetService.openLogin(false);
             this.otpWidgetService.closeForgotPassword();
-            if (this.referenceElement) {
+            // For Authorization mode with internal container, always close
+            if (this.type === PublicScriptType.Authorization || this.referenceElement) {
                 this.show.set(false);
             }
             this.cameFromLogin = false;
@@ -363,8 +373,67 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     public toggleSendOtp(intial: boolean = false) {
+        // Check if external container exists (for backward compatibility)
         this.referenceElement = document.getElementById(this.referenceId);
-        if (!this.referenceElement) {
+
+        // For Authorization mode, always use internal button container
+        if (this.type === PublicScriptType.Authorization) {
+            this.setShowLogin(false);
+            this.isUserProxyContainer = true;
+            this.show.set(false);
+            this.animate.set(false);
+            this.createAccountTextAppended = false;
+
+            if (intial) {
+                // Use internal button container
+                setTimeout(() => {
+                    const containerElement = this.buttonContainerEl?.nativeElement;
+                    if (containerElement) {
+                        this.showSkeleton = true;
+                        this.domBuilder.appendSkeletonLoader(
+                            this.renderer,
+                            containerElement,
+                            this.themeService.isDark()
+                        );
+                        this.addButtonsToReferenceElement(containerElement);
+
+                        setTimeout(() => {
+                            if (this.showSkeleton) {
+                                this.showSkeleton = false;
+                                this.domBuilder.forceRemoveAllSkeletonLoaders(this.renderer, containerElement);
+                            }
+                        }, 10000);
+                    }
+                }, 0);
+            }
+        } else if (this.type === PublicScriptType.Subscription) {
+            // Subscription mode
+            if (!this.referenceElement) {
+                this.ngZone.run(() => {
+                    const current = this.show();
+                    if (current) {
+                        this.animate.set(true);
+                        this.setShowLogin(false);
+                        setTimeout(() => {
+                            this.show.set(false);
+                            this.animate.set(false);
+                        }, 300);
+                    } else {
+                        this.show.set(true);
+                    }
+                });
+            } else {
+                this.setShowLogin(false);
+                this.isUserProxyContainer = false;
+                this.show.set(false);
+                this.animate.set(false);
+
+                if (intial && !this.isPreview && this.referenceElement) {
+                    this.appendSubscriptionButton(this.referenceElement);
+                }
+            }
+        } else {
+            // Other modes (UserManagement, OrganizationDetails, UserProfile)
             this.ngZone.run(() => {
                 const current = this.show();
                 if (current) {
@@ -378,34 +447,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                     this.show.set(true);
                 }
             });
-        } else {
-            this.setShowLogin(false);
-            this.isUserProxyContainer = false;
-            this.show.set(false);
-            this.animate.set(false);
-            this.createAccountTextAppended = false;
-
-            if (intial) {
-                if (this.type === PublicScriptType.Subscription) {
-                    if (!this.isPreview && this.referenceElement) {
-                        this.appendSubscriptionButton(this.referenceElement);
-                    }
-                } else {
-                    this.showSkeleton = true;
-                    this.domBuilder.appendSkeletonLoader(
-                        this.renderer,
-                        this.referenceElement,
-                        this.themeService.isDark()
-                    );
-                    this.addButtonsToReferenceElement(this.referenceElement);
-                    setTimeout(() => {
-                        if (this.showSkeleton) {
-                            this.showSkeleton = false;
-                            this.domBuilder.forceRemoveAllSkeletonLoaders(this.renderer, this.referenceElement);
-                        }
-                    }, 10000);
-                }
-            }
         }
     }
     public appendSubscriptionButton(element): void {
@@ -864,6 +905,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             setTimeout(() => {
                 if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
                     this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                    this.dialogPortalRef.onDetach(() => {
+                        this.dialogPortalRef = null;
+                        this.closeForgotPasswordDialog();
+                    });
                 }
             });
         });
@@ -1419,6 +1464,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
+            flex-wrap: wrap;
             gap: 8px !important;
             color: ${primaryColor} !important;
             cursor: pointer !important;
@@ -1532,7 +1578,8 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 }
             } else {
                 this.setShowLogin(false);
-                if (this.referenceElement) {
+                // For Authorization mode with internal container, or external container modes
+                if (this.type === PublicScriptType.Authorization || this.referenceElement) {
                     this.show.set(value);
                 }
             }
@@ -1544,13 +1591,18 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 this.cdr.detectChanges();
                 if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
                     this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                    this.dialogPortalRef.onDetach(() => {
+                        this.dialogPortalRef = null;
+                        this.closeOverlayDialog();
+                    });
                 }
             }
         });
     }
     public setShowLogin(value: boolean) {
         this.ngZone.run(() => {
-            if (this.referenceElement) {
+            // For Authorization mode with internal container, or external container modes
+            if (this.type === PublicScriptType.Authorization || this.referenceElement) {
                 this.show.set(value);
             }
             this.otpWidgetService.openLogin(value);
@@ -1558,6 +1610,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 this.cdr.detectChanges();
                 if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
                     this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                    this.dialogPortalRef.onDetach(() => {
+                        this.dialogPortalRef = null;
+                        this.closeOverlayDialog();
+                    });
                 }
             } else {
                 this.dialogPortalRef?.detach();

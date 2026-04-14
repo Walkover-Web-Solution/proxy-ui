@@ -1,0 +1,163 @@
+<!-- Skip to main content (accessibility) -->
+<a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:absolute focus:left-0 focus:top-0 focus:z-[9999] focus:no-underline focus:px-6 focus:py-3 focus:text-[#0d1117] focus:font-semibold focus:text-sm focus:rounded-br-md focus:bg-teal-400"
+    >Skip to main content</a
+>
+
+<div
+    class="min-h-dvh relative overflow-x-hidden [font-family:'Space_Grotesk','Inter',system-ui,-apple-system,sans-serif]"
+>
+    <!-- ─── HEADER ─────────────────────────────────────────── -->
+    @if (!hideHeader) {
+        <header
+            class="website-header fixed top-0 left-0 right-0 z-[100] backdrop-blur-sm border-b border-[#21262d] transition-colors duration-300 px-4 sm:px-6 md:px-8"
+            role="banner"
+        >
+            <div class="h-full max-w-[1400px] mx-auto grid grid-cols-[auto_1fr_auto] items-center gap-4">
+                <!-- Left: Logo -->
+                <a
+                    routerLink="/"
+                    class="flex items-center gap-2 no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 focus-visible:rounded-sm"
+                >
+                    <img
+                        src="/assets/images/36-blocks-logo.svg"
+                        alt="36Blocks — home"
+                        height="32"
+                        width="96"
+                        class="block"
+                        fetchpriority="high"
+                        loading="eager"
+                    />
+                </a>
+
+                <!-- Center: Desktop nav -->
+                <nav class="hidden md:flex items-center justify-center gap-6" aria-label="Primary navigation">
+                    @for (link of headerNavLinks; track link.route) {
+                        <a
+                            [routerLink]="link.route"
+                            routerLinkActive="!text-teal-400 font-medium"
+                            [routerLinkActiveOptions]="{ exact: link.route === '/' }"
+                            class="text-sm text-[#8b949e] no-underline transition-colors duration-200 hover:text-teal-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 focus-visible:rounded-sm"
+                            >{{ link.label }}</a
+                        >
+                    }
+                </nav>
+
+                <!-- Right: Login + hamburger -->
+                <div class="flex items-center justify-end gap-3">
+                    <button
+                        class="cursor-pointer px-4 py-1.5 bg-transparent !rounded-sm text-xs font-semibold border border-teal-400 text-teal-400 transition-all duration-200 hover:-translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400"
+                        (click)="login()"
+                        aria-label="Login to your 36Blocks account"
+                    >
+                        Login
+                    </button>
+
+                    <!-- Hamburger (mobile only) -->
+                    <button
+                        class="md:hidden cursor-pointer flex flex-col items-center justify-center w-9 h-9 gap-1.5 rounded-md text-[#8b949e] hover:text-teal-400 hover:bg-[#21262d] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400"
+                        (click)="toggleMobileMenu()"
+                        [attr.aria-expanded]="mobileMenuOpen()"
+                        aria-controls="mobile-nav"
+                        aria-label="Toggle navigation menu"
+                    >
+                        @if (mobileMenuOpen()) {
+                            <svg
+                                class="w-5 h-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                aria-hidden="true"
+                            >
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        } @else {
+                            <svg
+                                class="w-5 h-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                aria-hidden="true"
+                            >
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        }
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile nav drawer -->
+        @if (mobileMenuOpen()) {
+            <nav
+                id="mobile-nav"
+                class="md:hidden fixed top-[var(--website-header-height)] left-0 right-0 z-[99] bg-[#0d1117]/95 backdrop-blur-sm border-b border-[#21262d] flex flex-col py-3"
+                aria-label="Mobile navigation"
+            >
+                @for (link of headerNavLinks; track link.route) {
+                    <a
+                        [routerLink]="link.route"
+                        routerLinkActive="text-teal-400 bg-teal-400/5"
+                        [routerLinkActiveOptions]="{ exact: link.route === '/' }"
+                        class="px-5 py-3 text-sm text-[#8b949e] no-underline transition-colors duration-150 hover:text-teal-400 hover:bg-[#161b22] focus-visible:outline focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-teal-400"
+                        (click)="closeMobileMenu()"
+                        >{{ link.label }}</a
+                    >
+                }
+            </nav>
+        }
+    }
+
+    <!-- ─── PAGE CONTENT ──────────────────────────────────── -->
+    <main
+        id="main-content"
+        class="website-main ws-page-enter"
+        [class.website-main--no-footer]="hideFooter && !hideHeader"
+        [class.website-main--no-header]="hideHeader && !hideFooter"
+        [class.website-main--no-header-no-footer]="hideHeader && hideFooter"
+        [style.padding-top]="!hideHeader ? 'var(--website-header-height)' : null"
+    >
+        <router-outlet />
+    </main>
+
+    <!-- ─── FOOTER ────────────────────────────────────────── -->
+    @if (!hideFooter) {
+        <footer
+            class="website-footer bg-[#161b22] border-t border-[#21262d] px-4 sm:px-6 md:px-8 py-6"
+            role="contentinfo"
+        >
+            <div class="max-w-[1400px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                <small class="text-sm text-[#6e7681] order-2 sm:order-1"
+                    >&copy; 2026 36Blocks. All rights reserved.</small
+                >
+                <nav
+                    class="flex items-center gap-x-5 gap-y-2 flex-wrap justify-center order-1 sm:order-2"
+                    aria-label="Footer navigation"
+                >
+                    @for (link of footerLinks; track link.label) {
+                        @if (link.route) {
+                            <a
+                                [routerLink]="link.route"
+                                class="text-sm text-[#8b949e] no-underline transition-colors duration-200 hover:text-teal-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 focus-visible:rounded-sm"
+                                [attr.aria-label]="link.ariaLabel"
+                                >{{ link.label }}</a
+                            >
+                        } @else if (link.href) {
+                            <a
+                                [href]="link.href"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-sm text-[#8b949e] no-underline transition-colors duration-200 hover:text-teal-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 focus-visible:rounded-sm"
+                                [attr.aria-label]="link.ariaLabel + ' (opens in new tab)'"
+                                >{{ link.label }}</a
+                            >
+                        }
+                    }
+                </nav>
+            </div>
+        </footer>
+    }
+</div>

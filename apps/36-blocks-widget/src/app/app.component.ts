@@ -7,8 +7,9 @@ import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 const REFERENCE_ID = '4512365o177529298869d0d23cc0453';
 const THEME: WidgetTheme = WidgetTheme.System;
-const TYPE: PublicScriptType = PublicScriptType.Authorization;
-const AUTH_TOKEN = '';
+const TYPE: PublicScriptType = PublicScriptType.UserProfile;
+const AUTH_TOKEN =
+    'ZDZCVkV3SjltT0s4S0lxMWc2cnFVZ0lDU2hhVXRvdG1jckx4VHdrZXg2bXZ1dmVjb2FoSzY1VzJYK0J1eXAyZEQ3M2VzclBWckFVQ1ozbFZ3bWU3NE5GekpMOVRwSU92Ylp2SFYzaVRzQ1J0VXM0T3pEY3JyMUNPVG14TGF3cHVKQ2lHd0NPc1BzOEplcm15NEZEckJTN2tFakdVNmF2WTBNL2l4VjdrSnk1azJLTnZtVEhDa3Q1QzkvczlQalpzVEJsNCt1TlBSSWEvbzFqand0Y2pwZz09';
 
 @Component({
     selector: 'proxy-root',

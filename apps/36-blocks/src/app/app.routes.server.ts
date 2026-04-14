@@ -6,6 +6,22 @@ export const serverRoutes: ServerRoute[] = [
         renderMode: RenderMode.Prerender,
     },
     {
+        path: 'app/**',
+        renderMode: RenderMode.Client,
+    },
+    {
+        path: 'widget-preview/**',
+        renderMode: RenderMode.Client,
+    },
+    {
+        path: 'project',
+        renderMode: RenderMode.Client,
+    },
+    {
+        path: 'client/**',
+        renderMode: RenderMode.Client,
+    },
+    {
         path: '**',
         renderMode: RenderMode.Client,
     },
