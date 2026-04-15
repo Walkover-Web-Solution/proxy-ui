@@ -99,6 +99,7 @@
         "d3-time-format": "3.0.0",
         "d3-transition": "3.0.1",
         "dayjs": "1.11.7",
+        "echarts": "^6.0.0",
         "express": "^5.2.1",
         "firebase": "^12.10.0",
         "froala-editor": "4.0.15",

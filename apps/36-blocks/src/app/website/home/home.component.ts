@@ -268,7 +268,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
         },
         {
             num: '18',
-            html: `    <span class="token attr-name">src</span>=<span class="token string">"https://proxy.msg91.com/..."</span><span class="token tag">&gt;</span>`,
+            html: `    <span class="token attr-name">src</span>=<span class="token string">"https://36blocks.com/..."</span><span class="token tag">&gt;</span>`,
         },
         { num: '19', html: `  <span class="token tag">&lt;/script&gt;</span>` },
     ]);

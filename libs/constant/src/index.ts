@@ -3,6 +3,7 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 
 import { cloneDeep } from 'lodash-es';
 export * from './drop-down';
+export * from './info-tooltips';
 export * from './mat-icon';
 export * from './jitsi-calling';
 export * from './permission-mapping';
