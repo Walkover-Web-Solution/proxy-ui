@@ -33,7 +33,7 @@
     <!-- Pie Chart -->
     @if (!isLoading() && !error()) {
         @if (chartData().length) {
-            <div #chartEl style="height: 240px; width: 100%"></div>
+            <div #chartEl class="!h-60 !w-full"></div>
             <div class="flex justify-end mt-1 xl:absolute top-[40%] right-[10%]">
                 <mat-form-field class="no-padding w-32">
                     <mat-select [value]="selectedGroupBy()" (valueChange)="onGroupByChange($event)">
@@ -60,3 +60,17 @@
         }
     }
 </div>
+
+<ng-template #expandTpl>
+    <div class="flex items-center justify-between px-6 pt-5 pb-2">
+        <span class="text-base font-semibold">
+            Breakdown — {{ groupByOptions.find(o => o.value === selectedGroupBy())?.label ?? '' }}
+        </span>
+        <button mat-icon-button (click)="closeExpand()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="px-6 pb-6">
+        <div data-expand-chart="breakdown" style="height: 460px; width: 100%"></div>
+    </div>
+</ng-template>

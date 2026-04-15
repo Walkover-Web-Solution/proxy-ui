@@ -3,6 +3,7 @@ import {
     Component,
     ElementRef,
     OnDestroy,
+    TemplateRef,
     ViewChild,
     effect,
     inject,
@@ -20,14 +21,12 @@ import { takeUntil } from 'rxjs';
 import * as echarts from 'echarts';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialog } from '@angular/material/dialog';
-import { BreakdownExpandDialogComponent } from './breakdown-expand-dialog.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { INFO_TOOLTIPS } from '@proxy/constant';
-
-export type BreakdownGroupBy = 'service_id' | 'source' | 'type';
+import { BreakdownGroupBy, IBreakdownGroupByOption, GROUP_BY_OPTIONS } from '../dashboard.models';
 
 @Component({
-    selector: 'proxy-breakdown-chart',
+    selector: 'breakdown-chart',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         CommonModule,
@@ -43,12 +42,14 @@ export type BreakdownGroupBy = 'service_id' | 'source' | 'type';
 export class BreakdownChartComponent extends BaseComponent implements OnDestroy {
     readonly infoTooltip = INFO_TOOLTIPS.dashboard.charts.breakdown;
     @ViewChild('chartEl', { static: false }) chartEl!: ElementRef<HTMLDivElement>;
+    @ViewChild('expandTpl', { static: false }) expandTpl!: TemplateRef<any>;
 
     range = input<string>('week');
     featureConfigurationId = input<number | null>(null);
 
     private analyticsService = inject(AnalyticsService);
     private dialog = inject(MatDialog);
+    private expandDialogRef: MatDialogRef<any> | null = null;
     private chart: echarts.ECharts | null = null;
     private themeObserver: MutationObserver | null = null;
 
@@ -56,13 +57,9 @@ export class BreakdownChartComponent extends BaseComponent implements OnDestroy 
     readonly error = signal<string | null>(null);
     readonly chartData = signal<{ key: string; count: number }[]>([]);
 
-    selectedGroupBy = signal<BreakdownGroupBy>('type');
+    selectedGroupBy = signal<BreakdownGroupBy>(BreakdownGroupBy.type);
 
-    readonly groupByOptions: { label: string; value: BreakdownGroupBy }[] = [
-        { label: 'By Type', value: 'type' },
-        // { label: 'By Source', value: 'source' },
-        { label: 'By Service', value: 'service_id' },
-    ];
+    readonly groupByOptions: IBreakdownGroupByOption[] = GROUP_BY_OPTIONS;
 
     readonly palette = ['#6366f1', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
 
@@ -93,7 +90,7 @@ export class BreakdownChartComponent extends BaseComponent implements OnDestroy 
                     const data = res?.data?.data ?? [];
                     this.chartData.set(data);
                     this.isLoading.set(false);
-                    setTimeout(() => this.renderChart(data), 0);
+                    setTimeout(() => this.renderChart(), 0);
                 },
                 error: (err: any) => {
                     this.error.set(err?.message ?? 'Failed to load breakdown');
@@ -106,16 +103,20 @@ export class BreakdownChartComponent extends BaseComponent implements OnDestroy 
         this.selectedGroupBy.set(value);
     }
 
+    closeExpand(): void {
+        this.expandDialogRef?.close();
+    }
+
     openExpand(): void {
-        this.dialog.open(BreakdownExpandDialogComponent, {
-            data: {
-                data: this.chartData(),
-                palette: this.palette,
-                label:
-                    'Breakdown — ' + (this.groupByOptions.find((o) => o.value === this.selectedGroupBy())?.label ?? ''),
-            },
-            width: '80vw',
-            maxWidth: '900px',
+        const ref = (this.expandDialogRef = this.dialog.open(this.expandTpl, {
+            panelClass: ['mat-dialog', 'mat-dialog-lg'],
+        }));
+        ref.afterOpened().subscribe(() => {
+            const el = document.querySelector('[data-expand-chart="breakdown"]') as HTMLDivElement;
+            if (!el) return;
+            const expandChart = echarts.init(el);
+            expandChart.setOption(this.getPieOption({ expanded: true }));
+            ref.afterClosed().subscribe(() => expandChart.dispose());
         });
     }
 
@@ -126,49 +127,51 @@ export class BreakdownChartComponent extends BaseComponent implements OnDestroy 
     private watchTheme(): void {
         this.themeObserver?.disconnect();
         this.themeObserver = new MutationObserver(() => {
-            if (this.chartData().length) this.renderChart(this.chartData());
+            if (this.chartData().length) this.renderChart();
         });
         this.themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     }
 
-    private renderChart(data: { key: string; count: number }[]): void {
-        if (!this.chartEl?.nativeElement) return;
-        if (this.chart) {
-            this.chart.dispose();
-        }
-
-        const borderColor = this.getCssVar('--color-common-border');
-        const textColor = this.getCssVar('--color-common-text');
-        const bgColor = this.getCssVar('--color-common-bg');
-
-        this.chart = echarts.init(this.chartEl.nativeElement);
-        this.chart.setOption({
+    private getPieOption(opts: { expanded?: boolean } = {}): any {
+        const borderColor = this.chartEl?.nativeElement ? this.getCssVar('--color-common-border') : '';
+        const textColor = this.chartEl?.nativeElement ? this.getCssVar('--color-common-text') : '';
+        const bgColor = this.chartEl?.nativeElement ? this.getCssVar('--color-common-bg') : '';
+        return {
             backgroundColor: 'transparent',
             tooltip: {
                 trigger: 'item',
                 formatter: '{b}: {c} ({d}%)',
-                backgroundColor: bgColor,
-                borderColor: borderColor,
-                textStyle: { color: textColor },
+                ...(bgColor ? { backgroundColor: bgColor, borderColor, textStyle: { color: textColor } } : {}),
             },
-            legend: { bottom: 0, left: 'center', textStyle: { fontSize: 11, color: textColor } },
+            legend: {
+                bottom: 0,
+                left: 'center',
+                textStyle: { fontSize: opts.expanded ? 12 : 11, color: textColor || undefined },
+            },
             series: [
                 {
                     type: 'pie',
-                    radius: ['40%', '70%'],
+                    radius: opts.expanded ? ['38%', '65%'] : ['40%', '70%'],
                     center: ['50%', '45%'],
-                    data: data.map((d, i) => ({
+                    data: this.chartData().map((d, i) => ({
                         name: d.key,
                         value: d.count,
                         itemStyle: { color: this.palette[i % this.palette.length] },
                     })),
-                    label: { show: false },
-                    emphasis: {
-                        itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0,0,0,0.2)' },
-                    },
+                    label: opts.expanded ? { show: true, formatter: '{b}\n{d}%', fontSize: 12 } : { show: false },
+                    emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0,0,0,0.2)' } },
                 },
             ],
-        });
+        };
+    }
+
+    private renderChart(): void {
+        if (!this.chartEl?.nativeElement) return;
+        if (this.chart) {
+            this.chart.dispose();
+        }
+        this.chart = echarts.init(this.chartEl.nativeElement);
+        this.chart.setOption(this.getPieOption());
     }
 
     override ngOnDestroy(): void {

@@ -4,6 +4,8 @@ import {
     ElementRef,
     OnDestroy,
     QueryList,
+    TemplateRef,
+    ViewChild,
     ViewChildren,
     effect,
     inject,
@@ -22,16 +24,17 @@ import * as echarts from 'echarts';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialog } from '@angular/material/dialog';
-import { ChartExpandDialogComponent } from './chart-expand-dialog.component';
-import { INFO_TOOLTIPS } from '@proxy/constant';
-
-// chart component
-export type TimeseriesMetric = 'logins' | 'signups' | 'active_users';
-export type TimeseriesInterval = 'hour' | 'day' | 'week';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+    TimeseriesInterval,
+    ITimeseriesSeries,
+    INTERVAL_OPTIONS,
+    TIMESERIES_METRICS,
+    intervalForRange,
+} from '../dashboard.models';
 
 @Component({
-    selector: 'proxy-timeseries-chart',
+    selector: 'timeseries-chart',
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { style: 'display: contents' },
     imports: [
@@ -48,49 +51,31 @@ export type TimeseriesInterval = 'hour' | 'day' | 'week';
 })
 export class TimeseriesChartComponent extends BaseComponent implements OnDestroy {
     @ViewChildren('chartEl') chartEls!: QueryList<ElementRef<HTMLDivElement>>;
+    @ViewChild('expandTpl', { static: false }) expandTpl!: TemplateRef<any>;
 
     range = input<string>('week');
     featureConfigurationId = input<number | null>(null);
 
     private analyticsService = inject(AnalyticsService);
     private dialog = inject(MatDialog);
+    private expandDialogRef: MatDialogRef<any> | null = null;
 
     readonly isLoading = signal(false);
     readonly error = signal<string | null>(null);
-    readonly seriesList = signal<
-        { label: string; color: string; infoTooltip: string; data: { period: string; value: number }[] }[]
-    >([]);
+    readonly seriesList = signal<ITimeseriesSeries[]>([]);
+    readonly expandSeries = signal<ITimeseriesSeries | null>(null);
 
-    selectedInterval = signal<TimeseriesInterval>('day');
+    selectedInterval = signal<TimeseriesInterval>(TimeseriesInterval.day);
 
-    readonly metrics: { label: string; value: TimeseriesMetric; color: string; infoTooltip: string }[] = [
-        { label: 'Logins', value: 'logins', color: '#6366f1', infoTooltip: INFO_TOOLTIPS.dashboard.charts.logins },
-        { label: 'Signups', value: 'signups', color: '#10b981', infoTooltip: INFO_TOOLTIPS.dashboard.charts.signups },
-        {
-            label: 'Active Users',
-            value: 'active_users',
-            color: '#f59e0b',
-            infoTooltip: INFO_TOOLTIPS.dashboard.charts.active_users,
-        },
-    ];
+    readonly metrics = TIMESERIES_METRICS;
 
-    readonly intervalOptions: { label: string; value: TimeseriesInterval }[] = [
-        { label: 'Hourly', value: 'hour' },
-        { label: 'Daily', value: 'day' },
-        { label: 'Weekly', value: 'week' },
-    ];
-
-    private intervalForRange(range: string): TimeseriesInterval {
-        if (range === 'day') return 'hour';
-        if (range === 'month') return 'week';
-        return 'day';
-    }
+    readonly intervalOptions = INTERVAL_OPTIONS;
 
     constructor() {
         super();
         effect(() => {
             const range = this.range();
-            this.selectedInterval.set(this.intervalForRange(range));
+            this.selectedInterval.set(intervalForRange(range));
             const fcId = this.featureConfigurationId();
             this.fetchAllMetrics(fcId);
         });
@@ -102,7 +87,7 @@ export class TimeseriesChartComponent extends BaseComponent implements OnDestroy
         this.error.set(null);
         this.seriesList.set([]);
 
-        const calls = this.metrics.map((m) => {
+        const calls = Object.values(this.metrics).map((m) => {
             const params: ITimeseriesParams = {
                 range: this.range() as any,
                 metric: m.value,
@@ -116,10 +101,11 @@ export class TimeseriesChartComponent extends BaseComponent implements OnDestroy
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (results: any[]) => {
+                    const metricValues = Object.values(this.metrics);
                     const list = results.map((res, i) => ({
-                        label: this.metrics[i].label,
-                        color: this.metrics[i].color,
-                        infoTooltip: this.metrics[i].infoTooltip,
+                        label: metricValues[i]!.label,
+                        color: metricValues[i]!.color,
+                        infoTooltip: metricValues[i]!.infoTooltip,
                         data: (res?.data?.data ?? []) as { period: string; value: number }[],
                     }));
                     this.seriesList.set(list);
@@ -207,16 +193,54 @@ export class TimeseriesChartComponent extends BaseComponent implements OnDestroy
         });
     }
 
-    openExpand(s: {
-        label: string;
-        color: string;
-        infoTooltip: string;
-        data: { period: string; value: number }[];
-    }): void {
-        this.dialog.open(ChartExpandDialogComponent, {
-            data: s,
-            width: '80vw',
-            maxWidth: '1000px',
+    closeExpand(): void {
+        this.expandDialogRef?.close();
+    }
+
+    openExpand(s: ITimeseriesSeries): void {
+        this.expandSeries.set(s);
+        const ref = (this.expandDialogRef = this.dialog.open(this.expandTpl, {
+            panelClass: ['mat-dialog', 'mat-dialog-lg'],
+        }));
+        ref.afterOpened().subscribe(() => {
+            const el = document.querySelector('[data-expand-chart="timeseries"]') as HTMLDivElement;
+            if (!el) return;
+            const expandChart = echarts.init(el);
+            expandChart.setOption({
+                tooltip: { trigger: 'axis' },
+                grid: { top: 16, right: 24, bottom: 40, left: 56 },
+                xAxis: {
+                    type: 'category',
+                    data: s.data.map((d) => d.period),
+                    axisLabel: { fontSize: 11 },
+                    axisLine: { lineStyle: { color: '#e5e7eb' } },
+                    splitLine: { show: false },
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: { fontSize: 11 },
+                    splitLine: { lineStyle: { color: '#e5e7eb' } },
+                },
+                series: [
+                    {
+                        name: s.label,
+                        type: 'line',
+                        data: s.data.map((d) => d.value),
+                        smooth: true,
+                        symbol: 'circle',
+                        symbolSize: 6,
+                        lineStyle: { width: 2, color: s.color },
+                        itemStyle: { color: s.color },
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: s.color + '33' },
+                                { offset: 1, color: s.color + '05' },
+                            ]),
+                        },
+                    },
+                ],
+            });
+            ref.afterClosed().subscribe(() => expandChart.dispose());
         });
     }
 

@@ -37,10 +37,6 @@ export class AnalyticsService {
         return this.http.get(AnalyticsUrls.timeseries(this.baseURL), params);
     }
 
-    public getActiveUsers(params: IAnalyticsParams): Observable<any> {
-        return this.http.get(AnalyticsUrls.activeUsers(this.baseURL), params);
-    }
-
     public getBreakdown(params: IBreakdownParams): Observable<any> {
         return this.http.get(AnalyticsUrls.breakdown(this.baseURL), params);
     }

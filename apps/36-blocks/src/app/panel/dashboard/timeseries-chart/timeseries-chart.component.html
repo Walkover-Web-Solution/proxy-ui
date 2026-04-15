@@ -1,14 +1,3 @@
-<!-- <div class="flex flex-wrap items-center justify-between gap-3">
-        <span class="mat-body-1 font-semibold">Trend</span>
-        <mat-form-field class="no-padding w-28">
-            <mat-select [value]="selectedInterval()" (valueChange)="onIntervalChange($event)">
-                @for (opt of intervalOptions; track opt.value) {
-                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-                }
-            </mat-select>
-        </mat-form-field>
-    </div> -->
-
 <!-- Loading Skeleton -->
 @if (isLoading()) {
     <div class="animate-pulse flex flex-col gap-3">
@@ -18,12 +7,12 @@
 }
 
 <!-- Error -->
-<!-- @if (error()) {
-        <div class="flex items-center gap-2 text-red-500 mat-body-2">
-            <mat-icon class="mat-icon-18">error_outline</mat-icon>
-            {{ error() }}
-        </div>
-    } -->
+@if (error()) {
+    <div class="flex items-center gap-2 text-red-500 mat-body-2">
+        <mat-icon class="mat-icon-18">error_outline</mat-icon>
+        {{ error() }}
+    </div>
+}
 
 <!-- Charts: bare cards, parent grid controls layout -->
 @if (isLoading()) {
@@ -53,7 +42,7 @@
                     <mat-icon class="mat-icon-16 text-gray-400">open_in_full</mat-icon>
                 </button>
             </div>
-            <div #chartEl style="height: 220px; width: 100%"></div>
+            <div #chartEl class="!h-60 !w-full"></div>
         </div>
     }
 }
@@ -65,3 +54,15 @@
         <span class="text-sm">No data for this period</span>
     </div>
 }
+
+<ng-template #expandTpl>
+    <div class="flex items-center justify-between px-6 pt-5 pb-2">
+        <span class="text-base font-semibold" [style.color]="expandSeries()?.color">{{ expandSeries()?.label }}</span>
+        <button mat-icon-button (click)="closeExpand()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="px-6 pb-6">
+        <div data-expand-chart="timeseries" style="height: 420px; width: 100%"></div>
+    </div>
+</ng-template>

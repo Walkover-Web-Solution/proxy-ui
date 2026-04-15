@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DateRange, OVERVIEW_CARDS, RANGE_OPTIONS } from './dashboard.models';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
@@ -13,10 +14,7 @@ import { FeaturesService } from '@proxy/services/proxy/features';
 import { IFeature } from '@proxy/models/features-model';
 import { TimeseriesChartComponent } from './timeseries-chart/timeseries-chart.component';
 import { BreakdownChartComponent } from './breakdown-chart/breakdown-chart.component';
-import { INFO_TOOLTIPS } from '@proxy/constant';
 import { takeUntil } from 'rxjs';
-
-export type DateRange = 'day' | 'week' | 'month'; // dashboard
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,7 +32,6 @@ export type DateRange = 'day' | 'week' | 'month'; // dashboard
         BreakdownChartComponent,
     ],
     templateUrl: './dashboard.component.html',
-    styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent extends BaseComponent implements OnInit {
     private analyticsService = inject(AnalyticsService);
@@ -43,7 +40,7 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     readonly features = signal<IFeature[]>([]);
     readonly isLoadingFeatures = signal(false);
 
-    readonly range = signal<DateRange>('week');
+    readonly range = signal<DateRange>(DateRange.week);
     readonly featureConfigurationId = signal<number | string | null>('');
 
     readonly overviewData = signal<any>(null);
@@ -57,58 +54,13 @@ export class DashboardComponent extends BaseComponent implements OnInit {
         return base;
     });
 
-    readonly overviewCards = [
-        {
-            key: 'signups',
-            valueKey: 'signups.total',
-            label: 'Signups',
-            icon: 'person_add',
-            bgClass: 'bg-indigo-100 dark:bg-indigo-900/40',
-            iconClass: 'text-indigo-500',
-            sub: 'in selected period',
-            infoTooltip: INFO_TOOLTIPS.dashboard.overviewCards.signups,
-        },
-        {
-            key: 'logins',
-            valueKey: 'logins.total',
-            label: 'Logins',
-            icon: 'login',
-            bgClass: 'bg-violet-100 dark:bg-violet-900/40',
-            iconClass: 'text-violet-500',
-            sub: 'in selected period',
-            infoTooltip: INFO_TOOLTIPS.dashboard.overviewCards.logins,
-        },
-        {
-            key: 'active_users',
-            valueKey: 'active_users.unique',
-            label: 'Active Users',
-            icon: 'group',
-            bgClass: 'bg-cyan-100   dark:bg-cyan-900/40',
-            iconClass: 'text-cyan-500',
-            sub: 'unique in period',
-            infoTooltip: INFO_TOOLTIPS.dashboard.overviewCards.active_users,
-        },
-        {
-            key: 'users',
-            valueKey: 'users.client_total',
-            label: 'Total Users',
-            icon: 'people',
-            bgClass: 'bg-emerald-100 dark:bg-emerald-900/40',
-            iconClass: 'text-emerald-500',
-            sub: 'registered total',
-            infoTooltip: INFO_TOOLTIPS.dashboard.overviewCards.users,
-        },
-    ];
+    readonly overviewCards = OVERVIEW_CARDS;
 
     getCardValue(data: any, path: string): number {
         return path.split('.').reduce((acc, k) => acc?.[k], data) ?? 0;
     }
 
-    readonly rangeOptions: { label: string; value: DateRange }[] = [
-        { label: 'Today', value: 'day' },
-        { label: 'This Week', value: 'week' },
-        { label: 'This Month', value: 'month' },
-    ];
+    readonly rangeOptions = RANGE_OPTIONS;
 
     constructor() {
         super();

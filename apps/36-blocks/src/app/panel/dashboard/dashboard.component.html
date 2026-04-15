@@ -45,8 +45,10 @@
             @for (card of overviewCards; track card.key) {
                 <div class="rounded-2xl bg-color p-5 shadow-sm flex flex-col gap-1">
                     <div class="flex items-center gap-2 mb-1">
-                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg" [class]="card.bgClass">
-                            <mat-icon class="mat-icon-18" [class]="card.iconClass">{{ card.icon }}</mat-icon>
+                        <span
+                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-teal-400/10 border border-teal-400/20"
+                        >
+                            <mat-icon class="mat-icon-18 text-primary">{{ card.icon }}</mat-icon>
                         </span>
                         <span class="text-sm font-medium flex-1">{{ card.label }}</span>
                         <mat-icon
@@ -67,13 +69,7 @@
 
     <!-- Charts 2x2 Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <proxy-timeseries-chart
-            [range]="range()"
-            [featureConfigurationId]="featureConfigurationId()"
-        ></proxy-timeseries-chart>
-        <proxy-breakdown-chart
-            [range]="range()"
-            [featureConfigurationId]="featureConfigurationId()"
-        ></proxy-breakdown-chart>
+        <timeseries-chart [range]="range()" [featureConfigurationId]="featureConfigurationId()"></timeseries-chart>
+        <breakdown-chart [range]="range()" [featureConfigurationId]="featureConfigurationId()"></breakdown-chart>
     </div>
 </div>
