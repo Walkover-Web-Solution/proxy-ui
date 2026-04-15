@@ -1,7 +1,17 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, NgZone, OnInit, signal } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ScrollRevealDirective } from '../directives/scroll-reveal.directive';
+import { environment } from '../../../environments/environment';
+
+const CONTACT_WEBHOOK_URL = 'https://flow.sokt.io/func/scriUFuFnLpq';
+
+const ENVIRONMENT_LABEL_MAP: Record<string, string> = {
+    local: 'Local',
+    test: 'Test',
+    prod: 'Production',
+};
 
 export type ContactCategory = 'General' | 'Billing' | 'Security' | 'Integration' | 'Other';
 
@@ -12,6 +22,8 @@ export interface ContactFormPayload {
     subject: string;
     message: string;
     submittedAt: string;
+    environment: string;
+    sourceUrl: string;
 }
 
 @Component({
@@ -24,6 +36,8 @@ export class ContactComponent implements OnInit {
     private readonly titleService = inject(Title);
     private readonly metaService = inject(Meta);
     private readonly formBuilder = inject(FormBuilder);
+    private readonly httpClient = inject(HttpClient);
+    private readonly ngZone = inject(NgZone);
 
     public readonly categories: ContactCategory[] = ['General', 'Billing', 'Security', 'Integration', 'Other'];
 
@@ -37,6 +51,8 @@ export class ContactComponent implements OnInit {
 
     public readonly submitted = signal(false);
     public readonly submitSuccess = signal(false);
+    public readonly isSubmitting = signal(false);
+    public readonly submitError = signal(false);
 
     public ngOnInit(): void {
         this.titleService.setTitle('Contact — 36Blocks');
@@ -68,6 +84,7 @@ export class ContactComponent implements OnInit {
         }
 
         const formValues = this.contactForm.getRawValue();
+        const environmentLabel = ENVIRONMENT_LABEL_MAP[environment.env] ?? environment.env;
         const payload: ContactFormPayload = {
             name: formValues.name ?? '',
             email: formValues.email ?? '',
@@ -75,21 +92,43 @@ export class ContactComponent implements OnInit {
             subject: formValues.subject ?? '',
             message: formValues.message ?? '',
             submittedAt: new Date().toISOString(),
+            environment: environmentLabel,
+            sourceUrl: environment.proxyServer,
         };
 
-        // TODO: replace with API call, e.g. this.contactService.submit(payload)
-        console.group('%c📬 Contact Form Submission', 'color: #2dd4bf; font-weight: bold; font-size: 14px;');
-        console.log('%cName:     ', 'color: #8b949e; font-weight: bold;', payload.name);
-        console.log('%cEmail:    ', 'color: #8b949e; font-weight: bold;', payload.email);
-        console.log('%cCategory: ', 'color: #8b949e; font-weight: bold;', payload.category);
-        console.log('%cSubject:  ', 'color: #8b949e; font-weight: bold;', payload.subject);
-        console.log('%cMessage:  ', 'color: #8b949e; font-weight: bold;', payload.message);
-        console.log('%cTimestamp:', 'color: #8b949e; font-weight: bold;', payload.submittedAt);
-        console.log('%cFull payload:', 'color: #8b949e; font-weight: bold;', payload);
-        console.groupEnd();
+        this.isSubmitting.set(true);
+        this.submitError.set(false);
 
-        this.submitSuccess.set(true);
-        this.contactForm.reset({ category: 'General' });
-        this.submitted.set(false);
+        const headers = new HttpHeaders({ 'Content-Type': 'text/plain' });
+        this.httpClient
+            .post<{
+                data: { success: boolean };
+                message: string;
+                flowHitId: string;
+            }>(CONTACT_WEBHOOK_URL, JSON.stringify(payload), { headers })
+            .subscribe({
+                next: (response) => {
+                    this.isSubmitting.set(false);
+                    if (response?.data?.success) {
+                        this.submitSuccess.set(true);
+                        this.contactForm.reset({ category: 'General' });
+                        this.submitted.set(false);
+                        this.ngZone.run(() => setTimeout(() => this.submitSuccess.set(false), 5000));
+                    } else {
+                        this.submitError.set(true);
+                        this.ngZone.run(() => setTimeout(() => this.submitError.set(false), 5000));
+                    }
+                },
+                error: (httpError) => {
+                    console.error(
+                        '%c❌ Contact form submission failed',
+                        'color: #f87171; font-weight: bold;',
+                        httpError
+                    );
+                    this.isSubmitting.set(false);
+                    this.submitError.set(true);
+                    this.ngZone.run(() => setTimeout(() => this.submitError.set(false), 5000));
+                },
+            });
     }
 }

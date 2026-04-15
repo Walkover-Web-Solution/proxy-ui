@@ -905,6 +905,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             setTimeout(() => {
                 if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
                     this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                    this.dialogPortalRef.onDetach(() => {
+                        this.dialogPortalRef = null;
+                        this.closeForgotPasswordDialog();
+                    });
                 }
             });
         });
@@ -1494,7 +1498,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
         // Powered by footer
         const poweredBy: HTMLParagraphElement = this.renderer.createElement('a');
-        poweredBy.setAttribute('href', 'https://proxy.msg91.com');
+        poweredBy.setAttribute('href', 'https://36blocks.com');
         poweredBy.setAttribute('target', '_blank');
         poweredBy.setAttribute('rel', 'noopener noreferrer');
         poweredBy.setAttribute('data-powered-by', 'true');
@@ -1587,6 +1591,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 this.cdr.detectChanges();
                 if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
                     this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                    this.dialogPortalRef.onDetach(() => {
+                        this.dialogPortalRef = null;
+                        this.closeOverlayDialog();
+                    });
                 }
             }
         });
@@ -1602,6 +1610,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 this.cdr.detectChanges();
                 if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
                     this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                    this.dialogPortalRef.onDetach(() => {
+                        this.dialogPortalRef = null;
+                        this.closeOverlayDialog();
+                    });
                 }
             } else {
                 this.dialogPortalRef?.detach();

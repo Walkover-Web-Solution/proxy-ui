@@ -23,11 +23,7 @@
     <!-- Pricing Cards -->
     <section aria-labelledby="plans-heading" class="pb-20">
         <h2 id="plans-heading" class="sr-only">Pricing plans</h2>
-        <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch"
-            role="list"
-            aria-label="Pricing plans"
-        >
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch" aria-label="Pricing plans">
             @for (plan of plans; track plan.name) {
                 <article
                     class="relative flex flex-col rounded-2xl border text-left transition-all duration-300 group bg-[#161b22]"
@@ -38,7 +34,6 @@
                     [class.bg-\[\#0f1f1e\]]="plan.highlight"
                     [class.border-\[\#21262d\]]="!plan.highlight"
                     [class.hover\:border-\[\#30363d\]]="!plan.highlight"
-                    role="listitem"
                 >
                     @if (plan.badge) {
                         <span
@@ -82,13 +77,11 @@
                     <ul
                         class="flex-1 list-none p-7 pt-5 m-0 flex flex-col gap-3"
                         [attr.aria-label]="'Features included in ' + plan.name + ' plan'"
-                        role="list"
                     >
                         @for (feature of plan.features; track feature.text) {
                             <li
                                 class="flex items-start gap-3 text-sm leading-snug"
                                 [class.opacity-40]="!feature.included"
-                                role="listitem"
                             >
                                 <mat-icon
                                     class="!text-[18px] !w-[18px] !h-[18px] flex-shrink-0 mt-px text-teal-400"
@@ -112,16 +105,11 @@
                     <div class="px-7 pb-7">
                         <button
                             class="w-full py-3 px-6 !rounded-sm font-semibold text-sm transition-all duration-200 cursor-pointer hover:-translate-y-0.5 active:translate-y-0 border"
-                            [class.bg-teal-400]="plan.highlight"
-                            [class.text-\[\#0d1117\]]="plan.highlight"
-                            [class.border-teal-400]="plan.highlight"
-                            [class.shadow-\[0_4px_20px_rgba\(45\,212\,191\,0\.35\)\]]="plan.highlight"
-                            [class.hover\:bg-teal-300]="plan.highlight"
-                            [class.bg-transparent]="!plan.highlight"
-                            [class.border-teal-400\/30]="!plan.highlight"
-                            [class.text-teal-400]="!plan.highlight"
-                            [class.hover\:border-teal-400\/60]="!plan.highlight"
-                            [class.hover\:bg-teal-400\/5]="!plan.highlight"
+                            [ngClass]="
+                                plan.highlight
+                                    ? 'bg-teal-400 text-[#0d1117] border-teal-400 hover:bg-teal-300'
+                                    : 'bg-transparent text-teal-400 border-teal-400/30 hover:border-teal-400/60 hover:bg-teal-400/5'
+                            "
                             [attr.aria-label]="plan.cta + ' — ' + plan.name + ' plan'"
                         >
                             {{ plan.cta }}
@@ -138,10 +126,8 @@
             <div
                 class="flex items-start gap-5 rounded-2xl border border-[#21262d] bg-[#161b22] p-6 hover:border-[#30363d] transition-colors duration-200"
             >
-                <div
-                    class="flex-shrink-0 w-10 h-10 rounded-lg bg-teal-400/10 border border-teal-400/20 flex items-center justify-center"
-                >
-                    <mat-icon class="text-teal-400 !text-xl" aria-hidden="true">{{ banner.icon }}</mat-icon>
+                <div class="feature-main-icon">
+                    <mat-icon aria-hidden="true" class="!text-teal-400">{{ banner.icon }}</mat-icon>
                 </div>
                 <div>
                     <h2 class="text-sm font-semibold text-[#f0f6fc] mb-1">{{ banner.title }}</h2>
@@ -161,16 +147,13 @@
                 Everything you need to ship auth fast and scale confidently.
             </p>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" role="list" aria-label="Trust features">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" aria-label="Trust features">
             @for (item of trustItems; track item.title) {
                 <div
-                    class="flex flex-col gap-3 p-6 rounded-xl border border-[#21262d] bg-[#161b22] hover:border-[#30363d] transition-colors duration-200"
-                    role="listitem"
+                    class="flex flex-col items-center text-center sm:items-start sm:text-left gap-3 p-6 rounded-xl border border-[#21262d] bg-[#161b22] hover:border-[#30363d] transition-colors duration-200"
                 >
-                    <div
-                        class="w-10 h-10 rounded-lg bg-teal-400/10 border border-teal-400/20 flex items-center justify-center flex-shrink-0"
-                    >
-                        <mat-icon class="text-teal-400 !text-xl" aria-hidden="true">{{ item.icon }}</mat-icon>
+                    <div class="feature-main-icon mx-auto sm:mx-0">
+                        <mat-icon aria-hidden="true" class="!text-teal-400">{{ item.icon }}</mat-icon>
                     </div>
                     <div>
                         <p class="text-sm font-semibold text-[#f0f6fc] mb-1">{{ item.title }}</p>

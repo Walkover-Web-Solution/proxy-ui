@@ -193,6 +193,19 @@
     animation: ws-float 4s ease-in-out infinite;
 }
 
+// ── Feature icon box — shared across all website pages (same as home page) ───
+.feature-main-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(45, 212, 191, 0.1);
+    border: 1px solid rgba(45, 212, 191, 0.2);
+    display: grid;
+    place-items: center;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
 // ── Reduced motion overrides ─────────────────────────────────────────────────
 @media (prefers-reduced-motion: reduce) {
     .ws-reveal {

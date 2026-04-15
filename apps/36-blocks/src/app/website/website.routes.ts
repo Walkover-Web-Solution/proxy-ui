@@ -1,4 +1,5 @@
 import { Route } from '@angular/router';
+import { LoggedInGuard } from './home/authguard/logged-in.guard';
 
 export const websiteRoutes: Route[] = [
     {
@@ -8,6 +9,7 @@ export const websiteRoutes: Route[] = [
             {
                 path: '',
                 pathMatch: 'full',
+                canActivate: [LoggedInGuard],
                 loadComponent: () => import('./home/home.component').then((c) => c.HomeComponent),
             },
             {

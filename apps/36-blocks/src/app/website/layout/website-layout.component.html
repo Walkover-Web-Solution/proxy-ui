@@ -6,7 +6,7 @@
 >
 
 <div
-    class="website-shell relative overflow-x-hidden [font-family:'Space_Grotesk','Inter',system-ui,-apple-system,sans-serif]"
+    class="min-h-dvh relative overflow-x-hidden [font-family:'Space_Grotesk','Inter',system-ui,-apple-system,sans-serif]"
 >
     <!-- ─── HEADER ─────────────────────────────────────────── -->
     @if (!hideHeader) {
@@ -26,6 +26,8 @@
                         height="32"
                         width="96"
                         class="block"
+                        fetchpriority="high"
+                        loading="eager"
                     />
                 </a>
 
@@ -128,7 +130,7 @@
             role="contentinfo"
         >
             <div class="max-w-[1400px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-                <small class="text-sm text-[#484f58] order-2 sm:order-1"
+                <small class="text-sm text-[#6e7681] order-2 sm:order-1"
                     >&copy; 2026 36Blocks. All rights reserved.</small
                 >
                 <nav

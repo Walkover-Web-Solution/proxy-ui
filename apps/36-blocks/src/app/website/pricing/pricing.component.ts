@@ -93,7 +93,7 @@ export class PricingComponent implements OnInit {
                 { text: 'Custom branding', included: true },
                 { text: 'SMS available (usage-based)', included: true },
                 { text: 'Auto multi-org mapping', included: true },
-                { text: 'Overage: +$10 per 5k MAU', included: true, bold: true },
+                { text: 'Extra Usage: +$10 per 5k MAU', included: true, bold: true },
                 { text: '+$5 per extra Block', included: true, bold: true },
             ],
             cta: 'Upgrade to Growth',
@@ -111,7 +111,7 @@ export class PricingComponent implements OnInit {
                 { text: '24-hour sessions', included: true },
                 { text: 'Advanced org rules', included: true },
                 { text: 'SMS available (usage-based)', included: true },
-                { text: 'Overage: +$25 per 25k MAU', included: true, bold: true },
+                { text: 'Extra Usage: +$25 per 25k MAU', included: true, bold: true },
             ],
             cta: 'Choose Scale',
             ctaStyle: 'outline',
@@ -152,7 +152,7 @@ export class PricingComponent implements OnInit {
         {
             title: 'Security-first',
             description: 'Encrypted in transit and at rest.',
-            icon: 'shield',
+            icon: 'security',
         },
     ];
 }

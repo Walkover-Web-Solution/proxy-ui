@@ -10,7 +10,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { IFirebaseUserModel } from '@proxy/models/root-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { Store, select } from '@ngrx/store';
@@ -35,7 +34,7 @@ import * as logInActions from './ngrx/actions/login.action';
 })
 export class HomeComponent extends BaseComponent implements OnInit {
     public selectLogInErrors$: Observable<string[]>;
-    public logInData$: Observable<IFirebaseUserModel>;
+    public logInData$: Observable<any>;
     public logInDataInProcess$: Observable<boolean>;
     public logInDataSuccess$: Observable<boolean>;
 
@@ -205,7 +204,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
             label: 'Everything You Need to Manage Users',
             accentWord: 'Securely',
             desc: 'Replace months of custom authentication development with production-ready components built for security, scale, and speed.',
-            gridCols: 'grid-cols-1 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4',
+            gridCols: 'grid-cols-1 md:grid-cols-3 sm:grid-cols-2',
             cards: this.platformFeatures,
         },
         {
@@ -269,7 +268,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
         },
         {
             num: '18',
-            html: `    <span class="token attr-name">src</span>=<span class="token string">"https://proxy.msg91.com/..."</span><span class="token tag">&gt;</span>`,
+            html: `    <span class="token attr-name">src</span>=<span class="token string">"https://36blocks.com/..."</span><span class="token tag">&gt;</span>`,
         },
         { num: '19', html: `  <span class="token tag">&lt;/script&gt;</span>` },
     ]);
@@ -355,16 +354,10 @@ export class HomeComponent extends BaseComponent implements OnInit {
         this.injectJsonLdSchema();
 
         if (isPlatformBrowser(this.platformId)) {
-            this.selectLogInErrors$.subscribe((res) => {
-                res?.forEach((r) => {
-                    this.toast.error(r);
+            this.selectLogInErrors$.subscribe((errors) => {
+                errors?.forEach((errorMessage) => {
+                    this.toast.error(errorMessage);
                 });
-            });
-
-            this.logInData$.subscribe((res) => {
-                if (res) {
-                    this.router.navigate(['/app/dashboard']);
-                }
             });
 
             this.startTypewriter();

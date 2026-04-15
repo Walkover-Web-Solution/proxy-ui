@@ -22,7 +22,7 @@
                         <p class="text-xs text-gray-500 dark:text-gray-400">Manage your personal information</p>
                     </div>
                 </div>
-                @if (!isEditing) {
+                @if (!isEditing()) {
                     <button
                         type="button"
                         (click)="openEditDialog()"
@@ -75,7 +75,7 @@
             </div>
 
             <!-- View mode — stacks to 1-col on mobile, 3-col on sm+ -->
-            @if (!isEditing) {
+            @if (!isEditing()) {
                 <div
                     class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-gray-800 border-t border-gray-200 dark:border-gray-700"
                 >
@@ -197,7 +197,7 @@
                         <span>Actions</span>
                     </div>
                     @for (org of (userDetails$ | async)?.c_companies; track org.id) {
-                        <div class="flex flex-wrap items-center justify-between gap-3 px-4 lg:px-5 py-3">
+                        <div class="group flex flex-wrap items-center justify-between gap-3 px-4 lg:px-5 py-3">
                             <div class="flex min-w-0 items-center gap-3">
                                 <div
                                     class="w-avatar size-8 text-xs"
@@ -252,8 +252,12 @@
                                 </div>
                             </div>
                             @if (companyDetails?.currentCompany?.company_uname !== org.company_uname) {
-                                <button type="button" (click)="openModal(org?.id)" class="w-btn-danger-sm">
-                                    ↗ Leave
+                                <button
+                                    type="button"
+                                    (click)="openModal(org?.id)"
+                                    class="w-btn-danger-sm opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                                >
+                                    Leave
                                 </button>
                             }
                         </div>
@@ -267,7 +271,7 @@
         </div>
     </div>
 </div>
-@if (isEditing) {
+@if (isEditing()) {
     <div #editDialogPortal [class.dark]="isDark()">
         <div class="w-dialog-backdrop" (click)="cancelEdit()" aria-hidden="true"></div>
         <div role="dialog" aria-labelledby="edit-profile-title" aria-modal="true" class="w-dialog-panel">
