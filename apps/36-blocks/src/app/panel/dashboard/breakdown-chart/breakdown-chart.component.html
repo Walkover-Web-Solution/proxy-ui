@@ -1,0 +1,62 @@
+<div class="rounded-2xl bg-color shadow-sm p-5 flex flex-col gap-2 relative">
+    <!-- Card Header -->
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-1">
+            <span class="text-base font-bold">Breakdown</span>
+            <mat-icon
+                class="mat-icon-16 text-gray-400 cursor-default"
+                [matTooltip]="infoTooltip"
+                matTooltipPosition="above"
+                >info_outline</mat-icon
+            >
+        </div>
+        <button mat-icon-button class="w-7 h-7 leading-7" (click)="openExpand()" matTooltip="Expand">
+            <mat-icon class="mat-icon-16 text-gray-400">open_in_full</mat-icon>
+        </button>
+    </div>
+
+    <!-- Loading Skeleton -->
+    @if (isLoading()) {
+        <div class="animate-pulse flex flex-col gap-3 mt-2">
+            <div class="h-48 rounded bg-gray-100"></div>
+        </div>
+    }
+
+    <!-- Error -->
+    @if (error()) {
+        <div class="flex items-center gap-2 text-red-500 text-sm">
+            <mat-icon class="mat-icon-18">error_outline</mat-icon>
+            {{ error() }}
+        </div>
+    }
+
+    <!-- Pie Chart -->
+    @if (!isLoading() && !error()) {
+        @if (chartData().length) {
+            <div #chartEl style="height: 240px; width: 100%"></div>
+            <div class="flex justify-end mt-1 xl:absolute top-[40%] right-[10%]">
+                <mat-form-field class="no-padding w-32">
+                    <mat-select [value]="selectedGroupBy()" (valueChange)="onGroupByChange($event)">
+                        @for (opt of groupByOptions; track opt.value) {
+                            <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        } @else {
+            <div class="flex flex-col items-center justify-center h-48 gap-2 text-gray-400">
+                <mat-icon class="w-10 h-10 opacity-30" style="font-size: 40px">pie_chart</mat-icon>
+                <span class="text-sm">No data for this period</span>
+            </div>
+            <div class="flex justify-end mt-1">
+                <mat-form-field class="no-padding w-32">
+                    <mat-select [value]="selectedGroupBy()" (valueChange)="onGroupByChange($event)">
+                        @for (opt of groupByOptions; track opt.value) {
+                            <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        }
+    }
+</div>

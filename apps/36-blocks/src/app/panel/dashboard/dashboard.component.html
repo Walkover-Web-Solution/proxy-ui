@@ -1,32 +1,79 @@
-<div class="coming-soon-container flex flex-1 w-full items-center justify-center min-h-[calc(100vh-64px)] p-10">
-    <div class="coming-soon-content text-center max-w-[600px]">
-        <div class="icon-wrapper inline-flex items-center justify-center w-[120px] h-[120px] rounded-full mb-8">
-            <mat-icon class="coming-soon-icon">rocket_launch</mat-icon>
+<div class="flex flex-col gap-5 h-full">
+    <!-- Header -->
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <h2 class="my-0 text-xl font-bold">Analytics Overview</h2>
+        <div class="flex items-center gap-3">
+            <mat-form-field class="no-padding w-44">
+                <mat-select [value]="featureConfigurationId()" (valueChange)="onFeatureChange($event)">
+                    <mat-option value="">Client</mat-option>
+                    <mat-optgroup label="Blocks" class="cursor-default">
+                        @for (f of features(); track f.id) {
+                            <mat-option [value]="f.id">{{ f.name }}</mat-option>
+                        }
+                    </mat-optgroup>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="no-padding w-36">
+                <mat-select [value]="range()" (valueChange)="onRangeChange($event)">
+                    @for (opt of rangeOptions; track opt.value) {
+                        <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
         </div>
-        <h1 class="coming-soon-title text-5xl font-bold tracking-tight mb-4">Coming Soon</h1>
-        <p class="coming-soon-subtitle text-xl font-medium mb-3">We're working hard to bring you something amazing.</p>
-        <p class="coming-soon-description text-base leading-relaxed mb-10">
-            Our dashboard is under construction. Stay tuned for powerful analytics and insights.
-        </p>
-        <div class="coming-soon-features flex justify-center gap-8 flex-wrap">
-            <div
-                class="feature-item flex flex-col items-center gap-2 px-6 py-5 rounded-xl border transition-all duration-300 cursor-default"
-            >
-                <mat-icon class="feature-icon">analytics</mat-icon>
-                <span class="text-sm font-medium">Analytics</span>
-            </div>
-            <div
-                class="feature-item flex flex-col items-center gap-2 px-6 py-5 rounded-xl border transition-all duration-300 cursor-default"
-            >
-                <mat-icon class="feature-icon">insights</mat-icon>
-                <span class="text-sm font-medium">Insights</span>
-            </div>
-            <div
-                class="feature-item flex flex-col items-center gap-2 px-6 py-5 rounded-xl border transition-all duration-300 cursor-default"
-            >
-                <mat-icon class="feature-icon">trending_up</mat-icon>
-                <span class="text-sm font-medium">Reports</span>
-            </div>
+    </div>
+
+    <!-- Error -->
+    @if (overviewError()) {
+        <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-red-600 mat-body-2 flex items-center gap-2">
+            <mat-icon class="mat-icon-18">error_outline</mat-icon>
+            {{ overviewError() }}
         </div>
+    }
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        @if (isLoadingOverview()) {
+            @for (i of [1, 2, 3, 4]; track i) {
+                <div class="rounded-2xl bg-color p-5 animate-pulse shadow-sm">
+                    <div class="h-3 w-24 rounded bg-gray-200 mb-4"></div>
+                    <div class="h-8 w-16 rounded bg-gray-200 mb-2"></div>
+                    <div class="h-3 w-28 rounded bg-gray-100"></div>
+                </div>
+            }
+        } @else {
+            @for (card of overviewCards; track card.key) {
+                <div class="rounded-2xl bg-color p-5 shadow-sm flex flex-col gap-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg" [class]="card.bgClass">
+                            <mat-icon class="mat-icon-18" [class]="card.iconClass">{{ card.icon }}</mat-icon>
+                        </span>
+                        <span class="text-sm font-medium flex-1">{{ card.label }}</span>
+                        <mat-icon
+                            class="mat-icon-16 cursor-default"
+                            [matTooltip]="card.infoTooltip"
+                            matTooltipPosition="above"
+                            >info_outline</mat-icon
+                        >
+                    </div>
+                    <p class="text-3xl font-bold m-0 leading-tight">
+                        {{ getCardValue(overviewData(), card.valueKey) | number }}
+                    </p>
+                    <span class="text-xs mt-1">{{ card.sub }}</span>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Charts 2x2 Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <proxy-timeseries-chart
+            [range]="range()"
+            [featureConfigurationId]="featureConfigurationId()"
+        ></proxy-timeseries-chart>
+        <proxy-breakdown-chart
+            [range]="range()"
+            [featureConfigurationId]="featureConfigurationId()"
+        ></proxy-breakdown-chart>
     </div>
 </div>
