@@ -7,6 +7,10 @@ const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
 export const panelRoutes: Route[] = [
     {
+        path: 'onboarding',
+        loadComponent: () => import('./onboarding/onboarding.component').then((c) => c.OnboardingComponent),
+    },
+    {
         path: '',
         loadComponent: () => import('./layout/layout.component').then((c) => c.LayoutComponent),
         children: [

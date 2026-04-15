@@ -36,6 +36,10 @@ export const websiteRoutes: Route[] = [
                 path: 'contact',
                 loadComponent: () => import('./contact/contact.component').then((c) => c.ContactComponent),
             },
+            {
+                path: 'register',
+                loadComponent: () => import('./register/register-page.component').then((c) => c.RegisterPageComponent),
+            },
         ],
     },
 ];

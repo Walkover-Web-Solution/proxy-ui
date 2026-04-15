@@ -1,0 +1,338 @@
+<section
+    class="flex flex-col items-center justify-center px-4 py-10 sm:py-10"
+    aria-label="Create your 36Blocks account"
+>
+    <!-- Card -->
+    <div class="w-full max-w-lg">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Create your account</h1>
+            <p class="mt-2 text-sm text-[#8b949e]">Join 36Blocks and start building in minutes.</p>
+        </div>
+
+        <!-- Success state -->
+        @if (registrationSuccess()) {
+            <div
+                class="rounded-xl border border-teal-400/30 bg-teal-400/5 px-6 py-8 text-center"
+                role="alert"
+                aria-live="polite"
+                id="registration-success-banner"
+            >
+                <div
+                    class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-teal-400/10 border border-teal-400/20 mb-4"
+                    aria-hidden="true"
+                >
+                    <svg
+                        class="w-7 h-7 text-teal-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        aria-hidden="true"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
+                        />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-2">Check your inbox!</h2>
+                <p class="text-sm text-[#8b949e] leading-relaxed">
+                    We've sent a verification link to
+                    <span class="font-semibold text-teal-400">{{ registeredEmail() }}</span
+                    >. Click the link in the email to verify your address and complete sign-up.
+                </p>
+                <p class="mt-3 text-xs text-[#6e7681]">
+                    Didn't receive it? Check your spam folder or
+                    <button
+                        type="button"
+                        class="text-teal-400 underline cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 transition-colors duration-150 hover:text-teal-300"
+                        (click)="submitRegistration()"
+                    >
+                        try again</button
+                    >.
+                </p>
+            </div>
+        } @else {
+            <!-- Registration Form -->
+            <form
+                [formGroup]="registrationFormGroup"
+                (ngSubmit)="submitRegistration()"
+                novalidate
+                aria-label="Registration form"
+                class="rounded-xl border border-[#21262d] bg-[#161b22] px-6 py-8 space-y-5"
+            >
+                <!-- Global API errors -->
+                @if (registrationErrors().length > 0) {
+                    <div
+                        role="alert"
+                        aria-live="assertive"
+                        class="rounded-sm border border-red-500/30 bg-red-500/5 px-4 py-3"
+                    >
+                        @for (registrationError of registrationErrors(); track registrationError) {
+                            <p class="text-sm text-red-400">{{ registrationError }}</p>
+                        }
+                    </div>
+                }
+
+                <!-- First & Last Name -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- First Name -->
+                    <div>
+                        <label for="reg-fname" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
+                            First Name <span class="text-red-400" aria-hidden="true">*</span>
+                        </label>
+                        <input
+                            id="reg-fname"
+                            type="text"
+                            formControlName="firstName"
+                            autocomplete="given-name"
+                            placeholder="Jane"
+                            aria-describedby="reg-fname-error"
+                            [attr.aria-invalid]="getFieldError('firstName') ? 'true' : null"
+                            class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            [class.border-[#21262d]]="!getFieldError('firstName')"
+                            [class.border-red-500]="!!getFieldError('firstName')"
+                            [class.focus:ring-red-500]="!!getFieldError('firstName')"
+                        />
+                        @if (getFieldError('firstName')) {
+                            <p id="reg-fname-error" role="alert" class="mt-1.5 text-xs text-red-400">
+                                {{ getFieldError('firstName') }}
+                            </p>
+                        }
+                    </div>
+
+                    <!-- Last Name -->
+                    <div>
+                        <label for="reg-lname" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
+                            Last Name <span class="text-red-400" aria-hidden="true">*</span>
+                        </label>
+                        <input
+                            id="reg-lname"
+                            type="text"
+                            formControlName="lastName"
+                            autocomplete="family-name"
+                            placeholder="Doe"
+                            aria-describedby="reg-lname-error"
+                            [attr.aria-invalid]="getFieldError('lastName') ? 'true' : null"
+                            class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            [class.border-[#21262d]]="!getFieldError('lastName')"
+                            [class.border-red-500]="!!getFieldError('lastName')"
+                        />
+                        @if (getFieldError('lastName')) {
+                            <p id="reg-lname-error" role="alert" class="mt-1.5 text-xs text-red-400">
+                                {{ getFieldError('lastName') }}
+                            </p>
+                        }
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="reg-email" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
+                        Email Address <span class="text-red-400" aria-hidden="true">*</span>
+                    </label>
+                    <input
+                        id="reg-email"
+                        type="email"
+                        formControlName="email"
+                        autocomplete="email"
+                        placeholder="jane@company.com"
+                        aria-describedby="reg-email-error"
+                        [attr.aria-invalid]="getFieldError('email') ? 'true' : null"
+                        class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                        [class.border-[#21262d]]="!getFieldError('email')"
+                        [class.border-red-500]="!!getFieldError('email')"
+                    />
+                    @if (getFieldError('email')) {
+                        <p id="reg-email-error" role="alert" class="mt-1.5 text-xs text-red-400">
+                            {{ getFieldError('email') }}
+                        </p>
+                    }
+                </div>
+
+                <!-- Mobile & Username -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Mobile -->
+                    <div>
+                        <label for="reg-mobile" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
+                            Mobile Number <span class="text-red-400" aria-hidden="true">*</span>
+                        </label>
+                        <input
+                            id="reg-mobile"
+                            type="tel"
+                            formControlName="mobile"
+                            autocomplete="tel"
+                            placeholder="9876543210"
+                            aria-describedby="reg-mobile-error"
+                            [attr.aria-invalid]="getFieldError('mobile') ? 'true' : null"
+                            class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            [class.border-[#21262d]]="!getFieldError('mobile')"
+                            [class.border-red-500]="!!getFieldError('mobile')"
+                        />
+                        @if (getFieldError('mobile')) {
+                            <p id="reg-mobile-error" role="alert" class="mt-1.5 text-xs text-red-400">
+                                {{ getFieldError('mobile') }}
+                            </p>
+                        }
+                    </div>
+
+                    <!-- Username -->
+                    <div>
+                        <label for="reg-username" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
+                            Username <span class="text-red-400" aria-hidden="true">*</span>
+                        </label>
+                        <input
+                            id="reg-username"
+                            type="text"
+                            formControlName="username"
+                            autocomplete="username"
+                            placeholder="janedoe"
+                            aria-describedby="reg-username-error"
+                            [attr.aria-invalid]="getFieldError('username') ? 'true' : null"
+                            class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            [class.border-[#21262d]]="!getFieldError('username')"
+                            [class.border-red-500]="!!getFieldError('username')"
+                        />
+                        @if (getFieldError('username')) {
+                            <p id="reg-username-error" role="alert" class="mt-1.5 text-xs text-red-400">
+                                {{ getFieldError('username') }}
+                            </p>
+                        }
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label for="reg-password" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
+                        Password <span class="text-red-400" aria-hidden="true">*</span>
+                    </label>
+                    <div class="relative">
+                        <input
+                            id="reg-password"
+                            [type]="passwordVisible ? 'text' : 'password'"
+                            formControlName="password"
+                            autocomplete="new-password"
+                            placeholder="Min. 8 characters"
+                            aria-describedby="reg-password-error reg-password-hint"
+                            [attr.aria-invalid]="getFieldError('password') ? 'true' : null"
+                            class="block w-full rounded-sm border bg-[#0d1117] pl-3.5 pr-11 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            [class.border-[#21262d]]="!getFieldError('password')"
+                            [class.border-red-500]="!!getFieldError('password')"
+                        />
+                        <button
+                            type="button"
+                            (click)="togglePasswordVisibility()"
+                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#484f58] hover:text-[#8b949e] cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 focus-visible:rounded-r-lg"
+                            [attr.aria-label]="passwordVisible ? 'Hide password' : 'Show password'"
+                            [attr.aria-pressed]="passwordVisible"
+                        >
+                            @if (passwordVisible) {
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
+                                    />
+                                </svg>
+                            } @else {
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                                    />
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                    />
+                                </svg>
+                            }
+                        </button>
+                    </div>
+                    @if (getFieldError('password')) {
+                        <p id="reg-password-error" role="alert" class="mt-1.5 text-xs text-red-400">
+                            {{ getFieldError('password') }}
+                        </p>
+                    } @else {
+                        <p id="reg-password-hint" class="mt-1.5 text-xs text-[#6e7681]">At least 8 characters.</p>
+                    }
+                </div>
+
+                <!-- Organization / Client Name -->
+                <div>
+                    <label for="reg-org" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
+                        Organization Name <span class="text-red-400" aria-hidden="true">*</span>
+                    </label>
+                    <input
+                        id="reg-org"
+                        type="text"
+                        formControlName="organizationName"
+                        autocomplete="organization"
+                        placeholder="Acme Corp"
+                        aria-describedby="reg-org-error"
+                        [attr.aria-invalid]="getFieldError('organizationName') ? 'true' : null"
+                        class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                        [class.border-[#21262d]]="!getFieldError('organizationName')"
+                        [class.border-red-500]="!!getFieldError('organizationName')"
+                    />
+                    @if (getFieldError('organizationName')) {
+                        <p id="reg-org-error" role="alert" class="mt-1.5 text-xs text-red-400">
+                            {{ getFieldError('organizationName') }}
+                        </p>
+                    }
+                </div>
+
+                <!-- Submit -->
+                <button
+                    type="submit"
+                    [disabled]="registrationInProgress()"
+                    class="w-full flex items-center justify-center gap-2 !rounded-sm bg-teal-400 px-4 py-3 text-sm font-semibold text-[#0d1117] transition-all duration-200 cursor-pointer hover:bg-teal-300 active:bg-teal-500 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400"
+                    aria-label="Create your 36Blocks account"
+                >
+                    @if (registrationInProgress()) {
+                        <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <path
+                                class="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z"
+                            />
+                        </svg>
+                        Creating account…
+                    } @else {
+                        Create Account
+                    }
+                </button>
+
+                <!-- Login link -->
+                <p class="text-center text-sm text-[#6e7681]">
+                    Already have an account?
+                    <button
+                        type="button"
+                        class="text-teal-400 font-medium cursor-pointer hover:text-teal-300 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 rounded-sm"
+                        (click)="login()"
+                    >
+                        Log in
+                    </button>
+                </p>
+            </form>
+        }
+    </div>
+</section>

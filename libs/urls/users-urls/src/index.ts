@@ -3,6 +3,7 @@ import { createUrl } from '@proxy/service';
 export const UsersUrl = {
     getUsers: (baseUrl) => createUrl(baseUrl, 'clientUsers'),
     register: (baseUrl) => createUrl(baseUrl, 'register'),
+    exchangeToken: (baseUrl) => createUrl(baseUrl, 'exchange-token'),
     getRoles: (baseUrl) => createUrl(baseUrl, ':referenceId/cRoles'),
     createRole: (baseUrl) => createUrl(baseUrl, ':referenceId/cRoles'),
     updateRole: (baseUrl) => createUrl(baseUrl, ':referenceId/cRoles/:id'),

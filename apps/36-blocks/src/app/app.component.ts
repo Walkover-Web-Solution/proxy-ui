@@ -118,16 +118,21 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         if (isPlatformBrowser(this.platformId)) {
             this.actions$.pipe(ofType(logInActions.authenticatedAction), takeUntil(this.destroy$)).subscribe(() => {
                 const currentUrl = this.router.url;
+                const websiteRoutes = [
+                    '/pricing',
+                    '/about',
+                    '/contact',
+                    '/security',
+                    '/privacy',
+                    '/terms',
+                    '/register',
+                ];
                 const isOnWebsiteRoute =
                     currentUrl === '/' ||
                     currentUrl === '' ||
-                    currentUrl.startsWith('/pricing') ||
-                    currentUrl.startsWith('/about') ||
-                    currentUrl.startsWith('/contact') ||
-                    currentUrl.startsWith('/security') ||
-                    currentUrl.startsWith('/privacy') ||
-                    currentUrl.startsWith('/terms');
-                if (isOnWebsiteRoute) {
+                    websiteRoutes.some((route) => currentUrl.startsWith(route));
+                const isOnboardingRoute = currentUrl.startsWith('/app/onboarding');
+                if (isOnWebsiteRoute && !isOnboardingRoute) {
                     this.router.navigate(['/app/dashboard']);
                 }
             });
