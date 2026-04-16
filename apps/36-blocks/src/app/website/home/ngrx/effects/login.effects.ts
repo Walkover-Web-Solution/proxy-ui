@@ -7,11 +7,15 @@ import { errorResolver } from '@proxy/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
 import * as logInActions from '../actions/login.action';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { GoogleAuthProvider } from 'firebase/auth';
 import { LoginService } from '@proxy/services/login';
+import { UsersService } from '@proxy/services/proxy/users';
 
 @Injectable()
 export class LogInEffects {
     private platformId = inject(PLATFORM_ID);
+
+    private usersService = inject(UsersService);
 
     constructor(
         private actions$: Actions,
@@ -19,6 +23,37 @@ export class LogInEffects {
         private loginService: LoginService,
         private afAuth: AngularFireAuth
     ) {}
+
+    emailLogin$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(logInActions.emailLoginAction),
+            switchMap(({ email, password }) =>
+                this.usersService.emailLogin(email, password).pipe(
+                    map((response) => {
+                        const isOnboardingPending =
+                            response?.data?.is_onboarding_pending === true || response?.is_onboarding_pending === true;
+                        const jwtToken = response?.data?.token || response?.token || '';
+                        if (isOnboardingPending && jwtToken) {
+                            return logInActions.emailLoginOnboardingPending({ pendingJwtToken: jwtToken });
+                        }
+                        if (jwtToken) {
+                            this.authService.setTokenSync(jwtToken);
+                        }
+                        return logInActions.emailLoginSuccess();
+                    }),
+                    catchError((error) => {
+                        const errorBody = error?.error;
+                        const resolvedMessage =
+                            errorBody?.errors?.message ||
+                            errorBody?.data?.message ||
+                            errorBody?.message ||
+                            'Login failed. Please check your credentials.';
+                        return of(logInActions.logInActionError({ errors: errorResolver(resolvedMessage) }));
+                    })
+                )
+            )
+        )
+    );
 
     getUserAction$ = createEffect(() =>
         this.actions$.pipe(
@@ -53,6 +88,21 @@ export class LogInEffects {
                             return [logInActions.NotAuthenticatedAction({ response: null })];
                         }
                     })
+                );
+            })
+        )
+    );
+
+    // TODO (pending): googleOneTap$ effect activates only when googleClientId is set in env-variables.ts
+    // Flow: GIS id_token → Firebase signInWithCredential → logInActionComplete → existing backend chain
+    googleOneTap$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(logInActions.googleOneTapCredential),
+            switchMap(({ idToken }) => {
+                const firebaseCredential = GoogleAuthProvider.credential(idToken);
+                return from(this.afAuth.signInWithCredential(firebaseCredential)).pipe(
+                    map(() => logInActions.logInActionComplete()),
+                    catchError((error) => of(logInActions.logInActionError({ errors: errorResolver(error.message) })))
                 );
             })
         )

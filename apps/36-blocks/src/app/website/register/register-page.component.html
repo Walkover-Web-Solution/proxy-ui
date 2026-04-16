@@ -1,7 +1,4 @@
-<section
-    class="flex flex-col items-center justify-center px-4 py-10 sm:py-10"
-    aria-label="Create your 36Blocks account"
->
+<section class="flex flex-col items-center justify-center px-4 py-10" aria-label="Create your 36Blocks account">
     <!-- Card -->
     <div class="w-full max-w-lg">
         <!-- Header -->
@@ -76,58 +73,6 @@
                     </div>
                 }
 
-                <!-- First & Last Name -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- First Name -->
-                    <div>
-                        <label for="reg-fname" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                            First Name <span class="text-red-400" aria-hidden="true">*</span>
-                        </label>
-                        <input
-                            id="reg-fname"
-                            type="text"
-                            formControlName="firstName"
-                            autocomplete="given-name"
-                            placeholder="Jane"
-                            aria-describedby="reg-fname-error"
-                            [attr.aria-invalid]="getFieldError('firstName') ? 'true' : null"
-                            class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                            [class.border-[#21262d]]="!getFieldError('firstName')"
-                            [class.border-red-500]="!!getFieldError('firstName')"
-                            [class.focus:ring-red-500]="!!getFieldError('firstName')"
-                        />
-                        @if (getFieldError('firstName')) {
-                            <p id="reg-fname-error" role="alert" class="mt-1.5 text-xs text-red-400">
-                                {{ getFieldError('firstName') }}
-                            </p>
-                        }
-                    </div>
-
-                    <!-- Last Name -->
-                    <div>
-                        <label for="reg-lname" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                            Last Name <span class="text-red-400" aria-hidden="true">*</span>
-                        </label>
-                        <input
-                            id="reg-lname"
-                            type="text"
-                            formControlName="lastName"
-                            autocomplete="family-name"
-                            placeholder="Doe"
-                            aria-describedby="reg-lname-error"
-                            [attr.aria-invalid]="getFieldError('lastName') ? 'true' : null"
-                            class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                            [class.border-[#21262d]]="!getFieldError('lastName')"
-                            [class.border-red-500]="!!getFieldError('lastName')"
-                        />
-                        @if (getFieldError('lastName')) {
-                            <p id="reg-lname-error" role="alert" class="mt-1.5 text-xs text-red-400">
-                                {{ getFieldError('lastName') }}
-                            </p>
-                        }
-                    </div>
-                </div>
-
                 <!-- Email -->
                 <div>
                     <label for="reg-email" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
@@ -150,57 +95,6 @@
                             {{ getFieldError('email') }}
                         </p>
                     }
-                </div>
-
-                <!-- Mobile & Username -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Mobile -->
-                    <div>
-                        <label for="reg-mobile" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                            Mobile Number <span class="text-red-400" aria-hidden="true">*</span>
-                        </label>
-                        <input
-                            id="reg-mobile"
-                            type="tel"
-                            formControlName="mobile"
-                            autocomplete="tel"
-                            placeholder="9876543210"
-                            aria-describedby="reg-mobile-error"
-                            [attr.aria-invalid]="getFieldError('mobile') ? 'true' : null"
-                            class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                            [class.border-[#21262d]]="!getFieldError('mobile')"
-                            [class.border-red-500]="!!getFieldError('mobile')"
-                        />
-                        @if (getFieldError('mobile')) {
-                            <p id="reg-mobile-error" role="alert" class="mt-1.5 text-xs text-red-400">
-                                {{ getFieldError('mobile') }}
-                            </p>
-                        }
-                    </div>
-
-                    <!-- Username -->
-                    <div>
-                        <label for="reg-username" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                            Username <span class="text-red-400" aria-hidden="true">*</span>
-                        </label>
-                        <input
-                            id="reg-username"
-                            type="text"
-                            formControlName="username"
-                            autocomplete="username"
-                            placeholder="janedoe"
-                            aria-describedby="reg-username-error"
-                            [attr.aria-invalid]="getFieldError('username') ? 'true' : null"
-                            class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                            [class.border-[#21262d]]="!getFieldError('username')"
-                            [class.border-red-500]="!!getFieldError('username')"
-                        />
-                        @if (getFieldError('username')) {
-                            <p id="reg-username-error" role="alert" class="mt-1.5 text-xs text-red-400">
-                                {{ getFieldError('username') }}
-                            </p>
-                        }
-                    </div>
                 </div>
 
                 <!-- Password -->
@@ -275,30 +169,6 @@
                     }
                 </div>
 
-                <!-- Organization / Client Name -->
-                <div>
-                    <label for="reg-org" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                        Organization Name <span class="text-red-400" aria-hidden="true">*</span>
-                    </label>
-                    <input
-                        id="reg-org"
-                        type="text"
-                        formControlName="organizationName"
-                        autocomplete="organization"
-                        placeholder="Acme Corp"
-                        aria-describedby="reg-org-error"
-                        [attr.aria-invalid]="getFieldError('organizationName') ? 'true' : null"
-                        class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                        [class.border-[#21262d]]="!getFieldError('organizationName')"
-                        [class.border-red-500]="!!getFieldError('organizationName')"
-                    />
-                    @if (getFieldError('organizationName')) {
-                        <p id="reg-org-error" role="alert" class="mt-1.5 text-xs text-red-400">
-                            {{ getFieldError('organizationName') }}
-                        </p>
-                    }
-                </div>
-
                 <!-- Submit -->
                 <button
                     type="submit"
@@ -324,13 +194,12 @@
                 <!-- Login link -->
                 <p class="text-center text-sm text-[#6e7681]">
                     Already have an account?
-                    <button
-                        type="button"
+                    <a
+                        routerLink="/login"
                         class="text-teal-400 font-medium cursor-pointer hover:text-teal-300 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 rounded-sm"
-                        (click)="login()"
                     >
                         Log in
-                    </button>
+                    </a>
                 </p>
             </form>
         }

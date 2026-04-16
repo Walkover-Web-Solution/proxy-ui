@@ -3,7 +3,6 @@ import { RouterModule } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
-import * as logInActions from '../home/ngrx/actions/login.action';
 import * as registrationActions from '../home/ngrx/actions/registration.action';
 import {
     selectRegistrationInProgress,
@@ -36,30 +35,10 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
     });
 
     public readonly registrationFormGroup = new FormGroup({
-        firstName: new FormControl<string>('', {
-            nonNullable: true,
-            validators: [Validators.required, Validators.minLength(2)],
-        }),
-        lastName: new FormControl<string>('', {
-            nonNullable: true,
-            validators: [Validators.required, Validators.minLength(2)],
-        }),
         email: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
-        mobile: new FormControl<string>('', {
-            nonNullable: true,
-            validators: [Validators.required, Validators.pattern(/^\d{10,15}$/)],
-        }),
-        username: new FormControl<string>('', {
-            nonNullable: true,
-            validators: [Validators.required, Validators.minLength(3), Validators.pattern(/^[a-zA-Z0-9]+$/)],
-        }),
         password: new FormControl<string>('', {
             nonNullable: true,
             validators: [Validators.required, Validators.minLength(8)],
-        }),
-        organizationName: new FormControl<string>('', {
-            nonNullable: true,
-            validators: [Validators.required, Validators.minLength(2)],
         }),
     });
 
@@ -92,19 +71,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
             const requiredLength = control.errors['minlength'].requiredLength;
             return `Must be at least ${requiredLength} characters.`;
         }
-        if (control.errors?.['pattern']) {
-            if (fieldName === 'mobile') {
-                return 'Please enter a valid mobile number (10–15 digits).';
-            }
-            if (fieldName === 'username') {
-                return 'Only letters and numbers are allowed.';
-            }
-        }
         return 'Invalid value.';
-    }
-
-    public login(): void {
-        this.store.dispatch(logInActions.logInAction());
     }
 
     public submitRegistration(): void {
@@ -116,17 +83,8 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
         this.store.dispatch(
             registrationActions.registrationSubmitAction({
                 payload: {
-                    user: {
-                        fname: formValue.firstName,
-                        lname: formValue.lastName,
-                        email: formValue.email,
-                        mobile: formValue.mobile,
-                        username: formValue.username,
-                        password: formValue.password,
-                    },
-                    client: {
-                        name: formValue.organizationName,
-                    },
+                    email: formValue.email,
+                    password: formValue.password,
                 },
             })
         );

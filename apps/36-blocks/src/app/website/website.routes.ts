@@ -40,6 +40,10 @@ export const websiteRoutes: Route[] = [
                 path: 'register',
                 loadComponent: () => import('./register/register-page.component').then((c) => c.RegisterPageComponent),
             },
+            {
+                path: 'login',
+                loadComponent: () => import('./login/login-page.component').then((c) => c.LoginPageComponent),
+            },
         ],
     },
 ];

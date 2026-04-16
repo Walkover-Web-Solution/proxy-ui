@@ -98,4 +98,20 @@ export class UsersService {
     public exchangeToken(code: string): Observable<{ token: string }> {
         return this.httpNoAuth.post<{ token: string }>(UsersUrl.exchangeToken(this.baseURL), { code }, this.options);
     }
+
+    public emailLogin(email: string, password: string): Observable<any> {
+        return this.httpNoAuth.post(UsersUrl.emailLogin(this.baseURL), { email, password }, this.options);
+    }
+
+    public submitOnboarding(
+        payload: { name: string; mobile: string; organization_name: string },
+        authToken?: string
+    ): Observable<any> {
+        const headers: Record<string, string> = { ...this.options.headers };
+        if (authToken) {
+            headers['Authorization'] = authToken;
+        }
+        const options = { ...this.options, headers };
+        return this.httpNoAuth.post(UsersUrl.onboarding(this.baseURL), payload, options);
+    }
 }

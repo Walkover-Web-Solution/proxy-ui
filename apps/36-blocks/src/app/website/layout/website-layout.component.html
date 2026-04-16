@@ -53,13 +53,13 @@
                     >
                         Get started
                     </a>
-                    <button
+                    <a
+                        routerLink="/login"
                         class="cursor-pointer px-4 py-1.5 bg-transparent !rounded-sm text-xs font-semibold border border-teal-400 text-teal-400 transition-all duration-200 hover:-translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400"
-                        (click)="login()"
                         aria-label="Login to your 36Blocks account"
                     >
                         Login
-                    </button>
+                    </a>
 
                     <!-- Hamburger (mobile only) -->
                     <button
@@ -114,6 +114,14 @@
                         >{{ link.label }}</a
                     >
                 }
+                <a
+                    routerLink="/login"
+                    class="mx-5 mt-2 flex items-center justify-center rounded-sm px-4 py-2.5 text-sm font-semibold border border-teal-400 text-teal-400 transition-colors duration-150 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400"
+                    aria-label="Login to your 36Blocks account"
+                    (click)="closeMobileMenu()"
+                >
+                    Login
+                </a>
                 <a
                     routerLink="/register"
                     class="mx-5 mt-2 mb-1 flex items-center justify-center rounded-sm px-4 py-2.5 text-sm font-semibold bg-teal-400 text-[#0d1117] transition-colors duration-150 hover:bg-teal-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400"

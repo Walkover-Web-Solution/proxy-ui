@@ -18,7 +18,7 @@ export class RegistrationEffects {
                 this.usersService.register(payload).pipe(
                     map((response) =>
                         registrationActions.registrationSubmitComplete({
-                            registeredEmail: payload.user.email,
+                            registeredEmail: payload.email,
                         })
                     ),
                     catchError((error) => {

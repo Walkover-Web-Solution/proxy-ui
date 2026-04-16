@@ -1,14 +1,16 @@
 import {
     ChangeDetectionStrategy,
     Component,
+    ElementRef,
+    HostListener,
+    ViewChild,
     inject,
-    NgZone,
     OnDestroy,
     OnInit,
-    PLATFORM_ID,
     signal,
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -17,11 +19,12 @@ import { take, takeUntil } from 'rxjs/operators';
 import { AuthService } from '@proxy/services/proxy/auth';
 import { UsersService } from '@proxy/services/proxy/users';
 import * as logInActions from '../../website/home/ngrx/actions/login.action';
+import { COUNTRIES_DATA, Country } from '../../../../../shared/assets/utils/countries-info';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-onboarding',
-    imports: [],
+    imports: [ReactiveFormsModule, ScrollingModule],
     templateUrl: './onboarding.component.html',
     styleUrl: './onboarding.component.scss',
 })
@@ -32,56 +35,145 @@ export class OnboardingComponent implements OnInit, OnDestroy {
     private readonly usersService = inject(UsersService);
     private readonly store = inject(Store);
     private readonly actions$ = inject(Actions);
-    private readonly platformId = inject(PLATFORM_ID);
-    private readonly ngZone = inject(NgZone);
     private readonly destroy$ = new Subject<void>();
 
+    public readonly onboardingSubmitting = signal<boolean>(false);
     public readonly onboardingError = signal<string | null>(null);
-    public readonly onboardingInProgress = signal<boolean>(true);
-    public readonly redirectCountdown = signal<number>(3);
+    public passwordVisible = false;
 
-    private redirectTimer: ReturnType<typeof setInterval> | null = null;
+    private pendingJwtToken: string | null = null;
+
+    public readonly allCountries: Country[] = COUNTRIES_DATA;
+    public selectedCountry: Country = COUNTRIES_DATA.find((country) => country.code === 'IN') ?? COUNTRIES_DATA[0];
+    public readonly dialCodeDropdownOpen = signal<boolean>(false);
+    public readonly dialCodeSearchQuery = signal<string>('');
+
+    @ViewChild('dialCodeDropdownRef') private readonly dialCodeDropdownRef!: ElementRef<HTMLElement>;
+
+    public get filteredCountries(): Country[] {
+        const query = this.dialCodeSearchQuery().trim().toLowerCase();
+        if (!query) {
+            return this.allCountries;
+        }
+        return this.allCountries.filter(
+            (country) =>
+                country.name.toLowerCase().includes(query) ||
+                country.dialCode.includes(query) ||
+                country.nativeName.toLowerCase().includes(query)
+        );
+    }
+
+    public toggleDialCodeDropdown(): void {
+        const isOpen = !this.dialCodeDropdownOpen();
+        this.dialCodeDropdownOpen.set(isOpen);
+        if (isOpen) {
+            this.dialCodeSearchQuery.set('');
+        }
+    }
+
+    public selectCountry(country: Country): void {
+        this.selectedCountry = country;
+        this.dialCodeDropdownOpen.set(false);
+        this.dialCodeSearchQuery.set('');
+    }
+
+    public updateDialCodeSearch(value: string): void {
+        this.dialCodeSearchQuery.set(value);
+    }
+
+    public trackCountryByCode(_index: number, country: Country): string {
+        return country.code;
+    }
+
+    @HostListener('document:keydown.escape')
+    public closeDialCodeDropdownOnEscape(): void {
+        this.dialCodeDropdownOpen.set(false);
+    }
+
+    @HostListener('document:click', ['$event'])
+    public closeDialCodeDropdownOnOutsideClick(event: MouseEvent): void {
+        if (this.dialCodeDropdownRef && !this.dialCodeDropdownRef.nativeElement.contains(event.target as Node)) {
+            this.dialCodeDropdownOpen.set(false);
+        }
+    }
+
+    public readonly onboardingFormGroup = new FormGroup({
+        name: new FormControl<string>('', {
+            nonNullable: true,
+            validators: [Validators.required, Validators.minLength(2)],
+        }),
+        mobile: new FormControl<string>('', {
+            nonNullable: true,
+            validators: [Validators.required, Validators.pattern(/^\d{10,15}$/)],
+        }),
+        organizationName: new FormControl<string>('', {
+            nonNullable: true,
+            validators: [Validators.required, Validators.minLength(2)],
+        }),
+    });
 
     public ngOnInit(): void {
-        if (!isPlatformBrowser(this.platformId)) {
+        this.pendingJwtToken = this.activatedRoute.snapshot.queryParamMap.get('token');
+    }
+
+    public ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    public getFieldError(fieldName: string): string | null {
+        const control = this.onboardingFormGroup.get(fieldName);
+        if (!control || !control.invalid || !control.touched) {
+            return null;
+        }
+        if (control.errors?.['required']) {
+            return 'This field is required.';
+        }
+        if (control.errors?.['minlength']) {
+            const requiredLength = control.errors['minlength'].requiredLength;
+            return `Must be at least ${requiredLength} characters.`;
+        }
+        if (control.errors?.['pattern'] && fieldName === 'mobile') {
+            return 'Please enter a valid mobile number (10\u201315 digits).';
+        }
+        return 'Invalid value.';
+    }
+
+    public submitOnboarding(): void {
+        if (this.onboardingFormGroup.invalid) {
+            this.onboardingFormGroup.markAllAsTouched();
             return;
         }
-
-        const verificationCode = this.activatedRoute.snapshot.queryParamMap.get('code');
-
-        if (!verificationCode) {
-            this.onboardingError.set('No verification code found. Please check your email link and try again.');
-            this.onboardingInProgress.set(false);
-            this.redirectToHomeAfterDelay();
-            return;
-        }
+        this.onboardingError.set(null);
+        this.onboardingSubmitting.set(true);
+        const formValue = this.onboardingFormGroup.getRawValue();
+        const mobileWithDialCode = `${this.selectedCountry.dialCode}${formValue.mobile}`;
 
         this.usersService
-            .exchangeToken(verificationCode)
+            .submitOnboarding(
+                { name: formValue.name, mobile: mobileWithDialCode, organization_name: formValue.organizationName },
+                this.pendingJwtToken ?? undefined
+            )
             .pipe(take(1), takeUntil(this.destroy$))
             .subscribe({
                 next: (response) => {
-                    const jwtToken = response?.token;
-                    if (!jwtToken) {
-                        this.onboardingError.set('Verification failed: invalid server response. Please try again.');
-                        this.onboardingInProgress.set(false);
-                        this.redirectToHomeAfterDelay();
-                        return;
+                    const jwtToken = response?.data?.token || response?.token;
+                    if (jwtToken) {
+                        this.authService.setTokenSync(jwtToken);
                     }
-
-                    this.authService.setTokenSync(jwtToken);
 
                     this.actions$
                         .pipe(ofType(logInActions.authenticatedAction), take(1), takeUntil(this.destroy$))
                         .subscribe(() => {
+                            this.onboardingSubmitting.set(false);
                             this.router.navigate(['/app/features/create']);
                         });
 
                     this.actions$
                         .pipe(ofType(logInActions.logInActionError), take(1), takeUntil(this.destroy$))
                         .subscribe(({ errors }) => {
-                            this.onboardingError.set(errors?.join(' ') || 'Verification failed. Please try again.');
-                            this.onboardingInProgress.set(false);
+                            this.onboardingSubmitting.set(false);
+                            this.onboardingError.set(errors?.join(' ') || 'Something went wrong. Please try again.');
                         });
 
                     this.store.dispatch(logInActions.getUserAction());
@@ -92,36 +184,10 @@ export class OnboardingComponent implements OnInit, OnDestroy {
                         errorBody?.errors?.message ||
                         errorBody?.data?.message ||
                         errorBody?.message ||
-                        'Verification failed. Please try again.';
+                        'Onboarding failed. Please try again.';
                     this.onboardingError.set(resolvedMessage);
-                    this.onboardingInProgress.set(false);
-                    this.redirectToHomeAfterDelay();
+                    this.onboardingSubmitting.set(false);
                 },
             });
-    }
-
-    private redirectToHomeAfterDelay(): void {
-        this.redirectCountdown.set(3);
-        this.redirectTimer = this.ngZone.run(() =>
-            setInterval(() => {
-                const remaining = this.redirectCountdown() - 1;
-                this.redirectCountdown.set(remaining);
-                if (remaining <= 0) {
-                    if (this.redirectTimer) {
-                        clearInterval(this.redirectTimer);
-                        this.redirectTimer = null;
-                    }
-                    this.router.navigate(['/']);
-                }
-            }, 1000)
-        );
-    }
-
-    public ngOnDestroy(): void {
-        if (this.redirectTimer) {
-            clearInterval(this.redirectTimer);
-        }
-        this.destroy$.next();
-        this.destroy$.complete();
     }
 }

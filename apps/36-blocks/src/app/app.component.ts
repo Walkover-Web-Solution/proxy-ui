@@ -126,12 +126,13 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                     '/privacy',
                     '/terms',
                     '/register',
+                    '/login',
                 ];
                 const isOnWebsiteRoute =
                     currentUrl === '/' ||
                     currentUrl === '' ||
                     websiteRoutes.some((route) => currentUrl.startsWith(route));
-                const isOnboardingRoute = currentUrl.startsWith('/app/onboarding');
+                const isOnboardingRoute = currentUrl.startsWith('/onboarding');
                 if (isOnWebsiteRoute && !isOnboardingRoute) {
                     this.router.navigate(['/app/dashboard']);
                 }

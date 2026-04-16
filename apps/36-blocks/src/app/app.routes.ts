@@ -15,6 +15,10 @@ export const appRoutes: Route[] = [
         loadChildren: () => import('./website/website.routes').then((r) => r.websiteRoutes),
     },
     {
+        path: 'onboarding',
+        loadComponent: () => import('./panel/onboarding/onboarding.component').then((c) => c.OnboardingComponent),
+    },
+    {
         path: 'app',
         loadChildren: () => import('./panel/panel.routes').then((r) => r.panelRoutes),
     },

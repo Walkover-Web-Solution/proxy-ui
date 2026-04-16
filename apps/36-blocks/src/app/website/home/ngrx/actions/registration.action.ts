@@ -1,17 +1,8 @@
 import { createAction, props } from '@ngrx/store';
 
 export interface IRegistrationPayload {
-    user: {
-        email: string;
-        mobile: string;
-        fname: string;
-        lname: string;
-        username: string;
-        password: string;
-    };
-    client: {
-        name: string;
-    };
+    email: string;
+    password: string;
 }
 
 export const registrationSubmitAction = createAction(
