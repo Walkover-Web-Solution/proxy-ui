@@ -11,18 +11,23 @@
                     placeholder="All Blocks"
                     [formControl]="featureSearchControl"
                     [matAutocomplete]="featureAutocomplete"
+                    (input)="onFeatureInputChange($any($event.target).value)"
                 />
                 @if (featureConfigurationId()) {
                     <button matSuffix mat-icon-button aria-label="Clear" (click)="onFeatureInputClear()">
                         <mat-icon class="mat-icon-18">close</mat-icon>
                     </button>
                 }
-                <mat-autocomplete #featureAutocomplete="matAutocomplete" (optionSelected)="onFeatureSelected($event)">
+                <mat-autocomplete
+                    #featureAutocomplete="matAutocomplete"
+                    [displayWith]="displayFeatureName"
+                    (optionSelected)="onFeatureSelected($event)"
+                >
                     <mat-option value="">All Blocks</mat-option>
                     @for (feature of filteredFeatures(); track feature.id) {
                         <mat-option [value]="feature.id">{{ feature.name }}</mat-option>
                     }
-                    @if (filteredFeatures().length === 0 && featureSearchControl.value) {
+                    @if (filteredFeatures().length === 0 && featureSearchQuery()) {
                         <mat-option disabled>No blocks found</mat-option>
                     }
                 </mat-autocomplete>

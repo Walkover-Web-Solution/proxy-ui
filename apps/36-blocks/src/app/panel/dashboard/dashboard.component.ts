@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { DateRange, OVERVIEW_CARDS, RANGE_OPTIONS } from './dashboard.models';
 import { RouterModule } from '@angular/router';
@@ -47,10 +46,10 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     readonly isLoadingFeatures = signal(false);
 
     readonly featureSearchControl = new FormControl('');
-    private readonly featureSearchValue = toSignal(this.featureSearchControl.valueChanges, { initialValue: '' });
+    readonly featureSearchQuery = signal('');
 
     readonly filteredFeatures = computed(() => {
-        const query = (this.featureSearchValue() ?? '').toLowerCase().trim();
+        const query = this.featureSearchQuery().toLowerCase().trim();
         if (!query) return this.features();
         return this.features().filter((feature) => feature.name?.toLowerCase().includes(query));
     });
@@ -103,14 +102,23 @@ export class DashboardComponent extends BaseComponent implements OnInit {
             });
     }
 
+    displayFeatureName = (value: number | string | null): string => {
+        if (!value) return '';
+        return this.features().find((feature) => feature.id === value)?.name ?? '';
+    };
+
+    onFeatureInputChange(value: string): void {
+        this.featureSearchQuery.set(value);
+    }
+
     onFeatureSelected(event: MatAutocompleteSelectedEvent): void {
-        const selectedFeature = this.features().find((feature) => feature.id === event.option.value);
         this.featureConfigurationId.set(event.option.value ?? '');
-        this.featureSearchControl.setValue(selectedFeature?.name ?? '', { emitEvent: false });
+        this.featureSearchQuery.set('');
     }
 
     onFeatureInputClear(): void {
         this.featureSearchControl.setValue('');
+        this.featureSearchQuery.set('');
         this.featureConfigurationId.set('');
     }
 
