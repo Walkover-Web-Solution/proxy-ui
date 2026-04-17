@@ -23,7 +23,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { INFO_TOOLTIPS } from '@proxy/constant';
-import { BreakdownGroupBy, IBreakdownGroupByOption, GROUP_BY_OPTIONS } from '../dashboard.models';
+import {
+    BreakdownGroupBy,
+    IBreakdownGroupByOption,
+    GROUP_BY_OPTIONS,
+    TimeseriesInterval,
+    intervalForRange,
+} from '../dashboard.models';
 
 @Component({
     selector: 'breakdown-chart',
@@ -58,6 +64,7 @@ export class BreakdownChartComponent extends BaseComponent implements OnDestroy 
     readonly chartData = signal<{ key: string; count: number }[]>([]);
 
     selectedGroupBy = signal<BreakdownGroupBy>(BreakdownGroupBy.type);
+    selectedInterval = signal<TimeseriesInterval>(TimeseriesInterval.day);
 
     readonly groupByOptions: IBreakdownGroupByOption[] = GROUP_BY_OPTIONS;
 
@@ -67,9 +74,13 @@ export class BreakdownChartComponent extends BaseComponent implements OnDestroy 
         super();
         this.watchTheme();
         effect(() => {
+            const range = this.range();
+            const interval = intervalForRange(range);
+            this.selectedInterval.set(interval);
             const params: IBreakdownParams = {
-                range: this.range() as any,
+                range: range as any,
                 group_by: this.selectedGroupBy(),
+                interval,
             };
             const fcId = this.featureConfigurationId();
             if (fcId) params.feature_configuration_id = fcId;
