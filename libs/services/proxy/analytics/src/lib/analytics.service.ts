@@ -4,6 +4,8 @@ import { ProxyBaseUrls } from '@proxy/models/root-models';
 import { Observable } from 'rxjs';
 import { AnalyticsUrls } from '@proxy/urls/analytics-urls';
 
+type Interval = 'hour' | 'day' | 'week';
+
 export interface IAnalyticsParams {
     feature_configuration_id?: number;
     range?: 'day' | 'week' | 'month';
@@ -13,11 +15,12 @@ export interface IAnalyticsParams {
 
 export interface ITimeseriesParams extends IAnalyticsParams {
     metric: 'signups' | 'logins' | 'active_users';
-    interval: 'hour' | 'day' | 'week';
+    interval: Interval;
 }
 
 export interface IBreakdownParams extends IAnalyticsParams {
     group_by: 'service_id' | 'source' | 'type';
+    interval?: Interval;
 }
 
 @Injectable({

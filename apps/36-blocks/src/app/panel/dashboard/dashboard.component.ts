@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { DateRange, OVERVIEW_CARDS, RANGE_OPTIONS } from './dashboard.models';
 import { RouterModule } from '@angular/router';
@@ -7,7 +8,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { AnalyticsService, IAnalyticsParams } from '@proxy/services/proxy/analytics';
 import { FeaturesService } from '@proxy/services/proxy/features';
@@ -28,6 +31,9 @@ import { takeUntil } from 'rxjs';
         MatButtonModule,
         MatTooltipModule,
         FormsModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule,
+        MatInputModule,
         TimeseriesChartComponent,
         BreakdownChartComponent,
     ],
@@ -39,6 +45,15 @@ export class DashboardComponent extends BaseComponent implements OnInit {
 
     readonly features = signal<IFeature[]>([]);
     readonly isLoadingFeatures = signal(false);
+
+    readonly featureSearchControl = new FormControl('');
+    private readonly featureSearchValue = toSignal(this.featureSearchControl.valueChanges, { initialValue: '' });
+
+    readonly filteredFeatures = computed(() => {
+        const query = (this.featureSearchValue() ?? '').toLowerCase().trim();
+        if (!query) return this.features();
+        return this.features().filter((feature) => feature.name?.toLowerCase().includes(query));
+    });
 
     readonly range = signal<DateRange>(DateRange.week);
     readonly featureConfigurationId = signal<number | string | null>('');
@@ -88,8 +103,15 @@ export class DashboardComponent extends BaseComponent implements OnInit {
             });
     }
 
-    onFeatureChange(id: number | null): void {
-        this.featureConfigurationId.set(id);
+    onFeatureSelected(event: MatAutocompleteSelectedEvent): void {
+        const selectedFeature = this.features().find((feature) => feature.id === event.option.value);
+        this.featureConfigurationId.set(event.option.value ?? '');
+        this.featureSearchControl.setValue(selectedFeature?.name ?? '', { emitEvent: false });
+    }
+
+    onFeatureInputClear(): void {
+        this.featureSearchControl.setValue('');
+        this.featureConfigurationId.set('');
     }
 
     fetchOverview(params: IAnalyticsParams): void {

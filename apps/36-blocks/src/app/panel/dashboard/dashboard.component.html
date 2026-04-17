@@ -3,15 +3,29 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
         <h2 class="my-0 text-xl font-bold">Analytics Overview</h2>
         <div class="flex items-center gap-3">
-            <mat-form-field class="no-padding w-44">
-                <mat-select [value]="featureConfigurationId()" (valueChange)="onFeatureChange($event)">
-                    <mat-option value="">Client</mat-option>
-                    <mat-optgroup label="Blocks" class="cursor-default">
-                        @for (f of features(); track f.id) {
-                            <mat-option [value]="f.id">{{ f.name }}</mat-option>
-                        }
-                    </mat-optgroup>
-                </mat-select>
+            <mat-form-field class="no-padding">
+                <mat-icon matPrefix class="mat-icon-18 text-gray-400 mr-1">search</mat-icon>
+                <input
+                    matInput
+                    type="text"
+                    placeholder="All Blocks"
+                    [formControl]="featureSearchControl"
+                    [matAutocomplete]="featureAutocomplete"
+                />
+                @if (featureConfigurationId()) {
+                    <button matSuffix mat-icon-button aria-label="Clear" (click)="onFeatureInputClear()">
+                        <mat-icon class="mat-icon-18">close</mat-icon>
+                    </button>
+                }
+                <mat-autocomplete #featureAutocomplete="matAutocomplete" (optionSelected)="onFeatureSelected($event)">
+                    <mat-option value="">All Blocks</mat-option>
+                    @for (feature of filteredFeatures(); track feature.id) {
+                        <mat-option [value]="feature.id">{{ feature.name }}</mat-option>
+                    }
+                    @if (filteredFeatures().length === 0 && featureSearchControl.value) {
+                        <mat-option disabled>No blocks found</mat-option>
+                    }
+                </mat-autocomplete>
             </mat-form-field>
             <mat-form-field class="no-padding w-36">
                 <mat-select [value]="range()" (valueChange)="onRangeChange($event)">
