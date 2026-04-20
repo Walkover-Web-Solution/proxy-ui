@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, JsonPipe, NgTemplateOutlet } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -16,6 +16,7 @@ import { Observable } from 'rxjs';
     selector: 'proxy-log-details-side-dialog',
     imports: [
         AsyncPipe,
+        JsonPipe,
         NgTemplateOutlet,
         MatButtonModule,
         MatIconModule,
@@ -25,7 +26,6 @@ import { Observable } from 'rxjs';
         NoRecordFoundComponent,
     ],
     templateUrl: './log-details-side-dialog.component.html',
-    styleUrls: ['./log-details-side-dialog.component.scss'],
 })
 export class LogsDetailsSideDialogComponent extends BaseComponent implements OnDestroy {
     public dialogRef = inject<MatDialogRef<LogsDetailsSideDialogComponent>>(MatDialogRef);
