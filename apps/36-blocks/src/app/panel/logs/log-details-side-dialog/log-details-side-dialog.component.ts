@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, JsonPipe, NgTemplateOutlet } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { LoaderComponent } from '@proxy/ui/loader';
+import { NoRecordFoundComponent } from '@proxy/ui/no-record-found';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ILogDetailRes } from '@proxy/models/logs-models';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -12,9 +14,18 @@ import { Observable } from 'rxjs';
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-log-details-side-dialog',
-    imports: [AsyncPipe, NgTemplateOutlet, MatButtonModule, MatIconModule, MatDialogModule, LoaderComponent],
+    imports: [
+        AsyncPipe,
+        JsonPipe,
+        NgTemplateOutlet,
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule,
+        MatDialogModule,
+        LoaderComponent,
+        NoRecordFoundComponent,
+    ],
     templateUrl: './log-details-side-dialog.component.html',
-    styleUrls: ['./log-details-side-dialog.component.scss'],
 })
 export class LogsDetailsSideDialogComponent extends BaseComponent implements OnDestroy {
     public dialogRef = inject<MatDialogRef<LogsDetailsSideDialogComponent>>(MatDialogRef);

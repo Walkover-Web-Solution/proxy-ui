@@ -2,28 +2,31 @@
     <proxy-loader></proxy-loader>
 }
 <!-- Top Fixed Header::START -->
-<div matDialogContent>
-    <h2 class="mat-title mat-subheading-2 mb-0 text-dark">Logs Details</h2>
+<div class="flex items-center justify-between pe-5">
+    <h2 mat-dialog-title class="mat-title mat-subheading-2 mb-0 text-dark">Logs Details</h2>
+    <button matIconButton (click)="onCloseDialog()" role="button">
+        <mat-icon>close</mat-icon>
+    </button>
 </div>
 <!-- Top Fixed Header::END -->
 
 <!-- Content::START -->
 @if (data) {
-    <mat-dialog-content>
+    <mat-dialog-content class="!max-h-[calc(100vh-100px)] overflow-y-auto !py-3">
         @if (data.logData$ | async; as logdata) {
-            @if (data?.logSettings?.store_headers) {
+            @if (!data?.logSettings || data?.logSettings?.store_headers) {
                 <ng-container
                     [ngTemplateOutlet]="jsonCard"
                     [ngTemplateOutletContext]="{ title: 'Headers', jsonData: logdata?.headers }"
                 ></ng-container>
             }
-            @if (data?.logSettings?.store_requestBody) {
+            @if (!data?.logSettings || data?.logSettings?.store_requestBody) {
                 <ng-container
                     [ngTemplateOutlet]="jsonCard"
                     [ngTemplateOutletContext]="{ title: 'Request body', jsonData: logdata?.request_body }"
                 ></ng-container>
             }
-            @if (data?.logSettings?.store_response) {
+            @if (!data?.logSettings || data?.logSettings?.store_response) {
                 <ng-container
                     [ngTemplateOutlet]="jsonCard"
                     [ngTemplateOutletContext]="{ title: 'Response', jsonData: logdata?.response }"
@@ -36,9 +39,6 @@
         }
     </mat-dialog-content>
 }
-<mat-dialog-actions align="end">
-    <button mat-button (click)="onCloseDialog()">Close</button>
-</mat-dialog-actions>
 
 <ng-template #jsonCard let-title="title" let-jsonData="jsonData">
     <span class="mb-2 mt-1 mat-body-2 font-medium">{{ title }}</span>
