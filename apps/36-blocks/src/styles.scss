@@ -113,6 +113,7 @@ button {
     box-shadow: -4px 0px 16px #00000059;
     &.mat-dialog-lg {
         width: 535px;
+        max-width: 535px !important;
         @media only screen and (max-width: 768px) {
             width: 100%;
             max-width: 100% !important;
@@ -120,14 +121,18 @@ button {
     }
     &.mat-dialog-md {
         width: 450px;
+        max-width: 450px !important;
     }
     &.mat-dialog-xs {
         width: 374px;
+        max-width: 374px !important;
     }
     &.mat-dialog-xlg {
         width: 40vw;
+        max-width: 40vw !important;
         @media only screen and (max-width: 1280px) {
             width: 60vw;
+            max-width: 60vw !important;
         }
         @media only screen and (max-width: 992px) {
             width: 100%;
