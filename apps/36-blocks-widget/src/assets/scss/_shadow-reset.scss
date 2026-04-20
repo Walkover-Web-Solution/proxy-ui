@@ -1,0 +1,12 @@
+// Shadow DOM universal reset — import this in every component that uses
+// ViewEncapsulation.ShadowDom or ShadowDom-scoped styles.
+// This selector is fully encapsulated: it cannot affect anything outside
+// the component's shadow root.
+*,
+*::before,
+*::after {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-sizing: border-box;
+}
