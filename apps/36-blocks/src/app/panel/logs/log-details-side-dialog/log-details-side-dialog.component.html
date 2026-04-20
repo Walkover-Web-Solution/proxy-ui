@@ -11,19 +11,19 @@
 @if (data) {
     <mat-dialog-content>
         @if (data.logData$ | async; as logdata) {
-            @if (data?.logSettings?.store_headers) {
+            @if (!data?.logSettings || data?.logSettings?.store_headers) {
                 <ng-container
                     [ngTemplateOutlet]="jsonCard"
                     [ngTemplateOutletContext]="{ title: 'Headers', jsonData: logdata?.headers }"
                 ></ng-container>
             }
-            @if (data?.logSettings?.store_requestBody) {
+            @if (!data?.logSettings || data?.logSettings?.store_requestBody) {
                 <ng-container
                     [ngTemplateOutlet]="jsonCard"
                     [ngTemplateOutletContext]="{ title: 'Request body', jsonData: logdata?.request_body }"
                 ></ng-container>
             }
-            @if (data?.logSettings?.store_response) {
+            @if (!data?.logSettings || data?.logSettings?.store_response) {
                 <ng-container
                     [ngTemplateOutlet]="jsonCard"
                     [ngTemplateOutletContext]="{ title: 'Response', jsonData: logdata?.response }"
