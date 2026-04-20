@@ -27,37 +27,3 @@
     outline: 2px solid var(--proxy-error-40);
     outline-offset: -1px;
 }
-
-/* Dark mode — .dark class is on the dialog portal ancestor */
-:host-context(.dark) ::ng-deep .iti .iti__country-list {
-    background-color: #1f2937;
-    border-color: #374151;
-    color: #f9fafb;
-}
-
-:host-context(.dark) ::ng-deep .iti__country {
-    color: #f9fafb !important;
-}
-
-:host-context(.dark) ::ng-deep .iti__country:hover,
-:host-context(.dark) ::ng-deep .iti__country.iti__highlight {
-    background-color: #312e81 !important;
-}
-
-:host-context(.dark) ::ng-deep .iti__dial-code {
-    color: #9ca3af;
-}
-
-:host-context(.dark) ::ng-deep .iti__divider {
-    border-bottom-color: #374151;
-}
-
-:host-context(.dark) ::ng-deep .iti__selected-flag:hover,
-:host-context(.dark) ::ng-deep .iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
-    background-color: rgba(255, 255, 255, 0.08);
-}
-
-:host-context(.dark) ::ng-deep input[type='tel'] {
-    color: #f9fafb;
-    background-color: transparent;
-}

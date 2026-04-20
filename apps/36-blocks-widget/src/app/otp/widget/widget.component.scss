@@ -1,5 +1,6 @@
 @use 'intl-tel-input/build/css/intlTelInput.css';
 @use 'tailwindcss';
+@use '../../../assets/scss/shadow-reset';
 @source not inline("group-[aria-current=page]:text-indigo-600");
 @custom-variant dark (&:where(.dark, .dark *));
 
