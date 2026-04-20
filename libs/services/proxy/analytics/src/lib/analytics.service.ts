@@ -3,25 +3,11 @@ import { HttpWrapperService } from '@proxy/services/httpWrapper';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
 import { Observable } from 'rxjs';
 import { AnalyticsUrls } from '@proxy/urls/analytics-urls';
-
-type Interval = 'hour' | 'day' | 'week';
-
-export interface IAnalyticsParams {
-    feature_configuration_id?: number;
-    range?: 'day' | 'week' | 'month';
-    start?: string;
-    end?: string;
-}
-
-export interface ITimeseriesParams extends IAnalyticsParams {
-    metric: 'signups' | 'logins' | 'active_users';
-    interval: Interval;
-}
-
-export interface IBreakdownParams extends IAnalyticsParams {
-    group_by: 'service_id' | 'source' | 'type';
-    interval?: Interval;
-}
+import {
+    IAnalyticsParams,
+    IBreakdownParams,
+    ITimeseriesParams,
+} from 'apps/36-blocks/src/app/panel/dashboard/dashboard.models';
 
 @Injectable({
     providedIn: 'root',

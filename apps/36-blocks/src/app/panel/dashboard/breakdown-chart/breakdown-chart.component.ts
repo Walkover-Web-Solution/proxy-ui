@@ -16,7 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { AnalyticsService, IBreakdownParams } from '@proxy/services/proxy/analytics';
+import { AnalyticsService } from '@proxy/services/proxy/analytics';
 import { takeUntil } from 'rxjs';
 import * as echarts from 'echarts';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,6 +26,7 @@ import { INFO_TOOLTIPS } from '@proxy/constant';
 import {
     BreakdownGroupBy,
     IBreakdownGroupByOption,
+    IBreakdownParams,
     GROUP_BY_OPTIONS,
     TimeseriesInterval,
     intervalForRange,
