@@ -1,3 +1,17 @@
+/**
+ * build-elements.js
+ *
+ * Post-build script for the 36Blocks widget.
+ * Concatenates all Angular Element output chunks (polyfills → vendor → main),
+ * inlines the compiled CSS, wraps everything in a singleton guard to prevent
+ * duplicate execution when the script is loaded more than once, and writes
+ * the final self-contained bundle to the host app's public assets directory.
+ *
+ * Output: dist/apps/36-blocks/browser/assets/proxy-auth/proxy-auth.js
+ *
+ * Usage (package.json / nx.json):
+ *   node apps/36-blocks-widget/build-elements.js
+ */
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -69,9 +83,76 @@ const path = require('path');
 
     await fs.ensureDir(distOutDir);
 
+    // Wrap the entire bundle in a singleton guard so loading the script a second
+    // time (e.g. duplicate <script> tags on the client page) is a complete no-op.
+    const bundleBody = contents.join('\n');
+
+    const buildDate = new Date().toISOString();
+    const banner = `/**
+ * 36Blocks Authentication Widget — proxy-auth.js
+ *
+ * Copyright (c) ${new Date().getFullYear()} Walkover. All rights reserved.
+ *
+ * This script is auto-generated. Do not edit directly.
+ * Built: ${buildDate}
+ *
+ * Usage — Authorization (type: 'authorization'):
+ *
+ *   <!-- 1. Mount point: id must exactly match referenceId -->
+ *   <div id="YOUR_REFERENCE_ID"></div>
+ *
+ *   <!-- 2. Define config -->
+ *   <script type="text/javascript">
+ *     var configuration = {
+ *       referenceId: 'YOUR_REFERENCE_ID',  // must match the div id above
+ *       type: 'authorization',             // default — can be omitted
+ *       theme: 'system',                   // 'system' | 'light' | 'dark'  (default: 'system')
+ *       success: function(data)  { console.log('success', data); },
+ *       failure: function(error) { console.log('failure', error); },
+ *     };
+ *   <\/script>
+ *
+ *   <!-- 3. Load script and call initVerification -->
+ *   <script type="text/javascript" onload="initVerification(configuration)" src="SCRIPT_URL"><\/script>
+ *
+ * ---
+ *
+ * Usage — Authenticated views (type: 'user-profile' | 'user-management' | 'organization-details'):
+ *
+ *   <!-- 1. Mount point: use the fixed id "userProxyContainer" for authenticated views -->
+ *   <div id="userProxyContainer"></div>
+ *
+ *   <!-- 2. Define config -->
+ *   <script type="text/javascript">
+ *     var configuration = {
+ *       type: 'user-profile',              // 'user-profile' | 'user-management' | 'organization-details'
+ *       authToken: 'ENCRYPTED_TOKEN',      // required — obtained from the authorization success callback
+ *       theme: 'system',                   // 'system' | 'light' | 'dark'  (default: 'system')
+ *       success: function(data)  { console.log('success', data); },
+ *       failure: function(error) { console.log('failure', error); },
+ *     };
+ *   <\/script>
+ *
+ *   <!-- 3. Load script and call initVerification -->
+ *   <script type="text/javascript" onload="initVerification(configuration)" src="SCRIPT_URL"><\/script>
+ *
+ * Duplicate-load safe: loading this script more than once on the same page
+ * is a no-op — only the first execution registers the custom element.
+ */`;
+
+    // JS is single-threaded in the browser — two <script> tags execute serially,
+    // never in parallel, so a simple flag check is sufficient and race-free.
+    const guardedBundle = `${banner}
+(function() {
+    if (window.__proxyAuthLoaded) { return; }
+    window.__proxyAuthLoaded = true;
+${bundleBody}
+})();
+`;
+
     // Write the fresh build directly to dist — no intermediate src/assets copy needed
     const outPath = path.join(distOutDir, 'proxy-auth.js');
-    await fs.writeFile(outPath, contents.join('\n'));
+    await fs.writeFile(outPath, guardedBundle);
 
     const stats = await fs.stat(outPath);
     const sizeMB = (stats.size / 1048576).toFixed(2);
