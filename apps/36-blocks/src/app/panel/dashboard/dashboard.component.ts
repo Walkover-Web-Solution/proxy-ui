@@ -132,7 +132,7 @@ export class DashboardComponent extends BaseComponent implements OnInit {
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (res: any) => {
-                    this.overviewData.set(res?.data ?? null);
+                    this.overviewData.set(res?.data?.data ?? null);
                     this.isLoadingOverview.set(false);
                 },
                 error: (err: any) => {
