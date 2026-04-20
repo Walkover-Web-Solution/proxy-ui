@@ -7,6 +7,7 @@ import { envVariables } from './env-variables';
 export const environment = {
     production: false,
     env: 'dev',
+    googleClientId: '',
     proxyServer: 'https://36blocks.com',
     baseUrl: 'https://routes.msg91.com/api',
     ...envVariables,

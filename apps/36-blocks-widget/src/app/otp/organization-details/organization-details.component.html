@@ -191,10 +191,11 @@
                                 </p>
                             } @else if (
                                 organizationForm.get('companyName')?.touched &&
-                                organizationForm.get('companyName')?.hasError('minlength')
+                                organizationForm.get('companyName')?.hasError('pattern')
                             ) {
                                 <p id="org-company-name-error" role="alert" class="w-field-error">
-                                    Company name must be at least 3 characters.
+                                    Company name must start with a letter or number and contain only letters, numbers,
+                                    underscores, or spaces.
                                 </p>
                             }
                         </div>

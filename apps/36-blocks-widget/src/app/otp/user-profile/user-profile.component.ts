@@ -36,7 +36,7 @@ import {
 } from '../store/selectors';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash-es';
-import { UPDATE_REGEX } from '@proxy/regex';
+import { NAME_REGEX } from '@proxy/regex';
 import { WidgetTheme } from '@proxy/constant';
 import { WidgetThemeService } from '../service/widget-theme.service';
 @Component({
@@ -88,7 +88,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     // authToken: string = '';
 
     clientForm = new FormGroup({
-        name: new FormControl('', [Validators.required, Validators.pattern(UPDATE_REGEX)]),
+        name: new FormControl('', [Validators.required, Validators.pattern(NAME_REGEX)]),
         mobile: new FormControl({ value: '', disabled: true }),
         email: new FormControl({ value: '', disabled: true }),
     });

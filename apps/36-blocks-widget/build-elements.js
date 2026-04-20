@@ -150,9 +150,16 @@ ${bundleBody}
 })();
 `;
 
-    // Write the fresh build directly to dist — no intermediate src/assets copy needed
+    // Write the fresh build to dist (production / CI path)
     const outPath = path.join(distOutDir, 'proxy-auth.js');
     await fs.writeFile(outPath, guardedBundle);
+
+    // Also copy to the app's source assets so the Angular dev server can serve it
+    // at /assets/proxy-auth/proxy-auth.js without a production build.
+    const srcAssetsDir = './apps/36-blocks/src/assets/proxy-auth';
+    const srcAssetsPath = path.join(srcAssetsDir, 'proxy-auth.js');
+    await fs.ensureDir(srcAssetsDir);
+    await fs.copyFile(outPath, srcAssetsPath);
 
     const stats = await fs.stat(outPath);
     const sizeMB = (stats.size / 1048576).toFixed(2);
@@ -161,7 +168,9 @@ ${bundleBody}
         console.warn('WARNING: proxy-auth.js exceeds 3 MB — check for bundle bloat!');
     }
     console.info(`✓ Written to: ${distOutDir}/`);
+    console.info(`✓ Dev copy:   ${srcAssetsDir}/`);
 
     console.info('\n🎉 Elements created successfully!');
     console.info(`   • ${distOutDir}/proxy-auth.js → LATEST BUILD (${sizeMB} MB)`);
+    console.info(`   • ${srcAssetsDir}/proxy-auth.js → DEV SERVER COPY`);
 })();
