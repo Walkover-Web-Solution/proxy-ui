@@ -42,6 +42,11 @@
                         "glob": "intl-tel-input-custom.css",
                         "input": "apps/shared/assets/utils",
                         "output": "assets/utils"
+                    },
+                    {
+                        "glob": "proxy-auth.js",
+                        "input": "dist/apps/36-blocks/browser/assets/proxy-auth",
+                        "output": "assets/proxy-auth"
                     }
                 ],
                 "styles": [

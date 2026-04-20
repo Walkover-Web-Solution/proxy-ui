@@ -387,16 +387,18 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
         if (!this.logDetailDialogRef) {
             const clientSettings: IClientSettings = this.getValueFromObservable(this.clientSettings$);
             this.logDetailDialogRef = this.dialog.open(LogsDetailsSideDialogComponent, {
-                panelClass: ['mat-right-dialog', 'mat-dialog-lg'],
+                panelClass: ['mat-right-dialog', 'mat-dialog-xlg'],
                 data: {
                     logData$: this.reqLogs$,
                     isLoading$: this.componentStore.reqLogsInProcess$,
                     logSettings: clientSettings?.client?.settings?.logs,
                 },
-                autoFocus: false,
-                hasBackdrop: false,
+                maxHeight: '100vh',
+                autoFocus: true,
+                hasBackdrop: true,
                 enterAnimationDuration: '0ms',
                 exitAnimationDuration: '0ms',
+                disableClose: false,
             });
             this.logDetailDialogRef.afterClosed().subscribe(() => {
                 this.componentStore.resetReqLog();
