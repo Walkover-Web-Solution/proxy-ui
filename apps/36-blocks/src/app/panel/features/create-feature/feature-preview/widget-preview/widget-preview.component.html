@@ -123,15 +123,21 @@
         <!-- Preview content -->
         @for (tab of tabs; track tab.id) {
             @if (activeTab() === tab.id) {
-                <div [class]="viewMode() !== 'preview' ? 'hidden' : 'flex'" class="flex-1 flex-col overflow-hidden">
+                <div
+                    class="flex-1 flex-col overflow-hidden"
+                    [class.hidden]="viewMode() !== 'preview'"
+                    [class.flex]="viewMode() === 'preview'"
+                >
                     <div
                         class="flex-1 flex justify-center overflow-auto transition-colors duration-300"
-                        [class]="isDark() ? 'bg-gray-950' : 'bg-white'"
+                        [class.bg-gray-950]="isDark()"
+                        [class.bg-white]="!isDark()"
                         [class.items-center]="tab.id == PublicScriptType.Authorization"
                     >
                         <div
                             [id]="tab.id === PublicScriptType.Authorization ? referenceId() : proxyDomId"
-                            [class]="tab.id != PublicScriptType.Authorization ? 'w-full h-full' : ''"
+                            [class.w-full]="tab.id != PublicScriptType.Authorization"
+                            [class.h-full]="tab.id != PublicScriptType.Authorization"
                         ></div>
                     </div>
                 </div>
