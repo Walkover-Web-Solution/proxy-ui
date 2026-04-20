@@ -55,9 +55,9 @@
         @if (isLoadingOverview()) {
             @for (i of [1, 2, 3, 4]; track i) {
                 <div class="rounded-2xl bg-color p-5 animate-pulse shadow-sm">
-                    <div class="h-3 w-24 rounded bg-gray-200 mb-4"></div>
-                    <div class="h-8 w-16 rounded bg-gray-200 mb-2"></div>
-                    <div class="h-3 w-28 rounded bg-gray-100"></div>
+                    <div class="h-3 w-24 rounded bg-gray-200 dark:bg-gray-700 mb-4"></div>
+                    <div class="h-8 w-16 rounded bg-gray-200 dark:bg-gray-700 mb-2"></div>
+                    <div class="h-3 w-28 rounded bg-gray-100 dark:bg-gray-600"></div>
                 </div>
             }
         } @else {
