@@ -1,5 +1,24 @@
 import { INFO_TOOLTIPS } from '@proxy/constant';
 
+export type Interval = 'hour' | 'day' | 'week';
+
+export interface IAnalyticsParams {
+    feature_configuration_id?: number;
+    range?: 'day' | 'week' | 'month';
+    start?: string;
+    end?: string;
+}
+
+export interface ITimeseriesParams extends IAnalyticsParams {
+    metric: 'signups' | 'logins' | 'active_users';
+    interval: Interval;
+}
+
+export interface IBreakdownParams extends IAnalyticsParams {
+    group_by: 'service_id' | 'source' | 'type' | 'country';
+    interval?: Interval;
+}
+
 export enum DateRange {
     day = 'day',
     week = 'week',
@@ -55,6 +74,7 @@ export enum BreakdownGroupBy {
     service_id = 'service_id',
     source = 'source',
     type = 'type',
+    country = 'country',
 }
 
 export interface IBreakdownGroupByOption {
@@ -134,6 +154,7 @@ export const GROUP_BY_OPTIONS: IBreakdownGroupByOption[] = [
     { label: 'By Type', value: BreakdownGroupBy.type },
     // { label: 'By Source', value: BreakdownGroupBy.source },
     { label: 'By Service', value: BreakdownGroupBy.service_id },
+    { label: 'By Country', value: BreakdownGroupBy.country },
 ];
 
 export function intervalForRange(range: string): TimeseriesInterval {

@@ -18,7 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { AnalyticsService, ITimeseriesParams } from '@proxy/services/proxy/analytics';
+import { AnalyticsService } from '@proxy/services/proxy/analytics';
 import { forkJoin, takeUntil } from 'rxjs';
 import * as echarts from 'echarts';
 import { MatCardModule } from '@angular/material/card';
@@ -28,6 +28,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
     TimeseriesInterval,
     ITimeseriesSeries,
+    ITimeseriesParams,
     INTERVAL_OPTIONS,
     TIMESERIES_METRICS,
     intervalForRange,

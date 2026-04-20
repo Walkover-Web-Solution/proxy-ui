@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DateRange, OVERVIEW_CARDS, RANGE_OPTIONS } from './dashboard.models';
+import { DateRange, IAnalyticsParams, OVERVIEW_CARDS, RANGE_OPTIONS } from './dashboard.models';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
@@ -11,7 +11,7 @@ import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { AnalyticsService, IAnalyticsParams } from '@proxy/services/proxy/analytics';
+import { AnalyticsService } from '@proxy/services/proxy/analytics';
 import { FeaturesService } from '@proxy/services/proxy/features';
 import { IFeature } from '@proxy/models/features-model';
 import { TimeseriesChartComponent } from './timeseries-chart/timeseries-chart.component';
