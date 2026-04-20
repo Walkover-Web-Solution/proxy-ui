@@ -113,7 +113,7 @@ export class OnboardingComponent implements OnInit, OnDestroy {
     });
 
     public ngOnInit(): void {
-        this.pendingJwtToken = this.activatedRoute.snapshot.queryParamMap.get('token');
+        this.pendingJwtToken = this.activatedRoute.snapshot.queryParamMap.get('onboarding_token');
     }
 
     public ngOnDestroy(): void {
@@ -150,10 +150,12 @@ export class OnboardingComponent implements OnInit, OnDestroy {
         const mobileWithDialCode = `${this.selectedCountry.dialCode}${formValue.mobile}`;
 
         this.usersService
-            .submitOnboarding(
-                { name: formValue.name, mobile: mobileWithDialCode, organization_name: formValue.organizationName },
-                this.pendingJwtToken ?? undefined
-            )
+            .submitOnboarding({
+                name: formValue.name,
+                mobile: mobileWithDialCode,
+                organization_name: formValue.organizationName,
+                onboarding_token: this.pendingJwtToken ?? undefined,
+            })
             .pipe(take(1), takeUntil(this.destroy$))
             .subscribe({
                 next: (response) => {

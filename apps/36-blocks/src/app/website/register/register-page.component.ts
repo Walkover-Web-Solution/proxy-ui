@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CustomValidators } from '@proxy/custom-validator';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import * as registrationActions from '../home/ngrx/actions/registration.action';
@@ -10,6 +11,12 @@ import {
     selectRegistrationErrors,
     selectRegisteredEmail,
 } from '../home/ngrx/selector/registration.selector';
+
+export interface PasswordRule {
+    key: string;
+    label: string;
+    met: boolean;
+}
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,7 +45,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
         email: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
         password: new FormControl<string>('', {
             nonNullable: true,
-            validators: [Validators.required, Validators.minLength(8)],
+            validators: [Validators.required, CustomValidators.passwordStrength()],
         }),
     });
 
@@ -56,6 +63,18 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
         this.passwordVisible = !this.passwordVisible;
     }
 
+    public get passwordRules(): PasswordRule[] {
+        const control = this.registrationFormGroup.get('password');
+        const value: string = control?.value ?? '';
+        return [
+            { key: 'minLength', label: 'At least 8 characters', met: value.length >= 8 },
+            { key: 'uppercase', label: 'At least one uppercase letter (A–Z)', met: /[A-Z]/.test(value) },
+            { key: 'lowercase', label: 'At least one lowercase letter (a–z)', met: /[a-z]/.test(value) },
+            { key: 'number', label: 'At least one number (0–9)', met: /[0-9]/.test(value) },
+            { key: 'symbol', label: 'At least one symbol (!@#$…)', met: /[^A-Za-z0-9]/.test(value) },
+        ];
+    }
+
     public getFieldError(fieldName: string): string | null {
         const control = this.registrationFormGroup.get(fieldName);
         if (!control || !control.invalid || !control.touched) {
@@ -67,11 +86,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
         if (control.errors?.['email']) {
             return 'Please enter a valid email address.';
         }
-        if (control.errors?.['minlength']) {
-            const requiredLength = control.errors['minlength'].requiredLength;
-            return `Must be at least ${requiredLength} characters.`;
-        }
-        return 'Invalid value.';
+        return null;
     }
 
     public submitRegistration(): void {

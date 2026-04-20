@@ -103,15 +103,12 @@ export class UsersService {
         return this.httpNoAuth.post(UsersUrl.emailLogin(this.baseURL), { email, password }, this.options);
     }
 
-    public submitOnboarding(
-        payload: { name: string; mobile: string; organization_name: string },
-        authToken?: string
-    ): Observable<any> {
-        const headers: Record<string, string> = { ...this.options.headers };
-        if (authToken) {
-            headers['Authorization'] = authToken;
-        }
-        const options = { ...this.options, headers };
-        return this.httpNoAuth.post(UsersUrl.onboarding(this.baseURL), payload, options);
+    public submitOnboarding(payload: {
+        name: string;
+        mobile: string;
+        organization_name: string;
+        onboarding_token?: string;
+    }): Observable<any> {
+        return this.httpNoAuth.post(UsersUrl.onboarding(this.baseURL), payload, this.options);
     }
 }
