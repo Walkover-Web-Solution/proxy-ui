@@ -1,6 +1,8 @@
 @use 'tailwindcss';
 @use './imports';
 @use './mixins/common-utils' as *;
+
+@variant dark (&:where(.dark-theme, .dark-theme *));
 @source not inline("group-[aria-current=page]:text-indigo-600");
 .service-list {
     &.mat-mdc-list-base {
