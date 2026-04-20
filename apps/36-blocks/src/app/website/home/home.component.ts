@@ -204,7 +204,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
             label: 'Everything You Need to Manage Users',
             accentWord: 'Securely',
             desc: 'Replace months of custom authentication development with production-ready components built for security, scale, and speed.',
-            gridCols: 'grid-cols-1 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4',
+            gridCols: 'grid-cols-1 md:grid-cols-3 sm:grid-cols-2',
             cards: this.platformFeatures,
         },
         {
@@ -268,7 +268,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
         },
         {
             num: '18',
-            html: `    <span class="token attr-name">src</span>=<span class="token string">"https://proxy.msg91.com/..."</span><span class="token tag">&gt;</span>`,
+            html: `    <span class="token attr-name">src</span>=<span class="token string">"https://36blocks.com/..."</span><span class="token tag">&gt;</span>`,
         },
         { num: '19', html: `  <span class="token tag">&lt;/script&gt;</span>` },
     ]);

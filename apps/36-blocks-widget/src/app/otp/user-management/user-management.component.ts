@@ -21,6 +21,7 @@ import { CommonModule } from '@angular/common';
 import { ToastService } from '../service/toast.service';
 import { ToastComponent } from '../service/toast.component';
 import { WidgetTheme } from '@proxy/constant';
+import { UPDATE_REGEX } from '@proxy/regex';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Actions, ofType } from '@ngrx/effects';
@@ -309,7 +310,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
             });
 
         this.addUserForm = this.fb.group({
-            name: ['', Validators.required],
+            name: ['', [Validators.required, Validators.pattern(UPDATE_REGEX)]],
             email: ['', [Validators.required, Validators.email]],
             mobileNumber: ['', [Validators.pattern(/^(\+?[1-9]\d{1,14}|[0-9]{10})$/)]],
             role: [''],

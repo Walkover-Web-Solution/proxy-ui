@@ -1,0 +1,68 @@
+<!-- Loading Skeleton -->
+@if (isLoading()) {
+    <div class="animate-pulse flex flex-col gap-3">
+        <div class="h-4 w-1/3 rounded bg-gray-200"></div>
+        <div class="h-48 rounded bg-gray-100"></div>
+    </div>
+}
+
+<!-- Error -->
+@if (error()) {
+    <div class="flex items-center gap-2 text-red-500 mat-body-2">
+        <mat-icon class="mat-icon-18">error_outline</mat-icon>
+        {{ error() }}
+    </div>
+}
+
+<!-- Charts: bare cards, parent grid controls layout -->
+@if (isLoading()) {
+    <div class="rounded-2xl bg-color shadow-sm p-5 animate-pulse">
+        <div class="h-4 w-24 rounded bg-gray-200 mb-4"></div>
+        <div class="h-48 rounded bg-gray-100"></div>
+    </div>
+    <div class="rounded-2xl bg-color shadow-sm p-5 animate-pulse">
+        <div class="h-4 w-24 rounded bg-gray-200 mb-4"></div>
+        <div class="h-48 rounded bg-gray-100"></div>
+    </div>
+}
+@if (!isLoading() && seriesList().length) {
+    @for (s of seriesList(); track s.label) {
+        <div class="rounded-2xl bg-color shadow-sm p-5 flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1">
+                    <span class="text-base font-bold" [style.color]="s.color">{{ s.label }}</span>
+                    <mat-icon
+                        class="mat-icon-16 text-gray-400 cursor-default"
+                        [matTooltip]="s.infoTooltip"
+                        matTooltipPosition="above"
+                        >info_outline</mat-icon
+                    >
+                </div>
+                <button mat-icon-button class="w-7 h-7 leading-7" (click)="openExpand(s)" matTooltip="Expand">
+                    <mat-icon class="mat-icon-16 text-gray-400">open_in_full</mat-icon>
+                </button>
+            </div>
+            <div #chartEl class="!h-60 !w-full"></div>
+        </div>
+    }
+}
+@if (!isLoading() && !seriesList().length) {
+    <div
+        class="col-span-2 rounded-2xl bg-color shadow-sm p-5 flex flex-col items-center justify-center h-48 gap-2 text-gray-400"
+    >
+        <mat-icon class="w-12 h-12 opacity-30" style="font-size: 48px">show_chart</mat-icon>
+        <span class="text-sm">No data for this period</span>
+    </div>
+}
+
+<ng-template #expandTpl>
+    <div class="flex items-center justify-between px-6 pt-5 pb-2">
+        <span class="text-base font-semibold" [style.color]="expandSeries()?.color">{{ expandSeries()?.label }}</span>
+        <button mat-icon-button (click)="closeExpand()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="px-6 pb-6">
+        <div data-expand-chart="timeseries" style="height: 420px; width: 100%"></div>
+    </div>
+</ng-template>

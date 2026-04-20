@@ -8,7 +8,7 @@ export const environment = {
     production: false,
     env: 'dev',
     googleClientId: '',
-    proxyServer: 'https://proxy.msg91.com',
+    proxyServer: 'https://36blocks.com',
     baseUrl: 'https://routes.msg91.com/api',
     ...envVariables,
 };

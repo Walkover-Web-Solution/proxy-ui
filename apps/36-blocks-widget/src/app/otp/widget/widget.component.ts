@@ -1500,7 +1500,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
         // Powered by footer
         const poweredBy: HTMLParagraphElement = this.renderer.createElement('a');
-        poweredBy.setAttribute('href', 'https://proxy.msg91.com');
+        poweredBy.setAttribute('href', 'https://36blocks.com');
         poweredBy.setAttribute('target', '_blank');
         poweredBy.setAttribute('rel', 'noopener noreferrer');
         poweredBy.setAttribute('data-powered-by', 'true');
