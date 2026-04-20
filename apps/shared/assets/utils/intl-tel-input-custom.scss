@@ -50,12 +50,12 @@
     height: 0;
     border-left: 3px solid transparent;
     border-right: 3px solid transparent;
-    border-top: 4px solid #555;
+    border-top: 4px solid #6b7280;
 }
 
 .iti__arrow--up {
     border-top: none;
-    border-bottom: 4px solid #555;
+    border-bottom: 4px solid #6b7280;
 }
 
 .iti__country-list {
@@ -65,8 +65,8 @@
     padding: 0;
     margin: 0 0 0 -1px;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
-    background-color: white;
-    border: 1px solid #ccc;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
     white-space: nowrap;
     max-height: 200px;
     overflow-y: scroll;
@@ -93,7 +93,7 @@
 .iti__divider {
     padding-bottom: 5px;
     margin-bottom: 5px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #d1d5db;
 }
 
 .iti__country {
@@ -102,7 +102,7 @@
 }
 
 .iti__dial-code {
-    color: #999;
+    color: #6b7280;
 }
 
 .iti__country.iti__highlight {
@@ -1519,10 +1519,10 @@
 
 .iti__flag {
     height: 15px;
-    box-shadow: 0px 0px 1px 0px #888;
+    box-shadow: 0px 0px 1px 0px #9ca3af;
     background-image: url('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags.png') !important;
     background-repeat: no-repeat;
-    background-color: #dbdbdb;
+    background-color: #e5e7eb;
     background-position: 20px 0;
 }
 
@@ -1559,7 +1559,7 @@
 #phone:focus,
 [id^='init-contact']:focus {
     border-color: transparent;
-    outline: 2px solid #1e75ba !important;
+    outline: 2px solid var(--proxy-primary-40, #4f46e5) !important;
 }
 
 /* // .iti__selected-flag {
@@ -1587,13 +1587,14 @@
     position: absolute !important;
     bottom: 0 !important;
     top: auto !important;
-    left: auto !important;
+    left: 0 !important;
     transform: translateY(101%) !important;
     box-shadow: none;
     font-size: 14px;
     margin-left: 0;
-    width: 316px;
-    max-width: 100%;
+    min-width: 280px;
+    width: max-content;
+    max-width: min(316px, calc(100vw - 2rem));
     max-height: 250px;
 }
 
@@ -1617,7 +1618,7 @@
     overflow: hidden !important;
     text-overflow: ellipsis;
     padding: 10px 10px !important;
-    color: #3f4346 !important;
+    color: #374151 !important;
     font-weight: 500 !important;
 }
 
@@ -1627,7 +1628,7 @@
 
 .iti__country:hover,
 .iti__country.iti__highlight {
-    background-color: #d5e0f8 !important;
+    background-color: #e0e7ff !important;
 }
 
 /* // .iti .iti__country-list {
@@ -1717,13 +1718,13 @@
 //     border-radius: 8px !important;
 // } */
 .selected-dial-code {
-    color: #8f9396;
+    color: #6b7280;
 }
 
 .dropdown-menu.country-dropdown {
     width: 291px !important;
     border-radius: 8px 8px 0px 0px !important;
-    border-color: #d5d9dc !important;
+    border-color: #d1d5db !important;
 }
 
 .dropdown-menu.country-dropdown ul {
@@ -1743,14 +1744,14 @@
 //     color: #3f4346;
 // } */
 .invalid-input {
-    outline: 2px solid #cc5229;
+    outline: 2px solid var(--proxy-error-40, #dc2626);
 }
 
 /* Dark mode — triggered by .dark class on root element */
 .dark .iti .iti__country-list {
-    background-color: #1f2937;
-    border-color: #374151;
-    color: #f9fafb;
+    background-color: #1f2937; /* gray-800 */
+    border-color: #374151; /* gray-700 */
+    color: #f9fafb; /* gray-50 */
 }
 
 .dark .iti__country {
@@ -1759,15 +1760,15 @@
 
 .dark .iti__country:hover,
 .dark .iti__country.iti__highlight {
-    background-color: #312e81 !important;
+    background-color: #312e81 !important; /* indigo-900 */
 }
 
 .dark .iti__dial-code {
-    color: #9ca3af;
+    color: #9ca3af; /* gray-400 */
 }
 
 .dark .iti__divider {
-    border-bottom-color: #374151;
+    border-bottom-color: #374151; /* gray-700 */
 }
 
 .dark .iti__selected-flag:hover,
@@ -1777,6 +1778,6 @@
 
 .dark #phone,
 .dark [id^='init-contact'] {
-    color: #f9fafb;
+    color: #f9fafb; /* gray-50 */
     background-color: transparent;
 }

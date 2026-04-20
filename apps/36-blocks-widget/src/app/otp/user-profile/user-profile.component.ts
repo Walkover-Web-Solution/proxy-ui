@@ -24,8 +24,9 @@ import { ConfirmDialogComponent } from '../ui/confirm-dialog.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil, take, filter, skip } from 'rxjs';
 import { IAppState } from '../store/app.state';
+import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import { getUserDetails, leaveCompany, updateUser } from '../store/actions/otp.action';
+import { getUserDetails, leaveCompany, leaveCompanyError, updateUser } from '../store/actions/otp.action';
 import {
     error,
     getUserProfileData,
@@ -35,7 +36,7 @@ import {
 } from '../store/selectors';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash-es';
-import { UPDATE_REGEX } from '@proxy/regex';
+import { NAME_REGEX } from '@proxy/regex';
 import { WidgetTheme } from '@proxy/constant';
 import { WidgetThemeService } from '../service/widget-theme.service';
 @Component({
@@ -87,7 +88,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     // authToken: string = '';
 
     clientForm = new FormGroup({
-        name: new FormControl('', [Validators.required, Validators.pattern(UPDATE_REGEX)]),
+        name: new FormControl('', [Validators.required, Validators.pattern(NAME_REGEX)]),
         mobile: new FormControl({ value: '', disabled: true }),
         email: new FormControl({ value: '', disabled: true }),
     });
@@ -95,6 +96,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     public readonly isEditing = signal(false);
 
     private store = inject<Store<IAppState>>(Store);
+    private readonly actions$ = inject(Actions);
     readonly toastService = inject(ToastService);
     private readonly widgetPortal = inject(WidgetPortalService);
     private readonly cdr = inject(ChangeDetectorRef);
@@ -182,18 +184,33 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     }
 
     confirmLeave(): void {
+        const companyId = this.confirmDialogCompanyId();
         this.confirmDialogPortalRef?.detach();
         this.confirmDialogPortalRef = null;
-        const companyId = this.confirmDialogCompanyId();
-        this.confirmDialogCompanyId.set(null);
         if (!companyId) return;
-        this.store.dispatch(leaveCompany({ companyId, authToken: this.authToken() }));
-        this.deleteCompany$.pipe(filter(Boolean), take(1)).subscribe((res) => {
-            if (res) {
+
+        this.actions$
+            .pipe(ofType(leaveCompanyError), take(1), takeUntil(this.destroy$))
+            .subscribe(({ errorResponse }) => {
+                const errorMessage =
+                    errorResponse?.error?.errors?.message ||
+                    errorResponse?.error?.data?.message ||
+                    errorResponse?.error?.message ||
+                    errorResponse?.errors?.message ||
+                    errorResponse?.data?.message ||
+                    errorResponse?.message ||
+                    'Failed to leave the organisation.';
+                this.toastService.error(errorMessage);
+            });
+
+        this.deleteCompany$.pipe(filter(Boolean), take(1)).subscribe((response) => {
+            if (response) {
                 window.parent.postMessage({ type: 'proxy', data: { event: 'userLeftCompany', companyId } }, '*');
                 this.store.dispatch(getUserDetails({ request: this.authToken() }));
             }
         });
+
+        this.store.dispatch(leaveCompany({ companyId, authToken: this.authToken() }));
     }
 
     public openEditDialog(): void {

@@ -25,7 +25,7 @@ import { BaseComponent } from 'libs/ui/base-component/src/lib/base-component/bas
 import { OtpService } from '../service/otp.service';
 import { WidgetThemeService } from '../service/widget-theme.service';
 import { finalize, takeUntil } from 'rxjs';
-import { EMAIL_REGEX } from '@proxy/regex';
+import { COMPANY_NAME_REGEX, EMAIL_REGEX } from '@proxy/regex';
 
 @Component({
     selector: 'organization-details',
@@ -43,7 +43,7 @@ export class OrganizationDetailsComponent extends BaseComponent implements OnIni
     readonly isDark = computed(() => this.themeService.isDark$());
 
     public organizationForm = new FormGroup({
-        companyName: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
+        companyName: new FormControl<string>('', [Validators.required, Validators.pattern(COMPANY_NAME_REGEX)]),
         email: new FormControl<string>('', [Validators.required, Validators.pattern(EMAIL_REGEX)]),
         phoneNumber: new FormControl<string>('', [Validators.pattern(/^$|^[0-9]{10,15}$/)]),
         timezone: new FormControl<string>(''),

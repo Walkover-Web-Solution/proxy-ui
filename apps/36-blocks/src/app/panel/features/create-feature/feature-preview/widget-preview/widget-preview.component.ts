@@ -1,6 +1,5 @@
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import {
-    AfterViewInit,
     Component,
     Injector,
     afterNextRender,
@@ -66,7 +65,7 @@ export type PreviewTab =
     templateUrl: './widget-preview.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WidgetPreviewComponent implements AfterViewInit {
+export class WidgetPreviewComponent {
     private router = inject(Router);
     private route = inject(ActivatedRoute);
     private location = inject(Location);
@@ -90,7 +89,7 @@ export class WidgetPreviewComponent implements AfterViewInit {
     protected readonly proxyDomId = PROXY_DOM_ID;
 
     protected readonly referenceId = signal<string | null>(this.route.snapshot.paramMap.get('referenceId'));
-    private scriptLoaded = false;
+    private scriptInjected = false;
 
     public activeTab = signal<PreviewTab>(PublicScriptType.Authorization);
     public readonly activeTabLabel = computed(() => this.tabs.find((t) => t.id === this.activeTab())?.label ?? '');
@@ -177,7 +176,7 @@ export class WidgetPreviewComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.sideNavService.open();
-        setTimeout(() => this.launchWidget());
+        afterNextRender(() => this.launchWidget(), { injector: this._injector });
     }
 
     private originStorageKey(): string | null {
@@ -243,7 +242,7 @@ export class WidgetPreviewComponent implements AfterViewInit {
             queryParamsHandling: 'merge',
             replaceUrl: true,
         });
-        setTimeout(() => this.launchWidget(), 100);
+        afterNextRender(() => this.launchWidget(), { injector: this._injector });
     }
 
     public onThemeChange(newTheme: WidgetTheme): void {
@@ -254,7 +253,7 @@ export class WidgetPreviewComponent implements AfterViewInit {
             queryParamsHandling: 'merge',
             replaceUrl: true,
         });
-        setTimeout(() => this.launchWidget(), 50);
+        afterNextRender(() => this.launchWidget(), { injector: this._injector });
     }
 
     public logOut(): void {
@@ -325,8 +324,12 @@ export class WidgetPreviewComponent implements AfterViewInit {
             return;
         }
 
-        if (!this.scriptLoaded) {
-            this.scriptLoaded = true;
+        // Use the global flag so re-created component instances don't inject the script again.
+        // window.__proxyAuthLoaded is set by proxy-auth.js on first execution.
+        const alreadyInjected = this.scriptInjected || !!(window as any)['__proxyAuthLoaded'];
+
+        if (!alreadyInjected) {
+            this.scriptInjected = true;
             const script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = ProxyAuthScriptUrl(environment.proxyServer, new Date().getTime());

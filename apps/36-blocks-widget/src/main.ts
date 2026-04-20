@@ -22,58 +22,51 @@ import { environment } from './environments/environment';
 // Side-effect import — registers window.initVerification, showUserManagement, hideUserManagement
 import './app/init-verification';
 
-// Double-load protection — prevents duplicate Angular app if script is loaded twice
-if ((window as any).__proxyAuthLoaded) {
-    console.warn('[36Blocks] Script already loaded — skipping bootstrap.');
-} else {
-    (window as any).__proxyAuthLoaded = true;
-
-    createApplication({
-        providers: [
-            provideZoneChangeDetection({ eventCoalescing: true }),
-            provideHttpClient(),
-            provideAnimations(),
-            provideStore(reducers, {
-                runtimeChecks: {
-                    strictStateImmutability: true,
-                    strictActionImmutability: true,
-                },
-            }),
-            provideEffects([OtpEffects]),
-            ...(!environment.production ? [provideStoreDevtools({ maxAge: 25, serialize: true })] : []),
-            // ng-hcaptcha may not expose standalone providers — use importProvidersFrom as safe fallback
-            importProvidersFrom(NgHcaptchaModule.forRoot({ siteKey: environment.hCaptchaSiteKey })),
-            OtpService,
-            OtpUtilityService,
-            OtpWidgetService,
-            WidgetThemeService,
-            { provide: ProxyBaseUrls.Env, useValue: environment.env },
-            {
-                provide: ProxyBaseUrls.BaseURL,
-                useValue: environment.apiUrl + environment.msgMidProxy,
+createApplication({
+    providers: [
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideHttpClient(),
+        provideAnimations(),
+        provideStore(reducers, {
+            runtimeChecks: {
+                strictStateImmutability: true,
+                strictActionImmutability: true,
             },
-            {
-                provide: ProxyBaseUrls.ClientURL,
-                useValue: environment.apiUrl + environment.msgMidProxy,
-            },
-        ],
-    }).then((appRef) => {
-        const injector = appRef.injector;
-        try {
-            if (!customElements.get('proxy-auth')) {
-                const el = createCustomElement(ProxyAuthWidgetComponent, { injector });
-                customElements.define('proxy-auth', el);
-            }
-        } catch (e) {
-            console.warn('[36Blocks] Custom element registration failed:', e);
+        }),
+        provideEffects([OtpEffects]),
+        ...(!environment.production ? [provideStoreDevtools({ maxAge: 25, serialize: true })] : []),
+        // ng-hcaptcha may not expose standalone providers — use importProvidersFrom as safe fallback
+        importProvidersFrom(NgHcaptchaModule.forRoot({ siteKey: environment.hCaptchaSiteKey })),
+        OtpService,
+        OtpUtilityService,
+        OtpWidgetService,
+        WidgetThemeService,
+        { provide: ProxyBaseUrls.Env, useValue: environment.env },
+        {
+            provide: ProxyBaseUrls.BaseURL,
+            useValue: environment.apiUrl + environment.msgMidProxy,
+        },
+        {
+            provide: ProxyBaseUrls.ClientURL,
+            useValue: environment.apiUrl + environment.msgMidProxy,
+        },
+    ],
+}).then((appRef) => {
+    const injector = appRef.injector;
+    try {
+        if (!customElements.get('proxy-auth')) {
+            const el = createCustomElement(ProxyAuthWidgetComponent, { injector });
+            customElements.define('proxy-auth', el);
         }
+    } catch (e) {
+        console.warn('[36Blocks] Custom element registration failed:', e);
+    }
 
-        // Eagerly instantiate UserManagementBridgeService so its constructor runs
-        // immediately after bootstrap. This registers the window event listener for
-        // WidgetEvent.OpenInviteMemberDialog and drains any events that were buffered
-        // in window.__proxyAuth.pendingDialogEvents before Angular bootstrapped.
-        // Without this, the service is created lazily only when UserManagementComponent
-        // is first mounted, causing the event to be silently swallowed.
-        injector.get(UserManagementBridgeService);
-    });
-}
+    // Eagerly instantiate UserManagementBridgeService so its constructor runs
+    // immediately after bootstrap. This registers the window event listener for
+    // WidgetEvent.OpenInviteMemberDialog and drains any events that were buffered
+    // in window.__proxyAuth.pendingDialogEvents before Angular bootstrapped.
+    // Without this, the service is created lazily only when UserManagementComponent
+    // is first mounted, causing the event to be silently swallowed.
+    injector.get(UserManagementBridgeService);
+});
