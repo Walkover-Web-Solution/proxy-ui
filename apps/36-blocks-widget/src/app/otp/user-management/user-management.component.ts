@@ -21,6 +21,7 @@ import { CommonModule } from '@angular/common';
 import { ToastService } from '../service/toast.service';
 import { ToastComponent } from '../service/toast.component';
 import { WidgetTheme } from '@proxy/constant';
+import { NAME_REGEX } from '@proxy/regex';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Actions, ofType } from '@ngrx/effects';
@@ -41,6 +42,7 @@ import {
     updateRoleData,
     updateUserPermissionData,
     updateUserRoleData,
+    deleteUserData,
 } from '../store/selectors';
 import { isEqual } from 'lodash-es';
 import { WidgetThemeService } from '../service/widget-theme.service';
@@ -275,6 +277,17 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
                 }
             });
 
+        this.store
+            .pipe(select(deleteUserData), distinctUntilChanged(isEqual), takeUntilDestroyed(this.destroyRef))
+            .subscribe((res) => {
+                if (res) {
+                    this.getCompanyUsers();
+                    const message = res?.data?.message || res?.message || 'User removed successfully.';
+                    this.toastService.success(message);
+                    this.cdr.markForCheck();
+                }
+            });
+
         this.actions$
             .pipe(
                 ofType(
@@ -285,7 +298,8 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
                     otpActions.addUserError,
                     otpActions.updateCompanyUserError,
                     otpActions.updateUserRoleError,
-                    otpActions.updateUserPermissionError
+                    otpActions.updateUserPermissionError,
+                    otpActions.deleteUserError
                 ),
                 takeUntilDestroyed(this.destroyRef)
             )
@@ -309,7 +323,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
             });
 
         this.addUserForm = this.fb.group({
-            name: ['', Validators.required],
+            name: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
             email: ['', [Validators.required, Validators.email]],
             mobileNumber: ['', [Validators.pattern(/^(\+?[1-9]\d{1,14}|[0-9]{10})$/)]],
             role: [''],
@@ -399,8 +413,6 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
     public confirmDelete(): void {
         if (this.pendingDeleteUser) {
             const userId = (this.pendingDeleteUser as any).user_id;
-            this.userData = this.userData.filter((u: any) => u.user_id !== userId);
-            this.totalUsers = Math.max(0, this.totalUsers - 1);
             this.store.dispatch(otpActions.deleteUser({ companyId: userId, authToken: this.userToken() }));
         }
         this.cancelDelete();

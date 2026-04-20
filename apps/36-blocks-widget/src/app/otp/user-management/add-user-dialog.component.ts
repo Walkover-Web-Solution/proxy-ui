@@ -21,6 +21,7 @@ import { WidgetTheme } from '@proxy/constant';
 import { WidgetDialogRef } from '../service/widget-dialog.service';
 import { ToastService } from '../service/toast.service';
 import { ToastComponent } from '../service/toast.component';
+import { NAME_REGEX } from '@proxy/regex';
 
 /**
  * Standalone Add-User dialog.
@@ -179,7 +180,7 @@ export class AddUserDialogComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            name: ['', [Validators.required, Validators.pattern(/^[\p{L}\s'-]+$/u)]],
+            name: ['', [Validators.required, Validators.pattern(NAME_REGEX)]],
             email: ['', [Validators.required, Validators.email]],
             mobileNumber: ['', [Validators.pattern(/^(\+?[1-9]\d{1,14}|[0-9]{10})$/)]],
             role: [''],

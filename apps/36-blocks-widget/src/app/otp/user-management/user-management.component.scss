@@ -1,5 +1,6 @@
 @use 'tailwindcss';
 @use '../../../assets/scss/widget-ui' as *;
+@use '../../../assets/scss/shadow-reset';
 @custom-variant dark (&:where(.dark, .dark *));
 
 :host {

@@ -836,6 +836,12 @@
                                         addUserForm.get('name')?.hasError('required')
                                     ) {
                                         <p id="user-name-error" role="alert" class="w-field-error">Name is required</p>
+                                    } @else if (
+                                        addUserForm.get('name')?.touched && addUserForm.get('name')?.hasError('pattern')
+                                    ) {
+                                        <p id="user-name-error" role="alert" class="w-field-error">
+                                            Invalid name format.
+                                        </p>
                                     }
                                 </div>
                                 <div>

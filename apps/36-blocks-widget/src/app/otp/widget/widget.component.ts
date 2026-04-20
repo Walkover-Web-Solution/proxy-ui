@@ -1254,6 +1254,8 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             setTimeout(() => {
                 this.appendCreateAccountText(element);
             }, 100);
+
+            this.reapplyInjectedButtonTheme(this.themeService.isDark$());
         }
     }
 
@@ -1498,7 +1500,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
 
         // Powered by footer
         const poweredBy: HTMLParagraphElement = this.renderer.createElement('a');
-        poweredBy.setAttribute('href', 'https://proxy.msg91.com');
+        poweredBy.setAttribute('href', 'https://36blocks.com');
         poweredBy.setAttribute('target', '_blank');
         poweredBy.setAttribute('rel', 'noopener noreferrer');
         poweredBy.setAttribute('data-powered-by', 'true');
@@ -1686,7 +1688,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     private reapplyInjectedButtonTheme(dark: boolean): void {
-        const container = this.referenceElement;
+        const container =
+            this.type === PublicScriptType.Authorization
+                ? (this.buttonContainerEl?.nativeElement ?? null)
+                : (this.referenceElement ?? null);
         if (!container) return;
 
         const selectWidgetTheme = this.widgetTheme() as any;
