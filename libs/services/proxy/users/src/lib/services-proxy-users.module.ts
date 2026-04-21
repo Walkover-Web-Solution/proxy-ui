@@ -104,9 +104,8 @@ export class UsersService {
     }
 
     public submitOnboarding(payload: {
-        name: string;
-        mobile: string;
-        organization_name: string;
+        user: { name: string; mobile: string };
+        client: { name: string; mobile: string };
         onboarding_token?: string;
     }): Observable<any> {
         return this.httpNoAuth.post(UsersUrl.onboarding(this.baseURL), payload, this.options);

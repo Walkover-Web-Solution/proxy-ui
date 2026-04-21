@@ -61,7 +61,7 @@ export class LoginPageComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(ofType(logInActions.emailLoginOnboardingPending), takeUntil(this.destroy$))
             .subscribe(({ pendingJwtToken }) => {
                 this.loginInProgress.set(false);
-                this.router.navigate(['/onboarding'], { queryParams: { onboarding_token: pendingJwtToken } });
+                this.router.navigate(['/onboarding'], { queryParams: { token: pendingJwtToken } });
             });
 
         this.actions$.pipe(ofType(logInActions.emailLoginSuccess), takeUntil(this.destroy$)).subscribe(() => {

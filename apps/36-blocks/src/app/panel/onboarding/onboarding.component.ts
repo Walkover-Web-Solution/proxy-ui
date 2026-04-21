@@ -12,13 +12,10 @@ import {
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Actions, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { AuthService } from '@proxy/services/proxy/auth';
 import { UsersService } from '@proxy/services/proxy/users';
-import * as logInActions from '../../website/home/ngrx/actions/login.action';
 import { COUNTRIES_DATA, Country } from '../../../../../shared/assets/utils/countries-info';
 
 @Component({
@@ -33,8 +30,6 @@ export class OnboardingComponent implements OnInit, OnDestroy {
     private readonly router = inject(Router);
     private readonly authService = inject(AuthService);
     private readonly usersService = inject(UsersService);
-    private readonly store = inject(Store);
-    private readonly actions$ = inject(Actions);
     private readonly destroy$ = new Subject<void>();
 
     public readonly onboardingSubmitting = signal<boolean>(false);
@@ -113,7 +108,7 @@ export class OnboardingComponent implements OnInit, OnDestroy {
     });
 
     public ngOnInit(): void {
-        this.pendingJwtToken = this.activatedRoute.snapshot.queryParamMap.get('onboarding_token');
+        this.pendingJwtToken = this.activatedRoute.snapshot.queryParamMap.get('token');
     }
 
     public ngOnDestroy(): void {
@@ -147,13 +142,19 @@ export class OnboardingComponent implements OnInit, OnDestroy {
         this.onboardingError.set(null);
         this.onboardingSubmitting.set(true);
         const formValue = this.onboardingFormGroup.getRawValue();
-        const mobileWithDialCode = `${this.selectedCountry.dialCode}${formValue.mobile}`;
+        const dialCodeDigitsOnly = this.selectedCountry.dialCode.replace(/^\+/, '');
+        const mobileWithDialCode = `${dialCodeDigitsOnly}${formValue.mobile}`;
 
         this.usersService
             .submitOnboarding({
-                name: formValue.name,
-                mobile: mobileWithDialCode,
-                organization_name: formValue.organizationName,
+                user: {
+                    name: formValue.name,
+                    mobile: mobileWithDialCode,
+                },
+                client: {
+                    name: formValue.organizationName,
+                    mobile: mobileWithDialCode,
+                },
                 onboarding_token: this.pendingJwtToken ?? undefined,
             })
             .pipe(take(1), takeUntil(this.destroy$))
@@ -163,22 +164,8 @@ export class OnboardingComponent implements OnInit, OnDestroy {
                     if (jwtToken) {
                         this.authService.setTokenSync(jwtToken);
                     }
-
-                    this.actions$
-                        .pipe(ofType(logInActions.authenticatedAction), take(1), takeUntil(this.destroy$))
-                        .subscribe(() => {
-                            this.onboardingSubmitting.set(false);
-                            this.router.navigate(['/app/features/create']);
-                        });
-
-                    this.actions$
-                        .pipe(ofType(logInActions.logInActionError), take(1), takeUntil(this.destroy$))
-                        .subscribe(({ errors }) => {
-                            this.onboardingSubmitting.set(false);
-                            this.onboardingError.set(errors?.join(' ') || 'Something went wrong. Please try again.');
-                        });
-
-                    this.store.dispatch(logInActions.getUserAction());
+                    this.onboardingSubmitting.set(false);
+                    this.router.navigate(['/app/features/create']);
                 },
                 error: (error) => {
                     const errorBody = error?.error;

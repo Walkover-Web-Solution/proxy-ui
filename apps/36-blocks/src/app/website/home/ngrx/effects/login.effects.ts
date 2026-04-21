@@ -2,7 +2,7 @@ import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, switchMap, take } from 'rxjs/operators';
-import { from, of } from 'rxjs';
+import { from, of, throwError } from 'rxjs';
 import { errorResolver } from '@proxy/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
 import * as logInActions from '../actions/login.action';
@@ -29,25 +29,34 @@ export class LogInEffects {
             ofType(logInActions.emailLoginAction),
             switchMap(({ email, password }) =>
                 this.usersService.emailLogin(email, password).pipe(
-                    map((response) => {
+                    switchMap((response) => {
+                        if (response?.hasError) {
+                            const message =
+                                response?.errors?.message ||
+                                response?.data?.message ||
+                                response?.message ||
+                                'Login failed. Please check your credentials.';
+                            return throwError(() => message);
+                        }
                         const isOnboardingPending =
                             response?.data?.is_onboarding_pending === true || response?.is_onboarding_pending === true;
                         const jwtToken = response?.data?.token || response?.token || '';
                         if (isOnboardingPending && jwtToken) {
-                            return logInActions.emailLoginOnboardingPending({ pendingJwtToken: jwtToken });
+                            return of(logInActions.emailLoginOnboardingPending({ pendingJwtToken: jwtToken }));
                         }
                         if (jwtToken) {
                             this.authService.setTokenSync(jwtToken);
                         }
-                        return logInActions.emailLoginSuccess();
+                        return of(logInActions.emailLoginSuccess());
                     }),
                     catchError((error) => {
-                        const errorBody = error?.error;
                         const resolvedMessage =
-                            errorBody?.errors?.message ||
-                            errorBody?.data?.message ||
-                            errorBody?.message ||
-                            'Login failed. Please check your credentials.';
+                            typeof error === 'string'
+                                ? error
+                                : error?.errors?.message ||
+                                  error?.data?.message ||
+                                  error?.message ||
+                                  'Login failed. Please check your credentials.';
                         return of(logInActions.logInActionError({ errors: errorResolver(resolvedMessage) }));
                     })
                 )

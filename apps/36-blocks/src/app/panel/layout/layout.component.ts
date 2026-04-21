@@ -151,6 +151,28 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
             }
         });
 
+        this.clientSettings$.pipe(takeUntil(this.destroy$)).subscribe((clientSettings) => {
+            if (clientSettings?.client) {
+                this.logInData$.pipe(take(1)).subscribe((existingLoginData) => {
+                    if (!existingLoginData) {
+                        this.store.dispatch(
+                            logInActions.authenticatedAction({
+                                response: {
+                                    uid: String(clientSettings.client.id),
+                                    displayName: clientSettings.client.name,
+                                    email: clientSettings.client.email,
+                                    phoneNumber: clientSettings.client.mobile ?? null,
+                                    photoURL: null,
+                                    emailVerified: false,
+                                    jwtToken: this.authService.getTokenSync(),
+                                },
+                            })
+                        );
+                    }
+                });
+            }
+        });
+
         combineLatest([this.logInData$, this.clientSettings$]).subscribe(([loginData, clientSettings]) => {
             if (loginData && clientSettings) {
                 this.rootService.generateToken({ source: 'chatbot' }).subscribe((res) => {
