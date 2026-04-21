@@ -95,10 +95,6 @@ export class UsersService {
         return this.httpNoAuth.post(UsersUrl.register(this.baseURL), formData, this.options);
     }
 
-    public exchangeToken(code: string): Observable<{ token: string }> {
-        return this.httpNoAuth.post<{ token: string }>(UsersUrl.exchangeToken(this.baseURL), { code }, this.options);
-    }
-
     public emailLogin(email: string, password: string): Observable<any> {
         return this.httpNoAuth.post(UsersUrl.emailLogin(this.baseURL), { email, password }, this.options);
     }
