@@ -94,4 +94,16 @@ export class UsersService {
     public register(formData: any): Observable<any> {
         return this.httpNoAuth.post(UsersUrl.register(this.baseURL), formData, this.options);
     }
+
+    public emailLogin(email: string, password: string): Observable<any> {
+        return this.httpNoAuth.post(UsersUrl.emailLogin(this.baseURL), { email, password }, this.options);
+    }
+
+    public submitOnboarding(payload: {
+        user: { name: string; mobile: string };
+        client: { name: string; mobile: string };
+        onboarding_token?: string;
+    }): Observable<any> {
+        return this.httpNoAuth.post(UsersUrl.onboarding(this.baseURL), payload, this.options);
+    }
 }
