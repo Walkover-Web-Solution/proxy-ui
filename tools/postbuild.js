@@ -72,20 +72,29 @@ readDir(path.join(__dirname, rootDirectiory))
         });
     })
     .then(() => {
-        // Copy index.csr.html → app/index.html so static hosts (Amplify, S3, Nginx)
-        // can route /app/* to a clean Angular shell instead of the prerendered home page.
-        const csrHtmlPath = path.join(__dirname, rootDirectiory, 'index.csr.html');
+        // Copy index.html → app/index.html so static hosts (Amplify, S3, Nginx)
+        // can route /app/* to the CSR Angular shell.
+        // With SSR/prerender disabled the build outputs index.html directly (no index.csr.html).
+        const distIndexPath = path.join(__dirname, rootDirectiory, 'index.html');
         const appShellDir = path.join(__dirname, rootDirectiory, 'app');
         const appShellPath = path.join(appShellDir, 'index.html');
 
-        if (fs.existsSync(csrHtmlPath)) {
+        if (fs.existsSync(distIndexPath)) {
             if (!fs.existsSync(appShellDir)) {
                 fs.mkdirSync(appShellDir, { recursive: true });
             }
-            fs.copyFileSync(csrHtmlPath, appShellPath);
-            console.log(`Copied index.csr.html → app/index.html`);
+
+            let appShellHtml = fs.readFileSync(distIndexPath, 'utf8');
+
+            // Force base href to "/" so JS chunks load from the root, not from /app/
+            if (!appShellHtml.includes('<base href="/">')) {
+                appShellHtml = appShellHtml.replace(/<base\s+href="[^"]*"\s*\/?>/i, '<base href="/" />');
+            }
+
+            fs.writeFileSync(appShellPath, appShellHtml);
+            console.log(`Copied index.html → app/index.html (base href enforced)`);
         } else {
-            console.log('index.csr.html not found, skipping app/index.html copy');
+            console.log('index.html not found, skipping app/index.html copy');
         }
     })
     .catch((err) => {
