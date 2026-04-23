@@ -19,11 +19,6 @@
                 "outputPath": "dist/apps/36-blocks",
                 "index": "apps/36-blocks/src/index.html",
                 "browser": "apps/36-blocks/src/main.ts",
-                "server": "apps/36-blocks/src/main.server.ts",
-                "prerender": true,
-                "ssr": {
-                    "entry": "apps/36-blocks/src/server.ts"
-                },
                 "polyfills": ["zone.js"],
                 "tsConfig": "apps/36-blocks/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
