@@ -82,16 +82,8 @@ readDir(path.join(__dirname, rootDirectiory))
             if (!fs.existsSync(appShellDir)) {
                 fs.mkdirSync(appShellDir, { recursive: true });
             }
-
-            let appShellHtml = fs.readFileSync(csrHtmlPath, 'utf8');
-
-            // Force base href to "/" so JS chunks load from the root, not from /app/
-            if (!appShellHtml.includes('<base href="/">')) {
-                appShellHtml = appShellHtml.replace(/<base\s+href="[^"]*"\s*\/?>/i, '<base href="/" />');
-            }
-
-            fs.writeFileSync(appShellPath, appShellHtml);
-            console.log(`Copied index.csr.html → app/index.html (base href enforced)`);
+            fs.copyFileSync(csrHtmlPath, appShellPath);
+            console.log(`Copied index.csr.html → app/index.html`);
         } else {
             console.log('index.csr.html not found, skipping app/index.html copy');
         }
