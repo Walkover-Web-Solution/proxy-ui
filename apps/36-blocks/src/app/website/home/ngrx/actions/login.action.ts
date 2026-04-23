@@ -5,6 +5,13 @@ export const logInAction = createAction('[Auth] Log In Or Sign Up');
 export const logInActionComplete = createAction('[Auth] Log In Or Sign Up Complete');
 export const logInActionError = createAction('[Auth] Log In Or Sign Up Error', props<{ errors: string[] }>());
 
+export const emailLoginAction = createAction('[Auth] Email Login', props<{ email: string; password: string }>());
+export const emailLoginOnboardingPending = createAction(
+    '[Auth] Email Login Onboarding Pending',
+    props<{ pendingJwtToken: string }>()
+);
+export const emailLoginSuccess = createAction('[Auth] Email Login Success');
+
 export const authenticatedAction = createAction('[Auth] Authenticated', props<{ response: IFirebaseUserModel }>());
 
 export const NotAuthenticatedAction = createAction('[Auth] Unauthenticated', props<{ response: any }>());
@@ -14,3 +21,5 @@ export const logoutActionComplete = createAction('[Logout] User LogOut Complete'
 export const logoutActionError = createAction('[Logout] User LogOut Error', props<{ errors: string[] }>());
 
 export const getUserAction = createAction('[Auth] Get User');
+
+export const googleOneTapCredential = createAction('[Auth] Google One Tap Credential', props<{ idToken: string }>());

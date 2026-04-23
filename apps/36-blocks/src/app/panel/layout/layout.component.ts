@@ -38,6 +38,8 @@ import { environment } from '../../../environments/environment';
 import { AuthService } from '@proxy/services/proxy/auth';
 import { SideNavService } from './side-nav.service';
 import { UiSettingsService } from './ui-settings.service';
+import { FeaturesService } from '@proxy/services/proxy/features';
+import { take } from 'rxjs/operators';
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-layout',
@@ -85,6 +87,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     private cdr = inject(ChangeDetectorRef);
     public sideNavService = inject(SideNavService);
     private uiSettings = inject(UiSettingsService);
+    private featuresService = inject(FeaturesService);
 
     constructor() {
         super();
@@ -118,6 +121,18 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
             if (event?.url?.startsWith('/widget-preview')) {
                 (window as any).closeChatbot?.();
             }
+            if (event?.url?.includes('/features/create')) {
+                this.featuresService
+                    .getFeature({ itemsPerPage: 1, pageNo: 1 })
+                    .pipe(take(1))
+                    .subscribe((res) => {
+                        const hasFeatures = (res?.data?.totalEntityCount ?? 0) > 0;
+                        this.sideNavService.hideSidebar.set(!hasFeatures);
+                        this.cdr.markForCheck();
+                    });
+            } else {
+                this.sideNavService.hideSidebar.set(false);
+            }
             this.cdr.markForCheck();
         });
     }
@@ -133,6 +148,28 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
         this.swtichClientSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 location.href = '/app';
+            }
+        });
+
+        this.clientSettings$.pipe(takeUntil(this.destroy$)).subscribe((clientSettings) => {
+            if (clientSettings?.client) {
+                this.logInData$.pipe(take(1)).subscribe((existingLoginData) => {
+                    if (!existingLoginData) {
+                        this.store.dispatch(
+                            logInActions.authenticatedAction({
+                                response: {
+                                    uid: String(clientSettings.client.id),
+                                    displayName: clientSettings.client.name,
+                                    email: clientSettings.client.email,
+                                    phoneNumber: clientSettings.client.mobile ?? null,
+                                    photoURL: null,
+                                    emailVerified: false,
+                                    jwtToken: this.authService.getTokenSync(),
+                                },
+                            })
+                        );
+                    }
+                });
             }
         });
 
