@@ -13,7 +13,7 @@ export const appRoutes: Route[] = [
         loadChildren: () => import('./website/website.routes').then((r) => r.websiteRoutes),
     },
     {
-        path: 'app/onboarding',
+        path: 'onboarding',
         loadComponent: () => import('./panel/onboarding/onboarding.component').then((c) => c.OnboardingComponent),
     },
     {
