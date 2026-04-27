@@ -70,8 +70,14 @@ export class DashboardComponent extends BaseComponent implements OnInit {
 
     readonly overviewCards = OVERVIEW_CARDS;
 
-    getCardValue(data: any, path: string): number {
-        return path.split('.').reduce((acc, k) => acc?.[k], data) ?? 0;
+    getCardValue(data: any, path: string, fallbackPath?: string): number {
+        const read = (p: string) => p.split('.').reduce((acc, k) => acc?.[k], data);
+        const primary = read(path);
+        if (fallbackPath) {
+            if (primary) return primary as number;
+            return (read(fallbackPath) as number) ?? 0;
+        }
+        return (primary as number) ?? 0;
     }
 
     readonly rangeOptions = RANGE_OPTIONS;
