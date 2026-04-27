@@ -108,7 +108,7 @@ export class OnboardingComponent implements OnInit, OnDestroy {
     });
 
     public ngOnInit(): void {
-        this.pendingJwtToken = this.activatedRoute.snapshot.queryParamMap.get('token');
+        this.pendingJwtToken = this.activatedRoute.snapshot.queryParamMap.get('onboarding_token');
     }
 
     public ngOnDestroy(): void {
