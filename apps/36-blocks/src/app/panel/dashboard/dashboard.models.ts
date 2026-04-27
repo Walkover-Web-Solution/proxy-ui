@@ -33,6 +33,7 @@ export interface IRangeOption {
 export interface IOverviewCard {
     key: string;
     valueKey: string;
+    valueKeyFallback?: string;
     label: string;
     icon: string;
     sub: string;
@@ -85,7 +86,8 @@ export interface IBreakdownGroupByOption {
 export const OVERVIEW_CARDS: IOverviewCard[] = [
     {
         key: 'users',
-        valueKey: 'users.client_total',
+        valueKey: 'users.feature_configuration_total',
+        valueKeyFallback: 'users.client_total',
         label: 'Total Users',
         icon: 'people',
         sub: 'registered total',
