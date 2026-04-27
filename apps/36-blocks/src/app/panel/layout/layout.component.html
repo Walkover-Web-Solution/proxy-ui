@@ -3,6 +3,7 @@
         class="flex flex-col transition-all duration-200 mat-drawer-content max-desktop:fixed max-desktop:z-[999] max-desktop:top-0 max-desktop:bottom-0 bg-color p-2"
         [class.mat-drawer-toggle-btn-hover]="sideNavService.isSideNavOpen()"
         [class]="!sideNavService.isSideNavOpen() ? 'overflow-hidden !w-[56px] p-1.5' : 'w-[260px]'"
+        [class.!hidden]="sideNavService.hideSidebar()"
     >
         @let clientSettings = clientSettings$ | async; @let clientList = clients$ | async;
         @let isMultipleClients = (clientList?.data?.length ?? 0) > 1;

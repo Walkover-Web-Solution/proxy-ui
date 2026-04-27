@@ -2,16 +2,20 @@ import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, switchMap, take } from 'rxjs/operators';
-import { from, of } from 'rxjs';
+import { from, of, throwError } from 'rxjs';
 import { errorResolver } from '@proxy/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
 import * as logInActions from '../actions/login.action';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { GoogleAuthProvider } from 'firebase/auth';
 import { LoginService } from '@proxy/services/login';
+import { UsersService } from '@proxy/services/proxy/users';
 
 @Injectable()
 export class LogInEffects {
     private platformId = inject(PLATFORM_ID);
+
+    private usersService = inject(UsersService);
 
     constructor(
         private actions$: Actions,
@@ -19,6 +23,46 @@ export class LogInEffects {
         private loginService: LoginService,
         private afAuth: AngularFireAuth
     ) {}
+
+    emailLogin$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(logInActions.emailLoginAction),
+            switchMap(({ email, password }) =>
+                this.usersService.emailLogin(email, password).pipe(
+                    switchMap((response) => {
+                        if (response?.hasError) {
+                            const message =
+                                response?.errors?.message ||
+                                response?.data?.message ||
+                                response?.message ||
+                                'Login failed. Please check your credentials.';
+                            return throwError(() => message);
+                        }
+                        const isOnboardingPending =
+                            response?.data?.is_onboarding_pending === true || response?.is_onboarding_pending === true;
+                        const jwtToken = response?.data?.token || response?.token || '';
+                        if (isOnboardingPending && jwtToken) {
+                            return of(logInActions.emailLoginOnboardingPending({ pendingJwtToken: jwtToken }));
+                        }
+                        if (jwtToken) {
+                            this.authService.setTokenSync(jwtToken);
+                        }
+                        return of(logInActions.emailLoginSuccess());
+                    }),
+                    catchError((error) => {
+                        const resolvedMessage =
+                            typeof error === 'string'
+                                ? error
+                                : error?.errors?.message ||
+                                  error?.data?.message ||
+                                  error?.message ||
+                                  'Login failed. Please check your credentials.';
+                        return of(logInActions.logInActionError({ errors: errorResolver(resolvedMessage) }));
+                    })
+                )
+            )
+        )
+    );
 
     getUserAction$ = createEffect(() =>
         this.actions$.pipe(
@@ -53,6 +97,21 @@ export class LogInEffects {
                             return [logInActions.NotAuthenticatedAction({ response: null })];
                         }
                     })
+                );
+            })
+        )
+    );
+
+    // TODO (pending): googleOneTap$ effect activates only when googleClientId is set in env-variables.ts
+    // Flow: GIS id_token → Firebase signInWithCredential → logInActionComplete → existing backend chain
+    googleOneTap$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(logInActions.googleOneTapCredential),
+            switchMap(({ idToken }) => {
+                const firebaseCredential = GoogleAuthProvider.credential(idToken);
+                return from(this.afAuth.signInWithCredential(firebaseCredential)).pipe(
+                    map(() => logInActions.logInActionComplete()),
+                    catchError((error) => of(logInActions.logInActionError({ errors: errorResolver(error.message) })))
                 );
             })
         )
