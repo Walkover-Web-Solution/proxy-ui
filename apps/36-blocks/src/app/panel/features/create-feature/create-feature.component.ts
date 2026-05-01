@@ -68,6 +68,7 @@ import { CreateTaxDialogComponent } from './create-tax-dialog/create-tax-dialog.
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { ServiceListComponent, ServiceListItem } from '@proxy/ui/service-list';
 import { UiSettingsService } from '../../layout/ui-settings.service';
+import { SideNavService } from '../../layout/side-nav.service';
 import { WidgetThemeService } from 'apps/36-blocks-widget/src/app/otp/service/widget-theme.service';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FeaturePreviewComponent } from './feature-preview/feature-preview.component';
@@ -160,6 +161,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     private http = inject(HttpClient);
     private uiSettings = inject(UiSettingsService);
     private themeService = inject(WidgetThemeService);
+    public readonly sideNavService = inject(SideNavService);
 
     public taxes: any[] = [];
     public createPlanForm: any;

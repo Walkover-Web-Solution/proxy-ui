@@ -72,10 +72,7 @@
             </button>
         </div>
         <!-- Proxy Sidenav::START -->
-        <proxy-main-left-side-nav
-            class="mat-drawer-nav proxy-left-menu flex-1"
-            [isSideNavOpen]="!sideNavService.isSideNavOpen()"
-        ></proxy-main-left-side-nav>
+        <proxy-main-left-side-nav class="mat-drawer-nav proxy-left-menu flex-1"></proxy-main-left-side-nav>
         <!-- Proxy Sidenav::END -->
         @if (logInData$ | async; as user) {
             <proxy-sidebar-user-menu
