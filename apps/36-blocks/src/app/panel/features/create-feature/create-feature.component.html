@@ -3,9 +3,11 @@
         <proxy-loader></proxy-loader>
     }
     <div class="flex justify-start gap-2 mb-6" [class.items-start]="isEditMode" [class.items-center]="!isEditMode">
-        <button type="button" matIconButton [routerLink]="['/app', 'features']">
-            <mat-icon>keyboard_arrow_left</mat-icon>
-        </button>
+        @if (!sideNavService.hideSidebar()) {
+            <button type="button" matIconButton [routerLink]="['/app', 'features']">
+                <mat-icon>keyboard_arrow_left</mat-icon>
+            </button>
+        }
         @if (isEditMode) {
             <div class="flex items-center gap-1">
                 @if (nameFieldEditMode) {

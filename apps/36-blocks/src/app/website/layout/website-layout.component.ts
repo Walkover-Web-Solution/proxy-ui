@@ -5,6 +5,7 @@ import { filter, map, startWith } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import * as logInActions from '../home/ngrx/actions/login.action';
+import * as registrationActions from '../home/ngrx/actions/registration.action';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -76,5 +77,17 @@ export class WebsiteLayoutComponent implements OnInit, OnDestroy {
     public login(): void {
         this.closeMobileMenu();
         this.store.dispatch(logInActions.logInAction());
+    }
+
+    /**
+     * routerLink to /register is a no-op when already on /register, so the register page
+     * never re-initializes and the post-sign-up banner stays visible. Reset registration
+     * state so the form shows again.
+     */
+    public onRegisterCtaClick(): void {
+        const path = this.router.url.split('?')[0].split('#')[0];
+        if (path === '/register') {
+            this.store.dispatch(registrationActions.registrationResetAction());
+        }
     }
 }

@@ -3,7 +3,8 @@ import { RouterModule } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomValidators } from '@proxy/custom-validator';
 import { Store } from '@ngrx/store';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Actions, ofType } from '@ngrx/effects';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import * as registrationActions from '../home/ngrx/actions/registration.action';
 import {
     selectRegistrationInProgress,
@@ -27,6 +28,7 @@ export interface PasswordRule {
 })
 export class RegisterPageComponent implements OnInit, OnDestroy {
     private readonly store = inject(Store);
+    private readonly actions$ = inject(Actions);
 
     public readonly registrationInProgress = toSignal(this.store.select(selectRegistrationInProgress), {
         initialValue: false,
@@ -50,6 +52,13 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
     });
 
     public passwordVisible = false;
+
+    public constructor() {
+        this.actions$.pipe(ofType(registrationActions.registrationResetAction), takeUntilDestroyed()).subscribe(() => {
+            this.registrationFormGroup.reset({ email: '', password: '' });
+            this.passwordVisible = false;
+        });
+    }
 
     public ngOnInit(): void {
         this.store.dispatch(registrationActions.registrationResetAction());
