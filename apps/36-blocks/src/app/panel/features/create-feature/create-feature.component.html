@@ -3,9 +3,11 @@
         <proxy-loader></proxy-loader>
     }
     <div class="flex justify-start gap-2 mb-6" [class.items-start]="isEditMode" [class.items-center]="!isEditMode">
-        <button type="button" matIconButton [routerLink]="['/app', 'features']">
-            <mat-icon>keyboard_arrow_left</mat-icon>
-        </button>
+        @if (!sideNavService.hideSidebar()) {
+            <button type="button" matIconButton [routerLink]="['/app', 'features']">
+                <mat-icon>keyboard_arrow_left</mat-icon>
+            </button>
+        }
         @if (isEditMode) {
             <div class="flex items-center gap-1">
                 @if (nameFieldEditMode) {
@@ -300,7 +302,11 @@
     @if (isEditMode) {
         <div class="flex gap-4 grow items-start">
             <mat-card class="outline-card p-0 grow">
-                <mat-tab-group animationDuration="0ms" class="h-full block-feature-tabs">
+                <mat-tab-group
+                    animationDuration="0ms"
+                    class="h-full block-feature-tabs"
+                    [(selectedIndex)]="editModeMainTabIndex"
+                >
                     <mat-tab label="Service">
                         <div class="flex flex-col h-full p-6">
                             @if (featureForm.get('primaryDetails.feature_id')?.value === 1) {
@@ -437,11 +443,18 @@
                             </mat-tab>
                         </mat-tab-group>
                     </mat-tab>
+                    <mat-tab label="Manage Members">
+                        <div class="flex flex-col h-full p-6">
+                            <ng-container *ngTemplateOutlet="manageFeature"></ng-container>
+                        </div>
+                    </mat-tab>
                 </mat-tab-group>
             </mat-card>
-            <div class="shrink-0 sticky top-0 self-start">
-                <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
-            </div>
+            @if (editModeMainTabIndex !== editModeManageMembersTabIndex) {
+                <div class="shrink-0 sticky top-0 self-start">
+                    <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
+                </div>
+            }
         </div>
     }
 </div>
@@ -1191,6 +1204,15 @@
     </div>
 </ng-template>
 
+<ng-template #manageFeature>
+    <div class="flex flex-col gap-4">
+        <div class="">
+            <div>
+                <proxy-management [referenceId]="getReferenceId()"></proxy-management>
+            </div>
+        </div>
+    </div>
+</ng-template>
 <ng-template #webhook>
     <div class="flex flex-col gap-6 my-4">
         <div class="card-with-header">

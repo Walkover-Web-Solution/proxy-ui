@@ -1,13 +1,6 @@
 <main class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Hero -->
-    <section class="text-center pt-20 pb-16 sm:pt-24 sm:pb-20" aria-labelledby="pricing-heading">
-        <div
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6 bg-teal-400/10 border border-teal-400/30 text-teal-400"
-            aria-hidden="true"
-        >
-            <span class="w-2 h-2 rounded-full animate-pulse bg-teal-400"></span>
-            Simple, Transparent Pricing
-        </div>
+    <section class="text-center pt-10 pb-12 sm:pb-16" aria-labelledby="pricing-heading">
         <h1
             id="pricing-heading"
             class="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#f0f6fc] tracking-tight mb-5 leading-[1.1]"
@@ -104,6 +97,7 @@
                     <!-- CTA -->
                     <div class="px-7 pb-7">
                         <button
+                            routerLink="/register"
                             class="w-full py-3 px-6 !rounded-sm font-semibold text-sm transition-all duration-200 cursor-pointer hover:-translate-y-0.5 active:translate-y-0 border"
                             [ngClass]="
                                 plan.highlight

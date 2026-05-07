@@ -67,7 +67,9 @@ import { CreatePlanDialogComponent } from './create-plan-dialog/create-plan-dial
 import { CreateTaxDialogComponent } from './create-tax-dialog/create-tax-dialog.component';
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { ServiceListComponent, ServiceListItem } from '@proxy/ui/service-list';
+import { ManagementComponent } from '../../users/management/management.component';
 import { UiSettingsService } from '../../layout/ui-settings.service';
+import { SideNavService } from '../../layout/side-nav.service';
 import { WidgetThemeService } from 'apps/36-blocks-widget/src/app/otp/service/widget-theme.service';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FeaturePreviewComponent } from './feature-preview/feature-preview.component';
@@ -139,6 +141,7 @@ export interface PeriodicElement {
         ServiceListComponent,
         MatButtonToggleModule,
         FeaturePreviewComponent,
+        ManagementComponent,
     ],
     templateUrl: './create-feature.component.html',
     styleUrls: ['./create-feature.component.scss'],
@@ -160,6 +163,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     private http = inject(HttpClient);
     private uiSettings = inject(UiSettingsService);
     private themeService = inject(WidgetThemeService);
+    public readonly sideNavService = inject(SideNavService);
 
     public taxes: any[] = [];
     public createPlanForm: any;
@@ -220,6 +224,10 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public uploadLogoUrl$: Observable<string | null> = this.componentStore.uploadLogoUrl$;
     public errorInUploadLogo$: Observable<boolean> = this.componentStore.errorInUploadLogo$;
     public isEditMode = false;
+    /** Selected index of the edit-mode tab group; used to hide the preview panel on Manage Members. */
+    public editModeMainTabIndex = 0;
+    /** Manage Members tab index: Service, Branding, Setting, Design & code, Webhook, Manage Members. */
+    public readonly editModeManageMembersTabIndex = 5;
     public previewInputPosition: 'top' | 'bottom' = 'top';
     public selectedServiceIndex = 0;
     public selectedSubscriptionServiceIndex = -2;

@@ -1,9 +1,5 @@
 import { Route } from '@angular/router';
-import { redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { CanActivateRouteGuard } from '../website/home/authguard';
-import { ProjectGuard } from './guard/project.guard';
-
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
 export const panelRoutes: Route[] = [
     {
@@ -32,7 +28,6 @@ export const panelRoutes: Route[] = [
                 loadComponent: () => import('./chatbot/chatbot.component').then((c) => c.ChatbotComponent),
             },
         ],
-        data: { authGuardPipe: redirectUnauthorizedToLogin },
-        canActivate: [CanActivateRouteGuard, ProjectGuard],
+        canActivate: [CanActivateRouteGuard],
     },
 ];

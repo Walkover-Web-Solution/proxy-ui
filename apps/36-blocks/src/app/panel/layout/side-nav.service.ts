@@ -6,6 +6,7 @@ export class SideNavService {
     private uiSettings = inject(UiSettingsService);
 
     public isSideNavOpen = signal<boolean>(this.uiSettings.sideNavOpen);
+    public hideSidebar = signal<boolean>(false);
 
     public toggle(): void {
         const next = !this.isSideNavOpen();

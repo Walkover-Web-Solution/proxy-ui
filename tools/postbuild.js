@@ -72,21 +72,7 @@ readDir(path.join(__dirname, rootDirectiory))
         });
     })
     .then(() => {
-        // Copy index.csr.html → app/index.html so static hosts (Amplify, S3, Nginx)
-        // can route /app/* to a clean Angular shell instead of the prerendered home page.
-        const csrHtmlPath = path.join(__dirname, rootDirectiory, 'index.csr.html');
-        const appShellDir = path.join(__dirname, rootDirectiory, 'app');
-        const appShellPath = path.join(appShellDir, 'index.html');
-
-        if (fs.existsSync(csrHtmlPath)) {
-            if (!fs.existsSync(appShellDir)) {
-                fs.mkdirSync(appShellDir, { recursive: true });
-            }
-            fs.copyFileSync(csrHtmlPath, appShellPath);
-            console.log(`Copied index.csr.html → app/index.html`);
-        } else {
-            console.log('index.csr.html not found, skipping app/index.html copy');
-        }
+        console.log('Post-build tasks complete');
     })
     .catch((err) => {
         console.log('Error with post build:', err);

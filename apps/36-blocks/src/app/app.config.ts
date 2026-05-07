@@ -15,8 +15,10 @@ import { appRoutes } from './app.routes';
 import { environment } from '../environments/environment';
 import { reducers, clearStateMetaReducer } from './core/ngrx/store/app.state';
 import { loginsReducer } from './website/home/ngrx/store/login.state';
+import { registrationReducer } from './website/home/ngrx/reducers/registration.reducer';
 import { RootEffects } from './core/ngrx/effects/root';
 import { LogInEffects } from './website/home/ngrx/effects/login.effects';
+import { RegistrationEffects } from './website/home/ngrx/effects/registration.effects';
 import { ErrorInterceptor } from '@proxy/services/interceptor/errorInterceptor';
 import { ProxyBaseUrls } from '@proxy/models/root-models';
 import { AuthInitializerService } from './core/auth-initializer.service';
@@ -33,7 +35,8 @@ export const appConfig: ApplicationConfig = {
         provideHttpClient(withFetch(), withInterceptorsFromDi()),
         provideStore(reducers, { metaReducers: [clearStateMetaReducer] }),
         provideState('auth', loginsReducer),
-        provideEffects([RootEffects, LogInEffects]),
+        provideState('registration', registrationReducer),
+        provideEffects([RootEffects, LogInEffects, RegistrationEffects]),
         ...(!environment.production ? [provideStoreDevtools({ maxAge: 25, serialize: true })] : []),
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
         {

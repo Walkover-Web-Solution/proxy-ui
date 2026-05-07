@@ -1,5 +1,5 @@
 <div class="h-full flex flex-col gap-6">
-    <mat-form-field appearance="outline" class="no-padding w-full mt-6">
+    <!-- <mat-form-field appearance="outline" class="no-padding w-full mt-6">
         <mat-label>Block</mat-label>
         <mat-select [formControl]="roleForm.get('feature_id')" placeholder="Select Block">
             @for (feature of features; track feature.reference_id) {
@@ -9,7 +9,7 @@
         @if (roleForm.get('feature_id')?.hasError('required')) {
             <mat-error>Block is required</mat-error>
         }
-    </mat-form-field>
+    </mat-form-field> -->
     @if (!roleForm.get('feature_id')?.value) {
         <!-- Empty state: centered block selector -->
         <div class="flex-1 flex flex-col items-center justify-center gap-5 text-center">

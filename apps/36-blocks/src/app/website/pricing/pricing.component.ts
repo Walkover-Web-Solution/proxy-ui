@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { Meta, Title } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 
 export interface PricingFeature {
     text: string;
@@ -36,7 +37,7 @@ export interface TrustItem {
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-pricing',
-    imports: [CommonModule, MatIconModule],
+    imports: [CommonModule, RouterModule, MatIconModule],
     templateUrl: './pricing.component.html',
 })
 export class PricingComponent implements OnInit {

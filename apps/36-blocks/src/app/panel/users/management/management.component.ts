@@ -4,9 +4,12 @@ import {
     Component,
     OnInit,
     OnDestroy,
+    OnChanges,
+    SimpleChanges,
     ViewChild,
     TemplateRef,
     inject,
+    Input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -83,7 +86,7 @@ interface IRole {
     styleUrls: ['./management.component.scss'],
     providers: [FeatureComponentStore, UserComponentStore],
 })
-export class ManagementComponent implements OnInit, OnDestroy {
+export class ManagementComponent implements OnInit, OnDestroy, OnChanges {
     private featureComponentStore = inject(FeatureComponentStore);
     private userComponentStore = inject(UserComponentStore);
     private dialog = inject(MatDialog);
@@ -97,6 +100,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
         itemsPerPage: 1000,
         pageNo: 1,
     };
+    /** Current block `reference_id` when embedded (e.g. feature edit). Not the feature type id. */
+    @Input() referenceId: string | null = null;
     public roleSearchTerm: string = '';
     public permissionSearchTerm: string = '';
     public rolesPageSize: number = 25;
@@ -214,11 +219,22 @@ export class ManagementComponent implements OnInit, OnDestroy {
         });
     }
 
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['referenceId'] && this.referenceId && changes['referenceId'].firstChange === false) {
+            this.roleForm.patchValue({ feature_id: this.referenceId }, { emitEvent: true });
+            this.cdr.markForCheck();
+        }
+    }
+
     ngOnInit(): void {
         this.featureComponentStore.getFeature({ ...this.params });
-        this.features$.subscribe((features) => {
+        this.features$.pipe(takeUntil(this.destroy$)).subscribe((features) => {
             if (features) {
                 this.filterFeatures(features.data);
+                const referenceId = this.roleForm.get('feature_id')?.value as string | null;
+                if (referenceId) {
+                    this.bindSelectedFeatureByReferenceId(referenceId);
+                }
                 this.cdr.markForCheck();
             }
         });
@@ -297,12 +313,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
         // Subscribe to feature selection changes
         this.roleForm.get('feature_id')?.valueChanges.subscribe((referenceId: string | null) => {
             if (referenceId) {
-                // Find the selected feature and set its id
-                const selectedFeature = this.features.find((f) => f.reference_id === referenceId);
-                if (selectedFeature) {
-                    this.roleForm.get('id')?.setValue(selectedFeature.id, { emitEvent: false });
-                    this.userComponentStore.getFeatureDetails(of(selectedFeature.id));
-                }
+                this.bindSelectedFeatureByReferenceId(referenceId);
                 // Reset search terms and page indices when feature changes
                 this.roleSearchTerm = '';
                 this.permissionSearchTerm = '';
@@ -319,6 +330,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
                 this.permissionsPageIndex = 0;
             }
         });
+        if (this.referenceId) {
+            this.roleForm.patchValue({ feature_id: this.referenceId }, { emitEvent: true });
+        }
         this.createRole$
             .pipe(
                 filter((createRole) => !!createRole),
@@ -408,6 +422,18 @@ export class ManagementComponent implements OnInit, OnDestroy {
 
     public filterFeatures(features: IFeature[]): void {
         this.features = features.filter((feature) => feature.feature_id === 1);
+    }
+
+    /** Loads full feature details for Settings / default roles save. Call after `features` is populated (embed flow can set `feature_id` before the list arrives). */
+    private bindSelectedFeatureByReferenceId(referenceId: string): void {
+        const selectedFeature = this.features.find((f) => f.reference_id === referenceId);
+        if (!selectedFeature) {
+            return;
+        }
+        this.roleForm.get('id')?.setValue(selectedFeature.id, { emitEvent: false });
+        if (!this.featureDetails || this.featureDetails.id !== selectedFeature.id) {
+            this.userComponentStore.getFeatureDetails(of(selectedFeature.id));
+        }
     }
 
     public editRole(role: IRole): void {
@@ -635,29 +661,30 @@ export class ManagementComponent implements OnInit, OnDestroy {
         }
     }
     public saveDefaultRoles(): void {
-        if (this.defaultRolesForm.valid) {
-            const formData = this.defaultRolesForm.value;
-            const hiddenRoles: string[] = formData.hiddenDefaultRoles || [];
+        if (!this.defaultRolesForm.valid || !this.featureDetails?.id) {
+            return;
+        }
+        const formData = this.defaultRolesForm.value;
+        const hiddenRoles: string[] = formData.hiddenDefaultRoles || [];
 
-            const payload: any = {
-                id: this.featureDetails.id,
-                body: {
-                    extra_configurations: {
-                        c_roles: {
-                            default_creator_role: formData.defaultRoleForCreator,
-                            default_member_role: formData.defaultRoleForMember,
-                            hide_default_creator_role: hiddenRoles.includes('owner'),
-                            hide_default_member_role: hiddenRoles.includes('user'),
-                        },
-                        default_role: {
-                            name: 'Owner',
-                            value: 1,
-                        },
+        const payload: any = {
+            id: this.featureDetails.id,
+            body: {
+                extra_configurations: {
+                    c_roles: {
+                        default_creator_role: formData.defaultRoleForCreator,
+                        default_member_role: formData.defaultRoleForMember,
+                        hide_default_creator_role: hiddenRoles.includes('owner'),
+                        hide_default_member_role: hiddenRoles.includes('user'),
+                    },
+                    default_role: {
+                        name: 'Owner',
+                        value: 1,
                     },
                 },
-            };
-            this.userComponentStore.updateFeature(of(payload));
-        }
+            },
+        };
+        this.userComponentStore.updateFeature(of(payload));
     }
 
     public cancelDefaultRoles(): void {
