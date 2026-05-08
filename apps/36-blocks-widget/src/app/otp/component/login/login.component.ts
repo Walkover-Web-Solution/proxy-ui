@@ -39,6 +39,7 @@ import { NgHcaptchaModule } from 'ng-hcaptcha';
 })
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     public loginServiceData = input<any>();
+    public isCreateAccountTextAppended = input<boolean>(false);
     public theme = input<string>();
     protected readonly WidgetTheme = WidgetTheme;
     private readonly themeService = inject(WidgetThemeService);
