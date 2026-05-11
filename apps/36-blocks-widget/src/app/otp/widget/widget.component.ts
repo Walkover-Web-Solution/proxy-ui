@@ -248,7 +248,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 this.version = theme?.ui_preferences?.version || 'v1';
                 this.input_fields = theme?.ui_preferences?.input_fields || 'top';
                 this.show_social_login_icons = theme?.ui_preferences?.icons || false;
-                this.isCreateAccountTextAppended = theme?.ui_preferences?.create_account_link || false;
+                this.isCreateAccountTextAppended = theme?.ui_preferences?.block_registration || false;
                 this.dialogBorderRadius = this.getBorderRadiusCssValue(theme?.ui_preferences?.border_radius);
             });
         if (this.type === PublicScriptType.Subscription) {
@@ -873,7 +873,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 loginButton.disabled = false;
                 loginButton.textContent = originalText;
 
-                if (error?.status === 403) {
+                if (error?.status === 403 && this.isCreateAccountTextAppended) {
                     this.setShowRegistration(true, username);
                     resetHCaptcha();
                     return;
@@ -1441,7 +1441,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     private appendCreateAccountText(element): void {
-        if (!this.isCreateAccountTextAppended) {
+        if (this.isCreateAccountTextAppended) {
             return;
         }
         const existingCreateAccountText = element.querySelector('p[data-create-account="true"]');
@@ -1546,7 +1546,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 }
             },
             (error: HttpErrorResponse) => {
-                if (error?.status === 403) {
+                if (error?.status === 403 && this.isCreateAccountTextAppended) {
                     this.setShowRegistration(true);
                     this.show.set(true);
                     this.registrationViaLogin = false;

@@ -5,11 +5,10 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { WidgetTheme, PublicScriptType, WidgetConfig, PROXY_DOM_ID } from '@proxy/constant';
 import { WidgetThemeService } from './otp/service/widget-theme.service';
 
-const REFERENCE_ID = '4512365o177529298869d0d23cc0453';
+const REFERENCE_ID = '4512365b177668815069e61c1692def';
 const THEME: WidgetTheme = WidgetTheme.System;
-const TYPE: PublicScriptType = PublicScriptType.UserManagement;
-const AUTH_TOKEN =
-    'cmtQRzJ4KzBwajJ4QS9vOVFMR1ZmamxLaGFGazlRcnpiOUM4NFhPWXdDZkRDV293T0VWV0tFV1NFbVlmVTE2WkRsUHFVUk5ybHREUHk2VjdLM2FDNFcybDF6MjJnOFY5MjNZTVdQVVVWVWVJTDJHakNHNFRadVJwWDRmUVZrakVCNVVTdGZhSVRadmlYVEZTS1FJZTl2cSsycUpaQVpCZ2JyYmoxVVBPYTI0bXpBLy9lUkozTTJTVU9XWUl6VjI4a3ZyVGlOajVmczkvK0VNc3hXa3Mzdz09';
+const TYPE: PublicScriptType = PublicScriptType.Authorization;
+const AUTH_TOKEN = '';
 
 @Component({
     selector: 'proxy-root',
@@ -62,30 +61,30 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                     console.log('Failure reason:', error);
                 },
             };
-            if (TYPE) {
-                widgetConfig['type'] = TYPE;
+            // if (TYPE) {
+            //     widgetConfig['type'] = TYPE;
 
-                if (TYPE === PublicScriptType.Authorization) {
-                    // Optional: Path to redirect after login (e.g., '/login') only used get proxy_auth_token in admin panel while preview
-                    // widgetConfig['redirect_path'] = '/login';
-                    // Used to show Company details in the signup/registration form, default is true
-                    // showCompanyDetails: false,
-                } else {
-                    widgetConfig['authToken'] = AUTH_TOKEN;
+            //     if (TYPE === PublicScriptType.Authorization) {
+            //         // Optional: Path to redirect after login (e.g., '/login') only used get proxy_auth_token in admin panel while preview
+            //         // widgetConfig['redirect_path'] = '/login';
+            //         // Used to show Company details in the signup/registration form, default is true
+            //         // showCompanyDetails: false,
+            //     } else {
+            //         widgetConfig['authToken'] = AUTH_TOKEN;
 
-                    if (TYPE === PublicScriptType.UserManagement) {
-                        // Enables the Role & Permission tab in the User Management widget
-                        widgetConfig['isRolePermission'] = false;
-                    }
+            //         if (TYPE === PublicScriptType.UserManagement) {
+            //             // Enables the Role & Permission tab in the User Management widget
+            //             widgetConfig['isRolePermission'] = false;
+            //         }
 
-                    // Note: Currently Subscription widget is not in use.
-                    if (TYPE === PublicScriptType.Subscription) {
-                        // Use in Subscription widget to redirect
-                        // loginRedirectUrl: 'https://www.google.com',
-                        // widgetConfig['isPreview'] = true;
-                    }
-                }
-            }
+            //         // Note: Currently Subscription widget is not in use.
+            //         if (TYPE === PublicScriptType.Subscription) {
+            //             // Use in Subscription widget to redirect
+            //             // loginRedirectUrl: 'https://www.google.com',
+            //             // widgetConfig['isPreview'] = true;
+            //         }
+            //     }
+            // }
             if (THEME) {
                 widgetConfig['theme'] = THEME;
             }

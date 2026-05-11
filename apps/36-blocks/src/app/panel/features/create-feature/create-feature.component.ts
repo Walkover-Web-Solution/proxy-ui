@@ -440,7 +440,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 title: feature.ui_preferences?.title,
                                 sign_up_button_text: feature.ui_preferences?.sign_up_button_text ?? 'Create an account',
                                 icons: feature.ui_preferences?.icons ?? false,
-                                create_account_link: feature.ui_preferences?.create_account_link ?? true,
+                                create_account_link: feature.block_registration ?? true,
                                 theme: feature.ui_preferences?.theme || 'system',
                                 version: feature.ui_preferences?.version || 'v1',
                             },
@@ -882,6 +882,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                             logo_url:
                                 this.logoInputMode === 'file' ? this.logoUrl() : brandingDetailsForm.value.logo_url,
                         },
+                        block_registration: brandingDetailsForm.value.create_account_link || false,
                     };
                 } else {
                     brandingDetailsForm.markAllAsTouched();

@@ -50,13 +50,12 @@ function validateWidgetConfig(config: any): void {
 
 if (!window.initVerification) {
     window['initVerification'] = (config: any) => {
-        // Validate widget config and show error in console
-        validateWidgetConfig(config);
-
-        // In case of no type, set default to Authorization
+        // Default before validation: referenceId-only / legacy embeds omit `type` (authorization login widget).
         if (!config?.type) {
             config = { ...config, type: PublicScriptType.Authorization };
         }
+        validateWidgetConfig(config);
+
         const initFn = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const isRegisterFormOnlyFromParams = urlParams.get('isRegisterFormOnly') === 'true';
