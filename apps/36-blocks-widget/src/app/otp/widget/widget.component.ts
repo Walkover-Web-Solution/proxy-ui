@@ -1441,7 +1441,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     private appendCreateAccountText(element): void {
-        if (!this.isCreateAccountTextAppended) {
+        if (this.isCreateAccountTextAppended) {
             return;
         }
         const existingCreateAccountText = element.querySelector('p[data-create-account="true"]');

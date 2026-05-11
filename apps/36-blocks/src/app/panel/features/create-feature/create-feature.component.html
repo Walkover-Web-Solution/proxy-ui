@@ -909,7 +909,7 @@
             }
 
             <!-- Are you a new user - always at bottom -->
-            @if (featureForm.get('brandingDetails.create_account_link').value) {
+            @if (!featureForm.get('brandingDetails.create_account_link').value) {
                 <p class="mat-body-2 text-center font-14" [style.color]="getEffectivePrimaryColor()">
                     Are you a new user?
                     <a class="text-link" href="#">{{
