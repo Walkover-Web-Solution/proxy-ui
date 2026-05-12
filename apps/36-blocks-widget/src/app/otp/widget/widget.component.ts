@@ -873,7 +873,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 loginButton.disabled = false;
                 loginButton.textContent = originalText;
 
-                if (error?.status === 403 && this.isCreateAccountTextAppended) {
+                if (error?.status === 403 && !this.isCreateAccountTextAppended) {
                     this.setShowRegistration(true, username);
                     resetHCaptcha();
                     return;
@@ -1546,7 +1546,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 }
             },
             (error: HttpErrorResponse) => {
-                if (error?.status === 403 && this.isCreateAccountTextAppended) {
+                if (error?.status === 403 && !this.isCreateAccountTextAppended) {
                     this.setShowRegistration(true);
                     this.show.set(true);
                     this.registrationViaLogin = false;
