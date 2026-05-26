@@ -1120,6 +1120,57 @@
                             }
                         "
                     ></ng-container>
+                    <mat-form-field
+                        appearance="outline"
+                        class="w-full"
+                        [class.mat-form-field-invalid]="
+                            featureForm.get('authorizationDetails.origins')?.invalid &&
+                            featureForm.get('authorizationDetails.origins')?.touched
+                        "
+                    >
+                        <mat-label>Allowed Domains & IPs</mat-label>
+                        <mat-chip-grid #authorizationOriginsChipList aria-label="Allowed Domains and IPs" required>
+                            @for (item of chipListValues[authorizationOriginsChipKey]; track item) {
+                                <mat-chip-row
+                                    (removed)="
+                                        updateChipListValues(
+                                            'delete',
+                                            authorizationOriginsChipKey,
+                                            featureForm.get('authorizationDetails.origins'),
+                                            item
+                                        )
+                                    "
+                                    removable
+                                    disableRipple
+                                >
+                                    {{ item }}
+                                    <button type="button" matChipRemove>
+                                        <mat-icon>cancel</mat-icon>
+                                    </button>
+                                </mat-chip-row>
+                            }
+                            <input
+                                matChipInput
+                                type="text"
+                                [placeholder]="
+                                    chipListValues[authorizationOriginsChipKey]?.size
+                                        ? ''
+                                        : 'Enter domain or IP and press Enter'
+                                "
+                                autocomplete="off"
+                                [matChipInputFor]="authorizationOriginsChipList"
+                                [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
+                                (matChipInputTokenEnd)="addAuthorizationOrigin($event.value, $event.chipInput)"
+                            />
+                        </mat-chip-grid>
+                        <mat-hint>Press Enter to add. e.g. domain.in, example.com, 192.168.1.1</mat-hint>
+                        @if (
+                            featureForm.get('authorizationDetails.origins')?.hasError('atleastOneValueInChipList') &&
+                            featureForm.get('authorizationDetails.origins')?.touched
+                        ) {
+                            <mat-error>At least one domain or IP is required</mat-error>
+                        }
+                    </mat-form-field>
                     <!-- @if (isEditMode && featureForm.get('primaryDetails.feature_id')?.value === 1) {
                         <div class="flex items-center justify-between gap-3 py-3 px-3 my-3 rounded-lg">
                             <div class="flex flex-col gap-0.5">

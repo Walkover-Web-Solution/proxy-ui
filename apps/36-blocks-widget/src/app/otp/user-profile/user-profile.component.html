@@ -287,7 +287,7 @@
             </div>
 
             <form [formGroup]="clientForm" class="w-dialog-body">
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div class="flex flex-col gap-4">
                     <div>
                         <label for="profile-name" class="w-label">
                             Full Name <span class="text-red-500" aria-hidden="true">*</span>
@@ -305,19 +305,170 @@
                             <p role="alert" class="w-field-error">Invalid name format.</p>
                         }
                     </div>
+
                     <div>
                         <label for="profile-mobile" class="w-label">Mobile</label>
-                        <input
-                            id="profile-mobile"
-                            type="text"
-                            formControlName="mobile"
-                            placeholder="Not provided"
-                            readonly
-                            aria-readonly="true"
-                            class="w-input-readonly"
-                        />
+                        @if (!isEditingMobile()) {
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 min-w-0">
+                                    <input
+                                        id="profile-mobile-readonly"
+                                        type="text"
+                                        [value]="displayMobile"
+                                        placeholder="Not provided"
+                                        readonly
+                                        aria-readonly="true"
+                                        class="w-input-readonly"
+                                    />
+                                </div>
+                                <button type="button" (click)="startEditMobile()" class="w-btn-secondary-sm shrink-0">
+                                    Edit
+                                </button>
+                            </div>
+                        } @else {
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                                Enter number with country code, without + (e.g. 919876543210)
+                            </p>
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 min-w-0">
+                                    <input
+                                        id="profile-mobile"
+                                        type="tel"
+                                        formControlName="mobile"
+                                        autocomplete="off"
+                                        class="w-input"
+                                        [class.border-red-500]="
+                                            clientForm.get('mobile')?.touched && !isProfileMobileValid()
+                                        "
+                                        (keypress)="onMobileKeypress($event)"
+                                        (input)="onMobileInput()"
+                                        (blur)="onMobileBlur()"
+                                        placeholder="919876543210"
+                                    />
+                                </div>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    @if (!isMobileOtpVerified) {
+                                        <button
+                                            type="button"
+                                            (click)="isMobileOtpSent ? resendOtp() : getOtp()"
+                                            [disabled]="
+                                                (selectGetOtpInProcess$ | async) || (isMobileOtpSent && !canResendOtp)
+                                            "
+                                            class="w-btn-primary whitespace-nowrap px-3"
+                                        >
+                                            @if (!isMobileOtpSent) {
+                                                {{ (selectGetOtpInProcess$ | async) ? 'Sending...' : 'Get OTP' }}
+                                            } @else if (isMobileOtpSent && !canResendOtp) {
+                                                Resend in {{ resendTimer }}s
+                                            } @else if (
+                                                isMobileOtpSent && canResendOtp && !(selectGetOtpInProcess$ | async)
+                                            ) {
+                                                Resend OTP
+                                            } @else {
+                                                Sending...
+                                            }
+                                        </button>
+                                    } @else {
+                                        <span class="flex items-center gap-1 text-sm font-medium text-green-600">
+                                            Verified
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                height="18px"
+                                                viewBox="0 -960 960 960"
+                                                width="18px"
+                                                fill="#4caf50"
+                                                aria-hidden="true"
+                                            >
+                                                <path
+                                                    d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+                                                />
+                                            </svg>
+                                        </span>
+                                    }
+                                    <button type="button" (click)="cancelEditMobile()" class="w-btn-secondary">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                            @if (clientForm.get('mobile')?.touched && !isProfileMobileValid()) {
+                                <p role="alert" class="w-field-error">
+                                    Enter a valid mobile number with country code (10–15 digits).
+                                </p>
+                            } @else if (clientForm.get('mobile')?.errors?.otpVerificationFailed) {
+                                <p role="alert" class="w-field-error">Please verify the mobile number.</p>
+                            }
+
+                            @if (isNumberChanged || isMobileOtpVerified) {
+                                <div class="flex justify-end mt-1">
+                                    <a href="javascript:void(0)" (click)="numberChanged()" class="w-link"
+                                        >Change Number</a
+                                    >
+                                </div>
+                            }
+
+                            @if (isMobileOtpSent && !isMobileOtpVerified) {
+                                <div class="flex flex-col gap-2 mt-2">
+                                    <div class="flex items-center flex-wrap gap-3" [formGroup]="otpForm">
+                                        <input
+                                            type="text"
+                                            maxlength="1"
+                                            formControlName="otp1"
+                                            (input)="onOtpInput($event, 'otp1', otp2)"
+                                            (keyup)="onOtpKeyup($event, 'otp1')"
+                                            (keydown)="onOtpKeydown($event)"
+                                            (paste)="onOtpPaste($event)"
+                                            #otp1
+                                            class="w-input-otp"
+                                        />
+                                        <input
+                                            type="text"
+                                            maxlength="1"
+                                            formControlName="otp2"
+                                            (input)="onOtpInput($event, 'otp2', otp3)"
+                                            (keyup)="onOtpKeyup($event, 'otp2')"
+                                            (keydown)="onOtpKeydown($event, otp1)"
+                                            #otp2
+                                            class="w-input-otp"
+                                        />
+                                        <input
+                                            type="text"
+                                            maxlength="1"
+                                            formControlName="otp3"
+                                            (input)="onOtpInput($event, 'otp3', otp4)"
+                                            (keyup)="onOtpKeyup($event, 'otp3')"
+                                            (keydown)="onOtpKeydown($event, otp2)"
+                                            #otp3
+                                            class="w-input-otp"
+                                        />
+                                        <input
+                                            type="text"
+                                            maxlength="1"
+                                            formControlName="otp4"
+                                            (input)="onOtpInput($event, 'otp4')"
+                                            (keyup)="onOtpKeyup($event, 'otp4')"
+                                            (keydown)="onOtpKeydown($event, otp3)"
+                                            #otp4
+                                            class="w-input-otp"
+                                        />
+                                        <a
+                                            href="javascript:void(0)"
+                                            (click)="verifyOtp()"
+                                            [class.opacity-50]="selectVerifyOtpV2InProcess$ | async"
+                                            [class.pointer-events-none]="selectVerifyOtpV2InProcess$ | async"
+                                            class="w-link"
+                                        >
+                                            {{ (selectVerifyOtpV2InProcess$ | async) ? 'Verifying...' : 'Verify OTP' }}
+                                        </a>
+                                    </div>
+                                    @if (otpError) {
+                                        <p class="text-xs text-red-600 dark:text-red-400">{{ otpError }}</p>
+                                    }
+                                </div>
+                            }
+                        }
                     </div>
-                    <div class="sm:col-span-2">
+
+                    <div>
                         <label for="profile-email" class="w-label">Email Address</label>
                         <input
                             id="profile-email"

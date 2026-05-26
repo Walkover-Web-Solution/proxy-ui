@@ -58,7 +58,10 @@ export const leaveCompanyError = createAction(
     props<{ errors: string[]; errorResponse: any }>()
 );
 
-export const updateUser = createAction('[OTP] Update Field', props<{ name: string; authToken: string }>());
+export const updateUser = createAction(
+    '[OTP] Update Field',
+    props<{ name: string; authToken: string; mobile?: string; otpVerificationToken?: string }>()
+);
 export const updateUserComplete = createAction('[OTP] Update User Success', props<{ response: any }>());
 export const updateUserError = createAction(
     '[OTP] Update User Failure',

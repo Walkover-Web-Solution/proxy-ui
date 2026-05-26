@@ -22,23 +22,52 @@ import { ToastService } from '../service/toast.service';
 import { ToastComponent } from '../service/toast.component';
 import { ConfirmDialogComponent } from '../ui/confirm-dialog.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, takeUntil, take, filter, skip } from 'rxjs';
+import {
+    BehaviorSubject,
+    distinctUntilChanged,
+    interval,
+    map,
+    Observable,
+    Subscription,
+    takeUntil,
+    take,
+    filter,
+    skip,
+} from 'rxjs';
 import { IAppState } from '../store/app.state';
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import { getUserDetails, leaveCompany, leaveCompanyError, updateUser } from '../store/actions/otp.action';
+import {
+    getUserDetails,
+    leaveCompany,
+    leaveCompanyError,
+    resetAnyState,
+    sendOtpAction,
+    updateUser,
+    verifyOtpAction,
+} from '../store/actions/otp.action';
 import {
     error,
     getUserProfileData,
     getUserProfileInProcess,
     updateSuccess,
     leaveCompanySuccess,
+    selectGetOtpInProcess,
+    selectGetOtpSuccess,
+    selectVerifyOtpV2InProcess,
+    selectVerifyOtpV2Success,
+    selectVerifyOtpV2Data,
+    selectApiErrorResponse,
 } from '../store/selectors';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { isEqual } from 'lodash-es';
 import { NAME_REGEX } from '@proxy/regex';
 import { WidgetTheme } from '@proxy/constant';
 import { WidgetThemeService } from '../service/widget-theme.service';
+
+/** Digits only, 10–15 chars, with country code (e.g. 919876543210) */
+const PROFILE_MOBILE_REGEX = /^[1-9]\d{9,14}$/;
+
 @Component({
     selector: 'user-profile',
     imports: [CommonModule, ReactiveFormsModule, ToastComponent, ConfirmDialogComponent],
@@ -81,11 +110,32 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     public userInProcess$: Observable<boolean>;
     public deleteCompany$: Observable<any>;
     public update$: Observable<any>;
+    public selectGetOtpInProcess$: Observable<boolean>;
+    public selectGetOtpSuccess$: Observable<boolean>;
+    public selectVerifyOtpV2InProcess$: Observable<boolean>;
+    public selectVerifyOtpV2Success$: Observable<boolean>;
     public previousName: string;
+    public previousMobile: string = '';
     public errorMessage: string;
     public error$: Observable<any>;
     public companyDetails;
-    // authToken: string = '';
+
+    public otpForm = new FormGroup({
+        otp1: new FormControl<string>(''),
+        otp2: new FormControl<string>(''),
+        otp3: new FormControl<string>(''),
+        otp4: new FormControl<string>(''),
+    });
+
+    public isMobileOtpVerified = false;
+    public isMobileOtpSent = false;
+    public isNumberChanged = false;
+    public otpError = '';
+    public resendTimer = 0;
+    public canResendOtp = true;
+    public lastSentMobileNumber = '';
+    public otpVerificationToken = '';
+    private timerSubscription: Subscription;
 
     clientForm = new FormGroup({
         name: new FormControl('', [Validators.required, Validators.pattern(NAME_REGEX)]),
@@ -94,6 +144,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     });
 
     public readonly isEditing = signal(false);
+    public readonly isEditingMobile = signal(false);
 
     private store = inject<Store<IAppState>>(Store);
     private readonly actions$ = inject(Actions);
@@ -130,6 +181,26 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
         );
         this.update$ = this.store.pipe(select(updateSuccess), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
         this.error$ = this.store.pipe(select(error), distinctUntilChanged(isEqual), takeUntil(this.destroy$));
+        this.selectGetOtpInProcess$ = this.store.pipe(
+            select(selectGetOtpInProcess),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.selectGetOtpSuccess$ = this.store.pipe(
+            select(selectGetOtpSuccess),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.selectVerifyOtpV2InProcess$ = this.store.pipe(
+            select(selectVerifyOtpV2InProcess),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
+        this.selectVerifyOtpV2Success$ = this.store.pipe(
+            select(selectVerifyOtpV2Success),
+            distinctUntilChanged(isEqual),
+            takeUntil(this.destroy$)
+        );
     }
 
     ngAfterViewInit(): void {
@@ -139,6 +210,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     }
 
     ngOnDestroy(): void {
+        this.stopResendTimer();
         this.editDialogRef?.detach();
         this.confirmDialogPortalRef?.detach();
         this.toastPortalRef?.detach();
@@ -152,7 +224,9 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
                 this.companyDetails = res;
                 this.clientForm.get('name').setValue(res?.name);
                 this.clientForm.get('email').setValue(res?.email);
-                this.clientForm.get('mobile').setValue(res?.mobile ? res.mobile : '--Not Provided--');
+                const mobile = res?.mobile && res.mobile !== '--Not Provided--' ? res.mobile : '';
+                this.previousMobile = mobile;
+                this.clientForm.get('mobile').setValue(mobile);
             }
         });
 
@@ -161,6 +235,44 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
                 this.clientForm.get('name').markAsTouched();
             }
         });
+
+        this.selectVerifyOtpV2Success$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            this.isMobileOtpVerified = res;
+            if (res) {
+                this.clientForm.get('mobile').setErrors(null);
+                this.otpError = '';
+            }
+            this.cdr.markForCheck();
+        });
+
+        this.store
+            .pipe(select(selectVerifyOtpV2Data), distinctUntilChanged(isEqual), takeUntil(this.destroy$))
+            .subscribe((res) => {
+                if (res?.data?.otp_verification_token) {
+                    this.otpVerificationToken = res.data.otp_verification_token;
+                }
+                this.cdr.markForCheck();
+            });
+
+        this.selectGetOtpSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
+            if (res) {
+                this.isMobileOtpSent = true;
+                this.startResendTimer();
+                this.lastSentMobileNumber = this.getMobileIdentifier();
+                this.lockMobileInput();
+                this.cdr.markForCheck();
+            }
+        });
+
+        this.store
+            .pipe(select(selectApiErrorResponse), distinctUntilChanged(isEqual), takeUntil(this.destroy$))
+            .subscribe((errorResponse) => {
+                if (errorResponse && this.isMobileOtpSent && !this.isMobileOtpVerified) {
+                    this.otpError = 'Please enter valid OTP';
+                    this.otpForm.reset();
+                    this.cdr.markForCheck();
+                }
+            });
 
         this.store.dispatch(
             getUserDetails({
@@ -213,7 +325,256 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
         this.store.dispatch(leaveCompany({ companyId, authToken: this.authToken() }));
     }
 
+    public get displayMobile(): string {
+        const value = this.clientForm.get('mobile')?.value;
+        if (!value || value === '--Not Provided--') {
+            return 'Not provided';
+        }
+        return value;
+    }
+
+    public startEditMobile(): void {
+        this.resetMobileOtpState();
+        this.isEditingMobile.set(true);
+        const mobileControl = this.clientForm.get('mobile');
+        mobileControl.enable();
+        if (mobileControl.value === '--Not Provided--') {
+            mobileControl.setValue('');
+        }
+        this.cdr.detectChanges();
+    }
+
+    public cancelEditMobile(): void {
+        this.isEditingMobile.set(false);
+        this.resetMobileOtpState();
+        const mobileControl = this.clientForm.get('mobile');
+        mobileControl.setValue(this.previousMobile);
+        mobileControl.disable();
+        this.cdr.detectChanges();
+    }
+
+    public getMobileIdentifier(): string {
+        const mobileControl = this.clientForm.get('mobile');
+        const value = mobileControl?.disabled ? mobileControl.getRawValue() : mobileControl?.value;
+        return this.normalizeMobileDigits(value ?? '');
+    }
+
+    public isProfileMobileValid(): boolean {
+        const digits = this.getMobileIdentifier();
+        return PROFILE_MOBILE_REGEX.test(digits);
+    }
+
+    public onMobileBlur(): void {
+        const mobileControl = this.clientForm.get('mobile');
+        mobileControl?.markAsTouched();
+        const digits = this.getMobileIdentifier();
+        if (digits !== mobileControl?.value) {
+            mobileControl?.setValue(digits, { emitEvent: false });
+        }
+        this.cdr.detectChanges();
+    }
+
+    public onMobileKeypress(event: KeyboardEvent): void {
+        const char = event.key;
+        if (char.length === 1 && !/[0-9+]/.test(char)) {
+            event.preventDefault();
+        }
+    }
+
+    public numberChanged(): void {
+        this.isMobileOtpSent = false;
+        this.isMobileOtpVerified = false;
+        this.otpVerificationToken = '';
+        this.otpForm.reset();
+        this.unlockMobileInput();
+        this.cdr.detectChanges();
+    }
+
+    private lockMobileInput(): void {
+        this.isNumberChanged = true;
+        this.clientForm.get('mobile')?.disable({ emitEvent: false });
+    }
+
+    private unlockMobileInput(): void {
+        this.isNumberChanged = false;
+        if (this.isEditingMobile()) {
+            this.clientForm.get('mobile')?.enable({ emitEvent: false });
+        }
+    }
+
+    public getOtp(): void {
+        this.sendOtp(false);
+    }
+
+    public resendOtp(): void {
+        this.sendOtp(true);
+    }
+
+    private sendOtp(isResend: boolean): void {
+        const mobileControl = this.clientForm.get('mobile');
+        if (mobileControl.errors?.otpVerificationFailed) {
+            mobileControl.setErrors(null);
+        }
+        mobileControl.markAsTouched();
+        if (!this.isProfileMobileValid()) {
+            this.cdr.detectChanges();
+            return;
+        }
+        const currentMobile = this.getMobileIdentifier();
+        if (isResend && currentMobile !== this.lastSentMobileNumber) {
+            this.stopResendTimer();
+            this.canResendOtp = true;
+            this.lastSentMobileNumber = currentMobile;
+        }
+        if (!this.canResendOtp) {
+            return;
+        }
+        this.store.dispatch(
+            sendOtpAction({
+                request: {
+                    authToken: this.authToken(),
+                    identifier: currentMobile,
+                },
+            })
+        );
+    }
+
+    public verifyOtp(): void {
+        const otpValues = this.otpForm.value;
+        const otpArray = [otpValues.otp1, otpValues.otp2, otpValues.otp3, otpValues.otp4];
+        const otpString = otpArray.filter((val) => val && val.trim() !== '').join('');
+
+        if (otpString.length === 4) {
+            this.store.dispatch(
+                verifyOtpAction({
+                    request: {
+                        authToken: this.authToken(),
+                        identifier: this.getMobileIdentifier(),
+                        otp: otpString,
+                    },
+                })
+            );
+        }
+    }
+
+    public onMobileInput(): void {
+        if (this.isNumberChanged) {
+            return;
+        }
+        this.isMobileOtpSent = false;
+        this.isMobileOtpVerified = false;
+        this.otpVerificationToken = '';
+        this.otpForm.reset();
+        const value = this.getMobileIdentifier();
+        if (value !== this.lastSentMobileNumber) {
+            this.stopResendTimer();
+            this.canResendOtp = true;
+        }
+        this.cdr.detectChanges();
+    }
+
+    public onOtpInput(event: Event, controlName: string, nextInput?: HTMLInputElement): void {
+        const input = event.target as HTMLInputElement;
+        let value = input.value;
+        if (!/^\d*$/.test(value)) {
+            value = value.replace(/\D/g, '');
+            input.value = value;
+        }
+        this.otpForm.get(controlName).setValue(value);
+        if (this.otpError) {
+            this.otpError = '';
+        }
+        this.cdr.detectChanges();
+        if (value && nextInput) {
+            nextInput.focus();
+        }
+    }
+
+    public onOtpKeyup(event: Event, controlName: string): void {
+        const input = event.target as HTMLInputElement;
+        this.otpForm.get(controlName).setValue(input.value);
+        this.cdr.detectChanges();
+    }
+
+    public onOtpKeydown(event: KeyboardEvent, prevInput?: HTMLInputElement): void {
+        const input = event.target as HTMLInputElement;
+        if (event.key === 'Backspace' && !input.value && prevInput) {
+            event.preventDefault();
+            prevInput.focus();
+            prevInput.select();
+        }
+    }
+
+    public onOtpPaste(event: ClipboardEvent): void {
+        event.preventDefault();
+        const pastedData = event.clipboardData?.getData('text/plain') ?? '';
+        const otpDigits = pastedData.replace(/\D/g, '').slice(0, 4).split('');
+        const otpFields = ['otp1', 'otp2', 'otp3', 'otp4'] as const;
+        otpFields.forEach((field) => this.otpForm.get(field).setValue(''));
+        otpDigits.forEach((digit, index) => {
+            if (index < 4) {
+                this.otpForm.get(otpFields[index]).setValue(digit);
+            }
+        });
+        if (this.otpError) {
+            this.otpError = '';
+        }
+        this.cdr.detectChanges();
+    }
+
+    private startResendTimer(): void {
+        this.canResendOtp = false;
+        this.resendTimer = 30;
+        this.timerSubscription = interval(1000).subscribe(() => {
+            this.resendTimer--;
+            if (this.resendTimer <= 0) {
+                this.stopResendTimer();
+                this.canResendOtp = true;
+            }
+            this.cdr.detectChanges();
+        });
+    }
+
+    private stopResendTimer(): void {
+        if (this.timerSubscription) {
+            this.timerSubscription.unsubscribe();
+            this.timerSubscription = null;
+        }
+        this.resendTimer = 0;
+        this.canResendOtp = true;
+    }
+
+    private resetMobileOtpState(): void {
+        this.isMobileOtpVerified = false;
+        this.isMobileOtpSent = false;
+        this.otpError = '';
+        this.lastSentMobileNumber = '';
+        this.otpVerificationToken = '';
+        this.otpForm.reset();
+        this.stopResendTimer();
+        this.unlockMobileInput();
+        this.store.dispatch(
+            resetAnyState({
+                request: {
+                    getOtpInProcess: false,
+                    getOtpSuccess: false,
+                    verifyOtpV2InProcess: false,
+                    verifyOtpV2Success: false,
+                    apiErrorResponse: null,
+                    errors: null,
+                },
+            })
+        );
+    }
+
+    private normalizeMobileDigits(mobile: string): string {
+        return (mobile ?? '').replace(/\D/g, '');
+    }
+
     public openEditDialog(): void {
+        this.isEditingMobile.set(false);
+        this.resetMobileOtpState();
+        this.clientForm.get('mobile').disable();
         this.isEditing.set(true);
         this.cdr.detectChanges();
         setTimeout(() => {
@@ -231,20 +592,43 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
         this.editDialogRef?.detach();
         this.editDialogRef = null;
         this.isEditing.set(false);
+        this.isEditingMobile.set(false);
+        this.resetMobileOtpState();
         this.clientForm.get('name').setValue(this.previousName);
+        this.clientForm.get('mobile').setValue(this.previousMobile);
+        this.clientForm.get('mobile').disable();
     }
 
     updateUser() {
         const nameControl = this.clientForm.get('name');
+        const mobileControl = this.clientForm.get('mobile');
         const enteredName = nameControl?.value?.trim();
-        if (enteredName === this.previousName) {
+        const enteredMobile = this.isEditingMobile() ? this.getMobileIdentifier() : (mobileControl?.value ?? '').trim();
+        const nameChanged = enteredName !== this.previousName;
+        const mobileChanged = this.isEditingMobile() && enteredMobile !== this.previousMobile;
+
+        if (!nameChanged && !mobileChanged) {
             this.editDialogRef?.detach();
             this.editDialogRef = null;
             this.isEditing.set(false);
+            this.isEditingMobile.set(false);
+            mobileControl.disable();
             return;
         }
 
-        if (!enteredName || nameControl.invalid) {
+        if (nameChanged && (!enteredName || nameControl.invalid)) {
+            return;
+        }
+
+        if (mobileChanged && enteredMobile && !this.isProfileMobileValid()) {
+            mobileControl.markAsTouched();
+            this.cdr.detectChanges();
+            return;
+        }
+
+        if (mobileChanged && !this.isMobileOtpVerified) {
+            mobileControl.setErrors({ otpVerificationFailed: true });
+            this.cdr.detectChanges();
             return;
         }
 
@@ -259,7 +643,16 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
                 this.editDialogRef?.detach();
                 this.editDialogRef = null;
                 this.isEditing.set(false);
-                this.previousName = enteredName;
+                this.isEditingMobile.set(false);
+                this.resetMobileOtpState();
+                if (nameChanged) {
+                    this.previousName = enteredName;
+                }
+                if (mobileChanged) {
+                    this.previousMobile = enteredMobile;
+                }
+                mobileControl.setValue(this.previousMobile);
+                mobileControl.disable();
                 this.cdr.detectChanges();
                 this.toastService.success('Information successfully updated');
             }
@@ -269,9 +662,20 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
             if (err?.[0]) this.toastService.error(err[0]);
         });
 
-        this.store.dispatch(updateUser({ name: enteredName, authToken: this.authToken() }));
+        this.store.dispatch(
+            updateUser({
+                name: enteredName || this.previousName,
+                authToken: this.authToken(),
+                ...(mobileChanged && {
+                    mobile: enteredMobile,
+                    otpVerificationToken: this.otpVerificationToken,
+                }),
+            })
+        );
 
-        window.parent.postMessage({ type: 'proxy', data: { event: 'userNameUpdated', enteredName: enteredName } }, '*');
+        if (nameChanged) {
+            window.parent.postMessage({ type: 'proxy', data: { event: 'userNameUpdated', enteredName } }, '*');
+        }
     }
 
     public clear() {

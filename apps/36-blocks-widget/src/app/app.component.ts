@@ -61,30 +61,30 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                     console.log('Failure reason:', error);
                 },
             };
-            // if (TYPE) {
-            //     widgetConfig['type'] = TYPE;
+            if (TYPE) {
+                widgetConfig['type'] = TYPE;
 
-            //     if (TYPE === PublicScriptType.Authorization) {
-            //         // Optional: Path to redirect after login (e.g., '/login') only used get proxy_auth_token in admin panel while preview
-            //         // widgetConfig['redirect_path'] = '/login';
-            //         // Used to show Company details in the signup/registration form, default is true
-            //         // showCompanyDetails: false,
-            //     } else {
-            //         widgetConfig['authToken'] = AUTH_TOKEN;
+                if (TYPE === PublicScriptType.Authorization) {
+                    // Optional: Path to redirect after login (e.g., '/login') only used get proxy_auth_token in admin panel while preview
+                    // widgetConfig['redirect_path'] = '/login';
+                    // Used to show Company details in the signup/registration form, default is true
+                    // showCompanyDetails: false,
+                } else {
+                    widgetConfig['authToken'] = AUTH_TOKEN;
 
-            //         if (TYPE === PublicScriptType.UserManagement) {
-            //             // Enables the Role & Permission tab in the User Management widget
-            //             widgetConfig['isRolePermission'] = false;
-            //         }
+                    if (TYPE === PublicScriptType.UserManagement) {
+                        // Enables the Role & Permission tab in the User Management widget
+                        widgetConfig['isRolePermission'] = false;
+                    }
 
-            //         // Note: Currently Subscription widget is not in use.
-            //         if (TYPE === PublicScriptType.Subscription) {
-            //             // Use in Subscription widget to redirect
-            //             // loginRedirectUrl: 'https://www.google.com',
-            //             // widgetConfig['isPreview'] = true;
-            //         }
-            //     }
-            // }
+                    // Note: Currently Subscription widget is not in use.
+                    if (TYPE === PublicScriptType.Subscription) {
+                        // Use in Subscription widget to redirect
+                        // loginRedirectUrl: 'https://www.google.com',
+                        // widgetConfig['isPreview'] = true;
+                    }
+                }
+            }
             if (THEME) {
                 widgetConfig['theme'] = THEME;
             }
