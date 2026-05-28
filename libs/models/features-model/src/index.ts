@@ -13,11 +13,20 @@ export interface IFeature {
     updated_by: IUpdatedBy;
 }
 
+export interface IAllowedOrigin {
+    id: number;
+    origin: string;
+    created_at?: string;
+}
+
 export interface IFeatureDetails extends IFeature {
     projects?: string[];
     callback_url: string;
     authorization_format: IAuthorizationFormat;
     service_configurations: IServiceConfigurations[];
+    origins?: string[];
+    encryption_key?: string;
+    block_registration?: boolean;
 }
 
 export interface IServiceConfigurations {

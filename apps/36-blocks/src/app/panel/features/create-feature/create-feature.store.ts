@@ -4,7 +4,7 @@ import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { ComponentStore } from '@ngrx/component-store';
 import { tapResponse } from '@ngrx/operators';
 import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
-import { IFeature, IFeatureDetails, IFeatureType, IMethod } from '@proxy/models/features-model';
+import { IAllowedOrigin, IFeature, IFeatureDetails, IFeatureType, IMethod } from '@proxy/models/features-model';
 import { FeaturesService } from '@proxy/services/proxy/features';
 export interface ICreateFeatureInitialState {
     featureType: IFeatureType[];
@@ -33,6 +33,7 @@ export interface ICreateFeatureInitialState {
     uploadLogo: any;
     uploadLogoUrl: string | null;
     errorInUploadLogo: boolean;
+    allowedOrigins: string[] | null;
 }
 
 @Injectable()
@@ -68,6 +69,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             uploadLogo: null,
             uploadLogoUrl: null,
             errorInUploadLogo: false,
+            allowedOrigins: null,
         });
     }
     /** Selector for API progress  */
@@ -122,6 +124,7 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
     readonly uploadLogoUrl$: Observable<string | null> = this.select((state) => state.uploadLogoUrl);
     /** Selector for error in upload logo data */
     readonly errorInUploadLogo$: Observable<boolean> = this.select((state) => state.errorInUploadLogo);
+    readonly allowedOrigins$: Observable<string[]> = this.select((state) => state.allowedOrigins);
     /** Get feature type data */
     readonly getFeatureType = this.effect((data) => {
         return data.pipe(
@@ -706,6 +709,31 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
         );
     });
 
+    readonly getAllowedOrigins = this.effect((data: Observable<string | number>) => {
+        return data.pipe(
+            switchMap((id) => {
+                return this.service.getAllowedOrigins(id).pipe(
+                    tapResponse(
+                        (res: BaseResponse<any, void>) => {
+                            if (res?.hasError) {
+                                this.showError(res.errors);
+                                return this.patchState({ allowedOrigins: [] });
+                            }
+                            return this.patchState({
+                                allowedOrigins: this.normalizeAllowedOrigins(res?.data),
+                            });
+                        },
+                        (error: any) => {
+                            this.showError(error.errors);
+                            this.patchState({ allowedOrigins: [] });
+                        }
+                    ),
+                    catchError(() => EMPTY)
+                );
+            })
+        );
+    });
+
     readonly uploadLogo = this.effect((data: Observable<{ id: string | number; formData: FormData }>) => {
         return data.pipe(
             switchMap((req) => {
@@ -734,6 +762,29 @@ export class CreateFeatureComponentStore extends ComponentStore<ICreateFeatureIn
             })
         );
     });
+
+    private normalizeAllowedOrigins(data: any): string[] {
+        if (!data) {
+            return [];
+        }
+        const list: Array<string | IAllowedOrigin> = Array.isArray(data)
+            ? data
+            : (data.origins ?? data.allowedOrigins ?? data.allowed_origins ?? []);
+        if (!Array.isArray(list)) {
+            return [];
+        }
+        return list
+            .map((item) => {
+                if (typeof item === 'string') {
+                    return item.trim();
+                }
+                if (item && typeof item === 'object' && typeof item.origin === 'string') {
+                    return item.origin.trim();
+                }
+                return '';
+            })
+            .filter((origin) => origin.length > 0);
+    }
 
     private showError(error): void {
         const errorMessage = errorResolver(error);

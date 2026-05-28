@@ -124,4 +124,8 @@ export class FeaturesService {
             headers: {},
         });
     }
+
+    public getAllowedOrigins(id: string | number): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getAllowedOrigins(this.baseURL, id));
+    }
 }

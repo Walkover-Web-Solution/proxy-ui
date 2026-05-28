@@ -38,7 +38,7 @@ import {
     signal,
 } from '@angular/core';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { BehaviorSubject, Observable, distinctUntilChanged, filter, of, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, debounceTime, distinctUntilChanged, filter, of, take, takeUntil } from 'rxjs';
 import { CreateFeatureComponentStore } from './create-feature.store';
 import {
     FeatureFieldType,
@@ -59,6 +59,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
+import { MatChipInput } from '@angular/material/chips';
 import { MatStepper } from '@angular/material/stepper';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { getAcceptedTypeRegex } from '@proxy/utils';
@@ -223,6 +224,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public uploadLogo$: Observable<any> = this.componentStore.uploadLogo$;
     public uploadLogoUrl$: Observable<string | null> = this.componentStore.uploadLogoUrl$;
     public errorInUploadLogo$: Observable<boolean> = this.componentStore.errorInUploadLogo$;
+    public allowedOrigins$: Observable<string[]> = this.componentStore.allowedOrigins$;
     public isEditMode = false;
     /** Selected index of the edit-mode tab group; used to hide the preview panel on Manage Members. */
     public editModeMainTabIndex = 0;
@@ -275,6 +277,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public chipListSeparatorKeysCodes: number[] = [ENTER, COMMA];
     public chipListValues: { [key: string]: Set<string> } = {};
     public chipListReadOnlyValues: { [key: string]: Set<string> } = {};
+    public readonly authorizationOriginsChipKey = 'authorization_origins';
+    private autoFilledOriginFromRedirect: string | null = null;
 
     // File
     public fileValues: { [key: string]: FileList } = {};
@@ -322,6 +326,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             ]),
             encryptionKey: new FormControl<string>(null, []),
             blockNewUserSignUps: new FormControl<boolean>(false, []),
+            origins: new FormControl<string | null>(null, []),
         }),
         webhookDetails: new FormGroup({
             webhookUrl: new FormControl<string>(null, [Validators.required]),
@@ -349,6 +354,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public keepOrder = () => 0;
 
     ngOnInit(): void {
+        this.initAuthorizationOriginsChipList();
         this.themeService.setInputTheme(this.featureForm.get('brandingDetails.theme')?.value);
         this.featureForm
             .get('brandingDetails.theme')
@@ -357,6 +363,18 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 this.themeService.setInputTheme(theme);
             });
         this.componentStore.getWebhookEvents();
+        this.allowedOrigins$
+            .pipe(
+                filter((origins) => origins !== null),
+                takeUntil(this.destroy$)
+            )
+            .subscribe((origins) => {
+                this.patchAuthorizationOrigins(origins);
+            });
+        this.featureForm
+            .get('primaryDetails.redirect_url')
+            ?.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+            .subscribe((redirectUrl) => this.syncAllowedOriginFromRedirectUrl(redirectUrl));
         this.activatedRoute.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
             if (params?.id) {
                 this.featureId = params.id;
@@ -776,6 +794,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                 formGroup.markAsDirty();
             }
         });
+        this.syncAllowedOriginFromRedirectUrl(redirectUrl);
     }
 
     public createFeature() {
@@ -792,6 +811,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                     key: featureFormData.authorizationDetails.authorizationKey,
                 },
                 session_time: featureFormData.authorizationDetails.session_time,
+                origins: this.getAuthorizationOrigins(),
                 extra_configurations: {
                     theme: featureFormData.brandingDetails.theme,
                     create_account_link: featureFormData.brandingDetails.create_account_link || false,
@@ -852,6 +872,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                         //     input_fields: this.previewInputPosition,
                         // },
                         session_time: authorizationDetailsForm.value.session_time,
+                        origins: this.getAuthorizationOrigins(),
                     };
                 } else {
                     authorizationDetailsForm.markAllAsTouched();
@@ -1012,6 +1033,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     public getFeatureDetalis() {
         this.componentStore.getFeatureDetalis(this.featureId);
+        this.componentStore.getAllowedOrigins(this.featureId);
     }
 
     public getValueOtherThanForm(config: IFieldConfig, index: number): Promise<any> {
@@ -1182,21 +1204,111 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         });
     }
 
+    private extractAllowedOriginFromRedirectUrl(redirectUrl: string): string | null {
+        const trimmed = redirectUrl?.trim();
+        if (!trimmed) {
+            return null;
+        }
+        try {
+            const normalized = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+            const url = new URL(normalized);
+            if (!url.hostname) {
+                return null;
+            }
+            if (url.hostname === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(url.hostname)) {
+                return url.host;
+            }
+            return url.hostname;
+        } catch {
+            return null;
+        }
+    }
+
+    private syncAllowedOriginFromRedirectUrl(redirectUrl: string): void {
+        if (this.isEditMode) {
+            return;
+        }
+        this.initAuthorizationOriginsChipList();
+        const originSet = this.chipListValues[this.authorizationOriginsChipKey];
+        const extracted = this.extractAllowedOriginFromRedirectUrl(redirectUrl);
+
+        // Only replace the previous auto-filled chip; keep any manually added domains.
+        if (this.autoFilledOriginFromRedirect && this.autoFilledOriginFromRedirect !== extracted) {
+            originSet.delete(this.autoFilledOriginFromRedirect);
+        }
+
+        if (!extracted) {
+            if (this.autoFilledOriginFromRedirect) {
+                originSet.delete(this.autoFilledOriginFromRedirect);
+            }
+            this.autoFilledOriginFromRedirect = null;
+        } else {
+            originSet.add(extracted);
+            this.autoFilledOriginFromRedirect = extracted;
+        }
+
+        this.featureForm.get('authorizationDetails.origins')?.updateValueAndValidity();
+        this.cdr.markForCheck();
+    }
+
+    private initAuthorizationOriginsChipList(): void {
+        if (!this.chipListValues[this.authorizationOriginsChipKey]) {
+            this.chipListValues[this.authorizationOriginsChipKey] = new Set();
+            this.chipListReadOnlyValues[this.authorizationOriginsChipKey] = new Set();
+        }
+        const originsControl = this.featureForm.get('authorizationDetails.origins');
+        originsControl?.setValidators([
+            CustomValidators.atleastOneValueInChipList(this.chipListValues[this.authorizationOriginsChipKey]),
+        ]);
+        originsControl?.updateValueAndValidity({ emitEvent: false });
+    }
+
+    private patchAuthorizationOrigins(origins?: string[]): void {
+        this.initAuthorizationOriginsChipList();
+        const originSet = this.chipListValues[this.authorizationOriginsChipKey];
+        originSet.clear();
+        (origins ?? []).forEach((origin) => {
+            const trimmed = origin?.trim();
+            if (trimmed) {
+                originSet.add(trimmed);
+            }
+        });
+        this.featureForm.get('authorizationDetails.origins')?.updateValueAndValidity();
+        this.cdr.markForCheck();
+    }
+
+    private getAuthorizationOrigins(): string[] {
+        return Array.from(this.chipListValues[this.authorizationOriginsChipKey] ?? []);
+    }
+
+    public addAuthorizationOrigin(value: string, chipInput?: MatChipInput): void {
+        const fieldControl = this.featureForm.get('authorizationDetails.origins') as FormControl;
+        this.updateChipListValues('add', this.authorizationOriginsChipKey, fieldControl, value, chipInput);
+    }
+
     public updateChipListValues(
         operation: 'add' | 'delete',
         chipListKey: string,
         fieldControl: FormControl,
-        value: string
+        value: string,
+        chipInput?: MatChipInput
     ): void {
         if (operation === 'add') {
             const trimmedValue = value?.trim();
-            if (fieldControl.valid && trimmedValue && trimmedValue.length > 0) {
+            if (trimmedValue && trimmedValue.length > 0) {
                 this.chipListValues[chipListKey].add(trimmedValue);
-                fieldControl.reset();
+                fieldControl.reset(null, { emitEvent: false });
+                chipInput?.clear();
+                fieldControl.updateValueAndValidity();
+                this.cdr.markForCheck();
             }
         } else if (operation === 'delete') {
             this.chipListValues[chipListKey].delete(value);
+            if (chipListKey === this.authorizationOriginsChipKey && value === this.autoFilledOriginFromRedirect) {
+                this.autoFilledOriginFromRedirect = null;
+            }
             fieldControl.updateValueAndValidity();
+            this.cdr.markForCheck();
         }
     }
 

@@ -225,8 +225,8 @@ export class OtpEffects {
     UpdateUser$ = createEffect(() =>
         this.actions$.pipe(
             ofType(otpActions.updateUser),
-            switchMap(({ name, authToken }) => {
-                return this.otpService.updateUser(name, authToken).pipe(
+            switchMap(({ name, authToken, mobile, otpVerificationToken }) => {
+                return this.otpService.updateUser(name, authToken, mobile, otpVerificationToken).pipe(
                     map((res: any) => {
                         if (res.type !== 'error') {
                             return otpActions.updateUserComplete({

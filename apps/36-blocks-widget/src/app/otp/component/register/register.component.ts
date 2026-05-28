@@ -44,6 +44,8 @@ import {
 } from '../../store/selectors';
 import { IGetOtpRes } from '../../model/otp';
 
+type OtpChannel = 'mobile' | 'email';
+
 @Component({
     selector: 'proxy-register',
     imports: [CommonModule, ReactiveFormsModule],
@@ -115,6 +117,12 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         otp3: new FormControl<string>(''),
         otp4: new FormControl<string>(''),
     });
+    public emailOtpForm = new FormGroup({
+        otp1: new FormControl<string>(''),
+        otp2: new FormControl<string>(''),
+        otp3: new FormControl<string>(''),
+        otp4: new FormControl<string>(''),
+    });
 
     public intlClass: { [key: string]: IntlPhoneLib } = {};
     public apiError = new BehaviorSubject<string[]>(null);
@@ -130,13 +138,23 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public isOtpSent: boolean = false;
     public isNumberChanged: boolean = false;
     public otpError: string = '';
-    public otpVerificationToken: string = '';
+    public isEmailOtpVerified: boolean = false;
+    public isEmailOtpSent: boolean = false;
+    public isEmailChanged: boolean = false;
+    public emailOtpError: string = '';
+    public emailVerificationToken: string = '';
+    public mobileVerificationToken: string = '';
 
     // Resend OTP timer properties
     public resendTimer: number = 0;
     public canResendOtp: boolean = true;
     public lastSentMobileNumber: string = '';
+    public emailResendTimer: number = 0;
+    public canResendEmailOtp: boolean = true;
+    public lastSentEmail: string = '';
     private timerSubscription: Subscription;
+    private emailTimerSubscription: Subscription;
+    private pendingOtpChannel: OtpChannel = 'mobile';
 
     public selectWidgetTheme$: Observable<any>;
     public uiPreferences: any = {};
@@ -209,9 +227,18 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         this.registrationForm
             .get('user.mobile')
             .valueChanges.pipe(takeUntil(this.destroy$))
-            .subscribe((res) => {
+            .subscribe(() => {
                 this.isOtpVerified = false;
-                this.otpError = ''; // Clear error when mobile number changes
+                this.otpError = '';
+                this.mobileVerificationToken = '';
+            });
+        this.registrationForm
+            .get('user.email')
+            .valueChanges.pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.isEmailOtpVerified = false;
+                this.emailOtpError = '';
+                this.emailVerificationToken = '';
             });
         this.registrationForm
             .get('user.password')
@@ -223,25 +250,48 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             });
 
         this.selectVerifyOtpV2Success$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
-            this.isOtpVerified = res;
-            if (res) {
-                this.registrationForm.get('user.mobile').setErrors(null);
-                this.otpError = ''; // Clear error on successful verification
+            if (this.pendingOtpChannel === 'email') {
+                this.isEmailOtpVerified = res;
+                if (res) {
+                    this.registrationForm.get('user.email').setErrors(null);
+                    this.emailOtpError = '';
+                }
+            } else {
+                this.isOtpVerified = res;
+                if (res) {
+                    this.registrationForm.get('user.mobile').setErrors(null);
+                    this.otpError = '';
+                }
             }
             this.cdr.markForCheck();
         });
         this.selectVerifyOtpV2Data$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
-            this.otpVerificationToken = res?.data?.otp_verification_token;
+            const token = res?.data?.otp_verification_token;
+            if (token) {
+                if (this.pendingOtpChannel === 'email') {
+                    this.emailVerificationToken = token;
+                } else {
+                    this.mobileVerificationToken = token;
+                }
+            }
             this.cdr.markForCheck();
         });
         this.selectGetOtpSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
-            if (res) {
+            if (!res) {
+                return;
+            }
+            if (this.pendingOtpChannel === 'email') {
+                this.isEmailOtpSent = true;
+                this.startResendTimer('email');
+                this.lastSentEmail = this.registrationForm.get('user.email').value;
+                this.isEmailChanged = true;
+            } else {
                 this.isOtpSent = true;
-                this.startResendTimer();
+                this.startResendTimer('mobile');
                 this.lastSentMobileNumber = this.registrationForm.get('user.mobile').value;
                 this.isNumberChanged = true;
-                this.cdr.markForCheck();
             }
+            this.cdr.markForCheck();
         });
 
         // Handle API errors (OTP verification, getOtp, resendOtp)
@@ -260,10 +310,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 // Display error inline in the dialog
                 this.apiError.next([errorMessage]);
 
-                // If OTP was sent and error occurs during verification, also show inline error
-                if (this.isOtpSent && !this.isOtpVerified) {
+                if (this.pendingOtpChannel === 'email' && this.isEmailOtpSent && !this.isEmailOtpVerified) {
+                    this.emailOtpError = 'Please enter valid OTP';
+                    this.emailOtpForm.reset();
+                } else if (this.isOtpSent && !this.isOtpVerified) {
                     this.otpError = 'Please enter valid OTP';
-                    // Clear OTP form to allow user to retry
                     this.otpForm.reset();
                 }
             }
@@ -318,24 +369,47 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public ngOnDestroy(): void {
         // Remove global paste event listener
         document.removeEventListener('paste', this.handleGlobalPaste.bind(this));
-        this.stopResendTimer();
+        this.stopResendTimer('mobile');
+        this.stopResendTimer('email');
         super.ngOnDestroy();
     }
 
-    private startResendTimer(): void {
+    private startResendTimer(channel: OtpChannel): void {
+        if (channel === 'email') {
+            this.canResendEmailOtp = false;
+            this.emailResendTimer = 30;
+            this.emailTimerSubscription = interval(1000).subscribe(() => {
+                this.emailResendTimer--;
+                if (this.emailResendTimer <= 0) {
+                    this.stopResendTimer('email');
+                    this.canResendEmailOtp = true;
+                }
+                this.cdr.detectChanges();
+            });
+            return;
+        }
         this.canResendOtp = false;
         this.resendTimer = 30;
         this.timerSubscription = interval(1000).subscribe(() => {
             this.resendTimer--;
             if (this.resendTimer <= 0) {
-                this.stopResendTimer();
+                this.stopResendTimer('mobile');
                 this.canResendOtp = true;
             }
             this.cdr.detectChanges();
         });
     }
 
-    private stopResendTimer(): void {
+    private stopResendTimer(channel: OtpChannel): void {
+        if (channel === 'email') {
+            if (this.emailTimerSubscription) {
+                this.emailTimerSubscription.unsubscribe();
+                this.emailTimerSubscription = null;
+            }
+            this.emailResendTimer = 0;
+            this.canResendEmailOtp = true;
+            return;
+        }
         if (this.timerSubscription) {
             this.timerSubscription.unsubscribe();
             this.timerSubscription = null;
@@ -345,31 +419,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     }
 
     public resendOtp(): void {
-        const mobileControl = this.registrationForm.get('user.mobile');
-        const currentMobile = mobileControl.value;
+        this.sendOtpForChannel('mobile', true);
+    }
 
-        // Check if mobile number has changed
-        if (currentMobile !== this.lastSentMobileNumber) {
-            // If number changed, reset timer and allow immediate resend
-            this.stopResendTimer();
-            this.canResendOtp = true;
-            this.lastSentMobileNumber = currentMobile;
-        }
-
-        mobileControl.markAsTouched();
-        const isMobileValid = this.intlClass['user']?.isRequiredValidNumber;
-
-        if (mobileControl.valid && isMobileValid && this.canResendOtp) {
-            this.store.dispatch(
-                sendOtpAction({
-                    request: {
-                        referenceId: this.referenceId(),
-                        mobile: mobileControl.value,
-                        authkey: environment.sendOtpAuthKey,
-                    },
-                })
-            );
-        }
+    public resendEmailOtp(): void {
+        this.sendOtpForChannel('email', true);
     }
 
     public initIntl(key: string): void {
@@ -423,21 +477,24 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         );
     }
     private resetFormState(): void {
-        // Reset OTP verification states
         this.isOtpVerified = false;
         this.isOtpSent = false;
         this.isNumberChanged = false;
         this.otpError = '';
         this.lastSentMobileNumber = '';
+        this.isEmailOtpVerified = false;
+        this.isEmailOtpSent = false;
+        this.isEmailChanged = false;
+        this.emailOtpError = '';
+        this.lastSentEmail = '';
 
-        // Reset forms
         this.registrationForm.reset();
         this.otpForm.reset();
+        this.emailOtpForm.reset();
 
-        // Reset timer
-        this.stopResendTimer();
+        this.stopResendTimer('mobile');
+        this.stopResendTimer('email');
 
-        // Reset API errors
         this.apiError.next(null);
     }
 
@@ -485,6 +542,10 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             this.registrationForm.get('user.mobile').setErrors({ otpVerificationFailed: true });
             return;
         }
+        if (!this.isRegisterFormOnly() && !this.isEmailOtpVerified) {
+            this.registrationForm.get('user.email').setErrors({ otpVerificationFailed: true });
+            return;
+        }
         const formData = removeEmptyKeys(cloneDeep(this.registrationForm.getRawValue()), true);
         const state = JSON.parse(
             this.otpUtilityService.aesDecrypt(
@@ -527,7 +588,12 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             .register({
                 proxy_state: encodedData,
                 state: registrationState,
-                otp_verification_token: this.otpVerificationToken,
+                ...(this.emailVerificationToken && {
+                    email_otp_verification_token: this.emailVerificationToken,
+                }),
+                ...(this.mobileVerificationToken && {
+                    mobile_otp_verification_token: this.mobileVerificationToken,
+                }),
             })
             .subscribe(
                 (response) => {
@@ -539,51 +605,118 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             );
     }
 
-    public getOtp() {
-        if (this.registrationForm.get('user.mobile').errors?.otpVerificationFailed) {
-            this.registrationForm.get('user.mobile').setErrors(null);
-        }
+    public getOtp(): void {
+        this.sendOtpForChannel('mobile', false);
+    }
 
-        const mobileControl = this.registrationForm.get('user.mobile');
-        if (mobileControl.invalid) {
-            return;
-        }
-        const isMobileValid = this.intlClass['user']?.isRequiredValidNumber;
+    public getEmailOtp(): void {
+        this.sendOtpForChannel('email', false);
+    }
 
-        if (mobileControl.valid && isMobileValid) {
+    private sendOtpForChannel(channel: OtpChannel, isResend: boolean): void {
+        if (channel === 'email') {
+            const emailControl = this.registrationForm.get('user.email');
+            if (emailControl.errors?.otpVerificationFailed) {
+                emailControl.setErrors(null);
+            }
+            if (emailControl.invalid) {
+                emailControl.markAsTouched();
+                return;
+            }
+            const currentEmail = emailControl.value;
+            if (isResend && currentEmail !== this.lastSentEmail) {
+                this.stopResendTimer('email');
+                this.canResendEmailOtp = true;
+                this.lastSentEmail = currentEmail;
+            }
+            if (!this.canResendEmailOtp) {
+                return;
+            }
+            this.pendingOtpChannel = 'email';
             this.store.dispatch(
                 sendOtpAction({
                     request: {
                         referenceId: this.referenceId(),
-                        mobile: mobileControl.value,
-                        authkey: environment.sendOtpAuthKey,
+                        identifier: currentEmail,
                     },
                 })
             );
+            return;
         }
-    }
-    public verifyOtp() {
-        const otpValues = this.otpForm.value;
-        const mobileControl = this.registrationForm.get('user.mobile');
 
+        const mobileControl = this.registrationForm.get('user.mobile');
+        if (mobileControl.errors?.otpVerificationFailed) {
+            mobileControl.setErrors(null);
+        }
+        if (mobileControl.invalid) {
+            mobileControl.markAsTouched();
+            return;
+        }
+        const isMobileValid = this.intlClass['user']?.isRequiredValidNumber;
+        if (!isMobileValid) {
+            mobileControl.markAsTouched();
+            return;
+        }
+        const currentMobile = mobileControl.value;
+        if (isResend && currentMobile !== this.lastSentMobileNumber) {
+            this.stopResendTimer('mobile');
+            this.canResendOtp = true;
+            this.lastSentMobileNumber = currentMobile;
+        }
+        if (!this.canResendOtp) {
+            return;
+        }
+        this.pendingOtpChannel = 'mobile';
+        this.store.dispatch(
+            sendOtpAction({
+                request: {
+                    referenceId: this.referenceId(),
+                    identifier: currentMobile,
+                },
+            })
+        );
+    }
+
+    public verifyOtp(): void {
+        this.verifyOtpForChannel('mobile');
+    }
+
+    public verifyEmailOtp(): void {
+        this.verifyOtpForChannel('email');
+    }
+
+    private verifyOtpForChannel(channel: OtpChannel): void {
+        const form = channel === 'email' ? this.emailOtpForm : this.otpForm;
+        const identifierControl =
+            channel === 'email' ? this.registrationForm.get('user.email') : this.registrationForm.get('user.mobile');
+        const otpValues = form.value;
         const otpArray = [otpValues.otp1, otpValues.otp2, otpValues.otp3, otpValues.otp4];
         const otpString = otpArray.filter((val) => val && val.trim() !== '').join('');
 
         if (otpString.length === 4) {
+            this.pendingOtpChannel = channel;
             this.store.dispatch(
                 verifyOtpAction({
                     request: {
                         referenceId: this.referenceId(),
-                        mobile: mobileControl.value,
+                        identifier: identifierControl.value,
                         otp: otpString,
-                        authkey: environment.sendOtpAuthKey,
                     },
                 })
             );
         }
     }
 
-    public onOtpInput(event: any, controlName: string, nextInput?: HTMLInputElement) {
+    private getOtpForm(channel: OtpChannel): FormGroup {
+        return channel === 'email' ? this.emailOtpForm : this.otpForm;
+    }
+
+    public onOtpInput(
+        event: any,
+        controlName: string,
+        nextInput?: HTMLInputElement,
+        channel: OtpChannel = 'mobile'
+    ): void {
         const input = event.target;
         let value = input.value;
 
@@ -591,10 +724,13 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             value = value.replace(/\D/g, '');
             input.value = value;
         }
-        this.otpForm.get(controlName).setValue(value);
+        this.getOtpForm(channel).get(controlName).setValue(value);
 
-        // Clear error when user starts typing
-        if (this.otpError) {
+        if (channel === 'email') {
+            if (this.emailOtpError) {
+                this.emailOtpError = '';
+            }
+        } else if (this.otpError) {
             this.otpError = '';
         }
 
@@ -605,62 +741,60 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         }
     }
 
-    public onOtpPaste(event: any) {
+    public onOtpPaste(event: any, channel: OtpChannel = 'mobile'): void {
         event.preventDefault();
         const pastedData = event.clipboardData.getData('text/plain');
         const otpDigits = pastedData.replace(/\D/g, '').slice(0, 4).split('');
-
+        const form = this.getOtpForm(channel);
         const otpFields = ['otp1', 'otp2', 'otp3', 'otp4'];
-        otpFields.forEach((fieldName, index) => {
+
+        otpFields.forEach((fieldName) => {
             const controlName = fieldName as 'otp1' | 'otp2' | 'otp3' | 'otp4';
-            this.otpForm.get(controlName).setValue('');
+            form.get(controlName).setValue('');
         });
 
         otpDigits.forEach((digit, index) => {
             if (index < 4) {
                 const controlName = otpFields[index] as 'otp1' | 'otp2' | 'otp3' | 'otp4';
-                this.otpForm.get(controlName).setValue(digit);
+                form.get(controlName).setValue(digit);
             }
         });
 
-        // Clear error when user pastes OTP
-        if (this.otpError) {
+        if (channel === 'email') {
+            if (this.emailOtpError) {
+                this.emailOtpError = '';
+            }
+        } else if (this.otpError) {
             this.otpError = '';
         }
 
         this.cdr.detectChanges();
-        const lastFilledIndex = Math.min(otpDigits.length - 1, 3);
-        setTimeout(() => {
-            const nextField = document.querySelector(`#otp${lastFilledIndex + 1}`) as HTMLInputElement;
-            if (nextField && lastFilledIndex < 3) {
-                nextField.focus();
-            } else {
-                const currentField = document.querySelector(`#otp${lastFilledIndex + 1}`) as HTMLInputElement;
-                if (currentField) {
-                    currentField.focus();
-                }
-            }
-        }, 100);
     }
 
-    private handleGlobalPaste(event: ClipboardEvent) {
+    private handleGlobalPaste(event: ClipboardEvent): void {
         const target = event.target as HTMLElement;
-        if (target && target.closest('.otp-container')) {
-            this.onOtpPaste(event);
+        if (target?.closest('.mobile-otp-container')) {
+            this.onOtpPaste(event, 'mobile');
+        } else if (target?.closest('.email-otp-container')) {
+            this.onOtpPaste(event, 'email');
         }
     }
 
-    public onOtpKeyup(event: any, controlName: string) {
+    public onOtpKeyup(event: any, controlName: string, channel: OtpChannel = 'mobile'): void {
         const input = event.target;
         const value = input.value;
-        this.otpForm.get(controlName).setValue(value);
+        this.getOtpForm(channel).get(controlName).setValue(value);
         this.cdr.detectChanges();
     }
 
-    public onOtpKeydown(event: any, controlName: string, prevInput?: HTMLInputElement) {
+    public onOtpKeydown(
+        event: any,
+        controlName: string,
+        prevInput?: HTMLInputElement,
+        channel: OtpChannel = 'mobile'
+    ): void {
         const input = event.target;
 
-        // Handle backspace
         if (event.key === 'Backspace' && !input.value && prevInput) {
             event.preventDefault();
             prevInput.focus();
@@ -675,20 +809,39 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             this.registrationForm.get('user.mobile').setValue(value);
             this.otpForm.reset();
 
-            // Check if mobile number has changed
             if (value !== this.lastSentMobileNumber) {
-                this.stopResendTimer();
+                this.stopResendTimer('mobile');
                 this.canResendOtp = true;
             }
 
             this.cdr.detectChanges();
         }
     }
-    public numberChanged() {
+
+    public onEmailInput = (): void => {
+        this.isEmailOtpSent = false;
+        this.emailOtpForm.reset();
+        const value = this.registrationForm.get('user.email').value;
+        if (value !== this.lastSentEmail) {
+            this.stopResendTimer('email');
+            this.canResendEmailOtp = true;
+        }
+        this.cdr.detectChanges();
+    };
+
+    public numberChanged(): void {
         this.isOtpSent = false;
         this.isOtpVerified = false;
         this.isNumberChanged = false;
         this.otpForm.reset();
+        this.cdr.detectChanges();
+    }
+
+    public emailChanged(): void {
+        this.isEmailOtpSent = false;
+        this.isEmailOtpVerified = false;
+        this.isEmailChanged = false;
+        this.emailOtpForm.reset();
         this.cdr.detectChanges();
     }
 

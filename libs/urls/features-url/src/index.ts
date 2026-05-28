@@ -21,4 +21,5 @@ export const FeaturesUrls = {
     updatePaymentDetails: (baseUrl, refid) => createUrl(baseUrl, `subscription/${refid}/updateCredentials`),
     getWebhookEvents: (baseUrl) => createUrl(baseUrl, `getWebhookTriggerEvents`),
     uploadLogo: (baseUrl, id) => createUrl(baseUrl, `features/${id}/upload-logo`),
+    getAllowedOrigins: (baseUrl, id) => createUrl(baseUrl, `features/${id}/allowedOrigins`),
 };

@@ -1,9 +1,17 @@
 import { Inject, Injectable } from '@angular/core';
 import { BaseResponse, ProxyBaseUrls } from '@proxy/models/root-models';
 import { Observable, of } from 'rxjs';
-import { omit } from 'lodash-es';
 import { map } from 'rxjs/operators';
-import { OtpResModel, ISendOtpReq, IRetryOtpReq, IVerifyOtpReq, IWidgetResponse, IGetWidgetData } from '../model/otp';
+import {
+    OtpResModel,
+    ISendOtpReq,
+    IRetryOtpReq,
+    IVerifyOtpReq,
+    IVerifyOtpV2Req,
+    IRegisterReq,
+    IWidgetResponse,
+    IGetWidgetData,
+} from '../model/otp';
 import { otpVerificationUrls } from './urls/otp-urls';
 import { HttpWrapperService } from '@proxy/services/http-wrapper-no-auth';
 import { environment } from 'apps/36-blocks-widget/src/environments/environment';
@@ -26,6 +34,22 @@ export class OtpService {
         @Inject(ProxyBaseUrls.ClientURL) private clientUrl: any
     ) {}
 
+    private setOtpRequestHeaders(request: { referenceId?: string; authToken?: string; origin?: string }): void {
+        if (request.authToken) {
+            this.options.headers['proxy_auth_token'] = request.authToken;
+            delete this.options.headers['reference_id'];
+        } else if (request.referenceId) {
+            this.options.headers['reference_id'] = request.referenceId;
+            delete this.options.headers['proxy_auth_token'];
+        }
+        const origin =
+            request.origin ??
+            (typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}` : undefined);
+        if (origin) {
+            this.options.headers['origin'] = origin;
+        }
+    }
+
     public getWidgetData(
         requestId: string,
         payload?: { [key: string]: any }
@@ -35,22 +59,17 @@ export class OtpService {
     }
 
     public sendOtp(request: ISendOtpReq): Observable<OtpResModel> {
-        const referenceId = request.referenceId;
-        this.options.headers['authkey'] = request.authkey;
-        return this.http.post<OtpResModel>(
-            otpVerificationUrls.sendOtp(this.baseUrl).replace(':referenceId', referenceId),
-            omit(request, 'referenceId'),
-            this.options
-        );
+        this.setOtpRequestHeaders(request);
+        const body = { identifier: request.identifier ?? request.mobile };
+        return this.http.post<OtpResModel>(otpVerificationUrls.sendOtp(this.baseUrl), body, this.options);
     }
-    public verifyOtpV2(request: any): Observable<any> {
-        const referenceId = request.referenceId;
-        this.options.headers['authkey'] = request.authkey;
-        return this.http.post<any>(
-            otpVerificationUrls.verifyOtpV2(this.baseUrl).replace(':referenceId', referenceId),
-            omit(request, 'referenceId'),
-            this.options
-        );
+    public verifyOtpV2(request: IVerifyOtpV2Req): Observable<any> {
+        this.setOtpRequestHeaders(request);
+        const body = {
+            identifier: request.identifier ?? request.mobile,
+            otp: request.otp,
+        };
+        return this.http.post<any>(otpVerificationUrls.verifyOtpV2(this.baseUrl), body, this.options);
     }
 
     public resendOtpService(request: IRetryOtpReq): Observable<OtpResModel> {
@@ -74,7 +93,7 @@ export class OtpService {
         return this.http.get<any>(requestUrl, params, this.options);
     }
 
-    public register(body: { proxy_state?: string; state?: string; otp_verification_token?: string }): Observable<any> {
+    public register(body: IRegisterReq): Observable<any> {
         return this.http.post<any>(otpVerificationUrls.register(this.baseUrl), body, this.options);
     }
 
@@ -136,11 +155,20 @@ export class OtpService {
     public updateUser(
         name: string,
         authToken: string,
-        mobile?: string
+        mobile?: string,
+        otpVerificationToken?: string
     ): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;
         const url = otpVerificationUrls.updateUser(this.clientUrl);
-        return this.http.put<any>(url, { user: { name, mobile } }, this.options);
+        const user: { name: string; mobile?: string } = { name };
+        if (mobile !== undefined) {
+            user.mobile = mobile;
+        }
+        const body: { user: typeof user; otp_verification_token?: string } = { user };
+        if (otpVerificationToken) {
+            body.otp_verification_token = otpVerificationToken;
+        }
+        return this.http.put<any>(url, body, this.options);
     }
     public addUser(payload: any, authToken: string): Observable<BaseResponse<IWidgetResponse, IGetWidgetData>> {
         this.options.headers['proxy_auth_token'] = authToken;

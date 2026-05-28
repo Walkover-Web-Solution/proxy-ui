@@ -28,13 +28,32 @@ export interface IGetOtpRes {
 }
 
 export interface ISendOtpReq {
-    referenceId: string;
+    referenceId?: string;
+    identifier?: string;
+    mobile?: string;
+    origin?: string;
     variables?: any;
-    authkey?: string;
+    authToken?: string;
 }
 
 export interface IRetryOtpReq extends ISendOtpReq {
     reqId: string;
+}
+
+export interface IVerifyOtpV2Req {
+    referenceId?: string;
+    identifier?: string;
+    mobile?: string;
+    otp: string;
+    origin?: string;
+    authToken?: string;
+}
+
+export interface IRegisterReq {
+    proxy_state?: string;
+    state?: string;
+    email_verification_token?: string;
+    mobile_verification_token?: string;
 }
 
 export interface IVerifyOtpReq {
