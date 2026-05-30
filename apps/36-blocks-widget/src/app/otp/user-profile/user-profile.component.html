@@ -338,7 +338,8 @@
                                         autocomplete="off"
                                         class="w-input"
                                         [class.border-red-500]="
-                                            clientForm.get('mobile')?.touched && !isProfileMobileValid()
+                                            getOtpError ||
+                                            (clientForm.get('mobile')?.touched && !isProfileMobileValid())
                                         "
                                         (keypress)="onMobileKeypress($event)"
                                         (input)="onMobileInput()"
@@ -390,7 +391,9 @@
                                     </button>
                                 </div>
                             </div>
-                            @if (clientForm.get('mobile')?.touched && !isProfileMobileValid()) {
+                            @if (getOtpError) {
+                                <p role="alert" class="w-field-error">{{ getOtpError }}</p>
+                            } @else if (clientForm.get('mobile')?.touched && !isProfileMobileValid()) {
                                 <p role="alert" class="w-field-error">
                                     Enter a valid mobile number with country code (10–15 digits).
                                 </p>
@@ -408,7 +411,10 @@
 
                             @if (isMobileOtpSent && !isMobileOtpVerified) {
                                 <div class="flex flex-col gap-2 mt-2">
-                                    <div class="flex items-center flex-wrap gap-3" [formGroup]="otpForm">
+                                    <div
+                                        class="flex items-center flex-wrap gap-3 mobile-otp-container"
+                                        [formGroup]="otpForm"
+                                    >
                                         <input
                                             type="text"
                                             maxlength="1"

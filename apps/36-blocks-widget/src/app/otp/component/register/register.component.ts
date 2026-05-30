@@ -13,11 +13,13 @@ import {
     OnInit,
     ViewChild,
     ElementRef,
+    afterNextRender,
     computed,
     effect,
     inject,
     input,
     output,
+    Injector,
 } from '@angular/core';
 import { resetAll, resetAnyState, sendOtpAction, verifyOtpAction } from '../../store/actions/otp.action';
 import { BaseComponent } from '@proxy/ui/base-component';
@@ -163,11 +165,13 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     @ViewChild('otp2', { static: false }) otp2Ref: ElementRef;
     @ViewChild('otp3', { static: false }) otp3Ref: ElementRef;
     @ViewChild('otp4', { static: false }) otp4Ref: ElementRef;
+    @ViewChild('emailOtp1', { static: false }) emailOtp1Ref: ElementRef;
 
     private store = inject<Store<IAppState>>(Store);
     private otpService = inject(OtpService);
     private otpUtilityService = inject(OtpUtilityService);
     private cdr = inject(ChangeDetectorRef);
+    private readonly injector = inject(Injector);
     private readonly themeService = inject(WidgetThemeService);
     private readonly el = inject(ElementRef);
     readonly isDarkTheme = computed(() => this.themeService.isDark$());
@@ -280,7 +284,8 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             if (!res) {
                 return;
             }
-            if (this.pendingOtpChannel === 'email') {
+            const channel = this.pendingOtpChannel;
+            if (channel === 'email') {
                 this.isEmailOtpSent = true;
                 this.startResendTimer('email');
                 this.lastSentEmail = this.registrationForm.get('user.email').value;
@@ -291,7 +296,8 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 this.lastSentMobileNumber = this.registrationForm.get('user.mobile').value;
                 this.isNumberChanged = true;
             }
-            this.cdr.markForCheck();
+            this.cdr.detectChanges();
+            afterNextRender(() => this.focusFirstOtpInput(channel), { injector: this.injector });
         });
 
         // Handle API errors (OTP verification, getOtp, resendOtp)
@@ -709,6 +715,15 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
     private getOtpForm(channel: OtpChannel): FormGroup {
         return channel === 'email' ? this.emailOtpForm : this.otpForm;
+    }
+
+    private focusFirstOtpInput(channel: OtpChannel): void {
+        const containerSelector = channel === 'email' ? '.email-otp-container' : '.mobile-otp-container';
+        const input =
+            (this.el.nativeElement.querySelector(`${containerSelector} input`) as HTMLInputElement) ||
+            (channel === 'email' ? this.emailOtp1Ref?.nativeElement : this.otp1Ref?.nativeElement);
+
+        input?.focus();
     }
 
     public onOtpInput(
