@@ -7,10 +7,12 @@ import {
     Component,
     ElementRef,
     Input,
+    Injector,
     OnDestroy,
     OnInit,
     ViewChild,
     ViewEncapsulation,
+    afterNextRender,
     computed,
     effect,
     inject,
@@ -64,9 +66,9 @@ import { isEqual } from 'lodash-es';
 import { NAME_REGEX } from '@proxy/regex';
 import { WidgetTheme } from '@proxy/constant';
 import { WidgetThemeService } from '../service/widget-theme.service';
+import { PhoneNumberUtil } from 'google-libphonenumber';
 
-/** Digits only, 10–15 chars, with country code (e.g. 919876543210) */
-const PROFILE_MOBILE_REGEX = /^[1-9]\d{9,14}$/;
+const phoneUtil = PhoneNumberUtil.getInstance();
 
 @Component({
     selector: 'user-profile',
@@ -131,6 +133,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     public isMobileOtpSent = false;
     public isNumberChanged = false;
     public otpError = '';
+    public getOtpError = '';
     public resendTimer = 0;
     public canResendOtp = true;
     public lastSentMobileNumber = '';
@@ -151,11 +154,13 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     readonly toastService = inject(ToastService);
     private readonly widgetPortal = inject(WidgetPortalService);
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly injector = inject(Injector);
     readonly confirmDialogCompanyId = signal<number | null>(null);
 
     @ViewChild('editDialogPortal') private editDialogPortalEl?: ElementRef<HTMLElement>;
     @ViewChild('confirmDialogPortal') private confirmDialogPortalEl?: ElementRef<HTMLElement>;
     @ViewChild('toastPortal') private toastPortalEl?: ElementRef<HTMLElement>;
+    @ViewChild('otp1', { static: false }) private otp1Ref?: ElementRef<HTMLInputElement>;
 
     private editDialogRef: WidgetPortalRef | null = null;
     private confirmDialogPortalRef: WidgetPortalRef | null = null;
@@ -257,21 +262,32 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
         this.selectGetOtpSuccess$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
             if (res) {
                 this.isMobileOtpSent = true;
+                this.getOtpError = '';
                 this.startResendTimer();
                 this.lastSentMobileNumber = this.getMobileIdentifier();
                 this.lockMobileInput();
-                this.cdr.markForCheck();
+                this.cdr.detectChanges();
+                afterNextRender(() => this.focusFirstOtpInput(), { injector: this.injector });
             }
         });
 
         this.store
             .pipe(select(selectApiErrorResponse), distinctUntilChanged(isEqual), takeUntil(this.destroy$))
             .subscribe((errorResponse) => {
-                if (errorResponse && this.isMobileOtpSent && !this.isMobileOtpVerified) {
-                    this.otpError = 'Please enter valid OTP';
-                    this.otpForm.reset();
-                    this.cdr.markForCheck();
+                if (!errorResponse) {
+                    return;
                 }
+
+                const errorMessage = this.extractApiErrorMessage(errorResponse);
+
+                if (this.isMobileOtpSent && !this.isMobileOtpVerified) {
+                    this.otpError = errorMessage;
+                    this.otpForm.reset();
+                } else if (this.isEditingMobile()) {
+                    this.getOtpError = errorMessage;
+                }
+
+                this.cdr.markForCheck();
             });
 
         this.store.dispatch(
@@ -360,8 +376,40 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     }
 
     public isProfileMobileValid(): boolean {
+        return this.getProfileMobileValidationError() === null;
+    }
+
+    public getProfileMobileValidationError(): string | null {
         const digits = this.getMobileIdentifier();
-        return PROFILE_MOBILE_REGEX.test(digits);
+
+        if (!digits) {
+            return 'Mobile number is required.';
+        }
+
+        if (!/^\d+$/.test(digits)) {
+            return 'Mobile number must contain digits only.';
+        }
+
+        try {
+            const parsed = phoneUtil.parse(`+${digits}`, undefined);
+            const countryCode = parsed.getCountryCode();
+
+            if (!countryCode) {
+                return 'Enter a valid country code (e.g. 91 for India).';
+            }
+
+            if (!phoneUtil.isValidNumber(parsed)) {
+                const nationalNumber = parsed.getNationalNumber()?.toString() ?? '';
+                if (!nationalNumber) {
+                    return 'Enter a valid country code with your mobile number.';
+                }
+                return 'Enter a valid mobile number for the country code.';
+            }
+
+            return null;
+        } catch {
+            return 'Enter a valid mobile number with country code (e.g. 919876543210).';
+        }
     }
 
     public onMobileBlur(): void {
@@ -376,7 +424,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
 
     public onMobileKeypress(event: KeyboardEvent): void {
         const char = event.key;
-        if (char.length === 1 && !/[0-9+]/.test(char)) {
+        if (char.length === 1 && !/[0-9]/.test(char)) {
             event.preventDefault();
         }
     }
@@ -429,6 +477,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
         if (!this.canResendOtp) {
             return;
         }
+        this.getOtpError = '';
         this.store.dispatch(
             sendOtpAction({
                 request: {
@@ -464,6 +513,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
         this.isMobileOtpSent = false;
         this.isMobileOtpVerified = false;
         this.otpVerificationToken = '';
+        this.getOtpError = '';
         this.otpForm.reset();
         const value = this.getMobileIdentifier();
         if (value !== this.lastSentMobileNumber) {
@@ -544,10 +594,31 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
         this.canResendOtp = true;
     }
 
+    private extractApiErrorMessage(errorResponse: any): string {
+        return (
+            errorResponse?.errors?.message ||
+            errorResponse?.data?.message ||
+            errorResponse?.error?.errors?.message ||
+            errorResponse?.error?.data?.message ||
+            errorResponse?.error?.message ||
+            errorResponse?.message ||
+            'An error occurred'
+        );
+    }
+
+    private focusFirstOtpInput(): void {
+        const input =
+            this.otp1Ref?.nativeElement ||
+            (this.editDialogPortalEl?.nativeElement.querySelector('.mobile-otp-container input') as HTMLInputElement);
+
+        input?.focus();
+    }
+
     private resetMobileOtpState(): void {
         this.isMobileOtpVerified = false;
         this.isMobileOtpSent = false;
         this.otpError = '';
+        this.getOtpError = '';
         this.lastSentMobileNumber = '';
         this.otpVerificationToken = '';
         this.otpForm.reset();
