@@ -393,10 +393,11 @@
                             </div>
                             @if (getOtpError) {
                                 <p role="alert" class="w-field-error">{{ getOtpError }}</p>
-                            } @else if (clientForm.get('mobile')?.touched && !isProfileMobileValid()) {
-                                <p role="alert" class="w-field-error">
-                                    Enter a valid mobile number with country code (10–15 digits).
-                                </p>
+                            } @else if (
+                                clientForm.get('mobile')?.touched && getProfileMobileValidationError();
+                                as mobileError
+                            ) {
+                                <p role="alert" class="w-field-error">{{ mobileError }}</p>
                             } @else if (clientForm.get('mobile')?.errors?.otpVerificationFailed) {
                                 <p role="alert" class="w-field-error">Please verify the mobile number.</p>
                             }
