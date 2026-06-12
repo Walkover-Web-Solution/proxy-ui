@@ -206,24 +206,49 @@ export class BillingComponent extends BaseComponent implements OnInit {
         return planTier > activeTier;
     }
 
+    public isLowerPlan(plan: IBillingPlan, subscriptionStatus: IBillingSubscriptionStatus | null): boolean {
+        if (!subscriptionStatus?.has_subscription || !subscriptionStatus.active_plan_code) {
+            return false;
+        }
+
+        const activeTier = this.planTierOrder[subscriptionStatus.active_plan_code];
+        const planTier = this.planTierOrder[plan.lago_plan_code];
+
+        if (activeTier === undefined || planTier === undefined) {
+            return false;
+        }
+
+        return planTier < activeTier;
+    }
+
+    public canChangePlan(plan: IBillingPlan, subscriptionStatus: IBillingSubscriptionStatus | null): boolean {
+        if (!subscriptionStatus?.has_subscription) {
+            return true;
+        }
+
+        return this.isHigherPlan(plan, subscriptionStatus) || this.isLowerPlan(plan, subscriptionStatus);
+    }
+
     public isUpgrading(plan: IBillingPlan, upgradingPlanCode: string | null): boolean {
         return upgradingPlanCode === plan.lago_plan_code;
     }
 
     public onPlanCtaClick(plan: IBillingPlan, subscriptionStatus: IBillingSubscriptionStatus | null): void {
-        if (this.isActivePlan(plan, subscriptionStatus) || !this.isHigherPlan(plan, subscriptionStatus)) {
+        if (this.isActivePlan(plan, subscriptionStatus) || !this.canChangePlan(plan, subscriptionStatus)) {
             return;
         }
 
         const planName = this.getDisplayName(plan);
+        const actionLabel = this.isLowerPlan(plan, subscriptionStatus) ? 'downgrade' : 'upgrade';
+        const actionButtonLabel = this.isLowerPlan(plan, subscriptionStatus) ? 'Downgrade' : 'Upgrade';
         const confirmDialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
             panelClass: ['mat-dialog'],
         });
         confirmDialogRef.componentRef.setInput(
             'confirmationMessage',
-            `Are you sure you want to upgrade to ${planName}?`
+            `Are you sure you want to ${actionLabel} to ${planName}?`
         );
-        confirmDialogRef.componentRef.setInput('confirmButtonText', 'Upgrade');
+        confirmDialogRef.componentRef.setInput('confirmButtonText', actionButtonLabel);
         confirmDialogRef.componentRef.setInput('confirmButtonColor', 'primary');
 
         confirmDialogRef.afterClosed().subscribe((action) => {
@@ -380,6 +405,10 @@ export class BillingComponent extends BaseComponent implements OnInit {
 
         if (this.isHigherPlan(plan, subscriptionStatus)) {
             return `Upgrade to ${this.getDisplayName(plan)}`;
+        }
+
+        if (this.isLowerPlan(plan, subscriptionStatus)) {
+            return `Downgrade to ${this.getDisplayName(plan)}`;
         }
 
         if (plan.frontend_data?.cta) {
