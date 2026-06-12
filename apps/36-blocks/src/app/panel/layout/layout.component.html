@@ -86,11 +86,38 @@
                 (loggedOut)="logOut()"
             ></proxy-sidebar-user-menu>
         }
+        <div
+            class="sidebar-billing-link shrink-0"
+            [class.sidebar-billing-link--collapsed]="!sideNavService.isSideNavOpen()"
+        >
+            <a
+                class="sidebar-billing-link__anchor"
+                routerLink="/app/billing"
+                routerLinkActive="sidebar-billing-link__anchor--active"
+                [matTooltip]="!sideNavService.isSideNavOpen() ? 'Billing' : ''"
+                matTooltipPosition="right"
+            >
+                <span class="sidebar-billing-link__icon-wrap" aria-hidden="true">
+                    <mat-icon class="material-icons-outlined">credit_card</mat-icon>
+                </span>
+                @if (sideNavService.isSideNavOpen()) {
+                    <span class="sidebar-billing-link__text">
+                        <span class="sidebar-billing-link__label">Billing</span>
+                        <span class="sidebar-billing-link__hint">Plans & payment</span>
+                    </span>
+                    <mat-icon class="sidebar-billing-link__arrow material-icons-outlined" aria-hidden="true">
+                        chevron_right
+                    </mat-icon>
+                }
+            </a>
+        </div>
     </div>
+
     <div class="flex-1 flex flex-col" [class.app-content]="!showContainer">
         <!-- Content::START -->
         <router-outlet></router-outlet>
         <div id="ChatbotContainer" class="h-screen w-full"></div>
+
         <!-- Content::END -->
     </div>
 </div>

@@ -1,0 +1,1000 @@
+<main class="billing-page">
+    <div class="billing-page__content">
+        <section aria-labelledby="billing-usage-heading" class="billing-page__section billing-usage">
+            <h2 id="billing-usage-heading" class="sr-only">Current plan usage</h2>
+
+            @if (usageDashboardInProcess$ | async) {
+                <div class="flex justify-center py-16">
+                    <mat-spinner diameter="36"></mat-spinner>
+                </div>
+            } @else if (
+                {
+                    subscriptionStatus: (subscriptionStatus$ | async),
+                    activePlan: (activePlan$ | async),
+                    usage: (subscriptionUsage$ | async),
+                };
+                as vm
+            ) {
+                @if (vm.subscriptionStatus?.has_subscription && vm.activePlan) {
+                    @if (vm.usage) {
+                        <div class="flex flex-col gap-5">
+                            <header
+                                class="relative overflow-hidden rounded-[1.25rem] border p-6 text-[var(--billing-text)] shadow-[var(--billing-shadow-highlight)]"
+                                style="
+                                    border-color: var(--billing-card-border-highlight);
+                                    background:
+                                        linear-gradient(
+                                            135deg,
+                                            color-mix(in srgb, var(--billing-accent) 14%, var(--billing-card-bg)) 0%,
+                                            var(--billing-card-bg) 55%
+                                        ),
+                                        var(--billing-card-bg);
+                                "
+                            >
+                                <div
+                                    class="pointer-events-none absolute -right-8 -top-16 h-56 w-56 rounded-full"
+                                    style="
+                                        background: radial-gradient(
+                                            circle,
+                                            color-mix(in srgb, var(--billing-accent) 28%, transparent) 0%,
+                                            transparent 70%
+                                        );
+                                    "
+                                    aria-hidden="true"
+                                ></div>
+                                <div class="relative z-[1] flex flex-wrap items-start justify-between gap-6">
+                                    <div class="flex min-w-0 flex-1 items-start gap-4">
+                                        <div
+                                            class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border text-[var(--billing-accent)]"
+                                            style="
+                                                background: color-mix(
+                                                    in srgb,
+                                                    var(--billing-accent) 12%,
+                                                    var(--billing-card-bg)
+                                                );
+                                                border-color: var(--billing-card-border-highlight);
+                                                box-shadow: 0 8px 24px
+                                                    color-mix(in srgb, var(--billing-accent) 18%, transparent);
+                                            "
+                                        >
+                                            <mat-icon aria-hidden="true" class="!h-7 !w-7 !text-[1.75rem]"
+                                                >workspace_premium</mat-icon
+                                            >
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="mb-2.5 flex flex-wrap items-center gap-2.5">
+                                                <span
+                                                    class="inline-flex items-center rounded-full border px-2.5 py-[0.2rem] text-[0.6875rem] font-bold uppercase tracking-[0.04em] text-[var(--billing-text-muted)]"
+                                                    [style.color]="
+                                                        vm.subscriptionStatus.status === 'active'
+                                                            ? 'var(--billing-accent)'
+                                                            : 'var(--billing-text-muted)'
+                                                    "
+                                                    [style.border-color]="
+                                                        vm.subscriptionStatus.status === 'active'
+                                                            ? 'var(--billing-card-border-highlight)'
+                                                            : 'var(--billing-card-border)'
+                                                    "
+                                                    [style.box-shadow]="
+                                                        vm.subscriptionStatus.status === 'active'
+                                                            ? '0 0 0 1px color-mix(in srgb, var(--billing-accent) 15%, transparent)'
+                                                            : null
+                                                    "
+                                                >
+                                                    {{ getSubscriptionStatusLabel(vm.subscriptionStatus) }}
+                                                </span>
+                                                @if (
+                                                    getBillingPeriodLabel(
+                                                        vm.subscriptionStatus,
+                                                        vm.usage.period?.from,
+                                                        vm.usage.period?.to
+                                                    );
+                                                    as period
+                                                ) {
+                                                    <span
+                                                        class="inline-flex items-center gap-1 text-[0.8125rem] text-[var(--billing-text-muted)]"
+                                                    >
+                                                        <mat-icon
+                                                            aria-hidden="true"
+                                                            class="!h-[0.9375rem] !w-[0.9375rem] !text-[0.9375rem]"
+                                                        >
+                                                            date_range
+                                                        </mat-icon>
+                                                        {{ period }}
+                                                    </span>
+                                                }
+                                            </div>
+                                            <h3
+                                                class="mb-1.5 text-[clamp(1.5rem,2.5vw,2rem)] font-extrabold leading-[1.15]"
+                                            >
+                                                {{ getDisplayName(vm.activePlan) }}
+                                            </h3>
+                                            @if (getTagline(vm.activePlan); as tagline) {
+                                                <p
+                                                    class="m-0 max-w-[36rem] text-[0.9375rem] leading-[1.55] text-[var(--billing-text-muted)]"
+                                                >
+                                                    {{ tagline }}
+                                                </p>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="flex shrink-0 flex-col items-end gap-3.5">
+                                        @if (getPriceAmount(vm.activePlan); as amount) {
+                                            <div
+                                                class="rounded-[0.875rem] border px-4 py-3 text-right"
+                                                style="
+                                                    border-color: var(--billing-card-border);
+                                                    background: color-mix(
+                                                        in srgb,
+                                                        var(--billing-card-bg) 88%,
+                                                        var(--billing-accent) 12%
+                                                    );
+                                                "
+                                            >
+                                                <span
+                                                    class="mb-1 block text-[0.6875rem] font-semibold uppercase tracking-[0.06em] text-[var(--billing-text-muted)]"
+                                                >
+                                                    Current plan
+                                                </span>
+                                                <div class="flex items-end justify-end gap-1.5">
+                                                    <span
+                                                        class="text-[1.75rem] font-extrabold leading-none text-[var(--billing-accent)]"
+                                                    >
+                                                        {{ amount }}
+                                                    </span>
+                                                    <span
+                                                        class="pb-[0.2rem] text-[0.8125rem] font-medium text-[var(--billing-text-muted)]"
+                                                    >
+                                                        {{ getPricePeriod(vm.activePlan) }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        }
+                                        <button
+                                            type="button"
+                                            class="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border px-[1.15rem] py-[0.65rem] text-xs font-bold uppercase tracking-[0.06em] text-[#041210] shadow-[0_8px_18px_color-mix(in_srgb,var(--billing-accent)_28%,transparent)] transition"
+                                            style="
+                                                border-color: color-mix(
+                                                    in srgb,
+                                                    var(--billing-accent) 65%,
+                                                    transparent
+                                                );
+                                                background: linear-gradient(
+                                                    135deg,
+                                                    color-mix(in srgb, var(--billing-accent) 90%, #22d3ee) 0%,
+                                                    color-mix(in srgb, var(--billing-accent-hover) 85%, #5eead4) 100%
+                                                );
+                                            "
+                                            (click)="openPlansDialog()"
+                                        >
+                                            <mat-icon
+                                                aria-hidden="true"
+                                                class="!h-[0.95rem] !w-[0.95rem] !text-[0.95rem]"
+                                                >sync_alt</mat-icon
+                                            >
+                                            Change plan
+                                        </button>
+                                    </div>
+                                </div>
+                            </header>
+
+                            @if (vm.usage.metrics?.length) {
+                                <section
+                                    class="rounded-2xl border bg-[var(--billing-card-bg)] p-5"
+                                    style="border-color: var(--billing-card-border)"
+                                    aria-labelledby="billing-usage-metrics-heading"
+                                >
+                                    <div class="mb-5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+                                        <h4
+                                            id="billing-usage-metrics-heading"
+                                            class="m-0 inline-flex items-center gap-2 text-base font-bold text-[var(--billing-text)]"
+                                        >
+                                            <mat-icon
+                                                aria-hidden="true"
+                                                class="!h-[1.125rem] !w-[1.125rem] !text-[1.125rem] text-[var(--billing-accent)]"
+                                            >
+                                                monitoring
+                                            </mat-icon>
+                                            Usage overview
+                                        </h4>
+                                        <span class="text-[0.8125rem] text-[var(--billing-text-muted)]">
+                                            Live consumption this billing period
+                                        </span>
+                                    </div>
+
+                                    <div
+                                        class="grid grid-cols-1 gap-4 min-[900px]:grid-cols-2"
+                                        aria-label="Plan usage metrics"
+                                    >
+                                        @for (metric of vm.usage.metrics; track metric.code) {
+                                            <article
+                                                class="metric-card grid items-center justify-items-center gap-4 rounded-2xl border p-5 transition hover:-translate-y-0.5 min-[520px]:grid-cols-[auto_1fr] min-[520px]:justify-items-stretch"
+                                                style="
+                                                    background: linear-gradient(
+                                                        180deg,
+                                                        color-mix(
+                                                                in srgb,
+                                                                var(--billing-card-bg) 92%,
+                                                                var(--billing-accent) 8%
+                                                            )
+                                                            0%,
+                                                        var(--billing-card-bg) 100%
+                                                    );
+                                                    box-shadow: 0 10px 28px
+                                                        color-mix(in srgb, var(--billing-accent) 10%, transparent);
+                                                "
+                                                [class.metric-card--healthy]="getMetricTone(metric) === 'healthy'"
+                                                [class.metric-card--warning]="getMetricTone(metric) === 'warning'"
+                                                [class.metric-card--critical]="getMetricTone(metric) === 'critical'"
+                                                [class.metric-card--unlimited]="getMetricTone(metric) === 'unlimited'"
+                                            >
+                                                <div class="relative h-[7.5rem] w-[7.5rem] shrink-0">
+                                                    <svg
+                                                        class="block h-full w-full"
+                                                        viewBox="0 0 120 120"
+                                                        role="img"
+                                                        [attr.aria-label]="
+                                                            metric.name +
+                                                            ' usage ' +
+                                                            getMetricRingPercentDisplay(metric)
+                                                        "
+                                                    >
+                                                        <circle
+                                                            class="fill-none [stroke-width:9]"
+                                                            cx="60"
+                                                            cy="60"
+                                                            [attr.r]="metricRingRadius"
+                                                            stroke="color-mix(in srgb, var(--billing-card-border) 80%, transparent)"
+                                                        />
+                                                        <circle
+                                                            class="metric-ring-progress fill-none [stroke-linecap:round] [stroke-width:9] transition-[stroke-dashoffset] duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                                                            cx="60"
+                                                            cy="60"
+                                                            [attr.r]="metricRingRadius"
+                                                            [attr.stroke-dasharray]="metricRingCircumference"
+                                                            [attr.stroke-dashoffset]="getMetricRingOffset(metric)"
+                                                            [class.metric-ring-progress--healthy]="
+                                                                getMetricTone(metric) === 'healthy'
+                                                            "
+                                                            [class.metric-ring-progress--warning]="
+                                                                getMetricTone(metric) === 'warning'
+                                                            "
+                                                            [class.metric-ring-progress--critical]="
+                                                                getMetricTone(metric) === 'critical'
+                                                            "
+                                                            [class.metric-ring-progress--unlimited]="
+                                                                getMetricTone(metric) === 'unlimited'
+                                                            "
+                                                            transform="rotate(-90 60 60)"
+                                                        />
+                                                    </svg>
+                                                    <div
+                                                        class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-0.5"
+                                                    >
+                                                        <span
+                                                            class="text-[1.375rem] font-extrabold leading-none text-[var(--billing-text)]"
+                                                        >
+                                                            {{ getMetricRingPercentDisplay(metric) }}
+                                                        </span>
+                                                        <span
+                                                            class="text-[0.6875rem] font-semibold uppercase tracking-[0.06em] text-[var(--billing-text-muted)]"
+                                                        >
+                                                            used
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex min-w-0 flex-col gap-3.5">
+                                                    <div class="flex items-center gap-3">
+                                                        <span
+                                                            class="flex h-9 w-9 items-center justify-center rounded-[0.625rem] border"
+                                                            style="
+                                                                background: color-mix(
+                                                                    in srgb,
+                                                                    var(--billing-accent) 10%,
+                                                                    var(--billing-card-bg)
+                                                                );
+                                                                border-color: color-mix(
+                                                                    in srgb,
+                                                                    var(--billing-accent) 18%,
+                                                                    transparent
+                                                                );
+                                                            "
+                                                        >
+                                                            <mat-icon
+                                                                class="!h-[1.125rem] !w-[1.125rem] !text-[1.125rem] text-[var(--billing-accent)]"
+                                                                aria-hidden="true"
+                                                            >
+                                                                {{ getMetricIcon(metric.code) }}
+                                                            </mat-icon>
+                                                        </span>
+                                                        <div class="flex min-w-0 flex-col gap-0.5">
+                                                            <span
+                                                                class="text-base font-bold text-[var(--billing-text)]"
+                                                                >{{ metric.name }}</span
+                                                            >
+                                                            <span
+                                                                class="text-xs capitalize text-[var(--billing-text-muted)]"
+                                                                >{{ metric.unit }}</span
+                                                            >
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="grid w-full grid-cols-1 gap-2 min-[520px]:grid-cols-3">
+                                                        <div
+                                                            class="flex flex-col gap-0.5 rounded-lg border px-2.5 py-2"
+                                                            style="
+                                                                background: color-mix(
+                                                                    in srgb,
+                                                                    var(--billing-card-bg) 90%,
+                                                                    var(--billing-accent) 10%
+                                                                );
+                                                                border-color: color-mix(
+                                                                    in srgb,
+                                                                    var(--billing-card-border) 85%,
+                                                                    transparent
+                                                                );
+                                                            "
+                                                        >
+                                                            <span
+                                                                class="text-[0.625rem] font-semibold uppercase tracking-[0.05em] text-[var(--billing-text-muted)]"
+                                                            >
+                                                                Used
+                                                            </span>
+                                                            <span
+                                                                class="truncate text-sm font-bold text-[var(--billing-text)]"
+                                                            >
+                                                                {{ formatUsageValue(metric.current_usage) }}
+                                                            </span>
+                                                        </div>
+                                                        <div
+                                                            class="flex flex-col gap-0.5 rounded-lg border px-2.5 py-2"
+                                                            style="
+                                                                background: color-mix(
+                                                                    in srgb,
+                                                                    var(--billing-card-bg) 90%,
+                                                                    var(--billing-accent) 10%
+                                                                );
+                                                                border-color: color-mix(
+                                                                    in srgb,
+                                                                    var(--billing-card-border) 85%,
+                                                                    transparent
+                                                                );
+                                                            "
+                                                        >
+                                                            <span
+                                                                class="text-[0.625rem] font-semibold uppercase tracking-[0.05em] text-[var(--billing-text-muted)]"
+                                                            >
+                                                                Limit
+                                                            </span>
+                                                            <span
+                                                                class="truncate text-sm font-bold text-[var(--billing-text)]"
+                                                            >
+                                                                {{ getMetricLimitLabel(metric) }}
+                                                            </span>
+                                                        </div>
+                                                        <div
+                                                            class="flex flex-col gap-0.5 rounded-lg border px-2.5 py-2"
+                                                            style="
+                                                                background: color-mix(
+                                                                    in srgb,
+                                                                    var(--billing-card-bg) 90%,
+                                                                    var(--billing-accent) 10%
+                                                                );
+                                                                border-color: color-mix(
+                                                                    in srgb,
+                                                                    var(--billing-card-border) 85%,
+                                                                    transparent
+                                                                );
+                                                            "
+                                                        >
+                                                            <span
+                                                                class="text-[0.625rem] font-semibold uppercase tracking-[0.05em] text-[var(--billing-text-muted)]"
+                                                            >
+                                                                Remaining
+                                                            </span>
+                                                            <span
+                                                                class="truncate text-sm font-bold text-[var(--billing-accent)]"
+                                                            >
+                                                                {{ getMetricRemainingLabel(metric) }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        class="h-[0.4375rem] overflow-hidden rounded-full"
+                                                        role="progressbar"
+                                                        [attr.aria-valuenow]="
+                                                            metric.is_unlimited ? null : getMetricPercent(metric)
+                                                        "
+                                                        aria-valuemin="0"
+                                                        aria-valuemax="100"
+                                                        [attr.aria-label]="metric.name + ' usage bar'"
+                                                        style="
+                                                            background-color: color-mix(
+                                                                in srgb,
+                                                                var(--billing-card-border) 65%,
+                                                                transparent
+                                                            );
+                                                        "
+                                                    >
+                                                        <div
+                                                            class="metric-bar-fill h-full rounded-[inherit] transition-[width] duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                                                            [style.width.%]="
+                                                                metric.is_unlimited ? 100 : getMetricPercent(metric)
+                                                            "
+                                                            [class.metric-bar-fill--healthy]="
+                                                                getMetricTone(metric) === 'healthy'
+                                                            "
+                                                            [class.metric-bar-fill--warning]="
+                                                                getMetricTone(metric) === 'warning'
+                                                            "
+                                                            [class.metric-bar-fill--critical]="
+                                                                getMetricTone(metric) === 'critical'
+                                                            "
+                                                            [class.metric-bar-fill--unlimited]="
+                                                                getMetricTone(metric) === 'unlimited'
+                                                            "
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        }
+                                    </div>
+                                </section>
+                            } @else {
+                                <p class="m-0 text-[0.9375rem] leading-6 text-[var(--billing-text-muted)]">
+                                    No usage data available for this billing period.
+                                </p>
+                            }
+
+                            @if (getPlanFeatures(vm.activePlan); as features) {
+                                @if (features.length) {
+                                    <section
+                                        class="rounded-2xl border bg-[var(--billing-card-bg)] p-5"
+                                        style="border-color: var(--billing-card-border)"
+                                        aria-labelledby="billing-usage-features-heading"
+                                    >
+                                        <div class="mb-5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+                                            <h4
+                                                id="billing-usage-features-heading"
+                                                class="m-0 inline-flex items-center gap-2 text-base font-bold text-[var(--billing-text)]"
+                                            >
+                                                <mat-icon
+                                                    aria-hidden="true"
+                                                    class="!h-[1.125rem] !w-[1.125rem] !text-[1.125rem] text-[var(--billing-accent)]"
+                                                >
+                                                    verified
+                                                </mat-icon>
+                                                What's included
+                                            </h4>
+                                            <span class="text-[0.8125rem] text-[var(--billing-text-muted)]">
+                                                Everything in your {{ getDisplayName(vm.activePlan) }} plan
+                                            </span>
+                                        </div>
+                                        <ul
+                                            class="grid list-none grid-cols-1 gap-3 p-0 min-[640px]:grid-cols-2 min-[1100px]:grid-cols-3"
+                                            [attr.aria-label]="
+                                                'Features included in ' + getDisplayName(vm.activePlan) + ' plan'
+                                            "
+                                        >
+                                            @for (feature of features; track feature.text) {
+                                                <li
+                                                    class="flex items-start gap-3 rounded-xl border px-4 py-3 transition"
+                                                    [style.opacity]="feature.included ? 1 : 0.5"
+                                                    [style.border-style]="feature.included ? 'solid' : 'dashed'"
+                                                    style="
+                                                        border-color: color-mix(
+                                                            in srgb,
+                                                            var(--billing-accent) 18%,
+                                                            var(--billing-card-border)
+                                                        );
+                                                        background: linear-gradient(
+                                                            135deg,
+                                                            color-mix(
+                                                                    in srgb,
+                                                                    var(--billing-accent) 6%,
+                                                                    var(--billing-card-bg)
+                                                                )
+                                                                0%,
+                                                            var(--billing-card-bg) 100%
+                                                        );
+                                                    "
+                                                >
+                                                    <span
+                                                        class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+                                                        [style.color]="
+                                                            feature.included
+                                                                ? 'var(--billing-accent)'
+                                                                : 'var(--billing-feature-muted)'
+                                                        "
+                                                        [style.background]="
+                                                            feature.included
+                                                                ? 'color-mix(in srgb, var(--billing-accent) 12%, var(--billing-card-bg))'
+                                                                : 'color-mix(in srgb, var(--billing-feature-muted) 12%, var(--billing-card-bg))'
+                                                        "
+                                                        aria-hidden="true"
+                                                    >
+                                                        <mat-icon class="!h-3.5 !w-3.5 !text-sm">
+                                                            {{ feature.included ? 'check' : 'close' }}
+                                                        </mat-icon>
+                                                    </span>
+                                                    <span
+                                                        class="text-sm leading-[1.45] text-[var(--billing-feature-text)]"
+                                                        [class.font-semibold]="feature.bold"
+                                                        [style.color]="
+                                                            feature.bold
+                                                                ? 'var(--billing-text-muted)'
+                                                                : 'var(--billing-feature-text)'
+                                                        "
+                                                    >
+                                                        {{ feature.text }}
+                                                    </span>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </section>
+                                }
+                            }
+                        </div>
+                    } @else {
+                        <div
+                            class="flex flex-col items-start gap-4 rounded-2xl border bg-[var(--billing-card-bg)] px-6 py-8"
+                            style="border-color: var(--billing-card-border)"
+                        >
+                            <p class="m-0 text-[0.9375rem] leading-6 text-[var(--billing-text-muted)]">
+                                Unable to load usage for your current plan.
+                            </p>
+                            <button
+                                type="button"
+                                class="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border px-[1.15rem] py-[0.65rem] text-xs font-bold uppercase tracking-[0.06em] text-[#041210] shadow-[0_8px_18px_color-mix(in_srgb,var(--billing-accent)_28%,transparent)] transition"
+                                style="
+                                    border-color: color-mix(in srgb, var(--billing-accent) 65%, transparent);
+                                    background: linear-gradient(
+                                        135deg,
+                                        color-mix(in srgb, var(--billing-accent) 90%, #22d3ee) 0%,
+                                        color-mix(in srgb, var(--billing-accent-hover) 85%, #5eead4) 100%
+                                    );
+                                "
+                                (click)="openPlansDialog()"
+                            >
+                                <mat-icon aria-hidden="true" class="!h-[0.95rem] !w-[0.95rem] !text-[0.95rem]"
+                                    >sync_alt</mat-icon
+                                >
+                                Change plan
+                            </button>
+                        </div>
+                    }
+                } @else {
+                    <div
+                        class="flex flex-col items-start gap-4 rounded-2xl border bg-[var(--billing-card-bg)] px-6 py-8"
+                        style="border-color: var(--billing-card-border)"
+                    >
+                        <p class="m-0 text-[0.9375rem] leading-6 text-[var(--billing-text-muted)]">
+                            You don't have an active subscription yet.
+                        </p>
+                        <button
+                            type="button"
+                            class="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full border px-[1.15rem] py-[0.65rem] text-xs font-bold uppercase tracking-[0.06em] text-[#041210] shadow-[0_8px_18px_color-mix(in_srgb,var(--billing-accent)_28%,transparent)] transition"
+                            style="
+                                border-color: color-mix(in srgb, var(--billing-accent) 65%, transparent);
+                                background: linear-gradient(
+                                    135deg,
+                                    color-mix(in srgb, var(--billing-accent) 90%, #22d3ee) 0%,
+                                    color-mix(in srgb, var(--billing-accent-hover) 85%, #5eead4) 100%
+                                );
+                            "
+                            (click)="openPlansDialog()"
+                        >
+                            <mat-icon aria-hidden="true" class="!h-[0.95rem] !w-[0.95rem] !text-[0.95rem]"
+                                >sync_alt</mat-icon
+                            >
+                            Change plan
+                        </button>
+                    </div>
+                }
+            }
+        </section>
+    </div>
+</main>
+
+<ng-template #plansDialogTpl>
+    <div class="billing-plans-dialog__shell">
+        <div class="billing-plans-dialog__header">
+            <h2 class="billing-plans-dialog__title">Billing plans</h2>
+            <button
+                type="button"
+                mat-icon-button
+                class="billing-plans-dialog__close"
+                aria-label="Close billing plans"
+                (click)="closePlansDialog()"
+            >
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <main class="billing-page billing-page--dialog">
+            <div class="billing-page__content">
+                <section aria-labelledby="billing-plans-dialog-heading" class="billing-page__section">
+                    <h2 id="billing-plans-dialog-heading" class="sr-only">Billing plans</h2>
+
+                    @if (plansInProcess$ | async) {
+                        <div class="billing-page__loading">
+                            <mat-spinner diameter="32"></mat-spinner>
+                        </div>
+                    } @else if (plans$ | async; as plans) {
+                        @if (
+                            {
+                                subscriptionStatus: (subscriptionStatus$ | async),
+                                upgradingPlanCode: (upgradingPlanCode$ | async),
+                            };
+                            as vm
+                        ) {
+                            @if (plans.length) {
+                                <div
+                                    class="grid grid-cols-1 items-stretch justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                                    aria-label="Billing plans"
+                                >
+                                    @for (plan of plans; track plan.id) {
+                                        <article
+                                            class="relative flex w-full max-w-96 flex-col rounded-2xl border text-left transition"
+                                            [style.background-color]="'var(--billing-card-bg)'"
+                                            [style.border-color]="
+                                                isActivePlan(plan, vm.subscriptionStatus)
+                                                    ? 'var(--billing-card-border-highlight)'
+                                                    : 'var(--billing-card-border)'
+                                            "
+                                            [style.box-shadow]="
+                                                isActivePlan(plan, vm.subscriptionStatus)
+                                                    ? 'var(--billing-shadow-highlight)'
+                                                    : null
+                                            "
+                                        >
+                                            @if (getBadge(plan, vm.subscriptionStatus); as badge) {
+                                                <span
+                                                    class="absolute -top-3.5 left-1/2 z-[1] -translate-x-1/2 whitespace-nowrap rounded-full border px-4 py-1 text-xs font-bold"
+                                                    [style.color]="'var(--billing-accent)'"
+                                                    [style.background-color]="'var(--billing-badge-bg)'"
+                                                    [style.border-color]="'var(--billing-card-border-highlight)'"
+                                                    [style.box-shadow]="'var(--billing-badge-shadow)'"
+                                                >
+                                                    {{ badge }}
+                                                </span>
+                                            }
+
+                                            <div
+                                                class="border-b px-7 pb-6 pt-7"
+                                                [style.border-bottom-color]="
+                                                    isActivePlan(plan, vm.subscriptionStatus)
+                                                        ? 'var(--billing-card-divider-highlight)'
+                                                        : 'var(--billing-card-divider)'
+                                                "
+                                            >
+                                                <h3
+                                                    class="mb-1 text-xl font-bold"
+                                                    [style.color]="
+                                                        isActivePlan(plan, vm.subscriptionStatus)
+                                                            ? 'var(--billing-accent)'
+                                                            : 'var(--billing-text)'
+                                                    "
+                                                >
+                                                    {{ getDisplayName(plan) }}
+                                                </h3>
+                                                @if (getTagline(plan); as tagline) {
+                                                    <p class="mb-5 text-sm leading-6 text-[var(--billing-text-muted)]">
+                                                        {{ tagline }}
+                                                    </p>
+                                                }
+                                                @if (getPriceAmount(plan); as amount) {
+                                                    <div class="flex items-end gap-1.5">
+                                                        <span
+                                                            class="text-[2.625rem] font-extrabold leading-none tracking-[-0.02em]"
+                                                            [style.color]="
+                                                                isActivePlan(plan, vm.subscriptionStatus)
+                                                                    ? 'var(--billing-accent)'
+                                                                    : 'var(--billing-text)'
+                                                            "
+                                                        >
+                                                            {{ amount }}
+                                                        </span>
+                                                        <span
+                                                            class="pb-1.5 text-sm font-medium text-[var(--billing-text-muted)]"
+                                                            >{{ getPricePeriod(plan) }}</span
+                                                        >
+                                                    </div>
+                                                }
+                                            </div>
+
+                                            @if (getPlanFeatures(plan); as features) {
+                                                @if (features.length) {
+                                                    <ul
+                                                        class="m-0 flex flex-1 list-none flex-col gap-3 px-7 py-5"
+                                                        [attr.aria-label]="
+                                                            'Features included in ' + getDisplayName(plan) + ' plan'
+                                                        "
+                                                    >
+                                                        @for (feature of features; track feature.text) {
+                                                            <li
+                                                                class="flex items-start gap-3 text-sm leading-[1.45]"
+                                                                [style.opacity]="feature.included ? 1 : 0.45"
+                                                                [style.color]="'var(--billing-feature-text)'"
+                                                            >
+                                                                <mat-icon
+                                                                    class="!mt-[1px] !h-[1.125rem] !w-[1.125rem] shrink-0 !text-[1.125rem]"
+                                                                    [style.color]="
+                                                                        feature.included
+                                                                            ? 'var(--billing-accent)'
+                                                                            : 'var(--billing-feature-muted)'
+                                                                    "
+                                                                    aria-hidden="true"
+                                                                >
+                                                                    {{
+                                                                        feature.included
+                                                                            ? 'check_circle'
+                                                                            : 'remove_circle_outline'
+                                                                    }}
+                                                                </mat-icon>
+                                                                <span
+                                                                    [class.font-semibold]="feature.bold"
+                                                                    [style.color]="
+                                                                        feature.bold
+                                                                            ? 'var(--billing-text-muted)'
+                                                                            : 'var(--billing-feature-text)'
+                                                                    "
+                                                                >
+                                                                    {{ feature.text }}
+                                                                </span>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                }
+                                            }
+
+                                            <div class="mt-auto px-7 pb-7">
+                                                <button
+                                                    type="button"
+                                                    class="inline-flex w-full items-center justify-center gap-2 rounded-sm border px-6 py-3 text-sm font-semibold transition"
+                                                    [class.font-bold]="!isActivePlan(plan, vm.subscriptionStatus)"
+                                                    [disabled]="
+                                                        isActivePlan(plan, vm.subscriptionStatus) ||
+                                                        isUpgrading(plan, vm.upgradingPlanCode)
+                                                    "
+                                                    (click)="onPlanCtaClick(plan, vm.subscriptionStatus)"
+                                                    [attr.aria-label]="
+                                                        getCtaLabel(plan, vm.subscriptionStatus) +
+                                                        ' — ' +
+                                                        getDisplayName(plan) +
+                                                        ' plan'
+                                                    "
+                                                    [attr.aria-busy]="isUpgrading(plan, vm.upgradingPlanCode)"
+                                                    [style.color]="
+                                                        isActivePlan(plan, vm.subscriptionStatus)
+                                                            ? 'var(--billing-accent)'
+                                                            : 'var(--billing-accent-contrast)'
+                                                    "
+                                                    [style.background-color]="
+                                                        isActivePlan(plan, vm.subscriptionStatus)
+                                                            ? 'transparent'
+                                                            : 'var(--billing-accent)'
+                                                    "
+                                                    [style.border-color]="
+                                                        isActivePlan(plan, vm.subscriptionStatus)
+                                                            ? 'color-mix(in srgb, var(--billing-accent) 30%, transparent)'
+                                                            : 'var(--billing-accent)'
+                                                    "
+                                                >
+                                                    @if (isUpgrading(plan, vm.upgradingPlanCode)) {
+                                                        <mat-spinner class="shrink-0" diameter="18"></mat-spinner>
+                                                    } @else if (isActivePlan(plan, vm.subscriptionStatus)) {
+                                                        <mat-icon
+                                                            aria-hidden="true"
+                                                            class="!h-[1.125rem] !w-[1.125rem] !text-[1.125rem]"
+                                                            >verified</mat-icon
+                                                        >
+                                                    }
+                                                    {{
+                                                        isUpgrading(plan, vm.upgradingPlanCode)
+                                                            ? 'Upgrading...'
+                                                            : getCtaLabel(plan, vm.subscriptionStatus)
+                                                    }}
+                                                </button>
+                                            </div>
+                                        </article>
+                                    }
+                                </div>
+                            } @else {
+                                <p class="billing-page__empty">No plans found.</p>
+                            }
+                        }
+                    }
+                </section>
+
+                <section aria-labelledby="billing-payment-method-heading" class="w-full">
+                    <h2
+                        id="billing-payment-method-heading"
+                        class="mb-3 text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-[var(--billing-text-muted)]"
+                    >
+                        Payment method
+                    </h2>
+                    <div
+                        class="flex w-full flex-col items-start gap-4 rounded-xl border bg-[var(--billing-card-bg)] px-6 py-5"
+                        style="border-color: var(--billing-card-border)"
+                    >
+                        @if (paymentMethodsInProcess$ | async) {
+                            <div class="flex w-full flex-col gap-3" aria-hidden="true">
+                                @for (item of [1, 2]; track item) {
+                                    <div
+                                        class="flex items-center justify-between gap-4 rounded-lg border px-4 py-3"
+                                        style="border-color: var(--billing-card-border)"
+                                    >
+                                        <div class="flex min-w-0 flex-1 items-center gap-3">
+                                            <div
+                                                *skeleton="
+                                                    true;
+                                                    width: '34px';
+                                                    height: '34px';
+                                                    className: ['rounded-md']
+                                                "
+                                            ></div>
+                                            <div class="flex min-w-0 flex-col gap-1.5">
+                                                <div
+                                                    *skeleton="
+                                                        true;
+                                                        width: '140px';
+                                                        height: '14px';
+                                                        className: ['rounded-md']
+                                                    "
+                                                ></div>
+                                                <div
+                                                    *skeleton="
+                                                        true;
+                                                        width: '180px';
+                                                        height: '12px';
+                                                        className: ['rounded-md']
+                                                    "
+                                                ></div>
+                                                <div
+                                                    *skeleton="
+                                                        true;
+                                                        width: '100px';
+                                                        height: '12px';
+                                                        className: ['rounded-md']
+                                                    "
+                                                ></div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            *skeleton="true; width: '96px'; height: '30px'; className: ['rounded-md']"
+                                        ></div>
+                                    </div>
+                                }
+                                <div *skeleton="true; width: '168px'; height: '36px'; className: ['rounded-md']"></div>
+                            </div>
+                        } @else if (paymentMethods$ | async; as paymentMethods) {
+                            @if (
+                                { settingDefaultPaymentMethodId: (settingDefaultPaymentMethodId$ | async) };
+                                as paymentVm
+                            ) {
+                                @if (paymentMethods.length) {
+                                    <ul
+                                        class="flex w-full list-none flex-col gap-3 p-0"
+                                        aria-label="Saved payment methods"
+                                    >
+                                        @for (paymentMethod of paymentMethods; track paymentMethod.id) {
+                                            <li
+                                                class="flex items-center justify-between gap-4 rounded-lg border px-4 py-3"
+                                                style="
+                                                    border-color: var(--billing-card-border);
+                                                    background-color: color-mix(
+                                                        in srgb,
+                                                        var(--billing-card-bg) 92%,
+                                                        var(--billing-accent) 8%
+                                                    );
+                                                "
+                                            >
+                                                <div class="flex min-w-0 items-center gap-3">
+                                                    <mat-icon
+                                                        class="!h-5 !w-5 !text-[1.25rem] text-[var(--billing-accent)]"
+                                                        aria-hidden="true"
+                                                    >
+                                                        credit_card
+                                                    </mat-icon>
+                                                    <div class="flex min-w-0 flex-col gap-0.5">
+                                                        <span
+                                                            class="text-[0.9375rem] font-semibold leading-[1.4] text-[var(--billing-text)]"
+                                                        >
+                                                            {{ getPaymentMethodLabel(paymentMethod) }}
+                                                        </span>
+                                                        @if (getPaymentMethodEmail(paymentMethod); as email) {
+                                                            <span
+                                                                class="text-[0.8125rem] leading-[1.4] text-[var(--billing-text-muted)]"
+                                                                >{{ email }}</span
+                                                            >
+                                                        }
+                                                        @if (getPaymentMethodExpiry(paymentMethod); as expiry) {
+                                                            <span
+                                                                class="text-[0.8125rem] leading-[1.4] text-[var(--billing-text-muted)]"
+                                                                >{{ expiry }}</span
+                                                            >
+                                                        }
+                                                    </div>
+                                                </div>
+                                                @if (paymentMethod.is_default) {
+                                                    <span
+                                                        class="shrink-0 rounded-full border px-2.5 py-[0.2rem] text-[0.6875rem] font-bold uppercase tracking-[0.03em] text-[var(--billing-accent)]"
+                                                        style="
+                                                            border-color: var(--billing-card-border-highlight);
+                                                            background-color: var(--billing-badge-bg);
+                                                        "
+                                                    >
+                                                        Default
+                                                    </span>
+                                                } @else {
+                                                    <button
+                                                        type="button"
+                                                        class="inline-flex shrink-0 items-center justify-center gap-1.5 rounded border px-3 py-1.5 text-xs font-semibold text-[var(--billing-accent)] transition disabled:cursor-default disabled:opacity-70"
+                                                        style="
+                                                            border-color: color-mix(
+                                                                in srgb,
+                                                                var(--billing-accent) 30%,
+                                                                transparent
+                                                            );
+                                                            background-color: transparent;
+                                                        "
+                                                        [disabled]="!!paymentVm.settingDefaultPaymentMethodId"
+                                                        [attr.aria-busy]="
+                                                            isSettingDefaultPaymentMethod(
+                                                                paymentMethod,
+                                                                paymentVm.settingDefaultPaymentMethodId
+                                                            )
+                                                        "
+                                                        (click)="onSetDefaultPaymentMethodClick(paymentMethod)"
+                                                    >
+                                                        @if (
+                                                            isSettingDefaultPaymentMethod(
+                                                                paymentMethod,
+                                                                paymentVm.settingDefaultPaymentMethodId
+                                                            )
+                                                        ) {
+                                                            <mat-spinner class="shrink-0" diameter="14"></mat-spinner>
+                                                        }
+                                                        {{
+                                                            isSettingDefaultPaymentMethod(
+                                                                paymentMethod,
+                                                                paymentVm.settingDefaultPaymentMethodId
+                                                            )
+                                                                ? 'Setting...'
+                                                                : 'Set as default'
+                                                        }}
+                                                    </button>
+                                                }
+                                            </li>
+                                        }
+                                    </ul>
+                                } @else {
+                                    <p class="m-0 text-[0.9375rem] leading-6 text-[var(--billing-text-muted)]">
+                                        No payment method on file
+                                    </p>
+                                }
+
+                                <button
+                                    type="button"
+                                    class="inline-flex items-center justify-center gap-2 rounded px-4 py-2.5 text-xs font-bold uppercase tracking-[0.04em] text-[var(--billing-accent-contrast)] transition disabled:cursor-default disabled:opacity-85"
+                                    style="background-color: var(--billing-accent)"
+                                    [disabled]="addingPaymentMethod$ | async"
+                                    [attr.aria-busy]="addingPaymentMethod$ | async"
+                                    (click)="onAddPaymentMethodClick()"
+                                >
+                                    @if (addingPaymentMethod$ | async) {
+                                        <mat-spinner class="shrink-0" diameter="16"></mat-spinner>
+                                    }
+                                    {{ (addingPaymentMethod$ | async) ? 'Adding...' : 'Add payment method' }}
+                                </button>
+                            }
+                        }
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</ng-template>
