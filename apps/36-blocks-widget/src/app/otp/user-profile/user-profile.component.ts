@@ -227,7 +227,12 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
             if (res) {
                 this.previousName = res?.name;
                 this.companyDetails = res;
-                this.clientForm.get('name').setValue(res?.name);
+                const nameControl = this.clientForm.get('name');
+                nameControl?.setValue(res?.name);
+                nameControl?.updateValueAndValidity({ emitEvent: false });
+                if (nameControl?.hasError('pattern')) {
+                    nameControl.markAsTouched();
+                }
                 this.clientForm.get('email').setValue(res?.email);
                 const mobile = res?.mobile && res.mobile !== '--Not Provided--' ? res.mobile : '';
                 this.previousMobile = mobile;

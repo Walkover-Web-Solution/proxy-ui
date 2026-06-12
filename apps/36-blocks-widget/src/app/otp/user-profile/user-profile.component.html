@@ -302,7 +302,7 @@
                         @if (clientForm.get('name')?.touched && clientForm.get('name')?.hasError('required')) {
                             <p role="alert" class="w-field-error">Name is required.</p>
                         } @else if (clientForm.get('name')?.touched && clientForm.get('name')?.hasError('pattern')) {
-                            <p role="alert" class="w-field-error">Invalid name format.</p>
+                            <p role="alert" class="w-field-error">Only alphabets are allowed.</p>
                         }
                     </div>
 

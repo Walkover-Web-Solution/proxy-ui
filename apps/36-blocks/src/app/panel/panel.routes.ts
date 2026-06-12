@@ -27,6 +27,10 @@ export const panelRoutes: Route[] = [
                 path: 'chatbot',
                 loadComponent: () => import('./chatbot/chatbot.component').then((c) => c.ChatbotComponent),
             },
+            {
+                path: 'billing',
+                loadComponent: () => import('./billing/billing.component').then((c) => c.BillingComponent),
+            },
         ],
         canActivate: [CanActivateRouteGuard],
     },
