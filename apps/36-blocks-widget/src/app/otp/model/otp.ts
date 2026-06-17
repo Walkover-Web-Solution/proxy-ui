@@ -34,6 +34,7 @@ export interface ISendOtpReq {
     origin?: string;
     variables?: any;
     authToken?: string;
+    useRetry?: boolean;
 }
 
 export interface IRetryOtpReq extends ISendOtpReq {

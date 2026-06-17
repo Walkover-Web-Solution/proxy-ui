@@ -3,6 +3,7 @@ import { createUrl } from '@proxy/service';
 export const otpVerificationUrls = {
     getWidgetData: (baseUrl) => createUrl(baseUrl, ':referenceId/widget'),
     sendOtp: (baseUrl) => createUrl(baseUrl, 'otp/send'),
+    retryOtp: (baseUrl) => createUrl(baseUrl, 'otp/retry'),
     verifyOtpV2: (baseUrl) => createUrl(baseUrl, 'otp/verify'),
     verifyOtp: (baseUrl) => createUrl(baseUrl, 'widget/verifyOtp'),
     resend: (baseUrl) => createUrl(baseUrl, 'widget/retryOtp'),

@@ -630,6 +630,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 return;
             }
             const currentEmail = emailControl.value;
+            const isIdentifierChanged = currentEmail !== this.lastSentEmail;
             if (isResend && currentEmail !== this.lastSentEmail) {
                 this.stopResendTimer('email');
                 this.canResendEmailOtp = true;
@@ -644,6 +645,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                     request: {
                         referenceId: this.referenceId(),
                         identifier: currentEmail,
+                        useRetry: isResend && !isIdentifierChanged,
                     },
                 })
             );
@@ -664,6 +666,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
             return;
         }
         const currentMobile = mobileControl.value;
+        const isIdentifierChanged = currentMobile !== this.lastSentMobileNumber;
         if (isResend && currentMobile !== this.lastSentMobileNumber) {
             this.stopResendTimer('mobile');
             this.canResendOtp = true;
@@ -678,6 +681,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
                 request: {
                     referenceId: this.referenceId(),
                     identifier: currentMobile,
+                    useRetry: isResend && !isIdentifierChanged,
                 },
             })
         );
