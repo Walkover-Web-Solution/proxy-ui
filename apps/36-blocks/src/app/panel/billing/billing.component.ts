@@ -45,12 +45,6 @@ export class BillingComponent extends BaseComponent implements OnInit {
     private plansDialogRef: MatDialogRef<unknown> | null = null;
     public readonly metricRingRadius = 52;
     public readonly metricRingCircumference = 2 * Math.PI * 52;
-    private readonly planTierOrder: Record<string, number> = {
-        starter: 0,
-        growth: 1,
-        scale: 2,
-    };
-
     public plans$: Observable<IBillingPlan[] | null> = this.componentStore.plans$;
     public subscriptionStatus$: Observable<IBillingSubscriptionStatus | null> = this.componentStore.subscriptionStatus$;
     public activePlan$: Observable<IBillingPlan | null> = this.componentStore.activePlan$;
@@ -191,56 +185,85 @@ export class BillingComponent extends BaseComponent implements OnInit {
         }));
     }
 
-    public isHigherPlan(plan: IBillingPlan, subscriptionStatus: IBillingSubscriptionStatus | null): boolean {
+    private getPlanRank(planCode: string | null, plans: IBillingPlan[] | null | undefined): number | null {
+        if (!planCode || !plans?.length) {
+            return null;
+        }
+
+        const rank = plans.findIndex((plan) => plan.lago_plan_code === planCode);
+        return rank > -1 ? rank : null;
+    }
+
+    public isHigherPlan(
+        plan: IBillingPlan,
+        subscriptionStatus: IBillingSubscriptionStatus | null,
+        plans: IBillingPlan[] | null | undefined
+    ): boolean {
         if (!subscriptionStatus?.has_subscription || !subscriptionStatus.active_plan_code) {
             return false;
         }
 
-        const activeTier = this.planTierOrder[subscriptionStatus.active_plan_code];
-        const planTier = this.planTierOrder[plan.lago_plan_code];
+        const activeTier = this.getPlanRank(subscriptionStatus.active_plan_code, plans);
+        const planTier = this.getPlanRank(plan.lago_plan_code, plans);
 
-        if (activeTier === undefined || planTier === undefined) {
+        if (activeTier === null || planTier === null) {
             return false;
         }
 
         return planTier > activeTier;
     }
 
-    public isLowerPlan(plan: IBillingPlan, subscriptionStatus: IBillingSubscriptionStatus | null): boolean {
+    public isLowerPlan(
+        plan: IBillingPlan,
+        subscriptionStatus: IBillingSubscriptionStatus | null,
+        plans: IBillingPlan[] | null | undefined
+    ): boolean {
         if (!subscriptionStatus?.has_subscription || !subscriptionStatus.active_plan_code) {
             return false;
         }
 
-        const activeTier = this.planTierOrder[subscriptionStatus.active_plan_code];
-        const planTier = this.planTierOrder[plan.lago_plan_code];
+        const activeTier = this.getPlanRank(subscriptionStatus.active_plan_code, plans);
+        const planTier = this.getPlanRank(plan.lago_plan_code, plans);
 
-        if (activeTier === undefined || planTier === undefined) {
+        if (activeTier === null || planTier === null) {
             return false;
         }
 
         return planTier < activeTier;
     }
 
-    public canChangePlan(plan: IBillingPlan, subscriptionStatus: IBillingSubscriptionStatus | null): boolean {
+    public canChangePlan(
+        plan: IBillingPlan,
+        subscriptionStatus: IBillingSubscriptionStatus | null,
+        plans: IBillingPlan[] | null | undefined
+    ): boolean {
         if (!subscriptionStatus?.has_subscription) {
             return true;
         }
 
-        return this.isHigherPlan(plan, subscriptionStatus) || this.isLowerPlan(plan, subscriptionStatus);
+        if (this.isActivePlan(plan, subscriptionStatus)) {
+            return false;
+        }
+
+        return this.getPlanRank(subscriptionStatus.active_plan_code, plans) !== null;
     }
 
     public isUpgrading(plan: IBillingPlan, upgradingPlanCode: string | null): boolean {
         return upgradingPlanCode === plan.lago_plan_code;
     }
 
-    public onPlanCtaClick(plan: IBillingPlan, subscriptionStatus: IBillingSubscriptionStatus | null): void {
-        if (this.isActivePlan(plan, subscriptionStatus) || !this.canChangePlan(plan, subscriptionStatus)) {
+    public onPlanCtaClick(
+        plan: IBillingPlan,
+        subscriptionStatus: IBillingSubscriptionStatus | null,
+        plans: IBillingPlan[] | null | undefined
+    ): void {
+        if (this.isActivePlan(plan, subscriptionStatus) || !this.canChangePlan(plan, subscriptionStatus, plans)) {
             return;
         }
 
         const planName = this.getDisplayName(plan);
-        const actionLabel = this.isLowerPlan(plan, subscriptionStatus) ? 'downgrade' : 'upgrade';
-        const actionButtonLabel = this.isLowerPlan(plan, subscriptionStatus) ? 'Downgrade' : 'Upgrade';
+        const actionLabel = this.isLowerPlan(plan, subscriptionStatus, plans) ? 'downgrade' : 'upgrade';
+        const actionButtonLabel = this.isLowerPlan(plan, subscriptionStatus, plans) ? 'Downgrade' : 'Upgrade';
         const confirmDialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
             panelClass: ['mat-dialog'],
         });
@@ -398,16 +421,20 @@ export class BillingComponent extends BaseComponent implements OnInit {
         return `${this.formatUsageValue(remaining)} left`;
     }
 
-    public getCtaLabel(plan: IBillingPlan, subscriptionStatus: IBillingSubscriptionStatus | null): string {
+    public getCtaLabel(
+        plan: IBillingPlan,
+        subscriptionStatus: IBillingSubscriptionStatus | null,
+        plans: IBillingPlan[] | null | undefined
+    ): string {
         if (this.isActivePlan(plan, subscriptionStatus)) {
             return 'Subscribed';
         }
 
-        if (this.isHigherPlan(plan, subscriptionStatus)) {
+        if (this.isHigherPlan(plan, subscriptionStatus, plans)) {
             return `Upgrade to ${this.getDisplayName(plan)}`;
         }
 
-        if (this.isLowerPlan(plan, subscriptionStatus)) {
+        if (this.isLowerPlan(plan, subscriptionStatus, plans)) {
             return `Downgrade to ${this.getDisplayName(plan)}`;
         }
 
@@ -415,15 +442,6 @@ export class BillingComponent extends BaseComponent implements OnInit {
             return plan.frontend_data.cta;
         }
 
-        switch (plan.lago_plan_code) {
-            case 'starter':
-                return 'Start Free';
-            case 'growth':
-                return 'Upgrade to Growth';
-            case 'scale':
-                return 'Choose Scale';
-            default:
-                return `Choose ${this.getDisplayName(plan)}`;
-        }
+        return `Choose ${this.getDisplayName(plan)}`;
     }
 }
