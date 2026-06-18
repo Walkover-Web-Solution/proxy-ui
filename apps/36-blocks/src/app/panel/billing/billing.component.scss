@@ -99,6 +99,25 @@
     font-size: 0.875rem;
 }
 
+.billing-plans-scroll {
+    display: flex;
+    align-items: stretch;
+    gap: 1.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.9rem 0.25rem 0.75rem;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+}
+
+.billing-plan-card {
+    width: 24rem;
+    min-width: 24rem;
+    max-width: 24rem;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+}
+
 .metric-card {
     border-color: rgba(20, 184, 166, 0.35);
 

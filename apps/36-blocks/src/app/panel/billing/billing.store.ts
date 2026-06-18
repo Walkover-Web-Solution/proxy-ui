@@ -92,9 +92,7 @@ export class BillingComponentStore extends ComponentStore<IBillingInitialState> 
                             if (res?.hasError) {
                                 this.showErrorMessages(res.errors);
                             }
-                            const plans = (Array.isArray(res?.data) ? res.data : []).filter(
-                                (plan) => !plan?.is_internal
-                            );
+                            const plans = Array.isArray(res?.data) ? res.data : [];
                             this.patchState({
                                 plansInProcess: false,
                                 plans,
@@ -180,7 +178,7 @@ export class BillingComponentStore extends ComponentStore<IBillingInitialState> 
                             if (res?.hasError) {
                                 this.showErrorMessages(res.errors);
                             }
-                            const plan = res?.data && !res.data.is_internal ? res.data : null;
+                            const plan = res?.data ?? null;
                             this.patchState({
                                 activePlanInProcess: false,
                                 activePlan: plan,

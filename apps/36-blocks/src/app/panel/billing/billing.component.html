@@ -631,13 +631,10 @@
                             as vm
                         ) {
                             @if (plans.length) {
-                                <div
-                                    class="grid grid-cols-1 items-stretch justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3"
-                                    aria-label="Billing plans"
-                                >
+                                <div class="billing-plans-scroll" aria-label="Billing plans">
                                     @for (plan of plans; track plan.id) {
                                         <article
-                                            class="relative flex w-full max-w-96 flex-col rounded-2xl border text-left transition"
+                                            class="billing-plan-card relative flex flex-col rounded-2xl border text-left transition"
                                             [style.background-color]="'var(--billing-card-bg)'"
                                             [style.border-color]="
                                                 isActivePlan(plan, vm.subscriptionStatus)
@@ -757,12 +754,12 @@
                                                     [class.font-bold]="!isActivePlan(plan, vm.subscriptionStatus)"
                                                     [disabled]="
                                                         isActivePlan(plan, vm.subscriptionStatus) ||
-                                                        !canChangePlan(plan, vm.subscriptionStatus) ||
+                                                        !canChangePlan(plan, vm.subscriptionStatus, plans) ||
                                                         isUpgrading(plan, vm.upgradingPlanCode)
                                                     "
-                                                    (click)="onPlanCtaClick(plan, vm.subscriptionStatus)"
+                                                    (click)="onPlanCtaClick(plan, vm.subscriptionStatus, plans)"
                                                     [attr.aria-label]="
-                                                        getCtaLabel(plan, vm.subscriptionStatus) +
+                                                        getCtaLabel(plan, vm.subscriptionStatus, plans) +
                                                         ' — ' +
                                                         getDisplayName(plan) +
                                                         ' plan'
@@ -796,7 +793,7 @@
                                                     {{
                                                         isUpgrading(plan, vm.upgradingPlanCode)
                                                             ? 'Upgrading...'
-                                                            : getCtaLabel(plan, vm.subscriptionStatus)
+                                                            : getCtaLabel(plan, vm.subscriptionStatus, plans)
                                                     }}
                                                 </button>
                                             </div>
