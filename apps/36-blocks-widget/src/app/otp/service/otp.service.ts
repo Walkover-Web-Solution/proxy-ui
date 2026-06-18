@@ -63,6 +63,12 @@ export class OtpService {
         const body = { identifier: request.identifier ?? request.mobile };
         return this.http.post<OtpResModel>(otpVerificationUrls.sendOtp(this.baseUrl), body, this.options);
     }
+
+    public retryOtp(request: ISendOtpReq): Observable<OtpResModel> {
+        this.setOtpRequestHeaders(request);
+        const body = { identifier: request.identifier ?? request.mobile };
+        return this.http.post<OtpResModel>(otpVerificationUrls.retryOtp(this.baseUrl), body, this.options);
+    }
     public verifyOtpV2(request: IVerifyOtpV2Req): Observable<any> {
         this.setOtpRequestHeaders(request);
         const body = {

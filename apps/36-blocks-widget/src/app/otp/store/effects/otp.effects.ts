@@ -55,7 +55,10 @@ export class OtpEffects {
         this.actions$.pipe(
             ofType(otpActions.sendOtpAction),
             switchMap((p) => {
-                return this.otpService.sendOtp(p.request).pipe(
+                const otpRequest$ = p.request?.useRetry
+                    ? this.otpService.retryOtp(p.request)
+                    : this.otpService.sendOtp(p.request);
+                return otpRequest$.pipe(
                     map((res: OtpResModel) => {
                         if (res.type !== 'error') {
                             return otpActions.sendOtpActionComplete({
