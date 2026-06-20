@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { EMPTY, Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -27,6 +27,15 @@ export class ErrorInterceptor implements HttpInterceptor {
             this.cookieService.get('authToken')
         ) {
             return next.handle(request).pipe(
+                retry({
+                    count: 1,
+                    delay: (error: HttpErrorResponse) => {
+                        if (error instanceof HttpErrorResponse && error.status === 0) {
+                            return of(null);
+                        }
+                        return throwError(() => error);
+                    },
+                }),
                 catchError((err) => {
                     if (err instanceof HttpErrorResponse) {
                         if (err.status === 401) {
