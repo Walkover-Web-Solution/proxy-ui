@@ -16,6 +16,7 @@ export type WidgetConfig = {
     referenceId?: string;
     authToken?: string;
     type?: PublicScriptType;
+    exclude_role_ids?: number[];
     showCompanyDetails?: boolean;
     isRolePermission?: boolean;
     theme?: WidgetTheme;
