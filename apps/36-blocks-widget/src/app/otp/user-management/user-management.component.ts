@@ -765,13 +765,14 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
         this.currentPageIndex = event.pageIndex;
         this.currentPageSize = event.pageSize;
         const searchTerm = this.searchTerm?.trim() || undefined;
-        // API expects 1-based page number
         this.store.dispatch(
             otpActions.getCompanyUsers({
                 authToken: this.userToken(),
                 itemsPerPage: event.pageSize,
                 pageNo: event.pageIndex,
                 search: searchTerm,
+                exclude_role_ids: this.exclude_role_ids(),
+                include_role_ids: this.include_role_ids(),
             })
         );
     }
