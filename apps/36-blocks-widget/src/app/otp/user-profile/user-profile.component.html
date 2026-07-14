@@ -318,12 +318,10 @@
                                         placeholder="Not provided"
                                         readonly
                                         aria-readonly="true"
-                                        class="w-input-readonly"
+                                        (click)="startEditMobile()"
+                                        class="w-input-readonly cursor-pointer"
                                     />
                                 </div>
-                                <button type="button" (click)="startEditMobile()" class="w-btn-secondary-sm shrink-0">
-                                    Edit
-                                </button>
                             </div>
                         } @else {
                             <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">
