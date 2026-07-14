@@ -319,7 +319,7 @@
                                         readonly
                                         aria-readonly="true"
                                         (click)="startEditMobile()"
-                                        class="w-input-readonly cursor-pointer"
+                                        class="w-input-readonly read-only:cursor-pointer! read-only:opacity-100!"
                                     />
                                 </div>
                             </div>
@@ -336,8 +336,7 @@
                                         autocomplete="off"
                                         class="w-input"
                                         [class.border-red-500]="
-                                            getOtpError ||
-                                            (clientForm.get('mobile')?.touched && !isProfileMobileValid())
+                                            getOtpError || (showMobileValidation && !isProfileMobileValid())
                                         "
                                         (keypress)="onMobileKeypress($event)"
                                         (input)="onMobileInput()"
@@ -391,10 +390,7 @@
                             </div>
                             @if (getOtpError) {
                                 <p role="alert" class="w-field-error">{{ getOtpError }}</p>
-                            } @else if (
-                                clientForm.get('mobile')?.touched && getProfileMobileValidationError();
-                                as mobileError
-                            ) {
+                            } @else if (showMobileValidation && getProfileMobileValidationError(); as mobileError) {
                                 <p role="alert" class="w-field-error">{{ mobileError }}</p>
                             } @else if (clientForm.get('mobile')?.errors?.otpVerificationFailed) {
                                 <p role="alert" class="w-field-error">Please verify the mobile number.</p>

@@ -132,6 +132,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     public isMobileOtpVerified = false;
     public isMobileOtpSent = false;
     public isNumberChanged = false;
+    public showMobileValidation = false;
     public otpError = '';
     public getOtpError = '';
     public resendTimer = 0;
@@ -419,7 +420,6 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
 
     public onMobileBlur(): void {
         const mobileControl = this.clientForm.get('mobile');
-        mobileControl?.markAsTouched();
         const digits = this.getMobileIdentifier();
         if (digits !== mobileControl?.value) {
             mobileControl?.setValue(digits, { emitEvent: false });
@@ -469,6 +469,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
             mobileControl.setErrors(null);
         }
         mobileControl.markAsTouched();
+        this.showMobileValidation = true;
         if (!this.isProfileMobileValid()) {
             this.cdr.detectChanges();
             return;
@@ -519,6 +520,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
         this.isMobileOtpVerified = false;
         this.otpVerificationToken = '';
         this.getOtpError = '';
+        this.showMobileValidation = false;
         this.otpForm.reset();
         const value = this.getMobileIdentifier();
         if (value !== this.lastSentMobileNumber) {
@@ -622,6 +624,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     private resetMobileOtpState(): void {
         this.isMobileOtpVerified = false;
         this.isMobileOtpSent = false;
+        this.showMobileValidation = false;
         this.otpError = '';
         this.getOtpError = '';
         this.lastSentMobileNumber = '';
@@ -698,6 +701,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
 
         if (mobileChanged && enteredMobile && !this.isProfileMobileValid()) {
             mobileControl.markAsTouched();
+            this.showMobileValidation = true;
             this.cdr.detectChanges();
             return;
         }
