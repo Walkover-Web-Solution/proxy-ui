@@ -82,7 +82,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
 
                     if (TYPE === PublicScriptType.UserProfile) {
                         // Auto-open the Edit Profile dialog on load
-                        widgetConfig['openEditProfile'] = OPEN_EDIT_PROFILE;
+                        widgetConfig['openEditProfile'] = false;
                     }
 
                     // Note: Currently Subscription widget is not in use.
