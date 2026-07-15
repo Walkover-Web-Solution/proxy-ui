@@ -315,15 +315,13 @@
                                         id="profile-mobile-readonly"
                                         type="text"
                                         [value]="displayMobile"
-                                        placeholder="Not provided"
+                                        placeholder="Enter your mobile number"
                                         readonly
                                         aria-readonly="true"
-                                        class="w-input-readonly"
+                                        (click)="startEditMobile()"
+                                        class="w-input-readonly read-only:cursor-pointer! read-only:opacity-100!"
                                     />
                                 </div>
-                                <button type="button" (click)="startEditMobile()" class="w-btn-secondary-sm shrink-0">
-                                    Edit
-                                </button>
                             </div>
                         } @else {
                             <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">
@@ -338,8 +336,7 @@
                                         autocomplete="off"
                                         class="w-input"
                                         [class.border-red-500]="
-                                            getOtpError ||
-                                            (clientForm.get('mobile')?.touched && !isProfileMobileValid())
+                                            getOtpError || (showMobileValidation && !isProfileMobileValid())
                                         "
                                         (keypress)="onMobileKeypress($event)"
                                         (input)="onMobileInput()"
@@ -393,10 +390,7 @@
                             </div>
                             @if (getOtpError) {
                                 <p role="alert" class="w-field-error">{{ getOtpError }}</p>
-                            } @else if (
-                                clientForm.get('mobile')?.touched && getProfileMobileValidationError();
-                                as mobileError
-                            ) {
+                            } @else if (showMobileValidation && getProfileMobileValidationError(); as mobileError) {
                                 <p role="alert" class="w-field-error">{{ mobileError }}</p>
                             } @else if (clientForm.get('mobile')?.errors?.otpVerificationFailed) {
                                 <p role="alert" class="w-field-error">Please verify the mobile number.</p>
