@@ -22,7 +22,6 @@ export type WidgetConfig = {
     theme?: WidgetTheme;
     isPreview?: boolean;
     isLogin?: boolean;
-    openEditProfile?: boolean; // Auto-open the Edit Profile dialog on load (user-profile widget)
     loginRedirectUrl?: string;
     redirect_path?: string; // Optional: Path to redirect after login (e.g., '/dashboard') only used get proxy_auth_token in admin panel while preview
     target?: '_self' | '_blank';

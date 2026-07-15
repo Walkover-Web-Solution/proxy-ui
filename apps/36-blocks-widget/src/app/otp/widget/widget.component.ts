@@ -102,7 +102,6 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     @Input() public type: string;
     @Input() public isPreview: boolean = false;
     @Input() public isLogin: boolean = false;
-    @Input() public openEditProfile: boolean = false;
     @Input() public theme: string;
 
     private readonly _authToken$ = signal<string | undefined>(undefined);

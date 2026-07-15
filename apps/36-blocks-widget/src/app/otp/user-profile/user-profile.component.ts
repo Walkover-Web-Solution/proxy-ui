@@ -83,8 +83,6 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     public target = input<string>();
     public showCard = input<boolean>();
     public theme = input<string>();
-    public openEditProfile = input<boolean>(false);
-    private hasAutoOpenedEditDialog = false;
     protected readonly WidgetTheme = WidgetTheme;
     private readonly themeService = inject(WidgetThemeService);
     readonly isDark = computed(() => this.themeService.isDark$());
@@ -240,11 +238,6 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
                 const mobile = res?.mobile && res.mobile !== '--Not Provided--' ? res.mobile : '';
                 this.previousMobile = mobile;
                 this.clientForm.get('mobile').setValue(mobile);
-
-                if (this.openEditProfile() && !this.hasAutoOpenedEditDialog) {
-                    this.hasAutoOpenedEditDialog = true;
-                    this.openEditDialog();
-                }
             }
         });
 
