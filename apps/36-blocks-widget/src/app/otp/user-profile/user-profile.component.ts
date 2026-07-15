@@ -350,7 +350,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, After
     public get displayMobile(): string {
         const value = this.clientForm.get('mobile')?.value;
         if (!value || value === '--Not Provided--') {
-            return 'Not provided';
+            return '';
         }
         return value;
     }
