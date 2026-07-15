@@ -28,7 +28,11 @@
                 <organization-details [authToken]="authToken" [theme]="theme"></organization-details>
             }
             @case (PublicScriptType.UserProfile) {
-                <user-profile [authToken]="authToken" [theme]="theme"></user-profile>
+                <user-profile
+                    [authToken]="authToken"
+                    [theme]="theme"
+                    [openEditProfile]="openEditProfile"
+                ></user-profile>
             }
         }
     </div>

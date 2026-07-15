@@ -84,6 +84,7 @@ if (!window.initVerification) {
                 widgetElement.isRolePermission = config?.isRolePermission;
                 widgetElement.isPreview = config?.isPreview;
                 widgetElement.isLogin = config?.isLogin;
+                widgetElement.openEditProfile = config?.openEditProfile;
                 widgetElement.loginRedirectUrl = config?.loginRedirectUrl;
                 widgetElement.theme = config?.theme;
                 widgetElement.version = config?.version;
