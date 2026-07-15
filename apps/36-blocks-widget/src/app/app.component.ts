@@ -8,6 +8,7 @@ import { WidgetThemeService } from './otp/service/widget-theme.service';
 const REFERENCE_ID = '4512365b177668815069e61c1692def';
 const THEME: WidgetTheme = WidgetTheme.System;
 const TYPE: PublicScriptType = PublicScriptType.UserProfile;
+const OPEN_EDIT_PROFILE = true;
 const AUTH_TOKEN =
     'VnNwWTNwWEZYV2VicU1mWElaNjU2S08vZS94N3JxVVhCcUt2RU9KVy9JZ1BlWEJPczlTeU1ZNlowRVRrbVFPVGNIT09XNjJRelB3VXg0V0kyR1NGSEc3Q1VjRTNKVGJrVnk4WWMwdWJWYTBrUGJYYSs4UXpqdVkwOGVnOHI4Sk1DRW5lZDdxODFTTk14SC9UczVFTGJReWZyTmg4NHRKZVBOTFRPdzlMS2xOb29IcmZZWkhTd0FwUnBoRTY5TjJJOU1VbUdKeEhRdzRhTHFlSFpxaTByQT09';
 
@@ -54,6 +55,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         if (!environment.production) {
             const widgetConfig: WidgetConfig = {
                 referenceId: REFERENCE_ID, // Always pass referenceId
+
                 target: '_self', // '_blank' | '_self'
                 success: (data: unknown) => {
                     console.log('Success response:', data);
@@ -76,6 +78,11 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                     if (TYPE === PublicScriptType.UserManagement) {
                         // Enables the Role & Permission tab in the User Management widget
                         widgetConfig['isRolePermission'] = false;
+                    }
+
+                    if (TYPE === PublicScriptType.UserProfile) {
+                        // Auto-open the Edit Profile dialog on load
+                        widgetConfig['openEditProfile'] = false;
                     }
 
                     // Note: Currently Subscription widget is not in use.
