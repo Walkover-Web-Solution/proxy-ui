@@ -5,12 +5,11 @@ import { BaseComponent } from '@proxy/ui/base-component';
 import { WidgetTheme, PublicScriptType, WidgetConfig, PROXY_DOM_ID } from '@proxy/constant';
 import { WidgetThemeService } from './otp/service/widget-theme.service';
 
-const REFERENCE_ID = '4512365b177668815069e61c1692def';
+const REFERENCE_ID = '4512365o17835822266a4f4e12e0cd1';
 const THEME: WidgetTheme = WidgetTheme.System;
-const TYPE: PublicScriptType = PublicScriptType.UserProfile;
+const TYPE: PublicScriptType = PublicScriptType.Authorization;
 const OPEN_EDIT_PROFILE = true;
-const AUTH_TOKEN =
-    'VnNwWTNwWEZYV2VicU1mWElaNjU2S08vZS94N3JxVVhCcUt2RU9KVy9JZ1BlWEJPczlTeU1ZNlowRVRrbVFPVGNIT09XNjJRelB3VXg0V0kyR1NGSEc3Q1VjRTNKVGJrVnk4WWMwdWJWYTBrUGJYYSs4UXpqdVkwOGVnOHI4Sk1DRW5lZDdxODFTTk14SC9UczVFTGJReWZyTmg4NHRKZVBOTFRPdzlMS2xOb29IcmZZWkhTd0FwUnBoRTY5TjJJOU1VbUdKeEhRdzRhTHFlSFpxaTByQT09';
+const AUTH_TOKEN = '';
 
 @Component({
     selector: 'proxy-root',

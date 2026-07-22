@@ -1499,7 +1499,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         this.renderer.appendChild(paragraph, link);
         this.renderer.appendChild(element, paragraph);
 
-        // Powered by footer
+        // Powered by footer — hidden when branding is removed (ui_preferences.remove_branding)
+        if (selectWidgetTheme?.ui_preferences?.remove_branding) {
+            return;
+        }
         const poweredBy: HTMLParagraphElement = this.renderer.createElement('a');
         poweredBy.setAttribute('href', 'https://36blocks.com');
         poweredBy.setAttribute('target', '_blank');

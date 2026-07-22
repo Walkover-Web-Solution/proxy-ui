@@ -281,8 +281,85 @@
                     </div>
                 }
 
-                <!-- ── Settings Tab ── -->
+                <!-- ── Testing Users Tab ── -->
                 @if (selectedSectionIndex === 3) {
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                        <div class="grow">
+                            <p class="mat-body-2 font-medium m-0">Test Users</p>
+                            <p class="text-grey text-xs m-0">
+                                Users who log in with a matching email or mobile are treated as test users. On logout,
+                                their account (and any organization where they are the only member) is deleted.
+                            </p>
+                        </div>
+                        <button
+                            matButton="filled"
+                            class="mat-btn-xs"
+                            (click)="addTestUser()"
+                            [disabled]="testIdentities.length >= maxTestIdentities"
+                        >
+                            <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
+                            Add Test User
+                        </button>
+                    </div>
+
+                    <div class="table-scroll">
+                        <table mat-table [dataSource]="testIdentitiesDataSource" class="default-table responsive-table">
+                            <!-- Email Column -->
+                            <ng-container matColumnDef="email">
+                                <th mat-header-cell *matHeaderCellDef>Email</th>
+                                <td mat-cell *matCellDef="let element" data-label="Email">
+                                    {{ element.email || '—' }}
+                                </td>
+                            </ng-container>
+
+                            <!-- Mobile Column -->
+                            <ng-container matColumnDef="mobile">
+                                <th mat-header-cell *matHeaderCellDef>Mobile</th>
+                                <td mat-cell *matCellDef="let element" data-label="Mobile">
+                                    {{ element.mobile || '—' }}
+                                </td>
+                            </ng-container>
+
+                            <!-- Actions Column -->
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef></th>
+                                <td mat-cell *matCellDef="let element" data-label="Actions">
+                                    <div class="actions flex gap-3 justify-end">
+                                        <button
+                                            matButton="outlined"
+                                            (click)="removeTestUser(element)"
+                                            class="mat-btn-md"
+                                        >
+                                            <mat-icon class="material-icons-outlined mat-icon-18 mat-icon-prefix"
+                                                >delete</mat-icon
+                                            >
+                                            Remove
+                                        </button>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="testIdentitiesDisplayedColumns; sticky: true"></tr>
+                            <tr
+                                mat-row
+                                *matRowDef="let row; columns: testIdentitiesDisplayedColumns"
+                                class="hover-action"
+                            ></tr>
+
+                            <tr *matNoDataRow>
+                                <td class="mat-cell border-0" [attr.colspan]="testIdentitiesDisplayedColumns.length">
+                                    <proxy-no-record-found
+                                        [title]="'test users'"
+                                        [showBtn]="false"
+                                    ></proxy-no-record-found>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                }
+
+                <!-- ── Settings Tab ── -->
+                @if (selectedSectionIndex === 4) {
                     <div class="w-full">
                         <p class="mat-body-2 font-medium mb-6">Default Roles</p>
                         <form [formGroup]="defaultRolesForm">
@@ -398,5 +475,46 @@
         <button matButton="filled" (click)="submitPermissionDialog()" [disabled]="!dialogPermissionForm.valid">
             {{ isEditPermissionMode ? 'Update Permission' : 'Add Permission' }}
         </button>
+    </mat-dialog-actions>
+</ng-template>
+
+<!-- Add Test User Dialog Template -->
+<ng-template #addTestUserDialogTemplate>
+    <h2 matDialogTitle>Add Test User</h2>
+    <mat-dialog-content>
+        <form [formGroup]="dialogTestUserForm" class="flex flex-col gap-1">
+            <mat-form-field appearance="outline" class="w-full mt-2">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" formControlName="email" placeholder="user@example.com" />
+                @if (dialogTestUserForm.get('email')?.hasError('email')) {
+                    <mat-error>Enter a valid email</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Mobile</mat-label>
+                <input matInput formControlName="mobile" placeholder="+919876543210" />
+                <mat-hint>Include the country code with a leading + (e.g. +919876543210)</mat-hint>
+                @if (dialogTestUserForm.get('mobile')?.hasError('maxlength')) {
+                    <mat-error>Mobile must be 20 characters or fewer</mat-error>
+                }
+            </mat-form-field>
+
+            @if (
+                dialogTestUserForm.hasError('atLeastOneContact') &&
+                (dialogTestUserForm.dirty || dialogTestUserForm.touched)
+            ) {
+                <p class="text-red-500 text-xs mt-1 mb-0">Provide at least one of email or mobile.</p>
+            }
+
+            <p class="text-grey text-xs mt-2 mb-0">
+                Warning: adding a real user's email or mobile will delete their account (and any organization where they
+                are the only member) on their next logout.
+            </p>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button matButton (click)="closeTestUserDialog()">Close</button>
+        <button matButton="filled" (click)="submitTestUserDialog()" [disabled]="dialogTestUserForm.invalid">Add</button>
     </mat-dialog-actions>
 </ng-template>

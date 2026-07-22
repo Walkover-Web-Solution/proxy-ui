@@ -32,7 +32,7 @@ import { MatPaginatorGotoComponent } from '@proxy/ui/mat-paginator-goto';
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { CopyButtonComponent } from '@proxy/ui/copy-button';
 import { MarkdownModule } from 'ngx-markdown';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
 import { FeatureComponentStore } from '../../features/feature/feature.store';
@@ -53,6 +53,11 @@ interface IRole {
     permissions: string;
     permissionsList: any[];
     description?: string;
+}
+
+interface ITestIdentity {
+    email?: string;
+    mobile?: string;
 }
 
 @Component({
@@ -120,7 +125,13 @@ export class ManagementComponent implements OnInit, OnDestroy, OnChanges {
     public availablePermissions: any[] = [];
     public dialogRoleForm: FormGroup;
     public dialogPermissionForm: FormGroup;
+    public dialogTestUserForm: FormGroup;
     public defaultRolesForm: FormGroup;
+    /** Backend caps test_identities at 50 entries. */
+    public readonly maxTestIdentities = 50;
+    public testIdentities: ITestIdentity[] = [];
+    public testIdentitiesDisplayedColumns: string[] = ['email', 'mobile', 'actions'];
+    public testIdentitiesDataSource = new MatTableDataSource<ITestIdentity>([]);
     public roleCards: {
         icon: string;
         title: string;
@@ -172,6 +183,7 @@ export class ManagementComponent implements OnInit, OnDestroy, OnChanges {
         { name: 'Roles', icon: 'person' },
         { name: 'Permissions', icon: 'shield' },
         { name: 'Snippet', icon: 'code' },
+        { name: 'Testing Users', icon: 'person_add' },
         { name: 'Settings', icon: 'settings' },
     ];
     public features$: Observable<IPaginatedResponse<IFeature[]>> = this.featureComponentStore.feature$;
@@ -200,6 +212,7 @@ export class ManagementComponent implements OnInit, OnDestroy, OnChanges {
 
     @ViewChild('addRoleDialogTemplate', { static: false }) addRoleDialogTemplate: TemplateRef<any>;
     @ViewChild('addPermissionDialogTemplate', { static: false }) addPermissionDialogTemplate: TemplateRef<any>;
+    @ViewChild('addTestUserDialogTemplate', { static: false }) addTestUserDialogTemplate: TemplateRef<any>;
 
     constructor() {
         this.dialogRoleForm = new FormGroup({
@@ -212,6 +225,13 @@ export class ManagementComponent implements OnInit, OnDestroy, OnChanges {
             permissionName: new FormControl('', [Validators.required]),
             description: new FormControl('', []),
         });
+        this.dialogTestUserForm = new FormGroup(
+            {
+                email: new FormControl('', [Validators.email]),
+                mobile: new FormControl('', [Validators.maxLength(20)]),
+            },
+            { validators: (group: AbstractControl): ValidationErrors | null => this.atLeastOneContactValidator(group) }
+        );
         this.defaultRolesForm = new FormGroup({
             defaultRoleForCreator: new FormControl('', []),
             defaultRoleForMember: new FormControl('', []),
@@ -307,6 +327,7 @@ export class ManagementComponent implements OnInit, OnDestroy, OnChanges {
                     defaultRoleForMember: cRoles.default_member_role,
                     hiddenDefaultRoles: hiddenRoles,
                 });
+                this.setTestIdentities(this.featureDetails.extra_configurations?.test_identities);
                 this.cdr.markForCheck();
             }
         });
@@ -375,6 +396,18 @@ export class ManagementComponent implements OnInit, OnDestroy, OnChanges {
                 const referenceId = this.roleForm.get('feature_id')?.value;
                 if (referenceId) {
                     this.loadPermissions(referenceId, this.permissionSearchTerm);
+                }
+            });
+        // Refresh feature details after a successful feature update so cached
+        // extra_configurations (test_identities, default roles) stay in sync.
+        this.userComponentStore.createUpdateObject$
+            .pipe(
+                filter((updated) => !!updated),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(() => {
+                if (this.featureDetails?.id) {
+                    this.userComponentStore.getFeatureDetails(of(this.featureDetails.id));
                 }
             });
     }
@@ -693,6 +726,96 @@ export class ManagementComponent implements OnInit, OnDestroy, OnChanges {
             defaultRoleForMember: '',
             hiddenDefaultRoles: [],
         });
+    }
+
+    /** Group validator: a test identity must have at least one of email / mobile. */
+    private atLeastOneContactValidator(group: AbstractControl): ValidationErrors | null {
+        const email = (group.get('email')?.value || '').trim();
+        const mobile = (group.get('mobile')?.value || '').trim();
+        return email || mobile ? null : { atLeastOneContact: true };
+    }
+
+    private setTestIdentities(identities: ITestIdentity[] | undefined | null): void {
+        this.testIdentities = Array.isArray(identities) ? identities.map((entry) => ({ ...entry })) : [];
+        this.testIdentitiesDataSource.data = this.testIdentities;
+    }
+
+    public addTestUser(): void {
+        if (this.testIdentities.length >= this.maxTestIdentities) {
+            return;
+        }
+        this.dialogTestUserForm.reset({ email: '', mobile: '' });
+        this.dialogRef = this.dialog.open(this.addTestUserDialogTemplate, {
+            panelClass: ['mat-dialog'],
+            autoFocus: true,
+            restoreFocus: false,
+        });
+        this.dialogRef.afterClosed().subscribe((entry: ITestIdentity | false) => {
+            if (entry) {
+                this.setTestIdentities([...this.testIdentities, entry]);
+                this.persistTestIdentities();
+            }
+        });
+    }
+
+    public submitTestUserDialog(): void {
+        if (!this.dialogTestUserForm.valid) {
+            return;
+        }
+        const { email, mobile } = this.dialogTestUserForm.value;
+        const entry: ITestIdentity = {};
+        const trimmedEmail = (email || '').trim();
+        const trimmedMobile = (mobile || '').trim();
+        if (trimmedEmail) {
+            entry.email = trimmedEmail;
+        }
+        if (trimmedMobile) {
+            entry.mobile = trimmedMobile;
+        }
+        this.dialogRef.close(entry);
+    }
+
+    public closeTestUserDialog(): void {
+        this.dialogRef.close(false);
+    }
+
+    public removeTestUser(entry: ITestIdentity): void {
+        const confirmDialogRef: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
+            panelClass: ['mat-dialog'],
+        });
+        const label = entry.email || entry.mobile || 'this test user';
+        confirmDialogRef.componentRef.setInput(
+            'confirmationMessage',
+            `Are you sure you want to remove "${label}" from test users?`
+        );
+        confirmDialogRef.componentRef.setInput('confirmButtonText', 'Remove');
+        confirmDialogRef.componentRef.setInput('confirmButtonColor', 'warn');
+
+        confirmDialogRef.afterClosed().subscribe((action) => {
+            if (action === 'yes') {
+                this.setTestIdentities(this.testIdentities.filter((item) => item !== entry));
+                this.persistTestIdentities();
+            }
+        });
+    }
+
+    /**
+     * Persists the FULL test_identities list. The backend merges list values by
+     * index, so the complete desired array must be sent on every change.
+     */
+    private persistTestIdentities(): void {
+        if (!this.featureDetails?.id) {
+            return;
+        }
+        const payload = {
+            id: this.featureDetails.id,
+            body: {
+                extra_configurations: {
+                    test_identities: this.testIdentities,
+                },
+            },
+        };
+        this.userComponentStore.updateFeature(of(payload));
     }
 
     ngOnDestroy(): void {
