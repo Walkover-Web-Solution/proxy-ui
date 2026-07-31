@@ -187,7 +187,7 @@ export class AddUserDialogComponent implements OnInit, OnDestroy {
         });
 
         // Fetch roles for the dropdown
-        this.store.dispatch(otpActions.getRoles({ authToken: this.authToken, itemsPerPage: 1000 }));
+        this.store.dispatch(otpActions.getRoles({ authToken: this.authToken, itemsPerPage: 100 }));
 
         this.store
             .pipe(select(rolesData), distinctUntilChanged(isEqual), takeUntil(this._destroy$))

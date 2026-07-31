@@ -130,7 +130,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     public features: IFeature[] = [];
     /** Feature params */
     public featureParams: any = {
-        itemsPerPage: 1000,
+        itemsPerPage: 100,
         pageNo: 1,
     };
     // public selectedDateRange = {
