@@ -102,7 +102,7 @@ export class ManagementComponent implements OnInit, OnDestroy, OnChanges {
         id: new FormControl<number>(null),
     });
     public params: any = {
-        itemsPerPage: 1000,
+        itemsPerPage: 100,
         pageNo: 1,
     };
     /** Current block `reference_id` when embedded (e.g. feature edit). Not the feature type id. */
@@ -115,7 +115,7 @@ export class ManagementComponent implements OnInit, OnDestroy, OnChanges {
     public permissionsPageIndex: number = 0;
     public rolesTotalCount: number = 0;
     public permissionsTotalCount: number = 0;
-    public pageSizeOptions: number[] = [25, 50, 100, 1000];
+    public pageSizeOptions: number[] = [25, 50, 100];
     public features: IFeature[] = [];
     public featureDetails: any;
     public rolesDisplayedColumns: string[] = ['role', 'permissions', 'actions'];

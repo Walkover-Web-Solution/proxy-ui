@@ -75,7 +75,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     public toggleMenuSideBar: boolean;
     public showContainer = false;
     public clientsParams = {
-        itemsPerPage: 200,
+        itemsPerPage: 100,
         pageNo: 1,
     };
 

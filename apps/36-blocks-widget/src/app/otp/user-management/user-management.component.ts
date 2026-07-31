@@ -777,14 +777,14 @@ export class UserManagementComponent implements OnInit, AfterViewInit, OnDestroy
         );
     }
     public getRoles(): void {
-        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken(), itemsPerPage: 1000 }));
+        this.store.dispatch(otpActions.getRoles({ authToken: this.userToken(), itemsPerPage: 100 }));
     }
 
     public onRolesPageChange(event: PageEvent): void {
         this.store.dispatch(otpActions.getRoles({ authToken: this.userToken(), itemsPerPage: event.pageSize }));
     }
     public getPermissions(): void {
-        const pageSize = 1000;
+        const pageSize = 100;
         this.store.dispatch(otpActions.getPermissions({ authToken: this.userToken(), itemsPerPage: pageSize }));
     }
 
