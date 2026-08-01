@@ -88,7 +88,22 @@
                             <ng-container matColumnDef="actions">
                                 <th mat-header-cell *matHeaderCellDef></th>
                                 <td mat-cell *matCellDef="let element" data-label="Actions">
-                                    <div class="actions flex gap-3 justify-end">
+                                    <div class="actions flex gap-3 justify-end items-center">
+                                        @if (element.feature_configuration_id) {
+                                            <span
+                                                [matTooltip]="element.is_hidden ? 'Enable role' : 'Disable role'"
+                                                matTooltipPosition="above"
+                                            >
+                                                <mat-slide-toggle
+                                                    color="primary"
+                                                    [checked]="!element.is_hidden"
+                                                    (change)="toggleRoleVisibility(element, $event)"
+                                                    [attr.aria-label]="
+                                                        element.is_hidden ? 'Enable role' : 'Disable role'
+                                                    "
+                                                ></mat-slide-toggle>
+                                            </span>
+                                        }
                                         <span
                                             [matTooltip]="
                                                 !element.feature_configuration_id ? 'Default Role is not editable' : ''
