@@ -206,6 +206,12 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     private hcaptchaLoading: boolean = false;
     private hcaptchaRenderQueue: Array<() => void> = [];
     public isUserProxyContainer: boolean = true;
+    /** Host page URL where this widget script is embedded. */
+    public hostPageUrl: string = '';
+    /** Origin of the host page (protocol + host). */
+    public hostPageOrigin: string = '';
+    /** Absolute URL of the proxy-auth.js script tag, if found. */
+    public widgetScriptUrl: string = '';
 
     constructor() {
         super();
@@ -235,6 +241,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     ngOnInit() {
+        this.captureHostPageUrl();
         this.store.dispatch(resetAll());
         this._authToken$.set(this.authToken);
         this._type$.set(this.type);
@@ -357,6 +364,37 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             }
             this.cameFromLogin = false;
         });
+    }
+
+    /**
+     * Reads the page URL where the widget is loaded, plus the script src if available.
+     * Uses standard browser APIs — works for both CDN embeds and local serve.
+     */
+    private captureHostPageUrl(): void {
+        this.hostPageUrl = window.location?.href ?? '';
+        this.hostPageOrigin = window.location?.origin ?? '';
+        this.widgetScriptUrl =
+            (document.currentScript as HTMLScriptElement | null)?.src ||
+            (document.querySelector('script[src*="proxy-auth"]') as HTMLScriptElement | null)?.src ||
+            '';
+        console.log('[36Blocks] Host page URL:', this.hostPageUrl);
+    }
+
+    /** True when the host page URL looks like a register / sign-up route. */
+    private isSignupRoute(): boolean {
+        const path = `${window.location?.pathname ?? ''} ${window.location?.href ?? ''}`.toLowerCase();
+        return /sign[-_]?up|register|registration|signup/.test(path);
+    }
+
+    /**
+     * On register/sign-up routes, replace "Continue" in the auth button label with "Sign up".
+     * e.g. "Continue with Google" → "Sign up with Google"
+     */
+    private getAuthButtonText(text: string): string {
+        if (!text || !this.isSignupRoute()) {
+            return text;
+        }
+        return text.replace(/\bcontinue\b/gi, 'Sign up');
     }
 
     private loadExternalFonts() {
@@ -1331,8 +1369,9 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 width: 24px;
                 ${invertIcon ? 'filter: invert(1);' : ''}
             `;
+            const authButtonText = this.getAuthButtonText(buttonsData.text);
             image.src = buttonsData.icon;
-            image.alt = buttonsData.text;
+            image.alt = authButtonText;
             image.loading = 'lazy';
 
             if (buttonsData?.service_id) {
@@ -1352,6 +1391,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             this.renderer.appendChild(iconsContainer, button);
         } else {
             const span: HTMLSpanElement = this.renderer.createElement('span');
+            const authButtonText = this.getAuthButtonText(buttonsData.text);
 
             button.setAttribute('data-paw-button', 'true');
             button.style.cssText = `
@@ -1386,9 +1426,9 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 min-width: 170px
             `;
             image.src = buttonsData.icon;
-            image.alt = buttonsData.text;
+            image.alt = authButtonText;
             image.loading = 'lazy';
-            span.innerText = buttonsData.text;
+            span.innerText = authButtonText;
 
             if (buttonsData?.service_id) {
                 button.setAttribute('data-service-id', buttonsData.service_id);
