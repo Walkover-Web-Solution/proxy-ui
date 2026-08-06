@@ -387,14 +387,18 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     /**
-     * On register/sign-up routes, replace "Continue" in the auth button label with "Sign up".
+     * On register/sign-up routes, rewrite login-oriented auth button labels to "Sign up".
      * e.g. "Continue with Google" → "Sign up with Google"
+     *      "Login with OTP" → "Sign up with OTP"
      */
     private getAuthButtonText(text: string): string {
         if (!text || !this.isSignupRoute()) {
             return text;
         }
-        return text.replace(/\bcontinue\b/gi, 'Sign up');
+        return text
+            .replace(/\bcontinue\b/gi, 'Sign up')
+            .replace(/\blog[\s-]?in\b/gi, 'Sign up')
+            .replace(/\bsign[\s-]?in\b/gi, 'Sign up');
     }
 
     private loadExternalFonts() {
@@ -705,11 +709,20 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                                 }
                             });
                     } else {
-                        if (
-                            buttonsData?.service_id !== FeatureServiceIds.PasswordAuthentication ||
-                            (buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication &&
-                                this.version === 'v1')
-                        ) {
+                        const isPasswordAuth = buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication;
+
+                        // On signup/register routes, skip password login entirely.
+                        if (isPasswordAuth && this.isSignupRoute()) {
+                            buttonsProcessed++;
+                            this.checkAndAppendCreateAccountText(
+                                element,
+                                buttonsProcessed,
+                                totalButtons,
+                                fallbackTimeout,
+                                immediateFallback,
+                                otpTimeout
+                            );
+                        } else if (!isPasswordAuth || this.version === 'v1') {
                             this.appendButton(element, buttonsData);
                             buttonsProcessed++;
                             this.checkAndAppendCreateAccountText(
@@ -778,6 +791,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     public appendPasswordAuthenticationButtonV2(element: HTMLElement, buttonsData: any, totalButtons: number): void {
+        // Password login form is not shown on signup/register routes.
+        if (this.isSignupRoute()) {
+            return;
+        }
         if (this.showSkeleton) {
             this.showSkeleton = false;
             this.domBuilder.removeSkeletonLoader(this.renderer, element);
@@ -1299,6 +1316,10 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     }
 
     private appendButton(element, buttonsData): void {
+        // Password login button is not shown on signup/register routes.
+        if (buttonsData?.service_id === FeatureServiceIds.PasswordAuthentication && this.isSignupRoute()) {
+            return;
+        }
         if (this.showSkeleton) {
             this.showSkeleton = false;
             this.domBuilder.removeSkeletonLoader(this.renderer, element);
@@ -1494,50 +1515,53 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         const selectWidgetTheme = this.widgetTheme() as any;
         const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
 
-        const paragraph: HTMLParagraphElement = this.renderer.createElement('p');
-        const span: HTMLSpanElement = this.renderer.createElement('span');
-        const link: HTMLAnchorElement = this.renderer.createElement('a');
+        // Hide "Are you a new user? Create an account" on signup/register routes.
+        if (!this.isSignupRoute()) {
+            const paragraph: HTMLParagraphElement = this.renderer.createElement('p');
+            const span: HTMLSpanElement = this.renderer.createElement('span');
+            const link: HTMLAnchorElement = this.renderer.createElement('a');
 
-        paragraph.setAttribute('data-create-account', 'true');
+            paragraph.setAttribute('data-create-account', 'true');
 
-        paragraph.style.cssText = `
-            margin: 20px 8px 8px 8px !important;
-            font-size: 14px !important;
-            outline: none !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            flex-wrap: wrap;
-            gap: 8px !important;
-            color: ${primaryColor} !important;
-            cursor: pointer !important;
-            width: 316px !important;
-            max-width:100%;
-        `;
+            paragraph.style.cssText = `
+                margin: 20px 8px 8px 8px !important;
+                font-size: 14px !important;
+                outline: none !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex-wrap: wrap;
+                gap: 8px !important;
+                color: ${primaryColor} !important;
+                cursor: pointer !important;
+                width: 316px !important;
+                max-width:100%;
+            `;
 
-        // Style the link
-        link.style.cssText = `
-            color: #007bff !important;
-            text-decoration: none;
-            cursor: pointer;
-            font-weight: 500 !important;
-        `;
+            // Style the link
+            link.style.cssText = `
+                color: #007bff !important;
+                text-decoration: none;
+                cursor: pointer;
+                font-weight: 500 !important;
+            `;
 
-        // Set the text content
-        span.textContent = 'Are you a new user? ';
-        link.textContent = selectWidgetTheme?.ui_preferences?.sign_up_button_text || 'Create an account';
+            // Set the text content
+            span.textContent = 'Are you a new user? ';
+            link.textContent = selectWidgetTheme?.ui_preferences?.sign_up_button_text || 'Create an account';
 
-        // Add click event to the link
-        link.addEventListener('click', (event) => {
-            event.preventDefault();
-            this.cameFromLogin = false; // Set flag to indicate user came from dynamically appended buttons
-            this.setShowRegistration(true);
-        });
+            // Add click event to the link
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                this.cameFromLogin = false; // Set flag to indicate user came from dynamically appended buttons
+                this.setShowRegistration(true);
+            });
 
-        // Append elements
-        this.renderer.appendChild(paragraph, span);
-        this.renderer.appendChild(paragraph, link);
-        this.renderer.appendChild(element, paragraph);
+            // Append elements
+            this.renderer.appendChild(paragraph, span);
+            this.renderer.appendChild(paragraph, link);
+            this.renderer.appendChild(element, paragraph);
+        }
 
         // Powered by footer — hidden when branding is removed (ui_preferences.remove_branding)
         if (selectWidgetTheme?.ui_preferences?.remove_branding) {
