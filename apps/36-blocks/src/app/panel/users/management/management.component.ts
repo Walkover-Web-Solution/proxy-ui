@@ -24,7 +24,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDividerModule } from '@angular/material/divider';
 import { ServiceListComponent } from '@proxy/ui/service-list';
 import { NoRecordFoundComponent } from '@proxy/ui/no-record-found';
@@ -53,6 +53,9 @@ interface IRole {
     permissions: string;
     permissionsList: any[];
     description?: string;
+    is_hidden?: boolean;
+    feature_configuration_id?: number;
+    is_default?: boolean;
 }
 
 interface ITestIdentity {
@@ -272,6 +275,7 @@ export class ManagementComponent implements OnInit, OnDestroy, OnChanges {
                         permissionsList: permissionsList,
                         feature_configuration_id: role.feature_configuration_id,
                         is_default: role.is_default || false,
+                        is_hidden: !!role.is_hidden,
                         description: role.description || '',
                     };
                 });
@@ -557,6 +561,27 @@ export class ManagementComponent implements OnInit, OnDestroy, OnChanges {
 
     public closeDialog(): void {
         this.dialogRef.close(false);
+    }
+
+    /**
+     * Toggle role visibility via PUT /:referenceId/cRoles/:id with { is_hidden }.
+     * Checked (enabled) => is_hidden: false; unchecked (disabled) => is_hidden: true.
+     */
+    public toggleRoleVisibility(role: IRole, event: MatSlideToggleChange): void {
+        const referenceId = this.roleForm.get('feature_id')?.value;
+        if (!referenceId || !role?.id) {
+            event.source.checked = !event.checked;
+            return;
+        }
+        const is_hidden = !event.checked;
+        role.is_hidden = is_hidden;
+        this.userComponentStore.updateRole(
+            of({
+                id: role.id,
+                referenceId,
+                is_hidden,
+            })
+        );
     }
 
     public deleteRole(role: IRole): void {
