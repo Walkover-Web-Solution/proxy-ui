@@ -44,9 +44,14 @@ import {
     selectApiErrorResponse,
     selectWidgetTheme,
 } from '../../store/selectors';
-import { IGetOtpRes } from '../../model/otp';
+import { IGetOtpRes, IRegistrationFields } from '../../model/otp';
 
 type OtpChannel = 'mobile' | 'email';
+
+const DEFAULT_REGISTRATION_FIELDS: IRegistrationFields = {
+    mobile: 'optional_with_otp',
+    company: 'optional',
+};
 
 @Component({
     selector: 'proxy-register',
@@ -78,6 +83,32 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
     get showCompanyDetail(): boolean {
         return this.showCompanyDetails() !== false;
+    }
+
+    get showMobileField(): boolean {
+        return this.registrationFields.mobile !== 'hidden';
+    }
+
+    get mobileRequired(): boolean {
+        return (
+            this.registrationFields.mobile === 'mandatory_no_otp' ||
+            this.registrationFields.mobile === 'mandatory_with_otp'
+        );
+    }
+
+    get mobileOtpFlowEnabled(): boolean {
+        return (
+            this.registrationFields.mobile === 'optional_with_otp' ||
+            this.registrationFields.mobile === 'mandatory_with_otp'
+        );
+    }
+
+    get showCompanySection(): boolean {
+        return this.showCompanyDetail && this.registrationFields.company !== 'hidden';
+    }
+
+    get companyRequired(): boolean {
+        return this.registrationFields.company === 'mandatory';
     }
 
     public registrationForm = new FormGroup({
@@ -160,6 +191,7 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
     public selectWidgetTheme$: Observable<any>;
     public uiPreferences: any = {};
+    public registrationFields: IRegistrationFields = DEFAULT_REGISTRATION_FIELDS;
 
     @ViewChild('otp1', { static: false }) otp1Ref: ElementRef;
     @ViewChild('otp2', { static: false }) otp2Ref: ElementRef;
@@ -224,6 +256,9 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     ngOnInit(): void {
         this.selectWidgetTheme$.pipe(takeUntil(this.destroy$)).subscribe((theme) => {
             this.uiPreferences = theme?.ui_preferences || {};
+            this.registrationFields = theme?.registration_fields || DEFAULT_REGISTRATION_FIELDS;
+            this.applyRegistrationFieldRules();
+            this.cdr.markForCheck();
         });
         if (this.isRegisterFormOnly()) {
             this.registrationForm.get('user.email').disable();
@@ -330,6 +365,44 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         // Add global paste event listener
         document.addEventListener('paste', this.handleGlobalPaste.bind(this));
     }
+
+    private applyRegistrationFieldRules(): void {
+        const mobileControl = this.registrationForm.get('user.mobile');
+        if (!this.showMobileField) {
+            mobileControl.clearValidators();
+            mobileControl.reset(null);
+        } else {
+            mobileControl.setValidators(this.mobileRequired ? [Validators.required] : []);
+            mobileControl.updateValueAndValidity();
+        }
+
+        const companyGroup = this.registrationForm.get('company');
+        const companyNameControl = companyGroup.get('name');
+        const companyMobileControl = companyGroup.get('mobile');
+        const companyEmailControl = companyGroup.get('email');
+        if (!this.showCompanySection) {
+            companyGroup.reset(null);
+            companyNameControl.setValidators([Validators.minLength(3), Validators.maxLength(50)]);
+            companyMobileControl.setValidators([]);
+            companyEmailControl.setValidators([Validators.pattern(EMAIL_REGEX)]);
+        } else {
+            companyNameControl.setValidators(
+                this.companyRequired
+                    ? [Validators.required, Validators.minLength(3), Validators.maxLength(50)]
+                    : [Validators.minLength(3), Validators.maxLength(50)]
+            );
+            companyMobileControl.setValidators(this.companyRequired ? [Validators.required] : []);
+            companyEmailControl.setValidators(
+                this.companyRequired
+                    ? [Validators.required, Validators.pattern(EMAIL_REGEX)]
+                    : [Validators.pattern(EMAIL_REGEX)]
+            );
+        }
+        companyNameControl.updateValueAndValidity();
+        companyMobileControl.updateValueAndValidity();
+        companyEmailControl.updateValueAndValidity();
+    }
+
     checkPrefillDetails() {
         const val = this.prefillDetails();
         if (isNaN(Number(val))) {
@@ -544,7 +617,11 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
 
     public submit(): void {
         this.apiError.next(null);
-        if (!this.isOtpVerified) {
+        const mobileOtpRequired =
+            this.mobileOtpFlowEnabled &&
+            (this.registrationFields.mobile === 'mandatory_with_otp' ||
+                !!this.registrationForm.get('user.mobile').value);
+        if (mobileOtpRequired && !this.isOtpVerified) {
             this.registrationForm.get('user.mobile').setErrors({ otpVerificationFailed: true });
             return;
         }

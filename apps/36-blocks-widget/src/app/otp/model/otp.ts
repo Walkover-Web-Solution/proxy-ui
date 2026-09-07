@@ -15,8 +15,25 @@ export interface OtpResModel {
     request?: any;
 }
 
+export type MobileRegistrationFieldState =
+    | 'hidden'
+    | 'optional_no_otp'
+    | 'optional_with_otp'
+    | 'mandatory_no_otp'
+    | 'mandatory_with_otp';
+
+export type CompanyRegistrationFieldState = 'hidden' | 'optional' | 'mandatory';
+
+export interface IRegistrationFields {
+    mobile: MobileRegistrationFieldState;
+    company: CompanyRegistrationFieldState;
+}
+
 export interface IWidgetResponse {
     ciphered: string;
+    ui_preferences?: any;
+    registration_fields?: IRegistrationFields;
+    registerState?: any;
 }
 
 export interface IGetWidgetData {
