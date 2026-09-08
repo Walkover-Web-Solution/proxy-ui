@@ -178,141 +178,145 @@
     }
 
     <!-- Mobile + Get OTP -->
-    <div class="w-full">
-        <div class="flex items-center gap-2">
-            <div class="flex-1 min-w-0">
-                <ng-container
-                    *ngTemplateOutlet="
-                        intlFormField;
-                        context: {
-                            key: 'user',
-                            label: 'Mobile',
-                            required: true,
-                            hideErrors: true,
-                            formControl: registrationForm.get('user.mobile'),
-                            isFieldFocused: isNumberChanged,
-                        }
-                    "
-                ></ng-container>
-            </div>
-            @if (!isOtpVerified) {
-                <button
-                    type="button"
-                    (click)="isOtpSent ? resendOtp() : getOtp()"
-                    [disabled]="(selectGetOtpInProcess$ | async) || (isOtpSent && !canResendOtp)"
-                    class="w-btn-primary shrink-0 whitespace-nowrap px-3"
-                    [class.has-hover-color]="!!buttonHoverColor"
-                    [style.--btn-hover-color]="buttonHoverColor"
-                    [style.background-color]="buttonColor || null"
-                    [style.color]="buttonColor ? buttonTextColor || '#ffffff' : null"
-                    [style.border-radius]="borderRadiusValue || null"
-                >
-                    @if (!isOtpSent) {
-                        {{ (selectGetOtpInProcess$ | async) ? 'Sending...' : 'Get OTP' }}
-                    } @else if (isOtpSent && !canResendOtp) {
-                        Resend in {{ resendTimer }}s
-                    } @else if (isOtpSent && canResendOtp && !(selectGetOtpInProcess$ | async)) {
-                        Resend OTP
+    @if (showMobileField) {
+        <div class="w-full">
+            <div class="flex items-center gap-2">
+                <div class="flex-1 min-w-0">
+                    <ng-container
+                        *ngTemplateOutlet="
+                            intlFormField;
+                            context: {
+                                key: 'user',
+                                label: 'Mobile',
+                                required: mobileRequired,
+                                hideErrors: true,
+                                formControl: registrationForm.get('user.mobile'),
+                                isFieldFocused: isNumberChanged,
+                            }
+                        "
+                    ></ng-container>
+                </div>
+                @if (mobileOtpFlowEnabled) {
+                    @if (!isOtpVerified) {
+                        <button
+                            type="button"
+                            (click)="isOtpSent ? resendOtp() : getOtp()"
+                            [disabled]="(selectGetOtpInProcess$ | async) || (isOtpSent && !canResendOtp)"
+                            class="w-btn-primary shrink-0 whitespace-nowrap px-3"
+                            [class.has-hover-color]="!!buttonHoverColor"
+                            [style.--btn-hover-color]="buttonHoverColor"
+                            [style.background-color]="buttonColor || null"
+                            [style.color]="buttonColor ? buttonTextColor || '#ffffff' : null"
+                            [style.border-radius]="borderRadiusValue || null"
+                        >
+                            @if (!isOtpSent) {
+                                {{ (selectGetOtpInProcess$ | async) ? 'Sending...' : 'Get OTP' }}
+                            } @else if (isOtpSent && !canResendOtp) {
+                                Resend in {{ resendTimer }}s
+                            } @else if (isOtpSent && canResendOtp && !(selectGetOtpInProcess$ | async)) {
+                                Resend OTP
+                            } @else {
+                                Sending...
+                            }
+                        </button>
                     } @else {
-                        Sending...
+                        <span class="flex items-center gap-1 shrink-0 text-sm font-medium text-green-600">
+                            Verified
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="18px"
+                                viewBox="0 -960 960 960"
+                                width="18px"
+                                fill="#4caf50"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+                                />
+                            </svg>
+                        </span>
                     }
-                </button>
-            } @else {
-                <span class="flex items-center gap-1 shrink-0 text-sm font-medium text-green-600">
-                    Verified
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="18px"
-                        viewBox="0 -960 960 960"
-                        width="18px"
-                        fill="#4caf50"
-                        aria-hidden="true"
-                    >
-                        <path
-                            d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
-                        />
-                    </svg>
-                </span>
-            }
-        </div>
-        <ng-container
-            *ngTemplateOutlet="
-                intlFormFieldErrors;
-                context: {
-                    key: 'user',
-                    required: true,
-                    formControl: registrationForm.get('user.mobile'),
                 }
-            "
-        ></ng-container>
-    </div>
-
-    <!-- Change Number link -->
-    @if (isNumberChanged || isOtpVerified) {
-        <div class="flex justify-end">
-            <a href="javascript:void(0)" (click)="numberChanged()" class="w-link">Change Number</a>
-        </div>
-    }
-
-    <!-- OTP entry boxes -->
-    @if (isOtpSent && !isOtpVerified) {
-        <div class="flex flex-col gap-2">
-            <div class="flex items-center flex-wrap gap-3 mobile-otp-container" [formGroup]="otpForm">
-                <input
-                    type="text"
-                    maxlength="1"
-                    formControlName="otp1"
-                    (input)="onOtpInput($event, 'otp1', otp2, 'mobile')"
-                    (keyup)="onOtpKeyup($event, 'otp1', 'mobile')"
-                    (keydown)="onOtpKeydown($event, 'otp1', null, 'mobile')"
-                    (paste)="onOtpPaste($event, 'mobile')"
-                    #otp1
-                    class="w-input-otp"
-                />
-                <input
-                    type="text"
-                    maxlength="1"
-                    formControlName="otp2"
-                    (input)="onOtpInput($event, 'otp2', otp3, 'mobile')"
-                    (keyup)="onOtpKeyup($event, 'otp2', 'mobile')"
-                    (keydown)="onOtpKeydown($event, 'otp2', otp1, 'mobile')"
-                    #otp2
-                    class="w-input-otp"
-                />
-                <input
-                    type="text"
-                    maxlength="1"
-                    formControlName="otp3"
-                    (input)="onOtpInput($event, 'otp3', otp4, 'mobile')"
-                    (keyup)="onOtpKeyup($event, 'otp3', 'mobile')"
-                    (keydown)="onOtpKeydown($event, 'otp3', otp2, 'mobile')"
-                    #otp3
-                    class="w-input-otp"
-                />
-                <input
-                    type="text"
-                    maxlength="1"
-                    formControlName="otp4"
-                    (input)="onOtpInput($event, 'otp4', null, 'mobile')"
-                    (keyup)="onOtpKeyup($event, 'otp4', 'mobile')"
-                    (keydown)="onOtpKeydown($event, 'otp4', otp3, 'mobile')"
-                    #otp4
-                    class="w-input-otp"
-                />
-                <a
-                    href="javascript:void(0)"
-                    (click)="verifyOtp()"
-                    [class.opacity-50]="selectVerifyOtpV2InProcess$ | async"
-                    [class.pointer-events-none]="selectVerifyOtpV2InProcess$ | async"
-                    class="w-link"
-                >
-                    {{ (selectVerifyOtpV2InProcess$ | async) ? 'Verifying...' : 'Verify OTP' }}
-                </a>
             </div>
-            @if (otpError) {
-                <p class="text-xs text-red-600 dark:text-red-400">{{ otpError }}</p>
-            }
+            <ng-container
+                *ngTemplateOutlet="
+                    intlFormFieldErrors;
+                    context: {
+                        key: 'user',
+                        required: mobileRequired,
+                        formControl: registrationForm.get('user.mobile'),
+                    }
+                "
+            ></ng-container>
         </div>
+
+        <!-- Change Number link -->
+        @if (mobileOtpFlowEnabled && (isNumberChanged || isOtpVerified)) {
+            <div class="flex justify-end">
+                <a href="javascript:void(0)" (click)="numberChanged()" class="w-link">Change Number</a>
+            </div>
+        }
+
+        <!-- OTP entry boxes -->
+        @if (mobileOtpFlowEnabled && isOtpSent && !isOtpVerified) {
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center flex-wrap gap-3 mobile-otp-container" [formGroup]="otpForm">
+                    <input
+                        type="text"
+                        maxlength="1"
+                        formControlName="otp1"
+                        (input)="onOtpInput($event, 'otp1', otp2, 'mobile')"
+                        (keyup)="onOtpKeyup($event, 'otp1', 'mobile')"
+                        (keydown)="onOtpKeydown($event, 'otp1', null, 'mobile')"
+                        (paste)="onOtpPaste($event, 'mobile')"
+                        #otp1
+                        class="w-input-otp"
+                    />
+                    <input
+                        type="text"
+                        maxlength="1"
+                        formControlName="otp2"
+                        (input)="onOtpInput($event, 'otp2', otp3, 'mobile')"
+                        (keyup)="onOtpKeyup($event, 'otp2', 'mobile')"
+                        (keydown)="onOtpKeydown($event, 'otp2', otp1, 'mobile')"
+                        #otp2
+                        class="w-input-otp"
+                    />
+                    <input
+                        type="text"
+                        maxlength="1"
+                        formControlName="otp3"
+                        (input)="onOtpInput($event, 'otp3', otp4, 'mobile')"
+                        (keyup)="onOtpKeyup($event, 'otp3', 'mobile')"
+                        (keydown)="onOtpKeydown($event, 'otp3', otp2, 'mobile')"
+                        #otp3
+                        class="w-input-otp"
+                    />
+                    <input
+                        type="text"
+                        maxlength="1"
+                        formControlName="otp4"
+                        (input)="onOtpInput($event, 'otp4', null, 'mobile')"
+                        (keyup)="onOtpKeyup($event, 'otp4', 'mobile')"
+                        (keydown)="onOtpKeydown($event, 'otp4', otp3, 'mobile')"
+                        #otp4
+                        class="w-input-otp"
+                    />
+                    <a
+                        href="javascript:void(0)"
+                        (click)="verifyOtp()"
+                        [class.opacity-50]="selectVerifyOtpV2InProcess$ | async"
+                        [class.pointer-events-none]="selectVerifyOtpV2InProcess$ | async"
+                        class="w-link"
+                    >
+                        {{ (selectVerifyOtpV2InProcess$ | async) ? 'Verifying...' : 'Verify OTP' }}
+                    </a>
+                </div>
+                @if (otpError) {
+                    <p class="text-xs text-red-600 dark:text-red-400">{{ otpError }}</p>
+                }
+            </div>
+        }
     }
 
     <!-- Password + Confirm Password -->
@@ -348,9 +352,11 @@
     </p>
 
     <!-- Company Details -->
-    @if (showCompanyDetail) {
+    @if (showCompanySection) {
         <hr class="my-1 border-gray-200 dark:border-gray-700" />
-        <p class="text-sm font-semibold text-gray-900 dark:text-white">Company Details (Optional)</p>
+        <p class="text-sm font-semibold text-gray-900 dark:text-white">
+            Company Details{{ companyRequired ? '' : ' (Optional)' }}
+        </p>
         <ng-container
             *ngTemplateOutlet="
                 formField;
@@ -363,6 +369,7 @@
                 context: {
                     key: 'company',
                     label: 'Mobile',
+                    required: companyRequired,
                     formControl: registrationForm.get('company.mobile'),
                 }
             "
