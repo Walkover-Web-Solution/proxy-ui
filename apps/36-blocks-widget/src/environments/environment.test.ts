@@ -4,7 +4,7 @@ export const environment = {
     production: true,
     env: 'test',
     apiUrl: 'https://apitest.msg91.com/api',
-    baseUrl: 'https://test.proxy.msg91.com',
+    baseUrl: 'https://stage.36blocks.com',
     msgMidProxy: '',
     ...envVariables,
 };
