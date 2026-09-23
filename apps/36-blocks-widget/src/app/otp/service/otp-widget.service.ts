@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-const WIDGET_SCRIPT_JS = `https://verify.msg91.com/otp-provider.js`;
+const WIDGET_SCRIPT_JS = `https://test.verify.msg91.com/otp-provider.js`;
 
 declare var window;
 
