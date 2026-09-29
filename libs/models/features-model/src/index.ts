@@ -19,6 +19,67 @@ export interface IAllowedOrigin {
     created_at?: string;
 }
 
+export type OAuthClientType = 'public' | 'confidential';
+export type OAuthConfigStatus = 'active' | 'disabled';
+
+export interface IOAuthConfig {
+    id: number;
+    client_id: string;
+    feature_configuration_id: number;
+    name: string;
+    client_type: OAuthClientType;
+    pkce_required: boolean;
+    allowed_scopes: string[];
+    redirect_uris: string[];
+    status: OAuthConfigStatus;
+    has_secret: boolean;
+    /** Only present on create / regenerateSecret responses. */
+    client_secret?: string;
+    created_by?: number;
+    updated_by?: number;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface IOAuthConfigCreatePayload {
+    name: string;
+    client_type: OAuthClientType;
+    pkce_required?: boolean;
+    allowed_scopes: string[];
+    redirect_uris: string[];
+}
+
+export interface IOAuthConfigUpdatePayload {
+    name?: string;
+    pkce_required?: boolean;
+    allowed_scopes?: string[];
+    redirect_uris?: string[];
+    status?: OAuthConfigStatus;
+}
+
+export interface IBlockScope {
+    id: number;
+    feature_configuration_id: number;
+    key: string;
+    label: string;
+    created_at?: string;
+}
+
+export interface IBlockScopeCreatePayload {
+    key: string;
+    label: string;
+}
+
+export interface IBlockScopeUpdatePayload {
+    label: string;
+}
+
+/** Built-in scopes always allowed on OAuth configs (not returned by blockScopes). */
+export const BUILTIN_OAUTH_SCOPES: { key: string; label: string }[] = [
+    { key: 'profile', label: 'Profile' },
+    { key: 'email', label: 'Email' },
+];
+
 export interface IFeatureDetails extends IFeature {
     projects?: string[];
     callback_url: string;
