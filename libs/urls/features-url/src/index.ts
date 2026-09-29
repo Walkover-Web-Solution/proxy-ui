@@ -22,4 +22,14 @@ export const FeaturesUrls = {
     getWebhookEvents: (baseUrl) => createUrl(baseUrl, `getWebhookTriggerEvents`),
     uploadLogo: (baseUrl, id) => createUrl(baseUrl, `features/${id}/upload-logo`),
     getAllowedOrigins: (baseUrl, id) => createUrl(baseUrl, `features/${id}/allowedOrigins`),
+    oauthConfigs: (baseUrl, featureId) => createUrl(baseUrl, `features/${featureId}/oauthConfigs`),
+    oauthConfig: (baseUrl, featureId, oauthConfigId) =>
+        createUrl(baseUrl, `features/${featureId}/oauthConfigs/${oauthConfigId}`),
+    regenerateOauthSecret: (baseUrl, featureId, oauthConfigId) =>
+        createUrl(baseUrl, `features/${featureId}/oauthConfigs/${oauthConfigId}/regenerateSecret`),
+    disableOauthConfig: (baseUrl, featureId, oauthConfigId) =>
+        createUrl(baseUrl, `features/${featureId}/oauthConfigs/${oauthConfigId}/disable`),
+    blockScopes: (baseUrl, featureId) => createUrl(baseUrl, `features/${featureId}/blockScopes`),
+    blockScope: (baseUrl, featureId, blockScopeId) =>
+        createUrl(baseUrl, `features/${featureId}/blockScopes/${blockScopeId}`),
 };

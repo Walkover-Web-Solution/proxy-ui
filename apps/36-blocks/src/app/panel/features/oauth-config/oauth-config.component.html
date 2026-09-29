@@ -1,0 +1,428 @@
+<div class="h-full flex flex-col gap-6">
+    @if (!featureId) {
+        <div class="flex-1 flex flex-col items-center justify-center gap-5 text-center py-12">
+            <div
+                class="flex items-center justify-center w-16 h-16 rounded-full"
+                style="background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent)"
+            >
+                <mat-icon class="mat-icon-36 material-icons-outlined" style="color: var(--mat-sys-primary)"
+                    >vpn_key</mat-icon
+                >
+            </div>
+            <div>
+                <p class="font-semibold text-base m-0 mb-1">Feature required</p>
+                <p class="text-sm secondary-text-color m-0">Open a saved block to manage OAuth configs and scopes.</p>
+            </div>
+        </div>
+    } @else {
+        <div class="flex max-xl:flex-col gap-6 grow min-h-[400px]">
+            <proxy-service-list
+                class="w-[200px] shrink-0 self-start max-xl:w-full"
+                [classList]="'max-xl:!flex max-xl:gap-2 max-md:!block'"
+                [services]="oauthSections"
+                [selectedIndex]="selectedSectionIndex"
+                (serviceSelect)="selectedSectionIndex = $event"
+                [iconClass]="'max-xl:rotate-90'"
+            ></proxy-service-list>
+
+            <div class="grow">
+                <!-- ── OAuth Tab ── -->
+                @if (selectedSectionIndex === 0) {
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                        <div class="flex flex-wrap items-center grow gap-4">
+                            <proxy-lib-search
+                                [matFormFieldClass]="'no-padding w-xs-100'"
+                                [placeholder]="'Search OAuth'"
+                                (inputChanges)="searchOauth($event)"
+                                class="w-xs-100"
+                            ></proxy-lib-search>
+                        </div>
+                        <button matButton="filled" class="mat-btn-xs" (click)="addOauth()">
+                            <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
+                            Add OAuth
+                        </button>
+                    </div>
+
+                    <div class="table-scroll">
+                        <table mat-table [dataSource]="oauthDataSource" class="default-table responsive-table">
+                            <ng-container matColumnDef="name">
+                                <th mat-header-cell *matHeaderCellDef class="col-name">Name</th>
+                                <td mat-cell *matCellDef="let element" data-label="Name" class="col-name">
+                                    <p class="m-0 col-name__text">
+                                        {{ element.name }}
+                                    </p>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="clientId">
+                                <th mat-header-cell *matHeaderCellDef>Client ID</th>
+                                <td mat-cell *matCellDef="let element" data-label="Client ID">
+                                    <div class="flex items-center gap-1">
+                                        <span class="break-all">{{ element.client_id }}</span>
+                                        <proxy-copy-button
+                                            [copyData]="element.client_id"
+                                            tooltip="Copy client ID"
+                                        ></proxy-copy-button>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="clientType">
+                                <th mat-header-cell *matHeaderCellDef>Type</th>
+                                <td mat-cell *matCellDef="let element" data-label="Type">
+                                    <span>{{ element.client_type }}</span>
+                                    @if (element.pkce_required) {
+                                        <p class="text-xs mt-0.5 m-0 secondary-text-color">PKCE required</p>
+                                    }
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="scopes">
+                                <th mat-header-cell *matHeaderCellDef class="col-scopes">Scopes</th>
+                                <td mat-cell *matCellDef="let element" data-label="Scopes" class="col-scopes">
+                                    <mat-chip-set class="col-scopes__chips">
+                                        @for (scope of element.allowed_scopes; track scope) {
+                                            <mat-chip>{{ scope }}</mat-chip>
+                                        }
+                                    </mat-chip-set>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="status">
+                                <th mat-header-cell *matHeaderCellDef>Status</th>
+                                <td mat-cell *matCellDef="let element" data-label="Status">
+                                    <span
+                                        class="status-badge"
+                                        [class.status-badge--active]="element.status === 'active'"
+                                        [class.status-badge--inactive]="element.status !== 'active'"
+                                    >
+                                        {{ element.status === 'active' ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef></th>
+                                <td mat-cell *matCellDef="let element" data-label="Actions">
+                                    <div class="actions flex justify-end items-center">
+                                        <button
+                                            mat-icon-button
+                                            [matMenuTriggerFor]="oauthActionsMenu"
+                                            aria-label="OAuth actions"
+                                        >
+                                            <mat-icon class="material-icons-outlined">more_vert</mat-icon>
+                                        </button>
+                                        <mat-menu
+                                            #oauthActionsMenu="matMenu"
+                                            class="oauth-actions-menu"
+                                            xPosition="before"
+                                        >
+                                            <button mat-menu-item (click)="editOauth(element)">
+                                                <mat-icon class="material-icons-outlined">edit</mat-icon>
+                                                <span>Edit</span>
+                                            </button>
+                                            @if (element.client_type === 'confidential') {
+                                                <button mat-menu-item (click)="regenerateSecret(element)">
+                                                    <mat-icon class="material-icons-outlined">vpn_key</mat-icon>
+                                                    <span>Regenerate secret</span>
+                                                </button>
+                                            }
+                                            @if (element.status === 'active') {
+                                                <button mat-menu-item (click)="disableOauth(element)">
+                                                    <mat-icon class="material-icons-outlined">block</mat-icon>
+                                                    <span>Disable</span>
+                                                </button>
+                                            } @else {
+                                                <button mat-menu-item (click)="enableOauth(element)">
+                                                    <mat-icon class="material-icons-outlined">check_circle</mat-icon>
+                                                    <span>Enable</span>
+                                                </button>
+                                            }
+                                            <mat-divider></mat-divider>
+                                            <button
+                                                mat-menu-item
+                                                (click)="deleteOauth(element)"
+                                                class="oauth-actions-menu__danger"
+                                            >
+                                                <mat-icon class="material-icons-outlined">delete</mat-icon>
+                                                <span>Delete</span>
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="oauthDisplayedColumns; sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: oauthDisplayedColumns" class="hover-action"></tr>
+
+                            <tr *matNoDataRow>
+                                <td class="mat-cell border-0" [attr.colspan]="oauthDisplayedColumns.length">
+                                    <proxy-no-record-found
+                                        [title]="'oauth configs'"
+                                        [showBtn]="false"
+                                    ></proxy-no-record-found>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <mat-paginator-goto
+                        [length]="oauthTotalCount"
+                        [pageSize]="oauthPageSize"
+                        [pageSizeOptions]="pageSizeOptions"
+                        [showPaginatorLength]="oauthPageSize"
+                        (page)="onOauthPageChange($event)"
+                        [pageIndex]="oauthPageIndex"
+                        class="box-shadow-none"
+                    ></mat-paginator-goto>
+                }
+
+                <!-- ── Scope Tab ── -->
+                @if (selectedSectionIndex === 1) {
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                        <div class="flex flex-wrap items-center grow gap-4">
+                            <proxy-lib-search
+                                [matFormFieldClass]="'no-padding w-xs-100'"
+                                [placeholder]="'Search Scope'"
+                                (inputChanges)="searchScope($event)"
+                                class="w-xs-100"
+                            ></proxy-lib-search>
+                        </div>
+                        <button matButton="filled" class="mat-btn-xs" (click)="addScope()">
+                            <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
+                            Add Scope
+                        </button>
+                    </div>
+
+                    <div class="table-scroll">
+                        <table mat-table [dataSource]="scopeDataSource" class="default-table responsive-table">
+                            <ng-container matColumnDef="key">
+                                <th mat-header-cell *matHeaderCellDef>Key</th>
+                                <td mat-cell *matCellDef="let element" data-label="Key">
+                                    <p class="m-0">{{ element.key }}</p>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="label">
+                                <th mat-header-cell *matHeaderCellDef>Label</th>
+                                <td mat-cell *matCellDef="let element" data-label="Label">
+                                    <p class="m-0">{{ element.label || '—' }}</p>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef></th>
+                                <td mat-cell *matCellDef="let element" data-label="Actions">
+                                    <div class="actions flex justify-end items-center">
+                                        <button
+                                            mat-icon-button
+                                            [matMenuTriggerFor]="scopeActionsMenu"
+                                            aria-label="Scope actions"
+                                        >
+                                            <mat-icon class="material-icons-outlined">more_vert</mat-icon>
+                                        </button>
+                                        <mat-menu
+                                            #scopeActionsMenu="matMenu"
+                                            class="oauth-actions-menu"
+                                            xPosition="before"
+                                        >
+                                            <button mat-menu-item (click)="editScope(element)">
+                                                <mat-icon class="material-icons-outlined">edit</mat-icon>
+                                                <span>Edit</span>
+                                            </button>
+                                            <mat-divider></mat-divider>
+                                            <button
+                                                mat-menu-item
+                                                (click)="deleteScope(element)"
+                                                class="oauth-actions-menu__danger"
+                                            >
+                                                <mat-icon class="material-icons-outlined">delete</mat-icon>
+                                                <span>Delete</span>
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="scopeDisplayedColumns; sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: scopeDisplayedColumns" class="hover-action"></tr>
+
+                            <tr *matNoDataRow>
+                                <td class="mat-cell border-0" [attr.colspan]="scopeDisplayedColumns.length">
+                                    <proxy-no-record-found [title]="'scopes'" [showBtn]="false"></proxy-no-record-found>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <mat-paginator-goto
+                        [length]="scopeTotalCount"
+                        [pageSize]="scopePageSize"
+                        [pageSizeOptions]="pageSizeOptions"
+                        [showPaginatorLength]="scopePageSize"
+                        (page)="onScopePageChange($event)"
+                        [pageIndex]="scopePageIndex"
+                        class="box-shadow-none"
+                    ></mat-paginator-goto>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Add / Edit OAuth Dialog -->
+<ng-template #addOauthDialogTemplate>
+    <h2 matDialogTitle>{{ isEditOauthMode ? 'Edit OAuth' : 'Add OAuth' }}</h2>
+    <mat-dialog-content>
+        <form [formGroup]="dialogOauthForm" class="flex flex-col gap-1">
+            <mat-form-field appearance="outline" class="w-full mt-2">
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name" placeholder="Enter name" />
+                @if (dialogOauthForm.get('name')?.hasError('required')) {
+                    <mat-error>Name is required</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Client type</mat-label>
+                <mat-select formControlName="client_type">
+                    @for (type of clientTypes; track type.value) {
+                        <mat-option [value]="type.value">{{ type.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <div class="flex items-center justify-between gap-3 py-2 px-1 mb-2">
+                <div class="flex flex-col gap-0.5">
+                    <div class="flex items-center gap-1">
+                        <span class="mat-body-2 font-medium">Require PKCE</span>
+                        <mat-icon
+                            class="!text-base secondary-text-color cursor-pointer"
+                            matTooltip="PKCE: Adds an extra security layer to OAuth 2.0 by protecting authorization codes from interception. Recommended for SPAs and mobile apps"
+                            matTooltipPosition="above"
+                            matTooltipShowDelay="200"
+                            >info</mat-icon
+                        >
+                    </div>
+                    <span class="text-xs secondary-text-color"
+                        >Always enforced for public clients; optional for confidential</span
+                    >
+                </div>
+                <mat-slide-toggle formControlName="pkce_required" color="primary"></mat-slide-toggle>
+            </div>
+
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Allowed scopes</mat-label>
+                <mat-select #allowedScopesSelect formControlName="allowed_scopes" multiple>
+                    <button
+                        type="button"
+                        matButton
+                        (click)="addScopeFromOauthForm($event, allowedScopesSelect); $event.stopPropagation()"
+                        (mousedown)="$event.stopPropagation()"
+                        class="m-2"
+                    >
+                        <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
+                        Create scope
+                    </button>
+                    <mat-divider></mat-divider>
+                    @for (scope of availableScopeOptions; track scope.key) {
+                        <mat-option [value]="scope.key">{{ scope.key }}</mat-option>
+                    }
+                </mat-select>
+                @if (dialogOauthForm.get('allowed_scopes')?.hasError('required')) {
+                    <mat-error>Select at least one scope</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full mt-2 oauth-redirect-uris initial-height">
+                <mat-label>Redirect URIs</mat-label>
+                <mat-chip-grid #redirectUriChipList aria-label="Redirect URIs">
+                    @for (uri of redirectUriChips; track uri) {
+                        <mat-chip-row
+                            (removed)="removeRedirectUri(uri)"
+                            removable
+                            disableRipple
+                            [matTooltip]="uri"
+                            matTooltipShowDelay="300"
+                        >
+                            {{ uri }}
+                            <button type="button" matChipRemove>
+                                <mat-icon>cancel</mat-icon>
+                            </button>
+                        </mat-chip-row>
+                    }
+                    <input
+                        matChipInput
+                        type="text"
+                        [placeholder]="redirectUriChips.length ? '' : 'Enter Comma Separated Redirect URIs'"
+                        autocomplete="off"
+                        [matChipInputFor]="redirectUriChipList"
+                        [matChipInputSeparatorKeyCodes]="chipListSeparatorKeysCodes"
+                        (matChipInputTokenEnd)="addRedirectUri($event)"
+                    />
+                </mat-chip-grid>
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button type="button" matButton (click)="closeOauthDialog()">Close</button>
+        <button type="button" matButton="filled" (click)="submitOauthDialog()" [disabled]="!dialogOauthForm.valid">
+            {{ isEditOauthMode ? 'Update OAuth' : 'Add OAuth' }}
+        </button>
+    </mat-dialog-actions>
+</ng-template>
+
+<!-- Add / Edit Scope Dialog -->
+<ng-template #addScopeDialogTemplate>
+    <h2 matDialogTitle>{{ isEditScopeMode ? 'Edit Scope' : 'Add Scope' }}</h2>
+    <mat-dialog-content>
+        <form [formGroup]="dialogScopeForm" class="flex flex-col gap-1">
+            <mat-form-field appearance="outline" class="w-full mt-2">
+                <mat-label>Key</mat-label>
+                <input matInput formControlName="key" placeholder="Enter scope key" />
+                @if (dialogScopeForm.get('key')?.hasError('required')) {
+                    <mat-error>Key is required</mat-error>
+                }
+                @if (dialogScopeForm.get('key')?.hasError('pattern')) {
+                    <mat-error>Use lowercase letters, numbers, underscores; optional colon segments</mat-error>
+                }
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Label</mat-label>
+                <input matInput formControlName="label" placeholder="Enter scope label" />
+                @if (dialogScopeForm.get('label')?.hasError('required')) {
+                    <mat-error>Label is required</mat-error>
+                }
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button matButton (click)="closeScopeDialog()">Close</button>
+        <button matButton="filled" (click)="submitScopeDialog()" [disabled]="!dialogScopeForm.valid">
+            {{ isEditScopeMode ? 'Update Scope' : 'Add Scope' }}
+        </button>
+    </mat-dialog-actions>
+</ng-template>
+
+<!-- One-time client secret reveal -->
+<ng-template #secretRevealDialogTemplate>
+    <h2 matDialogTitle>Client secret</h2>
+    <mat-dialog-content>
+        <p class="text-sm m-0 mb-3">
+            Copy this secret now — it will not be shown again. Regenerating invalidates the previous secret.
+        </p>
+        @if (revealedClientId) {
+            <p class="text-xs secondary-text-color m-0 mb-1">Client ID</p>
+            <div class="flex items-center gap-2 mb-3">
+                <code class="break-all text-sm">{{ revealedClientId }}</code>
+                <proxy-copy-button [copyData]="revealedClientId" tooltip="Copy client ID"></proxy-copy-button>
+            </div>
+        }
+        <p class="text-xs secondary-text-color m-0 mb-1">Client secret</p>
+        <div class="flex items-center gap-2">
+            <code class="break-all text-sm">{{ revealedSecret }}</code>
+            <proxy-copy-button [copyData]="revealedSecret" tooltip="Copy secret"></proxy-copy-button>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button matButton="filled" (click)="closeSecretReveal()">Done</button>
+    </mat-dialog-actions>
+</ng-template>

@@ -69,6 +69,7 @@ import { CreateTaxDialogComponent } from './create-tax-dialog/create-tax-dialog.
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { ServiceListComponent, ServiceListItem } from '@proxy/ui/service-list';
 import { ManagementComponent } from '../../users/management/management.component';
+import { OauthConfigComponent } from '../oauth-config/oauth-config.component';
 import { UiSettingsService } from '../../layout/ui-settings.service';
 import { SideNavService } from '../../layout/side-nav.service';
 import { WidgetThemeService } from 'apps/36-blocks-widget/src/app/otp/service/widget-theme.service';
@@ -143,6 +144,7 @@ export interface PeriodicElement {
         MatButtonToggleModule,
         FeaturePreviewComponent,
         ManagementComponent,
+        OauthConfigComponent,
     ],
     templateUrl: './create-feature.component.html',
     styleUrls: ['./create-feature.component.scss'],
@@ -226,10 +228,20 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public errorInUploadLogo$: Observable<boolean> = this.componentStore.errorInUploadLogo$;
     public allowedOrigins$: Observable<string[]> = this.componentStore.allowedOrigins$;
     public isEditMode = false;
-    /** Selected index of the edit-mode tab group; used to hide the preview panel on Manage Members. */
+    /** Selected index of the edit-mode tab group; used to hide the preview panel on full-width tabs. */
     public editModeMainTabIndex = 0;
-    /** Manage Members tab index: Service, Branding, Setting, Design & code, Webhook, Manage Members. */
+    /** Manage Members tab index: Service, Branding, Setting, Design & code, Webhook, Manage Members, OAuth Config. */
     public readonly editModeManageMembersTabIndex = 5;
+    /** OAuth Config tab index (full-width, no preview panel). */
+    public readonly editModeOauthConfigTabIndex = 6;
+
+    /** Tabs that use the full content width (hide authorization preview). */
+    public get isEditModeFullWidthTab(): boolean {
+        return (
+            this.editModeMainTabIndex === this.editModeManageMembersTabIndex ||
+            this.editModeMainTabIndex === this.editModeOauthConfigTabIndex
+        );
+    }
     public previewInputPosition: 'top' | 'bottom' = 'top';
     public selectedServiceIndex = 0;
     public selectedSubscriptionServiceIndex = -2;

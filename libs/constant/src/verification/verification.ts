@@ -4,6 +4,7 @@ export enum PublicScriptType {
     UserManagement = 'user-management',
     OrganizationDetails = 'organization-details',
     Subscription = 'subscription',
+    OAuth = 'oauth2',
 }
 
 export enum WidgetTheme {
