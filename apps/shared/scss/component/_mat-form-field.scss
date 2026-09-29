@@ -5,15 +5,21 @@ mat-form-field {
             --mat-form-field-container-height: var(--custom-mat-form-field-height);
             .mdc-text-field--outlined {
                 height: var(--mat-form-field-container-height);
+                /* Chip grids wrap to multiple rows — grow with content instead of clipping. */
+                &:has(.mat-mdc-chip-set) {
+                    height: auto;
+                }
                 .mat-mdc-form-field-infix {
-                    &:has(.mat-mdc-chip-set) {
-                        padding-top: 8px !important;
-                    }
                     --mat-form-field-container-vertical-padding: 10px;
                     min-height: var(--mat-form-field-container-height);
                     height: var(--mat-form-field-container-height);
                     padding-top: 12px !important;
                     padding-bottom: 14px !important;
+
+                    &:has(.mat-mdc-chip-set) {
+                        padding-top: 8px !important;
+                        height: auto;
+                    }
                 }
             }
 
