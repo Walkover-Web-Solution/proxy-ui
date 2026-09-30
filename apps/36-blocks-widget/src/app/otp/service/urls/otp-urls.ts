@@ -2,6 +2,8 @@ import { createUrl } from '@proxy/service';
 
 export const otpVerificationUrls = {
     getWidgetData: (baseUrl) => createUrl(baseUrl, ':referenceId/widget'),
+    oauthAuthorize: (baseUrl) => createUrl(baseUrl, 'oauth/authorize'),
+    oauthAuthorizeDecision: (baseUrl) => createUrl(baseUrl, 'oauth/authorize/decision'),
     sendOtp: (baseUrl) => createUrl(baseUrl, 'otp/send'),
     retryOtp: (baseUrl) => createUrl(baseUrl, 'otp/retry'),
     verifyOtpV2: (baseUrl) => createUrl(baseUrl, 'otp/verify'),
