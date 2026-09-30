@@ -3,7 +3,7 @@ import { ProxyAuthWidgetComponent } from './otp/widget/widget.component';
 import { omit } from 'lodash-es';
 import { PROXY_DOM_ID, PublicScriptType, WidgetEvent } from '@proxy/constant';
 
-export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure'];
+export const RESERVED_KEYS = ['referenceId', 'target', 'style', 'success', 'failure', 'authType'];
 
 declare global {
     interface Window {
@@ -78,6 +78,7 @@ if (!window.initVerification) {
                     WithProperties<ProxyAuthWidgetComponent>;
                 widgetElement.referenceId = config?.referenceId;
                 widgetElement.type = config?.type;
+                widgetElement.authType = config?.authType || 'authorization';
                 widgetElement.authToken = config?.authToken;
                 widgetElement.showCompanyDetails = config?.showCompanyDetails;
                 widgetElement.userToken = config?.userToken;

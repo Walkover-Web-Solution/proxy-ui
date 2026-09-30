@@ -58,6 +58,37 @@ export class OtpService {
         return this.http.post<BaseResponse<IWidgetResponse, IGetWidgetData>>(url, payload ?? {}, this.options);
     }
 
+    /** OAuth 2.0 authorize validation — passes through all query params from the host page URL. */
+    public getOauthAuthorize(params: Record<string, string>): Observable<BaseResponse<any, void>> {
+        return this.http.get<BaseResponse<any, void>>(
+            otpVerificationUrls.oauthAuthorize(this.baseUrl),
+            params,
+            this.options
+        );
+    }
+
+    /**
+     * OAuth 2.0 consent decision. Sends `proxy_auth_token` as a header (same as other c-user APIs).
+     * Response includes the destination URL for the single browser navigation.
+     */
+    public postOauthAuthorizeDecision(
+        payload: Record<string, any>,
+        proxyAuthToken: string
+    ): Observable<BaseResponse<any, void>> {
+        const options = {
+            ...this.options,
+            headers: {
+                ...this.options.headers,
+                proxy_auth_token: proxyAuthToken,
+            },
+        };
+        return this.http.post<BaseResponse<any, void>>(
+            otpVerificationUrls.oauthAuthorizeDecision(this.baseUrl),
+            payload,
+            options
+        );
+    }
+
     public sendOtp(request: ISendOtpReq): Observable<OtpResModel> {
         this.setOtpRequestHeaders(request);
         const body = { identifier: request.identifier ?? request.mobile };
