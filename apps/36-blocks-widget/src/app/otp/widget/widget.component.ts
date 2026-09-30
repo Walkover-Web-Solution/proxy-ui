@@ -26,7 +26,7 @@ import {
     signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { META_TAG_ID, WidgetTheme, PublicScriptType } from '@proxy/constant';
+import { META_TAG_ID, WidgetTheme, PublicScriptType, WidgetAuthType } from '@proxy/constant';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { select, Store } from '@ngrx/store';
 import { isEqual } from 'lodash-es';
@@ -100,6 +100,8 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     @Input() public loginRedirectUrl: string;
     @Input() public authToken: string;
     @Input() public type: string;
+    /** Defaults to classic authorization; `auth2` starts the OAuth 2.0 consent flow. */
+    @Input() public authType: string = WidgetAuthType.Authorization;
     @Input() public isPreview: boolean = false;
     @Input() public isLogin: boolean = false;
     @Input() public openEditProfile: boolean = false;
@@ -110,6 +112,19 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     private readonly themeService = inject(WidgetThemeService);
     protected readonly WidgetTheme = WidgetTheme;
     protected readonly PublicScriptType = PublicScriptType;
+    protected readonly WidgetAuthType = WidgetAuthType;
+    /** Response from GET /oauth/authorize (auth2 flow only). */
+    public oauthAuthorizeData: any = null;
+    /** Host-page query params forwarded to GET /oauth/authorize (auth2). */
+    private oauthAuthorizeParams: Record<string, string> = {};
+    /** Set when post-login URL has proxy_auth_token + state — show consent instead of login. */
+    private oauthProxyAuthToken: string | null = null;
+    public readonly showOauthConsent = signal<boolean>(false);
+    public readonly oauthConsentLoading = signal<boolean>(false);
+    public readonly oauthConsentError = signal<string>('');
+    /** Static error when GET /oauth/authorize fails validation (invalid client_id, etc.). */
+    public readonly showOauthError = signal<boolean>(false);
+    public readonly oauthErrorMessage = signal<string>('');
 
     readonly viewMode = computed<PublicScriptType>(() => {
         const authToken = this._authToken$();
@@ -246,6 +261,21 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         this._authToken$.set(this.authToken);
         this._type$.set(this.type);
         this.themeService.setInputTheme(this.theme);
+
+        // OAuth 2.0: validate authorize first; on success load the classic login widget.
+        if (this.authType === WidgetAuthType.Auth2) {
+            this.initOauthAuthorize();
+            return;
+        }
+
+        this.initClassicAuthorizationWidget();
+    }
+
+    /**
+     * Classic authorization / subscription widget bootstrap (theme, getWidgetData, OTP wiring).
+     * Also used after a successful OAuth authorize response so the user can log in.
+     */
+    private initClassicAuthorizationWidget(): void {
         this.store
             .pipe(select(selectWidgetTheme), filter(Boolean), takeUntil(this.destroy$))
             .subscribe((theme: any) => {
@@ -294,7 +324,7 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
                 this.store.dispatch(
                     getWidgetData({
                         referenceId: this.referenceId,
-                        payload: this.otherData,
+                        payload: this.buildWidgetDataPayload(),
                     })
                 );
             } else {
@@ -378,6 +408,265 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             (document.querySelector('script[src*="proxy-auth"]') as HTMLScriptElement | null)?.src ||
             '';
         console.log('[36Blocks] Host page URL:', this.hostPageUrl);
+    }
+
+    /**
+     * Widget API payload. For auth2: addInfo.redirect_path + state (same params as authorize).
+     */
+    private buildWidgetDataPayload(): { [key: string]: any } {
+        if (this.authType !== WidgetAuthType.Auth2) {
+            return this.otherData;
+        }
+
+        const pathname = window.location?.pathname ?? '';
+        return {
+            ...this.otherData,
+            addInfo: {
+                ...(this.otherData?.addInfo || {}),
+                redirect_path: pathname,
+            },
+            state: JSON.stringify({ ...this.oauthAuthorizeParams }),
+        };
+    }
+
+    private readHostQueryParams(): Record<string, string> {
+        const params: Record<string, string> = {};
+        new URLSearchParams(window.location?.search ?? '').forEach((value, key) => {
+            params[key] = value;
+        });
+        return params;
+    }
+
+    /**
+     * Resolve authorize query params after login redirect.
+     * Prefer JSON `state` (same object we sent to the widget API); else strip proxy_auth_token.
+     */
+    private resolveAuthorizeParamsAfterLogin(params: Record<string, string>): Record<string, string> {
+        const stateRaw = params['state'];
+        if (stateRaw) {
+            try {
+                const parsed = JSON.parse(stateRaw);
+                if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+                    const fromState: Record<string, string> = {};
+                    Object.entries(parsed).forEach(([key, value]) => {
+                        if (value != null && key !== 'proxy_auth_token') {
+                            fromState[key] = String(value);
+                        }
+                    });
+                    if (fromState['client_id']) {
+                        return fromState;
+                    }
+                }
+            } catch {
+                // opaque OAuth state string — fall through
+            }
+        }
+        const rest: Record<string, string> = {};
+        Object.entries(params).forEach(([key, value]) => {
+            if (key !== 'proxy_auth_token') {
+                rest[key] = value;
+            }
+        });
+        return rest;
+    }
+
+    /**
+     * OAuth 2.0: if proxy_auth_token + state are present, user is logged in → consent UI.
+     * Otherwise validate authorize and load the classic login widget.
+     * On invalid authorize → static error page only (no widget API).
+     */
+    private initOauthAuthorize(): void {
+        const params = this.readHostQueryParams();
+        const proxyAuthToken = params['proxy_auth_token'];
+        const stateParam = params['state'];
+
+        if (proxyAuthToken && stateParam) {
+            this.oauthProxyAuthToken = proxyAuthToken;
+            this.oauthAuthorizeParams = this.resolveAuthorizeParamsAfterLogin(params);
+            this.otpService
+                .getOauthAuthorize(this.oauthAuthorizeParams)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe({
+                    next: (res: any) => {
+                        if (!this.isOauthAuthorizeSuccess(res)) {
+                            this.openOauthErrorPage(this.extractOauthErrorMessage(res));
+                            return;
+                        }
+                        this.oauthAuthorizeData = res?.data ?? res;
+                        this.openOauthConsentDialog();
+                    },
+                    error: (err) => {
+                        console.error('[36Blocks] OAuth authorize failed (consent):', err);
+                        this.openOauthErrorPage(this.extractOauthErrorMessage(err));
+                    },
+                });
+            return;
+        }
+
+        this.oauthAuthorizeParams = params;
+        this.otpService
+            .getOauthAuthorize(params)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: (res: any) => {
+                    if (!this.isOauthAuthorizeSuccess(res)) {
+                        this.openOauthErrorPage(this.extractOauthErrorMessage(res));
+                        return;
+                    }
+                    this.oauthAuthorizeData = res?.data ?? res;
+                    this.cdr.markForCheck();
+                    this.initClassicAuthorizationWidget();
+                },
+                error: (err) => {
+                    console.error('[36Blocks] OAuth authorize failed:', err);
+                    this.openOauthErrorPage(this.extractOauthErrorMessage(err));
+                },
+            });
+    }
+
+    private isOauthAuthorizeSuccess(res: any): boolean {
+        if (!res || res.hasError) {
+            return false;
+        }
+        const data = res?.data ?? res;
+        return !!(data?.client_id || data?.client_name);
+    }
+
+    private extractOauthErrorMessage(errOrRes: any): string {
+        const body = errOrRes?.error ?? errOrRes;
+        const msg =
+            body?.error_description ||
+            body?.error ||
+            body?.errors?.[0] ||
+            body?.data?.error_description ||
+            body?.data?.error ||
+            errOrRes?.errors?.[0];
+        if (typeof msg === 'string' && msg.trim()) {
+            return msg;
+        }
+        return 'Invalid client or authorization request. Please check the client id and try again.';
+    }
+
+    /** Static invalid-authorize page — no redirect, no widget load. */
+    private openOauthErrorPage(message: string): void {
+        this.ngZone.run(() => {
+            this.oauthErrorMessage.set(message);
+            this.showOauthError.set(true);
+            this.cdr.detectChanges();
+            setTimeout(() => {
+                if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
+                    this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                    this.dialogPortalRef.onDetach(() => {
+                        this.dialogPortalRef = null;
+                    });
+                }
+            });
+        });
+    }
+
+    /** Opens consent using the same Shadow DOM portal as login / forgot-password dialogs. */
+    private openOauthConsentDialog(): void {
+        this.ngZone.run(() => {
+            this.showOauthConsent.set(true);
+            this.cdr.detectChanges();
+            setTimeout(() => {
+                if (this.dialogPortalEl?.nativeElement && !this.dialogPortalRef) {
+                    this.dialogPortalRef = this.widgetPortal.attach(this.dialogPortalEl.nativeElement);
+                    this.dialogPortalRef.onDetach(() => {
+                        this.dialogPortalRef = null;
+                        this.showOauthConsent.set(false);
+                    });
+                }
+            });
+        });
+    }
+
+    /** Scope labels for the consent list (string keys or { key, label } objects). */
+    public oauthConsentScopeLabels(): string[] {
+        const scopes = this.oauthAuthorizeData?.scopes;
+        if (!Array.isArray(scopes) || scopes.length === 0) {
+            return [];
+        }
+        const fallback: Record<string, string> = {
+            email: 'Your email address',
+            profile: 'Your basic profile information',
+        };
+        return scopes
+            .map((scope: any) => {
+                if (scope && typeof scope === 'object') {
+                    return scope.label || fallback[scope.key] || scope.key || '';
+                }
+                const key = String(scope ?? '');
+                return fallback[key] || key;
+            })
+            .filter(Boolean);
+    }
+
+    public submitOauthConsent(approved: boolean): void {
+        if (!this.oauthProxyAuthToken || this.oauthConsentLoading()) {
+            return;
+        }
+        this.oauthConsentLoading.set(true);
+        this.oauthConsentError.set('');
+
+        const data = this.oauthAuthorizeData || {};
+        const scopes = data.scopes;
+        let scopeValue: string | undefined;
+        if (Array.isArray(scopes)) {
+            scopeValue = scopes
+                .map((s: any) => (typeof s === 'object' ? s?.key : s))
+                .filter(Boolean)
+                .join(' ');
+        } else if (typeof scopes === 'string') {
+            scopeValue = scopes;
+        }
+
+        const payload: Record<string, any> = {
+            action: approved ? 'approve' : 'deny',
+            client_id: data.client_id ?? this.oauthAuthorizeParams['client_id'],
+            redirect_uri: data.redirect_uri ?? this.oauthAuthorizeParams['redirect_uri'],
+            state: data.state ?? this.oauthAuthorizeParams['state'],
+            response_type: this.oauthAuthorizeParams['response_type'] || 'code',
+        };
+        if (scopeValue) {
+            payload.scope = scopeValue;
+        }
+        if (this.oauthAuthorizeParams['code_challenge']) {
+            payload.code_challenge = this.oauthAuthorizeParams['code_challenge'];
+        }
+        if (this.oauthAuthorizeParams['code_challenge_method']) {
+            payload.code_challenge_method = this.oauthAuthorizeParams['code_challenge_method'];
+        }
+
+        this.otpService
+            .postOauthAuthorizeDecision(payload, this.oauthProxyAuthToken)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+                next: (res: any) => {
+                    this.oauthConsentLoading.set(false);
+                    const dest = res?.data?.redirect_to;
+                    if (dest && typeof dest === 'string') {
+                        window.location.href = dest;
+                        return;
+                    }
+                    console.error('[36Blocks] OAuth decision response missing redirect_to:', res);
+                    this.oauthConsentError.set('Consent succeeded but no redirect URL was returned.');
+                    this.cdr.markForCheck();
+                },
+                error: (err) => {
+                    console.error('[36Blocks] OAuth decision failed:', err);
+                    this.oauthConsentLoading.set(false);
+                    const body = err?.error ?? err;
+                    // OAuth error body: { error, error_description } — prefer API message over HttpClient text.
+                    const oauthError = body?.error || body?.error_description || body?.errors?.[0] || err?.errors?.[0];
+                    this.oauthConsentError.set(
+                        typeof oauthError === 'string' && oauthError.trim()
+                            ? oauthError
+                            : 'Unable to complete consent. Please try again.'
+                    );
+                    this.cdr.markForCheck();
+                },
+            });
     }
 
     /** True when the host page URL looks like a register / sign-up route. */
@@ -811,7 +1100,11 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         loginContainer.style.cssText = `width:316px;max-width:100%;padding:0;margin:0 8px 16px 8px;display:flex;flex-direction:column;gap:8px;box-sizing:border-box;font-family:'Inter',sans-serif;border-radius:${borderRadius};`;
 
         const title: HTMLElement = this.renderer.createElement('div');
-        title.textContent = selectWidgetTheme?.ui_preferences?.title;
+        const clientName = this.oauthAuthorizeData?.client_name;
+        title.textContent =
+            this.authType === WidgetAuthType.Auth2 && clientName
+                ? `Sign in to continue to ${clientName}`
+                : selectWidgetTheme?.ui_preferences?.title;
         title.style.cssText = `font-size:16px;line-height:20px;font-weight:600;color:${primaryColor};margin:0 8px 20px 8px;text-align:center;width:316px;max-width:100%;`;
 
         const loginButton: HTMLButtonElement = this.renderer.createElement('button');
@@ -1515,8 +1808,8 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
         const selectWidgetTheme = this.widgetTheme() as any;
         const primaryColor = this.getPrimaryColorForCurrentTheme(selectWidgetTheme?.ui_preferences);
 
-        // Hide "Are you a new user? Create an account" on signup/register routes.
-        if (!this.isSignupRoute()) {
+        // Hide "Are you a new user? Create an account" on signup/register routes and OAuth auth2 flow.
+        if (!this.isSignupRoute() && this.authType !== WidgetAuthType.Auth2) {
             const paragraph: HTMLParagraphElement = this.renderer.createElement('p');
             const span: HTMLSpanElement = this.renderer.createElement('span');
             const link: HTMLAnchorElement = this.renderer.createElement('a');

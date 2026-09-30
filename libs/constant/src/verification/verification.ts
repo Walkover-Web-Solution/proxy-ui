@@ -7,6 +7,12 @@ export enum PublicScriptType {
     OAuth = 'oauth2',
 }
 
+/** Flow mode for the authorization widget: classic login vs OAuth 2.0 consent. */
+export enum WidgetAuthType {
+    Authorization = 'authorization',
+    Auth2 = 'auth2',
+}
+
 export enum WidgetTheme {
     System = 'system',
     Light = 'light',
@@ -17,6 +23,8 @@ export type WidgetConfig = {
     referenceId?: string;
     authToken?: string;
     type?: PublicScriptType;
+    /** Defaults to `authorization`. Pass `auth2` for the OAuth 2.0 consent flow. */
+    authType?: WidgetAuthType | 'authorization' | 'auth2';
     exclude_role_ids?: number[];
     showCompanyDetails?: boolean;
     isRolePermission?: boolean;

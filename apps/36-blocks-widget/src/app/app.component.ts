@@ -2,12 +2,14 @@ import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, OnInit }
 import { CommonModule } from '@angular/common';
 import { environment } from '../environments/environment';
 import { BaseComponent } from '@proxy/ui/base-component';
-import { WidgetTheme, PublicScriptType, WidgetConfig, PROXY_DOM_ID } from '@proxy/constant';
+import { WidgetTheme, PublicScriptType, WidgetConfig, PROXY_DOM_ID, WidgetAuthType } from '@proxy/constant';
 import { WidgetThemeService } from './otp/service/widget-theme.service';
 
 const REFERENCE_ID = '4512365o17835822266a4f4e12e0cd1';
 const THEME: WidgetTheme = WidgetTheme.System;
 const TYPE: PublicScriptType = PublicScriptType.Authorization;
+/** Classic login vs OAuth 2.0 — set to `WidgetAuthType.Auth2` to test authorize. */
+const AUTH_TYPE: WidgetAuthType = WidgetAuthType.Auth2;
 const OPEN_EDIT_PROFILE = true;
 const AUTH_TOKEN = '';
 
@@ -54,7 +56,7 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
         if (!environment.production) {
             const widgetConfig: WidgetConfig = {
                 referenceId: REFERENCE_ID, // Always pass referenceId
-
+                // authType: AUTH_TYPE,
                 target: '_self', // '_blank' | '_self'
                 success: (data: unknown) => {
                     console.log('Success response:', data);
