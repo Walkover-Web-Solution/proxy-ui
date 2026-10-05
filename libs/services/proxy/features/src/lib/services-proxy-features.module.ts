@@ -1,8 +1,20 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpWrapperService } from '@proxy/services/httpWrapper';
-import { BaseResponse, IPaginatedResponse, ProxyBaseUrls } from '@proxy/models/root-models';
+import { BaseResponse, IPaginatedResponse, IReqParams, ProxyBaseUrls } from '@proxy/models/root-models';
 import { Observable } from 'rxjs';
-import { IFeature, IFeatureDetails, IFeatureReq, IFeatureType, IMethod } from '@proxy/models/features-model';
+import {
+    IBlockScope,
+    IBlockScopeCreatePayload,
+    IBlockScopeUpdatePayload,
+    IFeature,
+    IFeatureDetails,
+    IFeatureReq,
+    IFeatureType,
+    IMethod,
+    IOAuthConfig,
+    IOAuthConfigCreatePayload,
+    IOAuthConfigUpdatePayload,
+} from '@proxy/models/features-model';
 import { FeaturesUrls } from '@proxy/urls/features-url';
 @Injectable({
     providedIn: 'root',
@@ -127,5 +139,113 @@ export class FeaturesService {
 
     public getAllowedOrigins(id: string | number): Observable<BaseResponse<any, void>> {
         return this.http.get<BaseResponse<any, void>>(FeaturesUrls.getAllowedOrigins(this.baseURL, id));
+    }
+
+    // ── OAuth configs ──
+    public getOauthConfigs(
+        featureId: string | number,
+        params?: IReqParams
+    ): Observable<BaseResponse<IPaginatedResponse<IOAuthConfig[]>, void>> {
+        return this.http.get<BaseResponse<IPaginatedResponse<IOAuthConfig[]>, void>>(
+            FeaturesUrls.oauthConfigs(this.baseURL, featureId),
+            params
+        );
+    }
+
+    public getOauthConfig(
+        featureId: string | number,
+        oauthConfigId: string | number
+    ): Observable<BaseResponse<IOAuthConfig, void>> {
+        return this.http.get<BaseResponse<IOAuthConfig, void>>(
+            FeaturesUrls.oauthConfig(this.baseURL, featureId, oauthConfigId)
+        );
+    }
+
+    public createOauthConfig(
+        featureId: string | number,
+        body: IOAuthConfigCreatePayload
+    ): Observable<BaseResponse<IOAuthConfig, void>> {
+        return this.http.post<BaseResponse<IOAuthConfig, void>>(
+            FeaturesUrls.oauthConfigs(this.baseURL, featureId),
+            body
+        );
+    }
+
+    public updateOauthConfig(
+        featureId: string | number,
+        oauthConfigId: string | number,
+        body: IOAuthConfigUpdatePayload
+    ): Observable<BaseResponse<IOAuthConfig, void>> {
+        return this.http.put<BaseResponse<IOAuthConfig, void>>(
+            FeaturesUrls.oauthConfig(this.baseURL, featureId, oauthConfigId),
+            body
+        );
+    }
+
+    public deleteOauthConfig(
+        featureId: string | number,
+        oauthConfigId: string | number
+    ): Observable<BaseResponse<any, void>> {
+        return this.http.delete<BaseResponse<any, void>>(
+            FeaturesUrls.oauthConfig(this.baseURL, featureId, oauthConfigId)
+        );
+    }
+
+    public regenerateOauthSecret(
+        featureId: string | number,
+        oauthConfigId: string | number
+    ): Observable<BaseResponse<IOAuthConfig, void>> {
+        return this.http.post<BaseResponse<IOAuthConfig, void>>(
+            FeaturesUrls.regenerateOauthSecret(this.baseURL, featureId, oauthConfigId),
+            {}
+        );
+    }
+
+    public disableOauthConfig(
+        featureId: string | number,
+        oauthConfigId: string | number
+    ): Observable<BaseResponse<IOAuthConfig, void>> {
+        return this.http.post<BaseResponse<IOAuthConfig, void>>(
+            FeaturesUrls.disableOauthConfig(this.baseURL, featureId, oauthConfigId),
+            {}
+        );
+    }
+
+    // ── Block scopes ──
+    public getBlockScopes(
+        featureId: string | number,
+        params?: IReqParams
+    ): Observable<BaseResponse<IPaginatedResponse<IBlockScope[]>, void>> {
+        return this.http.get<BaseResponse<IPaginatedResponse<IBlockScope[]>, void>>(
+            FeaturesUrls.blockScopes(this.baseURL, featureId),
+            params
+        );
+    }
+
+    public createBlockScope(
+        featureId: string | number,
+        body: IBlockScopeCreatePayload
+    ): Observable<BaseResponse<IBlockScope, void>> {
+        return this.http.post<BaseResponse<IBlockScope, void>>(FeaturesUrls.blockScopes(this.baseURL, featureId), body);
+    }
+
+    public updateBlockScope(
+        featureId: string | number,
+        blockScopeId: string | number,
+        body: IBlockScopeUpdatePayload
+    ): Observable<BaseResponse<IBlockScope, void>> {
+        return this.http.put<BaseResponse<IBlockScope, void>>(
+            FeaturesUrls.blockScope(this.baseURL, featureId, blockScopeId),
+            body
+        );
+    }
+
+    public deleteBlockScope(
+        featureId: string | number,
+        blockScopeId: string | number
+    ): Observable<BaseResponse<any, void>> {
+        return this.http.delete<BaseResponse<any, void>>(
+            FeaturesUrls.blockScope(this.baseURL, featureId, blockScopeId)
+        );
     }
 }

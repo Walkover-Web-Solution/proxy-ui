@@ -1,4 +1,4 @@
-@if (viewMode() === PublicScriptType.Authorization) {
+@if (viewMode() === PublicScriptType.Authorization && !showOauthConsent() && !showOauthError()) {
     <!-- Button container for Authorization mode - buttons injected here -->
     <div #buttonContainer [class.dark]="isDarkTheme()" class="contents"></div>
 }
@@ -38,13 +38,108 @@
     </div>
 }
 
-@if (showRegistration() || showLogin() || showForgotPassword()) {
+@if (showRegistration() || showLogin() || showForgotPassword() || showOauthConsent() || showOauthError()) {
     <div #dialogPortal [class.dark]="isDarkTheme()">
         <div
             class="w-dialog-backdrop"
-            (click)="showForgotPassword() ? closeForgotPasswordDialog() : closeOverlayDialog()"
+            (click)="
+                showOauthConsent() || showOauthError()
+                    ? null
+                    : showForgotPassword()
+                      ? closeForgotPasswordDialog()
+                      : closeOverlayDialog()
+            "
             aria-hidden="true"
         ></div>
+
+        @if (showOauthError()) {
+            <div
+                role="dialog"
+                aria-labelledby="oauth-error-title"
+                aria-modal="true"
+                class="w-dialog-panel w-dialog-panel--md"
+            >
+                <div class="w-dialog-header">
+                    <h2 id="oauth-error-title" class="w-dialog-title flex-1">Authorization failed</h2>
+                </div>
+                <div class="w-dialog-body">
+                    <p class="w-section-subtitle mt-0">
+                        {{ oauthErrorMessage() }}
+                    </p>
+                </div>
+            </div>
+        }
+
+        @if (showOauthConsent()) {
+            <div
+                role="dialog"
+                aria-labelledby="oauth-consent-title"
+                aria-modal="true"
+                class="w-dialog-panel w-dialog-panel--md"
+            >
+                <div class="w-dialog-header">
+                    <h2 id="oauth-consent-title" class="w-dialog-title flex-1">
+                        {{ oauthAuthorizeData?.client_name || 'Application' }} wants to access your account
+                    </h2>
+                </div>
+                <div class="w-dialog-body space-y-4">
+                    <p class="w-section-subtitle mt-0">
+                        This will allow {{ oauthAuthorizeData?.client_name || 'this application' }} to:
+                    </p>
+                    @if (oauthConsentScopeLabels().length) {
+                        <ul class="w-body-list">
+                            @for (label of oauthConsentScopeLabels(); track label) {
+                                <li
+                                    class="text-sm font-normal"
+                                    [style.color]="isDarkTheme() ? '#d1d5db' : '#374151'"
+                                    [style.font-size.px]="14"
+                                >
+                                    {{ label }}
+                                </li>
+                            }
+                        </ul>
+                    } @else {
+                        <p class="w-section-subtitle mt-0">This app is not requesting any specific permissions.</p>
+                    }
+                    @if (oauthConsentError()) {
+                        <p role="alert" class="w-field-error">{{ oauthConsentError() }}</p>
+                    }
+                </div>
+                <div class="w-dialog-footer">
+                    <button
+                        type="button"
+                        class="w-btn-secondary"
+                        [disabled]="oauthConsentLoading()"
+                        (click)="submitOauthConsent(false)"
+                    >
+                        Deny
+                    </button>
+                    <button
+                        type="button"
+                        class="w-btn-primary"
+                        [disabled]="oauthConsentLoading() || !oauthAuthorizeData"
+                        (click)="submitOauthConsent(true)"
+                    >
+                        @if (oauthConsentLoading()) {
+                            <svg class="w-spinner" aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                                <circle
+                                    class="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    stroke-width="4"
+                                />
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                            </svg>
+                            Please wait...
+                        } @else {
+                            Allow
+                        }
+                    </button>
+                </div>
+            </div>
+        }
 
         @if (showForgotPassword()) {
             <div
@@ -248,7 +343,7 @@
             </div>
         }
 
-        @if (!showForgotPassword()) {
+        @if (!showForgotPassword() && !showOauthConsent() && !showOauthError()) {
             <div role="dialog" aria-modal="true" class="w-dialog-panel" [class.w-dialog-panel--lg]="showRegistration()">
                 @if (isOtpLoading()) {
                     <proxy-progress-bar></proxy-progress-bar>
@@ -293,7 +388,9 @@
                         <proxy-login
                             [loginServiceData]="loginWidgetData"
                             [theme]="theme"
-                            [isCreateAccountTextAppended]="isCreateAccountTextAppended"
+                            [isCreateAccountTextAppended]="
+                                isCreateAccountTextAppended || authType === WidgetAuthType.Auth2
+                            "
                             (togglePopUp)="closeOverlayDialog()"
                             (closePopUp)="closeOverlayDialog()"
                             (openPopUp)="setShowRegistrationFromLogin($event)"

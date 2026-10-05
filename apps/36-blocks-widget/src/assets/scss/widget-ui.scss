@@ -327,6 +327,28 @@
     }
 }
 
+// Body list text (consent scopes, etc.) — match w-section-subtitle size
+.w-body-list {
+    @apply list-disc space-y-1 pl-5 text-sm font-normal text-gray-700;
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+
+    li {
+        @apply font-normal text-gray-700;
+        font-size: 0.875rem !important;
+        line-height: 1.25rem !important;
+        font-weight: 400 !important;
+    }
+
+    .dark & {
+        @apply text-gray-300;
+
+        li {
+            color: #d1d5db !important;
+        }
+    }
+}
+
 // ── BADGES / TAGS ─────────────────────────────────────────────────────────────
 
 // Generic neutral badge (role label, "Default" tag)

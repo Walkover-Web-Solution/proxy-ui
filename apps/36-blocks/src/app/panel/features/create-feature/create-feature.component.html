@@ -448,9 +448,14 @@
                             <ng-container *ngTemplateOutlet="manageFeature"></ng-container>
                         </div>
                     </mat-tab>
+                    <mat-tab label="OAuth Config">
+                        <div class="flex flex-col h-full p-6">
+                            <ng-container *ngTemplateOutlet="oauthConfig"></ng-container>
+                        </div>
+                    </mat-tab>
                 </mat-tab-group>
             </mat-card>
-            @if (editModeMainTabIndex !== editModeManageMembersTabIndex) {
+            @if (!isEditModeFullWidthTab) {
                 <div class="shrink-0 sticky top-0 self-start">
                     <ng-container *ngTemplateOutlet="previewAuthorization"></ng-container>
                 </div>
@@ -1264,6 +1269,11 @@
                 <proxy-management [referenceId]="getReferenceId()"></proxy-management>
             </div>
         </div>
+    </div>
+</ng-template>
+<ng-template #oauthConfig>
+    <div class="flex flex-col gap-4">
+        <proxy-oauth-config [featureId]="featureId"></proxy-oauth-config>
     </div>
 </ng-template>
 <ng-template #webhook>
