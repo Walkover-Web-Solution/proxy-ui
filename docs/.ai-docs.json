@@ -1,0 +1,17 @@
+{
+    "skill": "ai-docs",
+    "skill_version": "0.1.0",
+    "created": "2026-10-14",
+    "last_run": { "mode": "init", "commit": "76f26ae5", "date": "2026-10-14" },
+    "superseded": [
+        "docs/widget-window-events.md",
+        "docs/widget-script-loading.md",
+        "docs/widget-integration-guide.md",
+        "docs/widget-build-fixes.md",
+        "docs/widget-ui-design-system.md",
+        "docs/build-modernization.md",
+        "docs/angular-upgrade-plan.md",
+        "docs/angular-v14-to-v17-migration-report.md",
+        "docs/standalone-migration-progress.md"
+    ]
+}
