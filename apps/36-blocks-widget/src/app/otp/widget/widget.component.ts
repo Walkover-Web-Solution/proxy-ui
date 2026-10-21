@@ -121,6 +121,8 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
     private oauthProxyAuthToken: string | null = null;
     public readonly showOauthConsent = signal<boolean>(false);
     public readonly oauthConsentLoading = signal<boolean>(false);
+    /** Which consent button is in flight, so only that one shows the spinner. */
+    public readonly oauthConsentAction = signal<'approve' | 'deny' | null>(null);
     public readonly oauthConsentError = signal<string>('');
     /** Static error when GET /oauth/authorize fails validation (invalid client_id, etc.). */
     public readonly showOauthError = signal<boolean>(false);
@@ -607,7 +609,9 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             return;
         }
         this.oauthConsentLoading.set(true);
+        this.oauthConsentAction.set(approved ? 'approve' : 'deny');
         this.oauthConsentError.set('');
+        this.cdr.markForCheck();
 
         const data = this.oauthAuthorizeData || {};
         const scopes = data.scopes;
@@ -643,21 +647,21 @@ export class ProxyAuthWidgetComponent extends BaseComponent implements OnInit, O
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (res: any) => {
-                    this.oauthConsentLoading.set(false);
                     const dest = res?.data?.redirect_to;
-                    if (dest && typeof dest === 'string') {
-                        window.location.href = dest;
+                    if (typeof dest === 'string' && dest) {
+                        window.location.replace(dest);
                         return;
                     }
-                    console.error('[36Blocks] OAuth decision response missing redirect_to:', res);
+                    this.oauthConsentLoading.set(false);
+                    this.oauthConsentAction.set(null);
                     this.oauthConsentError.set('Consent succeeded but no redirect URL was returned.');
                     this.cdr.markForCheck();
                 },
                 error: (err) => {
                     console.error('[36Blocks] OAuth decision failed:', err);
                     this.oauthConsentLoading.set(false);
+                    this.oauthConsentAction.set(null);
                     const body = err?.error ?? err;
-                    // OAuth error body: { error, error_description } — prefer API message over HttpClient text.
                     const oauthError = body?.error || body?.error_description || body?.errors?.[0] || err?.errors?.[0];
                     this.oauthConsentError.set(
                         typeof oauthError === 'string' && oauthError.trim()
