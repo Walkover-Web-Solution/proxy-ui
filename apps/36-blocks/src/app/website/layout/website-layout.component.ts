@@ -28,7 +28,7 @@ export class WebsiteLayoutComponent implements OnInit, OnDestroy {
 
     public readonly footerLinks: { label: string; ariaLabel: string; route?: string; href?: string }[] = [
         { label: 'About Us', ariaLabel: '36Blocks About us', route: '/about' },
-        { label: 'Documentation', ariaLabel: '36Blocks Documentation', href: 'https://36blocks.com/help' },
+        { label: 'Documentation', ariaLabel: '36Blocks Documentation', href: 'https://help.36blocks.com/' },
         { label: 'Security', ariaLabel: '36Blocks Security information', route: '/security' },
         { label: 'Privacy', ariaLabel: '36Blocks Privacy policy', route: '/privacy' },
         { label: 'Terms', ariaLabel: '36Blocks Terms of service', route: '/terms' },
