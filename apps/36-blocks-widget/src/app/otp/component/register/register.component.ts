@@ -118,12 +118,16 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         otp2: new FormControl<string>(''),
         otp3: new FormControl<string>(''),
         otp4: new FormControl<string>(''),
+        otp5: new FormControl<string>(''),
+        otp6: new FormControl<string>(''),
     });
     public emailOtpForm = new FormGroup({
         otp1: new FormControl<string>(''),
         otp2: new FormControl<string>(''),
         otp3: new FormControl<string>(''),
         otp4: new FormControl<string>(''),
+        otp5: new FormControl<string>(''),
+        otp6: new FormControl<string>(''),
     });
 
     public intlClass: { [key: string]: IntlPhoneLib } = {};
@@ -165,6 +169,8 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     @ViewChild('otp2', { static: false }) otp2Ref: ElementRef;
     @ViewChild('otp3', { static: false }) otp3Ref: ElementRef;
     @ViewChild('otp4', { static: false }) otp4Ref: ElementRef;
+    @ViewChild('otp5', { static: false }) otp5Ref: ElementRef;
+    @ViewChild('otp6', { static: false }) otp6Ref: ElementRef;
     @ViewChild('emailOtp1', { static: false }) emailOtp1Ref: ElementRef;
 
     private store = inject<Store<IAppState>>(Store);
@@ -700,10 +706,17 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
         const identifierControl =
             channel === 'email' ? this.registrationForm.get('user.email') : this.registrationForm.get('user.mobile');
         const otpValues = form.value;
-        const otpArray = [otpValues.otp1, otpValues.otp2, otpValues.otp3, otpValues.otp4];
+        const otpArray = [
+            otpValues.otp1,
+            otpValues.otp2,
+            otpValues.otp3,
+            otpValues.otp4,
+            otpValues.otp5,
+            otpValues.otp6,
+        ];
         const otpString = otpArray.filter((val) => val && val.trim() !== '').join('');
 
-        if (otpString.length === 4) {
+        if (otpString.length === 6) {
             this.pendingOtpChannel = channel;
             this.store.dispatch(
                 verifyOtpAction({
@@ -763,18 +776,18 @@ export class RegisterComponent extends BaseComponent implements AfterViewInit, O
     public onOtpPaste(event: any, channel: OtpChannel = 'mobile'): void {
         event.preventDefault();
         const pastedData = event.clipboardData.getData('text/plain');
-        const otpDigits = pastedData.replace(/\D/g, '').slice(0, 4).split('');
+        const otpDigits = pastedData.replace(/\D/g, '').slice(0, 6).split('');
         const form = this.getOtpForm(channel);
-        const otpFields = ['otp1', 'otp2', 'otp3', 'otp4'];
+        const otpFields = ['otp1', 'otp2', 'otp3', 'otp4', 'otp5', 'otp6'];
 
         otpFields.forEach((fieldName) => {
-            const controlName = fieldName as 'otp1' | 'otp2' | 'otp3' | 'otp4';
+            const controlName = fieldName as 'otp1' | 'otp2' | 'otp3' | 'otp4' | 'otp5' | 'otp6';
             form.get(controlName).setValue('');
         });
 
         otpDigits.forEach((digit, index) => {
-            if (index < 4) {
-                const controlName = otpFields[index] as 'otp1' | 'otp2' | 'otp3' | 'otp4';
+            if (index < 6) {
+                const controlName = otpFields[index] as 'otp1' | 'otp2' | 'otp3' | 'otp4' | 'otp5' | 'otp6';
                 form.get(controlName).setValue(digit);
             }
         });

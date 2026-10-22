@@ -144,10 +144,30 @@
                         type="text"
                         maxlength="1"
                         formControlName="otp4"
-                        (input)="onOtpInput($event, 'otp4', null, 'email')"
+                        (input)="onOtpInput($event, 'otp4', emailOtp5, 'email')"
                         (keyup)="onOtpKeyup($event, 'otp4', 'email')"
                         (keydown)="onOtpKeydown($event, 'otp4', emailOtp3, 'email')"
                         #emailOtp4
+                        class="w-input-otp"
+                    />
+                    <input
+                        type="text"
+                        maxlength="1"
+                        formControlName="otp5"
+                        (input)="onOtpInput($event, 'otp5', emailOtp6, 'email')"
+                        (keyup)="onOtpKeyup($event, 'otp5', 'email')"
+                        (keydown)="onOtpKeydown($event, 'otp5', emailOtp4, 'email')"
+                        #emailOtp5
+                        class="w-input-otp"
+                    />
+                    <input
+                        type="text"
+                        maxlength="1"
+                        formControlName="otp6"
+                        (input)="onOtpInput($event, 'otp6', null, 'email')"
+                        (keyup)="onOtpKeyup($event, 'otp6', 'email')"
+                        (keydown)="onOtpKeydown($event, 'otp6', emailOtp5, 'email')"
+                        #emailOtp6
                         class="w-input-otp"
                     />
                     <a
@@ -293,10 +313,30 @@
                     type="text"
                     maxlength="1"
                     formControlName="otp4"
-                    (input)="onOtpInput($event, 'otp4', null, 'mobile')"
+                    (input)="onOtpInput($event, 'otp4', otp5, 'mobile')"
                     (keyup)="onOtpKeyup($event, 'otp4', 'mobile')"
                     (keydown)="onOtpKeydown($event, 'otp4', otp3, 'mobile')"
                     #otp4
+                    class="w-input-otp"
+                />
+                <input
+                    type="text"
+                    maxlength="1"
+                    formControlName="otp5"
+                    (input)="onOtpInput($event, 'otp5', otp6, 'mobile')"
+                    (keyup)="onOtpKeyup($event, 'otp5', 'mobile')"
+                    (keydown)="onOtpKeydown($event, 'otp5', otp4, 'mobile')"
+                    #otp5
+                    class="w-input-otp"
+                />
+                <input
+                    type="text"
+                    maxlength="1"
+                    formControlName="otp6"
+                    (input)="onOtpInput($event, 'otp6', null, 'mobile')"
+                    (keyup)="onOtpKeyup($event, 'otp6', 'mobile')"
+                    (keydown)="onOtpKeydown($event, 'otp6', otp5, 'mobile')"
+                    #otp6
                     class="w-input-otp"
                 />
                 <a
