@@ -49,6 +49,28 @@ export interface IOAuthConfigCreatePayload {
     redirect_uris: string[];
 }
 
+/** Max active (not revoked) client secrets a block can have at once. Enforced by the backend too. */
+export const MAX_ACTIVE_CLIENT_SECRETS = 2;
+
+export interface IClientSecret {
+    id: number;
+    feature_configuration_id: number;
+    name: string;
+    /** Last 4 characters of the secret. The full value is never returned after creation. */
+    last_four: string;
+    created_by?: number;
+    created_at?: string;
+    /** Set once the secret is revoked; revoked secrets are kept as history. */
+    revoked_at?: string | null;
+    revoked_by?: number | null;
+    /** Only present on the create response, exactly once. */
+    client_secret?: string;
+}
+
+export interface IClientSecretCreatePayload {
+    name: string;
+}
+
 export interface IOAuthConfigUpdatePayload {
     name?: string;
     pkce_required?: boolean;
@@ -80,6 +102,13 @@ export const BUILTIN_OAUTH_SCOPES: { key: string; label: string }[] = [
     { key: 'email', label: 'Email' },
 ];
 
+/**
+ * What the post-login redirect carries.
+ * - legacy: the proxy_auth_token (and refresh token) in the redirect URL.
+ * - code: a short-lived, single-use code that the client's server exchanges for the tokens (POST /c/exchange).
+ */
+export type RedirectResponseMode = 'legacy' | 'code';
+
 export interface IFeatureDetails extends IFeature {
     projects?: string[];
     callback_url: string;
@@ -88,6 +117,8 @@ export interface IFeatureDetails extends IFeature {
     origins?: string[];
     encryption_key?: string;
     block_registration?: boolean;
+    /** Missing on blocks saved before the setting existed; those behave as 'legacy'. */
+    redirect_response_mode?: RedirectResponseMode;
 }
 
 export interface IServiceConfigurations {

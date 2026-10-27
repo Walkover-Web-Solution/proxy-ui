@@ -4,6 +4,8 @@ import { BaseResponse, IPaginatedResponse, IReqParams, ProxyBaseUrls } from '@pr
 import { Observable } from 'rxjs';
 import {
     IBlockScope,
+    IClientSecret,
+    IClientSecretCreatePayload,
     IBlockScopeCreatePayload,
     IBlockScopeUpdatePayload,
     IFeature,
@@ -208,6 +210,31 @@ export class FeaturesService {
         return this.http.post<BaseResponse<IOAuthConfig, void>>(
             FeaturesUrls.disableOauthConfig(this.baseURL, featureId, oauthConfigId),
             {}
+        );
+    }
+
+    // ── Client secrets ──
+    public getClientSecrets(featureId: string | number): Observable<BaseResponse<IClientSecret[], void>> {
+        return this.http.get<BaseResponse<IClientSecret[], void>>(FeaturesUrls.clientSecrets(this.baseURL, featureId));
+    }
+
+    public createClientSecret(
+        featureId: string | number,
+        body: IClientSecretCreatePayload
+    ): Observable<BaseResponse<IClientSecret, void>> {
+        return this.http.post<BaseResponse<IClientSecret, void>>(
+            FeaturesUrls.clientSecrets(this.baseURL, featureId),
+            body
+        );
+    }
+
+    /** Revokes (does not delete) a secret: it stops working immediately and stays listed as history. */
+    public revokeClientSecret(
+        featureId: string | number,
+        secretId: string | number
+    ): Observable<BaseResponse<IClientSecret, void>> {
+        return this.http.delete<BaseResponse<IClientSecret, void>>(
+            FeaturesUrls.clientSecret(this.baseURL, featureId, secretId)
         );
     }
 
