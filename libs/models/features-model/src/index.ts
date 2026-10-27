@@ -49,6 +49,28 @@ export interface IOAuthConfigCreatePayload {
     redirect_uris: string[];
 }
 
+/** Max active (not revoked) client secrets a block can have at once. Enforced by the backend too. */
+export const MAX_ACTIVE_CLIENT_SECRETS = 2;
+
+export interface IClientSecret {
+    id: number;
+    feature_configuration_id: number;
+    name: string;
+    /** Last 4 characters of the secret. The full value is never returned after creation. */
+    last_four: string;
+    created_by?: number;
+    created_at?: string;
+    /** Set once the secret is revoked; revoked secrets are kept as history. */
+    revoked_at?: string | null;
+    revoked_by?: number | null;
+    /** Only present on the create response, exactly once. */
+    client_secret?: string;
+}
+
+export interface IClientSecretCreatePayload {
+    name: string;
+}
+
 export interface IOAuthConfigUpdatePayload {
     name?: string;
     pkce_required?: boolean;
