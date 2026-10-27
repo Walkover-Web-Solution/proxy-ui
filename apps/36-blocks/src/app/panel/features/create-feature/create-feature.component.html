@@ -1179,7 +1179,15 @@
                         }
                     </mat-form-field>
                     @if (isEditMode && featureId) {
-                        <proxy-client-secrets [featureId]="featureId"></proxy-client-secrets>
+                        <proxy-redirect-response-mode
+                            [control]="featureForm.controls.authorizationDetails.controls.redirect_response_mode"
+                            [activeSecretCount]="activeClientSecretCount"
+                            [savedMode]="savedRedirectResponseMode"
+                        ></proxy-redirect-response-mode>
+                        <proxy-client-secrets
+                            [featureId]="featureId"
+                            (activeSecretCountChange)="onActiveSecretCountChange($event)"
+                        ></proxy-client-secrets>
                     } @else {
                         <p class="text-xs secondary-text-color m-0">Save the block to create client secrets.</p>
                     }

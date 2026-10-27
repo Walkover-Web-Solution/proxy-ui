@@ -1,0 +1,64 @@
+<section class="mode-section border border-color rounded-lg" aria-labelledby="redirect-response-title">
+    <div class="flex items-start gap-3 px-4 pt-4 pb-3">
+        <mat-icon class="icon-20 mt-0.5">swap_horiz</mat-icon>
+        <div class="flex flex-col gap-0.5 min-w-0">
+            <h3 id="redirect-response-title" class="mat-body-2 font-semibold m-0">Redirect Response</h3>
+            <p class="text-xs secondary-text-color m-0">
+                Choose what we send to your redirect URL after a successful login.
+            </p>
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-3 px-4 pb-4">
+        <mat-radio-group [formControl]="control" aria-labelledby="redirect-response-title" class="mode-options">
+            <mat-radio-button
+                value="legacy"
+                class="mode-option"
+                [class.mode-option--selected]="control.value === 'legacy'"
+            >
+                <span class="mode-option__title">Legacy</span>
+                <span class="mode-option__desc">Send the <code>proxy_auth_token</code> in the redirect URL.</span>
+            </mat-radio-button>
+            <mat-radio-button
+                value="code"
+                class="mode-option"
+                [class.mode-option--selected]="control.value === 'code'"
+                [disabled]="codeDisabled"
+            >
+                <span class="mode-option__title">Code</span>
+                <span class="mode-option__desc">
+                    Send a one-time <code>code</code>. Your server exchanges it for the <code>proxy_auth_token</code>.
+                </span>
+            </mat-radio-button>
+        </mat-radio-group>
+
+        @if (showNoSecretHint) {
+            <p class="mode-hint" role="note">
+                <mat-icon class="icon-16">lock</mat-icon>
+                Create a client secret below to enable Code.
+            </p>
+        }
+
+        <div class="info-banner" role="note">
+            <mat-icon class="icon-16">info</mat-icon>
+            <div class="flex flex-col gap-2">
+                <span class="font-semibold">Which one should I choose?</span>
+                <span>
+                    <strong>Legacy:</strong> after login we redirect your user to your redirect URL with the
+                    <code>proxy_auth_token</code> in the URL. Nothing else to set up, but the token can end up in
+                    browser history and server logs.
+                </span>
+                <span>
+                    <strong>Code:</strong> after login we redirect with a short-lived, single-use
+                    <code>code</code> instead. Your server then exchanges it for the <code>proxy_auth_token</code> by
+                    calling <code>POST /c/exchange</code> with the code and one of your client secrets. Tokens never
+                    appear in the URL, so we recommend this option.
+                </span>
+                <span>
+                    <strong>Before you switch to Code:</strong> create a client secret below and update your server to
+                    do the exchange. Until then, logins that arrive with only a code can't be completed.
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
