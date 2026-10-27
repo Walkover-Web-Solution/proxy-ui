@@ -29,6 +29,9 @@ export const FeaturesUrls = {
         createUrl(baseUrl, `features/${featureId}/oauthConfigs/${oauthConfigId}/regenerateSecret`),
     disableOauthConfig: (baseUrl, featureId, oauthConfigId) =>
         createUrl(baseUrl, `features/${featureId}/oauthConfigs/${oauthConfigId}/disable`),
+    clientSecrets: (baseUrl, featureId) => createUrl(baseUrl, `features/${featureId}/clientSecrets`),
+    clientSecret: (baseUrl, featureId, secretId) =>
+        createUrl(baseUrl, `features/${featureId}/clientSecrets/${secretId}`),
     blockScopes: (baseUrl, featureId) => createUrl(baseUrl, `features/${featureId}/blockScopes`),
     blockScope: (baseUrl, featureId, blockScopeId) =>
         createUrl(baseUrl, `features/${featureId}/blockScopes/${blockScopeId}`),
