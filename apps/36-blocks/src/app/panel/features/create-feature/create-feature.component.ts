@@ -70,6 +70,7 @@ import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { ServiceListComponent, ServiceListItem } from '@proxy/ui/service-list';
 import { ManagementComponent } from '../../users/management/management.component';
 import { OauthConfigComponent } from '../oauth-config/oauth-config.component';
+import { ClientSecretsComponent } from '../client-secrets/client-secrets.component';
 import { UiSettingsService } from '../../layout/ui-settings.service';
 import { SideNavService } from '../../layout/side-nav.service';
 import { WidgetThemeService } from 'apps/36-blocks-widget/src/app/otp/service/widget-theme.service';
@@ -145,6 +146,7 @@ export interface PeriodicElement {
         FeaturePreviewComponent,
         ManagementComponent,
         OauthConfigComponent,
+        ClientSecretsComponent,
     ],
     templateUrl: './create-feature.component.html',
     styleUrls: ['./create-feature.component.scss'],
