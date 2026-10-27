@@ -1,0 +1,124 @@
+:host {
+    display: block;
+}
+
+/*
+ * mat-icon clips whatever falls outside its box. A Tailwind text-size class also sets a larger
+ * line-height, so forcing a smaller height on it cuts the glyph's bottom off. Size the glyph,
+ * the box and the line-height together instead.
+ */
+.icon-16,
+.icon-20 {
+    flex-shrink: 0;
+}
+
+.icon-16 {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+}
+
+.icon-20 {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+}
+
+.mode-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mode-option {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--color-common-border);
+    border-radius: 8px;
+    padding-right: 12px;
+    transition:
+        border-color 120ms ease,
+        background-color 120ms ease;
+
+    // MDC centres the radio against the label; with a title and a description we want it at the top.
+    ::ng-deep .mdc-form-field {
+        width: 100%;
+        align-items: flex-start;
+    }
+
+    ::ng-deep .mdc-form-field > label {
+        flex: 1;
+        cursor: pointer;
+        padding: 10px 0 10px 4px;
+    }
+
+    &__title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+    }
+
+    &__desc {
+        display: block;
+        margin-top: 2px;
+        font-size: 12.5px;
+        line-height: 18px;
+        opacity: 0.75;
+    }
+
+    // Material keeps the radio's focus halo (a 12% tint circle) for as long as the native input has focus,
+    // and a mouse click leaves it focused, so the halo lingers until the user clicks elsewhere. Hide it for
+    // pointer and touch focus; keyboard focus keeps it, since keyboard users need the focus indicator.
+    &.cdk-mouse-focused,
+    &.cdk-touch-focused {
+        ::ng-deep .mdc-radio__native-control:focus + .mdc-radio__background::before {
+            opacity: 0;
+            transform: scale(0);
+        }
+    }
+
+    &--selected {
+        border-color: var(--mat-sys-primary, #0f766e);
+        background: color-mix(in srgb, var(--mat-sys-primary, #0f766e) 6%, transparent);
+    }
+}
+
+code {
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.92em;
+    background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.mode-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 18px;
+    color: #b45309;
+}
+
+.info-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 19.5px;
+    color: #1d4ed8;
+    background: color-mix(in srgb, #3b82f6 12%, transparent);
+
+    // centre the 16px icon on the first line of text (19.5px line box)
+    .icon-16 {
+        margin-top: 1.75px;
+    }
+}

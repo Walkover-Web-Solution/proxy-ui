@@ -9,7 +9,7 @@ export const environment = {
     env: 'local',
     googleClientId: '',
     proxyServer: 'http://localhost:4200',
-    baseUrl: 'http://localhost:8080/api',
+    baseUrl: 'https://apitest.msg91.com/api',
     ...envVariables,
 };
 /*

@@ -50,6 +50,7 @@ import {
     IMethod,
     IMethodService,
     ProxyAuthScript,
+    RedirectResponseMode,
 } from '@proxy/models/features-model';
 import { WidgetTheme } from '@proxy/constant';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators, ValidatorFn } from '@angular/forms';
@@ -71,6 +72,7 @@ import { ServiceListComponent, ServiceListItem } from '@proxy/ui/service-list';
 import { ManagementComponent } from '../../users/management/management.component';
 import { OauthConfigComponent } from '../oauth-config/oauth-config.component';
 import { ClientSecretsComponent } from '../client-secrets/client-secrets.component';
+import { RedirectResponseModeComponent } from '../redirect-response-mode/redirect-response-mode.component';
 import { UiSettingsService } from '../../layout/ui-settings.service';
 import { SideNavService } from '../../layout/side-nav.service';
 import { WidgetThemeService } from 'apps/36-blocks-widget/src/app/otp/service/widget-theme.service';
@@ -147,6 +149,7 @@ export interface PeriodicElement {
         ManagementComponent,
         OauthConfigComponent,
         ClientSecretsComponent,
+        RedirectResponseModeComponent,
     ],
     templateUrl: './create-feature.component.html',
     styleUrls: ['./create-feature.component.scss'],
@@ -230,6 +233,10 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     public errorInUploadLogo$: Observable<boolean> = this.componentStore.errorInUploadLogo$;
     public allowedOrigins$: Observable<string[]> = this.componentStore.allowedOrigins$;
     public isEditMode = false;
+    /** The redirect response mode currently saved on the block (what the radio group resets to). */
+    public savedRedirectResponseMode: RedirectResponseMode = 'legacy';
+    /** Active client secrets on the block, or null until the secrets section has loaded. */
+    public activeClientSecretCount: number | null = null;
     /** Selected index of the edit-mode tab group; used to hide the preview panel on full-width tabs. */
     public editModeMainTabIndex = 0;
     /** Manage Members tab index: Service, Branding, Setting, Design & code, Webhook, Manage Members, OAuth Config. */
@@ -341,6 +348,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             encryptionKey: new FormControl<string>(null, []),
             blockNewUserSignUps: new FormControl<boolean>(false, []),
             origins: new FormControl<string | null>(null, []),
+            redirect_response_mode: new FormControl<RedirectResponseMode>('legacy'),
         }),
         webhookDetails: new FormGroup({
             webhookUrl: new FormControl<string>(null, [Validators.required]),
@@ -443,6 +451,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
             this.featureDetails$
                 .pipe(filter(Boolean), distinctUntilChanged(isEqual), takeUntil(this.destroy$))
                 .subscribe((feature) => {
+                    this.savedRedirectResponseMode = feature.redirect_response_mode ?? 'legacy';
                     this.serviceMethods$.pipe(filter(Boolean), take(1)).subscribe(() => {
                         this.featureForm.patchValue({
                             primaryDetails: {
@@ -455,6 +464,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                                 authorizationKey: feature.authorization_format.key,
                                 encryptionKey: feature.encryption_key,
                                 blockNewUserSignUps: feature.block_registration || false,
+                                redirect_response_mode: feature.redirect_response_mode ?? 'legacy',
                             },
                             webhookDetails: {
                                 webhookUrl: feature.webhook?.url,
@@ -844,6 +854,16 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         }
     }
 
+    public onActiveSecretCountChange(count: number): void {
+        this.activeClientSecretCount = count;
+        // The last active secret was revoked while "Code" was picked but not yet saved: Code can't work
+        // without a secret, so fall back instead of letting Update fail on the backend check.
+        const modeControl = this.featureForm.controls.authorizationDetails.controls.redirect_response_mode;
+        if (count === 0 && modeControl.value === 'code' && this.savedRedirectResponseMode !== 'code') {
+            modeControl.setValue('legacy');
+        }
+    }
+
     public updateFeature(type: 'name' | 'service' | 'authorization' | 'branding' | 'webhook') {
         let payload;
         const selectedMethod = cloneDeep(this.selectedMethod.getValue());
@@ -889,6 +909,11 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                         // },
                         session_time: authorizationDetailsForm.value.session_time,
                         origins: this.getAuthorizationOrigins(),
+                        // only sent when changed, so saving other settings never re-triggers its backend checks
+                        ...(authorizationDetailsForm.value.redirect_response_mode !==
+                            this.savedRedirectResponseMode && {
+                            redirect_response_mode: authorizationDetailsForm.value.redirect_response_mode,
+                        }),
                     };
                 } else {
                     authorizationDetailsForm.markAllAsTouched();

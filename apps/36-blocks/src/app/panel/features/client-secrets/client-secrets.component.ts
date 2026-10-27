@@ -2,8 +2,10 @@ import {
     ChangeDetectionStrategy,
     Component,
     DestroyRef,
+    EventEmitter,
     Input,
     OnChanges,
+    Output,
     SimpleChanges,
     TemplateRef,
     ViewChild,
@@ -24,6 +26,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { IClientSecret, MAX_ACTIVE_CLIENT_SECRETS } from '@proxy/models/features-model';
 import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { CopyButtonComponent } from '@proxy/ui/copy-button';
+import { distinctUntilChanged, filter } from 'rxjs';
 import { ClientSecretsComponentStore } from './client-secrets.store';
 
 /**
@@ -62,6 +65,9 @@ export class ClientSecretsComponent implements OnChanges {
     /** Numeric feature configuration id (`features/{id}/clientSecrets`). */
     @Input() featureId: number | null = null;
 
+    /** Emits the number of active secrets once the list has loaded, and again whenever it changes. */
+    @Output() activeSecretCountChange = new EventEmitter<number>();
+
     public readonly maxSecrets = MAX_ACTIVE_CLIENT_SECRETS;
 
     public readonly secrets = signal<IClientSecret[]>([]);
@@ -98,6 +104,13 @@ export class ClientSecretsComponent implements OnChanges {
 
     constructor() {
         this.store.secrets$.pipe(takeUntilDestroyed()).subscribe((secrets) => this.secrets.set(secrets));
+        this.store.activeCount$
+            .pipe(
+                filter((count): count is number => count !== null),
+                distinctUntilChanged(),
+                takeUntilDestroyed()
+            )
+            .subscribe((count) => this.activeSecretCountChange.emit(count));
         this.store.isLoading$.pipe(takeUntilDestroyed()).subscribe((value) => this.isLoading.set(value));
         this.store.loadFailed$.pipe(takeUntilDestroyed()).subscribe((value) => this.loadFailed.set(value));
         this.store.revokingId$.pipe(takeUntilDestroyed()).subscribe((value) => this.revokingId.set(value));
