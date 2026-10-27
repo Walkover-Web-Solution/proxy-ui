@@ -9,6 +9,8 @@ import { EMPTY, Observable, catchError, switchMap } from 'rxjs';
 
 export interface IClientSecretsState {
     secrets: IClientSecret[];
+    /** True once the list has been fetched successfully at least once. */
+    loaded: boolean;
     /** True while the list is being fetched. */
     isLoading: boolean;
     /** Set when the list could not be fetched, so the UI can offer a retry. */
@@ -28,6 +30,7 @@ export class ClientSecretsComponentStore extends ComponentStore<IClientSecretsSt
     ) {
         super({
             secrets: [],
+            loaded: false,
             isLoading: false,
             loadFailed: false,
             isCreating: false,
@@ -37,6 +40,10 @@ export class ClientSecretsComponentStore extends ComponentStore<IClientSecretsSt
     }
 
     readonly secrets$ = this.select((state) => state.secrets);
+    /** Number of active (not revoked) secrets, or null until the list has loaded (so 0 is never a guess). */
+    readonly activeCount$ = this.select((state) =>
+        state.loaded ? state.secrets.filter((secret) => !secret.revoked_at).length : null
+    );
     readonly isLoading$ = this.select((state) => state.isLoading);
     readonly loadFailed$ = this.select((state) => state.loadFailed);
     readonly isCreating$ = this.select((state) => state.isCreating);
@@ -57,6 +64,7 @@ export class ClientSecretsComponentStore extends ComponentStore<IClientSecretsSt
                             }
                             this.patchState({
                                 isLoading: false,
+                                loaded: true,
                                 secrets: Array.isArray(res?.data) ? res.data : [],
                             });
                         },

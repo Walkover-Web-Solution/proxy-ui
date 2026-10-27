@@ -102,6 +102,13 @@ export const BUILTIN_OAUTH_SCOPES: { key: string; label: string }[] = [
     { key: 'email', label: 'Email' },
 ];
 
+/**
+ * What the post-login redirect carries.
+ * - legacy: the proxy_auth_token (and refresh token) in the redirect URL.
+ * - code: a short-lived, single-use code that the client's server exchanges for the tokens (POST /c/exchange).
+ */
+export type RedirectResponseMode = 'legacy' | 'code';
+
 export interface IFeatureDetails extends IFeature {
     projects?: string[];
     callback_url: string;
@@ -110,6 +117,8 @@ export interface IFeatureDetails extends IFeature {
     origins?: string[];
     encryption_key?: string;
     block_registration?: boolean;
+    /** Missing on blocks saved before the setting existed; those behave as 'legacy'. */
+    redirect_response_mode?: RedirectResponseMode;
 }
 
 export interface IServiceConfigurations {
