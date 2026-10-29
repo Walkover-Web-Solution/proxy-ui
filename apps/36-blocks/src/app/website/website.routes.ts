@@ -13,6 +13,10 @@ export const websiteRoutes: Route[] = [
                 loadComponent: () => import('./home/home.component').then((c) => c.HomeComponent),
             },
             {
+                path: 'docs',
+                loadComponent: () => import('./docs/docs.component').then((c) => c.DocsComponent),
+            },
+            {
                 path: 'pricing',
                 loadComponent: () => import('./pricing/pricing.component').then((c) => c.PricingComponent),
             },

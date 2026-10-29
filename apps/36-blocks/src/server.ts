@@ -15,14 +15,14 @@ export function app(): express.Express {
     const angularApp = new AngularNodeAppEngine();
 
     server.get(
-        '**',
+        '/{*path}',
         express.static(browserDistFolder, {
             maxAge: '1y',
             index: false,
         })
     );
 
-    server.get('**', (req, res, next) => {
+    server.get('/{*path}', (req, res, next) => {
         angularApp
             .handle(req, { server: res })
             .then((response) => {

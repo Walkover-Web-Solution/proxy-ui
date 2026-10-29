@@ -47,7 +47,8 @@
         "workspace-generator": "nx workspace-generator",
         "update-public-suffix": "node ./libs/ui/handle-domain/src/lib/updater.js",
         "format:code": "npx prettier --write --ignore-unknown .",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "test:v0": "node --test tools/tests/*.test.cjs"
     },
     "private": true,
     "dependencies": {

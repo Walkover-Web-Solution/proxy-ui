@@ -20,7 +20,7 @@
                 "index": "apps/36-blocks/src/index.html",
                 "browser": "apps/36-blocks/src/main.ts",
                 "server": "apps/36-blocks/src/main.server.ts",
-                "prerender": true,
+                "outputMode": "server",
                 "ssr": {
                     "entry": "apps/36-blocks/src/server.ts"
                 },
@@ -124,11 +124,17 @@
                     "namedChunks": false
                 },
                 "development": {
+                    "security": {
+                        "allowedHosts": ["localhost", "127.0.0.1", "[::1]"]
+                    },
                     "optimization": false,
                     "extractLicenses": false,
                     "sourceMap": true
                 },
                 "local": {
+                    "security": {
+                        "allowedHosts": ["localhost", "127.0.0.1", "[::1]"]
+                    },
                     "optimization": false,
                     "extractLicenses": false,
                     "sourceMap": true

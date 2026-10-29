@@ -3,6 +3,7 @@ import { Route, Router } from '@angular/router';
 import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { CookieService } from 'ngx-cookie-service';
 import { AuthService } from '@proxy/services/proxy/auth';
+import { CanActivateRouteGuard } from './website/home/authguard';
 
 @Component({ template: '', standalone: true })
 class NotFoundRedirectComponent {}
@@ -26,6 +27,12 @@ export const appRoutes: Route[] = [
             ),
         data: { authGuardPipe: redirectUnauthorizedToLogin },
         canActivate: [AngularFireAuthGuard],
+    },
+    {
+        path: 'project-load-error',
+        loadComponent: () =>
+            import('./panel/guard/project-load-error.component').then((c) => c.ProjectLoadErrorComponent),
+        canActivate: [CanActivateRouteGuard],
     },
     {
         path: 'project',
