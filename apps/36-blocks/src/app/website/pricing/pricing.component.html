@@ -6,17 +6,17 @@
             aria-hidden="true"
         >
             <span class="w-2 h-2 rounded-full animate-pulse bg-teal-400"></span>
-            Simple, Transparent Pricing
+            Pricing and service terms
         </div>
         <h1
             id="pricing-heading"
             class="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#f0f6fc] tracking-tight mb-5 leading-[1.1]"
         >
-            Simple pricing.<br class="hidden sm:block" />
-            <span class="text-teal-400">No enterprise drama.</span>
+            Plan your integration.<br class="hidden sm:block" />
+            <span class="text-teal-400">Confirm your service terms.</span>
         </h1>
         <p class="text-lg text-[#8b949e] max-w-xl mx-auto leading-relaxed">
-            Built for SaaS founders who want authentication done — without complexity.
+            Current prices, limits, and service commitments require confirmation for your environment.
         </p>
     </section>
 
@@ -103,8 +103,9 @@
 
                     <!-- CTA -->
                     <div class="px-7 pb-7">
-                        <button
-                            class="w-full py-3 px-6 !rounded-sm font-semibold text-sm transition-all duration-200 cursor-pointer hover:-translate-y-0.5 active:translate-y-0 border"
+                        <a
+                            routerLink="/contact"
+                            class="block text-center no-underline w-full py-3 px-6 !rounded-sm font-semibold text-sm transition-all duration-200 cursor-pointer hover:-translate-y-0.5 active:translate-y-0 border"
                             [ngClass]="
                                 plan.highlight
                                     ? 'bg-teal-400 text-[#0d1117] border-teal-400 hover:bg-teal-300'
@@ -113,7 +114,7 @@
                             [attr.aria-label]="plan.cta + ' — ' + plan.name + ' plan'"
                         >
                             {{ plan.cta }}
-                        </button>
+                        </a>
                     </div>
                 </article>
             }
@@ -144,7 +145,7 @@
                 Built for serious SaaS teams
             </h2>
             <p class="text-[#8b949e] text-base max-w-md mx-auto">
-                Everything you need to ship auth fast and scale confidently.
+                Understand your configuration and verify the integration before launch.
             </p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" aria-label="Trust features">

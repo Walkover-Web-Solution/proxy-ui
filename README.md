@@ -6,13 +6,17 @@
 
 1. Clone https://github.com/Walkover-Web-Solution/proxy-ui.git.
 
-2. This project requires Node version 14+, install Node from [here](https://nodejs.org/en/).
+2. This is Angular 21.2 / Nx 21.6 / TypeScript 5.9. Use a compatible Node runtime; see the [canonical development guide](../user-proxy/docs/DEVELOPMENT.md). Node 14 is unsupported.
 
 3. Go inside the cloned directory `proxy-ui` in any terminal and run these following commands in the terminal to install dependency and start local serve.
 
-4. Run `npm i` for installation of dependencies.
+4. Run `npm ci --ignore-scripts --legacy-peer-deps` to install the locked dependencies. Review the development guide before enabling install hooks.
 
-5. Run `npm start` to local serve the project.
+5. Configure approved local environment values, run `node tools/set-env`, then `npm start`. The checked-in local API URL points to a remote test service; change it before exercising mutations.
+
+Read [AGENTS.md](AGENTS.md), [current work state](../user-proxy/docs/WORK-STATE.md), [architecture](../user-proxy/docs/ARCHITECTURE.md) and the authoritative [capability matrix](../user-proxy/docs/CAPABILITIES.md). The API is the sibling `user-proxy` repository. `node --test tools/tests/*.test.cjs` runs focused behavior tests; legacy Nx/Jest targets have known gaps recorded in the work state.
+
+The existing contribution and style guidance below remains applicable. Use the canonical development and design guides where obsolete runtime/module instructions conflict with the current standalone Angular architecture.
 
 ## Contributing Guide
 

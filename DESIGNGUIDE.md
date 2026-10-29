@@ -1,20 +1,8 @@
 # Proxy UI Design Guide
 
-##   Setup Guide
+## Setup
 
-1. Clone https://github.com/Walkover-Web-Solution/proxy-UI.git.
-
-2. This project requires Node version 14+, install Node from [here](https://nodejs.org/en/).
-
-3. Go inside the cloned directory `proxy-UI` in any terminal and run these following commands in the terminal to install dependency and start local serve.
-
-4. Run `npm i` for installation of dependencies.
-
-5. Serving the project locally: 
-    * For proxy: Run `npm start` to local serve the project.
-    * For Admin Panel: Run `npm run start:admin` to local serve the project.
-    * For chat-widget: Run `npm run start:chat-widget` to local serve the project.
-    * For otp-provider: Run `npm run start:otp-provider` to local serve the project.
+Use the current [README](README.md) and canonical [development guide](../user-proxy/docs/DEVELOPMENT.md) for runtime, install and startup commands. Legacy admin/chat/OTP application commands formerly listed here no longer describe the supplied workspace. The following styling guidance remains reference material; use the canonical [design standards](../user-proxy/docs/DESIGN.md) for product behavior.
 
 ## Prerequisites
 It is important to have a thorough understanding of **HTML**, **CSS** and its pre-processor **SASS** to contribute to this project. If unaware of any of the above then go through their documention first.

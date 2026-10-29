@@ -16,6 +16,10 @@ export const panelRoutes: Route[] = [
                 loadChildren: () => import('./logs/logs.routes').then((r) => r.logsRoutes),
             },
             {
+                path: 'activity',
+                loadComponent: () => import('./activity/activity.component').then((c) => c.ActivityComponent),
+            },
+            {
                 path: 'dashboard',
                 loadComponent: () => import('./dashboard/dashboard.component').then((c) => c.DashboardComponent),
             },

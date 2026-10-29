@@ -1,5 +1,7 @@
 # Proxy Auth Widget — Client Integration Guide
 
+> **Verification:** Examples describe existing widget contracts; provider login and application session flows still require environment testing. Browser callbacks alone do not authorize business resources.
+>
 > **Created:** Mar 25, 2026  
 > **Scope:** `apps/36-blocks-widget` — `initVerification` usage examples for all widget types  
 > **Script output:** `dist/apps/36-blocks/assets/proxy-auth/proxy-auth.js`
@@ -52,11 +54,12 @@ Default widget type. Shows OTP, social login, and/or password login buttons base
         type: 'authorization',
         success: (data) => {
             // get verified token in response
-            console.log('success response', data);
+            // Privately hand off to your application's verified session flow.
+            // Never log callback data: it may contain credentials.
         },
         failure: (error) => {
             // handle error
-            console.log('failure reason', error);
+            // Show a safe failure message; do not log credential-bearing payloads.
         },
     };
 </script>
@@ -83,11 +86,12 @@ Displays the authenticated user's profile. Requires an `authToken` obtained from
         authToken: 'ENCRYPTED_AUTH_TOKEN',
         success: (data) => {
             // get verified token in response
-            console.log('success response', data);
+            // Privately hand off to your application's verified session flow.
+            // Never log callback data: it may contain credentials.
         },
         failure: (error) => {
             // handle error
-            console.log('failure reason', error);
+            // Show a safe failure message; do not log credential-bearing payloads.
         },
     };
 </script>
@@ -115,11 +119,12 @@ Shows a role & user management panel. Requires an `authToken`. Use `isRolePermis
         isRolePermission: true,
         success: (data) => {
             // get verified token in response
-            console.log('success response', data);
+            // Privately hand off to your application's verified session flow.
+            // Never log callback data: it may contain credentials.
         },
         failure: (error) => {
             // handle error
-            console.log('failure reason', error);
+            // Show a safe failure message; do not log credential-bearing payloads.
         },
     };
 </script>
@@ -147,11 +152,12 @@ Renders the organization details view. Use `showCompanyDetails` to include the c
         showCompanyDetails: true,
         success: (data) => {
             // get verified token in response
-            console.log('success response', data);
+            // Privately hand off to your application's verified session flow.
+            // Never log callback data: it may contain credentials.
         },
         failure: (error) => {
             // handle error
-            console.log('failure reason', error);
+            // Show a safe failure message; do not log credential-bearing payloads.
         },
     };
 </script>
@@ -178,11 +184,12 @@ Shows subscription plans. Set `isLogin: true` to display a login flow alongside 
         isLogin: true,
         success: (data) => {
             // get verified token in response
-            console.log('success response', data);
+            // Privately hand off to your application's verified session flow.
+            // Never log callback data: it may contain credentials.
         },
         failure: (error) => {
             // handle error
-            console.log('failure reason', error);
+            // Show a safe failure message; do not log credential-bearing payloads.
         },
     };
 </script>
@@ -213,11 +220,12 @@ Uses `version: 'v2'` UI, icon-only social buttons, custom input field position, 
         target: '_blank',
         success: (data) => {
             // get verified token in response
-            console.log('success response', data);
+            // Privately hand off to your application's verified session flow.
+            // Never log callback data: it may contain credentials.
         },
         failure: (error) => {
             // handle error
-            console.log('failure reason', error);
+            // Show a safe failure message; do not log credential-bearing payloads.
         },
     };
 </script>
