@@ -32,6 +32,8 @@ export class LogsDetailsSideDialogComponent extends BaseComponent implements OnD
     public data = inject<{
         logData$: Observable<ILogDetailRes>;
         isLoading$: Observable<boolean>;
+        error$: Observable<string | null>;
+        retry: () => void;
         logSettings: any;
     }>(MAT_DIALOG_DATA);
 
