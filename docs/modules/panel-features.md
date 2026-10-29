@@ -1,11 +1,11 @@
 ---
 covers: ["apps/36-blocks/src/app/panel/features/**"]
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: 395659d5
+verified_on: 2026-10-29
 ---
 # Panel features (blocks)
 
-The dashboard's "Blocks" section: list the project's features, create one through a stepper wizard, then manage it (services, branding, settings, webhook, members, OAuth clients) and preview it in the embeddable widget. It lives in `apps/36-blocks/src/app/panel/features/` and is mounted under `/app/features` by `apps/36-blocks/src/app/panel/panel.routes.ts` (the copy in `apps/36-blocks/src/app/panel/layout/layout.routes.ts` is dead; see [routes](../ui/routes.md)). All backend calls go through `FeaturesService` in `libs/services/proxy/features/` (see [shared-libs](../modules/shared-libs.md)). The end-to-end trace is in [feature-configuration](../flows/feature-configuration.md).
+The dashboard's "Blocks" section: list the project's features, create one through a stepper wizard, then manage it (services, branding, settings including client secrets and the redirect response mode, webhook, members, OAuth clients) and preview it in the embeddable widget. It lives in `apps/36-blocks/src/app/panel/features/` and is mounted under `/app/features` by `apps/36-blocks/src/app/panel/panel.routes.ts` (the copy in `apps/36-blocks/src/app/panel/layout/layout.routes.ts` is dead; see [routes](../ui/routes.md)). All backend calls go through `FeaturesService` in `libs/services/proxy/features/` (see [shared-libs](../modules/shared-libs.md)). The end-to-end trace is in [feature-configuration](../flows/feature-configuration.md).
 
 A **feature** (UI name: **block**) is a backend record with a `reference_id`. Host pages pass that `reference_id` to the widget script (`initVerification`) to render it ([widget-embed](../modules/widget-embed.md)). The code knows two feature types, both identified by `feature_id`:
 
@@ -29,6 +29,9 @@ The ids are hard-coded as `=== 1` / `=== 2` checks throughout `create-feature.co
 | `apps/36-blocks/src/app/panel/features/create-feature/simple-dialog/simple-dialog.component.ts` | `SimpleDialogComponent`: generic config-driven form, used for billable metrics. Returns the form value |
 | `apps/36-blocks/src/app/panel/features/oauth-config/oauth-config.component.ts` | `OauthConfigComponent` (`proxy-oauth-config`, input `featureId`): OAuth clients and block scopes CRUD (the "OAuth Config" edit tab) |
 | `apps/36-blocks/src/app/panel/features/oauth-config/oauth-config.store.ts` | `OauthConfigComponentStore`: effects for OAuth configs and block scopes |
+| `apps/36-blocks/src/app/panel/features/client-secrets/client-secrets.component.ts` | `ClientSecretsComponent` (`proxy-client-secrets`, input `featureId`, output `activeSecretCountChange`): list, create and revoke the block's client secrets, inside "Session & Token Settings" |
+| `apps/36-blocks/src/app/panel/features/client-secrets/client-secrets.store.ts` | `ClientSecretsComponentStore`: `getSecrets`, `createSecret`, `revokeSecret`, and the one-time `createdSecret` |
+| `apps/36-blocks/src/app/panel/features/redirect-response-mode/redirect-response-mode.component.ts` | `RedirectResponseModeComponent` (`proxy-redirect-response-mode`): `legacy` / `code` radio group bound to the parent form's `authorizationDetails.redirect_response_mode` control. No store, no HTTP |
 | `apps/36-blocks/src/app/panel/features/create-feature/feature-preview/feature-preview.component.ts` | `blocks-feature-preview`: "Preview Widgets" button that navigates to `/widget-preview/:referenceId` |
 | `apps/36-blocks/src/app/panel/features/create-feature/feature-preview/widget-preview/widget-preview.component.ts` | `WidgetPreviewComponent`: full-page live widget preview. Routed from `apps/36-blocks/src/app/app.routes.ts`, outside `/app` |
 | `apps/36-blocks/src/app/panel/features/create-feature/feature-preview/widget-preview/widget-code-snippet.ts` | `buildCodeSnippet(referenceId, type)`: the copyable snippet shown in the preview's code view |
@@ -51,6 +54,17 @@ The ids are hard-coded as `=== 1` / `=== 2` checks throughout `create-feature.co
 ### Edit (`/app/features/manage/:id`)
 `getFeatureDetalis()` (the typo is the real name) calls store `getFeatureDetalis(id)` → `GET features/:id` and store `getAllowedOrigins(id)` → `GET features/:id/allowedOrigins`. `featureDetails$` patches the whole form. Each tab saves one slice with `updateFeature(type)` → `PUT features/:id`. After a successful update, the component refetches the details. Tabs: Service, Branding, Setting (authorization), Design & code, Webhook (Configurations / Event Catalog), Manage Members (`proxy-management` from [panel-ops](../modules/panel-ops.md), keyed by `reference_id`), OAuth Config (`proxy-oauth-config`, keyed by numeric `featureId`). The last two tabs are full width (`editModeManageMembersTabIndex` = 5, `editModeOauthConfigTabIndex` = 6).
 
+### Client secrets and redirect response mode (Setting tab)
+Both sit at the end of the `authorizationSetup` template ("Session & Token Settings"), which the Setting tab and the create stepper share. They render only when `isEditMode && featureId`; the create stepper shows "Save the block to create client secrets." instead.
+1. `ClientSecretsComponent.ngOnChanges` loads the list for `featureId` (`GET features/:id/clientSecrets`). Once loaded, it emits the active (not revoked) count through `activeSecretCountChange`; `CreateFeatureComponent.onActiveSecretCountChange` stores it in `activeClientSecretCount`.
+2. "Create" opens a `MatDialog` with a name field (required, max 100, not blank). Creating is blocked at `MAX_ACTIVE_CLIENT_SECRETS` (2) active secrets, and while the list is unknown. `POST features/:id/clientSecrets` returns the plaintext `client_secret` once; the dialog switches to a reveal step that closes only through "Done", and the plaintext is cleared from the component and the store when the dialog closes. The list is then refetched. A failed create also refetches, so the list reflects a limit hit from another tab.
+3. "Revoke" asks for confirmation (`ConfirmDialogComponent`), then `DELETE features/:id/clientSecrets/:secretId`. Revoked secrets stay in the list as history (`revoked_at`), sorted after active ones.
+4. `RedirectResponseModeComponent` disables `code` unless the block is already saved as `code` or has at least one active secret; it shows "Create a client secret below to enable Code." only when the count is known to be 0.
+5. The mode is saved with the tab's Update button (`updateFeature('authorization')`). The key `redirect_response_mode` is sent only when it differs from `savedRedirectResponseMode` (the value loaded from `GET features/:id`, `'legacy'` when absent).
+6. If the last active secret is revoked while `code` is selected but not yet saved, `onActiveSecretCountChange` resets the control to `legacy`.
+
+What the modes mean (from the model comments and the info banner): `legacy` puts `proxy_auth_token` in the post-login redirect URL; `code` sends a short-lived single-use code that the customer's server exchanges for the token with `POST /c/exchange` and one of these secrets. The exchange endpoint and the redirect itself are backend behaviour; nothing in this repo calls `/c/exchange` or reads the mode outside the dashboard form.
+
 ### Store → service map
 
 `CreateFeatureComponentStore` (all in `create-feature.store.ts`. "–" means no caller in this area):
@@ -72,6 +86,8 @@ The ids are hard-coded as `=== 1` / `=== 2` checks throughout `create-feature.co
 | `createLagoFeature`, `getPlansForm`, `getBillableMetricForm` | same names | – (unused) |
 
 `OauthConfigComponentStore`: `getOauthConfigs`, `createOauthConfig`, `updateOauthConfig`, `deleteOauthConfig`, `regenerateOauthSecret`, `disableOauthConfig`, `getBlockScopes`, `createBlockScope`, `updateBlockScope` and `deleteBlockScope` each call the `FeaturesService` method with the same name. `getBlockScopeCatalog` calls `getBlockScopes` with `{ itemsPerPage: 100, pageNo: 1 }` to fill the scope picker.
+
+`ClientSecretsComponentStore`: `getSecrets` → `getClientSecrets`, `createSecret` → `createClientSecret`, `revokeSecret` → `revokeClientSecret`.
 
 URL builders are in `libs/urls/features-url/src/index.ts:FeaturesUrls`, relative to `ProxyBaseUrls.BaseURL` (= `environment.baseUrl`, see [environment](../environment.md)). The full endpoint list is in [api](../api.md).
 
@@ -111,12 +127,13 @@ Chip lists are sent joined by `config.delimiter` (default space). `readFile` fie
 name:          { name }
 service:       { services }
 authorization: { extra_configurations: { theme, create_account_link, default_role: { name: 'Owner', value: 1 } },
-                 encryption_key, block_registration, authorization_format, session_time, origins }
+                 encryption_key, block_registration, authorization_format, session_time, origins,
+                 redirect_response_mode? }   // 'legacy' | 'code', only when changed
 branding:      { ui_preferences: { ...existing minus primary_color, ...brandingDetails, input_fields: 'top'|'bottom', logo_url },
                  block_registration }   // = brandingDetails.create_account_link
 webhook:       { webhook: { url, method }, trigger_events: string[] }
 ```
-Read side: `IFeatureDetails` in `libs/models/features-model/src/index.ts` declares `service_configurations`, `authorization_format`, `encryption_key` and `block_registration`. The component also reads `ui_preferences`, `webhook` and `trigger_events` (or `webhook_events`), which the interface does not declare.
+Read side: `IFeatureDetails` in `libs/models/features-model/src/index.ts` declares `service_configurations`, `authorization_format`, `encryption_key`, `block_registration` and `redirect_response_mode` (missing on blocks saved before the setting existed; treated as `'legacy'`). The component also reads `ui_preferences`, `webhook` and `trigger_events` (or `webhook_events`), which the interface does not declare.
 
 ### Plan, tax and metric sub-configs (subscription only)
 The form *definitions* come from the backend inside the selected method: `method_services[0].configurations.plans.fields`, `.billable_metrics.fields` and `.forms.taxes.fields`. Payment form: `getPaymentDetailsForm()` → `.stripe`. Every URL is keyed by the feature's `reference_id`, not its numeric id (`subscription/<refId>/plans|taxes|billableMetrics`).
@@ -136,6 +153,11 @@ The form *definitions* come from the backend inside the selected method: `method
 - `allowed_scopes` options = `BUILTIN_OAUTH_SCOPES` (`profile`, `email`, never returned by the API) + block scopes. A scope key must match `SCOPE_KEY_PATTERN` `/^[a-z0-9_]+(:[a-z0-9_]+)*$/`.
 - `client_secret` appears only in the create and regenerate responses. The component shows it once in a reveal dialog (`openSecretReveal`).
 
+### Block client secrets (`ClientSecretsComponent`)
+- These are separate from OAuth client secrets above: they belong to the block itself (`features/:id/clientSecrets`) and are used for the `code` redirect exchange.
+- Create body `IClientSecretCreatePayload`: `{ name }`. Response `IClientSecret`: `{ id, feature_configuration_id, name, last_four, created_by?, created_at?, revoked_at?, revoked_by?, client_secret? }`. `client_secret` is present only on the create response.
+- `MAX_ACTIVE_CLIENT_SECRETS = 2` in `libs/models/features-model/src/index.ts`; the model comment says the backend enforces it too.
+
 ### Preview and snippet: how a feature reaches the widget
 - `ProxyAuthScript(environment.proxyServer, reference_id, type)` (in `libs/models/features-model/src/index.ts`) renders `var configuration = { referenceId, type, success, failure }` plus `<script src=".../assets/proxy-auth/proxy-auth.js" onload="initVerification(configuration)">`. `type` is `'authorization'` when `feature_id === 1`, otherwise `'subscription'`. The wizard also shows `demoDiv` = `<div id="<reference_id>"></div>`, the inline mount point (otherwise the widget opens in a dialog).
 - `WidgetPreviewComponent` reads `:referenceId` from the route and calls `window.initVerification(config)` with `{ referenceId, type: activeTab, theme, target: '_blank', success, failure }`. The Authorization tab adds `redirect_path` and mounts into `#<referenceId>`. The User Profile, User Management and Organization tabs (`PublicScriptType`) need an `authToken`: either from the Authorization tab's `success` token, or from the `proxy_auth_token` query param. They mount into `#userProxyContainer` (`PROXY_DOM_ID`). Query params `tab` and `theme` are kept in sync.
@@ -144,7 +166,7 @@ The form *definitions* come from the backend inside the selected method: `method
 ## Gotchas
 
 > [!WARNING]
-> Two ids. Feature CRUD, allowed origins, logo, OAuth and block scopes use the numeric `id` (`featureId`, the `manage/:id` param). Billing (plans, taxes, metrics, payment) and the widget use the string `reference_id` (`getReferenceId()`). Mixing them up returns 404s or another feature's data.
+> Two ids. Feature CRUD, allowed origins, logo, OAuth, block scopes and client secrets use the numeric `id` (`featureId`, the `manage/:id` param). Billing (plans, taxes, metrics, payment) and the widget use the string `reference_id` (`getReferenceId()`). Mixing them up returns 404s or another feature's data.
 
 > [!WARNING]
 > `create-feature.component.ts` runs all writes inside `setTimeout(..., 100)` because `setFormDataInPayload` fills `readFile` and `chipList` values through promises that mutate the payload in place. Do not remove the delay or `await` around it without making `getServicePayload` async. Otherwise file contents are sent as `null`.
@@ -173,9 +195,14 @@ The form *definitions* come from the backend inside the selected method: `method
 
 - Service, plan, tax, metric and payment forms are **rendered from backend field configs** (`IFieldConfig`: `type`, `is_required`, `regex`, `is_hidden`, `is_disable`, `delimiter`, `read_only_value`, `source`…). New login providers or billing fields can then ship without a UI release. The UI sends the backend's own config object back with `value` filled in (commits `ba9c7c13` "Created `Service` form dynamically" and `7a701020` "dynamic with hard code").
 - The create and manage pages are one component, so the same templates (`serviceDetails`, `brandingStepContent`, `designAndCode`) serve both the stepper and the tabs.
-- OAuth configs and block scopes were added in `d6999655` "OAuth crud" as a separate component with its own store, rather than more state in the 800-line create store.
+- OAuth configs and block scopes were added in `d6999655` "OAuth crud" as a separate component with its own store, rather than more state in the 800-line create store. Client secrets followed the same pattern (`08be8990`).
+- `redirect_response_mode` is sent only when changed, so saving other settings never re-triggers the backend's checks on it (comment in `updateFeature`, commit `1c8aaa9e`). Two active secrets are allowed so a secret can be rotated without downtime (`ClientSecretsComponent` doc comment).
 
 > [!TODO] Needs a human: are `feature_id` 1 and 2 stable backend ids? Are more feature types planned? There is no enum, and the UI hard-codes them.
+
+> [!TODO] Needs a human: does `redirect_response_mode: 'code'` change what the widget receives after login (`redirect_url`, or `data.redirect_to` from the callback URL or the OAuth decision)? Is `POST /c/exchange` on the same base URL as the rest of the proxy API? Nothing in this repo produces or consumes the code.
+
+> [!TODO] Needs a human: the dashboard shows client-secret create/revoke to anyone who can open the Setting tab (no role check in the UI). Does the backend restrict these endpoints by role?
 
 > [!TODO] Needs a human: are `createLagoFeature`, store `getPlansForm` and `getBillableMetricForm` (Lago = the billing backend behind subscription blocks) dead code that can be removed?
 

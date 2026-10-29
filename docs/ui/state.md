@@ -1,7 +1,7 @@
 ---
 covers: ["apps/36-blocks/src/app/core/ngrx/**", "apps/36-blocks/src/app/website/home/ngrx/**", "apps/36-blocks/src/app/**/*.store.ts", "apps/36-blocks/src/app/panel/layout/side-nav.service.ts", "apps/36-blocks/src/app/panel/layout/ui-settings.service.ts", "apps/36-blocks-widget/src/app/otp/store/**", "apps/36-blocks-widget/src/app/otp/component/login/login.store.ts", "apps/36-blocks-widget/src/main.ts", "apps/36-blocks-widget/src/main.dev.ts"]
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: 395659d5
+verified_on: 2026-10-29
 ---
 # State
 
@@ -77,6 +77,7 @@ Each extends `ComponentStore<State>`, is `@Injectable()` (not `providedIn: 'root
 | `FeatureComponentStore` | `apps/36-blocks/src/app/panel/features/feature/feature.store.ts` | `FeatureComponent`, `UserComponent`, `ManagementComponent` | `features`, `isLoading`, `hasSomeFeatures` | [panel-features](../modules/panel-features.md) |
 | `CreateFeatureComponentStore` | `apps/36-blocks/src/app/panel/features/create-feature/create-feature.store.ts` | `CreateFeatureComponent` | `featureType`, `serviceMethods`, `featureDetails`, plans/taxes/billable metrics, `paymentDetailsForm`, `webhookEvents`, `uploadLogoUrl`, `allowedOrigins` | [panel-features](../modules/panel-features.md#store--service-map) |
 | `OauthConfigComponentStore` | `apps/36-blocks/src/app/panel/features/oauth-config/oauth-config.store.ts` | `OauthConfigComponent` | `oauthConfigs`, `blockScopes`, `blockScopeCatalog`, last create/update/delete results | [panel-features](../modules/panel-features.md) |
+| `ClientSecretsComponentStore` | `apps/36-blocks/src/app/panel/features/client-secrets/client-secrets.store.ts` | `ClientSecretsComponent` | `secrets`, `loaded`, `isLoading`, `loadFailed`, `isCreating`, `revokingId`, `createdSecret` (one-time plaintext, cleared when the dialog closes) | [panel-features](../modules/panel-features.md#client-secrets-and-redirect-response-mode-setting-tab) |
 | `UserComponentStore` | `apps/36-blocks/src/app/panel/users/user/user.store.ts` | `UserComponent`, `ManagementComponent` | `users`, `roles`, `permissions`, CRUD results, `featureDetails` | [panel-ops](../modules/panel-ops.md) |
 | `LogsComponentStore` | `apps/36-blocks/src/app/panel/logs/log/logs.store.ts` | `LogComponent` | `logs`, `environments`, `projects`, `reqLogs`, `*InProcess` | [panel-ops](../modules/panel-ops.md) |
 | `BillingComponentStore` | `apps/36-blocks/src/app/panel/billing/billing.store.ts` | `BillingComponent` | `plans`, `activePlan`, `subscriptionStatus`, `subscriptionUsage`, `paymentMethods`, `upgradingPlanCode` | [panel-ops](../modules/panel-ops.md) |

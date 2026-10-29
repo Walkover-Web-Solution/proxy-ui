@@ -1,6 +1,6 @@
 ---
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: 395659d5
+verified_on: 2026-10-29
 ---
 # Docs index
 
@@ -16,6 +16,8 @@ Start with [../AGENTS.md](../AGENTS.md), then read the doc for the area you're c
 | [api.md](api.md) | You're touching the widget's public JS API (`initVerification`, callbacks, window events) or any backend call |
 | [environment.md](environment.md) | You're running or building locally, adding an env key, or touching CI or `tools/` |
 | [recipes.md](recipes.md) | You're making a common change: a page, a backend call, a block tab, a widget config key or screen, an env value, a lib, a release |
+| [decisions.md](decisions.md) | You want to know why something is built the way it is before changing it: the single-file widget, two HTTP wrappers, build-time config, per-page stores, no Nx Cloud |
+| [open-questions.md](open-questions.md) | You hit something the code can't explain. Every open question for a human, linked to the doc that holds the detail |
 
 ## Modules
 
@@ -52,23 +54,16 @@ The older notes (docs/widget-*.md, docs/build-modernization.md, docs/angular-*.m
 
 ## Needs a human
 
-Open questions the code can't answer. Answer them in the doc that asks, then delete the TODO.
+Open questions the code can't answer are collected in [open-questions.md](open-questions.md), and each one is also a `[!TODO]` in the doc it concerns. Answer it in that doc, then delete the TODO and the line in open-questions.md.
 
-- **Branching:** which branch to cut `-clean` from, and whether `main` and `development` are retired ([conventions.md](conventions.md#branching-and-release)).
-- **Deploy and CI:**
-  - the deploy target and the branch-to-environment mapping ([architecture.md](architecture.md#build), [environment.md](environment.md))
-  - whether CI "Build check" passes ([environment.md](environment.md))
-  - whether the `postbuild.js` hash regex matches upper-case hashes ([environment.md](environment.md))
-  - whether stage `production: false` is intended ([environment.md](environment.md))
-- **SSR:** why it was removed, and whether the leftover files can be deleted ([modules/app-shell.md](modules/app-shell.md)).
-- **Auth:**
-  - whether the backend rejects `Bearer` ([modules/shared-libs.md](modules/shared-libs.md))
-  - the missing redirect after email login, and whether `/login` can return 401 ([flows/dashboard-login.md](flows/dashboard-login.md))
-- **Widget:**
-  - client-side AES with static keys ([modules/widget-auth.md](modules/widget-auth.md))
-  - whether MSG91 and callback errors should reach the host's `failure` ([modules/widget-auth.md](modules/widget-auth.md), [flows/widget-verification.md](flows/widget-verification.md))
-  - whether Tailwind preflight leaks into host pages, and whether `webpack.config.js` is dead ([modules/widget-embed.md](modules/widget-embed.md))
-  - which backend permissions guard the role/permission endpoints, and the future of the `subscription` type ([modules/widget-account.md](modules/widget-account.md))
-- **Blocks:** whether `feature_id` 1/2 are stable, and the dead Lago helpers ([modules/panel-features.md](modules/panel-features.md)).
-- **Panel:** whether Logs is still a supported product, and which payment provider sits behind checkout ([modules/panel-ops.md](modules/panel-ops.md)).
-- **UI:** the rule for where state goes ([ui/state.md](ui/state.md)) and the `@apply` opacity limit ([ui/design-system.md](ui/design-system.md)).
+## Where the standard doc names live
+
+Some agent guides expect files named ARCHITECTURE, FLOWS, CONFIGURATION, DECISIONS and OPEN_QUESTIONS. In this repo they map to the existing lower-case files, so there is one source of truth per topic and no case-only name clashes on case-insensitive file systems:
+
+| Expected | Here |
+|---|---|
+| ARCHITECTURE.md (modules, data, who calls whom) | [architecture.md](architecture.md), with per-module detail in [modules/](#modules) |
+| FLOWS.md (main flows step by step) | [flows/](#flows): [dashboard-login](flows/dashboard-login.md), [feature-configuration](flows/feature-configuration.md), [widget-verification](flows/widget-verification.md) |
+| CONFIGURATION.md (every setting and env var) | [environment.md](environment.md) |
+| DECISIONS.md | [decisions.md](decisions.md) |
+| OPEN_QUESTIONS.md | [open-questions.md](open-questions.md) |

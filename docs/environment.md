@@ -1,7 +1,7 @@
 ---
 covers: ["tools/set-env.js", "tools/postbuild.js", ".env.example", "apps/36-blocks/src/environments/**", "apps/36-blocks-widget/src/environments/**", "apps/36-blocks/project.json", "apps/36-blocks-widget/project.json", "package.json", "nx.json", ".github/workflows/main.yml", "apps/36-blocks/src/server.ts"]
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: 395659d5
+verified_on: 2026-10-29
 ---
 # Environment
 
@@ -121,7 +121,13 @@ Run by `build:web:test`, `build:web:stage` and `build:web:prod` with `--path=dis
 4. Replaces the `{{POST_BUILD_ENTERS_HASH_HERE}}` placeholder in the main bundle with the hash. `VersionCheckService` compares that against version.json (polled from `proxyServer`) and shows the "new version available" banner. <!-- verify:ignore -->
 
 Errors are only logged; the build never fails here.
-> [!TODO] Needs a human: Angular's application builder names bundles `main-<HASH>.js` with upper-case hashes, which the lower-case regex may not match (then the hash is empty and version checks never fire). Confirm against a real `dist/apps/36-blocks/browser/` listing. <!-- verify:ignore -->
+> [!WARNING]
+> The "new version" check never fires on built output. Checked with `node tools/set-env && npx nx build 36-blocks --configuration=production && node tools/postbuild --path=dist/apps/36-blocks` at `395659d5`: <!-- verify:ignore -->
+> - the main bundle is `main-ATJYEVFT.js` (upper-case hash), which the lower-case regex does not match, so version.json is written as `{"version": "0.0.3", "hash": ""}` and no replacement runs; <!-- verify:ignore -->
+> - the placeholder is not in the main bundle anyway: it sits in a lazy `chunk-*.js` with `VersionCheckService` (`libs/service/src/lib/version-check/version-check.service.ts`); <!-- verify:ignore -->
+> - at runtime `hasHashChanged` returns false while `currentHash` is still the placeholder, then stores `''` from version.json, and returns false for an empty `currentHash` from then on.
+>
+> [!TODO] Needs a human: fix this (case-insensitive regex plus replacing the placeholder in whichever file holds it), or drop the version check?
 
 ## CI: `.github/workflows/main.yml` ("Build check")
 - Triggers: `pull_request` to `development`, `main` or `production`, and manual `workflow_dispatch`. **Not** `stage`, although `origin/stage` exists, and not on push.
@@ -129,8 +135,8 @@ Errors are only logged; the build never fails here.
 - Bundle-size step (`if: always()`): fails if `apps/36-blocks/src/assets/proxy-auth/proxy-auth.js` is over 3 MB (3145728 bytes). It is skipped silently when the file is absent, and the workflow never runs `build-elements.js`, so in practice it checks nothing. <!-- verify:ignore -->
 
 > [!WARNING]
-> CI never runs `tools/set-env.js`, and env-variables.ts is gitignored. The Nx `set-env` targets in both `project.json` files are not dependencies (dependsOn) of `build`. Any affected build therefore compiles without `./env-variables`, which looks like it would fail. The widget also has no `local` configuration.
-> [!TODO] Needs a human: does the "Build check" job pass today? If so, how does env-variables.ts exist on the runner?
+> CI never runs `tools/set-env.js`, and env-variables.ts is gitignored. The Nx `set-env` targets in both `project.json` files are not dependencies (dependsOn) of `build`. Any affected build therefore compiles without `./env-variables`, and it fails: GitHub Actions shows 95 failures in the last 100 "Build check" runs, and the last green run was on 2026-04-23. The failing log (e.g. run 39735436439 on `P0092-clean`) is `TS2307: Cannot find module './env-variables'` for both apps. The widget also has no `local` configuration.
+> [!TODO] Needs a human: should the workflow run `node tools/set-env` with placeholder values first (in CI mode it exits 1 on any missing key, so the keys would have to be set), or should the job be removed? Until then a red "Build check" says nothing about the change under review.
 
 Deployment is not in this repo. `set-env.js` comments and `AWS_BRANCH` point to AWS Amplify, where .env is written before the build.
 > [!TODO] Needs a human: which Amplify app/branch maps to which build script (`build:test` / `build:stage` / `build:prod`)?

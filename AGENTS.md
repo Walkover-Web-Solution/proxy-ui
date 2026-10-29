@@ -18,16 +18,16 @@ Both apps are client-only and call a backend "proxy" API that lives in another r
 | Full build | `npm run build:test`, `npm run build:stage` or `npm run build:prod`. Plain `npm run build` mixes a prod widget with a local dashboard |
 | Format | `npm run format:code`. Prettier also runs on pre-commit through husky and lint-staged |
 
-`npm test` and `npm run lint` are not reliable at this commit: there is no test target on the dashboard, and `nx workspace-lint` is gone in Nx 21. Check a change by building the affected app: `npx nx build 36-blocks` or `npx nx build 36-blocks-widget` (run `node tools/set-env` first).
+`npm test` and `npm run lint` are not reliable at this commit: there is no test target on the dashboard, and `nx workspace-lint` is gone in Nx 21. Check a change by building the affected app: `npx nx build 36-blocks` or `npx nx build 36-blocks-widget` (run `node tools/set-env` first). The CI "Build check" workflow fails on every PR today because it never runs `set-env`, so a red check there says nothing about your change ([docs/environment.md](docs/environment.md#ci-githubworkflowsmainyml-build-check)).
 
 ## Read before you change
 
-- Anything → [docs/architecture.md](docs/architecture.md), then [docs/conventions.md](docs/conventions.md)
+- Anything → [docs/architecture.md](docs/architecture.md), then [docs/conventions.md](docs/conventions.md); why things are shaped this way → [docs/decisions.md](docs/decisions.md)
 - The widget's public API, events or build → [docs/modules/widget-embed.md](docs/modules/widget-embed.md) and [docs/api.md](docs/api.md#widget-public-api-host-page--widget)
 - Widget login, register or OTP → [docs/modules/widget-auth.md](docs/modules/widget-auth.md), [docs/flows/widget-verification.md](docs/flows/widget-verification.md)
 - Widget account screens → [docs/modules/widget-account.md](docs/modules/widget-account.md)
 - Dashboard login, token or guards → [docs/modules/app-shell.md](docs/modules/app-shell.md), [docs/flows/dashboard-login.md](docs/flows/dashboard-login.md)
-- Blocks (features) wizard → [docs/modules/panel-features.md](docs/modules/panel-features.md), [docs/flows/feature-configuration.md](docs/flows/feature-configuration.md)
+- Blocks (features) wizard, OAuth clients, client secrets, redirect response mode → [docs/modules/panel-features.md](docs/modules/panel-features.md), [docs/flows/feature-configuration.md](docs/flows/feature-configuration.md)
 - Users, logs, billing, dashboard, layout → [docs/modules/panel-ops.md](docs/modules/panel-ops.md)
 - `libs/**`, HTTP, the interceptor → [docs/modules/shared-libs.md](docs/modules/shared-libs.md)
 - Routes, state, components, styling → [docs/ui/](docs/README.md#ui)
@@ -48,7 +48,7 @@ Both apps are client-only and call a backend "proxy" API that lives in another r
 5. Set and clear the dashboard token only through `AuthService.setTokenSync` / `clearTokenSync`. They keep the `authToken` cookie and the in-memory `IToken` in sync. Guards read both, HttpWrapper reads memory, and ErrorInterceptor reads only the cookie ([docs/modules/app-shell.md](docs/modules/app-shell.md)).
 6. A dashboard endpoint called without a session must be on the ErrorInterceptor allow-list. Otherwise it is silently dropped (`EMPTY`) ([docs/modules/shared-libs.md](docs/modules/shared-libs.md)).
 7. A 200 can still be an error. Check `res.hasError` (dashboard) or the per-endpoint success field (widget) as well as using `catchError` ([docs/conventions.md](docs/conventions.md#http-and-errors)).
-8. A block has two ids: numeric `id` for feature CRUD, OAuth and scopes, and string `reference_id` for the widget, billing and the Users/roles screens. Passing the wrong one fails silently ([docs/glossary.md](docs/glossary.md)).
+8. A block has two ids: numeric `id` for feature CRUD, OAuth, scopes and client secrets, and string `reference_id` for the widget, billing and the Users/roles screens. Passing the wrong one fails silently ([docs/glossary.md](docs/glossary.md)).
 9. In the widget, copy `OtpService.options` before adding per-call headers. It is one shared mutable object, and its headers leak into later calls.
 10. The widget must not import `@proxy/services/proxy/*`, `@proxy/services/httpWrapper` or the login service. They need `AngularFireAuth` and `IToken`, which only the dashboard provides.
 11. Add dashboard pages to `apps/36-blocks/src/app/panel/panel.routes.ts`. `apps/36-blocks/src/app/panel/layout/layout.routes.ts` is dead (nothing imports it).
@@ -71,5 +71,5 @@ Both apps are client-only and call a backend "proxy" API that lives in another r
 
 ## Docs map
 
-See [docs/README.md](docs/README.md) for every doc, when to read it, and the open questions for humans.
+See [docs/README.md](docs/README.md) for every doc and when to read it. What the code can't answer is listed in [docs/open-questions.md](docs/open-questions.md); don't guess at those, ask.
 When you change behaviour that a doc describes, update that doc in the same change and run `/ai-docs update`.
