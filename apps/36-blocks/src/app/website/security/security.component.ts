@@ -17,13 +17,13 @@ export class SecurityComponent implements OnInit {
         this.metaService.updateTag({
             name: 'description',
             content:
-                'Learn how 36Blocks keeps your users safe with enterprise-grade encryption, hCaptcha bot protection, rate limiting, RBAC audit logs, and responsible disclosure.',
+                'Understand authentication configuration, application access boundaries, and investigation coverage in 36Blocks.',
         });
         this.metaService.updateTag({ name: 'robots', content: 'index, follow' });
         this.metaService.updateTag({ property: 'og:title', content: 'Security — 36Blocks' });
         this.metaService.updateTag({
             property: 'og:description',
-            content: 'Enterprise-grade security built into every layer of 36Blocks.',
+            content: 'Authentication configuration and application security boundaries.',
         });
         this.metaService.updateTag({ property: 'og:type', content: 'website' });
     }

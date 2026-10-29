@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { WIDGET_EXAMPLE } from '../docs/widget-example';
 import { WidgetTheme } from '@proxy/constant';
 import { WidgetThemeService } from 'apps/36-blocks-widget/src/app/otp/service/widget-theme.service';
-import { DomSanitizer, Meta, SafeHtml, Title } from '@angular/platform-browser';
+import { Meta, Title } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { DOCUMENT } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -46,7 +47,6 @@ export class HomeComponent extends BaseComponent implements OnInit {
     private titleService = inject(Title);
     private platformId = inject(PLATFORM_ID);
     private document = inject(DOCUMENT);
-    private sanitizer = inject(DomSanitizer);
     // temp chagnes
     public readonly accent = {
         text: 'text-teal-400',
@@ -129,7 +129,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
         { icon: 'brush', title: 'Theme Editor', desc: 'Match your brand colors' },
         { icon: 'dashboard', title: 'Layout Options', desc: 'Multiple form layouts' },
         { icon: 'smartphone', title: 'Responsive', desc: 'Works on all devices' },
-        { icon: 'translate', title: 'i18n Ready', desc: '30+ languages' },
+        { icon: 'tune', title: 'Configurable', desc: 'Configure enabled login methods' },
     ];
 
     public readonly platformFeatures: { icon: string; title: string; desc: string }[] = [
@@ -151,9 +151,17 @@ export class HomeComponent extends BaseComponent implements OnInit {
             desc: 'Passwordless and social authentication for better conversion.',
         },
         { icon: 'lock', title: 'Role-Based Access', desc: 'Fine-grained permissions using RBAC.' },
-        { icon: 'trending_up', title: 'Activity Tracking', desc: 'Audit logs and user activity monitoring.' },
+        {
+            icon: 'trending_up',
+            title: 'Activity Tracking',
+            desc: 'Request logs and instrumented sensitive-operation activity.',
+        },
         { icon: 'schedule', title: 'Secure Sessions', desc: 'Token-based authentication with session expiry.' },
-        { icon: 'menu_book', title: 'Developer Documentation', desc: 'Clear APIs, SDKs, and step-by-step guides.' },
+        {
+            icon: 'menu_book',
+            title: 'Developer Documentation',
+            desc: 'Widget setup and application security boundaries.',
+        },
     ];
 
     public readonly buildCards: { icon: string; title: string; desc: string; highlight?: boolean }[] = [
@@ -162,7 +170,11 @@ export class HomeComponent extends BaseComponent implements OnInit {
             title: 'SaaS Applications',
             desc: 'Launch faster with secure authentication and access control.',
         },
-        { icon: 'business', title: 'Enterprise Tools', desc: 'Manage teams, roles, and permissions at scale.' },
+        {
+            icon: 'business',
+            title: 'Team Applications',
+            desc: 'Manage organization memberships, roles, and permissions.',
+        },
         {
             icon: 'smartphone',
             title: 'Consumer Apps',
@@ -173,8 +185,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
     ];
 
     public readonly heroStats: { value: string; label: string }[] = [
-        { value: '5 min', label: 'Integration time' },
-        { value: '99.9%', label: 'Uptime SLA' },
+        { value: 'Widget', label: 'Browser integration' },
+        { value: 'API', label: 'Server integration' },
     ];
 
     public readonly mockFormFields: { label: string; placeholder: string }[] = [
@@ -184,7 +196,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
 
     public readonly floatingBadges: { side: 'left' | 'right'; dot?: string; icon?: string; text: string }[] = [
         { side: 'left', dot: 'bg-green-500', text: 'JavaScript Ready' },
-        { side: 'right', icon: 'verified', text: 'Enterprise-grade' },
+        { side: 'right', icon: 'verified', text: 'Configurable UI' },
     ];
 
     public readonly macDots: string[] = ['bg-[#ff5f56]', 'bg-[#ffbd2e]', 'bg-[#27ca40]'];
@@ -203,7 +215,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
             headingId: 'features-heading',
             label: 'Everything You Need to Manage Users',
             accentWord: 'Securely',
-            desc: 'Replace months of custom authentication development with production-ready components built for security, scale, and speed.',
+            desc: 'Configure authentication, user management, and investigation tools for your connected applications.',
             gridCols: 'grid-cols-1 md:grid-cols-3 sm:grid-cols-2',
             cards: this.platformFeatures,
         },
@@ -218,64 +230,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
         },
     ];
 
-    public readonly codeSnippetLines: { num: string; html: SafeHtml }[] = this.buildCodeLines([
-        {
-            num: '01',
-            html: `  <span class="token tag">&lt;script</span> <span class="token attr-name">type</span>=<span class="token string">"text/javascript"</span><span class="token tag">&gt;</span>`,
-        },
-        {
-            num: '02',
-            html: `    <span class="token keyword">var</span> <span class="token variable">configuration</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>`,
-        },
-        {
-            num: '03',
-            html: `      <span class="token property">referenceId:</span> <span class="token string">'4512365a176770...'</span>,`,
-        },
-        {
-            num: '04',
-            html: `      <span class="token property">type:</span> <span class="token string">'authorization'</span>,`,
-        },
-        {
-            num: '05',
-            html: `      <span class="token property">success:</span> <span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">&#123;</span>`,
-        },
-        { num: '06', html: `        <span class="token comment">// get verified token in response</span>` },
-        {
-            num: '07',
-            html: `        <span class="token object">console</span>.<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'success response'</span>, data<span class="token punctuation">)</span>;`,
-        },
-        { num: '08', html: `      <span class="token punctuation">&#125;</span>,` },
-        {
-            num: '09',
-            html: `      <span class="token property">failure:</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">&#123;</span>`,
-        },
-        { num: '10', html: `        <span class="token comment">// handle error</span>` },
-        {
-            num: '11',
-            html: `        <span class="token object">console</span>.<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'failure reason'</span>, error<span class="token punctuation">)</span>;`,
-        },
-        { num: '12', html: `      <span class="token punctuation">&#125;</span>,` },
-        { num: '13', html: `    <span class="token punctuation">&#125;</span>;` },
-        { num: '14', html: `  <span class="token tag">&lt;/script&gt;</span>` },
-        { num: '15', html: `  <span class="token tag">&lt;script</span>` },
-        {
-            num: '16',
-            html: `    <span class="token attr-name">type</span>=<span class="token string">"text/javascript"</span>`,
-        },
-        {
-            num: '17',
-            html: `    <span class="token attr-name">onload</span>=<span class="token string">"initVerification(configuration)"</span>`,
-        },
-        {
-            num: '18',
-            html: `    <span class="token attr-name">src</span>=<span class="token string">"https://36blocks.com/..."</span><span class="token tag">&gt;</span>`,
-        },
-        { num: '19', html: `  <span class="token tag">&lt;/script&gt;</span>` },
-    ]);
-
-    private buildCodeLines(lines: { num: string; html: string }[]): { num: string; html: SafeHtml }[] {
-        return lines.map((l) => ({ num: l.num, html: this.sanitizer.bypassSecurityTrustHtml(l.html) }));
-    }
+    public readonly codeSnippet = WIDGET_EXAMPLE;
 
     public currentlyBuilding: string = '';
     private buildingTexts = [
@@ -318,12 +273,12 @@ export class HomeComponent extends BaseComponent implements OnInit {
             {
                 name: 'description',
                 content:
-                    'Launch secure user signup, login, roles, and access control in minutes with 36Blocks. Plug & play authentication with social login, OTP, RBAC, and analytics.',
+                    'Configure user signup, login, roles, and access controls with 36Blocks. Plug & play authentication with social login, OTP, RBAC, and analytics.',
             },
             {
                 name: 'keywords',
                 content:
-                    'authentication platform, SSO, OTP login, social login, RBAC, user management, Angular auth, developer authentication, passwordless login, hCaptcha, role-based access control',
+                    'authentication platform, OTP login, social login, RBAC, user management, Angular auth, developer authentication, passwordless login, hCaptcha, role-based access control',
             },
             { name: 'robots', content: 'index, follow' },
             { name: 'author', content: '36Blocks' },
@@ -332,7 +287,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
             {
                 property: 'og:description',
                 content:
-                    'Launch secure user signup, login, roles, and access control in minutes. Plug & play authentication platform with social login, OTP, and RBAC.',
+                    'Configure user signup, login, roles, and access controls. Plug & play authentication platform with social login, OTP, and RBAC.',
             },
             { property: 'og:type', content: 'website' },
             { property: 'og:url', content: 'https://36blocks.com/' },
@@ -345,7 +300,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
             { name: 'twitter:title', content: '36Blocks — Secure Auth & User Management for Modern Apps' },
             {
                 name: 'twitter:description',
-                content: 'Plug & play authentication with social login, OTP, RBAC, and analytics. 5-minute setup.',
+                content:
+                    'Plug & play authentication with social login, OTP, RBAC, and analytics. Configurable widget integration.',
             },
             { name: 'twitter:image', content: 'https://36blocks.com/assets/og-image.png' },
             { name: 'twitter:image:alt', content: '36Blocks — Secure Auth & User Management' },
@@ -424,16 +380,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
                 '@type': 'WebSite',
                 name: '36Blocks',
                 url: 'https://36blocks.com/',
-                description:
-                    'Secure authentication and user management platform with social login, OTP, RBAC, and analytics.',
-                potentialAction: {
-                    '@type': 'SearchAction',
-                    target: {
-                        '@type': 'EntryPoint',
-                        urlTemplate: 'https://36blocks.com/?q={search_term_string}',
-                    },
-                    'query-input': 'required name=search_term_string',
-                },
+                description: 'Authentication and user management with configurable login, roles, and analytics.',
             },
             {
                 '@context': 'https://schema.org',
@@ -443,13 +390,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
                 applicationCategory: 'DeveloperApplication',
                 operatingSystem: 'Web',
                 description:
-                    'Plug & play authentication platform with social login, OTP, role-based access control, and user analytics. Integrate in 5 minutes.',
-                offers: {
-                    '@type': 'Offer',
-                    price: '0',
-                    priceCurrency: 'USD',
-                    availability: 'https://schema.org/InStock',
-                },
+                    'Plug & play authentication platform with social login, OTP, role-based access control, and user analytics. Integrate using the configured widget.',
                 featureList: [
                     'Social Login (Google, Apple)',
                     'OTP Authentication',
@@ -457,9 +398,9 @@ export class HomeComponent extends BaseComponent implements OnInit {
                     'hCaptcha Bot Protection',
                     'User Analytics Dashboard',
                     'Customizable Auth Forms',
-                    'Multi-language Support (30+ languages)',
+                    'Configurable Login Methods',
                     'Secure Sessions with Token Expiry',
-                    'Activity Tracking & Audit Logs',
+                    'Request Logs',
                 ],
                 author: {
                     '@type': 'Organization',
