@@ -1,7 +1,7 @@
 ---
 covers: ["tools/set-env.js", "tools/postbuild.js", ".env.example", "apps/36-blocks/src/environments/**", "apps/36-blocks-widget/src/environments/**", "apps/36-blocks/project.json", "apps/36-blocks-widget/project.json", "package.json", "nx.json", ".github/workflows/main.yml", "apps/36-blocks/src/server.ts"]
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: 395659d5
+verified_on: 2026-10-29
 ---
 # Environment
 
@@ -129,8 +129,8 @@ Errors are only logged; the build never fails here.
 - Bundle-size step (`if: always()`): fails if `apps/36-blocks/src/assets/proxy-auth/proxy-auth.js` is over 3 MB (3145728 bytes). It is skipped silently when the file is absent, and the workflow never runs `build-elements.js`, so in practice it checks nothing. <!-- verify:ignore -->
 
 > [!WARNING]
-> CI never runs `tools/set-env.js`, and env-variables.ts is gitignored. The Nx `set-env` targets in both `project.json` files are not dependencies (dependsOn) of `build`. Any affected build therefore compiles without `./env-variables`, which looks like it would fail. The widget also has no `local` configuration.
-> [!TODO] Needs a human: does the "Build check" job pass today? If so, how does env-variables.ts exist on the runner?
+> CI never runs `tools/set-env.js`, and env-variables.ts is gitignored. The Nx `set-env` targets in both `project.json` files are not dependencies (dependsOn) of `build`. Any affected build therefore compiles without `./env-variables`, and it fails: GitHub Actions shows 95 failures in the last 100 "Build check" runs, and the last green run was on 2026-04-23. The failing log (e.g. run 39735436439 on `P0092-clean`) is `TS2307: Cannot find module './env-variables'` for both apps. The widget also has no `local` configuration.
+> [!TODO] Needs a human: should the workflow run `node tools/set-env` with placeholder values first (in CI mode it exits 1 on any missing key, so the keys would have to be set), or should the job be removed? Until then a red "Build check" says nothing about the change under review.
 
 Deployment is not in this repo. `set-env.js` comments and `AWS_BRANCH` point to AWS Amplify, where .env is written before the build.
 > [!TODO] Needs a human: which Amplify app/branch maps to which build script (`build:test` / `build:stage` / `build:prod`)?

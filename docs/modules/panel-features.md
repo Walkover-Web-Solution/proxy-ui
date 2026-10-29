@@ -200,6 +200,10 @@ The form *definitions* come from the backend inside the selected method: `method
 
 > [!TODO] Needs a human: are `feature_id` 1 and 2 stable backend ids? Are more feature types planned? There is no enum, and the UI hard-codes them.
 
+> [!TODO] Needs a human: does `redirect_response_mode: 'code'` change what the widget receives after login (`redirect_url`, or `data.redirect_to` from the callback URL or the OAuth decision)? Is `POST /c/exchange` on the same base URL as the rest of the proxy API? Nothing in this repo produces or consumes the code.
+
+> [!TODO] Needs a human: the dashboard shows client-secret create/revoke to anyone who can open the Setting tab (no role check in the UI). Does the backend restrict these endpoints by role?
+
 > [!TODO] Needs a human: are `createLagoFeature`, store `getPlansForm` and `getBillableMetricForm` (Lago = the billing backend behind subscription blocks) dead code that can be removed?
 
 ## Changing it safely

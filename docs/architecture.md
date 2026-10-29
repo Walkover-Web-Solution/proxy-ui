@@ -1,7 +1,7 @@
 ---
 covers: ["apps/36-blocks/src/main.ts", "apps/36-blocks/src/app/app.config.ts", "apps/36-blocks/src/app/app.routes.ts", "apps/36-blocks-widget/src/main.ts", "apps/36-blocks-widget/src/app/init-verification.ts", "apps/36-blocks-widget/build-elements.js", "apps/*/project.json", "tsconfig.base.json", "nx.json", "tools/*.js"]
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: 395659d5
+verified_on: 2026-10-29
 ---
 # Architecture
 
@@ -120,6 +120,8 @@ flowchart LR
 > Mixing the two up fails silently. See [glossary.md](glossary.md).
 
 ## Decisions and history
+
+The full list, with evidence for each, is in [decisions.md](decisions.md). The ones that shape this page:
 
 - **One file for the widget.** Customers paste one `<script>` tag, so `build-elements.js` concatenates polyfills → vendor → scripts → main, skips `chunk-*` files and inlines the CSS. A dynamic `import()` creates an ESM chunk that breaks this, which is why the widget has none (lesson from the March 2026 build fixes).
 - **Shadow DOM for the widget.** `ProxyAuthWidgetComponent` uses `ViewEncapsulation.ShadowDom`, and overlays get their own shadow hosts on `document.body`, so host-page CSS can't break the widget. See [modules/widget-embed.md](modules/widget-embed.md).
