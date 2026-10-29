@@ -1,7 +1,7 @@
 ---
 covers: ["apps/36-blocks-widget/src/app/init-verification.ts", "apps/36-blocks-widget/src/main.ts", "apps/36-blocks-widget/src/app/otp/widget/widget.component.*", "apps/36-blocks-widget/src/app/otp/service/otp-widget.service.ts", "apps/36-blocks-widget/src/app/otp/service/otp.service.ts", "apps/36-blocks-widget/src/app/otp/service/otp-utility.service.ts", "apps/36-blocks-widget/src/app/otp/service/urls/otp-urls.ts", "apps/36-blocks-widget/src/app/otp/service/widget-portal.service.ts", "apps/36-blocks-widget/src/app/otp/service/proxy-auth-dom-builder.service.ts", "apps/36-blocks-widget/src/app/otp/store/**", "apps/36-blocks-widget/src/app/otp/component/login/**", "apps/36-blocks-widget/src/app/otp/component/register/**", "libs/constant/src/verification/verification.ts", "libs/models/features-model/src/index.ts"]
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: 395659d5
+verified_on: 2026-10-29
 ---
 # Flow: widget verification (login widget on a host page)
 
@@ -115,7 +115,7 @@ sequenceDiagram
     - No `proxy_auth_token` → `GET oauth/authorize` with all params. `isOauthAuthorizeSuccess` (no `hasError` and `client_id` or `client_name` in data) → `oauthAuthorizeData`, then step 6. `buildWidgetDataPayload` adds `addInfo.redirect_path = location.pathname` and `state = JSON.stringify(oauthAuthorizeParams)` to the widget-data body. Failure → `openOauthErrorPage(message)` (static dialog, no widget data call).
     - `proxy_auth_token` and `state` present (back from login) → `resolveAuthorizeParamsAfterLogin` rebuilds params from the JSON `state`, re-validates `oauth/authorize`, then `openOauthConsentDialog`.
 21. **Consent** — `apps/36-blocks-widget/src/app/otp/widget/widget.component.ts:submitOauthConsent` → `OtpService.postOauthAuthorizeDecision`
-    `POST oauth/authorize/decision` with header `proxy_auth_token` and body `{ action: 'approve'|'deny', client_id, redirect_uri, state, response_type, scope?, code_challenge?, code_challenge_method? }`. `data.redirect_to` → `window.location.href`; missing → inline error; HTTP error → `oauthConsentError` from `error` / `error_description`. No host callback in either case.
+    `POST oauth/authorize/decision` with header `proxy_auth_token` and body `{ action: 'approve'|'deny', client_id, redirect_uri, state, response_type, scope?, code_challenge?, code_challenge_method? }`. Both buttons are disabled while the request runs, and only the clicked one shows the spinner (`oauthConsentAction`). `data.redirect_to` → `window.location.replace` (the consent page is not kept in history; buttons stay disabled until the page unloads); missing → inline error; HTTP error → `oauthConsentError` from `error` / `error_description`. No host callback in either case.
 
 ## Data at key hops
 
@@ -202,6 +202,6 @@ What the host receives, by case:
 | 17 | Dialog moved into a shadow host on `document.body` (`WidgetPortalService.attach`) |
 | 18 | `POST otp/send` / `otp/retry` / `otp/verify`; writes `reference_id` and `origin` into the shared `OtpService.options.headers` (see [widget-auth](../modules/widget-auth.md#gotchas)) |
 | 19 | `POST c/register?action=redirect`; `window.location.href = redirect_url` |
-| 20–21 | `GET oauth/authorize`, `POST oauth/authorize/decision`; `window.location.href = redirect_to` |
+| 20–21 | `GET oauth/authorize`, `POST oauth/authorize/decision`; `window.location.replace(redirect_to)` |
 
 The widget writes no cookies and no `localStorage`. Sessions are created by the backend responses and the redirects (`redirect_url`, `redirect_to`), which carry the user off the host page.

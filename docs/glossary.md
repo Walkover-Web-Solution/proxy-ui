@@ -1,7 +1,7 @@
 ---
 covers: ["libs/constant/src/verification/verification.ts", "libs/models/root-models/src/index.ts", "libs/models/features-model/src/index.ts"]
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: 395659d5
+verified_on: 2026-10-29
 ---
 # Glossary
 
@@ -18,6 +18,8 @@ verified_on: 2026-10-14
 | `authType` | `authorization` (default) or `auth2`, which runs the OAuth 2.0 consent flow first. | `WidgetAuthType` |
 | method / `method_services` | A backend login-method bundle and its services. Service ids are in `FeatureServiceIds` (6 MSG91 OTP, 7 Google, 8 Apple, 9 password). | `libs/models/features-model/src/index.ts` |
 | client | The customer's organization (company). The current client is stored on the server against the token, so requests never send a client id. Switching client reloads the page. | `apps/36-blocks/src/app/core/ngrx/` (`switchClient`) |
+| client secret | Two unrelated things. A **block client secret** (`features/:id/clientSecrets`, `IClientSecret`, at most 2 active) lets the customer's server exchange a `code`-mode login code for the token. An **OAuth client secret** belongs to one confidential OAuth client (`oauthConfigs/:id/regenerateSecret`). Neither has to do with "client" meaning the customer's company. | `libs/models/features-model/src/index.ts` |
+| redirect response mode | Per-block setting for what the post-login redirect carries: `legacy` (the `proxy_auth_token` in the URL) or `code` (a one-time code for `POST /c/exchange`). Missing means `legacy`. | `RedirectResponseMode` in `libs/models/features-model/src/index.ts` |
 | project / environment | Entities from the old proxy-gateway product. Only the Logs filters and the `/project` wizard use them; they are not blocks. | `libs/models/logs-models` |
 | `authToken` (cookie) | The proxy JWT for the dashboard session, kept 30 days at path `/`. It is mirrored in memory as `IToken.proxyJWTToken`. | `libs/services/proxy/auth` (`AuthService.setTokenSync`) |
 | `authToken` (widget config) | The end user's token, passed by the host page to the account screens. The widget sends it as the `proxy_auth_token` header. | `apps/36-blocks-widget/src/app/otp/service/otp.service.ts` |
