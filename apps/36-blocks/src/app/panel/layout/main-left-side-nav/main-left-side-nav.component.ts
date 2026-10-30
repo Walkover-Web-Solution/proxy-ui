@@ -29,10 +29,11 @@ export class MainLeftSideNavComponent extends BaseComponent {
     public isSideNavOpen = input<boolean>();
 
     protected readonly navItems = [
-        { route: 'dashboard', icon: 'dashboard', label: 'Dashboard' },
-        { route: 'features', icon: 'featured_play_list', label: 'Blocks' },
-        { route: 'users', icon: 'person', label: 'User' },
-        { route: 'logs', icon: 'description', label: 'Logs' }, //  Temporary hide this page
-        { route: 'chatbot', icon: 'face', label: 'Ask Ai' },
+        { route: 'dashboard', icon: 'dashboard', label: 'Overview' },
+        { route: 'features', icon: 'featured_play_list', label: 'Applications & blocks' },
+        { route: 'users', icon: 'person', label: 'People' },
+        { route: 'logs', icon: 'description', label: 'Request logs' },
+        { route: 'activity', icon: 'history', label: 'Operator activity' },
+        { route: 'chatbot', icon: 'face', label: 'Assistant' },
     ];
 }

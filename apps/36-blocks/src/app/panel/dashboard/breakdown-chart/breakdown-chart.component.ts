@@ -17,7 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { AnalyticsService } from '@proxy/services/proxy/analytics';
-import { takeUntil } from 'rxjs';
+import { Subscription, takeUntil } from 'rxjs';
 import * as echarts from 'echarts';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -60,6 +60,11 @@ export class BreakdownChartComponent extends BaseComponent implements OnDestroy 
     private chart: echarts.ECharts | null = null;
     private themeObserver: MutationObserver | null = null;
 
+    private chartRequest?: Subscription;
+    private lastParams: IBreakdownParams;
+    retry(): void {
+        if (this.lastParams) this.fetchBreakdown(this.lastParams);
+    }
     readonly isLoading = signal(false);
     readonly error = signal<string | null>(null);
     readonly chartData = signal<{ key: string; count: number }[]>([]);
@@ -90,22 +95,29 @@ export class BreakdownChartComponent extends BaseComponent implements OnDestroy 
     }
 
     fetchBreakdown(params: IBreakdownParams): void {
+        this.chartRequest?.unsubscribe();
+        this.lastParams = params;
         this.isLoading.set(true);
         this.error.set(null);
         this.chartData.set([]);
 
-        this.analyticsService
+        this.chartRequest = this.analyticsService
             .getBreakdown(params)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (res: any) => {
-                    const data = res?.data?.data ?? [];
+                    if (res?.hasError || !Array.isArray(res?.data?.data)) {
+                        this.error.set('Usage breakdown is unavailable. Retry or check your workspace access.');
+                        this.isLoading.set(false);
+                        return;
+                    }
+                    const data = res.data.data;
                     this.chartData.set(data);
                     this.isLoading.set(false);
                     setTimeout(() => this.renderChart(), 0);
                 },
                 error: (err: any) => {
-                    this.error.set(err?.message ?? 'Failed to load breakdown');
+                    this.error.set('Usage breakdown could not be loaded. Check your connection and retry.');
                     this.isLoading.set(false);
                 },
             });

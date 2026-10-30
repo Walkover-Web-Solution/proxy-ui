@@ -17,10 +17,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
             color="primary"
             [class]="btnClass()"
             [cdkCopyToClipboard]="copyData()"
-            onclick="this.blur()"
             (click)="onCopy()"
             [class.pointer-events-none]="copied | async"
             [matTooltip]="tooltip()"
+            [attr.aria-label]="tooltip() || 'Copy value'"
         >
             <mat-icon
                 [class]="'material-icons-outlined mat-icon-18 ' + iconClass()"

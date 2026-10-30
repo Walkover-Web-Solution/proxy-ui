@@ -1,0 +1,46 @@
+.workspace-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.nav-section {
+    font:
+        9px ui-monospace,
+        monospace;
+    letter-spacing: 0.12em;
+    color: var(--experience-muted);
+    padding: 10px 12px 14px;
+}
+.workspace-navigation a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 42px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    color: var(--experience-muted);
+    font-size: 12px;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+.workspace-navigation a:hover {
+    background: var(--experience-page);
+}
+.workspace-navigation a.active {
+    background: var(--experience-soft);
+    color: var(--experience-accent);
+    font-weight: 600;
+    box-shadow: inset 2px 0 var(--experience-accent);
+}
+mat-icon {
+    font-size: 19px;
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+}
+.nav-docs {
+    margin-top: 24px;
+    border-top: 1px solid var(--experience-border);
+    padding-top: 18px !important;
+    border-radius: 0 !important;
+}

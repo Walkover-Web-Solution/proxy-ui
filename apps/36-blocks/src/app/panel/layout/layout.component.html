@@ -1,10 +1,20 @@
-<div class="flex w-full h-full" [class.collapsed-sidebar]="!sideNavService.isSideNavOpen()">
+<div
+    class="workspace-shell"
+    (keydown.escape)="sideNavService.close()"
+    [class.collapsed-sidebar]="!sideNavService.isSideNavOpen()"
+>
     <div
-        class="flex flex-col transition-all duration-200 mat-drawer-content max-desktop:fixed max-desktop:z-[999] max-desktop:top-0 max-desktop:bottom-0 bg-color p-2"
+        class="workspace-sidebar flex flex-col mat-drawer-content bg-color p-2"
         [class.mat-drawer-toggle-btn-hover]="sideNavService.isSideNavOpen()"
         [class]="!sideNavService.isSideNavOpen() ? 'overflow-hidden !w-[56px] p-1.5' : 'w-[260px]'"
         [class.!hidden]="sideNavService.hideSidebar()"
     >
+        <a class="workspace-brand brand" routerLink="/app/dashboard" aria-label="36blocks overview"
+            ><span class="brand-mark" aria-hidden="true">▦</span>
+            @if (sideNavService.isSideNavOpen()) {
+                <span>36blocks</span>
+            }
+        </a>
         @let clientSettings = clientSettings$ | async; @let clientList = clients$ | async;
         @let isMultipleClients = (clientList?.data?.length ?? 0) > 1;
         <div
@@ -14,6 +24,11 @@
         >
             <div
                 class="flex items-center grow gap-2 mat-drawer-header-title pr-2"
+                role="button"
+                tabindex="0"
+                aria-label="Switch workspace"
+                (keydown.enter)="clientsMenuTrigger.openMenu()"
+                (keydown.space)="$event.preventDefault(); clientsMenuTrigger.openMenu()"
                 #clientsMenuTrigger="matMenuTrigger"
                 [matMenuTriggerFor]="isMultipleClients ? clientsMenu : null"
                 [class.pl-2]="!sideNavService.isSideNavOpen()"
@@ -62,6 +77,7 @@
                 matIconButton
                 class="sidebar-toggle-btn"
                 (click)="toggleSideBarEvent()"
+                [attr.aria-label]="sideNavService.isSideNavOpen() ? 'Collapse menu' : 'Expand menu'"
                 [matTooltip]="sideNavService.isSideNavOpen() ? 'Collapse Menu' : 'Expand Menu'"
                 matTooltipPosition="right"
                 type="button"
@@ -113,11 +129,35 @@
         </div>
     </div>
 
-    <div class="flex-1 flex flex-col" [class.app-content]="!showContainer">
-        <!-- Content::START -->
-        <router-outlet></router-outlet>
-        <div id="ChatbotContainer" class="h-screen w-full"></div>
-
-        <!-- Content::END -->
+    @if (sideNavService.isSideNavOpen()) {
+        <button class="sidebar-scrim" aria-label="Close navigation" (click)="sideNavService.close()"></button>
+    }
+    <div class="workspace-main">
+        <header class="workspace-topbar">
+            <button
+                mat-icon-button
+                type="button"
+                class="workspace-mobile-menu"
+                (click)="toggleSideBarEvent()"
+                aria-label="Open navigation"
+                [attr.aria-expanded]="sideNavService.isSideNavOpen()"
+            >
+                <mat-icon>menu</mat-icon>
+            </button>
+            <div class="context-path">
+                <span class="context-client">{{ (clientSettings$ | async)?.client?.name || 'Workspace' }}</span
+                ><span class="context-separator" aria-hidden="true">/</span
+                ><span class="context-area">{{ currentArea() }}</span>
+            </div>
+            <div class="context-meta">
+                <span class="environment-label"
+                    ><span class="environment-prefix">Console: </span>{{ environmentLabel }}</span
+                ><a href="https://developers.36blocks.com">Developer docs ↗</a>
+            </div>
+        </header>
+        <main id="workspace-content" class="workspace-content" [class.chatbot-content]="showContainer">
+            <router-outlet></router-outlet>
+            <div id="ChatbotContainer" class="h-full w-full" [style.display]="showContainer ? 'block' : 'none'"></div>
+        </main>
     </div>
 </div>

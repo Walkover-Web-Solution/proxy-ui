@@ -70,6 +70,8 @@ export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit
     /** Store page size option */
     public pageSizeOptions = PAGE_SIZE_OPTIONS;
 
+    readonly error$ = this.componentStore.error$;
+
     ngOnInit(): void {
         this.getFeatures();
     }
