@@ -32,7 +32,8 @@ export class MainLeftSideNavComponent extends BaseComponent {
         { route: 'dashboard', icon: 'dashboard', label: 'Dashboard' },
         { route: 'features', icon: 'featured_play_list', label: 'Blocks' },
         { route: 'users', icon: 'person', label: 'User' },
-        { route: 'logs', icon: 'description', label: 'Logs' }, //  Temporary hide this page
+        { route: 'logs', icon: 'description', label: 'Logs' },
+        { route: 'activity', icon: 'history', label: 'Activity' },
         { route: 'chatbot', icon: 'face', label: 'Ask Ai' },
     ];
 }

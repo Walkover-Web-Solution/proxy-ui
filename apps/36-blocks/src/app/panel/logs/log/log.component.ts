@@ -133,6 +133,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
     });
     // Observable
     public isLoading$: Observable<boolean> = this.componentStore.isLoading$;
+    public logsError$ = this.componentStore.logsError$;
     public logs$: Observable<IPaginatedResponse<ILogsRes[]>> = this.componentStore.logsData$;
     public environments$: Observable<IPaginatedResponse<IEnvironments[]>> = this.componentStore.environments$;
     public projects$: Observable<IPaginatedResponse<IProjects[]>> = this.componentStore.projects$;
@@ -252,6 +253,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
             ...this.params,
             ...this.formatDateRange(),
         };
+        this.params.pageNo = 1;
         this.getLogs();
     }
 
@@ -277,6 +279,7 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
             project_id,
             environment_id,
         });
+        this.params.pageNo = 1;
         this.getLogs();
     }
 
@@ -352,8 +355,8 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
             this.params = CustomValidators.removeNullKeys({
                 ...this.params,
                 range: formValue.range ? formValue.range : null,
-                from: formValue.from ? formValue.from : null,
-                to: formValue.to ? formValue.to : null,
+                from: formValue.from ?? null,
+                to: formValue.to ?? null,
                 request_type:
                     formValue.requestType?.length && formValue.requestType.length !== this.requestTypes.length
                         ? formValue.requestType.join(',')
@@ -391,6 +394,8 @@ export class LogComponent extends BaseComponent implements OnDestroy, OnInit {
                 data: {
                     logData$: this.reqLogs$,
                     isLoading$: this.componentStore.reqLogsInProcess$,
+                    error$: this.componentStore.reqLogsError$,
+                    retry: () => this.componentStore.getLogsById(id),
                     logSettings: clientSettings?.client?.settings?.logs,
                 },
                 maxHeight: '100vh',
