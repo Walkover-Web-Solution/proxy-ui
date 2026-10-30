@@ -4,7 +4,7 @@
 <!-- Top Fixed Header::START -->
 <div class="flex items-center justify-between pe-5">
     <h2 mat-dialog-title class="mat-title mat-subheading-2 mb-0 text-dark">Logs Details</h2>
-    <button matIconButton (click)="onCloseDialog()" role="button">
+    <button matIconButton (click)="onCloseDialog()" aria-label="Close log details">
         <mat-icon>close</mat-icon>
     </button>
 </div>
@@ -13,7 +13,12 @@
 <!-- Content::START -->
 @if (data) {
     <mat-dialog-content class="!max-h-[calc(100vh-100px)] overflow-y-auto !py-3">
-        @if (data.logData$ | async; as logdata) {
+        @if (data.error$ | async; as error) {
+            <div role="alert">
+                <p>{{ error }}</p>
+                <button matButton="outlined" (click)="data.retry()">Retry loading details</button>
+            </div>
+        } @else if (data.logData$ | async; as logdata) {
             @if (!data?.logSettings || data?.logSettings?.store_headers) {
                 <ng-container
                     [ngTemplateOutlet]="jsonCard"
@@ -44,7 +49,7 @@
     <span class="mb-2 mt-1 mat-body-2 font-medium">{{ title }}</span>
     <mat-card class="outline-card overflow-y-auto w-break">
         <mat-card-content>
-            <pre [innerHtml]="jsonData | json"></pre>
+            <pre>{{ jsonData | json }}</pre>
         </mat-card-content>
     </mat-card>
 </ng-template>

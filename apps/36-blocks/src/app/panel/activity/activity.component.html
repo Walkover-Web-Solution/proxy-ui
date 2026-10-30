@@ -1,0 +1,225 @@
+<section class="activity-page" aria-labelledby="activity-title">
+    <header>
+        <h1 id="activity-title">Activity</h1>
+        <p>
+            Investigate operator actions for the current client. Login as records include the actor, target, reason and
+            outcome.
+        </p>
+        <p>
+            Older operations may have no audit details. A started attempt without a final outcome needs investigation.
+        </p>
+    </header>
+
+    <details class="login-as">
+        <summary>Login as an end user</summary>
+        <p>
+            For client Owners, Admins and Super admins. This creates a session with the target user's access to their
+            application. The action and your reason are recorded in Activity. Use internal numeric IDs from the current
+            client. If no company is specified, the user's first company is checked for eligibility.
+        </p>
+        <p>
+            Confirm the user and company before continuing. Configure an HTTPS application redirect on the block before
+            starting; this panel does not display raw session tokens. The application remains responsible for business
+            permissions.
+        </p>
+        <form
+            class="activity-filters"
+            #loginForm="ngForm"
+            (ngSubmit)="loginForm.valid && loginAs()"
+            aria-label="Login as an end user"
+        >
+            <mat-form-field
+                ><mat-label>Target user ID</mat-label
+                ><input
+                    matInput
+                    name="loginTarget"
+                    [(ngModel)]="loginTarget"
+                    (ngModelChange)="clearLoginResult()"
+                    [disabled]="loggingIn()"
+                    required
+                    inputmode="numeric"
+                    pattern="[0-9]+"
+            /></mat-form-field>
+            <mat-form-field
+                ><mat-label>Company ID (optional)</mat-label
+                ><input
+                    matInput
+                    name="loginCompany"
+                    [(ngModel)]="loginCompany"
+                    (ngModelChange)="clearLoginResult()"
+                    [disabled]="loggingIn()"
+                    inputmode="numeric"
+                    pattern="[0-9]+"
+            /></mat-form-field>
+            <mat-form-field class="reason-field"
+                ><mat-label>Reason</mat-label
+                ><textarea
+                    matInput
+                    name="loginReason"
+                    [(ngModel)]="loginReason"
+                    (ngModelChange)="clearLoginResult()"
+                    [disabled]="loggingIn()"
+                    required
+                    maxlength="500"
+                    rows="2"
+                    placeholder="Support ticket or investigation purpose; do not include credentials"
+                ></textarea>
+            </mat-form-field>
+            <label class="confirmation"
+                ><input
+                    type="checkbox"
+                    name="confirmed"
+                    [(ngModel)]="loginConfirmed"
+                    [disabled]="loggingIn()"
+                    required
+                />
+                I confirm the target and understand this creates an impersonated session.</label
+            >
+            <button mat-flat-button type="submit" [disabled]="loggingIn() || loginForm.invalid">
+                {{ loggingIn() ? 'Creating session…' : 'Create impersonated session' }}
+            </button>
+        </form>
+        @if (loginError(); as message) {
+            <p role="alert">{{ message }}</p>
+        }
+        @if (loginMessage(); as message) {
+            <p role="status">{{ message }}</p>
+        }
+        @if (loginRedirect(); as redirect) {
+            <a
+                mat-stroked-button
+                [href]="redirect"
+                target="_blank"
+                rel="noopener noreferrer"
+                referrerpolicy="no-referrer"
+                >Open connected application</a
+            >
+        }
+    </details>
+
+    <form
+        class="activity-filters"
+        #filterForm="ngForm"
+        (ngSubmit)="filterForm.valid && applyFilters()"
+        aria-label="Filter activity"
+    >
+        <mat-form-field
+            ><mat-label>Operation</mat-label
+            ><input matInput name="operation" [(ngModel)]="filters.operation" placeholder="For example, login_as"
+        /></mat-form-field>
+        <mat-form-field
+            ><mat-label>Actor name or email</mat-label><input matInput name="actor" [(ngModel)]="filters.name"
+        /></mat-form-field>
+        <mat-form-field
+            ><mat-label>Outcome</mat-label
+            ><mat-select name="outcome" [(ngModel)]="filters.outcome">
+                <mat-option value="">All outcomes</mat-option>
+                <mat-option value="started">Started</mat-option><mat-option value="succeeded">Succeeded</mat-option>
+                <mat-option value="denied">Denied</mat-option><mat-option value="failed">Failed</mat-option>
+            </mat-select></mat-form-field
+        >
+        <mat-form-field
+            ><mat-label>Target user ID</mat-label
+            ><input matInput name="target" [(ngModel)]="filters.target_user_id" inputmode="numeric" pattern="[0-9]+"
+        /></mat-form-field>
+        <mat-form-field
+            ><mat-label>Block ID</mat-label
+            ><input
+                matInput
+                name="block"
+                [(ngModel)]="filters.feature_configuration_id"
+                inputmode="numeric"
+                pattern="[0-9]+"
+        /></mat-form-field>
+        <mat-form-field
+            ><mat-label>From date</mat-label><input matInput name="from" type="date" [(ngModel)]="filters.startDate"
+        /></mat-form-field>
+        <mat-form-field
+            ><mat-label>Through date</mat-label
+            ><input matInput name="through" type="date" [(ngModel)]="filters.endDate"
+        /></mat-form-field>
+        <div class="filter-actions">
+            <button mat-flat-button type="submit" [disabled]="loading() || filterForm.invalid">Apply filters</button
+            ><button mat-button type="button" (click)="clearFilters()" [disabled]="loading()">Clear</button>
+        </div>
+    </form>
+
+    @if (loading()) {
+        <p role="status" aria-live="polite">Loading activity…</p>
+    } @else if (error(); as message) {
+        <div role="alert">
+            <p>{{ message }}</p>
+            <button mat-stroked-button type="button" (click)="load(page())">Retry</button>
+        </div>
+    } @else if (rows().length === 0) {
+        <p role="status">No activity matches these filters for the current client.</p>
+    } @else {
+        <p role="status">{{ total() }} matching operations · Page {{ page() }} of {{ totalPages() }}</p>
+        <div class="table-scroll" role="region" aria-label="Activity results" tabindex="0">
+            <table>
+                <caption class="visually-hidden">
+                    Operator activity in the current client
+                </caption>
+                <thead>
+                    <tr>
+                        <th scope="col">When</th>
+                        <th scope="col">Actor</th>
+                        <th scope="col">Operation</th>
+                        <th scope="col">Outcome</th>
+                        <th scope="col">Audit details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (row of rows(); track row.id) {
+                        <tr>
+                            <td>
+                                {{ row.created_at | date: 'medium'
+                                }}<small>Operation #{{ row.id }} · Session {{ row.session_id ?? 'unavailable' }}</small>
+                            </td>
+                            <td>
+                                {{ row.user?.name || row.user?.email || 'Unavailable'
+                                }}<small>{{ row.user?.email }}</small
+                                ><small
+                                    >Actor ID:
+                                    {{ row.audit_context?.actor_user_id ?? row.user?.user_id ?? 'unavailable' }}</small
+                                >
+                            </td>
+                            <td>{{ row.operation }}</td>
+                            <td>
+                                {{ row.audit_context?.outcome || 'Not recorded' }}
+                                @if (row.audit_context?.failure_code) {
+                                    <small>{{ row.audit_context.failure_code }}</small>
+                                }
+                            </td>
+                            <td>
+                                @if (row.audit_context; as audit) {
+                                    <dl>
+                                        <dt>Target user</dt>
+                                        <dd>{{ audit.target_user_id ?? 'Not recorded' }}</dd>
+                                        <dt>Company</dt>
+                                        <dd>{{ audit.target_company_id ?? 'Not recorded' }}</dd>
+                                        <dt>Block</dt>
+                                        <dd>{{ audit.feature_configuration_id ?? 'Not recorded' }}</dd>
+                                        <dt>Reason</dt>
+                                        <dd class="reason">{{ audit.reason || 'Not recorded' }}</dd>
+                                        <dt>Source IP</dt>
+                                        <dd>{{ audit.source_ip || 'Not recorded' }}</dd>
+                                    </dl>
+                                } @else {
+                                    <span>No audit details were recorded for this operation.</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <nav class="pagination" aria-label="Activity pages">
+            <button mat-stroked-button type="button" (click)="load(page() - 1)" [disabled]="page() <= 1">
+                Previous</button
+            ><button mat-stroked-button type="button" (click)="load(page() + 1)" [disabled]="page() >= totalPages()">
+                Next
+            </button>
+        </nav>
+    }
+</section>

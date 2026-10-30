@@ -38,8 +38,8 @@
         <p
             class="text-[17px] leading-relaxed text-[#8b949e] text-center lg:text-left max-w-[460px] m-0 anim-fade-up stagger-3"
         >
-            Launch secure user signup, login, roles, and access control in minutes — without building complex
-            authentication systems from scratch.
+            Configure user signup, login, roles, and access controls for your application. Investigate failures and
+            manage users from one panel.
         </p>
 
         <div
@@ -62,15 +62,13 @@
             >
                 Explore Platform
             </button>
-            <a
-                href="https://help.36blocks.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="cursor-pointer px-5 py-2 !rounded-sm bg-transparent border border-[#21262d] text-[#c9d1d9] font-semibold text-sm no-underline text-center transition-all duration-200 hover:border-teal-400/50 hover:-translate-y-px"
-                aria-label="View 36Blocks documentation (opens in new tab)"
+            <button
+                class="cursor-pointer px-5 py-2 !rounded-sm bg-transparent border border-[#21262d] text-[#c9d1d9] font-semibold text-sm transition-all duration-200 hover:border-teal-400/50 hover:-translate-y-px"
+                routerLink="/docs"
+                aria-label="View 36Blocks documentation"
             >
                 View Documentation
-            </a>
+            </button>
         </div>
 
         <ul
@@ -138,7 +136,7 @@
 
         <figure
             class="bg-[#161b22] border border-[#21262d] border-teal-400/15 overflow-hidden rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.5)] animate-[floatUp_7s_ease-in-out_infinite] m-0"
-            aria-label="5-minute integration code sample"
+            aria-label="Widget integration code sample"
         >
             <div
                 class="flex items-center gap-3 px-5 pt-6 pb-3 bg-black/30 border-b border-teal-400/10"
@@ -158,14 +156,13 @@
                 class="m-0 bg-transparent border-0 overflow-x-auto px-6 py-5 text-sm leading-[1.8]"
                 role="region"
                 aria-label="JavaScript integration snippet"
-            ><code class="block font-mono">@for (line of codeSnippetLines; track line.num) {<span class="text-[#484f58] mr-5 select-none">{{ line.num }}</span><span [innerHTML]="line.html"></span>
-}@empty {}</code></pre>
+            ><code class="block font-mono">{{ codeSnippet }}</code></pre>
             <figcaption
                 class="flex items-center justify-between mx-5 mb-5 px-4 py-2.5 rounded-xl text-[#c9d1d9] text-[13px] font-medium bg-teal-400/10 border border-teal-400/20"
             >
                 <span class="flex items-center gap-1.5">
                     <mat-icon class="!text-base !w-4 text-teal-400" aria-hidden="true">bolt</mat-icon>
-                    5 min setup
+                    Widget setup
                 </span>
                 <span class="flex items-center gap-1 text-teal-400/70 text-[11px]">
                     <mat-icon class="!text-base !w-4" aria-hidden="true">verified</mat-icon>

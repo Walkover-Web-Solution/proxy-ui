@@ -1,0 +1,80 @@
+<main class="max-w-[960px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20 text-[#c9d1d9]">
+    <h1 class="text-4xl font-bold text-[#f0f6fc] mb-5">Authentication integration guide</h1>
+    <p class="mb-8 text-[#8b949e]">
+        Use the existing authentication widget with your configured block. This guide describes the current widget
+        contract; availability depends on your environment and enabled providers.
+    </p>
+    <section aria-labelledby="widget-setup" class="mb-10">
+        <h2 id="widget-setup" class="text-2xl font-semibold mb-4">1. Configure and mount the widget</h2>
+        <ol class="list-decimal pl-6 space-y-3 mb-5">
+            <li>
+                Create or select an authentication block in the panel and copy its reference ID. Configure login
+                methods, provider credentials, and allowed source domains for your application.
+            </li>
+            <li>
+                Replace both occurrences of <code>YOUR_REFERENCE_ID</code> with that ID. Authorization mode mounts into
+                the element whose ID exactly matches the reference ID.
+            </li>
+            <li>
+                Replace <code>WIDGET_ORIGIN</code> with the origin hosting the widget built for your API environment.
+                The widget build produces <code>/assets/proxy-auth/proxy-auth.js</code>. Load it before calling
+                <code>window.initVerification</code>.
+            </li>
+        </ol>
+        <pre
+            class="p-5 bg-[#161b22] rounded-xl border border-[#30363d] overflow-x-auto text-sm"
+        ><code>{{ example }}</code></pre>
+        <p class="mt-4 text-[#8b949e]">
+            The success callback is required. The example reports completion only; implement your application's private
+            server handoff before granting access. Never log the callback result, credentials, or session tokens.
+        </p>
+    </section>
+    <section aria-labelledby="session-boundary" class="mb-10">
+        <h2 id="session-boundary" class="text-2xl font-semibold mb-4">2. Establish your application session</h2>
+        <p class="mb-3">
+            A browser callback alone does not authorize access. Your backend must verify the authentication result using
+            the contract for your configured block and environment, check expiry and application membership, and
+            establish its own session. Do not assume the returned token is a JWT that your application can decode or
+            verify locally.
+        </p>
+        <p>
+            Keep credentials out of URLs, logs, analytics, and support screenshots. Confirm session expiration, logout,
+            and recovery behavior in your environment before launch.
+        </p>
+    </section>
+    <section aria-labelledby="membership-boundary" class="mb-10">
+        <h2 id="membership-boundary" class="text-2xl font-semibold mb-4">
+            3. Enforce membership and business permissions
+        </h2>
+        <p class="mb-3">
+            Identity, authentication, application membership, and business authorization are distinct. A shared identity
+            does not grant access to every application or organization. Your product must enforce tenant membership,
+            resource ownership, and business permissions on every protected server request.
+        </p>
+        <p>
+            Authenticated widget views use the fixed mount point <code>userProxyContainer</code> and require an
+            <code>authToken</code>. View types include <code>user-profile</code>, <code>user-management</code>, and
+            <code>organization-details</code>. Enable these only for authorized users; hiding a control does not enforce
+            a permission.
+        </p>
+    </section>
+    <section aria-labelledby="widget-checks" class="mb-10">
+        <h2 id="widget-checks" class="text-2xl font-semibold mb-4">4. Verify the complete flow</h2>
+        <ul class="list-disc pl-6 space-y-3">
+            <li>Test on an approved source domain with the widget and API configured for the same environment.</li>
+            <li>
+                Confirm the mount element exists, the script loads, and the callback runs after a real configured login.
+            </li>
+            <li>Test invalid credentials, expired sessions, logout, and cross-organization access denial.</li>
+            <li>
+                Use request logs to investigate API failures. Sensitive-operation activity history covers instrumented
+                operations; it is not a complete history of every action.
+            </li>
+        </ul>
+        <p class="mt-5">
+            For an API integration contract or environment-specific setup,
+            <a routerLink="/contact" class="text-teal-400 underline">contact the team</a>. Review
+            <a routerLink="/security" class="text-teal-400 underline">security boundaries</a> before enabling access.
+        </p>
+    </section>
+</main>
