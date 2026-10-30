@@ -35,7 +35,8 @@ function load(relative, dependencies = {}) {
 const modelPath = 'apps/36-blocks/src/app/panel/activity/activity.models.ts';
 const models = load(modelPath);
 const componentPath = 'apps/36-blocks/src/app/panel/activity/activity.component.ts';
-function createComponent(service) {
+function createComponent(service, target = null) {
+    class ActivatedRoute {}
     const signal = (initial) => {
         let value = initial;
         const get = () => value;
@@ -48,9 +49,11 @@ function createComponent(service) {
         '@angular/core': {
             Component: () => (target) => target,
             ChangeDetectionStrategy: {},
-            inject: () => service,
+            inject: (token) =>
+                token === ActivatedRoute ? { snapshot: { queryParamMap: { get: () => target } } } : service,
             signal,
         },
+        '@angular/router': { ActivatedRoute },
         './activity.models': models,
         './activity.service': { ActivityService: class {} },
     });
@@ -219,4 +222,36 @@ test('editing the impersonation target clears the previous credential link and c
     assert.equal(component.loginRedirect(), null);
     assert.equal(component.loginMessage(), null);
     assert.equal(component.loginConfirmed, false);
+});
+
+test('a user investigation link prefills a valid target without creating a session', () => {
+    let params;
+    const component = createComponent(
+        {
+            getOperations: (value) => {
+                params = value;
+                return of(empty);
+            },
+            loginAs: () => {
+                throw new Error('Must not submit from navigation');
+            },
+        },
+        '25'
+    );
+    component.ngOnInit();
+    assert.equal(params.target_user_id, '25');
+    assert.equal(component.loginTarget, '25');
+    assert.equal(component.loginConfirmed, false);
+    const malformed = createComponent(
+        {
+            getOperations: (value) => {
+                params = value;
+                return of(empty);
+            },
+        },
+        '25<script>'
+    );
+    malformed.ngOnInit();
+    assert.equal(params.target_user_id, undefined);
+    assert.equal(malformed.loginTarget, '');
 });

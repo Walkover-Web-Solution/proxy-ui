@@ -245,3 +245,58 @@ test('production panel keeps authentication without restoring project gating', (
     assert.equal(panel.children.find((route) => route.path === '').redirectTo, 'dashboard');
     assert.equal(typeof panel.children.find((route) => route.path === 'activity').loadComponent, 'function');
 });
+
+const { UserComponentStore } = loadClass('apps/36-blocks/src/app/panel/users/user/user.store.ts', {
+    '@angular/core': angular,
+    '@ngrx/component-store': { ComponentStore: StateHost },
+    '@ngrx/operators': { tapResponse: (next, error) => tap({ next, error }) },
+    '@proxy/models/root-models': { errorResolver: () => ['Request failed'] },
+});
+test('people directory keeps denied/error/malformed responses separate from a successful empty result', () => {
+    let response = throwError(() => ({ errorCode: 403 }));
+    const store = new UserComponentStore({ getUsers: () => response }, {}, { error() {} });
+    store.getUsers({});
+    assert.match(store.state$.value.usersError, /permission/);
+    assert.equal(store.state$.value.users, null);
+    response = of({ hasError: false, data: null });
+    store.getUsers({});
+    assert.match(store.state$.value.usersError, /could not be loaded/);
+    response = of({ hasError: false, data: { data: [] } });
+    store.getUsers({});
+    assert.equal(store.state$.value.usersError, null);
+    assert.equal(store.state$.value.users.data.length, 0);
+    assert.equal(store.state$.value.isLoading, false);
+});
+test('people directory cancels stale filters and clears old records during a new request', () => {
+    const stale = new Subject();
+    let response = stale;
+    const store = new UserComponentStore({ getUsers: () => response }, {}, { error() {} });
+    store.patchState({ users: { data: [{ id: 1 }] } });
+    store.getUsers({ search: 'Alex' });
+    assert.equal(store.state$.value.users, null);
+    response = of({ data: { data: [{ id: 2 }] } });
+    store.getUsers({ search: 'Morgan' });
+    stale.next({ data: { data: [{ id: 1 }] } });
+    assert.equal(store.state$.value.users.data[0].id, 2);
+    assert.equal(stale.observed, false);
+});
+const { FeatureComponentStore } = loadClass('apps/36-blocks/src/app/panel/features/feature/feature.store.ts', {
+    '@angular/core': angular,
+    '@ngrx/component-store': { ComponentStore: StateHost },
+    '@ngrx/operators': { tapResponse: (next, error) => tap({ next, error }) },
+    '@proxy/models/root-models': { errorResolver: () => ['Request failed'] },
+});
+test('application list malformed or denied responses are recoverable without claiming an empty workspace', () => {
+    let response = of({ data: null });
+    const store = new FeatureComponentStore({ getFeature: () => response }, { error() {} });
+    store.getFeature({});
+    assert.match(store.state$.value.error, /could not be loaded/);
+    assert.equal(store.state$.value.hasSomeFeatures, null);
+    response = throwError(() => ({ status: 403 }));
+    store.getFeature({});
+    assert.match(store.state$.value.error, /permission/);
+    response = of({ data: { data: [], totalEntityCount: 0 } });
+    store.getFeature({});
+    assert.equal(store.state$.value.error, null);
+    assert.equal(store.state$.value.hasSomeFeatures, false);
+});

@@ -19,7 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { AnalyticsService } from '@proxy/services/proxy/analytics';
-import { forkJoin, takeUntil } from 'rxjs';
+import { Subscription, forkJoin, takeUntil } from 'rxjs';
 import * as echarts from 'echarts';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -61,6 +61,7 @@ export class TimeseriesChartComponent extends BaseComponent implements OnDestroy
     private dialog = inject(MatDialog);
     private expandDialogRef: MatDialogRef<any> | null = null;
 
+    private chartRequest?: Subscription;
     readonly isLoading = signal(false);
     readonly error = signal<string | null>(null);
     readonly seriesList = signal<ITimeseriesSeries[]>([]);
@@ -84,6 +85,7 @@ export class TimeseriesChartComponent extends BaseComponent implements OnDestroy
     }
 
     fetchAllMetrics(fcId: number | null): void {
+        this.chartRequest?.unsubscribe();
         this.isLoading.set(true);
         this.error.set(null);
         this.seriesList.set([]);
@@ -98,10 +100,15 @@ export class TimeseriesChartComponent extends BaseComponent implements OnDestroy
             return this.analyticsService.getTimeseries(params);
         });
 
-        forkJoin(calls)
+        this.chartRequest = forkJoin(calls)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (results: any[]) => {
+                    if (results.some((res) => res?.hasError || !Array.isArray(res?.data?.data))) {
+                        this.error.set('Usage trends are unavailable. Retry or check your workspace access.');
+                        this.isLoading.set(false);
+                        return;
+                    }
                     const metricValues = Object.values(this.metrics);
                     const list = results.map((res, i) => ({
                         label: metricValues[i]!.label,
@@ -114,7 +121,7 @@ export class TimeseriesChartComponent extends BaseComponent implements OnDestroy
                     setTimeout(() => this.renderCharts(), 0);
                 },
                 error: (err: any) => {
-                    this.error.set(err?.message ?? 'Failed to load timeseries');
+                    this.error.set('Usage trends could not be loaded. Check your connection and retry.');
                     this.isLoading.set(false);
                 },
             });

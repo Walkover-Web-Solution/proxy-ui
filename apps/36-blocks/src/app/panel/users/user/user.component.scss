@@ -2,3 +2,36 @@
     display: block;
     height: 100%;
 }
+
+.mobile-profile-details {
+    display: none;
+}
+@media (max-width: 720px) {
+    .people-table td[data-label='Phone Number'],
+    .people-table td[data-label='User ID'],
+    .people-table td[data-label='Created At'] {
+        display: none !important;
+    }
+    .mobile-profile-details {
+        display: block;
+        margin-top: 8px;
+        font-size: 11px;
+        color: var(--experience-muted);
+    }
+    .mobile-profile-details summary {
+        cursor: pointer;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    .mobile-profile-details dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 8px 14px;
+        margin: 12px 0 4px;
+        text-align: left;
+    }
+    .mobile-profile-details dd {
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+}

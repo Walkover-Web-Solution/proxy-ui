@@ -1,3 +1,4 @@
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -18,11 +19,20 @@ import { ActivityService } from './activity.service';
 @Component({
     selector: 'proxy-activity',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [DatePipe, FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+    imports: [
+        RouterModule,
+        DatePipe,
+        FormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+    ],
     templateUrl: './activity.component.html',
     styleUrl: './activity.component.scss',
 })
 export class ActivityComponent implements OnInit, OnDestroy {
+    private readonly route = inject(ActivatedRoute);
     private readonly service = inject(ActivityService);
     private request?: Subscription;
     private loginRequest?: Subscription;
@@ -44,6 +54,12 @@ export class ActivityComponent implements OnInit, OnDestroy {
     readonly loginRedirect = signal<string | null>(null);
 
     ngOnInit(): void {
+        const target = this.route.snapshot.queryParamMap.get('target_user_id');
+        if (target && /^[1-9][0-9]*$/.test(target) && Number.isSafeInteger(Number(target))) {
+            this.filters.target_user_id = target;
+            this.appliedFilters.target_user_id = target;
+            this.loginTarget = target;
+        }
         this.load(1);
     }
 

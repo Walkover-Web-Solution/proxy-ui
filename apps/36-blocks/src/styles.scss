@@ -14,6 +14,7 @@
 @use 'assets/scss/component/utility-classes';
 @use 'assets/scss/component/website-animations';
 @use '../../shared/scss/global';
+@use 'assets/scss/component/experience';
 
 /* Website layout dimensions */
 :root {
@@ -46,11 +47,9 @@ body {
     font-size: 0.875rem;
 
     &.website-active {
-        background-color: #0d1117;
-        background-image:
-            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(45, 212, 191, 0.15), transparent),
-            radial-gradient(ellipse 60% 40% at 100% 100%, rgba(45, 212, 191, 0.08), transparent);
-        color: #c9d1d9;
+        background-color: var(--experience-page);
+        background-image: none;
+        color: var(--experience-ink);
     }
 }
 .text-color {

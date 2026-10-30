@@ -116,18 +116,11 @@ export class ContactComponent implements OnInit {
                         this.ngZone.run(() => setTimeout(() => this.submitSuccess.set(false), 5000));
                     } else {
                         this.submitError.set(true);
-                        this.ngZone.run(() => setTimeout(() => this.submitError.set(false), 5000));
                     }
                 },
                 error: (httpError) => {
-                    console.error(
-                        '%c❌ Contact form submission failed',
-                        'color: #f87171; font-weight: bold;',
-                        httpError
-                    );
                     this.isSubmitting.set(false);
                     this.submitError.set(true);
-                    this.ngZone.run(() => setTimeout(() => this.submitError.set(false), 5000));
                 },
             });
     }

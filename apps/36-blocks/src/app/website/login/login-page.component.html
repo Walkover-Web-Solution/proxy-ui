@@ -2,12 +2,12 @@
     <div class="w-full max-w-md">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Welcome back</h1>
-            <p class="mt-2 text-sm text-[#8b949e]">Log in to your 36Blocks account.</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-[#202d1d] tracking-tight">Welcome back</h1>
+            <p class="mt-2 text-sm text-[#5e6c56]">Log in to your 36Blocks account.</p>
         </div>
 
         <!-- Card -->
-        <div class="rounded-xl border border-[#21262d] bg-[#161b22] px-6 py-8 space-y-5">
+        <div class="rounded-xl border border-[#dce3d4] bg-[#ffffff] px-6 py-8 space-y-5">
             <!-- Global errors -->
             @if (loginErrors().length > 0) {
                 <div
@@ -16,7 +16,7 @@
                     class="rounded-sm border border-red-500/30 bg-red-500/5 px-4 py-3"
                 >
                     @for (loginError of loginErrors(); track loginError) {
-                        <p class="text-sm text-red-400">{{ loginError }}</p>
+                        <p class="text-sm text-red-700">{{ loginError }}</p>
                     }
                 </div>
             }
@@ -31,8 +31,8 @@
             >
                 <!-- Email -->
                 <div>
-                    <label for="login-email" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                        Email Address <span class="text-red-400" aria-hidden="true">*</span>
+                    <label for="login-email" class="block text-sm font-medium text-[#43523c] mb-1.5">
+                        Email Address <span class="text-red-700" aria-hidden="true">*</span>
                     </label>
                     <input
                         id="login-email"
@@ -42,12 +42,12 @@
                         placeholder="jane@company.com"
                         aria-describedby="login-email-error"
                         [attr.aria-invalid]="getFieldError('email') ? 'true' : null"
-                        class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                        [class.border-[#21262d]]="!getFieldError('email')"
+                        class="block w-full rounded-sm border bg-[#f8f9f3] px-3.5 py-2.5 text-sm text-[#202d1d] placeholder:text-[#65735c] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                        [class.border-[#dce3d4]]="!getFieldError('email')"
                         [class.border-red-500]="!!getFieldError('email')"
                     />
                     @if (getFieldError('email')) {
-                        <p id="login-email-error" role="alert" class="mt-1.5 text-xs text-red-400">
+                        <p id="login-email-error" role="alert" class="mt-1.5 text-xs text-red-700">
                             {{ getFieldError('email') }}
                         </p>
                     }
@@ -55,8 +55,8 @@
 
                 <!-- Password -->
                 <div>
-                    <label for="login-password" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                        Password <span class="text-red-400" aria-hidden="true">*</span>
+                    <label for="login-password" class="block text-sm font-medium text-[#43523c] mb-1.5">
+                        Password <span class="text-red-700" aria-hidden="true">*</span>
                     </label>
                     <div class="relative">
                         <input
@@ -67,14 +67,14 @@
                             placeholder="Your password"
                             aria-describedby="login-password-error"
                             [attr.aria-invalid]="getFieldError('password') ? 'true' : null"
-                            class="block w-full rounded-sm border bg-[#0d1117] pl-3.5 pr-11 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                            [class.border-[#21262d]]="!getFieldError('password')"
+                            class="block w-full rounded-sm border bg-[#f8f9f3] pl-3.5 pr-11 py-2.5 text-sm text-[#202d1d] placeholder:text-[#65735c] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            [class.border-[#dce3d4]]="!getFieldError('password')"
                             [class.border-red-500]="!!getFieldError('password')"
                         />
                         <button
                             type="button"
                             (click)="togglePasswordVisibility()"
-                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#484f58] hover:text-[#8b949e] cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 focus-visible:rounded-r-lg"
+                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#65735c] hover:text-[#5e6c56] cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 focus-visible:rounded-r-lg"
                             [attr.aria-label]="passwordVisible ? 'Hide password' : 'Show password'"
                             [attr.aria-pressed]="passwordVisible"
                         >
@@ -117,7 +117,7 @@
                         </button>
                     </div>
                     @if (getFieldError('password')) {
-                        <p id="login-password-error" role="alert" class="mt-1.5 text-xs text-red-400">
+                        <p id="login-password-error" role="alert" class="mt-1.5 text-xs text-red-700">
                             {{ getFieldError('password') }}
                         </p>
                     }
@@ -127,7 +127,7 @@
                 <button
                     type="submit"
                     [disabled]="loginInProgress()"
-                    class="w-full flex items-center justify-center gap-2 !rounded-sm bg-teal-400 px-4 py-3 text-sm font-semibold text-[#0d1117] transition-all duration-200 cursor-pointer hover:bg-teal-300 active:bg-teal-500 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400"
+                    class="w-full flex items-center justify-center gap-2 !rounded-sm bg-[#315b2b] px-4 py-3 text-sm font-semibold text-white transition-all duration-200 cursor-pointer hover:bg-[#24471f] active:bg-teal-500 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400"
                     aria-label="Log in to your account"
                 >
                     @if (loginInProgress()) {
@@ -149,10 +149,10 @@
             <!-- Divider -->
             <div class="relative">
                 <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                    <div class="w-full border-t border-[#21262d]"></div>
+                    <div class="w-full border-t border-[#dce3d4]"></div>
                 </div>
                 <div class="relative flex justify-center text-xs">
-                    <span class="px-3 bg-[#161b22] text-[#6e7681]">or continue with</span>
+                    <span class="px-3 bg-[#ffffff] text-[#627059]">or continue with</span>
                 </div>
             </div>
 
@@ -170,7 +170,7 @@
                     ></div>
                     @if (googleLoginInProgress()) {
                         <div
-                            class="absolute inset-0 flex items-center justify-center gap-2 text-sm text-[#c9d1d9] bg-[#161b22]/80 rounded-sm"
+                            class="absolute inset-0 flex items-center justify-center gap-2 text-sm text-[#43523c] bg-[#ffffff]/80 rounded-sm"
                         >
                             <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                                 <circle
@@ -197,7 +197,7 @@
                     type="button"
                     (click)="loginWithGoogle()"
                     [disabled]="googleLoginInProgress()"
-                    class="w-full flex items-center justify-center gap-3 !rounded-sm border border-[#21262d] bg-transparent px-4 py-2.5 text-sm font-medium text-[#c9d1d9] transition-all duration-200 cursor-pointer hover:border-[#8b949e] hover:text-white disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400"
+                    class="w-full flex items-center justify-center gap-3 !rounded-sm border border-[#dce3d4] bg-transparent px-4 py-2.5 text-sm font-medium text-[#43523c] transition-all duration-200 cursor-pointer hover:border-[#5e6c56] hover:text-[#202d1d] disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400"
                     aria-label="Log in with Google"
                 >
                     @if (googleLoginInProgress()) {
@@ -235,13 +235,13 @@
             }
 
             <!-- Sign up link -->
-            <p class="text-center text-sm text-[#6e7681]">
+            <p class="text-center text-sm text-[#627059]">
                 Don't have an account?
                 <a
                     routerLink="/register"
-                    class="text-teal-400 font-medium cursor-pointer hover:text-teal-300 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 rounded-sm"
+                    class="text-[#3c6533] font-medium cursor-pointer hover:text-teal-300 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 rounded-sm"
                 >
-                    Sign up free
+                    Create an account
                 </a>
             </p>
         </div>

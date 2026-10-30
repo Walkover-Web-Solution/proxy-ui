@@ -2,7 +2,7 @@
     display: block;
 }
 .activity-page {
-    padding: 1.5rem;
+    padding: 0;
     max-width: 1500px;
     margin: auto;
 }
@@ -96,9 +96,38 @@ dd {
 }
 @media (max-width: 600px) {
     .activity-page {
-        padding: 1rem;
+        padding: 0;
     }
     .reason-field {
         grid-column: auto;
     }
+}
+
+.login-as {
+    background: var(--experience-surface);
+}
+.activity-page th {
+    background: var(--experience-soft);
+    font-size: 11px;
+    color: var(--experience-muted);
+}
+.activity-page td {
+    font-size: 12px;
+}
+
+.activity-filter-panel {
+    border: 1px solid var(--experience-border);
+    border-radius: 8px;
+    background: var(--experience-surface);
+    padding: 14px 16px;
+    margin: 18px 0;
+}
+.activity-filter-panel summary {
+    font-size: 13px;
+}
+.filter-target {
+    margin-left: 14px;
+    font-weight: 400;
+    color: var(--experience-muted);
+    font-size: 12px;
 }
