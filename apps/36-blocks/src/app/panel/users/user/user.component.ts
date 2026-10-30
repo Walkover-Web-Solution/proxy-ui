@@ -25,7 +25,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { DateRangePickerComponent } from '@proxy/date-range-picker';
-import { NoRecordFoundComponent } from '@proxy/ui/no-record-found';
 import { MatPaginatorGotoComponent } from '@proxy/ui/mat-paginator-goto';
 import { SearchComponent } from '@proxy/ui/search';
 import { SkeletonDirective } from '@proxy/directives/skeleton';
@@ -77,7 +76,6 @@ import { MatMenuTrigger } from '@angular/material/menu';
         MatTableModule,
         MatPaginatorModule,
         DateRangePickerComponent,
-        NoRecordFoundComponent,
         MatPaginatorGotoComponent,
         SearchComponent,
         SkeletonDirective,
@@ -100,6 +98,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
     /** Store current API inprogress state */
     public loading$: Observable<{ [key: string]: boolean }> = this.componentStore.loading$;
     /** Store User data */
+    readonly usersError$ = this.componentStore.usersError$;
     public users$: Observable<IPaginatedResponse<IUser[]>> = this.componentStore.users$;
     /** Store display column */
     public displayedColumns: string[] = [
@@ -110,6 +109,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
         'block_name',
         'last_login',
         'created_at',
+        'investigate',
     ];
     /** Store params for fetching feature data */
     public params: any = {};
@@ -256,6 +256,7 @@ export class UserComponent extends BaseComponent implements OnDestroy, OnInit {
      * @param event
      */
     public setDateRange(event) {
+        this.params.pageNo = 1;
         this.selectedRangeValue = event;
         this.params = {
             ...this.params,

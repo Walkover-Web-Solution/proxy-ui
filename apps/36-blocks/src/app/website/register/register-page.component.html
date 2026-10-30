@@ -3,24 +3,24 @@
     <div class="w-full max-w-lg">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Create your account</h1>
-            <p class="mt-2 text-sm text-[#8b949e]">Join 36Blocks and start building in minutes.</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-[#202d1d] tracking-tight">Create your account</h1>
+            <p class="mt-2 text-sm text-[#5e6c56]">Join 36Blocks and start building in minutes.</p>
         </div>
 
         <!-- Success state -->
         @if (registrationSuccess()) {
             <div
-                class="rounded-xl border border-teal-400/30 bg-teal-400/5 px-6 py-8 text-center"
+                class="rounded-xl border border-teal-400/30 bg-[#dce9d4]/5 px-6 py-8 text-center"
                 role="alert"
                 aria-live="polite"
                 id="registration-success-banner"
             >
                 <div
-                    class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-teal-400/10 border border-teal-400/20 mb-4"
+                    class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#dce9d4]/10 border border-teal-400/20 mb-4"
                     aria-hidden="true"
                 >
                     <svg
-                        class="w-7 h-7 text-teal-400"
+                        class="w-7 h-7 text-[#3c6533]"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -34,17 +34,17 @@
                         />
                     </svg>
                 </div>
-                <h2 class="text-xl font-bold text-white mb-2">Check your inbox!</h2>
-                <p class="text-sm text-[#8b949e] leading-relaxed">
+                <h2 class="text-xl font-bold text-[#202d1d] mb-2">Check your inbox!</h2>
+                <p class="text-sm text-[#5e6c56] leading-relaxed">
                     We've sent a verification link to
-                    <span class="font-semibold text-teal-400">{{ registeredEmail() }}</span
+                    <span class="font-semibold text-[#3c6533]">{{ registeredEmail() }}</span
                     >. Click the link in the email to verify your address and complete sign-up.
                 </p>
-                <p class="mt-3 text-xs text-[#6e7681]">
+                <p class="mt-3 text-xs text-[#627059]">
                     Didn't receive it? Check your spam folder or
                     <button
                         type="button"
-                        class="text-teal-400 underline cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 transition-colors duration-150 hover:text-teal-300"
+                        class="text-[#3c6533] underline cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 transition-colors duration-150 hover:text-teal-300"
                         (click)="submitRegistration()"
                     >
                         try again</button
@@ -58,7 +58,7 @@
                 (ngSubmit)="submitRegistration()"
                 novalidate
                 aria-label="Registration form"
-                class="rounded-xl border border-[#21262d] bg-[#161b22] px-6 py-8 space-y-5"
+                class="rounded-xl border border-[#dce3d4] bg-[#ffffff] px-6 py-8 space-y-5"
             >
                 <!-- Global API errors -->
                 @if (registrationErrors().length > 0) {
@@ -68,15 +68,15 @@
                         class="rounded-sm border border-red-500/30 bg-red-500/5 px-4 py-3"
                     >
                         @for (registrationError of registrationErrors(); track registrationError) {
-                            <p class="text-sm text-red-400">{{ registrationError }}</p>
+                            <p class="text-sm text-red-700">{{ registrationError }}</p>
                         }
                     </div>
                 }
 
                 <!-- Email -->
                 <div>
-                    <label for="reg-email" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                        Email Address <span class="text-red-400" aria-hidden="true">*</span>
+                    <label for="reg-email" class="block text-sm font-medium text-[#43523c] mb-1.5">
+                        Email Address <span class="text-red-700" aria-hidden="true">*</span>
                     </label>
                     <input
                         id="reg-email"
@@ -86,12 +86,12 @@
                         placeholder="jane@company.com"
                         aria-describedby="reg-email-error"
                         [attr.aria-invalid]="getFieldError('email') ? 'true' : null"
-                        class="block w-full rounded-sm border bg-[#0d1117] px-3.5 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                        [class.border-[#21262d]]="!getFieldError('email')"
+                        class="block w-full rounded-sm border bg-[#f8f9f3] px-3.5 py-2.5 text-sm text-[#202d1d] placeholder:text-[#65735c] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                        [class.border-[#dce3d4]]="!getFieldError('email')"
                         [class.border-red-500]="!!getFieldError('email')"
                     />
                     @if (getFieldError('email')) {
-                        <p id="reg-email-error" role="alert" class="mt-1.5 text-xs text-red-400">
+                        <p id="reg-email-error" role="alert" class="mt-1.5 text-xs text-red-700">
                             {{ getFieldError('email') }}
                         </p>
                     }
@@ -99,8 +99,8 @@
 
                 <!-- Password -->
                 <div>
-                    <label for="reg-password" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                        Password <span class="text-red-400" aria-hidden="true">*</span>
+                    <label for="reg-password" class="block text-sm font-medium text-[#43523c] mb-1.5">
+                        Password <span class="text-red-700" aria-hidden="true">*</span>
                     </label>
                     <div class="relative">
                         <input
@@ -111,14 +111,14 @@
                             placeholder="Min. 8 characters"
                             aria-describedby="reg-password-error"
                             [attr.aria-invalid]="getFieldError('password') ? 'true' : null"
-                            class="block w-full rounded-sm border bg-[#0d1117] pl-3.5 pr-11 py-2.5 text-sm text-white placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
-                            [class.border-[#21262d]]="!getFieldError('password')"
+                            class="block w-full rounded-sm border bg-[#f8f9f3] pl-3.5 pr-11 py-2.5 text-sm text-[#202d1d] placeholder:text-[#65735c] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            [class.border-[#dce3d4]]="!getFieldError('password')"
                             [class.border-red-500]="!!getFieldError('password')"
                         />
                         <button
                             type="button"
                             (click)="togglePasswordVisibility()"
-                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#484f58] hover:text-[#8b949e] cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 focus-visible:rounded-r-lg"
+                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#65735c] hover:text-[#5e6c56] cursor-pointer transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 focus-visible:rounded-r-lg"
                             [attr.aria-label]="passwordVisible ? 'Hide password' : 'Show password'"
                             [attr.aria-pressed]="passwordVisible"
                         >
@@ -161,7 +161,7 @@
                         </button>
                     </div>
                     @if (getFieldError('password')) {
-                        <p id="reg-password-error" role="alert" class="mt-1.5 text-xs text-red-400">
+                        <p id="reg-password-error" role="alert" class="mt-1.5 text-xs text-red-700">
                             {{ getFieldError('password') }}
                         </p>
                     }
@@ -181,7 +181,7 @@
                                 >
                                     @if (rule.met) {
                                         <svg
-                                            class="w-3.5 h-3.5 shrink-0 text-teal-400"
+                                            class="w-3.5 h-3.5 shrink-0 text-[#3c6533]"
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             stroke="currentColor"
@@ -194,10 +194,10 @@
                                                 d="M4.5 12.75l6 6 9-13.5"
                                             />
                                         </svg>
-                                        <span class="text-teal-400">{{ rule.label }}</span>
+                                        <span class="text-[#3c6533]">{{ rule.label }}</span>
                                     } @else {
                                         <svg
-                                            class="w-3.5 h-3.5 shrink-0 text-[#484f58]"
+                                            class="w-3.5 h-3.5 shrink-0 text-[#65735c]"
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             stroke="currentColor"
@@ -210,7 +210,7 @@
                                                 d="M6 18L18 6M6 6l12 12"
                                             />
                                         </svg>
-                                        <span class="text-[#6e7681]">{{ rule.label }}</span>
+                                        <span class="text-[#627059]">{{ rule.label }}</span>
                                     }
                                 </li>
                             }
@@ -222,7 +222,7 @@
                 <button
                     type="submit"
                     [disabled]="registrationInProgress()"
-                    class="w-full flex items-center justify-center gap-2 !rounded-sm bg-teal-400 px-4 py-3 text-sm font-semibold text-[#0d1117] transition-all duration-200 cursor-pointer hover:bg-teal-300 active:bg-teal-500 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400"
+                    class="w-full flex items-center justify-center gap-2 !rounded-sm bg-[#315b2b] px-4 py-3 text-sm font-semibold text-white transition-all duration-200 cursor-pointer hover:bg-[#24471f] active:bg-teal-500 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400"
                     aria-label="Create your 36Blocks account"
                 >
                     @if (registrationInProgress()) {
@@ -241,11 +241,11 @@
                 </button>
 
                 <!-- Login link -->
-                <p class="text-center text-sm text-[#6e7681]">
+                <p class="text-center text-sm text-[#627059]">
                     Already have an account?
                     <a
                         routerLink="/login"
-                        class="text-teal-400 font-medium cursor-pointer hover:text-teal-300 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 rounded-sm"
+                        class="text-[#3c6533] font-medium cursor-pointer hover:text-teal-300 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 rounded-sm"
                     >
                         Log in
                     </a>

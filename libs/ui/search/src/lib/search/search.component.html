@@ -4,6 +4,7 @@
             [attr.type]="type()"
             matInput
             [placeholder]="placeholder()"
+            [attr.aria-label]="placeholder() || 'Search'"
             autocomplete="off"
             [matTooltip]="toolTipString()"
             #tooltip="matTooltip"
@@ -17,6 +18,7 @@
             [attr.type]="type()"
             matInput
             [placeholder]="placeholder()"
+            [attr.aria-label]="placeholder() || 'Search'"
             autocomplete="off"
             [matTooltip]="toolTipString()"
             #tooltip="matTooltip"
@@ -30,7 +32,14 @@
     }
     <mat-icon matPrefix>search</mat-icon>
     @if (searchFormControl.value?.length && !hideCloseIcon()) {
-        <button (click)="clearSearch()" class="icon-btn-md mr-1" matIconButton matSuffix>
+        <button
+            type="button"
+            aria-label="Clear search"
+            (click)="clearSearch()"
+            class="icon-btn-md mr-1"
+            matIconButton
+            matSuffix
+        >
             <mat-icon>close</mat-icon>
         </button>
     }

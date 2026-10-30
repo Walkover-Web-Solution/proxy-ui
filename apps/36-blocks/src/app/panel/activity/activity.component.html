@@ -1,15 +1,18 @@
 <section class="activity-page" aria-labelledby="activity-title">
-    <header>
-        <h1 id="activity-title">Activity</h1>
-        <p>
-            Investigate operator actions for the current client. Login as records include the actor, target, reason and
-            outcome.
-        </p>
-        <p>
-            Older operations may have no audit details. A started attempt without a final outcome needs investigation.
-        </p>
+    <header class="page-heading">
+        <div>
+            <span class="page-kicker">INVESTIGATE WITH CONTEXT</span>
+            <h1 id="activity-title">Operator activity</h1>
+            <p>Who acted, what changed, and the recorded outcome in this workspace.</p>
+        </div>
+        <a routerLink="/app/users">Find a person →</a>
     </header>
-
+    <div class="experience-notice">
+        <span
+            >Older operations may have no audit details. A started attempt without a final outcome needs
+            investigation.</span
+        ><a href="https://developers.36blocks.com">Activity guidance ↗</a>
+    </div>
     <details class="login-as">
         <summary>Login as an end user</summary>
         <p>
@@ -18,9 +21,9 @@
             client. If no company is specified, the user's first company is checked for eligibility.
         </p>
         <p>
-            Confirm the user and company before continuing. Configure an HTTPS application redirect on the block
-            before starting; this panel does not display raw session tokens. The application remains responsible for
-            business permissions.
+            Confirm the user and company before continuing. Configure an HTTPS application redirect on the block before
+            starting; this panel does not display raw session tokens. The application remains responsible for business
+            permissions.
         </p>
         <form
             class="activity-filters"
@@ -97,52 +100,66 @@
         }
     </details>
 
-    <form
-        class="activity-filters"
-        #filterForm="ngForm"
-        (ngSubmit)="filterForm.valid && applyFilters()"
-        aria-label="Filter activity"
-    >
-        <mat-form-field
-            ><mat-label>Operation</mat-label
-            ><input matInput name="operation" [(ngModel)]="filters.operation" placeholder="For example, login_as"
-        /></mat-form-field>
-        <mat-form-field
-            ><mat-label>Actor name or email</mat-label><input matInput name="actor" [(ngModel)]="filters.name"
-        /></mat-form-field>
-        <mat-form-field
-            ><mat-label>Outcome</mat-label
-            ><mat-select name="outcome" [(ngModel)]="filters.outcome">
-                <mat-option value="">All outcomes</mat-option>
-                <mat-option value="started">Started</mat-option><mat-option value="succeeded">Succeeded</mat-option>
-                <mat-option value="denied">Denied</mat-option><mat-option value="failed">Failed</mat-option>
-            </mat-select></mat-form-field
+    <details class="activity-filter-panel">
+        <summary>
+            Filter operator activity
+            @if (filters.target_user_id) {
+                <span class="filter-target">User {{ filters.target_user_id }}</span>
+            }
+        </summary>
+        <form
+            class="activity-filters"
+            #filterForm="ngForm"
+            (ngSubmit)="filterForm.valid && applyFilters()"
+            aria-label="Filter activity"
         >
-        <mat-form-field
-            ><mat-label>Target user ID</mat-label
-            ><input matInput name="target" [(ngModel)]="filters.target_user_id" inputmode="numeric" pattern="[0-9]+"
-        /></mat-form-field>
-        <mat-form-field
-            ><mat-label>Block ID</mat-label
-            ><input
-                matInput
-                name="block"
-                [(ngModel)]="filters.feature_configuration_id"
-                inputmode="numeric"
-                pattern="[0-9]+"
-        /></mat-form-field>
-        <mat-form-field
-            ><mat-label>From date</mat-label><input matInput name="from" type="date" [(ngModel)]="filters.startDate"
-        /></mat-form-field>
-        <mat-form-field
-            ><mat-label>Through date</mat-label
-            ><input matInput name="through" type="date" [(ngModel)]="filters.endDate"
-        /></mat-form-field>
-        <div class="filter-actions">
-            <button mat-flat-button type="submit" [disabled]="loading() || filterForm.invalid">Apply filters</button
-            ><button mat-button type="button" (click)="clearFilters()" [disabled]="loading()">Clear</button>
-        </div>
-    </form>
+            <mat-form-field
+                ><mat-label>Operation</mat-label
+                ><input matInput name="operation" [(ngModel)]="filters.operation" placeholder="For example, login_as"
+            /></mat-form-field>
+            <mat-form-field
+                ><mat-label>Actor name or email</mat-label><input matInput name="actor" [(ngModel)]="filters.name"
+            /></mat-form-field>
+            <mat-form-field
+                ><mat-label>Outcome</mat-label
+                ><mat-select name="outcome" [(ngModel)]="filters.outcome">
+                    <mat-option value="">All outcomes</mat-option>
+                    <mat-option value="started">Started</mat-option><mat-option value="succeeded">Succeeded</mat-option>
+                    <mat-option value="denied">Denied</mat-option><mat-option value="failed">Failed</mat-option>
+                </mat-select></mat-form-field
+            >
+            <mat-form-field
+                ><mat-label>Target user ID</mat-label
+                ><input
+                    matInput
+                    name="target"
+                    [(ngModel)]="filters.target_user_id"
+                    inputmode="numeric"
+                    pattern="[0-9]+"
+            /></mat-form-field>
+            <mat-form-field
+                ><mat-label>Block ID</mat-label
+                ><input
+                    matInput
+                    name="block"
+                    [(ngModel)]="filters.feature_configuration_id"
+                    inputmode="numeric"
+                    pattern="[0-9]+"
+            /></mat-form-field>
+            <mat-form-field
+                ><mat-label>From date</mat-label
+                ><input matInput name="from" type="date" [(ngModel)]="filters.startDate"
+            /></mat-form-field>
+            <mat-form-field
+                ><mat-label>Through date</mat-label
+                ><input matInput name="through" type="date" [(ngModel)]="filters.endDate"
+            /></mat-form-field>
+            <div class="filter-actions">
+                <button mat-flat-button type="submit" [disabled]="loading() || filterForm.invalid">Apply filters</button
+                ><button mat-button type="button" (click)="clearFilters()" [disabled]="loading()">Clear</button>
+            </div>
+        </form>
+    </details>
 
     @if (loading()) {
         <p role="status" aria-live="polite">Loading activity…</p>

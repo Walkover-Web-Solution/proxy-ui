@@ -1,14 +1,47 @@
-<div class="flex flex-col gap-5 h-full">
+<div class="flex flex-col gap-5">
+    <div class="page-heading">
+        <div>
+            <span class="page-kicker">YOUR WORKSPACE, IN CONTEXT</span>
+            <h1>Overview</h1>
+            <p>Find what is connected. Understand access. Follow the evidence.</p>
+        </div>
+        <a href="https://developers.36blocks.com">Developer documentation ↗</a>
+    </div>
+    <div class="journey-links">
+        <a class="journey-link" routerLink="/app/features"
+            ><span class="step">01</span>
+            <div>
+                <strong>Connect an application</strong>
+                <p>Configure a block and verify sign-in.</p>
+            </div>
+            <span class="arrow">↗</span></a
+        ><a class="journey-link" routerLink="/app/users"
+            ><span class="step">02</span>
+            <div>
+                <strong>Understand a person</strong>
+                <p>Find a user and investigate their activity.</p>
+            </div>
+            <span class="arrow">↗</span></a
+        ><a class="journey-link" routerLink="/app/logs"
+            ><span class="step">03</span>
+            <div>
+                <strong>Investigate a request</strong>
+                <p>Inspect a failure and its context.</p>
+            </div>
+            <span class="arrow">↗</span></a
+        >
+    </div>
     <!-- Header -->
     <div class="flex flex-wrap items-center justify-between gap-4">
-        <h2 class="my-0 text-xl font-bold">Analytics Overview</h2>
+        <h2 class="my-0 text-xl font-bold">Usage in context</h2>
         <div class="flex items-center gap-3">
             <mat-form-field class="no-padding">
                 <mat-icon matPrefix class="mat-icon-18 text-gray-400 mr-1">search</mat-icon>
                 <input
                     matInput
                     type="text"
-                    placeholder="All Blocks"
+                    placeholder="All blocks"
+                    aria-label="Filter usage by authentication block"
                     [formControl]="featureSearchControl"
                     [matAutocomplete]="featureAutocomplete"
                     (input)="onFeatureInputChange($any($event.target).value)"
@@ -33,7 +66,7 @@
                 </mat-autocomplete>
             </mat-form-field>
             <mat-form-field class="no-padding w-36">
-                <mat-select [value]="range()" (valueChange)="onRangeChange($event)">
+                <mat-select aria-label="Usage date range" [value]="range()" (valueChange)="onRangeChange($event)">
                     @for (opt of rangeOptions; track opt.value) {
                         <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
                     }
@@ -42,14 +75,21 @@
         </div>
     </div>
 
-    <!-- Error -->
+    @if (featuresError()) {
+        <div class="experience-notice error" role="alert">
+            {{ featuresError() }}<button mat-button (click)="fetchFeatures()">Retry filters</button>
+        </div>
+    }
     @if (overviewError()) {
-        <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-red-600 mat-body-2 flex items-center gap-2">
-            <mat-icon class="mat-icon-18">error_outline</mat-icon>
-            {{ overviewError() }}
+        <div class="experience-notice error" role="alert">
+            {{ overviewError() }}<button mat-button (click)="fetchOverview(params())">Retry usage</button>
         </div>
     }
 
+    <p class="secondary-text-color text-xs" role="status">
+        Scope:
+        {{ featureConfigurationId() ? displayFeatureName(featureConfigurationId()) : 'All blocks in this workspace' }}
+    </p>
     <!-- KPI Cards -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         @if (isLoadingOverview()) {
@@ -62,7 +102,7 @@
             }
         } @else {
             @for (card of overviewCards; track card.key) {
-                <div class="rounded-2xl bg-color p-5 shadow-sm flex flex-col gap-1">
+                <div class="metric-card rounded-xl bg-color p-5 border border-color flex flex-col gap-1">
                     <div class="flex items-center gap-2 mb-1">
                         <span
                             class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-teal-400/10 border border-teal-400/20"
@@ -78,7 +118,11 @@
                         >
                     </div>
                     <p class="text-3xl font-bold m-0 leading-tight">
-                        {{ getCardValue(overviewData(), card.valueKey, card.valueKeyFallback) | number }}
+                        {{
+                            getCardValue(overviewData(), card.valueKey, card.valueKeyFallback) === null
+                                ? '—'
+                                : (getCardValue(overviewData(), card.valueKey, card.valueKeyFallback) | number)
+                        }}
                     </p>
                     <span class="text-xs mt-1">{{ card.sub }}</span>
                 </div>
@@ -86,6 +130,15 @@
         }
     </div>
 
+    <p class="secondary-text-color text-xs">
+        Usage reflects the selected period and available analytics. A dash means unavailable; it does not mean zero.
+        Active users are not a count of current sessions.
+    </p>
+    <div class="experience-notice">
+        <strong>Need to understand an operator action?</strong
+        ><span>Activity records who acted, the target and the recorded outcome.</span
+        ><a routerLink="/app/activity">Open operator activity →</a>
+    </div>
     <!-- Charts 2x2 Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <timeseries-chart [range]="range()" [featureConfigurationId]="featureConfigurationId()"></timeseries-chart>

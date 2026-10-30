@@ -1,3 +1,11 @@
+<div class="page-heading">
+    <div>
+        <span class="page-kicker">PEOPLE & ACCESS</span>
+        <h1>People</h1>
+        <p>Find a user, identify their block, and follow the recorded activity.</p>
+    </div>
+    <a href="https://developers.36blocks.com">User management guidance ↗</a>
+</div>
 @if (loading$ | async; as loading) {
     <div class="flex flex-col h-full">
         <mat-tab-group
@@ -7,12 +15,12 @@
             (selectedTabChange)="onTabChange($event.index)"
         >
             <!-- User Tab -->
-            <mat-tab label="User">
+            <mat-tab label="Directory">
                 <div class="flex flex-col h-full">
                     <div class="flex flex-wrap items-center justify-between gap-4 my-6">
                         <proxy-lib-search
                             [matFormFieldClass]="'no-padding w-xs-100'"
-                            [placeholder]="'Search'"
+                            [placeholder]="'Search name or email'"
                             (inputChanges)="search($event)"
                             class="w-xs-100"
                         ></proxy-lib-search>
@@ -85,6 +93,11 @@
                             </button>
                         </div>
                     </div>
+                    @if (usersError$ | async; as error) {
+                        <div class="experience-notice error" role="alert">
+                            {{ error }}<button mat-button (click)="getUsers()">Retry</button>
+                        </div>
+                    }
                     <div class="table-scroll">
                         <table
                             mat-table
@@ -95,14 +108,27 @@
                                       ? [1, 2, 3, 4]
                                       : []
                             "
-                            class="default-table responsive-table"
+                            class="default-table responsive-table people-table"
                         >
                             <!-- Name Column -->
                             <ng-container matColumnDef="name">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="width-md-300">Name</th>
                                 <td mat-cell *matCellDef="let element" data-label="Name">
                                     @if (!loading.dataLoading) {
-                                        <span>{{ element.name }}</span>
+                                        <div>
+                                            <span>{{ element.name }}</span>
+                                            <details class="mobile-profile-details">
+                                                <summary>Profile details</summary>
+                                                <dl>
+                                                    <dt>User ID</dt>
+                                                    <dd>{{ element.id }}</dd>
+                                                    <dt>Phone</dt>
+                                                    <dd>{{ element.mobile || 'Not provided' }}</dd>
+                                                    <dt>Created</dt>
+                                                    <dd>{{ element.created_at | date: 'mediumDate' }}</dd>
+                                                </dl>
+                                            </details>
+                                        </div>
                                     } @else {
                                         <ng-container [ngTemplateOutlet]="loadingRef"></ng-container>
                                     }
@@ -225,6 +251,20 @@
                                 </td>
                             </ng-container>
 
+                            <ng-container matColumnDef="investigate"
+                                ><th mat-header-cell *matHeaderCellDef>Investigate</th>
+                                <td mat-cell *matCellDef="let element" data-label="Investigate">
+                                    @if (!loading.dataLoading) {
+                                        <a
+                                            class="table-action"
+                                            [routerLink]="['/app/activity']"
+                                            [queryParams]="{ target_user_id: element.id }"
+                                            [attr.aria-label]="'View activity for ' + (element.name || element.id)"
+                                            >View activity →</a
+                                        >
+                                    }
+                                </td></ng-container
+                            >
                             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                             <tr
                                 mat-row
@@ -235,7 +275,18 @@
 
                             <tr *matNoDataRow>
                                 <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
-                                    <proxy-no-record-found [title]="'users'" [showBtn]="false"></proxy-no-record-found>
+                                    @if (!(usersError$ | async)) {
+                                        <div class="p-8 text-center">
+                                            <strong>No people match these filters.</strong>
+                                            <p class="secondary-text-color text-sm">
+                                                Try a different name or email, a wider date range, or reset company and
+                                                block filters.
+                                            </p>
+                                            <button mat-button (click)="resetParam()">
+                                                Reset company & block filters
+                                            </button>
+                                        </div>
+                                    }
                                 </td>
                             </tr>
                         </table>
@@ -245,7 +296,7 @@
                         [pageSize]="(users$ | async)?.itemsPerPage || 25"
                         [pageSizeOptions]="pageSizeOptions"
                         (page)="pageChange($event)"
-                        [pageIndex]="(users$ | async)?.pageNumber - 1"
+                        [pageIndex]="((users$ | async)?.pageNumber || 1) - 1"
                         class="box-shadow-none"
                     ></mat-paginator-goto>
                 </div>
@@ -253,7 +304,7 @@
 
             <!-- Management Tab -->
             <mat-tab label="Management">
-                <proxy-management></proxy-management>
+                <ng-template matTabContent><proxy-management></proxy-management></ng-template>
             </mat-tab>
         </mat-tab-group>
     </div>

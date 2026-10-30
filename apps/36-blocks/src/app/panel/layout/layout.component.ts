@@ -74,6 +74,29 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
 
     public toggleMenuSideBar: boolean;
     public showContainer = false;
+    readonly currentArea = signal('Overview');
+    readonly environmentLabel = environment.production
+        ? 'Production'
+        : environment.env === 'local'
+          ? 'Local'
+          : environment.env;
+    private updateArea(url: string): void {
+        const section = url.split('?')[0].split('/')[2] || 'dashboard';
+        this.currentArea.set(
+            (
+                {
+                    dashboard: 'Overview',
+                    features: 'Applications & blocks',
+                    users: 'People',
+                    logs: 'Request logs',
+                    activity: 'Operator activity',
+                    chatbot: 'Assistant',
+                    billing: 'Billing',
+                } as Record<string, string>
+            )[section] || 'Workspace'
+        );
+        this.showContainer = section === 'chatbot';
+    }
     public clientsParams = {
         itemsPerPage: 100,
         pageNo: 1,
@@ -112,29 +135,36 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
             takeUntil(this.destroy$)
         );
 
-        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-            this.showContainer = event?.url?.includes('chatbot');
-            const container = document.getElementById('ChatbotContainer');
-            if (container) {
-                container.style.display = this.showContainer ? 'block' : 'none';
-            }
-            if (event?.url?.startsWith('/widget-preview')) {
-                (window as any).closeChatbot?.();
-            }
-            if (event?.url?.includes('/features/create')) {
-                this.featuresService
-                    .getFeature({ itemsPerPage: 1, pageNo: 1 })
-                    .pipe(take(1))
-                    .subscribe((res) => {
-                        const hasFeatures = (res?.data?.totalEntityCount ?? 0) > 0;
-                        this.sideNavService.hideSidebar.set(!hasFeatures);
-                        this.cdr.markForCheck();
-                    });
-            } else {
-                this.sideNavService.hideSidebar.set(false);
-            }
-            this.cdr.markForCheck();
-        });
+        this.updateArea(this.router.url);
+        this.router.events
+            .pipe(
+                filter((event) => event instanceof NavigationEnd),
+                takeUntil(this.destroy$)
+            )
+            .subscribe((event: NavigationEnd) => {
+                this.updateArea(event.urlAfterRedirects || event.url);
+                if (this.isMobileDevice()) this.sideNavService.close();
+                const container = document.getElementById('ChatbotContainer');
+                if (container) {
+                    container.style.display = this.showContainer ? 'block' : 'none';
+                }
+                if (event?.url?.startsWith('/widget-preview')) {
+                    (window as any).closeChatbot?.();
+                }
+                if (event?.url?.includes('/features/create')) {
+                    this.featuresService
+                        .getFeature({ itemsPerPage: 1, pageNo: 1 })
+                        .pipe(take(1))
+                        .subscribe((res) => {
+                            const hasFeatures = (res?.data?.totalEntityCount ?? 0) > 0;
+                            this.sideNavService.hideSidebar.set(!hasFeatures);
+                            this.cdr.markForCheck();
+                        });
+                } else {
+                    this.sideNavService.hideSidebar.set(false);
+                }
+                this.cdr.markForCheck();
+            });
     }
     ngOnInit(): void {
         this.getClients();
@@ -173,55 +203,57 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
         //     }
         // });
 
-        combineLatest([this.logInData$, this.clientSettings$]).subscribe(([loginData, clientSettings]) => {
-            if (loginData && clientSettings) {
-                this.rootService.generateToken({ source: 'chatbot' }).subscribe((res) => {
-                    const scriptId = 'chatbot-main-script';
-                    const existingScript = document.getElementById(scriptId);
-                    if (existingScript) {
-                        existingScript.remove();
-                    }
-                    const scriptElement = document.createElement('script');
-                    scriptElement.type = 'text/javascript';
-                    scriptElement.src = environment.interfaceScriptUrl;
-                    scriptElement.id = scriptId;
-                    scriptElement.setAttribute('embedToken', res?.data?.jwt);
-                    scriptElement.setAttribute('parentId', 'ChatbotContainer');
-                    scriptElement.setAttribute('fullScreen', 'true');
-                    scriptElement.setAttribute('hideIcon', 'true');
-                    scriptElement.setAttribute('hideCloseButton', 'true');
+        combineLatest([this.logInData$, this.clientSettings$])
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(([loginData, clientSettings]) => {
+                if (loginData && clientSettings) {
+                    this.rootService.generateToken({ source: 'chatbot' }).subscribe((res) => {
+                        const scriptId = 'chatbot-main-script';
+                        const existingScript = document.getElementById(scriptId);
+                        if (existingScript) {
+                            existingScript.remove();
+                        }
+                        const scriptElement = document.createElement('script');
+                        scriptElement.type = 'text/javascript';
+                        scriptElement.src = environment.interfaceScriptUrl;
+                        scriptElement.id = scriptId;
+                        scriptElement.setAttribute('embedToken', res?.data?.jwt);
+                        scriptElement.setAttribute('parentId', 'ChatbotContainer');
+                        scriptElement.setAttribute('fullScreen', 'true');
+                        scriptElement.setAttribute('hideIcon', 'true');
+                        scriptElement.setAttribute('hideCloseButton', 'true');
 
-                    scriptElement.onload = () => {
-                        const payload = {
-                            variables: {
-                                variables: JSON.stringify({
-                                    session: this.authService.getTokenSync(),
-                                }),
-                            },
-                            threadId: `${loginData?.email}${clientSettings?.client?.id}`,
-                            bridgeName: 'root',
-                            parentId: 'ChatbotContainer',
-                            fullScreen: true,
+                        scriptElement.onload = () => {
+                            const payload = {
+                                variables: {
+                                    variables: JSON.stringify({
+                                        session: this.authService.getTokenSync(),
+                                    }),
+                                },
+                                threadId: `${loginData?.email}${clientSettings?.client?.id}`,
+                                bridgeName: 'root',
+                                parentId: 'ChatbotContainer',
+                                fullScreen: true,
+                            };
+                            setTimeout(() => {
+                                if (this.router.url.startsWith('/widget-preview')) {
+                                    return;
+                                }
+                                (window as any).SendDataToChatbot(payload);
+                                (window as any).openChatbot();
+                                // Body have class light-theme
+                                if (document.body.classList.contains('light-theme')) {
+                                    this.sendThemeToChatbot('light');
+                                } else {
+                                    this.sendThemeToChatbot('dark');
+                                }
+                            }, 2000);
                         };
-                        setTimeout(() => {
-                            if (this.router.url.startsWith('/widget-preview')) {
-                                return;
-                            }
-                            (window as any).SendDataToChatbot(payload);
-                            (window as any).openChatbot();
-                            // Body have class light-theme
-                            if (document.body.classList.contains('light-theme')) {
-                                this.sendThemeToChatbot('light');
-                            } else {
-                                this.sendThemeToChatbot('dark');
-                            }
-                        }, 2000);
-                    };
 
-                    document.body.appendChild(scriptElement);
-                });
-            }
-        });
+                        document.body.appendChild(scriptElement);
+                    });
+                }
+            });
     }
 
     public logOut() {

@@ -18,6 +18,12 @@ Read [AGENTS.md](AGENTS.md), [current work state](../user-proxy/docs/WORK-STATE.
 
 The existing contribution and style guidance below remains applicable. Use the canonical development and design guides where obsolete runtime/module instructions conflict with the current standalone Angular architecture.
 
+## Isolated design review
+
+Product and API guidance lives at [developers.36blocks.com](https://developers.36blocks.com). `/docs` is a legacy handoff page, not another documentation site.
+
+Run `npm run review:build`, then `npm run review:serve` for the local review at `http://127.0.0.1:4360`. It renders the real routes using synthetic fixtures and a separate bootstrap. All mutations are rejected; no live API calls or credentials are issued. `review-version.json` identifies the source fingerprint. Release configurations continue to use `src/main.ts`. This review does not verify live authentication or providers.
+
 ## Contributing Guide
 
 Before contributing it is required that you should have a proper knowledge of **Git** and **Nx**. If you're unfamiliar with Git or Nx you should first visit the recommended [Udacity Git course](https://blog.udacity.com/2015/06/a-beginners-git-github-tutorial.html) and [Nx Docs](https://nx.dev/getting-started/intro)
