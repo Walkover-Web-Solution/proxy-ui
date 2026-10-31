@@ -55,7 +55,7 @@ The layout itself (`apps/36-blocks/src/app/website/layout/website-layout.compone
 
 ### Dashboard (`panelRoutes`, layout `LayoutComponent`)
 
-The parent route `/app` lazy-loads `apps/36-blocks/src/app/panel/layout/layout.component.ts:LayoutComponent` (side nav, header, client switcher, theme toggle) with `canActivate: [CanActivateRouteGuard]`. The guard is on the parent only; children inherit it.
+The parent route `/app` lazy-loads `apps/36-blocks/src/app/panel/layout/layout.component.ts:LayoutComponent` (side nav, header, client switcher, Light / Dark / System theme switcher) with `canActivate: [CanActivateRouteGuard]`. The guard is on the parent only; children inherit it.
 
 | Route | Component | Guard | Load | Purpose / data |
 |---|---|---|---|---|

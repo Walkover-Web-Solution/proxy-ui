@@ -33,10 +33,10 @@
 }
 <mat-menu #menu="matMenu" class="profile-menu ml-1 w-[260px]">
     <h4 class="m-0 py-2 px-6 text-dark font-medium">{{ user.displayName }}</h4>
-    <button type="button" mat-menu-item class="flex items-center gap-2" (click)="darkModeToggled.emit(!isDarkMode)">
-        <mat-icon class="mat-icon-18 material-icons-outlined">{{ isDarkMode ? 'dark_mode' : 'light_mode' }}</mat-icon>
-        <span>{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
-    </button>
+    <div class="theme-menu" (click)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()">
+        <p class="theme-menu__label">Theme</p>
+        <proxy-theme-switcher class="theme-switcher--full" />
+    </div>
     <button
         type="button"
         mat-menu-item

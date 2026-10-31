@@ -1,0 +1,78 @@
+:host {
+    display: inline-flex;
+    max-width: 100%;
+}
+
+:host.theme-switcher--full {
+    display: flex;
+    width: 100%;
+}
+
+:host ::ng-deep .theme-switcher.mat-button-toggle-group {
+    border: 1px solid var(--experience-border);
+    border-radius: 7px;
+    height: 32px;
+    overflow: hidden;
+}
+
+:host.theme-switcher--full ::ng-deep .theme-switcher.mat-button-toggle-group {
+    width: 100%;
+}
+
+:host ::ng-deep .theme-switcher .mat-button-toggle {
+    color: var(--experience-muted);
+    font-size: 12px;
+}
+
+:host.theme-switcher--full ::ng-deep .theme-switcher .mat-button-toggle {
+    flex: 1 1 0;
+}
+
+:host ::ng-deep .theme-switcher .mat-button-toggle-checked {
+    background: var(--experience-soft);
+    color: var(--experience-ink);
+}
+
+:host ::ng-deep .theme-switcher .mat-button-toggle-label-content {
+    line-height: 30px;
+    padding: 0 8px;
+}
+
+:host ::ng-deep .theme-switcher .mat-button-toggle:focus-visible .mat-button-toggle-button {
+    outline: 2px solid var(--experience-accent);
+    outline-offset: -2px;
+}
+
+.theme-switcher__option {
+    align-items: center;
+    display: inline-flex;
+    gap: 4px;
+}
+
+.theme-switcher__option .mat-icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+}
+
+.theme-switcher__label {
+    font-weight: 500;
+}
+
+@media (max-width: 720px) {
+    :host.theme-switcher--responsive .theme-switcher__label {
+        border: 0;
+        clip: rect(0, 0, 0, 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        white-space: nowrap;
+        width: 1px;
+    }
+
+    :host.theme-switcher--responsive ::ng-deep .theme-switcher .mat-button-toggle-label-content {
+        padding: 0 6px;
+    }
+}

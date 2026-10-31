@@ -77,9 +77,17 @@ body.dark-theme {
     --experience-soft: #283624;
 }
 body.website-active {
+    --experience-page: #f8f9f3;
+    --experience-surface: #fff;
+    --experience-ink: #202d1d;
+    --experience-muted: #5e6c56;
+    --experience-border: #dce3d4;
+    --experience-accent: #315b2b;
+    --experience-soft: #edf2e7;
     background: var(--experience-page);
     background-image: none;
     color: var(--experience-ink);
+    color-scheme: light;
 }
 .website-shell {
     --experience-page: #f8f9f3;
