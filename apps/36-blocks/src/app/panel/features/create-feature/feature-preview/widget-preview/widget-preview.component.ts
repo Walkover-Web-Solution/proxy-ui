@@ -30,7 +30,7 @@ import { selectLogInData } from '../../../../../website/home/ngrx/selector/login
 import { ILogInFeatureStateWithRootState } from '../../../../../website/home/ngrx/store/login.state';
 import * as logInActions from '../../../../../website/home/ngrx/actions/login.action';
 import { SidebarUserMenuComponent } from '../../../../layout/sidebar-user-menu/sidebar-user-menu.component';
-import { UiSettingsService } from '../../../../layout/ui-settings.service';
+import { ThemeSwitcherComponent } from '../../../../layout/theme-switcher/theme-switcher.component';
 import { SideNavService } from '../../../../layout/side-nav.service';
 import { Location } from '@angular/common';
 import { environment } from '../../../../../../environments/environment';
@@ -61,6 +61,7 @@ export type PreviewTab =
         CopyButtonComponent,
         A11yModule,
         SidebarUserMenuComponent,
+        ThemeSwitcherComponent,
     ],
     templateUrl: './widget-preview.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -74,13 +75,11 @@ export class WidgetPreviewComponent {
     private breakpointObserver = inject(BreakpointObserver);
     private readonly _injector = inject(Injector);
     private readonly store = inject<Store<ILogInFeatureStateWithRootState>>(Store);
-    private readonly uiSettings = inject(UiSettingsService);
     private readonly sideNavService = inject(SideNavService);
 
     @ViewChild('drawer') drawer!: MatDrawer;
 
     public readonly isMobile = signal<boolean>(false);
-    public readonly isDarkMode = signal<boolean>(false);
     public readonly logInData$: Observable<IFirebaseUserModel>;
     private readonly originUrl: string | null;
 
@@ -129,7 +128,6 @@ export class WidgetPreviewComponent {
     constructor() {
         this.originUrl = this.resolveOriginUrl();
         this.logInData$ = this.store.pipe(select(selectLogInData), distinctUntilChanged(isEqual));
-        this.isDarkMode.set(this.uiSettings.theme === 'dark-theme');
         this.breakpointObserver
             .observe([Breakpoints.XSmall, Breakpoints.Small])
             .pipe(takeUntilDestroyed())
@@ -258,12 +256,6 @@ export class WidgetPreviewComponent {
 
     public logOut(): void {
         this.store.dispatch(logInActions.logoutAction());
-    }
-
-    public switchedDarkMode(isDark: boolean): void {
-        const hostClass = isDark ? 'dark-theme' : 'light-theme';
-        this.uiSettings.setTheme(hostClass);
-        this.isDarkMode.set(isDark);
     }
 
     public launchWidget(): void {

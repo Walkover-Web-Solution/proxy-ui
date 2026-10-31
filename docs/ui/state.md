@@ -14,7 +14,7 @@ Both apps use three kinds of state: a global NgRx store (`@ngrx/store` + `@ngrx/
 | Session-wide, read by the layout and by several pages, must die on logout | Global NgRx store | logged-in user, client settings, clients list, projects | One shared copy; `clearStateMetaReducer` wipes it on `logoutAction`. |
 | Server data and CRUD results for one page | A `ComponentStore` in `<page>.store.ts`, listed in that component's `providers` | blocks list, logs, billing, users/roles | Destroyed with the page, so no stale data on the next visit and no global reset needed. |
 | Local UI flags, view mode, theme, derived values | `signal()` / `computed()` in the component or a root service | side nav open, dialog open, `isEditing`, `isDark` | Commits e1a40b95 (side nav `BehaviorSubject` → signal), 8641b056 (`isEditing` → signal), 39a7ba6e (`isDark` getter → `computed`) moved this kind of state to signals. |
-| User preference that must survive reloads | `UiSettingsService` (`localStorage` key `ui-settings`, 30-day TTL) | theme, side nav open | a4a88252 extracted it from the layout. |
+| User preference that must survive reloads | `UiSettingsService` (`localStorage` key `ui-settings`, 30-day TTL) | theme preference (`light` / `dark` / `system`), side nav open | a4a88252 extracted it from the layout. |
 | Store value read in a signal-based template | `toSignal(store.select(...), { initialValue })` | `RegisterPageComponent`, `ProxyAuthWidgetComponent` | Avoids `async` pipes in signal templates. |
 
 New code follows this table. Do not add page-only data to the global store, and do not add new `BehaviorSubject` UI flags.
@@ -111,7 +111,7 @@ readonly getFeature = this.effect((req$: Observable<IFeatureReq>) => req$.pipe(
 ## Signals
 
 - Signal inputs/outputs (`input<T>()`, `input.required`, `output<T>()`) are the norm in `libs/ui/**`, directives and the widget (78107ece fixed templates to call them as `x()`). A few older libs (`MentionDirective`, `SkeletonDirective`) still use `@Input`.
-- Dashboard: `SideNavService` (`apps/36-blocks/src/app/panel/layout/side-nav.service.ts`) holds `isSideNavOpen` and `hideSidebar` signals, persisted through `UiSettingsService`. `LayoutComponent.isDarkMode`, dashboard charts and `WidgetPreviewComponent` (`referenceId`, `viewMode`, computed snippet) also use signals.
+- Dashboard: `SideNavService` (`apps/36-blocks/src/app/panel/layout/side-nav.service.ts`) holds `isSideNavOpen` and `hideSidebar` signals, persisted through `UiSettingsService`. `UiSettingsService.themePreference` and `isDark` are the console theme signals. Dashboard charts and `WidgetPreviewComponent` (`referenceId`, `viewMode`, computed snippet) also use signals.
 - Widget: `ProxyAuthWidgetComponent` uses `show`, `showRegistration`, `showForgotPassword`, OAuth flags and a `viewMode` computed (see [widget-auth](../modules/widget-auth.md#1-which-screen-shows-the-state-machine)); `WidgetThemeService` exposes `resolvedTheme` and `isDark$` signals; every widget screen has `isDark = computed(() => themeService.isDark$())` and `effect(() => this.themeService.setInputTheme(this.theme()))`.
 - `OtpWidgetService.showlogin` is still a `BehaviorSubject`, bridged with `toSignal`.
 
@@ -119,7 +119,7 @@ readonly getFeature = this.effect((req$: Observable<IFeatureReq>) => req$.pipe(
 
 | What | Where | Owner |
 |---|---|---|
-| Theme + side nav open | `localStorage['ui-settings']`, expires after 30 days | `apps/36-blocks/src/app/panel/layout/ui-settings.service.ts:UiSettingsService` |
+| Theme preference (`light` / `dark` / `system`) + side nav open | `localStorage['ui-settings']`, expires after 30 days. `system` resolves with `prefers-color-scheme`. | `apps/36-blocks/src/app/panel/layout/ui-settings.service.ts:UiSettingsService` |
 | Widget preview "back" target (`originUrl` from navigation state) | `sessionStorage['widget_preview_origin_<referenceId>']` | `WidgetPreviewComponent` |
 | Auth token | cookie `authToken` + memory | `AuthService`, see [app-shell](../modules/app-shell.md#where-the-auth-token-lives) |
 

@@ -4,6 +4,7 @@ import {
     Component,
     OnDestroy,
     OnInit,
+    effect,
     inject,
     signal,
 } from '@angular/core';
@@ -22,6 +23,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MainLeftSideNavComponent } from './main-left-side-nav/main-left-side-nav.component';
 import { SidebarUserMenuComponent } from './sidebar-user-menu/sidebar-user-menu.component';
+import { ThemeSwitcherComponent } from './theme-switcher/theme-switcher.component';
 import { IClient, IClientSettings, IFirebaseUserModel, IPaginatedResponse } from '@proxy/models/root-models';
 import { BaseComponent } from '@proxy/ui/base-component';
 import { Store, select } from '@ngrx/store';
@@ -59,6 +61,7 @@ import { take } from 'rxjs/operators';
         ScrollingModule,
         MainLeftSideNavComponent,
         SidebarUserMenuComponent,
+        ThemeSwitcherComponent,
     ],
     host: { class: 'flex w-full h-screen' },
     templateUrl: './layout.component.html',
@@ -69,8 +72,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     public clientSettings$: Observable<IClientSettings>;
     public clients$: Observable<IPaginatedResponse<IClient[]>>;
     public swtichClientSuccess$: Observable<boolean>;
-
-    public isDarkMode = signal<boolean>(false);
 
     public toggleMenuSideBar: boolean;
     public showContainer = false;
@@ -114,6 +115,9 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
 
     constructor() {
         super();
+        effect(() => {
+            this.sendThemeToChatbot(this.uiSettings.isDark() ? 'dark' : 'light');
+        });
         this.logInData$ = this.store.pipe(
             select(selectLogInData),
             distinctUntilChanged(isEqual),
@@ -169,7 +173,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     ngOnInit(): void {
         this.getClients();
         this.getClientSettings();
-        this.getCurrentTheme();
         document.body.classList.remove('website-active');
 
         if (this.isMobileDevice()) {
@@ -270,19 +273,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
 
     public switchClient(clientId: number): void {
         this.store.dispatch(rootActions.switchClient({ request: { client_id: clientId } }));
-    }
-
-    public getCurrentTheme() {
-        this.switchedDarkMode(this.uiSettings.theme === 'dark-theme');
-    }
-
-    public switchedDarkMode(isDarkMode: boolean) {
-        const hostClass = isDarkMode ? 'dark-theme' : 'light-theme';
-        this.uiSettings.setTheme(hostClass);
-        this.isDarkMode.set(isDarkMode);
-
-        // This GTWY chatbot config for forced theme
-        this.sendThemeToChatbot(this.isDarkMode() ? 'dark' : 'light');
     }
 
     private sendThemeToChatbot(theme: 'light' | 'dark'): void {

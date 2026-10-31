@@ -94,13 +94,7 @@
         ></proxy-main-left-side-nav>
         <!-- Proxy Sidenav::END -->
         @if (logInData$ | async; as user) {
-            <proxy-sidebar-user-menu
-                class="mt-auto"
-                [user]="user"
-                [isDarkMode]="isDarkMode()"
-                (darkModeToggled)="switchedDarkMode($event)"
-                (loggedOut)="logOut()"
-            ></proxy-sidebar-user-menu>
+            <proxy-sidebar-user-menu class="mt-auto" [user]="user" (loggedOut)="logOut()"></proxy-sidebar-user-menu>
         }
         <div
             class="sidebar-billing-link shrink-0"
@@ -150,6 +144,7 @@
                 ><span class="context-area">{{ currentArea() }}</span>
             </div>
             <div class="context-meta">
+                <proxy-theme-switcher class="theme-switcher--responsive" />
                 <span class="environment-label"
                     ><span class="environment-prefix">Console: </span>{{ environmentLabel }}</span
                 ><a href="https://developers.36blocks.com">Developer docs ↗</a>

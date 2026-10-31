@@ -19,6 +19,35 @@
         />
     </head>
     <body>
+        <script>
+            (function () {
+                try {
+                    var raw = localStorage.getItem('ui-settings');
+                    var preference = 'light';
+                    if (raw) {
+                        var parsed = JSON.parse(raw);
+                        var ttl = 30 * 24 * 60 * 60 * 1000;
+                        if (parsed && typeof parsed._savedAt === 'number' && Date.now() - parsed._savedAt < ttl) {
+                            if (
+                                parsed.themePreference === 'light' ||
+                                parsed.themePreference === 'dark' ||
+                                parsed.themePreference === 'system'
+                            ) {
+                                preference = parsed.themePreference;
+                            } else if (parsed.theme === 'dark-theme') {
+                                preference = 'dark';
+                            } else if (parsed.theme === 'light-theme') {
+                                preference = 'light';
+                            }
+                        }
+                    }
+                    var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    var dark = preference === 'dark' || (preference === 'system' && systemDark);
+                    document.body.classList.remove('light-theme', 'dark-theme');
+                    document.body.classList.add(dark ? 'dark-theme' : 'light-theme');
+                } catch (e) {}
+            })();
+        </script>
         <div id="app-splash-screen">
             <style>
                 #app-splash-screen {
