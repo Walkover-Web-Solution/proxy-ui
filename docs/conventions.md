@@ -1,5 +1,5 @@
 ---
-covers: [".prettierrc.json", "package.json", ".husky/pre-commit", "apps/*/.eslintrc.json", ".eslintrc.json", ".github/workflows/main.yml", "tsconfig.base.json"]
+covers: [".prettierrc.json", "package.json", ".husky/pre-commit", "apps/*/.eslintrc.json", ".eslintrc.json", ".github/workflows/main.yml", ".github/workflows/status-check.yml", "tsconfig.base.json"]
 verified_at: 76f26ae5
 verified_on: 2026-10-14
 ---
@@ -59,7 +59,9 @@ The flow used in practice, from merged PRs #620–#661:
 3. Release with `stage` → `production`. If that conflicts, use a `<card>-prod` branch → `production`. Hotfixes sometimes go straight to `production`; any revert must also land on `stage`, or the next release brings the change back (this happened with the retry interceptor, #642 → #639).
 
 > [!WARNING]
-> `README.md` still describes `development` → `main` → `production`. `main` (last merged 2026-04-21) and `development` (2026-04-27) are stale. `.github/workflows/main.yml` runs only on PRs to `development`, `main` and `production`, so **PRs into `stage` get no CI build**. Build locally before you open one.
+> `README.md` still describes `development` → `main` → `production`. `main` (last merged 2026-04-21) and `development` (2026-04-27) are stale. `.github/workflows/main.yml` runs only on PRs to `development`, `main` and `production`, so **PRs into `stage` get no CI build**. `.github/workflows/status-check.yml` runs `npm run status:check` on every pull request. Build locally before you open one.
+
+Every change to a feature, screen, rule, table or decision updates [STATUS.md](../STATUS.md) in the same change: the row, a change-log line, and the "Reviewed up to commit" hash. Update it for a teammate when they didn't. The check fails when `apps/`, `libs/` or `tools/` differ from the base branch and `STATUS.md` does not, unless the code commit message contains `[no status]`. This repo has no root `src/` or `migrations/` directory.
 
 > [!TODO] Needs a human: confirm which branch new `-clean` branches should be cut from now (`stage` or `production`), and whether `main` / `development` are retired.
 

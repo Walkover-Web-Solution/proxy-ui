@@ -10,3 +10,4 @@ Start with the canonical [work state](../user-proxy/docs/WORK-STATE.md), [archit
 - Run `node --test tools/tests/*.test.cjs`, affected builds and `git diff --check`. Existing Nx/Jest targets have known gaps: report exact commands and limitations in canonical work state.
 - Keep error, denied, empty and loading states distinct; provide retry. Never render request data as HTML or log/store tokens. Client visibility does not replace server authorization.
 - Update the single backend-owned capability matrix and work state alongside changes. Product/architecture guidance is linked, not duplicated here. Public claims require evidence; do not invent SLAs, guarantees or future functional controls.
+- Every change to a feature, screen, rule, table or decision updates [STATUS.md](STATUS.md) in the same change: the row, a change-log line, and the "Reviewed up to commit" hash. Update STATUS.md for teammates who didn't.

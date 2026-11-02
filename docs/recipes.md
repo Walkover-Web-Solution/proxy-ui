@@ -124,7 +124,7 @@ Learned from the merged PR list (`gh pr list --state merged`), not from `README.
 3. Release: a PR from `stage` into `production` (#656 "Stage"). Hotfixes sometimes go straight to `production` from their own branch (#649, #637), or via a `<card-id>-prod` branch (#661).
 
 > [!WARNING]
-> `README.md` describes `development` → `main` → `production`. That flow is stale: `origin/main` was last updated 2026-04-21 and `origin/development` 2026-04-27. `.github/workflows/main.yml` runs the build check only on PRs into `development`, `main` and `production`, so PRs into `stage` get no CI build. Run `npx nx affected --target=build --configuration=local` yourself.
+> `README.md` describes `development` → `main` → `production`. That flow is stale: `origin/main` was last updated 2026-04-21 and `origin/development` 2026-04-27. `.github/workflows/main.yml` runs the build check only on PRs into `development`, `main` and `production`, so PRs into `stage` get no CI build. `.github/workflows/status-check.yml` still runs `npm run status:check` on those PRs. Run `npx nx affected --target=build --configuration=local` yourself. Update [STATUS.md](../STATUS.md) in the same change when a feature, screen, rule, table or decision changes.
 
 > [!WARNING]
 > A revert merged only into `production` is undone by the next `stage` → `production` merge. #642 reverted the `ErrorInterceptor` retry on `production` (2026-06-23); #639 brought it back from `stage` the next day, and the retry is live on every branch at HEAD. Revert on `stage` too.

@@ -1,5 +1,5 @@
 ---
-covers: ["tools/set-env.js", "tools/postbuild.js", ".env.example", "apps/36-blocks/src/environments/**", "apps/36-blocks-widget/src/environments/**", "apps/36-blocks/project.json", "apps/36-blocks-widget/project.json", "package.json", "nx.json", ".github/workflows/main.yml", "apps/36-blocks/src/server.ts"]
+covers: ["tools/set-env.js", "tools/postbuild.js", ".env.example", "apps/36-blocks/src/environments/**", "apps/36-blocks-widget/src/environments/**", "apps/36-blocks/project.json", "apps/36-blocks-widget/project.json", "package.json", "nx.json", ".github/workflows/main.yml", ".github/workflows/status-check.yml", "apps/36-blocks/src/server.ts"]
 verified_at: 76f26ae5
 verified_on: 2026-10-14
 ---
@@ -42,6 +42,7 @@ It is up when the console shows `[set-env] Written: …/env-variables.ts` and th
 | `test:contract` | `nx test 36-blocks-widget …`: the widget has no `test` target, so this cannot run (see [widget-embed](./modules/widget-embed.md)). |
 | `lint` | `nx workspace-lint && nx lint`. `workspace-lint` is not an Nx 21 command, so use `npx nx run-many -t lint`. |
 | `format`, `format:check`, `format:code` | Nx / Prettier formatting. A husky `pre-commit` hook runs `lint-staged` (Prettier on `*.{html,scss,ts,json}`). |
+| `status:check` | `node scripts/status-check.mjs`. Fails when `apps/`, `libs/` or `tools/` changed against the base branch and `STATUS.md` did not. See [Status check](#ci-status-check). |
 
 > [!WARNING]
 > `npm run build` (no suffix) builds the widget with the `production` environment but the dashboard with `local`. A "local" full build therefore ships a widget pointing at the production API.
@@ -134,3 +135,10 @@ Errors are only logged; the build never fails here.
 
 Deployment is not in this repo. `set-env.js` comments and `AWS_BRANCH` point to AWS Amplify, where .env is written before the build.
 > [!TODO] Needs a human: which Amplify app/branch maps to which build script (`build:test` / `build:stage` / `build:prod`)?
+
+## CI: Status check
+
+- Workflow: `.github/workflows/status-check.yml`. Triggers: every `pull_request`, plus `workflow_dispatch`. Checkout uses `fetch-depth: 0`, then fetches the PR base branch.
+- Runs `npm run status:check` with `STATUS_BASE=origin/<base>` on pull requests. It does not install dependencies.
+- Fails when `apps/`, `libs/` or `tools/` differ from the merge-base and `STATUS.md` does not, unless every one of those code commits has `[no status]` in its message. An uncommitted code edit fails unless `STATUS.md` is uncommitted too. The command always prints commits that touch those directories after the `Reviewed up to commit` hash in `STATUS.md`.
+- There is no root `src/` or `migrations/` directory. `migrations.json` is the Nx migration manifest and is not watched.

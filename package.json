@@ -49,6 +49,7 @@
         "format:code": "npx prettier --write --ignore-unknown .",
         "prepare": "husky install",
         "test:v0": "node --test tools/tests/*.test.cjs",
+        "status:check": "node scripts/status-check.mjs",
         "review:build": "NX_DAEMON=false NX_ISOLATE_PLUGINS=false nx build 36-blocks --configuration=review && node tools/review/version.cjs",
         "review:serve": "node tools/review/serve.cjs dist/review/browser 4360"
     },
