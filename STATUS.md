@@ -1,6 +1,6 @@
 # Status
 
-**Plan:** Not supplied · **Last updated:** 2026-11-02 · **Reviewed up to commit:** `83d8a2798df49e2183df0bc9118f8cc72517621c`
+**Plan:** Not supplied · **Last updated:** 2026-11-02 · **Reviewed up to commit:** `40b605359b20cc50983c61936a1f7c7890d71e8c`
 
 ## Legend
 
@@ -57,4 +57,5 @@ The missing plan named no tests. Nothing in this section is ✅.
 
 ## Change log
 
-- 2026-11-02 · Cursor Agent · Added the tracker and left product rows unscored because the plan text is not in this repo. `node --test tools/tests/status-check.test.cjs` passed on Node 22 (4 tests). The clean-tree check on this branch is recorded after that run. · tracker 🟡; no product status changed
+- 2026-11-02 · Cursor Agent · Ran `npm run status:check` on the clean branch (pass; it listed `40b60535`), then after an uncommitted edit to `apps/36-blocks/src/app/panel/layout/theme-preference.ts` with `STATUS.md` unchanged (fail), then again after reverting that edit (pass). Moved the reviewed hash to `40b60535`. · tracker stays 🟡
+- 2026-11-02 · Cursor Agent · Added the tracker and left product rows unscored because the plan text is not in this repo. `node --test tools/tests/status-check.test.cjs` passed on Node 22 (4 tests). · tracker 🟡; no product status changed
