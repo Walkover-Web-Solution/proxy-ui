@@ -1,7 +1,7 @@
 ---
 covers: ["apps/36-blocks-widget/src/app/otp/widget/**", "apps/36-blocks-widget/src/app/otp/component/login/**", "apps/36-blocks-widget/src/app/otp/component/register/**", "apps/36-blocks-widget/src/app/otp/component/index.ts", "apps/36-blocks-widget/src/app/otp/store/**", "apps/36-blocks-widget/src/app/otp/service/otp.service.ts", "apps/36-blocks-widget/src/app/otp/service/otp-widget.service.ts", "apps/36-blocks-widget/src/app/otp/service/otp-utility.service.ts", "apps/36-blocks-widget/src/app/otp/service/urls/**", "apps/36-blocks-widget/src/app/otp/model/**"]
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: 395659d5
+verified_on: 2026-10-29
 ---
 # Widget auth (login / register / OTP)
 
@@ -100,7 +100,7 @@ The older actions `getOtpResendAction` / `getOtpVerifyAction` (`widget/retryOtp`
 
 `initOauthAuthorize` reads the host page query string.
 - No `proxy_auth_token` → `GET oauth/authorize` with all params. Valid (`client_id` or `client_name` in data) → classic widget boots; the V2 password title becomes "Sign in to continue to {client_name}". Invalid → `openOauthErrorPage` (static message, no widget API call).
-- `proxy_auth_token` and `state` present (user came back after login) → params are recovered from the JSON `state` by `resolveAuthorizeParamsAfterLogin`, `oauth/authorize` is re-validated, then the consent dialog opens. `submitOauthConsent` posts `{ action: approve|deny, client_id, redirect_uri, state, response_type, scope?, code_challenge?, code_challenge_method? }` to `oauth/authorize/decision` with header `proxy_auth_token`, then navigates to `data.redirect_to`.
+- `proxy_auth_token` and `state` present (user came back after login) → params are recovered from the JSON `state` by `resolveAuthorizeParamsAfterLogin`, `oauth/authorize` is re-validated, then the consent dialog opens. `submitOauthConsent` posts `{ action: approve|deny, client_id, redirect_uri, state, response_type, scope?, code_challenge?, code_challenge_method? }` to `oauth/authorize/decision` with header `proxy_auth_token`, then navigates to `data.redirect_to` with `window.location.replace`. While the request runs both buttons are disabled and only the clicked one (`oauthConsentAction`) shows a spinner.
 
 ## Contracts
 

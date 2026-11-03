@@ -1,0 +1,1 @@
+{ "extends": "./tsconfig.app.json", "files": ["src/main.review.ts"], "include": ["src/**/*.d.ts"] }

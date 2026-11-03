@@ -41,14 +41,13 @@
                 }
             </mat-nav-list>
 
+            <div class="px-2 pb-2">
+                <p class="m-0 mb-1 px-1 text-xs secondary-text-color">Console theme</p>
+                <proxy-theme-switcher class="theme-switcher--full" />
+            </div>
             <!-- User menu footer — consistent with main layout sidebar -->
             @if (logInData$ | async; as user) {
-                <proxy-sidebar-user-menu
-                    [user]="user"
-                    [isDarkMode]="isDarkMode()"
-                    (darkModeToggled)="switchedDarkMode($event)"
-                    (loggedOut)="logOut()"
-                ></proxy-sidebar-user-menu>
+                <proxy-sidebar-user-menu [user]="user" (loggedOut)="logOut()"></proxy-sidebar-user-menu>
             }
         </div>
     </mat-drawer>
@@ -59,7 +58,7 @@
             hideSingleSelectionIndicator
             [value]="theme()"
             (change)="onThemeChange($event.value)"
-            aria-label="Select theme"
+            aria-label="Widget preview theme"
         >
             <mat-button-toggle [value]="WidgetTheme.Light" matTooltip="Light theme">
                 <mat-icon aria-hidden="true">light_mode</mat-icon>

@@ -1,0 +1,26 @@
+<mat-button-toggle-group
+    class="theme-switcher"
+    hideSingleSelectionIndicator
+    [value]="preference()"
+    (change)="select($event.value)"
+    aria-label="Color theme"
+>
+    <mat-button-toggle value="light" matTooltip="Light">
+        <span class="theme-switcher__option">
+            <mat-icon class="material-icons-outlined" aria-hidden="true">light_mode</mat-icon>
+            <span class="theme-switcher__label">Light</span>
+        </span>
+    </mat-button-toggle>
+    <mat-button-toggle value="dark" matTooltip="Dark">
+        <span class="theme-switcher__option">
+            <mat-icon class="material-icons-outlined" aria-hidden="true">dark_mode</mat-icon>
+            <span class="theme-switcher__label">Dark</span>
+        </span>
+    </mat-button-toggle>
+    <mat-button-toggle value="system" matTooltip="Match system setting">
+        <span class="theme-switcher__option">
+            <mat-icon class="material-icons-outlined" aria-hidden="true">contrast</mat-icon>
+            <span class="theme-switcher__label">System</span>
+        </span>
+    </mat-button-toggle>
+</mat-button-toggle-group>

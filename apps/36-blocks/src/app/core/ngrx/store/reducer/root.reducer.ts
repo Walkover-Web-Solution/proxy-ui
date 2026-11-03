@@ -18,6 +18,7 @@ export interface IRootState {
     //All project
     allProjects: IPaginatedResponse<IProjects[]>;
     projectInProcess: boolean;
+    projectLoadFailed: boolean;
 }
 
 export const initialState: IRootState = {
@@ -33,6 +34,7 @@ export const initialState: IRootState = {
     clientsInProcess: false,
     switchClientSuccess: false,
     projectInProcess: false,
+    projectLoadFailed: false,
     allProjects: null,
 };
 
@@ -121,6 +123,7 @@ const _rootReducer = createReducer(
         return {
             ...state,
             projectInProcess: true,
+            projectLoadFailed: false,
         };
     }),
     on(rootActions.getAllProjectSuccess, (state, { response }) => {
@@ -128,6 +131,7 @@ const _rootReducer = createReducer(
             ...state,
             allProjects: response,
             projectInProcess: false,
+            projectLoadFailed: false,
         };
     }),
     on(rootActions.getAllProjectsError, (state) => {
@@ -135,6 +139,7 @@ const _rootReducer = createReducer(
             ...state,
             allProjects: null,
             projectInProcess: false,
+            projectLoadFailed: true,
         };
     })
 );

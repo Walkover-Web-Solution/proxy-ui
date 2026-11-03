@@ -771,7 +771,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
 
     /** Default primary color: black in light theme, white in dark theme */
     public getDefaultPrimaryColor(): string {
-        return this.uiSettings.theme === 'dark-theme' ? '#ffffff' : '#000000';
+        return this.uiSettings.isDark() ? '#ffffff' : '#000000';
     }
 
     /** Returns the effective primary color based on the selected branding theme */

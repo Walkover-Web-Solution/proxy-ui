@@ -5,7 +5,7 @@ verified_on: 2026-10-14
 ---
 # Panel pages (everything except features)
 
-The logged-in dashboard under `/app`: the shell (`LayoutComponent` with side nav, client switcher, theme toggle and the "Ask AI" chatbot), and the Dashboard, Users, Logs and Billing pages. It also covers two pages that sit outside `/app`: `/onboarding` (finish sign-up) and `/project` (legacy proxy-gateway project wizard). The Blocks pages (`/app/features`) are in [panel-features](./panel-features.md). Auth, the root NgRx store and app routes are in [app-shell](./app-shell.md).
+The logged-in dashboard under `/app`: the shell (`LayoutComponent` with side nav, client switcher, Light / Dark / System theme switcher and the "Ask AI" chatbot), and the Dashboard, Users, Logs and Billing pages. It also covers two pages that sit outside `/app`: `/onboarding` (finish sign-up) and `/project` (legacy proxy-gateway project wizard). The Blocks pages (`/app/features`) are in [panel-features](./panel-features.md). Auth, the root NgRx store and app routes are in [app-shell](./app-shell.md).
 
 | File | Role |
 |---|---|
@@ -13,8 +13,9 @@ The logged-in dashboard under `/app`: the shell (`LayoutComponent` with side nav
 | `apps/36-blocks/src/app/panel/layout/layout.routes.ts` | `layoutRoutes`. A stale copy of `panelRoutes` without `billing`. Nothing imports it. |
 | `apps/36-blocks/src/app/panel/layout/layout.component.ts` | `LayoutComponent`: loads clients and client settings into the root store, client switcher, dark mode, hides the sidebar on `/features/create` for first-time users, injects the chatbot script. |
 | `apps/36-blocks/src/app/panel/layout/main-left-side-nav/main-left-side-nav.component.ts` | `MainLeftSideNavComponent`: the `navItems` list (Dashboard, Blocks, User, Logs, Ask Ai). Billing is a separate link in the layout template. |
-| `apps/36-blocks/src/app/panel/layout/sidebar-user-menu/sidebar-user-menu.component.ts` | `SidebarUserMenuComponent`: user avatar menu; emits `darkModeToggled` and `loggedOut`. |
-| `apps/36-blocks/src/app/panel/layout/ui-settings.service.ts` | `UiSettingsService`: theme and side-nav state in `localStorage['ui-settings']` with a 30-day TTL. |
+| `apps/36-blocks/src/app/panel/layout/sidebar-user-menu/sidebar-user-menu.component.ts` | `SidebarUserMenuComponent`: user avatar menu; hosts the theme switcher and emits `loggedOut`. |
+| `apps/36-blocks/src/app/panel/layout/theme-switcher/theme-switcher.component.ts` | `ThemeSwitcherComponent`: Light, Dark and System buttons. Reads and writes `UiSettingsService`. |
+| `apps/36-blocks/src/app/panel/layout/ui-settings.service.ts` | `UiSettingsService`: theme preference and side-nav state in `localStorage['ui-settings']` with a 30-day TTL. |
 | `apps/36-blocks/src/app/panel/layout/side-nav.service.ts` | `SideNavService`: `isSideNavOpen` and `hideSidebar` signals; `toggle`/`open`/`close` persist through `UiSettingsService`. |
 | `apps/36-blocks/src/app/panel/dashboard/dashboard.component.ts` | `DashboardComponent`: range and block filter, overview cards. No store; signals and `AnalyticsService` directly. |
 | `apps/36-blocks/src/app/panel/dashboard/dashboard.models.ts` | Param interfaces, `OVERVIEW_CARDS`, `RANGE_OPTIONS`, `TIMESERIES_METRICS`, `GROUP_BY_OPTIONS`, `intervalForRange`. |
@@ -45,8 +46,8 @@ The logged-in dashboard under `/app`: the shell (`LayoutComponent` with side nav
 
 ## Layout, side nav and UI settings
 
-1. `UiSettingsService` reads `localStorage['ui-settings']` = `{ theme: 'light-theme' | 'dark-theme', sideNavOpen: boolean, _savedAt: number }`. Data older than 30 days (`TTL_MS`) or corrupt JSON falls back to `{ theme: 'light-theme', sideNavOpen: true }`. On the server it never touches storage.
-2. `setTheme` saves and swaps the `light-theme` / `dark-theme` class on `document.body`. Charts and other theme-aware code watch that class (the dashboard charts use a `MutationObserver` on `body`).
+1. `UiSettingsService` reads `localStorage['ui-settings']` = `{ themePreference: 'light' | 'dark' | 'system', theme: 'light-theme' | 'dark-theme', sideNavOpen: boolean, _savedAt: number }`. `theme` is the resolved body class. Records saved before the preference existed are read from `theme` (`dark-theme` → `dark`, otherwise `light`). Data older than 30 days (`TTL_MS`) or corrupt JSON falls back to `{ themePreference: 'light', theme: 'light-theme', sideNavOpen: true }`. On the server it never touches storage.
+2. `setThemePreference` saves the choice and swaps the `light-theme` / `dark-theme` class on `document.body`. `system` follows `prefers-color-scheme` and updates the class when the OS scheme changes. Charts and other theme-aware code watch that class (the dashboard charts use a `MutationObserver` on `body`). The same buttons sit in the workspace top bar and in the account menu. `LayoutComponent` sends the resolved `light` or `dark` value to the chatbot.
 3. `SideNavService.isSideNavOpen` starts from the stored value; `toggle`/`open`/`close` write back. `LayoutComponent` closes it on widths ≤ 992 px. `UserComponent.onTabChange` closes it on the Management tab. `CreateFeatureComponent` and `WidgetPreviewComponent` also use both services.
 4. `hideSidebar` is set on every `NavigationEnd`: on `/features/create` it calls `FeaturesService.getFeature({ itemsPerPage: 1, pageNo: 1 })` and hides the sidebar when the client has no features yet (first-block flow), otherwise it is `false`.
 5. Chatbot ("Ask Ai"): when both login data and client settings exist, `RootService.generateToken({ source: 'chatbot' })` returns `data.jwt`. The layout appends `<script id="chatbot-main-script" src=environment.interfaceScriptUrl embedToken=… parentId="ChatbotContainer" fullScreen hideIcon hideCloseButton>`. On load, after 2 s, it calls `window.SendDataToChatbot({ variables: { variables: JSON.stringify({ session: <auth token> }) }, threadId: email + client.id, bridgeName: 'root', ... })` and `window.openChatbot()`. `#ChatbotContainer` is always in the DOM and shown only when the URL contains `chatbot`. Theme changes are pushed with `window.Chatbot.sendData({ theme })`. The script URL comes from the environment ([environment.md](../environment.md)).

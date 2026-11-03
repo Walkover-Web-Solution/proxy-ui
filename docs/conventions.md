@@ -1,7 +1,7 @@
 ---
 covers: [".prettierrc.json", "package.json", ".husky/pre-commit", "apps/*/.eslintrc.json", ".eslintrc.json", ".github/workflows/main.yml", "tsconfig.base.json"]
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: 395659d5
+verified_on: 2026-10-29
 ---
 # Conventions
 
@@ -59,7 +59,7 @@ The flow used in practice, from merged PRs #620–#661:
 3. Release with `stage` → `production`. If that conflicts, use a `<card>-prod` branch → `production`. Hotfixes sometimes go straight to `production`; any revert must also land on `stage`, or the next release brings the change back (this happened with the retry interceptor, #642 → #639).
 
 > [!WARNING]
-> `README.md` still describes `development` → `main` → `production`. `main` (last merged 2026-04-21) and `development` (2026-04-27) are stale. `.github/workflows/main.yml` runs only on PRs to `development`, `main` and `production`, so **PRs into `stage` get no CI build**. Build locally before you open one.
+> `README.md` still describes `development` → `main` → `production`. `main` (last merged 2026-04-21) and `development` (2026-04-27) are stale. `.github/workflows/main.yml` runs only on PRs to `development`, `main` and `production`, so **PRs into `stage` get no CI build**. Where it does run, it currently fails on every PR because `env-variables.ts` is never generated ([environment.md](environment.md#ci-githubworkflowsmainyml-build-check)). Build locally before you open one.
 
 > [!TODO] Needs a human: confirm which branch new `-clean` branches should be cut from now (`stage` or `production`), and whether `main` / `development` are retired.
 

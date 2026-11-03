@@ -1,0 +1,25 @@
+name: V0 behavior checks
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  behavior:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies without lifecycle hooks
+        run: npm ci --ignore-scripts --legacy-peer-deps --no-audit --no-fund
+      - name: Run focused behavior and HTTP routing tests
+        run: npm run test:v0
+      - name: Generate local environment modules without credentials
+        env:
+          CI: 'false'
+        run: node tools/set-env
+      - name: Check application types and templates
+        run: node_modules/.bin/ngc --noEmit -p apps/36-blocks/tsconfig.app.json

@@ -47,7 +47,7 @@ The `36-blocks` Nx app is one Angular SPA that serves both the public marketing 
 5. On `authenticatedAction`, `AppComponent` redirects to `/app/dashboard` if the current URL is `/` or a website route (`/pricing`, `/about`, `/contact`, `/security`, `/privacy`, `/terms`, `/register`, `/login`), but never from `/onboarding`.
 6. On the first `NavigationEnd`, the `#app-splash-screen` element from `index.html` gets `splash-hidden` and is removed 300 ms later.
 7. On every `NavigationEnd`, the deepest primary route's `data.title` goes to `rootActions.headerTitleAction`.
-8. When `environment.env !== 'local'`, `VersionCheckService.initVersionCheck` polls `environment.proxyServer + '/version.json'` (written by `tools/postbuild.js`). Once a new version is seen, the next `NavigationStart` does `window.location.reload()`.
+8. When `environment.env !== 'local'`, `VersionCheckService.initVersionCheck` polls `environment.proxyServer + '/version.json'` (written by `tools/postbuild.js`). Once a new version is seen, the next `NavigationStart` does `window.location.reload()`. In current builds a new version is never seen: the hash in version.json is empty and the placeholder is never replaced ([environment.md](../environment.md#post-build-toolspostbuildjs)).
 
 ### Routes and guards
 
@@ -193,7 +193,7 @@ The swap is done by `fileReplacements` in `apps/36-blocks/project.json`; `local`
 - **Cookie plus memory token.** `AuthInitializerService` and the splash screen were added together (`c07d8b5a`) so the token from the cookie is in memory before guards and HTTP calls run. The Firebase `authState` fallback in `CanActivateRouteGuard` came in `9bf13277`, after `AngularFireAuthGuard` was replaced by the custom guard (`cc2504a4`). <!-- verify:ignore -->
 - **Root-level `auth` and `registration` features.** They are registered in `appConfig` rather than in lazy routes because `AppComponent`, the website layout and panel components all dispatch and select login actions.
 - **One Tap is scaffolded but off.** `googleClientId` was added as `''` to every environment in `b96c3516` "for future Google authentication integration"; the code comments say it activates once the client ID is configured.
-- **Version check reload.** `AppComponent` reloads on the next navigation after a deploy so users do not keep an old bundle whose lazy chunks no longer exist.
+- **Version check reload.** `AppComponent` reloads on the next navigation after a deploy so users do not keep an old bundle whose lazy chunks no longer exist. (It does not fire today; see [environment.md](../environment.md#post-build-toolspostbuildjs).)
 
 ## Changing it safely
 

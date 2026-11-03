@@ -18,7 +18,7 @@ const path = require('path');
 // Object.assign ensures .env values override any stale/dev env vars pre-set by Amplify.
 try {
     const dotenvResult = require('dotenv').config({
-        path: path.resolve(__dirname, '../.env')
+        path: path.resolve(__dirname, '../.env'),
     });
     if (dotenvResult.parsed) {
         Object.assign(process.env, dotenvResult.parsed);
@@ -45,20 +45,16 @@ if (DEBUG) {
 
 function get(key, fallback = undefined) {
     const value = env[key] !== undefined ? env[key] : fallback;
-    
+
     // Debug logging to track credential source
     if (DEBUG) {
         if (value !== undefined) {
-            // Show first 8 chars for verification without exposing full secrets
-            const preview = typeof value === 'string' && value.length > 8 
-                ? `${value.substring(0, 8)}...` 
-                : '***SET***';
-            console.log(`[set-env DEBUG] ${key} = ${preview}`);
+            console.log(`[set-env DEBUG] ${key} = SET`);
         } else {
             console.log(`[set-env DEBUG] ${key} = MISSING`);
         }
     }
-    
+
     if (value === undefined) {
         if (isCI) missingKeys.push(key);
         else console.warn(`[set-env] WARNING: env var "${key}" is not set`);
