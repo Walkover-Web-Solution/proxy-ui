@@ -1,7 +1,7 @@
 ---
 covers: ["apps/36-blocks-widget/src/app/init-verification.ts", "apps/36-blocks-widget/src/main.ts", "apps/36-blocks-widget/src/app/otp/service/otp.service.ts", "apps/36-blocks-widget/src/app/otp/service/urls/**", "apps/36-blocks-widget/src/app/otp/service/user-management-bridge.service.ts", "libs/constant/src/widget-events.ts", "libs/urls/**", "libs/services/proxy/**", "libs/services/login/**", "apps/36-blocks/src/app/panel/billing/billing.urls.ts", "apps/36-blocks/src/app/panel/billing/billing.service.ts", "apps/36-blocks/src/app/app.config.ts"]
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: 395659d5
+verified_on: 2026-10-29
 ---
 # API
 
@@ -150,7 +150,7 @@ Base `environment.baseUrl`; all with the JWT `Authorization` header.
 | PUT / DELETE | `/:referenceId/cPermission/:id` | `updatePermission` / `deletePermission` |
 
 ## Dashboard: features (blocks) configuration
-`FeaturesService` (`libs/services/proxy/features/src/lib/services-proxy-features.module.ts`), JWT auth, base `environment.baseUrl`. Callers: `apps/36-blocks/src/app/panel/features/create-feature/create-feature.store.ts`, `apps/36-blocks/src/app/panel/features/feature/feature.store.ts`, `apps/36-blocks/src/app/panel/features/oauth-config/oauth-config.store.ts`, plus `LayoutComponent`, `DashboardComponent` and the users store (feature lists). Field-level details are in [panel-features](./modules/panel-features.md).
+`FeaturesService` (`libs/services/proxy/features/src/lib/services-proxy-features.module.ts`), JWT auth, base `environment.baseUrl`. Callers: `apps/36-blocks/src/app/panel/features/create-feature/create-feature.store.ts`, `apps/36-blocks/src/app/panel/features/feature/feature.store.ts`, `apps/36-blocks/src/app/panel/features/oauth-config/oauth-config.store.ts`, `apps/36-blocks/src/app/panel/features/client-secrets/client-secrets.store.ts`, plus `LayoutComponent`, `DashboardComponent` and the users store (feature lists). Field-level details are in [panel-features](./modules/panel-features.md).
 
 <!-- verify:ignore-start -->
 | Method | Path | Service method |
@@ -165,6 +165,8 @@ Base `environment.baseUrl`; all with the JWT `Authorization` header.
 | GET / PUT / DELETE | /features/:featureId/oauthConfigs/:oauthConfigId | `getOauthConfig` / `updateOauthConfig` / `deleteOauthConfig` |
 | POST | /features/:featureId/oauthConfigs/:oauthConfigId/regenerateSecret | `regenerateOauthSecret` |
 | POST | /features/:featureId/oauthConfigs/:oauthConfigId/disable | `disableOauthConfig` |
+| GET / POST | /features/:featureId/clientSecrets | `getClientSecrets` / `createClientSecret` (plaintext `client_secret` only in this response) |
+| DELETE | /features/:featureId/clientSecrets/:secretId | `revokeClientSecret` (revokes; the secret stays listed with `revoked_at`) |
 | GET / POST | /features/:featureId/blockScopes | `getBlockScopes` / `createBlockScope` |
 | PUT / DELETE | /features/:featureId/blockScopes/:blockScopeId | `updateBlockScope` / `deleteBlockScope` |
 | GET / POST | /subscription/:refId/billableMetrics | `getAllBillableMetrics` / `createBillableMetric` |

@@ -2,7 +2,7 @@
     "skill": "ai-docs",
     "skill_version": "0.1.0",
     "created": "2026-10-14",
-    "last_run": { "mode": "init", "commit": "76f26ae5", "date": "2026-10-14" },
+    "last_run": { "mode": "update", "commit": "395659d5", "date": "2026-10-29" },
     "superseded": [
         "docs/widget-window-events.md",
         "docs/widget-script-loading.md",

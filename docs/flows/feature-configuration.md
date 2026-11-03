@@ -1,7 +1,7 @@
 ---
 covers: ["apps/36-blocks/src/app/panel/features/**", "apps/36-blocks/src/app/panel/onboarding/onboarding.component.ts", "apps/36-blocks/src/app/panel/layout/layout.component.ts", "libs/services/proxy/features/**", "libs/urls/features-url/**", "libs/models/features-model/**"]
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: 395659d5
+verified_on: 2026-10-29
 ---
 # Flow: create and configure a block (feature)
 
@@ -69,13 +69,14 @@ All component methods below are in `apps/36-blocks/src/app/panel/features/create
 14. **Patch form** — first `featureDetails$` subscription (distinct on `feature_id` + `reference_id`): `getServiceMethods(feature.feature_id)`, rebuild `proxyAuthScript` and `demoDiv` from `feature.reference_id`; for `feature_id === 2` also loads metrics and plans. Second subscription waits for `serviceMethods$` then `patchValue`s every group. Service controls take values from `feature.service_configurations[service_id]`. `redirect_url` validators are cleared (field hidden).
 15. **Save a tab** — each tab button calls `updateFeature(type)` with `type` in `'name' | 'service' | 'authorization' | 'branding' | 'webhook'`; the matching form group must be valid, then `setTimeout(100)` → `PUT /features/:id` with only that slice. In edit mode `getServicePayload` sends every dirty group, enabled or not.
 16. **After save** — store sets `createUpdateObject = res.data` → the same `createUpdateObject$` subscription runs: `nameFieldEditMode = false`, `getFeatureDetalis()` refetch, `featureId = obj.id`, snippet rebuilt.
-17. **Subscription billing in manage** — plans, taxes, metrics and payment are edited through the same dialogs and store effects as the wizard, always keyed by `getReferenceId()` (`createUpdateObject.reference_id ?? featureDetails.reference_id`). Members and OAuth tabs are separate components; see [panel-features](../modules/panel-features.md#edit-appfeaturesmanageid).
+17. **Client secrets and redirect response mode (Setting tab)** — `proxy-client-secrets` loads `GET /features/:id/clientSecrets`, creates with `POST /features/:id/clientSecrets` (plaintext shown once) and revokes with `DELETE /features/:id/clientSecrets/:secretId`, each immediately. `proxy-redirect-response-mode` only edits the form control; the mode is saved by the Setting tab's Update (`updateFeature('authorization')`), and only when it changed. `code` is selectable once the block has an active secret. Details in [panel-features](../modules/panel-features.md#client-secrets-and-redirect-response-mode-setting-tab).
+18. **Subscription billing in manage** — plans, taxes, metrics and payment are edited through the same dialogs and store effects as the wizard, always keyed by `getReferenceId()` (`createUpdateObject.reference_id ?? featureDetails.reference_id`). Members and OAuth tabs are separate components; see [panel-features](../modules/panel-features.md#edit-appfeaturesmanageid).
 
 ### Preview and the customer snippet
 
-18. **Open preview** — `apps/36-blocks/src/app/panel/features/create-feature/feature-preview/feature-preview.component.ts:FeaturePreviewComponent.openPreview` (header button, shown once a `reference_id` exists) or the list row action → `router.navigate(['/widget-preview', referenceId], { state: { originUrl } })`. The route is top-level in `apps/36-blocks/src/app/app.routes.ts`, guarded by `CanActivateRouteGuard`, outside the panel layout.
-19. **Launch widget** — `apps/36-blocks/src/app/panel/features/create-feature/feature-preview/widget-preview/widget-preview.component.ts:WidgetPreviewComponent.launchWidget`: removes stale `proxy-auth` elements, injects `ProxyAuthScriptUrl(environment.proxyServer, Date.now())` once (guarded by `window.__proxyAuthLoaded`), then calls `window.initVerification(config)`. Authorization tab mounts into `#<referenceId>` with `redirect_path`; on `success` with a token it stores `authToken` and switches to the User Profile tab. Other tabs mount into `#userProxyContainer` (`PROXY_DOM_ID`) with `authToken`. There is no Subscription tab in the preview.
-20. **Snippet the customer pastes** — two variants exist:
+19. **Open preview** — `apps/36-blocks/src/app/panel/features/create-feature/feature-preview/feature-preview.component.ts:FeaturePreviewComponent.openPreview` (header button, shown once a `reference_id` exists) or the list row action → `router.navigate(['/widget-preview', referenceId], { state: { originUrl } })`. The route is top-level in `apps/36-blocks/src/app/app.routes.ts`, guarded by `CanActivateRouteGuard`, outside the panel layout.
+20. **Launch widget** — `apps/36-blocks/src/app/panel/features/create-feature/feature-preview/widget-preview/widget-preview.component.ts:WidgetPreviewComponent.launchWidget`: removes stale `proxy-auth` elements, injects `ProxyAuthScriptUrl(environment.proxyServer, Date.now())` once (guarded by `window.__proxyAuthLoaded`), then calls `window.initVerification(config)`. Authorization tab mounts into `#<referenceId>` with `redirect_path`; on `success` with a token it stores `authToken` and switches to the User Profile tab. Other tabs mount into `#userProxyContainer` (`PROXY_DOM_ID`) with `authToken`. There is no Subscription tab in the preview.
+21. **Snippet the customer pastes** — two variants exist:
    - wizard/manage "Design & code": `ProxyAuthScript(environment.proxyServer, reference_id, type)` from `libs/models/features-model/src/index.ts` plus `demoDiv`.
    - preview "code" view: `apps/36-blocks/src/app/panel/features/create-feature/feature-preview/widget-preview/widget-code-snippet.ts:buildCodeSnippet(referenceId, activeTab)`, which includes the mount `<div>`; for non-authorization tabs it uses `authToken: 'ENCRYPTED_AUTH_TOKEN'` instead of `referenceId`.
    On the host page the script loads proxy-auth.js from `environment.proxyServer` and `onload` calls `initVerification(configuration)`; from there it is the widget's flow ([widget-embed](../modules/widget-embed.md)).
@@ -111,7 +112,8 @@ All component methods below are in `apps/36-blocks/src/app/panel/features/create
 name          { name }
 service       { services }
 authorization { extra_configurations: { theme, create_account_link, default_role: { name: 'Owner', value: 1 } },
-                encryption_key, block_registration, authorization_format, session_time, origins }
+                encryption_key, block_registration, authorization_format, session_time, origins,
+                redirect_response_mode? }   // 'legacy' | 'code', only when changed
 branding      { ui_preferences: { ...existing minus primary_color, ...brandingDetails, input_fields, logo_url },
                 block_registration }
 webhook       { webhook: { url, method }, trigger_events }
@@ -141,7 +143,7 @@ webhook       { webhook: { url, method }, trigger_events }
 
 ## Side effects
 
-- Backend writes: `POST /features`, `PUT /features/:id`, `POST /features/:id/upload-logo`, and for subscription blocks `POST /subscription/:refId/billableMetrics`, `POST /subscription/:refId/taxes`, `POST /subscription/:refId/plans` and `POST /subscription/:refId/updateCredentials`. The backend creates the `reference_id`.
+- Backend writes: `POST /features`, `PUT /features/:id`, `POST /features/:id/upload-logo`, `POST` / `DELETE /features/:id/clientSecrets[/:secretId]`, and for subscription blocks `POST /subscription/:refId/billableMetrics`, `POST /subscription/:refId/taxes`, `POST /subscription/:refId/plans` and `POST /subscription/:refId/updateCredentials`. The backend creates the `reference_id`.
 - Toasts on every success and failure (`PrimeNgToastService`).
 - Layout: sidebar hidden on `/features/create` for a client with no blocks.
 - Preview: appends the proxy-auth.js `<script>` to `<head>` once per page load, writes `widget_preview_origin_<referenceId>` to `sessionStorage` for the back button, keeps `tab`/`theme` in the query string, and calls `window.closeChatbot` (from `LayoutComponent`) when navigating to `/widget-preview`.
