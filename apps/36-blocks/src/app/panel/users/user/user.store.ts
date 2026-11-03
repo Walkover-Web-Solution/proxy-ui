@@ -22,6 +22,7 @@ export interface IUserInitialState {
     featureDetails: any;
     createUpdateObject: IFeature;
     isLoading: boolean;
+    usersError: string | null;
 }
 @Injectable()
 export class UserComponentStore extends ComponentStore<IUserInitialState> {
@@ -42,6 +43,7 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
             updatePermission: null,
             featureDetails: null,
             createUpdateObject: null,
+            usersError: null,
             isLoading: false,
         });
     }
@@ -62,35 +64,39 @@ export class UserComponentStore extends ComponentStore<IUserInitialState> {
     readonly updatePermission$: Observable<any> = this.select((state) => state.updatePermission);
     readonly featureDetails$: Observable<any> = this.select((state) => state.featureDetails);
     readonly createUpdateObject$: Observable<IFeature> = this.select((state) => state.createUpdateObject);
+    readonly usersError$ = this.select((state) => state.usersError);
     /** Get users data */
-    readonly getUsers = this.effect((data: Observable<IUserReq>) => {
-        return data.pipe(
-            switchMap((req: IUserReq) => {
-                this.patchState({ isLoading: true });
+    readonly getUsers = this.effect((data: Observable<IUserReq>) =>
+        data.pipe(
+            switchMap((req) => {
+                this.patchState({ isLoading: true, users: null, usersError: null });
                 return this.service.getUsers(req).pipe(
                     tapResponse(
                         (res: BaseResponse<IPaginatedResponse<IUser[]>, IUserReq>) => {
-                            if (res?.hasError) {
-                                this.showError(res?.errors);
-                            }
-                            return this.patchState({
+                            const valid = !res?.hasError && Array.isArray(res?.data?.data);
+                            this.patchState({
                                 isLoading: false,
-                                users: res?.data,
+                                users: valid ? res.data : null,
+                                usersError: valid
+                                    ? null
+                                    : 'People could not be loaded. Retry or check your workspace access.',
                             });
                         },
-                        (error: any) => {
-                            this.showError(error?.errors);
-                            return this.patchState({
+                        (error: any) =>
+                            this.patchState({
                                 isLoading: false,
                                 users: null,
-                            });
-                        }
+                                usersError:
+                                    error?.status === 403 || error?.errorCode === 403
+                                        ? 'You need permission to view users in this workspace. Ask an administrator.'
+                                        : 'People could not be loaded. Check your connection and retry.',
+                            })
                     ),
-                    catchError((err) => EMPTY)
+                    catchError(() => EMPTY)
                 );
             })
-        );
-    });
+        )
+    );
 
     readonly getRoles = this.effect((data: Observable<any>) => {
         return data.pipe(

@@ -1,5 +1,21 @@
+<div class="page-heading">
+    <div>
+        <span class="page-kicker">CONNECT YOUR APPLICATIONS</span>
+        <h1>Applications & blocks</h1>
+        <p>
+            A block holds your application's authentication configuration. Open one to configure methods and
+            integration.
+        </p>
+    </div>
+    <a href="https://developers.36blocks.com">Setup guidance ↗</a>
+</div>
 @if (loading$ | async; as loading) {
     <div class="flex flex-col h-full">
+        @if (error$ | async; as error) {
+            <div class="experience-notice error" role="alert">
+                {{ error }}<button mat-button (click)="getFeatures()">Retry</button>
+            </div>
+        }
         @if (loading.dataLoading && (hasSomeFeatures$ | async) === null) {
             <proxy-loader></proxy-loader>
         }
@@ -22,7 +38,7 @@
             <div class="flex items-center gap-4 ml-auto flex-wrap">
                 <button matButton="filled" class="mat-btn-xs" [routerLink]="['/app', 'features', 'create']">
                     <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">add</mat-icon>
-                    <span class="hide-xs">Add New Block</span>
+                    <span class="hide-xs">Create a block</span>
                 </button>
                 <button
                     matButton="filled"
@@ -36,13 +52,17 @@
             </div>
         </div>
 
-        @if ((hasSomeFeatures$ | async) === false) {
-            <p class="mat-body-2 text-secondary w-1/2">
-                The "Features" component in the Proxy Server is a dynamic tool that offers versatile authentication and
-                subscription plan options. It supports various authentication methods like OTP and social logins (e.g.,
-                Google, Microsoft) while providing flexible subscription plans. Users benefit from enhanced security,
-                cost-efficient resource allocation, and a user-friendly dashboard for easy configuration.
-            </p>
+        @if ((hasSomeFeatures$ | async) === false && !(error$ | async)) {
+            <div class="experience-notice">
+                <div>
+                    <strong>Connect your first application.</strong>
+                    <p>
+                        Create an authentication block, choose a login method, then verify sign-in in the connected
+                        application.
+                    </p>
+                </div>
+                <a href="https://developers.36blocks.com">Read the setup guidance ↗</a>
+            </div>
         }
         @if ((hasSomeFeatures$ | async) === true) {
             <div class="table-scroll">
@@ -168,7 +188,9 @@
 
                     <tr *matNoDataRow>
                         <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
-                            <proxy-no-record-found [title]="'blocks'" [showBtn]="false"></proxy-no-record-found>
+                            @if (!(error$ | async)) {
+                                <proxy-no-record-found [title]="'blocks'" [showBtn]="false"></proxy-no-record-found>
+                            }
                         </td>
                     </tr>
                 </table>
@@ -178,7 +200,7 @@
                 [pageSize]="(feature$ | async)?.itemsPerPage || 25"
                 [pageSizeOptions]="pageSizeOptions"
                 (page)="pageChange($event)"
-                [pageIndex]="(feature$ | async)?.pageNumber - 1"
+                [pageIndex]="((feature$ | async)?.pageNumber || 1) - 1"
                 class="box-shadow-none"
             ></mat-paginator-goto>
         }

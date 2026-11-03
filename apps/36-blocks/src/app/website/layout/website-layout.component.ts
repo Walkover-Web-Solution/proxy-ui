@@ -22,13 +22,14 @@ export class WebsiteLayoutComponent implements OnInit, OnDestroy {
 
     public readonly headerNavLinks: { label: string; ariaLabel: string; route: string }[] = [
         { label: 'Home', ariaLabel: '36Blocks home', route: '/' },
+        { label: 'Docs', ariaLabel: '36Blocks integration guide', route: '/docs' },
         { label: 'Pricing', ariaLabel: '36Blocks Pricing plans', route: '/pricing' },
         { label: 'Contact', ariaLabel: 'Contact 36Blocks', route: '/contact' },
     ];
 
     public readonly footerLinks: { label: string; ariaLabel: string; route?: string; href?: string }[] = [
         { label: 'About Us', ariaLabel: '36Blocks About us', route: '/about' },
-        { label: 'Documentation', ariaLabel: '36Blocks Documentation', href: 'https://help.36blocks.com/' },
+        { label: 'Documentation', ariaLabel: '36Blocks Documentation', route: '/docs' },
         { label: 'Security', ariaLabel: '36Blocks Security information', route: '/security' },
         { label: 'Privacy', ariaLabel: '36Blocks Privacy policy', route: '/privacy' },
         { label: 'Terms', ariaLabel: '36Blocks Terms of service', route: '/terms' },

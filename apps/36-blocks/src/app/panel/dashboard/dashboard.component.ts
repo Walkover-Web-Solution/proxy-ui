@@ -16,7 +16,7 @@ import { FeaturesService } from '@proxy/services/proxy/features';
 import { IFeature } from '@proxy/models/features-model';
 import { TimeseriesChartComponent } from './timeseries-chart/timeseries-chart.component';
 import { BreakdownChartComponent } from './breakdown-chart/breakdown-chart.component';
-import { takeUntil } from 'rxjs';
+import { Subscription, takeUntil } from 'rxjs';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,6 +44,7 @@ export class DashboardComponent extends BaseComponent implements OnInit {
 
     readonly features = signal<IFeature[]>([]);
     readonly isLoadingFeatures = signal(false);
+    readonly featuresError = signal<string | null>(null);
 
     readonly featureSearchControl = new FormControl('');
     readonly featureSearchQuery = signal('');
@@ -68,16 +69,13 @@ export class DashboardComponent extends BaseComponent implements OnInit {
         return base;
     });
 
+    private overviewRequest?: Subscription;
     readonly overviewCards = OVERVIEW_CARDS;
 
-    getCardValue(data: any, path: string, fallbackPath?: string): number {
+    getCardValue(data: any, path: string, fallbackPath?: string): number | null {
         const read = (p: string) => p.split('.').reduce((acc, k) => acc?.[k], data);
-        const primary = read(path);
-        if (fallbackPath) {
-            if (primary) return primary as number;
-            return (read(fallbackPath) as number) ?? 0;
-        }
-        return (primary as number) ?? 0;
+        const value = read(path) ?? (fallbackPath && !this.featureConfigurationId() ? read(fallbackPath) : null);
+        return typeof value === 'number' && Number.isFinite(value) ? value : null;
     }
 
     readonly rangeOptions = RANGE_OPTIONS;
@@ -96,15 +94,23 @@ export class DashboardComponent extends BaseComponent implements OnInit {
 
     fetchFeatures(): void {
         this.isLoadingFeatures.set(true);
+        this.featuresError.set(null);
         this.featuresService
-            .getFeature({})
+            .getFeature({ itemsPerPage: 100, pageNo: 1 })
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (res: any) => {
-                    this.features.set(res?.data?.data ?? []);
+                    if (res?.hasError || !Array.isArray(res?.data?.data)) {
+                        this.featuresError.set('Application filters could not be loaded. Retry to choose a block.');
+                    } else {
+                        this.features.set(res.data.data);
+                    }
                     this.isLoadingFeatures.set(false);
                 },
-                error: () => this.isLoadingFeatures.set(false),
+                error: () => {
+                    this.isLoadingFeatures.set(false);
+                    this.featuresError.set('Application filters could not be loaded. Check your access and retry.');
+                },
             });
     }
 
@@ -129,20 +135,31 @@ export class DashboardComponent extends BaseComponent implements OnInit {
     }
 
     fetchOverview(params: IAnalyticsParams): void {
+        this.overviewRequest?.unsubscribe();
         this.isLoadingOverview.set(true);
         this.overviewData.set(null);
         this.overviewError.set(null);
 
-        this.analyticsService
+        this.overviewRequest = this.analyticsService
             .getOverview(params)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (res: any) => {
-                    this.overviewData.set(res?.data?.data ?? null);
+                    if (res?.hasError || !res?.data?.data || typeof res.data.data !== 'object') {
+                        this.overviewError.set(
+                            'Usage is unavailable. Retry or check your access with an administrator.'
+                        );
+                    } else {
+                        this.overviewData.set(res.data.data);
+                    }
                     this.isLoadingOverview.set(false);
                 },
                 error: (err: any) => {
-                    this.overviewError.set(err?.message ?? 'Failed to load overview');
+                    this.overviewError.set(
+                        err?.status === 403 || err?.errorCode === 403
+                            ? 'You do not have access to usage in this workspace. Ask a workspace administrator.'
+                            : 'Usage could not be loaded. Check your connection and retry.'
+                    );
                     this.isLoadingOverview.set(false);
                 },
             });

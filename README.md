@@ -6,13 +6,23 @@
 
 1. Clone https://github.com/Walkover-Web-Solution/proxy-ui.git.
 
-2. This project requires Node version 14+, install Node from [here](https://nodejs.org/en/).
+2. This is Angular 21.2 / Nx 21.6 / TypeScript 5.9. Use a compatible Node runtime; see the [canonical development guide](../user-proxy/docs/DEVELOPMENT.md). Node 14 is unsupported.
 
 3. Go inside the cloned directory `proxy-ui` in any terminal and run these following commands in the terminal to install dependency and start local serve.
 
-4. Run `npm i` for installation of dependencies.
+4. Run `npm ci --ignore-scripts --legacy-peer-deps` to install the locked dependencies. Review the development guide before enabling install hooks.
 
-5. Run `npm start` to local serve the project.
+5. Configure approved local environment values, run `node tools/set-env`, then `npm start`. The checked-in local API URL points to a remote test service; change it before exercising mutations.
+
+Read [AGENTS.md](AGENTS.md), [current work state](../user-proxy/docs/WORK-STATE.md), [architecture](../user-proxy/docs/ARCHITECTURE.md) and the authoritative [capability matrix](../user-proxy/docs/CAPABILITIES.md). The API is the sibling `user-proxy` repository. `node --test tools/tests/*.test.cjs` runs focused behavior tests; legacy Nx/Jest targets have known gaps recorded in the work state.
+
+The existing contribution and style guidance below remains applicable. Use the canonical development and design guides where obsolete runtime/module instructions conflict with the current standalone Angular architecture.
+
+## Isolated design review
+
+Product and API guidance lives at [developers.36blocks.com](https://developers.36blocks.com). `/docs` is a legacy handoff page, not another documentation site.
+
+Run `npm run review:build`, then `npm run review:serve` for the local review at `http://127.0.0.1:4360`. It renders the real routes using synthetic fixtures and a separate bootstrap. All mutations are rejected; no live API calls or credentials are issued. `review-version.json` identifies the source fingerprint. Release configurations continue to use `src/main.ts`. This review does not verify live authentication or providers.
 
 ## Contributing Guide
 
@@ -344,3 +354,9 @@ We have a server [Marlin](marlin.phone91.com) [for Prod] & [sailfish](sailfish.p
 
 If client origin is widget (origin = `chat`) [will implement for all in v2], we have an option to start meet from `client-card-component`.
 For selected client we use `call-session-creds` API to fetch `room` & `jwt` to init socket connection and Jitsi meet room with Jitsi Options. [Jitsi Reference Doc](https://developer.8x8.com/jaas/docs/iframe-api-integration)
+
+## Production integration — 29 October 2026
+
+The V0 changes are reconciled with production commit `2b1deb17`. Production deliberately uses a browser-only build and removed `ProjectGuard`; this merge preserves both decisions and the newer production navigation, OAuth/client-secret features, and compact website spacing. The original feature branch's SSR and project-guard changes/tests are therefore not part of this production integration.
+
+Validation: 23 applicable `npm run test:v0` checks, Angular type/template checking, and `npm run build:prod` passed, including the widget bundle and post-build packaging. Build warnings remain; this does not certify configured Firebase/provider login. Activity and Login as require the companion backend API/migrations from [user-proxy PR #1476](https://github.com/Walkover-Web-Solution/user-proxy/pull/1476) before live use. See the canonical [work state](../user-proxy/docs/WORK-STATE.md) for remaining integration gates.

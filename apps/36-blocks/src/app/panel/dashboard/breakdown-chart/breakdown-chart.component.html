@@ -1,4 +1,4 @@
-<div class="rounded-2xl bg-color shadow-sm p-5 flex flex-col gap-2 relative">
+<div class="rounded-xl bg-color border border-color p-5 flex flex-col gap-2 relative">
     <!-- Card Header -->
     <div class="flex items-center justify-between">
         <div class="flex items-center gap-1">
@@ -10,7 +10,13 @@
                 >info_outline</mat-icon
             >
         </div>
-        <button mat-icon-button class="w-7 h-7 leading-7" (click)="openExpand()" matTooltip="Expand">
+        <button
+            mat-icon-button
+            class="w-7 h-7 leading-7"
+            (click)="openExpand()"
+            matTooltip="Expand"
+            aria-label="Expand usage breakdown"
+        >
             <mat-icon class="mat-icon-16 text-gray-400">open_in_full</mat-icon>
         </button>
     </div>
@@ -24,9 +30,9 @@
 
     <!-- Error -->
     @if (error()) {
-        <div class="flex items-center gap-2 text-red-500 text-sm">
+        <div class="experience-notice error" role="alert">
             <mat-icon class="mat-icon-18">error_outline</mat-icon>
-            {{ error() }}
+            {{ error() }}<button mat-button (click)="retry()">Retry breakdown</button>
         </div>
     }
 
@@ -36,7 +42,11 @@
             <div #chartEl class="!h-60 !w-full"></div>
             <div class="flex justify-end mt-1 xl:absolute top-[40%] right-[10%]">
                 <mat-form-field class="no-padding w-32">
-                    <mat-select [value]="selectedGroupBy()" (valueChange)="onGroupByChange($event)">
+                    <mat-select
+                        aria-label="Group usage breakdown"
+                        [value]="selectedGroupBy()"
+                        (valueChange)="onGroupByChange($event)"
+                    >
                         @for (opt of groupByOptions; track opt.value) {
                             <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
                         }
@@ -50,7 +60,11 @@
             </div>
             <div class="flex justify-end mt-1">
                 <mat-form-field class="no-padding w-32">
-                    <mat-select [value]="selectedGroupBy()" (valueChange)="onGroupByChange($event)">
+                    <mat-select
+                        aria-label="Group usage breakdown"
+                        [value]="selectedGroupBy()"
+                        (valueChange)="onGroupByChange($event)"
+                    >
                         @for (opt of groupByOptions; track opt.value) {
                             <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
                         }
@@ -66,7 +80,7 @@
         <span class="text-base font-semibold">
             Breakdown — {{ groupByOptions.find(o => o.value === selectedGroupBy())?.label ?? '' }}
         </span>
-        <button mat-icon-button (click)="closeExpand()">
+        <button mat-icon-button (click)="closeExpand()" aria-label="Close expanded chart">
             <mat-icon>close</mat-icon>
         </button>
     </div>

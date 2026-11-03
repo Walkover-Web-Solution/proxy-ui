@@ -107,7 +107,8 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this.uiSettings.setTheme(this.uiSettings.theme);
+        // Keep the root theme service alive for the whole session, including system-scheme changes.
+        this.uiSettings.themePreference();
 
         this.logoutActionComplete$.subscribe((res) => {
             if (res) {

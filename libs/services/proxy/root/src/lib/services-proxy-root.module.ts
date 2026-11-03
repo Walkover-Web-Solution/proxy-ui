@@ -36,7 +36,7 @@ export class RootService {
     public generateToken(params: { [key: string]: any } = {}): Observable<BaseResponse<{ jwt: string }, void>> {
         return this.http.get<BaseResponse<{ jwt: string }, void>>(RootUrls.generateToken(this.baseUrl), params);
     }
-    public getProjects(): Observable<BaseResponse<IProjects, void>> {
-        return this.http.get<BaseResponse<IProjects, void>>(RootUrls.getProject(this.baseUrl));
+    public getProjects(): Observable<BaseResponse<IPaginatedResponse<IProjects[]>, void>> {
+        return this.http.get<BaseResponse<IPaginatedResponse<IProjects[]>, void>>(RootUrls.getProject(this.baseUrl));
     }
 }

@@ -1,10 +1,8 @@
-# proxy-ui (36 Blocks frontend)
+# Working on proxy-ui
 
-An Nx monorepo (Angular 21, standalone components, NgRx, Tailwind v4) with two apps:
-- `apps/36-blocks`: the customer dashboard and the marketing site.
-- `apps/36-blocks-widget`: an embeddable auth widget, built into one script (proxy-auth.js) that customer sites load and call through `window.initVerification(config)`.
+Owns the Angular public website, operator dashboard and embeddable authentication widget. Backend APIs, persistence and session policy belong to sibling `user-proxy`; connected applications own business authorization.
 
-Both apps are client-only and call a backend "proxy" API that lives in another repo.
+Start with the canonical [work state](../user-proxy/docs/WORK-STATE.md), [architecture](../user-proxy/docs/ARCHITECTURE.md), [capabilities](../user-proxy/docs/CAPABILITIES.md), [development](../user-proxy/docs/DEVELOPMENT.md), [security](../user-proxy/docs/SECURITY-OPERATIONS.md) and [design](../user-proxy/docs/DESIGN.md). Preserve existing README contribution rules and DESIGNGUIDE.md. Read widget integration/event guides before changing the custom element contract.
 
 ## Commands
 

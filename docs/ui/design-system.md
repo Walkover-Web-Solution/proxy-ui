@@ -53,13 +53,13 @@ Breakpoints: use Tailwind's defaults (`sm` 640, `md` 768, `lg` 1024, `xl` 1280, 
 
 ## Dashboard theme
 
-- **Light/dark switch.** `UiSettingsService` (`apps/36-blocks/src/app/panel/layout/ui-settings.service.ts`) puts exactly one of `light-theme` / `dark-theme` on `<body>` (default `light-theme`), persisted in `localStorage['ui-settings']` for 30 days. `AppComponent.ngOnInit` applies it on boot; `LayoutComponent.switchedDarkMode` toggles it (and tells the GTWY chatbot), `WidgetPreviewComponent` can set it too.
+- **Light / dark / system.** `UiSettingsService` (`apps/36-blocks/src/app/panel/layout/ui-settings.service.ts`) stores a preference `light` | `dark` | `system` in `localStorage['ui-settings']` for 30 days (default `light`; older records that only have `theme: 'light-theme' | 'dark-theme'` still load). It puts exactly one of `light-theme` / `dark-theme` on `<body>`. `system` follows `prefers-color-scheme` and updates when the OS scheme changes. `apps/36-blocks/src/index.html` applies the same choice before Angular boots so the first paint matches. The workspace top bar, the account menu and the widget-preview sidebar (`proxy-theme-switcher`) all set it. `LayoutComponent` tells the GTWY chatbot the resolved `light` or `dark` value whenever it changes. The marketing site (`body.website-active`) keeps its own light palette. The widget preview's Light / System / Dark group is a different control: it sets the embed's `config.theme`, not the console.
 - **Material.** `_default-theme.scss` includes `mat.all-component-themes($light-theme)` once on `html`, then only `mat.all-component-colors($dark-theme)` + `mat.system-level-colors` under `body.dark-theme` (and under a `prefers-color-scheme: dark` block for a body with no theme class). It also re-points `--mat-sys-outline` to `--color-common-border` and sets `--mat-sys-on-surface` per theme.
   - Why colours only for dark: including `all-component-themes` a second time re-emits density and typography and triggers Material's duplicate-styles warning. Keep this split when you add themes.
 - **Tailwind `dark:`.** `apps/shared/scss/global.scss` declares `@variant dark (&:where(.dark-theme, .dark-theme *));` (cbfb7d1e), so `dark:` utilities in dashboard templates follow `body.dark-theme`, not the OS setting.
 
 > [!WARNING]
-> The `prefers-color-scheme` block in `_default-theme.scss` only applies when `<body>` has neither class. `UiSettingsService` always sets one once it is created, so in practice the dashboard ignores the OS theme. Do not rely on that block; use `body.dark-theme`.
+> The `prefers-color-scheme` block in `_default-theme.scss` only applies when `<body>` has neither class. `UiSettingsService` always sets one class. System mode still paints with `body.light-theme` or `body.dark-theme`; it does not leave the body unclassed. Do not rely on that media block; use `body.dark-theme`.
 
 ### Dialogs
 
