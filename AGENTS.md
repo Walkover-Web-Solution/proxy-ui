@@ -2,7 +2,14 @@
 
 Owns the Angular public website, operator dashboard and embeddable authentication widget. Backend APIs, persistence and session policy belong to sibling `user-proxy`; connected applications own business authorization.
 
-Start with the canonical [work state](../user-proxy/docs/WORK-STATE.md), [architecture](../user-proxy/docs/ARCHITECTURE.md), [capabilities](../user-proxy/docs/CAPABILITIES.md), [development](../user-proxy/docs/DEVELOPMENT.md), [security](../user-proxy/docs/SECURITY-OPERATIONS.md) and [design](../user-proxy/docs/DESIGN.md). Preserve existing README contribution rules and DESIGNGUIDE.md. Read widget integration/event guides before changing the custom element contract.
+<!-- middleware:guidance:start -->
+## Guidance for this kind of repository
+
+Kept by the middleware (version 046fbf2131b2). Read these before changing anything here:
+- [docs/guidance/product-ui.md](docs/guidance/product-ui.md)
+<!-- middleware:guidance:end -->
+
+Both apps are client-only and call a backend "proxy" API that lives in another repo.
 
 ## Commands
 
