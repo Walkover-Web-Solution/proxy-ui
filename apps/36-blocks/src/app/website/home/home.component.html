@@ -1,419 +1,234 @@
-<!-- ─── HERO ─────────────────────────────────────────── -->
-<main
-    id="main-content"
-    class="relative z-[1] grid grid-cols-1 lg:grid-cols-2 items-center gap-20 max-w-[1400px] mx-auto md:gap-12 px-4 pt-8 pb-16 md:px-8 sm:px-5 lg:px-18"
-    role="main"
->
-    <!-- Decorative: dot grid + orbs -->
-    <div
-        class="absolute inset-0 pointer-events-none z-0 [background-image:radial-gradient(circle,rgba(45,212,191,0.12)_1px,transparent_1px)] [background-size:32px_32px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,black_20%,transparent_100%)]"
-        aria-hidden="true"
-    ></div>
-    <div
-        class="absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full pointer-events-none z-0 blur-[80px] [background:radial-gradient(circle,rgba(45,212,191,0.12)_0%,transparent_70%)] animate-[glowPulse_6s_ease-in-out_infinite]"
-        aria-hidden="true"
-    ></div>
-    <div
-        class="absolute bottom-0 right-0 w-[380px] h-[380px] rounded-full pointer-events-none z-0 blur-[80px] [background:radial-gradient(circle,rgba(59,130,246,0.07)_0%,transparent_70%)] animate-[glowPulse_10s_ease-in-out_infinite]"
-        aria-hidden="true"
-    ></div>
-
-    <!-- Left: Copy -->
-    <div class="relative z-[1] flex flex-col gap-7 items-center lg:items-start">
-        <div
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium w-fit anim-fade-up stagger-1"
-            [class]="accent.pillBadge"
-            aria-hidden="true"
-        >
-            <span class="w-2 h-2 rounded-full animate-pulse bg-teal-400"></span>
-            Plug &amp; Play Authentication
-        </div>
-
-        <h1
-            class="leading-[1.08] text-center lg:text-left font-bold text-[#f0f6fc] m-0 tracking-[-2px] text-[36px] md:text-[44px] lg:text-[48px] anim-fade-up stagger-2"
-        >
-            <span class="shimmer-text">Secure Auth</span> &amp; User<br />Management for<br />Modern Apps
-        </h1>
-
-        <p
-            class="text-[17px] leading-relaxed text-[#8b949e] text-center lg:text-left max-w-[460px] m-0 anim-fade-up stagger-3"
-        >
-            Launch secure user signup, login, roles, and access control in minutes — without building complex
-            authentication systems from scratch.
-        </p>
-
-        <div
-            class="flex flex-col gap-2 px-5 py-4 bg-[#161b22] border border-[#21262d] border-teal-400/20 rounded-2xl max-w-[420px] anim-fade-up stagger-4"
-            aria-live="polite"
-            aria-label="Platform description"
-        >
-            <span class="text-[15px] font-medium leading-relaxed text-teal-400"
-                >A developer-friendly authentication platform with social login, OTP, analytics, and role-based access
-                control.</span
-            >
-        </div>
-
-        <div class="flex gap-3 flex-col md:flex-row anim-fade-up stagger-5" role="group" aria-label="Primary actions">
-            <button
-                class="cursor-pointer border-0 px-5 py-2 !rounded-sm font-semibold text-sm btn-cta-glow"
-                [class]="accent.btnPrimary"
-                (click)="login()"
-                aria-label="Explore the 36Blocks platform"
-            >
-                Explore Platform
-            </button>
-            <button
-                class="cursor-pointer px-5 py-2 !rounded-sm bg-transparent border border-[#21262d] text-[#c9d1d9] font-semibold text-sm transition-all duration-200 hover:border-teal-400/50 hover:-translate-y-px"
-                (click)="login()"
-                aria-label="View 36Blocks documentation"
-            >
-                View Documentation
-            </button>
-        </div>
-
-        <ul
-            class="flex list-none p-0 m-0 md:gap-6 flex-wrap gap-4 anim-fade-up stagger-6"
-            aria-label="Key features"
-            role="list"
-        >
-            @for (badge of heroBadges; track badge.label) {
-                <li class="flex items-center gap-2 text-[#8b949e] text-sm" role="listitem">
-                    <mat-icon class="!text-base !w-4 text-teal-400" aria-hidden="true">check_circle</mat-icon>
-                    {{ badge.label }}
-                </li>
-            }
-        </ul>
-
-        <!-- Stats row -->
-        <ul
-            class="grid w-full sm:w-1/2 list-none p-0 m-0 gap-3 pt-2 border-t border-teal-400/10 anim-fade-up stagger-7 grid-cols-2"
-            aria-label="Platform statistics"
-            role="list"
-        >
-            @for (stat of heroStats; track stat.label) {
-                <li
-                    class="stat-card bg-[#161b22] border border-[#21262d] border-teal-400/10 rounded-xl px-3 py-3 text-center"
-                    role="listitem"
-                >
-                    <p class="m-0 text-[22px] font-bold text-teal-400 leading-none">{{ stat.value }}</p>
-                    <p class="m-0 text-[11px] text-[#8b949e] mt-1 leading-tight">{{ stat.label }}</p>
-                </li>
-            }
-        </ul>
-    </div>
-
-    <!-- Right: Code Card -->
-    <div class="relative z-[1] anim-fade-right stagger-3 sm:mx-2" aria-label="Code integration example">
-        <!-- Spinning decorative ring -->
-        <div
-            class="absolute -inset-6 rounded-3xl border border-teal-400/10 ring-spin pointer-events-none"
-            aria-hidden="true"
-        ></div>
-        <div
-            class="absolute -inset-12 rounded-[40px] border border-teal-400/5 ring-spin pointer-events-none"
-            style="animation-direction: reverse; animation-duration: 28s"
-            aria-hidden="true"
-        ></div>
-
-        @for (badge of floatingBadges; track badge.text) {
-            <div
-                class="absolute -top-3 z-[2] inline-flex items-center gap-1.5 px-3 bg-[#161b22] border border-[#21262d] rounded-full text-xs font-medium text-[#c9d1d9] shadow-lg"
-                [class.left-5]="badge.side === 'left'"
-                [class.right-5]="badge.side === 'right'"
-                [class.py-1.5]="badge.side === 'left'"
-                [class.py-0.5]="badge.side === 'right'"
-                aria-hidden="true"
-            >
-                @if (badge.dot) {
-                    <span class="w-2 h-2 rounded-full" [class]="badge.dot"></span>
-                }
-                @if (badge.icon) {
-                    <mat-icon class="!text-base !w-4 text-teal-400" aria-hidden="true">{{ badge.icon }}</mat-icon>
-                }
-                {{ badge.text }}
+<div class="home-page">
+    <section class="hero section-width" aria-labelledby="hero-title">
+        <div class="hero-copy">
+            <p class="eyebrow"><span class="status-dot"></span> Built for our teams. Ready for the work.</p>
+            <h1 id="hero-title">Your applications.<br />Your people.<br /><span>A clearer picture.</span></h1>
+            <p class="hero-description">
+                Bring authentication, user access, and investigation into one workspace. Less time connecting the dots.
+                More time building what matters.
+            </p>
+            <div class="hero-actions">
+                <a class="action-primary" routerLink="/login">Open your workspace <span aria-hidden="true">↗</span></a
+                ><a class="action-text" href="#workspace">Take a closer look ↓</a>
             </div>
-        }
-
-        <figure
-            class="bg-[#161b22] border border-[#21262d] border-teal-400/15 overflow-hidden rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.5)] animate-[floatUp_7s_ease-in-out_infinite] m-0"
-            aria-label="5-minute integration code sample"
-        >
-            <div
-                class="flex items-center gap-3 px-5 pt-6 pb-3 bg-black/30 border-b border-teal-400/10"
-                aria-hidden="true"
-            >
-                <div class="flex gap-2">
-                    @for (dot of macDots; track dot) {
-                        <span class="w-3 h-3 rounded-full" [class]="dot"></span>
-                    }
+            <p class="hero-note">36blocks is an internal platform. Team access is required.</p>
+        </div>
+        <div class="hero-art" aria-label="Authentication, people and activity connected in one workspace">
+            <span class="art-caption mono">THE CONNECTED WORKSPACE / 36</span>
+            <div class="connection-line line-one"></div>
+            <div class="connection-line line-two"></div>
+            <div class="art-node node-app">
+                <span class="node-symbol">◫</span>
+                <div>
+                    <small>01 / CONNECT</small><strong>Your application</strong><span>Configured authentication</span>
                 </div>
-                <span class="text-[#8b949e] text-[13px] ml-2">proxy-auth.js</span>
-                <span class="ml-auto text-[11px] px-2 py-0.5 rounded-full bg-teal-400/10 text-teal-400"
-                    >JavaScript</span
-                >
+                <span class="node-check">✓</span>
             </div>
-            <pre
-                class="m-0 bg-transparent border-0 overflow-x-auto px-6 py-5 text-sm leading-[1.8]"
-                role="region"
-                aria-label="JavaScript integration snippet"
-            ><code class="block font-mono">@for (line of codeSnippetLines; track line.num) {<span class="text-[#484f58] mr-5 select-none">{{ line.num }}</span><span [innerHTML]="line.html"></span>
-}@empty {}</code></pre>
-            <figcaption
-                class="flex items-center justify-between mx-5 mb-5 px-4 py-2.5 rounded-xl text-[#c9d1d9] text-[13px] font-medium bg-teal-400/10 border border-teal-400/20"
-            >
-                <span class="flex items-center gap-1.5">
-                    <mat-icon class="!text-base !w-4 text-teal-400" aria-hidden="true">bolt</mat-icon>
-                    5 min setup
-                </span>
-                <span class="flex items-center gap-1 text-teal-400/70 text-[11px]">
-                    <mat-icon class="!text-base !w-4" aria-hidden="true">verified</mat-icon>
-                    Production ready
-                </span>
-            </figcaption>
-        </figure>
-    </div>
-</main>
-
-<!-- ─── SECTION: Customizable Auth Forms ─────────────── -->
-<section
-    class="section-forms-grid relative z-[1] w-fit grid items-center gap-16 max-w-[1400px] mx-auto xl:grid-cols-2 grid-cols-1 md:gap-12 sm:gap-8 px-4 py-16 md:px-8 md:py-20 sm:px-5 sm:py-16 lg:px-18 lg:py-28"
-    aria-labelledby="forms-heading"
->
-    <div class="form-preview-grid relative grid items-start gap-4 sm:gap-3" aria-hidden="true">
-        <div class="col1-row1 bg-[#161b22] themed-card border border-teal-400/15 rounded-xl px-4 py-3">
-            <span class="block text-xs themed-text-secondary mb-2.5">Colour</span>
-            <div class="flex gap-2">
-                @for (color of themeColors; track color.hex) {
-                    <span
-                        class="w-6 h-6 rounded-[6px] cursor-pointer transition-all duration-200"
-                        [style.background-color]="color.hex"
-                        [style.outline]="selectedColor === color.hex ? '2px solid ' + color.hex : 'none'"
-                        [style.outline-offset]="selectedColor === color.hex ? '2px' : '0'"
-                        [style.transform]="selectedColor !== color.hex ? 'scale(1.1)' : 'scale(1)'"
-                        (click)="selectColor(color.hex)"
-                    ></span>
-                }
+            <div class="art-node node-people">
+                <span class="node-symbol">◎</span>
+                <div>
+                    <small>02 / UNDERSTAND</small><strong>People & access</strong><span>Users, companies, roles</span>
+                </div>
+            </div>
+            <div class="art-node node-activity">
+                <span class="node-symbol">↳</span>
+                <div>
+                    <small>03 / INVESTIGATE</small><strong>A useful trail</strong
+                    ><span>Requests and operator activity</span>
+                </div>
             </div>
         </div>
-
-        <div
-            class="col2-rows relative"
-            [style.--bg-page]="themeVars['--bg-page']"
-            [style.--bg-card]="themeVars['--bg-card']"
-            [style.--bg-card2]="themeVars['--bg-card2']"
-            [style.--border]="themeVars['--border']"
-            [style.--text-primary]="themeVars['--text-primary']"
-            [style.--text-secondary]="themeVars['--text-secondary']"
-            [style.--text-body]="themeVars['--text-body']"
-        >
-            <div
-                class="text-center themed-card border rounded-2xl p-8 min-w-[280px] shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
-            >
-                <div
-                    class="grid place-items-center w-12 h-12 text-[#0d1117] font-bold text-2xl mx-auto mb-5"
-                    [style.background-color]="selectedColor"
-                    [style.border-radius.px]="borderRadius"
-                >
-                    S
+    </section>
+    <section class="workflow-strip section-width" aria-label="Questions we help answer">
+        <span>MAKE SENSE OF ACCESS</span>
+        <p>What is connected?</p>
+        <b aria-hidden="true">/</b>
+        <p>Who has access?</p>
+        <b aria-hidden="true">/</b>
+        <p>What happened?</p>
+    </section>
+    <section id="workspace" class="workspace-section section-width" aria-labelledby="workspace-title">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">A WORKSPACE, NOT ANOTHER GUESS</p>
+                <h2 id="workspace-title">From a question<br />to a next step.</h2>
+            </div>
+            <p>Start with an application. Find the person. <br />Follow the activity. Keep the context.</p>
+        </div>
+        <div class="workspace-demo">
+            <div class="demo-sidebar">
+                <a class="brand" routerLink="/"><span class="brand-mark" aria-hidden="true">▦</span>36blocks</a>
+                <div class="demo-account">
+                    <span class="account-avatar">A</span> Acme workspace <span aria-hidden="true">⌄</span>
                 </div>
-                <h3 class="m-0 mb-6 themed-text-primary text-xl font-semibold">Sign in to SuperApp</h3>
-                @for (field of mockFormFields; track field.label) {
-                    <div class="text-left mb-4">
-                        <label class="block text-[13px] themed-text-body mb-2">{{ field.label }}</label>
-                        <div
-                            class="px-3.5 py-3 themed-card border themed-text-secondary text-sm"
-                            [style.border-radius.px]="borderRadius"
-                        >
-                            {{ field.placeholder }}
+                <span class="demo-nav-label">WORKSPACE</span>
+                @for (view of views; track view) {
+                    <button
+                        type="button"
+                        [class.active]="selectedView() === view"
+                        (click)="selectedView.set(view)"
+                        [attr.aria-pressed]="selectedView() === view"
+                    >
+                        <span aria-hidden="true">{{
+                            view === 'Applications' ? '◫' : view === 'People' ? '◎' : '↳'
+                        }}</span
+                        >{{ view }}
+                    </button>
+                }
+                <a class="demo-help" href="https://developers.36blocks.com">Developer documentation ↗</a>
+            </div>
+            <div class="demo-content" aria-live="polite">
+                <div class="demo-toolbar">
+                    <span>Acme / {{ selectedView() }}</span
+                    ><span class="demo-badge">Illustrative data</span>
+                </div>
+                @if (selectedView() === 'Applications') {
+                    <div class="demo-title">
+                        <div>
+                            <small>YOUR CONNECTED APPLICATIONS</small>
+                            <h3>A home for every login.</h3>
+                        </div>
+                        <span class="demo-count">02 applications</span>
+                    </div>
+                    <div class="demo-table">
+                        <div class="demo-row table-head">
+                            <span>APPLICATION</span><span>AUTHENTICATION</span><span>NEXT STEP</span>
+                        </div>
+                        <div class="demo-row">
+                            <span
+                                ><b class="app-avatar">P</b
+                                ><strong>People portal<small>Authentication block</small></strong></span
+                            ><span><i class="status-dot"></i> Email & password</span
+                            ><a href="https://developers.36blocks.com">View setup ↗</a>
+                        </div>
+                        <div class="demo-row">
+                            <span
+                                ><b class="app-avatar amber">S</b
+                                ><strong>Support desk<small>Authentication block</small></strong></span
+                            ><span><i class="status-dot"></i> Google sign-in</span
+                            ><a href="https://developers.36blocks.com">View setup ↗</a>
+                        </div>
+                    </div>
+                    <div class="demo-insight">
+                        <span>↳</span>
+                        <div>
+                            <strong>Configuration is the beginning.</strong>
+                            <p>Verify a login in your connected application before calling setup complete.</p>
+                        </div>
+                    </div>
+                } @else if (selectedView() === 'People') {
+                    <div class="demo-title">
+                        <div>
+                            <small>PEOPLE & ACCESS</small>
+                            <h3>Put a person in context.</h3>
+                        </div>
+                        <span class="demo-count">Example user</span>
+                    </div>
+                    <div class="person-example">
+                        <span class="person-avatar">AL</span>
+                        <div>
+                            <h4>Alex Lee</h4>
+                            <p>alex&#64;example.com · People portal</p>
+                        </div>
+                    </div>
+                    <div class="person-facts">
+                        <div><small>COMPANY</small><strong>Acme</strong></div>
+                        <div><small>ROLE</small><strong>Member</strong></div>
+                        <div><small>INVESTIGATE</small><strong>Operator activity →</strong></div>
+                    </div>
+                    <div class="demo-insight">
+                        <span>◎</span>
+                        <div>
+                            <strong>Identity with the right boundaries.</strong>
+                            <p>Manage memberships and roles. Your application enforces access to its own resources.</p>
+                        </div>
+                    </div>
+                } @else {
+                    <div class="demo-title">
+                        <div>
+                            <small>OPERATOR ACTIVITY</small>
+                            <h3>Understand the action.</h3>
+                        </div>
+                        <span class="demo-count">Example record</span>
+                    </div>
+                    <div class="activity-example">
+                        <span class="activity-icon">↳</span>
+                        <div>
+                            <strong>Login as · completed</strong>
+                            <p>Admin → Alex Lee · People portal</p>
+                            <blockquote>“Reproduce the reported sign-in issue.”</blockquote>
+                            <small>Actor, target, reason and outcome kept together.</small>
+                        </div>
+                        <span class="demo-badge">Audited action</span>
+                    </div>
+                    <div class="demo-insight">
+                        <span>↗</span>
+                        <div>
+                            <strong>Different evidence. One investigation.</strong>
+                            <p>Use request logs for API failures and Activity for instrumented operator actions.</p>
                         </div>
                     </div>
                 }
-                <button
-                    class="w-full cursor-pointer border-0 py-3 text-[#0d1117] font-semibold text-[15px] mb-5 transition-all duration-200"
-                    [style.background-color]="selectedColor"
-                    [style.border-radius.px]="borderRadius"
-                    tabindex="-1"
-                >
-                    Continue
-                </button>
-                <div
-                    class="or-divider flex items-center gap-3 mb-5 themed-text-secondary text-[13px]"
-                    [style.--divider-color]="themeVars['--border']"
-                >
-                    OR
-                </div>
-                <button
-                    class="w-full flex items-center justify-center gap-2.5 bg-transparent border py-3 themed-text-body font-medium text-sm mb-5 cursor-pointer"
-                    [style.border-color]="themeVars['--border']"
-                    [style.border-radius.px]="borderRadius"
-                    tabindex="-1"
-                >
-                    <span class="font-bold text-base">G</span> Continue with Google
-                </button>
-                <p class="m-0 text-[13px] themed-text-secondary">
-                    Don't have an account? <span class="cursor-pointer" [style.color]="selectedColor">Sign up</span>
-                </p>
             </div>
         </div>
-
-        <div class="col3-row1 bg-[#161b22] themed-card border border-teal-400/15 rounded-xl px-4 py-3">
-            <span class="block text-xs themed-text-secondary mb-2.5">Logo icon</span>
-            <div class="flex gap-2">
-                <div
-                    class="grid place-items-center w-10 h-10 rounded-[10px] text-[#0d1117] font-semibold cursor-pointer bg-teal-400 border"
-                >
-                    S
-                </div>
-                <div
-                    class="grid place-items-center w-10 h-10 border-teal-400/15 rounded-[10px] themed-card border themed-text-body cursor-pointer"
-                >
-                    <mat-icon class="!text-xl !w-5">tune</mat-icon>
-                </div>
-            </div>
-        </div>
-
-        <div class="col1-row3 bg-[#161b22] themed-card border border-teal-400/15 rounded-xl px-4 py-3">
-            <span class="block text-xs themed-text-secondary mb-2.5">Radius — {{ borderRadius }}px</span>
-            <input
-                type="range"
-                min="0"
-                max="24"
-                [value]="borderRadius"
-                (input)="onRadiusChange($event)"
-                class="radius-slider w-full cursor-pointer"
-                [style.accent-color]="'rgb(45, 212, 191)'"
-                tabindex="-1"
-            />
-            <div class="flex justify-between mt-1">
-                <span class="w-6 h-2 rounded-full bg-gray-600"></span>
-                <span class="w-6 h-2 rounded-full bg-gray-600"></span>
-            </div>
-        </div>
-
-        <div class="col3-row3 self-end rounded-xl px-4 py-3 border border-teal-400/15 bg-[#161b22]">
-            <span class="block text-xs mb-2.5">Appearance</span>
-            <div class="flex rounded-lg p-1 border border-teal-400/15">
-                @for (mode of appearanceModes; track mode.value) {
-                    <button
-                        [class]="
-                            'cursor-pointer border-0 px-3 py-1.5 grow !rounded-sm text-xs transition-all duration-200' +
-                            (selectedAppearance === mode.value ? ' bg-teal-400 text-dark' : '')
-                        "
-                        (click)="selectAppearance(mode.value)"
-                        tabindex="-1"
-                    >
-                        {{ mode.label }}
-                    </button>
-                }
-            </div>
-        </div>
-    </div>
-
-    <div class="flex flex-col gap-7 items-center lg:items-start">
-        <div
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium md:w-fit"
-            [class]="accent.pillBadge"
-            aria-hidden="true"
-        >
-            <span class="w-2 h-2 rounded-full animate-pulse bg-teal-400"></span>
-            Beautiful UI Components
-        </div>
-        <h2
-            id="forms-heading"
-            class="leading-[1.08] font-bold text-center lg:text-left text-[#f0f6fc] m-0 tracking-[-1.5px] text-[32px] md:text-[40px] lg:text-[44px]"
-        >
-            Customizable <span class="shimmer-text">Auth Forms</span><br />Ready to Deploy
-        </h2>
-        <p class="text-[17px] leading-relaxed text-[#8b949e] max-w-[400px] m-0">
-            Pre-built, beautiful authentication components that match your brand. Customize colors, radius, logos, and
-            more with our visual editor.
+        <p class="demo-disclosure">
+            Interactive illustration of supported workflows. Synthetic records; no live usage data.
         </p>
-        <ul
-            class="grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 list-none p-0 m-0 gap-4 mt-2 grid-cols-1 w-full"
-            aria-label="UI customisation features"
-            role="list"
-        >
-            @for (card of uiFeatureCards; track card.title) {
-                <li class="feature-card bg-[#161b22] border border-[#21262d] rounded-xl p-4" role="listitem">
-                    <div class="feature-main-icon">
-                        <mat-icon aria-hidden="true" class="!text-teal-400">{{ card.icon }}</mat-icon>
-                    </div>
-                    <h3 class="m-0 mb-1 text-[#f0f6fc] text-[16px] font-semibold">{{ card.title }}</h3>
-                    <p class="m-0 text-[#8b949e] text-[12px] leading-snug">{{ card.desc }}</p>
-                </li>
-            }
-        </ul>
-    </div>
-</section>
-
-<!-- ─── SECTIONS: Features + What You Can Build (unified) ─ -->
-@for (section of cardSections; track section.id) {
-    <section
-        class="relative z-[1] text-center max-w-[1400px] mx-auto px-4 py-16 md:px-8 md:py-20 sm:px-5 sm:py-16 lg:px-18 lg:py-28"
-        [attr.aria-labelledby]="section.headingId"
-    >
-        <div class="mb-16 sm:mb-8 relative z-[1]">
-            <h2
-                [id]="section.headingId"
-                class="text-[32px] leading-[1.12] font-bold text-[#f0f6fc] m-0 mb-5 tracking-[-1.5px] md:text-[44px]"
-            >
-                {{ section.label }} <span class="shimmer-text">{{ section.accentWord }}</span>
-            </h2>
-            @if (section.desc) {
-                <p class="text-[17px] leading-relaxed text-[#8b949e] max-w-[560px] mx-auto m-0">
-                    {{ section.desc }}
-                </p>
-            }
-        </div>
-        <ul
-            class="grid list-none p-0 m-0 gap-5 relative z-[1]"
-            [class]="section.gridCols"
-            [attr.aria-label]="section.headingId"
-            role="list"
-        >
-            @for (card of section.cards; track card.title) {
-                <li class="feature-card text-left bg-[#161b22] border border-[#21262d] rounded-xl p-4" role="listitem">
-                    <div class="feature-main-icon">
-                        <mat-icon aria-hidden="true" class="!text-teal-400">{{ card.icon }}</mat-icon>
-                    </div>
-                    <h3 class="m-0 mb-1 text-[#f0f6fc] text-[16px] font-semibold">{{ card.title }}</h3>
-                    <p class="m-0 text-[#8b949e] text-[12px] leading-snug">{{ card.desc }}</p>
-                </li>
-            }
-        </ul>
     </section>
-}
-
-<!-- ─── CTA ──────────────────────────────────────────── -->
-<section
-    class="relative z-[1] text-center max-w-[1400px] mx-auto px-4 py-16 md:px-8 md:py-20 sm:px-5 sm:py-16 lg:px-18 lg:py-28 overflow-hidden"
-    aria-labelledby="cta-heading"
->
-    <div
-        class="absolute inset-0 opacity-40 pointer-events-none z-0 [background-image:radial-gradient(circle,rgba(45,212,191,0.12)_1px,transparent_1px)] [background-size:32px_32px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,black_20%,transparent_100%)]"
-        aria-hidden="true"
-    ></div>
-    <div
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full pointer-events-none z-0 blur-[80px] [background:radial-gradient(circle,rgba(45,212,191,0.12)_0%,transparent_70%)] animate-[glowPulse_6s_ease-in-out_infinite]"
-        aria-hidden="true"
-    ></div>
-    <div class="relative z-[1]">
-        <h2
-            id="cta-heading"
-            class="text-[32px] leading-[1.15] font-bold text-[#f0f6fc] m-0 mb-5 tracking-[-2px] md:text-[30px] lg:text-[44px]"
-        >
-            Stop Building Authentication.<br /><span class="shimmer-text">Start Building Your Product.</span>
-        </h2>
-        <p class="text-[18px] leading-relaxed text-[#8b949e] max-w-[540px] mx-auto m-0 mb-10 sm:text-base">
-            Handle user signup, login, security, and access control with a modern authentication and user management
-            platform.
-        </p>
-        <button
-            class="cursor-pointer border-0 px-8 py-2.5 !rounded-sm font-bold text-[15px] bg-teal-400 text-[#0d1117] btn-cta-glow"
-            routerLink="/register"
-            aria-label="Get started with 36Blocks for free"
-        >
-            Get Started Free
-        </button>
-    </div>
-</section>
+    <section id="workflow" class="journeys section-width" aria-labelledby="journey-title">
+        <p class="eyebrow">BUILT AROUND THE WORK</p>
+        <h2 id="journey-title">Keep moving.<br />Keep your bearings.</h2>
+        <div class="journey-grid">
+            <article>
+                <span class="journey-number">01 / SET UP</span>
+                <h3>Give your app <br />a way in.</h3>
+                <p>
+                    Create an authentication block, choose supported login methods, and connect the widget. Verify the
+                    flow in your application.
+                </p>
+                <a href="https://developers.36blocks.com">Explore developer documentation ↗</a>
+            </article>
+            <article>
+                <span class="journey-number">02 / UNDERSTAND</span>
+                <h3>Find the person. <br />See the context.</h3>
+                <p>
+                    Find users by name or email. Filter by block and company, then follow their operator activity when
+                    you need to investigate.
+                </p>
+                <a routerLink="/login">Open your workspace ↗</a>
+            </article>
+            <article>
+                <span class="journey-number">03 / INVESTIGATE</span>
+                <h3>Make the next <br />action clear.</h3>
+                <p>
+                    Inspect request failures, review recorded operator actions, and reproduce a user issue with
+                    authorized, audited Login as.
+                </p>
+                <a routerLink="/security">Understand access boundaries ↗</a>
+            </article>
+        </div>
+    </section>
+    <section class="developer-section section-width">
+        <div>
+            <p class="eyebrow">FOR THE PEOPLE BUILDING IT</p>
+            <h2>One product.<br />One source of guidance.</h2>
+            <p>
+                Setup, integration, and API guidance live together in our developer documentation. Follow the guidance
+                for your deployed version.
+            </p>
+            <a class="action-primary" href="https://developers.36blocks.com">Go to developer documentation ↗</a>
+        </div>
+        <div class="developer-index">
+            <span class="mono">DEVELOPERS.36BLOCKS.COM</span
+            ><a href="https://developers.36blocks.com">Configure authentication <span>↗</span></a
+            ><a href="https://developers.36blocks.com">Connect the widget <span>↗</span></a
+            ><a href="https://developers.36blocks.com">Understand users & access <span>↗</span></a>
+            <p>Available methods depend on your block configuration.<br />Confirm enabled providers with your team.</p>
+        </div>
+    </section>
+    <section class="closing section-width">
+        <span class="brand-mark" aria-hidden="true">▦</span>
+        <h2>Less guesswork.<br />More building.</h2>
+        <a class="action-primary" routerLink="/login">Open your workspace ↗</a>
+    </section>
+</div>

@@ -127,6 +127,20 @@
                     "optimization": false,
                     "extractLicenses": false,
                     "sourceMap": true
+                },
+                "review": {
+                    "browser": "apps/36-blocks/src/main.review.ts",
+                    "tsConfig": "apps/36-blocks/tsconfig.review.json",
+                    "outputPath": "dist/review",
+                    "optimization": false,
+                    "extractLicenses": false,
+                    "sourceMap": false,
+                    "fileReplacements": [
+                        {
+                            "replace": "apps/36-blocks/src/environments/environment.ts",
+                            "with": "apps/36-blocks/src/environments/environment.review.ts"
+                        }
+                    ]
                 }
             },
             "defaultConfiguration": "production"

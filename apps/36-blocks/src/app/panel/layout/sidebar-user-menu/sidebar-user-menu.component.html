@@ -33,18 +33,23 @@
 }
 <mat-menu #menu="matMenu" class="profile-menu ml-1 w-[260px]">
     <h4 class="m-0 py-2 px-6 text-dark font-medium">{{ user.displayName }}</h4>
-    <div mat-menu-item class="flex items-center gap-2" (click)="darkModeToggled.emit(!isDarkMode)">
+    <button type="button" mat-menu-item class="flex items-center gap-2" (click)="darkModeToggled.emit(!isDarkMode)">
         <mat-icon class="mat-icon-18 material-icons-outlined">{{ isDarkMode ? 'dark_mode' : 'light_mode' }}</mat-icon>
         <span>{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
-    </div>
-    <a mat-menu-item class="flex items-center justify-between text-danger" (click)="loggedOut.emit()">
+    </button>
+    <button
+        type="button"
+        mat-menu-item
+        class="flex items-center justify-between text-danger"
+        (click)="loggedOut.emit()"
+    >
         Logout <mat-icon class="mat-icon-18 text-danger mr-0">logout</mat-icon>
-    </a>
+    </button>
 </mat-menu>
 
 <ng-template #displayPicture>
     @if (user.photoURL) {
-        <img [src]="user.photoURL" alt="No Image" class="w-7 h-7 rounded-full" loading="lazy" />
+        <img [src]="user.photoURL" alt="" class="w-7 h-7 rounded-full" loading="lazy" />
     } @else {
         <mat-icon aria-hidden="false" class="mr-6 text-grey material-icons-outlined">account_circle</mat-icon>
     }

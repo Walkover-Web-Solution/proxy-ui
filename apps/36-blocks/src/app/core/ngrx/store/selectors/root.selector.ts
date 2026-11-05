@@ -32,3 +32,10 @@ export const selectProjectInProcess = createSelector(
     selectRootState,
     (rootState: IRootState) => rootState.projectInProcess
 );
+
+/** One selector keeps project data and its request outcome consistent for guards. */
+export const selectProjectAccessState = createSelector(selectRootState, (state: IRootState) => ({
+    projects: state.allProjects,
+    loading: state.projectInProcess,
+    failed: state.projectLoadFailed,
+}));

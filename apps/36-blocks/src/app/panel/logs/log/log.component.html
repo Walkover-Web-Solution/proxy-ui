@@ -1,3 +1,15 @@
+<div class="page-heading">
+    <div>
+        <span class="page-kicker">FOLLOW THE REQUEST</span>
+        <h1>Request logs</h1>
+        <p>Choose a project and environment, narrow the time range, then open a request to inspect its outcome.</p>
+    </div>
+    <a href="https://developers.36blocks.com">Troubleshooting guidance ↗</a>
+</div>
+<div class="experience-notice">
+    <span>Request logs show API execution. To investigate an operator action, use Activity.</span
+    ><a href="/app/activity">Open operator activity →</a>
+</div>
 <div class="flex flex-col h-full">
     @if (isLoading$ | async) {
         <proxy-loader></proxy-loader>
@@ -195,6 +207,12 @@
         </div>
     </div>
 
+    @if (logsError$ | async; as error) {
+        <div role="alert" class="p-4 mb-4 border rounded">
+            <p>{{ error }}</p>
+            <button matButton="outlined" (click)="getLogs()">Retry loading logs</button>
+        </div>
+    }
     <div class="table-scroll">
         <table
             mat-table
@@ -286,6 +304,10 @@
                 mat-row
                 *matRowDef="let row; columns: displayedColumns; let i = index"
                 (click)="viewLogsDetails(row?._id)"
+                (keydown.enter)="viewLogsDetails(row?._id)"
+                (keydown.space)="$event.preventDefault(); viewLogsDetails(row?._id)"
+                tabindex="0"
+                aria-label="View request log details"
                 class="cursor-pointer"
                 [class.highlight]="(reqLogs$ | async)?.id === row._id"
                 [class.last-child]="i + 1 === pageSizeOptions[0]"
@@ -294,7 +316,9 @@
 
             <tr *matNoDataRow>
                 <td class="mat-cell border-0" [attr.colspan]="displayedColumns.length">
-                    <proxy-no-record-found [title]="'logs'" [showBtn]="false"></proxy-no-record-found>
+                    @if (!(logsError$ | async) && !(isLoading$ | async)) {
+                        <proxy-no-record-found [title]="'logs'" [showBtn]="false"></proxy-no-record-found>
+                    }
                 </td>
             </tr>
         </table>

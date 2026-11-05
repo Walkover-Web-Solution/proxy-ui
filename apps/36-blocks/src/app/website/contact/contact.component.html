@@ -1,35 +1,35 @@
-<main class="max-w-[720px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20">
+<div class="max-w-[720px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20">
     <!-- Hero -->
     <section class="mb-14 text-center" aria-labelledby="contact-heading" wsReveal="up">
         <h1
             id="contact-heading"
-            class="text-4xl sm:text-5xl font-bold text-[#f0f6fc] tracking-tight mb-5 leading-[1.1]"
+            class="text-4xl sm:text-5xl font-bold text-[#202d1d] tracking-tight mb-5 leading-[1.1]"
         >
             Get in Touch
         </h1>
-        <p class="text-lg text-[#8b949e] max-w-xl mx-auto leading-relaxed">
+        <p class="text-lg text-[#5e6c56] max-w-xl mx-auto leading-relaxed">
             Have a question, integration issue, or billing enquiry? We're here to help.
         </p>
     </section>
 
     <!-- Contact Form -->
     <section
-        class="rounded-2xl border border-[#21262d] bg-[#161b22] p-8 mb-6"
+        class="rounded-2xl border border-[#dce3d4] bg-[#ffffff] p-8 mb-6"
         aria-labelledby="contact-form-heading"
         wsReveal="up"
     >
-        <h2 id="contact-form-heading" class="text-xl font-bold text-[#f0f6fc] mb-1">Send us a message</h2>
-        <p class="text-sm text-[#8b949e] mb-7">Fill in the form and we'll get back to you within 24 hours.</p>
+        <h2 id="contact-form-heading" class="text-xl font-bold text-[#202d1d] mb-1">Send us a message</h2>
+        <p class="text-sm text-[#5e6c56] mb-7">Fill in the form and we'll get back to you within 24 hours.</p>
 
         <!-- Success state -->
         @if (submitSuccess()) {
             <div
-                class="flex items-start gap-4 rounded-xl border border-teal-400/30 bg-teal-400/5 px-5 py-4 mb-6"
+                class="flex items-start gap-4 rounded-xl border border-teal-400/30 bg-[#dce9d4]/5 px-5 py-4 mb-6"
                 role="alert"
                 aria-live="polite"
             >
                 <svg
-                    class="w-5 h-5 text-teal-400 flex-shrink-0 mt-0.5"
+                    class="w-5 h-5 text-[#3c6533] flex-shrink-0 mt-0.5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -43,8 +43,8 @@
                     />
                 </svg>
                 <div>
-                    <p class="text-sm font-semibold text-teal-400">Message sent!</p>
-                    <p class="text-sm text-[#8b949e] mt-0.5">Thanks for reaching out. We'll reply within 24 hours.</p>
+                    <p class="text-sm font-semibold text-[#3c6533]">Message sent!</p>
+                    <p class="text-sm text-[#5e6c56] mt-0.5">Thanks for reaching out. We'll reply within 24 hours.</p>
                 </div>
             </div>
         }
@@ -53,8 +53,8 @@
             <!-- Name + Email row -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                    <label for="contact-name" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                        Full name <span class="text-red-400" aria-hidden="true">*</span>
+                    <label for="contact-name" class="block text-sm font-medium text-[#43523c] mb-1.5">
+                        Full name <span class="text-red-700" aria-hidden="true">*</span>
                     </label>
                     <input
                         id="contact-name"
@@ -65,12 +65,12 @@
                         aria-required="true"
                         [attr.aria-invalid]="isFieldInvalid('name') ? 'true' : null"
                         aria-describedby="contact-name-error"
-                        class="block w-full rounded-lg border bg-[#0d1117] px-3.5 py-2.5 text-sm text-[#f0f6fc] placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                        class="block w-full rounded-lg border bg-[#f8f9f3] px-3.5 py-2.5 text-sm text-[#202d1d] placeholder:text-[#65735c] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
                         [class.border-red-500]="isFieldInvalid('name')"
                         [class.border-[#30363d]]="!isFieldInvalid('name')"
                     />
                     @if (isFieldInvalid('name')) {
-                        <p id="contact-name-error" class="mt-1.5 text-xs text-red-400" role="alert">
+                        <p id="contact-name-error" class="mt-1.5 text-xs text-red-700" role="alert">
                             @if (contactForm.get('name')?.errors?.['required']) {
                                 Name is required.
                             } @else if (contactForm.get('name')?.errors?.['minlength']) {
@@ -81,8 +81,8 @@
                 </div>
 
                 <div>
-                    <label for="contact-email" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                        Email address <span class="text-red-400" aria-hidden="true">*</span>
+                    <label for="contact-email" class="block text-sm font-medium text-[#43523c] mb-1.5">
+                        Email address <span class="text-red-700" aria-hidden="true">*</span>
                     </label>
                     <input
                         id="contact-email"
@@ -93,12 +93,12 @@
                         aria-required="true"
                         [attr.aria-invalid]="isFieldInvalid('email') ? 'true' : null"
                         aria-describedby="contact-email-error"
-                        class="block w-full rounded-lg border bg-[#0d1117] px-3.5 py-2.5 text-sm text-[#f0f6fc] placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                        class="block w-full rounded-lg border bg-[#f8f9f3] px-3.5 py-2.5 text-sm text-[#202d1d] placeholder:text-[#65735c] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
                         [class.border-red-500]="isFieldInvalid('email')"
                         [class.border-[#30363d]]="!isFieldInvalid('email')"
                     />
                     @if (isFieldInvalid('email')) {
-                        <p id="contact-email-error" class="mt-1.5 text-xs text-red-400" role="alert">
+                        <p id="contact-email-error" class="mt-1.5 text-xs text-red-700" role="alert">
                             @if (contactForm.get('email')?.errors?.['required']) {
                                 Email is required.
                             } @else if (contactForm.get('email')?.errors?.['email']) {
@@ -111,15 +111,15 @@
 
             <!-- Category -->
             <div>
-                <label for="contact-category" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                    Category <span class="text-red-400" aria-hidden="true">*</span>
+                <label for="contact-category" class="block text-sm font-medium text-[#43523c] mb-1.5">
+                    Category <span class="text-red-700" aria-hidden="true">*</span>
                 </label>
                 <div class="relative">
                     <select
                         id="contact-category"
                         formControlName="category"
                         aria-required="true"
-                        class="block w-full appearance-none rounded-lg border border-[#30363d] bg-[#0d1117] pl-3.5 pr-9 py-2.5 text-sm text-[#f0f6fc] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                        class="block w-full appearance-none rounded-lg border border-[#30363d] bg-[#f8f9f3] pl-3.5 pr-9 py-2.5 text-sm text-[#202d1d] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
                     >
                         @for (cat of categories; track cat) {
                             <option [value]="cat">{{ cat }}</option>
@@ -130,7 +130,7 @@
                         aria-hidden="true"
                     >
                         <svg
-                            class="w-4 h-4 text-[#484f58]"
+                            class="w-4 h-4 text-[#65735c]"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -145,8 +145,8 @@
 
             <!-- Subject -->
             <div>
-                <label for="contact-subject" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                    Subject <span class="text-red-400" aria-hidden="true">*</span>
+                <label for="contact-subject" class="block text-sm font-medium text-[#43523c] mb-1.5">
+                    Subject <span class="text-red-700" aria-hidden="true">*</span>
                 </label>
                 <input
                     id="contact-subject"
@@ -156,12 +156,12 @@
                     aria-required="true"
                     [attr.aria-invalid]="isFieldInvalid('subject') ? 'true' : null"
                     aria-describedby="contact-subject-error"
-                    class="block w-full rounded-lg border bg-[#0d1117] px-3.5 py-2.5 text-sm text-[#f0f6fc] placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    class="block w-full rounded-lg border bg-[#f8f9f3] px-3.5 py-2.5 text-sm text-[#202d1d] placeholder:text-[#65735c] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400"
                     [class.border-red-500]="isFieldInvalid('subject')"
                     [class.border-[#30363d]]="!isFieldInvalid('subject')"
                 />
                 @if (isFieldInvalid('subject')) {
-                    <p id="contact-subject-error" class="mt-1.5 text-xs text-red-400" role="alert">
+                    <p id="contact-subject-error" class="mt-1.5 text-xs text-red-700" role="alert">
                         @if (contactForm.get('subject')?.errors?.['required']) {
                             Subject is required.
                         } @else if (contactForm.get('subject')?.errors?.['minlength']) {
@@ -173,8 +173,8 @@
 
             <!-- Message -->
             <div>
-                <label for="contact-message" class="block text-sm font-medium text-[#c9d1d9] mb-1.5">
-                    Message <span class="text-red-400" aria-hidden="true">*</span>
+                <label for="contact-message" class="block text-sm font-medium text-[#43523c] mb-1.5">
+                    Message <span class="text-red-700" aria-hidden="true">*</span>
                 </label>
                 <textarea
                     id="contact-message"
@@ -184,13 +184,13 @@
                     aria-required="true"
                     [attr.aria-invalid]="isFieldInvalid('message') ? 'true' : null"
                     aria-describedby="contact-message-error contact-message-hint"
-                    class="block w-full rounded-lg border bg-[#0d1117] px-3.5 py-2.5 text-sm text-[#f0f6fc] placeholder:text-[#484f58] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400 resize-y min-h-[120px]"
+                    class="block w-full rounded-lg border bg-[#f8f9f3] px-3.5 py-2.5 text-sm text-[#202d1d] placeholder:text-[#65735c] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400 resize-y min-h-[120px]"
                     [class.border-red-500]="isFieldInvalid('message')"
                     [class.border-[#30363d]]="!isFieldInvalid('message')"
                 ></textarea>
                 <div class="flex items-start justify-between mt-1.5">
                     @if (isFieldInvalid('message')) {
-                        <p id="contact-message-error" class="text-xs text-red-400" role="alert">
+                        <p id="contact-message-error" class="text-xs text-red-700" role="alert">
                             @if (contactForm.get('message')?.errors?.['required']) {
                                 Message is required.
                             } @else if (contactForm.get('message')?.errors?.['minlength']) {
@@ -198,9 +198,9 @@
                             }
                         </p>
                     } @else {
-                        <span id="contact-message-hint" class="text-xs text-[#484f58]">Minimum 20 characters</span>
+                        <span id="contact-message-hint" class="text-xs text-[#65735c]">Minimum 20 characters</span>
                     }
-                    <span class="text-xs text-[#484f58] ml-auto">
+                    <span class="text-xs text-[#65735c] ml-auto">
                         {{ contactForm.get('message')?.value?.length ?? 0 }} / 2000
                     </span>
                 </div>
@@ -214,7 +214,7 @@
                     aria-live="polite"
                 >
                     <svg
-                        class="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5"
+                        class="w-5 h-5 text-red-700 flex-shrink-0 mt-0.5"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -228,18 +228,18 @@
                         />
                     </svg>
                     <div>
-                        <p class="text-sm font-semibold text-red-400">Something went wrong</p>
-                        <p class="text-sm text-[#8b949e] mt-0.5">Failed to send your message. Please try again.</p>
+                        <p class="text-sm font-semibold text-red-700">Something went wrong</p>
+                        <p class="text-sm text-[#5e6c56] mt-0.5">Failed to send your message. Please try again.</p>
                     </div>
                 </div>
             }
 
             <!-- Submit -->
             <div class="flex items-center justify-between gap-4 pt-1 flex-wrap">
-                <p class="text-xs text-[#484f58]"><span class="text-red-400">*</span> Required fields</p>
+                <p class="text-xs text-[#65735c]"><span class="text-red-700">*</span> Required fields</p>
                 <button
                     type="submit"
-                    class="cursor-pointer inline-flex items-center gap-2 px-6 py-2.5 !rounded-sm bg-teal-400 text-[#0d1117] text-sm font-bold transition-all duration-200 hover:-translate-y-px hover:bg-teal-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0"
+                    class="cursor-pointer inline-flex items-center gap-2 px-6 py-2.5 !rounded-sm bg-[#315b2b] text-white text-sm font-bold transition-all duration-200 hover:-translate-y-px hover:bg-[#24471f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0"
                     [disabled]="isSubmitting() || (contactForm.invalid && submitted())"
                 >
                     @if (isSubmitting()) {
@@ -282,9 +282,9 @@
     </section>
 
     <!-- Response time note -->
-    <div class="rounded-2xl border border-[#21262d] bg-[#161b22] p-7 text-center ws-hover-glow" wsReveal="up">
-        <p class="text-sm text-[#8b949e]">
-            Our typical response time is <strong class="text-[#c9d1d9]">under 24 hours</strong> on business days.
+    <div class="rounded-2xl border border-[#dce3d4] bg-[#ffffff] p-7 text-center ws-hover-glow" wsReveal="up">
+        <p class="text-sm text-[#5e6c56]">
+            Our typical response time is <strong class="text-[#43523c]">under 24 hours</strong> on business days.
         </p>
     </div>
-</main>
+</div>

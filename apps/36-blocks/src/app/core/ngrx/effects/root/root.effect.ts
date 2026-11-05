@@ -82,7 +82,7 @@ export class RootEffects {
             switchMap((req) => {
                 return this.rootService.getProjects().pipe(
                     map((res) => {
-                        if (res.hasError) {
+                        if (res.hasError || !Array.isArray(res.data?.data)) {
                             this.showError(res.errors);
                             return rootActions.getAllProjectsError();
                         }
