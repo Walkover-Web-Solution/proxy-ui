@@ -32,6 +32,7 @@ export class MainLeftSideNavComponent extends BaseComponent {
         { route: 'dashboard', icon: 'dashboard', label: 'Overview' },
         { route: 'features', icon: 'featured_play_list', label: 'Applications & blocks' },
         { route: 'users', icon: 'person', label: 'People' },
+        { route: 'team', icon: 'admin_panel_settings', label: 'Team & access' },
         { route: 'logs', icon: 'description', label: 'Request logs' },
         { route: 'activity', icon: 'history', label: 'Operator activity' },
         { route: 'chatbot', icon: 'face', label: 'Assistant' },

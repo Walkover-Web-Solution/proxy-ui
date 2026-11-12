@@ -1,0 +1,220 @@
+<div class="tab-toolbar">
+    <form class="search-form" (ngSubmit)="applySearch()" role="search" aria-label="Search team members">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Search by name or email</mat-label>
+            <input matInput name="search" [(ngModel)]="searchText" autocomplete="off" maxlength="100" />
+        </mat-form-field>
+        <button mat-flat-button type="submit" [disabled]="loading()">Search</button>
+        @if (hasFilter()) {
+            <button mat-button type="button" (click)="clearSearch()" [disabled]="loading()">Clear</button>
+        }
+    </form>
+    <div class="tab-toolbar__actions">
+        <button
+            mat-flat-button
+            type="button"
+            (click)="openInvite()"
+            [disabled]="rolesLoading() || rolesFailed() || !assignable().length"
+            [matTooltip]="rolesFailed() ? 'Roles could not be loaded; retry below.' : ''"
+        >
+            <mat-icon>person_add</mat-icon>
+            Invite member
+        </button>
+    </div>
+</div>
+
+@if (rolesFailed()) {
+    <div class="banner banner--warn" role="alert">
+        <mat-icon aria-hidden="true">warning</mat-icon>
+        <span>
+            Roles could not be loaded, so inviting people and changing roles is unavailable.
+            <button mat-button type="button" (click)="loadRoles(true)">Retry</button>
+        </span>
+    </div>
+}
+
+@if (loading()) {
+    <p role="status" aria-live="polite">Loading team members…</p>
+} @else if (error(); as message) {
+    <div class="state-block" role="alert">
+        <p>{{ message }}</p>
+        <button mat-stroked-button type="button" (click)="load(page())">Retry</button>
+    </div>
+} @else if (members().length === 0) {
+    <div class="state-block" role="status">
+        @if (hasFilter()) {
+            <p>No team members match this search.</p>
+            <button mat-stroked-button type="button" (click)="clearSearch()">Clear search</button>
+        } @else {
+            <p>This workspace has no team members yet.</p>
+        }
+    </div>
+} @else {
+    <p role="status" aria-live="polite">
+        {{ total() }} {{ total() === 1 ? 'person' : 'people' }} · Page {{ page() }} of {{ totalPages() }}
+    </p>
+    <div class="table-scroll" role="region" aria-label="Team members" tabindex="0">
+        <table class="team-table">
+            <caption class="visually-hidden">
+                Operators of the current workspace
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">Member</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Added</th>
+                    <th scope="col" class="actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (member of members(); track member.id) {
+                    @let status = memberStatus(member);
+                    <tr>
+                        <td>
+                            {{ memberDisplayName(member) }}
+                            @if (isMe(member)) {
+                                <span class="you-badge">You</span>
+                            }
+                            @if (memberDisplayName(member) !== member.email) {
+                                <small>{{ member.email }}</small>
+                            }
+                        </td>
+                        <td>{{ roleName(member) }}</td>
+                        <td>
+                            <span
+                                class="status-pill"
+                                [class.status-pill--good]="status.key === 'active'"
+                                [class.status-pill--wait]="status.key === 'invited'"
+                                [class.status-pill--bad]="status.key === 'declined' || status.key === 'invite-expired'"
+                                [class.status-pill--muted]="status.key === 'disabled' || status.key === 'unknown'"
+                                >{{ status.label }}</span
+                            >
+                        </td>
+                        <td>{{ member.client_user?.created_at | date: 'mediumDate' }}</td>
+                        <td class="actions">
+                            @if (status.canResend) {
+                                <button
+                                    mat-stroked-button
+                                    type="button"
+                                    (click)="resend(member)"
+                                    [disabled]="resendingId() !== null"
+                                    [attr.aria-label]="'Send invitation again to ' + member.email"
+                                >
+                                    {{ resendingId() === member.id ? 'Sending…' : 'Send again' }}
+                                </button>
+                            }
+                            <span
+                                [matTooltip]="isMe(member) ? 'You cannot change your own role.' : ''"
+                                matTooltipPosition="above"
+                            >
+                                <button
+                                    mat-stroked-button
+                                    type="button"
+                                    (click)="openRoleChange(member)"
+                                    [disabled]="isMe(member) || rolesLoading() || rolesFailed()"
+                                    [attr.aria-label]="'Change role of ' + memberDisplayName(member)"
+                                >
+                                    Change role
+                                </button>
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <nav class="pagination" aria-label="Team member pages">
+        <button mat-stroked-button type="button" (click)="load(page() - 1)" [disabled]="page() <= 1">Previous</button>
+        <button mat-stroked-button type="button" (click)="load(page() + 1)" [disabled]="page() >= totalPages()">
+            Next
+        </button>
+    </nav>
+}
+
+<ng-template #inviteDialog>
+    <h2 matDialogTitle>Invite a team member</h2>
+    <mat-dialog-content>
+        <p class="text-sm m-0 mb-3">
+            They will receive an email with an invitation link that is valid for {{ inviteExpiryMinutes }} minutes. The
+            role controls what they can do on this dashboard.
+        </p>
+        <form id="invite-member-form" class="dialog-form" [formGroup]="inviteForm" (ngSubmit)="submitInvite()">
+            <mat-form-field appearance="outline">
+                <mat-label>Email address</mat-label>
+                <input matInput type="email" formControlName="email" autocomplete="off" maxlength="254" />
+                @if (inviteForm.controls.email.touched && inviteForm.controls.email.invalid) {
+                    <mat-error>Enter a valid email address</mat-error>
+                }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Role</mat-label>
+                <mat-select formControlName="role_id">
+                    @for (role of assignable(); track role.id) {
+                        <mat-option [value]="role.id"
+                            >{{ role.role_name }} · {{ role.permissions.length }} permissions</mat-option
+                        >
+                    }
+                </mat-select>
+                <mat-hint>See the Roles tab for exactly what each role allows.</mat-hint>
+                @if (inviteForm.controls.role_id.touched && inviteForm.controls.role_id.invalid) {
+                    <mat-error>Choose a role</mat-error>
+                }
+            </mat-form-field>
+        </form>
+        @if (dialogError(); as message) {
+            <p class="dialog-error" role="alert">{{ message }}</p>
+        }
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button type="button" mat-button [disabled]="saving()" (click)="closeDialog()">Cancel</button>
+        <button type="submit" form="invite-member-form" mat-flat-button [disabled]="saving()">
+            @if (saving()) {
+                <mat-spinner diameter="18" class="mr-2"></mat-spinner>
+                Sending…
+            } @else {
+                Send invitation
+            }
+        </button>
+    </mat-dialog-actions>
+</ng-template>
+
+<ng-template #roleDialog>
+    @if (roleTarget(); as target) {
+        <h2 matDialogTitle>Change role</h2>
+        <mat-dialog-content>
+            <p class="text-sm m-0 mb-3">
+                Choose the dashboard role for <strong>{{ memberDisplayName(target) }}</strong> in this workspace.
+            </p>
+            <form id="change-role-form" class="dialog-form" [formGroup]="roleForm" (ngSubmit)="submitRoleChange()">
+                <mat-form-field appearance="outline">
+                    <mat-label>Role</mat-label>
+                    <mat-select formControlName="role_id">
+                        @for (role of assignable(); track role.id) {
+                            <mat-option [value]="role.id"
+                                >{{ role.role_name }} · {{ role.permissions.length }} permissions</mat-option
+                            >
+                        }
+                    </mat-select>
+                    @if (roleForm.controls.role_id.touched && roleForm.controls.role_id.invalid) {
+                        <mat-error>Choose a role</mat-error>
+                    }
+                </mat-form-field>
+            </form>
+            @if (dialogError(); as message) {
+                <p class="dialog-error" role="alert">{{ message }}</p>
+            }
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button type="button" mat-button [disabled]="saving()" (click)="closeDialog()">Cancel</button>
+            <button type="submit" form="change-role-form" mat-flat-button [disabled]="saving()">
+                @if (saving()) {
+                    <mat-spinner diameter="18" class="mr-2"></mat-spinner>
+                    Saving…
+                } @else {
+                    Save role
+                }
+            </button>
+        </mat-dialog-actions>
+    }
+</ng-template>

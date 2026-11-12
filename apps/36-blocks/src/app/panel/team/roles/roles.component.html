@@ -1,0 +1,61 @@
+<div class="tab-toolbar">
+    <p class="tab-toolbar__lead">
+        Dashboard roles define what an <strong>operator</strong> can do here. They are the same for every workspace.
+        Assign them from <a routerLink="../members">Members</a> or when creating an
+        <a routerLink="../api-keys">API key</a>. Roles for the end users of an application are configured per block
+        under People → Management.
+    </p>
+</div>
+
+@if (loading()) {
+    <p role="status" aria-live="polite">Loading roles…</p>
+} @else if (error(); as message) {
+    <div class="state-block" role="alert">
+        <p>{{ message }}</p>
+        <button mat-stroked-button type="button" (click)="load(true)">Retry</button>
+    </div>
+} @else if (roles().length === 0) {
+    <div class="state-block" role="status"><p>No roles were returned.</p></div>
+} @else {
+    @let view = matrix();
+    <div class="table-scroll" role="region" aria-label="Permissions by role" tabindex="0">
+        <table class="team-table">
+            <caption class="visually-hidden">
+                Permissions granted to each dashboard role
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">Permission</th>
+                    @for (role of view.roles; track role.id) {
+                        <th scope="col">
+                            {{ role.role_name }}
+                            @if (role.id === superAdminId) {
+                                <small>Platform role; cannot be assigned here</small>
+                            } @else {
+                                <small>{{ role.permissions.length }} permissions</small>
+                            }
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (row of view.rows; track row.permission) {
+                    <tr>
+                        <th scope="row">{{ row.permission }}</th>
+                        @for (role of view.roles; track role.id) {
+                            <td>
+                                @if (row.grants[role.id]) {
+                                    <mat-icon class="material-icons-outlined" aria-hidden="true">check</mat-icon>
+                                    <span class="visually-hidden">Allowed</span>
+                                } @else {
+                                    <span aria-hidden="true">–</span>
+                                    <span class="visually-hidden">Not allowed</span>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
