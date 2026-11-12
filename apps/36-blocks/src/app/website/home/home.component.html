@@ -8,8 +8,46 @@
                 More time building what matters.
             </p>
             <div class="hero-actions">
-                <a class="action-primary" routerLink="/login">Open your workspace <span aria-hidden="true">↗</span></a
-                ><a class="action-text" href="#workspace">Take a closer look ↓</a>
+                <div class="prompt-wrap">
+                    <button
+                        type="button"
+                        class="prompt-copy"
+                        [class.copied]="copyState() === 'copied'"
+                        [class.failed]="copyState() === 'failed'"
+                        aria-describedby="prompt-preview"
+                        (click)="copyPrompt()"
+                    >
+                        @switch (copyState()) {
+                            @case ('copied') {
+                                <span aria-hidden="true">✓</span> Copied
+                            }
+                            @case ('failed') {
+                                <span aria-hidden="true">!</span> Copy failed
+                            }
+                            @default {
+                                <span aria-hidden="true">⧉</span> Copy AI prompt
+                            }
+                        }
+                    </button>
+                    <span class="visually-hidden" role="status" aria-live="polite">
+                        @if (copyState() === 'copied') {
+                            Prompt copied to your clipboard.
+                        } @else if (copyState() === 'failed') {
+                            Couldn’t copy automatically. Select the prompt text and copy it manually.
+                        }
+                    </span>
+                    <div class="prompt-hint" [class.dismissed]="hintDismissed()" aria-hidden="true">
+                        <span class="hint-spark">✦</span>Building with an AI agent? Start here.
+                    </div>
+                </div>
+                <div id="prompt-preview" class="prompt-popover" role="tooltip">
+                    <p class="eyebrow">PASTE INTO YOUR AI CODING ASSISTANT</p>
+                    <pre class="prompt-body mono" tabindex="0">{{ integrationPrompt }}</pre>
+                </div>
+                <a class="action-secondary" routerLink="/login"
+                    >Open your workspace <span aria-hidden="true">↗</span></a
+                >
+                <a class="action-text" href="#workspace">Take a closer look ↓</a>
             </div>
             <p class="hero-note">36blocks is an internal platform. Team access is required.</p>
         </div>
