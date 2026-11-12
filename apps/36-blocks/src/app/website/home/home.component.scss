@@ -30,11 +30,177 @@ h1 span {
     gap: 24px;
     align-items: center;
     margin-top: 32px;
+    --hero-actions-pad: 44px;
+    padding-bottom: var(--hero-actions-pad);
+    position: relative;
+}
+.prompt-copy {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 150px; // keeps the row from shifting when the label changes to Copied / Copy failed
+    min-height: 46px;
+    padding: 14px 20px;
+    border-radius: 7px;
+    border: 1px solid #315b2b;
+    background: #315b2b;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.prompt-copy:hover {
+    background: #24491f;
+}
+// A light sheen sweeps across the button every few seconds.
+.prompt-copy::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.32) 50%, transparent 60%);
+    background-size: 250% 100%;
+    background-position: 150% 0;
+    animation: prompt-shine 3.6s ease-in-out infinite;
+}
+@keyframes prompt-shine {
+    0%,
+    55% {
+        background-position: 150% 0;
+    }
+    100% {
+        background-position: -50% 0;
+    }
+}
+.prompt-copy.copied::after,
+.prompt-copy.failed::after {
+    animation: none;
+    opacity: 0;
+}
+.prompt-copy.failed {
+    background: #a63d2f;
+    border-color: #a63d2f;
+}
+@media (prefers-reduced-motion: reduce) {
+    .prompt-copy::after {
+        animation: none;
+        opacity: 0;
+    }
+}
+.action-secondary {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    min-height: 46px;
+    padding: 14px 20px;
+    border-radius: 7px;
+    border: 1px solid var(--experience-border);
+    background: var(--experience-surface);
+    color: var(--experience-ink);
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 0.15s;
+}
+.action-secondary:hover {
+    border-color: var(--experience-accent);
+    color: var(--experience-ink);
+}
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+// The popover is a child of the wrapper, so moving the pointer from the button into it keeps it open
+// and the prompt text stays selectable. padding-top bridges the gap between button and panel.
+.prompt-popover {
+    position: absolute;
+    top: calc(100% - var(--hero-actions-pad));
+    left: 0;
+    z-index: 20;
+    --popover-pad: 16px;
+    width: 700px;
+    max-width: calc(100vw - 32px);
+    padding-top: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition:
+        opacity 0.15s,
+        transform 0.15s,
+        visibility 0.15s;
+}
+// :focus-visible (keyboard focus) rather than :focus-within, so a mouse click doesn't pin the popover open.
+.prompt-wrap:hover ~ .prompt-popover,
+.prompt-wrap:has(:focus-visible) ~ .prompt-popover,
+.prompt-popover:hover,
+.prompt-popover:has(:focus-visible) {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+}
+.prompt-popover::before {
+    content: '';
+    position: absolute;
+    inset: 10px 0 0;
+    background: var(--experience-surface);
+    border: 1px solid var(--experience-border);
+    border-radius: var(--experience-radius);
+    box-shadow: 0 18px 40px -18px rgba(32, 45, 29, 0.35);
+    z-index: -1;
+}
+.prompt-popover .eyebrow {
+    padding: var(--popover-pad) var(--popover-pad) 0;
+}
+.prompt-wrap {
+    position: relative;
+}
+// Caption under the button. Yields to the popover on hover/focus and goes away after the first copy.
+.prompt-hint {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 2px;
+    white-space: nowrap;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--experience-muted);
+    pointer-events: none;
+    transition: opacity 0.15s;
+}
+.hint-spark {
+    margin-right: 6px;
+    color: var(--experience-accent);
+}
+.prompt-wrap:hover .prompt-hint,
+.prompt-wrap:has(:focus-visible) .prompt-hint,
+.prompt-hint.dismissed {
+    opacity: 0;
+}
+.prompt-body {
+    margin: 10px var(--popover-pad) var(--popover-pad);
+    padding: 12px 14px;
+    overflow: auto;
+    border: 1px solid var(--experience-border);
+    border-radius: 8px;
+    background: var(--experience-soft);
+    color: var(--experience-ink);
+    font-size: 11px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
 .hero-note {
     font-size: 12px;
     color: var(--experience-muted);
-    margin-top: 20px;
+    margin-top: 0;
 }
 .hero-art {
     position: relative;
@@ -696,5 +862,30 @@ h2 {
     }
     .closing {
         padding-block: 56px;
+    }
+}
+
+// Hover previews need a pointer and room; touch and narrow screens keep the button and the arrow cue.
+@media (hover: none), (max-width: 720px) {
+    .prompt-popover {
+        display: none;
+    }
+}
+
+// On small screens the caption flows under the button instead of floating, so a wrapped row can't overlap it.
+@media (max-width: 720px) {
+    .hero-actions {
+        --hero-actions-pad: 0px;
+    }
+    .prompt-wrap {
+        flex: 1 1 100%;
+    }
+    .prompt-hint {
+        position: static;
+        margin-top: 10px;
+        white-space: normal;
+    }
+    .hero-note {
+        margin-top: 20px;
     }
 }
