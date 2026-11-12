@@ -34,6 +34,8 @@ import { rootActions } from '../../core/ngrx/actions';
 import { selectAllClient, selectClientSettings, selectSwitchClientSuccess } from '../../core/ngrx';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { RootService } from '@proxy/services/proxy/root';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateWorkspaceDialogComponent } from './create-workspace-dialog/create-workspace-dialog.component';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '@proxy/services/proxy/auth';
 import { SideNavService } from './side-nav.service';
@@ -88,6 +90,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
                     dashboard: 'Overview',
                     features: 'Applications & blocks',
                     users: 'People',
+                    team: 'Team & access',
                     logs: 'Request logs',
                     activity: 'Operator activity',
                     chatbot: 'Assistant',
@@ -111,6 +114,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     public sideNavService = inject(SideNavService);
     private uiSettings = inject(UiSettingsService);
     private featuresService = inject(FeaturesService);
+    private dialog = inject(MatDialog);
 
     constructor() {
         super();
@@ -266,6 +270,23 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
 
     public getClientSettings() {
         this.store.dispatch(rootActions.getClientSettings());
+    }
+
+    /** Opens the create-workspace dialog. The API switches the session into the new workspace, so reload like a switch. */
+    public createWorkspace(): void {
+        this.dialog
+            .open(CreateWorkspaceDialogComponent, {
+                panelClass: ['mat-dialog'],
+                autoFocus: 'input',
+                restoreFocus: true,
+            })
+            .afterClosed()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((client) => {
+                if (client) {
+                    location.href = '/app';
+                }
+            });
     }
 
     public switchClient(clientId: number): void {

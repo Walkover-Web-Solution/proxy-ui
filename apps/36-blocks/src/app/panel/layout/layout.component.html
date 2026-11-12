@@ -16,7 +16,6 @@
             }
         </a>
         @let clientSettings = clientSettings$ | async; @let clientList = clients$ | async;
-        @let isMultipleClients = (clientList?.data?.length ?? 0) > 1;
         <div
             class="flex items-center pt-2"
             [class.flex-col]="!sideNavService.isSideNavOpen()"
@@ -26,11 +25,11 @@
                 class="flex items-center grow gap-2 mat-drawer-header-title pr-2"
                 role="button"
                 tabindex="0"
-                aria-label="Switch workspace"
+                aria-label="Switch or create workspace"
                 (keydown.enter)="clientsMenuTrigger.openMenu()"
                 (keydown.space)="$event.preventDefault(); clientsMenuTrigger.openMenu()"
                 #clientsMenuTrigger="matMenuTrigger"
-                [matMenuTriggerFor]="isMultipleClients ? clientsMenu : null"
+                [matMenuTriggerFor]="clientsMenu"
                 [class.pl-2]="!sideNavService.isSideNavOpen()"
                 [class.pl-4]="sideNavService.isSideNavOpen()"
             >
@@ -41,11 +40,9 @@
                         >
                             {{ clientSettings?.client?.name }}
                         </span>
-                        @if (isMultipleClients) {
-                            <mat-icon>{{
-                                clientsMenuTrigger?.menuOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
-                            }}</mat-icon>
-                        }
+                        <mat-icon>{{
+                            clientsMenuTrigger?.menuOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
+                        }}</mat-icon>
                     </div>
                 } @else {
                     <mat-icon class="mat-icon-22" [matTooltip]="clientSettings?.client?.name" matTooltipPosition="right"
@@ -72,6 +69,11 @@
                         </span>
                     </button>
                 }
+                <mat-divider></mat-divider>
+                <button mat-menu-item type="button" (click)="createWorkspace()">
+                    <mat-icon>add</mat-icon>
+                    <span>Create workspace</span>
+                </button>
             </mat-menu>
             <button
                 matIconButton

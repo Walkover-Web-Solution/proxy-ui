@@ -1,0 +1,207 @@
+<div class="tab-toolbar">
+    <p class="tab-toolbar__lead">
+        Your servers send an API key in the <code>authkey</code> header to call server-to-server APIs. A key acts with
+        the permissions of its role, so give it the lowest role that works. Anyone who can view this page can see the
+        full key; keep it out of browsers and source control.
+    </p>
+    <div class="tab-toolbar__actions">
+        <button
+            mat-flat-button
+            type="button"
+            (click)="openCreate()"
+            [disabled]="rolesLoading() || rolesFailed() || !assignable().length"
+            [matTooltip]="rolesFailed() ? 'Roles could not be loaded; retry below.' : ''"
+        >
+            <mat-icon>add</mat-icon>
+            Create API key
+        </button>
+    </div>
+</div>
+
+@if (rolesFailed()) {
+    <div class="banner banner--warn" role="alert">
+        <mat-icon aria-hidden="true">warning</mat-icon>
+        <span>
+            Roles could not be loaded, so creating keys and changing their role is unavailable.
+            <button mat-button type="button" (click)="loadRoles(true)">Retry</button>
+        </span>
+    </div>
+}
+
+@if (loading()) {
+    <p role="status" aria-live="polite">Loading API keys…</p>
+} @else if (error(); as message) {
+    <div class="state-block" role="alert">
+        <p>{{ message }}</p>
+        <button mat-stroked-button type="button" (click)="load(page())">Retry</button>
+    </div>
+} @else if (keys().length === 0) {
+    <div class="state-block" role="status">
+        <p>This workspace has no API keys yet.</p>
+        <button
+            mat-stroked-button
+            type="button"
+            (click)="openCreate()"
+            [disabled]="rolesLoading() || rolesFailed() || !assignable().length"
+        >
+            Create API key
+        </button>
+    </div>
+} @else {
+    <p role="status" aria-live="polite">
+        {{ total() }} {{ total() === 1 ? 'key' : 'keys' }} · Page {{ page() }} of {{ totalPages() }}
+    </p>
+    <div class="table-scroll" role="region" aria-label="API keys" tabindex="0">
+        <table class="team-table">
+            <caption class="visually-hidden">
+                API keys of the current workspace
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Key</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Created</th>
+                    <th scope="col" class="actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (key of keys(); track key.id) {
+                    <tr [class.row-inactive]="key.status !== 'active'">
+                        <td>{{ key.name }}</td>
+                        <td>
+                            <span class="mono">{{ isRevealed(key) ? key.authkey : mask(key.authkey) }}</span>
+                            <button
+                                type="button"
+                                mat-icon-button
+                                (click)="toggleReveal(key)"
+                                [attr.aria-label]="(isRevealed(key) ? 'Hide key ' : 'Show key ') + key.name"
+                                [attr.aria-pressed]="isRevealed(key)"
+                                [matTooltip]="isRevealed(key) ? 'Hide key' : 'Show key'"
+                            >
+                                <mat-icon class="material-icons-outlined">{{
+                                    isRevealed(key) ? 'visibility_off' : 'visibility'
+                                }}</mat-icon>
+                            </button>
+                            <proxy-copy-button
+                                [copyData]="key.authkey"
+                                [tooltip]="'Copy key ' + key.name"
+                            ></proxy-copy-button>
+                        </td>
+                        <td>{{ roleName(key.role_id) }}</td>
+                        <td>
+                            <span
+                                class="status-pill"
+                                [class.status-pill--good]="key.status === 'active'"
+                                [class.status-pill--muted]="key.status !== 'active'"
+                                >{{ key.status === 'active' ? 'Active' : 'Inactive' }}</span
+                            >
+                        </td>
+                        <td>
+                            {{ key.created_at | date: 'mediumDate' }}
+                            <small>by {{ actor(key.created_by) }}</small>
+                        </td>
+                        <td class="actions">
+                            <button
+                                mat-stroked-button
+                                type="button"
+                                (click)="openEdit(key)"
+                                [disabled]="busyId() !== null || rolesLoading() || rolesFailed()"
+                                [attr.aria-label]="'Edit API key ' + key.name"
+                            >
+                                Edit
+                            </button>
+                            <button
+                                mat-stroked-button
+                                type="button"
+                                (click)="setActive(key, key.status !== 'active')"
+                                [disabled]="busyId() !== null"
+                                [attr.aria-label]="
+                                    (key.status === 'active' ? 'Deactivate API key ' : 'Activate API key ') + key.name
+                                "
+                            >
+                                {{ key.status === 'active' ? 'Deactivate' : 'Activate' }}
+                            </button>
+                            <button
+                                mat-stroked-button
+                                type="button"
+                                (click)="remove(key)"
+                                [disabled]="busyId() !== null"
+                                [attr.aria-label]="'Delete API key ' + key.name"
+                            >
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <nav class="pagination" aria-label="API key pages">
+        <button mat-stroked-button type="button" (click)="load(page() - 1)" [disabled]="page() <= 1">Previous</button>
+        <button mat-stroked-button type="button" (click)="load(page() + 1)" [disabled]="page() >= totalPages()">
+            Next
+        </button>
+    </nav>
+}
+
+<ng-template #keyDialog>
+    <h2 matDialogTitle>{{ editing() ? 'Edit API key' : 'Create API key' }}</h2>
+    <mat-dialog-content>
+        <p class="text-sm m-0 mb-3">
+            @if (editing()) {
+                You can rename the key or change its role. The key value itself cannot be changed; delete the key and
+                create a new one to rotate it.
+            } @else {
+                A secure key is generated for you. You can show and copy it from the list after it is created.
+            }
+        </p>
+        <form id="api-key-form" class="dialog-form" [formGroup]="keyForm" (ngSubmit)="submitKey()">
+            <mat-form-field appearance="outline">
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name" autocomplete="off" [attr.maxlength]="nameMax" />
+                <mat-hint>{{ nameMin }}–{{ nameMax }} letters, numbers or underscores</mat-hint>
+                @if (keyForm.controls.name.touched && keyForm.controls.name.invalid) {
+                    <mat-error>
+                        @if (keyForm.controls.name.hasError('required')) {
+                            Name is required
+                        } @else if (keyForm.controls.name.hasError('minlength')) {
+                            Use at least {{ nameMin }} characters
+                        } @else {
+                            Start with a letter or number; use only letters, numbers and underscores
+                        }
+                    </mat-error>
+                }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Role</mat-label>
+                <mat-select formControlName="role_id">
+                    @for (role of assignable(); track role.id) {
+                        <mat-option [value]="role.id"
+                            >{{ role.role_name }} · {{ role.permissions.length }} permissions</mat-option
+                        >
+                    }
+                </mat-select>
+                <mat-hint>The key can do whatever this role can do.</mat-hint>
+                @if (keyForm.controls.role_id.touched && keyForm.controls.role_id.invalid) {
+                    <mat-error>Choose a role</mat-error>
+                }
+            </mat-form-field>
+        </form>
+        @if (dialogError(); as message) {
+            <p class="dialog-error" role="alert">{{ message }}</p>
+        }
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button type="button" mat-button [disabled]="saving()" (click)="closeDialog()">Cancel</button>
+        <button type="submit" form="api-key-form" mat-flat-button [disabled]="saving()">
+            @if (saving()) {
+                <mat-spinner diameter="18" class="mr-2"></mat-spinner>
+                Saving…
+            } @else {
+                {{ editing() ? 'Save changes' : 'Create key' }}
+            }
+        </button>
+    </mat-dialog-actions>
+</ng-template>
