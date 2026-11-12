@@ -33,6 +33,11 @@ export class RootService {
         );
     }
 
+    // Create a workspace (client) owned by the signed-in user. The API also switches the session into it.
+    public createClient(body: { name: string }): Observable<BaseResponse<IClient, void>> {
+        return this.http.post<BaseResponse<IClient, void>>(RootUrls.createClient(this.baseUrl), body);
+    }
+
     public generateToken(params: { [key: string]: any } = {}): Observable<BaseResponse<{ jwt: string }, void>> {
         return this.http.get<BaseResponse<{ jwt: string }, void>>(RootUrls.generateToken(this.baseUrl), params);
     }

@@ -81,7 +81,76 @@ const operations = [
         audit_context: null,
     },
 ];
+const permissionNames = [
+    'View client users',
+    'Create client user',
+    'Update user role',
+    'View authkeys',
+    'Create authkey',
+    'Edit authkey',
+    'Delete authkey',
+];
+const operatorRoles = [
+    { id: 4, role_name: 'User', permissions: permissionNames.slice(0, 1).concat(permissionNames.slice(3, 4)) },
+    { id: 3, role_name: 'Admin', permissions: permissionNames.slice(0, 6) },
+    { id: 2, role_name: 'Owner', permissions: permissionNames },
+    { id: 1, role_name: 'Super admin', permissions: permissionNames },
+].map((role) => ({ ...role, permissions: role.permissions.map((permission) => ({ permission })) }));
+const teamMember = (
+    id: number,
+    fname: string,
+    lname: string,
+    role: { id: number; role_name: string },
+    invite_status: string,
+    updated_at: string
+) => ({
+    id,
+    email: `${fname.toLowerCase()}@example.test`,
+    fname,
+    lname,
+    mobile: null,
+    is_registered: invite_status === 'accepted',
+    stage: invite_status === 'accepted' ? 'onboarded' : 'invited',
+    created_at: '2026-10-20T08:00:00Z',
+    client_user: {
+        id: 100 + id,
+        status: invite_status === 'accepted' ? 'enabled' : 'disabled',
+        invite_status,
+        created_at: '2026-10-20T08:00:00Z',
+        updated_at,
+        role,
+    },
+});
+const teamMembers = [
+    teamMember(2, 'Review', 'Admin', { id: 3, role_name: 'Admin' }, 'accepted', '2026-10-20T08:00:00Z'),
+    teamMember(3, 'Morgan', 'Chen', { id: 4, role_name: 'User' }, 'accepted', '2026-10-21T08:00:00Z'),
+    teamMember(4, 'Jordan', '', { id: 4, role_name: 'User' }, 'pending', '2020-01-01T00:00:00Z'),
+    teamMember(5, 'Casey', 'Lopez', { id: 3, role_name: 'Admin' }, 'rejected', '2026-10-22T08:00:00Z'),
+];
+const apiKeys = [
+    { id: 21, name: 'default', authkey: '0123456789abcdef0123456789abcdef', role_id: 2, status: 'active' },
+    { id: 22, name: 'backend_sync', authkey: 'fedcba9876543210fedcba9876543210', role_id: 3, status: 'inactive' },
+].map((key) => ({
+    ...key,
+    created_at: '2026-10-20T08:00:00Z',
+    updated_at: '2026-10-20T08:00:00Z',
+    created_by: { id: 2, name: 'Review Admin', email: 'admin@example.test' },
+    updated_by: { id: 2, name: 'Review Admin', email: 'admin@example.test' },
+}));
 export function reviewData(path: string, params: HttpParams): any {
+    if (path === 'users') {
+        const term = params.get('name')?.toLowerCase();
+        return page(
+            teamMembers.filter(
+                (member) =>
+                    !term ||
+                    `${member.fname} ${member.lname}`.toLowerCase().includes(term) ||
+                    member.email.toLowerCase().includes(term)
+            )
+        );
+    }
+    if (path === 'rolePermissions') return page(operatorRoles);
+    if (path === 'authentications') return page(apiKeys);
     if (path === 'getClientSettings') return { client, role: { id: 3, role_name: 'Admin' } };
     if (path === 'clients') return page([client]);
     if (path === 'features')

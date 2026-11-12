@@ -1,0 +1,39 @@
+<h2 matDialogTitle>Create workspace</h2>
+<mat-dialog-content>
+    <p class="text-sm m-0 mb-3">
+        A workspace holds its own applications, team, API keys and billing. You become its Owner and the dashboard
+        switches to it right away. You can switch back any time from the workspace menu.
+    </p>
+    <form id="create-workspace-form" [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Workspace name</mat-label>
+            <input matInput formControlName="name" autocomplete="off" [attr.maxlength]="nameMax" />
+            <mat-hint>{{ nameMin }}–{{ nameMax }} letters, numbers, spaces or underscores</mat-hint>
+            @if (form.controls.name.touched && form.controls.name.invalid) {
+                <mat-error>
+                    @if (form.controls.name.hasError('required')) {
+                        Name is required
+                    } @else if (form.controls.name.hasError('minlength')) {
+                        Use at least {{ nameMin }} characters
+                    } @else {
+                        Start with a letter or number; use only letters, numbers, spaces and underscores
+                    }
+                </mat-error>
+            }
+        </mat-form-field>
+    </form>
+    @if (error(); as message) {
+        <p class="text-sm mt-2 mb-0" role="alert" style="color: var(--mat-sys-error, #b91c1c)">{{ message }}</p>
+    }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button type="button" mat-button [disabled]="saving()" (click)="cancel()">Cancel</button>
+    <button type="submit" form="create-workspace-form" mat-flat-button [disabled]="saving()">
+        @if (saving()) {
+            <mat-spinner diameter="18" class="mr-2"></mat-spinner>
+            Creating…
+        } @else {
+            Create workspace
+        }
+    </button>
+</mat-dialog-actions>

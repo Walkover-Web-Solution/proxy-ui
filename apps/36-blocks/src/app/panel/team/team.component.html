@@ -1,0 +1,29 @@
+<section class="team-page" aria-labelledby="team-title">
+    <header class="page-heading">
+        <div>
+            <span class="page-kicker">WHO CAN OPERATE THIS WORKSPACE</span>
+            <h1 id="team-title">Team &amp; access</h1>
+            <p>
+                Manage the people who sign in to this dashboard, what each role allows, and the API keys your servers
+                use. These are <strong>operators</strong> of the workspace, not the end users of your applications (find
+                those under People).
+            </p>
+        </div>
+    </header>
+
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel" aria-label="Team and access sections">
+        @for (tab of tabs; track tab.path) {
+            <a
+                mat-tab-link
+                [routerLink]="tab.path"
+                routerLinkActive
+                #linkActive="routerLinkActive"
+                [active]="linkActive.isActive"
+                >{{ tab.label }}</a
+            >
+        }
+    </nav>
+    <mat-tab-nav-panel #tabPanel class="team-panel">
+        <router-outlet></router-outlet>
+    </mat-tab-nav-panel>
+</section>
