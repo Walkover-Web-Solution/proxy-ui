@@ -1,0 +1,60 @@
+.key-notice {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 0 0 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--experience-border);
+    border-radius: var(--experience-radius);
+    background: var(--experience-soft);
+    color: var(--experience-ink);
+    font-size: 12px;
+    line-height: 1.6;
+}
+.key-notice mat-icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    color: var(--experience-accent);
+}
+.key-notice a {
+    color: var(--experience-accent);
+    font-weight: 600;
+}
+.edit-section {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--experience-border);
+}
+.edit-section h3 {
+    margin: 0 0 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--experience-ink);
+}
+.edit-section p {
+    margin: 0 0 12px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--experience-muted);
+}
+.edit-section code {
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+}
+.edit-status {
+    min-height: 0;
+}
+.edit-status .edit-problem {
+    margin: 12px 0 0;
+    color: #a63d2f;
+}
+:host-context(.dark-theme) .edit-status .edit-problem {
+    color: #ffc3af;
+}
+@media (max-width: 520px) {
+    .reveal-button {
+        width: 100%;
+    }
+}

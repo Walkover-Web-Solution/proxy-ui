@@ -61,7 +61,13 @@
                         application.
                     </p>
                 </div>
-                <a href="https://developers.36blocks.com">Read the setup guidance ↗</a>
+                <div class="flex flex-wrap items-center gap-4 ml-auto">
+                    <button matButton="filled" type="button" class="mat-btn-xs" (click)="openAiSetup()">
+                        <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">auto_awesome</mat-icon>
+                        Set up with AI
+                    </button>
+                    <a href="https://developers.36blocks.com">Read the setup guidance ↗</a>
+                </div>
             </div>
         }
         @if ((hasSomeFeatures$ | async) === true) {

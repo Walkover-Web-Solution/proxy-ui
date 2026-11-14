@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Subscription } from 'rxjs';
 import {
     ActivityOperation,
+    activityActor,
     activityParams,
     emptyActivityFilters,
     isActivityForbidden,
@@ -36,6 +37,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
     private readonly service = inject(ActivityService);
     private request?: Subscription;
     private loginRequest?: Subscription;
+    protected readonly actorOf = activityActor;
     filters = emptyActivityFilters();
     private appliedFilters = emptyActivityFilters();
     readonly rows = signal<ActivityOperation[]>([]);

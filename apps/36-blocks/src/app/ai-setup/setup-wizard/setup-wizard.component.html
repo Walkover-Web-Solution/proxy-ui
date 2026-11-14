@@ -1,0 +1,366 @@
+<div class="setup-page">
+    <div class="page-heading">
+        <div>
+            <span class="page-kicker">SET UP WITH AI</span>
+            <h1>{{ another() ? 'Add another block with AI' : 'Set up your first block with AI' }}</h1>
+            <p>
+                Name the block, hand one prompt to your AI coding agent, and it creates the block and wires it into your
+                app.
+            </p>
+        </div>
+        <a href="https://developers.36blocks.com" target="_blank" rel="noopener">Developer documentation ↗</a>
+    </div>
+
+    @switch (keys.permissions()) {
+        @case ('idle') {
+            <section class="setup-card" aria-busy="true">
+                <p class="state-line" role="status">
+                    <mat-spinner diameter="20" aria-hidden="true"></mat-spinner>
+                    Checking what you can do in this workspace…
+                </p>
+            </section>
+        }
+        @case ('loading') {
+            <section class="setup-card" aria-busy="true">
+                <p class="state-line" role="status">
+                    <mat-spinner diameter="20" aria-hidden="true"></mat-spinner>
+                    Checking what you can do in this workspace…
+                </p>
+            </section>
+        }
+        @case ('error') {
+            <section class="setup-card">
+                <h2 class="step-heading" tabindex="-1">We couldn’t check your access</h2>
+                <p class="lead" role="alert">
+                    Your permissions in this workspace couldn’t be loaded. Nothing was created. Try again, or set up the
+                    block manually.
+                </p>
+                <div class="actions">
+                    <button type="button" mat-flat-button (click)="retryPermissions()">Try again</button>
+                    <button type="button" mat-stroked-button (click)="setUpManually()">Set up manually</button>
+                    <button type="button" mat-button (click)="skip()">Skip for now</button>
+                </div>
+            </section>
+        }
+        @case ('denied') {
+            <ng-container *ngTemplateOutlet="denied"></ng-container>
+        }
+        @case ('allowed') {
+            <ol class="stepper" aria-label="Setup progress">
+                @for (s of steps; track s.n) {
+                    <li
+                        [class.is-current]="step() === s.n"
+                        [class.is-done]="step() > s.n"
+                        [attr.aria-current]="step() === s.n ? 'step' : null"
+                    >
+                        <span class="stepper-dot" aria-hidden="true">
+                            @if (step() > s.n) {
+                                <mat-icon>check</mat-icon>
+                            } @else {
+                                {{ s.n }}
+                            }
+                        </span>
+                        <span class="stepper-label"
+                            ><span class="visually-hidden">Step {{ s.n }}: </span>{{ s.label }}</span
+                        >
+                    </li>
+                }
+            </ol>
+
+            @switch (step()) {
+                <!-- Step 1: name -->
+                @case (1) {
+                    <section class="setup-card">
+                        <h2 class="step-heading" tabindex="-1">Name your block</h2>
+                        <p class="lead">
+                            A block holds one application’s sign-in configuration. Choose a name you will recognise.
+                            Your AI creates the block for you in the next steps; nothing is created yet.
+                        </p>
+                        <form (submit)="$event.preventDefault(); submitName()" novalidate>
+                            <mat-form-field class="name-field">
+                                <mat-label>Block name</mat-label>
+                                <input
+                                    matInput
+                                    type="text"
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                    [maxlength]="nameMax + 20"
+                                    [formControl]="name"
+                                    [attr.aria-invalid]="nameError() ? 'true' : null"
+                                    aria-describedby="name-hint name-status"
+                                    placeholder="e.g. Customer app login"
+                                    (blur)="showNameError.set(name.value.length > 0)"
+                                />
+                                <mat-hint id="name-hint"
+                                    >{{ nameMin }}–{{ nameMax }} characters. Letters, numbers, spaces and
+                                    underscores.</mat-hint
+                                >
+                            </mat-form-field>
+                            <div id="name-status" class="field-status" role="status" aria-live="polite">
+                                @if (nameError()) {
+                                    <p class="problem">{{ nameError() }}</p>
+                                } @else if (lookup() === 'taken') {
+                                    <p class="warning">
+                                        <mat-icon aria-hidden="true">warning_amber</mat-icon>
+                                        <span
+                                            >A block named “{{ check().value }}” already exists in this workspace. Block
+                                            names are unique, so your AI would be refused. Pick a different name.</span
+                                        >
+                                    </p>
+                                }
+                            </div>
+                            <div class="actions">
+                                <button type="submit" mat-flat-button>Continue</button>
+                            </div>
+                        </form>
+                    </section>
+                }
+
+                <!-- Step 2: key and prompt -->
+                @case (2) {
+                    <section class="setup-card">
+                        <h2 class="step-heading" tabindex="-1">Give this to your AI</h2>
+                        <p class="summary">
+                            Block to create: <strong>{{ blockName() }}</strong>
+                            <button type="button" class="link-button" (click)="go(1)">Change name</button>
+                        </p>
+
+                        @if (!hasPrompt()) {
+                            <p class="lead">
+                                Your AI needs a way to call the 36Blocks API for this workspace. Pressing the button
+                                creates a workspace API key named <code>{{ keyName }}</code> with the Owner role, or
+                                reuses it if one already exists, and builds the prompt that contains it. Nothing is
+                                created before you press it.
+                            </p>
+                            <div class="actions">
+                                <button
+                                    type="button"
+                                    mat-flat-button
+                                    [disabled]="keys.provision() === 'working'"
+                                    (click)="createKey()"
+                                >
+                                    <mat-icon aria-hidden="true">key</mat-icon>
+                                    {{
+                                        keys.provision() === 'working'
+                                            ? 'Preparing…'
+                                            : 'Create setup key and show prompt'
+                                    }}
+                                </button>
+                                <button type="button" mat-button (click)="go(1)">Back</button>
+                            </div>
+                            <div class="field-status" role="status" aria-live="polite">
+                                @if (keys.revoke() === 'done') {
+                                    <p class="note">
+                                        The previous setup key was revoked. A new one is created when you press the
+                                        button.
+                                    </p>
+                                }
+                                @if (keys.provision() === 'failed' && keys.failure(); as failure) {
+                                    <p class="problem" role="alert">{{ failureText[failure] }}</p>
+                                } @else if (promptUnavailable()) {
+                                    <p class="problem" role="alert">
+                                        The prompt couldn’t be built. Nothing was sent anywhere. Go back and check the
+                                        block name.
+                                    </p>
+                                }
+                            </div>
+                        } @else {
+                            <proxy-ai-setup-panel
+                                [prompt]="copyPrompt()"
+                                [displayPrompt]="shownPrompt()"
+                                kind="setup"
+                                [sensitive]="true"
+                                tabsHeading="Optional: use the MCP connector"
+                                (promptCopied)="onPromptCopied()"
+                            >
+                                <div aiPanelNotice class="key-notice" role="note">
+                                    <mat-icon aria-hidden="true">key</mat-icon>
+                                    <div>
+                                        <p>
+                                            <strong>This prompt contains a workspace API key</strong> (<code>{{
+                                                keys.keyName()
+                                            }}</code
+                                            >{{ keys.reused() ? ', reused from earlier' : '' }}). Whoever holds it can
+                                            create, read and change this workspace’s blocks, including the provider
+                                            credentials stored in them, and call this workspace’s server-to-server APIs.
+                                            It cannot delete blocks or manage other API keys.
+                                        </p>
+                                        <p>
+                                            Treat it like a password: your agent should keep it in an environment
+                                            variable and never commit it. Revoke it when setup is done (step 3). You can
+                                            also manage it later under
+                                            <a routerLink="/app/team/api-keys">Team &amp; access → API keys</a>.
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    aiPanelActions
+                                    type="button"
+                                    mat-stroked-button
+                                    class="reveal-button"
+                                    [attr.aria-pressed]="revealed()"
+                                    (click)="toggleReveal()"
+                                >
+                                    <mat-icon aria-hidden="true">{{
+                                        revealed() ? 'visibility_off' : 'visibility'
+                                    }}</mat-icon>
+                                    {{ revealed() ? 'Hide key' : 'Show key' }}
+                                </button>
+                                <p aiPanelTabsNote class="tabs-note">
+                                    The prompt works with plain HTTPS calls and does not need a connector. If your agent
+                                    uses the connector it may ask for the <code>authkey</code> value; if it can’t send
+                                    that header it should use plain HTTPS.
+                                </p>
+                            </proxy-ai-setup-panel>
+                            <div class="actions">
+                                <button type="button" mat-flat-button (click)="startWaiting()">
+                                    I’ve pasted it, wait for my block
+                                </button>
+                                <button type="button" mat-button (click)="go(1)">Back</button>
+                            </div>
+                        }
+                    </section>
+                }
+
+                <!-- Step 3: waiting, then done -->
+                @case (3) {
+                    <section class="setup-card">
+                        @if (phase() === 'waiting') {
+                            <h2 class="step-heading" tabindex="-1">Waiting for your block…</h2>
+                            <div class="state-line" role="status" aria-live="polite">
+                                @if (!pollingStopped()) {
+                                    <mat-spinner diameter="22" aria-hidden="true"></mat-spinner>
+                                }
+                                <p>
+                                    @if (pollingStopped()) {
+                                        We stopped checking automatically. If your agent has created the block, check
+                                        again.
+                                    } @else {
+                                        Paste the prompt into your AI agent. It will ask which sign-in methods you want
+                                        and confirm the redirect URL and allowed origins with you. This page checks for
+                                        “{{ blockName() }}” every few seconds while the tab is open.
+                                    }
+                                </p>
+                            </div>
+                            @if (checkFailed()) {
+                                <p class="problem" role="alert">
+                                    Couldn’t check your blocks just now. This is a problem reading the list, not a sign
+                                    that nothing was created. Check again in a moment.
+                                </p>
+                            }
+                            <div class="actions">
+                                <button type="button" mat-stroked-button [disabled]="checking()" (click)="checkAgain()">
+                                    {{ checking() ? 'Checking…' : 'Check again' }}
+                                </button>
+                                <button type="button" mat-button (click)="backToPrompt()">Show prompt</button>
+                            </div>
+                        } @else {
+                            <h2 class="step-heading" tabindex="-1">Your block is ready</h2>
+                            @if (found(); as result) {
+                                <p class="success" role="status">
+                                    <mat-icon aria-hidden="true">check_circle</mat-icon>
+                                    <span>
+                                        @if (result.renamed) {
+                                            A new block appeared, but under a different name than “{{ blockName() }}”:
+                                            your AI changed it. Check it is the one you expect.
+                                        } @else {
+                                            <strong>{{ result.block.name }}</strong> was created.
+                                        }
+                                    </span>
+                                </p>
+                                <dl class="facts">
+                                    <dt>Block name</dt>
+                                    <dd>{{ result.block.name }}</dd>
+                                    <dt>Reference ID</dt>
+                                    <dd>
+                                        <code>{{ result.block.referenceId }}</code>
+                                    </dd>
+                                </dl>
+                                <div class="actions">
+                                    @if (blockLink(); as link) {
+                                        <a mat-flat-button [routerLink]="link">Open block</a>
+                                    }
+                                    @if (previewLink(); as link) {
+                                        <a mat-stroked-button [routerLink]="link">Preview widget</a>
+                                    }
+                                    <a mat-button routerLink="/app/dashboard">Go to dashboard</a>
+                                </div>
+                            }
+                        }
+
+                        <!-- Key controls -->
+                        @if (keys.keyName() && keys.revoke() !== 'done') {
+                            <section class="key-section" aria-labelledby="key-heading">
+                                <h3 id="key-heading">Setup key</h3>
+                                <p>
+                                    The key <code>{{ keys.keyName() }}</code> is still active. It lets whoever holds it
+                                    manage this workspace’s blocks and use its server-to-server APIs. Revoke it when
+                                    your AI has finished, or manage it any time under
+                                    <a routerLink="/app/team/api-keys">Team &amp; access → API keys</a>.
+                                </p>
+                                @if (keys.canRevoke()) {
+                                    <button
+                                        type="button"
+                                        mat-stroked-button
+                                        class="revoke-button"
+                                        [disabled]="keys.revoke() === 'working'"
+                                        (click)="confirmRevoke()"
+                                    >
+                                        <mat-icon aria-hidden="true">block</mat-icon>
+                                        {{ keys.revoke() === 'working' ? 'Revoking…' : 'Revoke setup key' }}
+                                    </button>
+                                } @else {
+                                    <p class="note">
+                                        Your role can’t revoke API keys. Ask a workspace Owner or Admin to do it under
+                                        Team &amp; access.
+                                    </p>
+                                }
+                            </section>
+                        }
+                        <div class="key-status" role="status" aria-live="polite">
+                            @if (keys.revoke() === 'done') {
+                                <p class="success">
+                                    <mat-icon aria-hidden="true">check_circle</mat-icon>
+                                    <span
+                                        >The setup key was revoked. It no longer works, and your agent can’t use it any
+                                        more.</span
+                                    >
+                                </p>
+                            } @else if (keys.revoke() === 'failed') {
+                                <p class="problem" role="alert">
+                                    The key couldn’t be revoked. It is still active. Try again, or revoke it under
+                                    <a routerLink="/app/team/api-keys">Team &amp; access → API keys</a>.
+                                </p>
+                            }
+                        </div>
+                    </section>
+                }
+            }
+
+            <div class="alt-paths">
+                <span>Prefer not to use AI?</span>
+                <button type="button" mat-button (click)="setUpManually()">Set up manually</button>
+                <button type="button" mat-button (click)="skip()">Skip for now</button>
+            </div>
+        }
+    }
+</div>
+
+<ng-template #denied>
+    <section class="setup-card">
+        <h2 class="step-heading" tabindex="-1">You need an admin to do this</h2>
+        <p class="lead" role="alert">
+            Setting up with AI creates a workspace API key, which takes the
+            @for (permission of neededPermissions; track permission; let last = $last) {
+                <code>{{ permission }}</code
+                >{{ last ? '' : ' and ' }}
+            }
+            permissions in this workspace. Your role doesn’t have them, so nothing was created. Ask a workspace Owner or
+            Admin to set this up, or continue with the manual setup.
+        </p>
+        <div class="actions">
+            <button type="button" mat-flat-button (click)="setUpManually()">Set up manually</button>
+            <button type="button" mat-button (click)="skip()">Skip for now</button>
+        </div>
+    </section>
+</ng-template>

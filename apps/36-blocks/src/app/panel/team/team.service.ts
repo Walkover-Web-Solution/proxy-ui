@@ -59,6 +59,11 @@ export class TeamService {
         return this.roles$;
     }
 
+    /** Permission names (flat list) the signed-in user holds in the active workspace. */
+    getMyPermissions(): Observable<TeamResponse<string[]>> {
+        return this.http.get<TeamResponse<string[]>>(TeamUrls.myPermissions(this.baseUrl));
+    }
+
     getApiKeys(pageNo: number): Observable<TeamPage<ApiKey>> {
         return this.http.get<TeamPage<ApiKey>>(TeamUrls.apiKeys(this.baseUrl), {
             pageNo,

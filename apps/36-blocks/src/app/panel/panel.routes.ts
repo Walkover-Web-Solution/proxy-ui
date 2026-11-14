@@ -20,6 +20,11 @@ export const panelRoutes: Route[] = [
                 loadComponent: () => import('./activity/activity.component').then((c) => c.ActivityComponent),
             },
             {
+                path: 'setup',
+                loadComponent: () =>
+                    import('../ai-setup/setup-wizard/setup-wizard.component').then((c) => c.SetupWizardComponent),
+            },
+            {
                 path: 'dashboard',
                 loadComponent: () => import('./dashboard/dashboard.component').then((c) => c.DashboardComponent),
             },

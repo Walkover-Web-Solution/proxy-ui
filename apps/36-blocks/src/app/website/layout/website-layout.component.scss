@@ -26,8 +26,44 @@
 .desktop-nav a.active {
     color: var(--experience-accent);
 }
-.header-workspace {
+.header-ai {
     margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--experience-accent);
+    border-radius: 7px;
+    background: var(--experience-soft);
+    color: var(--experience-accent);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.header-ai:hover {
+    background: var(--experience-surface);
+}
+.header-ai:focus-visible,
+.mobile-ai:focus-visible {
+    outline: 2px solid var(--experience-accent);
+    outline-offset: 2px;
+}
+.mobile-ai {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--experience-accent);
+    font: inherit;
+    cursor: pointer;
+}
+.header-workspace {
+    margin-left: 0;
     display: flex;
     gap: 28px;
     align-items: center;
@@ -118,6 +154,7 @@
 }
 @media (max-width: 640px) {
     .desktop-nav,
+    .header-ai,
     .header-workspace {
         display: none;
     }

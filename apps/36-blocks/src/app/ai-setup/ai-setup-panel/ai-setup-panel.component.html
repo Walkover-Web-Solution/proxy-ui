@@ -1,0 +1,99 @@
+<p class="ai-explainer">{{ explanation() }}</p>
+<ng-content select="[aiPanelNotice]"></ng-content>
+
+<label class="ai-label" for="ai-prompt-field">Prompt</label>
+<textarea
+    #promptField
+    id="ai-prompt-field"
+    class="ai-prompt"
+    readonly
+    [attr.rows]="promptRows()"
+    [class.ai-prompt-tall]="sensitive()"
+    spellcheck="false"
+    [value]="shownPrompt()"
+></textarea>
+<div class="ai-copy-row">
+    <button
+        type="button"
+        mat-flat-button
+        class="ai-copy-button"
+        [class.ai-copy-failed]="stateOf('prompt') === 'failed'"
+        (click)="copyPrompt()"
+    >
+        <mat-icon aria-hidden="true">{{
+            stateOf('prompt') === 'copied' ? 'check' : stateOf('prompt') === 'failed' ? 'error_outline' : 'content_copy'
+        }}</mat-icon>
+        {{ stateOf('prompt') === 'copied' ? 'Copied' : stateOf('prompt') === 'failed' ? 'Copy failed' : 'Copy prompt' }}
+    </button>
+    <span class="ai-copy-status" role="status" aria-live="polite">
+        @if (stateOf('prompt') === 'copied') {
+            Prompt copied to your clipboard.
+        } @else if (stateOf('prompt') === 'failed') {
+            Couldn’t copy automatically. The prompt is selected, so copy it with your keyboard.
+        }
+    </span>
+    <ng-content select="[aiPanelActions]"></ng-content>
+</div>
+
+<h3 class="ai-subheading">{{ tabsHeading() }}</h3>
+<ng-content select="[aiPanelTabsNote]"></ng-content>
+<mat-tab-group class="ai-tabs" animationDuration="0ms" mat-stretch-tabs="false" aria-label="AI tool">
+    <mat-tab label="Claude Code">
+        <div class="ai-tab-body">
+            <p>Run this in your terminal to add the 36Blocks MCP server:</p>
+            <div class="ai-snippet">
+                <pre tabindex="0" aria-label="Claude Code command">{{ claudeCodeCommand }}</pre>
+                <button type="button" mat-stroked-button (click)="copySnippet('claude', claudeCodeCommand)">
+                    {{
+                        stateOf('claude') === 'copied'
+                            ? 'Copied'
+                            : stateOf('claude') === 'failed'
+                              ? 'Copy failed'
+                              : 'Copy'
+                    }}
+                </button>
+            </div>
+        </div>
+    </mat-tab>
+    <mat-tab label="Cursor">
+        <div class="ai-tab-body">
+            <p>
+                Add this to <code>.cursor/mcp.json</code> in your project, or <code>~/.cursor/mcp.json</code> for all
+                projects:
+            </p>
+            <div class="ai-snippet">
+                <pre tabindex="0" aria-label="Cursor mcp.json entry">{{ cursorConfig }}</pre>
+                <button type="button" mat-stroked-button (click)="copySnippet('cursor', cursorConfig)">
+                    {{
+                        stateOf('cursor') === 'copied'
+                            ? 'Copied'
+                            : stateOf('cursor') === 'failed'
+                              ? 'Copy failed'
+                              : 'Copy'
+                    }}
+                </button>
+            </div>
+        </div>
+    </mat-tab>
+    <mat-tab label="Other">
+        <div class="ai-tab-body">
+            <p>Add this URL as an MCP server (or connector) in your AI tool:</p>
+            <div class="ai-snippet">
+                <pre tabindex="0" aria-label="MCP server URL">{{ mcpUrl }}</pre>
+                <button type="button" mat-stroked-button (click)="copySnippet('url', mcpUrl)">
+                    {{ stateOf('url') === 'copied' ? 'Copied' : stateOf('url') === 'failed' ? 'Copy failed' : 'Copy' }}
+                </button>
+            </div>
+            <p>No MCP support? Your agent can use the CLI instead. Install the modules once with:</p>
+            <div class="ai-snippet">
+                <pre tabindex="0" aria-label="CLI install command">{{ cliInit }}</pre>
+                <button type="button" mat-stroked-button (click)="copySnippet('cli', cliInit)">
+                    {{ stateOf('cli') === 'copied' ? 'Copied' : stateOf('cli') === 'failed' ? 'Copy failed' : 'Copy' }}
+                </button>
+            </div>
+        </div>
+    </mat-tab>
+</mat-tab-group>
+@if (!sensitive()) {
+    <p class="ai-note">Sign in through your tool’s connector. Never paste tokens or secrets into a prompt.</p>
+}

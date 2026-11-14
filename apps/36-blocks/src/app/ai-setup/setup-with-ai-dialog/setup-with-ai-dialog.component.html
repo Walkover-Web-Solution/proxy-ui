@@ -1,0 +1,77 @@
+<h2 matDialogTitle>Set up with AI</h2>
+<mat-dialog-content>
+    <proxy-ai-setup-panel
+        [prompt]="prompt()"
+        [displayPrompt]="shown()"
+        [kind]="keyed() ? 'block-key' : data.kind"
+        [sensitive]="keyed()"
+        [tabsHeading]="keyed() ? 'Optional: use the MCP connector' : 'Connect your AI tool to 36Blocks'"
+    >
+        @if (keyed()) {
+            <p aiPanelNotice class="key-notice" role="note">
+                <mat-icon aria-hidden="true">key</mat-icon>
+                <span>
+                    This prompt includes the workspace API key <strong>{{ keys.keyName() }}</strong
+                    >. Whoever holds it can manage this workspace’s blocks and use its server-to-server APIs, so treat
+                    it like a password: keep it in an environment variable and never commit it. Revoke it when you are
+                    done, under <a routerLink="/app/team/api-keys" matDialogClose>Team &amp; access → API keys</a>.
+                </span>
+            </p>
+        }
+        @if (keyed()) {
+            <button
+                aiPanelActions
+                type="button"
+                mat-stroked-button
+                class="reveal-button"
+                [attr.aria-pressed]="revealed()"
+                (click)="toggleReveal()"
+            >
+                <mat-icon aria-hidden="true">{{ revealed() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                {{ revealed() ? 'Hide key' : 'Show key' }}
+            </button>
+        }
+    </proxy-ai-setup-panel>
+
+    @if (canEditBlock && !keyed()) {
+        <section class="edit-section" aria-labelledby="edit-heading">
+            <h3 id="edit-heading">Want your AI to change this block?</h3>
+            <p>
+                This creates (or reuses) a workspace API key named <code>{{ keyName }}</code> with the Owner role and
+                switches to a prompt that includes it, so your agent can read and update this block through the API.
+                Nothing is created until you press the button.
+            </p>
+            <div class="edit-actions">
+                <button
+                    type="button"
+                    mat-stroked-button
+                    [disabled]="keys.provision() === 'working' || keys.permissions() === 'loading'"
+                    (click)="letAiChange()"
+                >
+                    <mat-icon aria-hidden="true">edit_note</mat-icon>
+                    {{
+                        keys.provision() === 'working' || keys.permissions() === 'loading'
+                            ? 'Preparing…'
+                            : 'Let my AI change this block'
+                    }}
+                </button>
+            </div>
+            <div class="edit-status" role="status" aria-live="polite">
+                @if (keys.permissions() === 'denied' || keys.provision() === 'denied') {
+                    <p class="edit-problem">
+                        You need an admin to do this. Creating an API key takes the <code>create_authkey</code> and
+                        <code>view_authkeys</code> permissions in this workspace. Ask a workspace Owner or Admin, or use
+                        the prompt above.
+                    </p>
+                } @else if (keys.permissions() === 'error') {
+                    <p class="edit-problem">Couldn’t check your permissions just now. Try again in a moment.</p>
+                } @else if (keys.provision() === 'failed' && keys.failure(); as failure) {
+                    <p class="edit-problem">{{ failureText[failure] }}</p>
+                }
+            </div>
+        </section>
+    }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button type="button" mat-button matDialogClose>Close</button>
+</mat-dialog-actions>

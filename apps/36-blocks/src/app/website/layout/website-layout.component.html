@@ -11,6 +11,9 @@
                     ><a href="https://developers.36blocks.com">Developers <span aria-hidden="true">↗</span></a
                     ><a routerLink="/about" routerLinkActive="active">Our approach</a>
                 </nav>
+                <button class="header-ai" type="button" (click)="openAiSetup()">
+                    <span aria-hidden="true">✦</span> Set up with AI
+                </button>
                 <a class="header-workspace" routerLink="/login">Open workspace <span aria-hidden="true">↗</span></a
                 ><button
                     class="mobile-toggle"
@@ -33,6 +36,8 @@
                     <a routerLink="/" fragment="workspace" (click)="closeMobileMenu()">Product</a
                     ><a href="https://developers.36blocks.com">Developers ↗</a
                     ><a routerLink="/about" (click)="closeMobileMenu()">Our approach</a
+                    ><button class="mobile-ai" type="button" (click)="openAiSetup()">
+                        <span aria-hidden="true">✦</span> Set up with AI</button
                     ><a routerLink="/login" (click)="closeMobileMenu()">Open workspace ↗</a>
                 </nav>
             }

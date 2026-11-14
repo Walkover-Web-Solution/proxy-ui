@@ -58,6 +58,7 @@ import { CAMPAIGN_NAME_REGEX, ONLY_INTEGER_REGEX, URL_REGEX } from '@proxy/regex
 import { CustomValidators } from '@proxy/custom-validator';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { environment } from '../../../../environments/environment';
+import { AiSetupService } from '../../../ai-setup/ai-setup.service';
 import { HttpClient } from '@angular/common/http';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { MatChipInput } from '@angular/material/chips';
@@ -168,6 +169,8 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     private toast = inject(PrimeNgToastService);
     private ngZone = inject(NgZone);
     private dialog = inject(MatDialog);
+    private aiSetup = inject(AiSetupService);
+    private aiSetupReferenceId: string | null = null;
     private http = inject(HttpClient);
     private uiSettings = inject(UiSettingsService);
     private themeService = inject(WidgetThemeService);
@@ -440,6 +443,14 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
                         feature.feature_id === 1 ? 'authorization' : 'subscription'
                     );
                     this.demoDiv.set(`<div id="${feature.reference_id}"></div>`);
+
+                    // "Set up with AI" in the dashboard shell now uses the integration prompt for this block.
+                    this.aiSetupReferenceId = feature.reference_id;
+                    this.aiSetup.setBlockContext({
+                        referenceId: feature.reference_id,
+                        blockType: feature.feature?.name,
+                        widgetType: feature.feature_id === 1 ? 'authorization' : 'subscription',
+                    });
 
                     // Initialize billable metrics form fields for edit mode
                     if (feature.feature_id === 2) {
@@ -1061,6 +1072,7 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
     }
 
     public ngOnDestroy(): void {
+        if (this.aiSetupReferenceId) this.aiSetup.clearBlockContext(this.aiSetupReferenceId);
         super.ngOnDestroy();
     }
 

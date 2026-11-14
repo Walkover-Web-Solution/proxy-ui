@@ -42,6 +42,7 @@ import { SideNavService } from './side-nav.service';
 import { UiSettingsService } from './ui-settings.service';
 import { FeaturesService } from '@proxy/services/proxy/features';
 import { take } from 'rxjs/operators';
+import { AiSetupService } from '../../ai-setup/ai-setup.service';
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-layout',
@@ -115,6 +116,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     private uiSettings = inject(UiSettingsService);
     private featuresService = inject(FeaturesService);
     private dialog = inject(MatDialog);
+    private aiSetup = inject(AiSetupService);
 
     constructor() {
         super();
@@ -147,6 +149,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
             )
             .subscribe((event: NavigationEnd) => {
                 this.updateArea(event.urlAfterRedirects || event.url);
+                this.aiSetup.onNavigation();
                 if (this.isMobileDevice()) this.sideNavService.close();
                 const container = document.getElementById('ChatbotContainer');
                 if (container) {
@@ -175,6 +178,10 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
         this.getClientSettings();
         this.getCurrentTheme();
         document.body.classList.remove('website-active');
+        // The one-time redirect to the setup wizard and the contextual prompt depend on the active workspace.
+        this.clientSettings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => {
+            if (settings?.client?.id) this.aiSetup.setWorkspace(settings.client.id);
+        });
 
         if (this.isMobileDevice()) {
             this.sideNavService.close();
@@ -287,6 +294,10 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
                     location.href = '/app';
                 }
             });
+    }
+
+    public openAiSetup(): void {
+        void this.aiSetup.openSetup();
     }
 
     public switchClient(clientId: number): void {

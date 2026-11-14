@@ -42,6 +42,20 @@ const people = ['Alex Lee', 'Morgan Chen', 'Sam Rivera', 'Jamie Patel', 'Taylor 
 }));
 const operations = [
     {
+        id: 302,
+        session_id: 0,
+        operation: 'create_feature_configuration',
+        user: null,
+        created_at: '2026-10-30T05:40:00Z',
+        audit_context: {
+            actor_type: 'auth_key',
+            auth_key_id: 31,
+            auth_key_name: 'AI_setup',
+            source_ip: '203.0.113.9',
+            outcome: 'succeeded',
+        },
+    },
+    {
         id: 301,
         session_id: 1,
         operation: 'login_as',
@@ -137,7 +151,43 @@ const apiKeys = [
     created_by: { id: 2, name: 'Review Admin', email: 'admin@example.test' },
     updated_by: { id: 2, name: 'Review Admin', email: 'admin@example.test' },
 }));
-export function reviewData(path: string, params: HttpParams): any {
+/** Obviously fake: never a real credential. Matches the shape the real API returns (32 characters). */
+export const FAKE_AUTH_KEY = 'FAKEFAKEFAKEFAKEFAKEFAKEFAKE0001';
+const newBlock = (name: string, referenceId: string) => ({
+    id: 13,
+    name,
+    reference_id: referenceId,
+    feature_id: 1,
+    created_at: '2026-11-12T08:00:00Z',
+    updated_at: '2026-11-12T08:00:00Z',
+    feature: { name: 'Authentication' },
+    services: [{ name: 'Google' }],
+});
+const reviewKeys: any[] = [];
+export function reviewCreateKey(name: string, roleId: number): any {
+    const key = {
+        id: 31,
+        name,
+        authkey: FAKE_AUTH_KEY,
+        role_id: roleId,
+        status: 'active',
+        created_at: '2026-11-12T08:00:00Z',
+        updated_at: '2026-11-12T08:00:00Z',
+    };
+    reviewKeys.push(key);
+    return key;
+}
+export function reviewUpdateKey(id: number, status: string): any {
+    const key = reviewKeys.find((item) => item.id === id);
+    if (key) key.status = status;
+    return key ?? { id, status };
+}
+/** Machine permission names, as `GET /getUserPermissions` returns them (a flat list). */
+const ownerPermissions = ['view_clients', 'view_authkeys', 'create_authkey', 'edit_authkey', 'delete_authkey'];
+const readerPermissions = ['view_clients', 'view_authkeys'];
+
+export function reviewData(path: string, params: HttpParams, flags: string[] = []): any {
+    if (path === 'getUserPermissions') return flags.includes('noperm') ? readerPermissions : ownerPermissions;
     if (path === 'users') {
         const term = params.get('name')?.toLowerCase();
         return page(
@@ -150,9 +200,20 @@ export function reviewData(path: string, params: HttpParams): any {
         );
     }
     if (path === 'rolePermissions') return page(operatorRoles);
-    if (path === 'authentications') return page(apiKeys);
+    if (path === 'authentications') {
+        const existing = flags.includes('haskey')
+            ? [{ ...apiKeys[0], id: 40, name: 'AI_setup', authkey: FAKE_AUTH_KEY }]
+            : [];
+        return page([...apiKeys, ...existing, ...reviewKeys]);
+    }
     if (path === 'getClientSettings') return { client, role: { id: 3, role_name: 'Admin' } };
     if (path === 'clients') return page([client]);
+    if (path === 'features') {
+        // Flags simulate the agent finishing: the new block appears under the chosen name, or under another one.
+        if (flags.includes('appear')) return page([newBlock('Customer login', 'customer-login')]);
+        if (flags.includes('appear-other')) return page([newBlock('Mobile app auth', 'mobile-app-auth')]);
+        if (flags.includes('appear-more')) return page([...blocks, newBlock('Customer login', 'customer-login')]);
+    }
     if (path === 'features')
         return page(
             blocks.filter(

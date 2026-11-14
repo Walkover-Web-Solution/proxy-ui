@@ -26,24 +26,48 @@ import { RootEffects } from './app/core/ngrx/effects/root';
 import { CanActivateRouteGuard } from './app/website/home/authguard';
 import { LoggedInGuard } from './app/website/home/authguard/logged-in.guard';
 import { GoogleOneTapService } from './app/website/login/google-one-tap.service';
-import { page, reviewData } from './review/fixtures';
+import { FAKE_AUTH_KEY, page, reviewCreateKey, reviewData, reviewUpdateKey } from './review/fixtures';
 
+// In-app navigation drops the query string; keep the last flags so a review state survives it (a reload resets it).
+let lastFlags: string[] = [];
 class ReviewBackend implements HttpBackend {
     handle(request: HttpRequest<unknown>): Observable<HttpEvent<unknown>> {
-        const state = new URLSearchParams(location.search).get('reviewState');
+        // `reviewState` may hold several comma-separated flags, e.g. `empty,noperm`.
+        const param = new URLSearchParams(location.search).get('reviewState');
+        if (param !== null) lastFlags = param.split(',').filter(Boolean);
+        const flags = lastFlags;
+        const state = flags[0] ?? null;
         const path = new URL(request.url, location.origin).pathname.replace('/review-api/', '');
         const fail = (status: number) =>
             throwError(
                 () => new HttpErrorResponse({ status, error: { errors: { message: 'Synthetic review response' } } })
             );
-        if (request.method !== 'GET') return fail(403);
-        if (state === 'denied') return fail(403);
-        if (state === 'error') return fail(503);
-        let data = reviewData(path, request.params);
+        const ok = (data: unknown, status = 200) =>
+            of(new HttpResponse({ status, body: { hasError: false, errors: [], data } })).pipe(delay(250));
+        if (request.method !== 'GET') {
+            // Only the key calls of the setup wizard are simulated, with a fake key; everything else stays refused.
+            const body = (request.body ?? {}) as { name?: string; role_id?: number; status?: string };
+            if (request.method === 'POST' && path === 'authentications') {
+                if (flags.includes('keyfail')) return fail(500);
+                if (flags.includes('createdenied')) return fail(403);
+                return ok(reviewCreateKey(String(body.name), Number(body.role_id)), 201);
+            }
+            if (request.method === 'PUT' && /^authentications\/\d+$/.test(path)) {
+                if (flags.includes('revokefail')) return fail(500);
+                return ok(reviewUpdateKey(Number(path.split('/')[1]), String(body.status)));
+            }
+            return fail(403);
+        }
+        if (flags.includes('denied')) return fail(403);
+        if (flags.includes('error')) return fail(503);
+        if (path === 'getUserPermissions' && flags.includes('permerror')) return fail(503);
+        let data = reviewData(path, request.params, flags);
         if (data === undefined) return fail(404);
-        if (state === 'empty' && data?.data && Array.isArray(data.data)) data = page([]);
+        // `empty` empties the lists the page shows, but the wizard still needs roles and keys to exist.
+        const keepsData = path === 'rolePermissions' || path === 'authentications';
+        if (state === 'empty' && !keepsData && data?.data && Array.isArray(data.data)) data = page([]);
         return of(new HttpResponse({ status: 200, body: { hasError: false, errors: [], data } })).pipe(
-            delay(state === 'loading' ? 15000 : 100)
+            delay(flags.includes('loading') ? 15000 : 100)
         );
     }
 }

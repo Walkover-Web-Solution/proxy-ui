@@ -7,6 +7,7 @@ import {
     NgZone,
     signal,
     computed,
+    effect,
     ChangeDetectionStrategy,
     ViewChild,
 } from '@angular/core';
@@ -39,6 +40,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { CopyButtonComponent } from '@proxy/ui/copy-button';
 import { buildCodeSnippet } from './widget-code-snippet';
 import { A11yModule } from '@angular/cdk/a11y';
+import { AiSetupService } from '../../../../../ai-setup/ai-setup.service';
 
 export type PreviewTab =
     | PublicScriptType.Authorization
@@ -76,6 +78,7 @@ export class WidgetPreviewComponent {
     private readonly store = inject<Store<ILogInFeatureStateWithRootState>>(Store);
     private readonly uiSettings = inject(UiSettingsService);
     private readonly sideNavService = inject(SideNavService);
+    private readonly aiSetup = inject(AiSetupService);
 
     @ViewChild('drawer') drawer!: MatDrawer;
 
@@ -127,6 +130,13 @@ export class WidgetPreviewComponent {
     ];
 
     constructor() {
+        // The preview only knows the block's reference id, so the prompt omits block type (the agent can read it via the Get Block API).
+        effect((onCleanup) => {
+            const referenceId = this.referenceId();
+            if (!referenceId) return;
+            this.aiSetup.setBlockContext({ referenceId });
+            onCleanup(() => this.aiSetup.clearBlockContext(referenceId));
+        });
         this.originUrl = this.resolveOriginUrl();
         this.logInData$ = this.store.pipe(select(selectLogInData), distinctUntilChanged(isEqual));
         this.isDarkMode.set(this.uiSettings.theme === 'dark-theme');
@@ -208,6 +218,10 @@ export class WidgetPreviewComponent {
             console.error('sessionStorage unavailable');
         }
         return null;
+    }
+
+    public openAiSetup(): void {
+        void this.aiSetup.openSetup();
     }
 
     public goBack(): void {
