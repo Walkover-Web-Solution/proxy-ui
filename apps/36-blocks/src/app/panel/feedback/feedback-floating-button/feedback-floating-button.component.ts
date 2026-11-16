@@ -16,7 +16,7 @@ export class FeedbackFloatingButtonComponent {
     public readonly feedbackService = inject(FeedbackService);
 
     public readonly shouldShow = computed(() => {
-        return this.feedbackService.isLoggedIn() && !this.feedbackService.isSidebarPresent();
+        return this.feedbackService.isAvailable() && !this.feedbackService.isSidebarPresent();
     });
 
     public openFeedback(): void {

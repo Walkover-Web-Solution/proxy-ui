@@ -132,28 +132,30 @@
                 }
             </a>
         </div>
-        <div
-            class="sidebar-feedback-link shrink-0"
-            [class.sidebar-feedback-link--collapsed]="!sideNavService.isSideNavOpen()"
-        >
-            <button
-                type="button"
-                class="sidebar-feedback-link__btn"
-                (click)="openFeedback()"
-                [matTooltip]="!sideNavService.isSideNavOpen() ? 'Feedback' : ''"
-                matTooltipPosition="right"
-                aria-label="Feedback"
+        @if (feedbackService.isAvailable()) {
+            <div
+                class="sidebar-feedback-link shrink-0"
+                [class.sidebar-feedback-link--collapsed]="!sideNavService.isSideNavOpen()"
             >
-                <span class="sidebar-feedback-link__icon-wrap" aria-hidden="true">
-                    <mat-icon class="material-icons-outlined">feedback</mat-icon>
-                </span>
-                @if (sideNavService.isSideNavOpen()) {
-                    <span class="sidebar-feedback-link__text">
-                        <span class="sidebar-feedback-link__label">Feedback</span>
+                <button
+                    type="button"
+                    class="sidebar-feedback-link__btn"
+                    (click)="openFeedback()"
+                    [matTooltip]="!sideNavService.isSideNavOpen() ? 'Feedback' : ''"
+                    matTooltipPosition="right"
+                    aria-label="Feedback"
+                >
+                    <span class="sidebar-feedback-link__icon-wrap" aria-hidden="true">
+                        <mat-icon class="material-icons-outlined">feedback</mat-icon>
                     </span>
-                }
-            </button>
-        </div>
+                    @if (sideNavService.isSideNavOpen()) {
+                        <span class="sidebar-feedback-link__text">
+                            <span class="sidebar-feedback-link__label">Feedback</span>
+                        </span>
+                    }
+                </button>
+            </div>
+        }
     </div>
 
     @if (sideNavService.isSideNavOpen()) {

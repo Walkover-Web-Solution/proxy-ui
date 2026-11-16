@@ -123,9 +123,17 @@ export class FeedbackApiService {
     }
 
     public async sendFeedback(text: string): Promise<IFeedbackSendResult> {
-        const url = (environment as any).stewardFeedbackUrl || 'https://steward.embarko.app/api/v1/feedback';
-        const key = (environment as any).stewardFeedbackKey || 'pk_7109b673ade5f6aefc2eb0a1dfbcee1c4a2e';
+        const url = (environment as any).stewardFeedbackUrl;
+        const key = (environment as any).stewardFeedbackKey;
         const appVersion = (environment as any).appVersion || '0.0.3';
+
+        if (!url || !key) {
+            return {
+                success: false,
+                status: 0,
+                error: 'Feedback service is not configured.',
+            };
+        }
 
         const user = this.getSessionUser();
         const payload = {
