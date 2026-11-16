@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 
-/** Shell for the operator "Team & access" area: members, roles and API keys of the current workspace. */
+/** Shell for the operator "Team & access" area: members, roles, API keys and connected AI tools. */
 @Component({
     selector: 'proxy-team',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,5 +15,6 @@ export class TeamComponent {
         { path: 'members', label: 'Members' },
         { path: 'roles', label: 'Roles' },
         { path: 'api-keys', label: 'API keys' },
+        { path: 'ai-tools', label: 'AI tools' },
     ];
 }

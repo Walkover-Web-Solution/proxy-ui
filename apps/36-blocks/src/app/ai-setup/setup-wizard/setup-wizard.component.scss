@@ -96,11 +96,8 @@
     color: var(--experience-muted);
 }
 .lead code,
-.key-section code,
 .summary code,
-.facts code,
-.tabs-note code,
-.key-notice code {
+.facts code {
     font-family: ui-monospace, monospace;
     font-size: 12px;
 }
@@ -176,43 +173,9 @@
 }
 
 // ---- Prompt step ---------------------------------------------------------------------------------------------------
-.key-notice {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    margin: 0 0 14px;
-    padding: 12px 14px;
-    border: 1px solid var(--experience-border);
-    border-radius: var(--experience-radius);
-    background: var(--experience-soft);
-    color: var(--experience-ink);
-    font-size: 12px;
-    line-height: 1.6;
-}
-.key-notice p {
-    margin: 0 0 6px;
-}
-.key-notice p:last-child {
-    margin-bottom: 0;
-}
-.key-notice mat-icon {
-    flex: none;
-    width: 18px;
-    height: 18px;
-    font-size: 18px;
-    color: var(--experience-accent);
-}
-.key-notice a,
-.key-section a,
 .problem a {
     color: var(--experience-accent);
     font-weight: 600;
-}
-.tabs-note {
-    margin: 0 0 4px;
-    font-size: 12px;
-    line-height: 1.6;
-    color: var(--experience-muted);
 }
 
 // ---- Waiting / done ------------------------------------------------------------------------------------------------
@@ -261,29 +224,6 @@
     min-width: 0;
     overflow-wrap: anywhere;
 }
-.key-section {
-    margin-top: 24px;
-    padding-top: 18px;
-    border-top: 1px solid var(--experience-border);
-}
-.key-section h3 {
-    margin: 0 0 4px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--experience-ink);
-}
-.key-section p {
-    margin: 0 0 12px;
-    font-size: 12px;
-    line-height: 1.6;
-    color: var(--experience-muted);
-}
-.key-status {
-    min-height: 0;
-}
-.key-status .success {
-    margin: 16px 0 0;
-}
 .alt-paths {
     display: flex;
     flex-wrap: wrap;
@@ -320,10 +260,5 @@
     }
     .facts dd {
         margin-bottom: 8px;
-    }
-}
-@media (max-width: 520px) {
-    .reveal-button {
-        width: 100%;
     }
 }

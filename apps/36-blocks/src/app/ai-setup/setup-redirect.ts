@@ -1,10 +1,12 @@
 /**
- * Decision logic for the one-time redirect to the "Set up with AI" wizard (`/app/setup`). Dependency-free so it can be
- * tested without Angular. Loading, empty, error and denied stay distinct: only a successfully loaded, empty list
- * qualifies, so a failed or slow request never sends anyone anywhere.
+ * Decision logic for sending a workspace that has no blocks to the "Set up with AI" wizard (`/app/setup`).
+ * Dependency-free so it can be tested without Angular. The decision runs in a route guard before any dashboard page
+ * renders. Loading, empty, error and denied stay distinct: only a successfully loaded, empty list qualifies, so a failed
+ * or slow request never sends anyone anywhere.
  */
 
 export const SETUP_ROUTE = '/app/setup';
+export const MANUAL_CREATE_ROUTE = '/app/features/create';
 
 export type BlockListStatus = 'idle' | 'loading' | 'loaded' | 'error' | 'denied';
 
@@ -13,63 +15,61 @@ export interface SetupRedirectInput {
     status: BlockListStatus;
     /** Total blocks reported by the list API; null until a load succeeds. */
     total: number | null;
-    /** Current router URL. */
+    /** The URL being navigated to. */
     url: string;
-    dismissed: boolean;
-    /** A dialog is currently open: never navigate away from under it. */
-    anotherDialogOpen: boolean;
-    /** The redirect already happened for this workspace in this tab. */
-    alreadyRedirected: boolean;
+    /** The user chose "Skip, I'll set up manually" for this workspace in this tab. */
+    skipped: boolean;
 }
 
 /**
- * Dashboard pages only. Excludes the wizard itself and the manual create/manage flows, where the user is already
- * setting a block up.
+ * The entry pages of the dashboard: where a user lands after sign-in, after switching workspace or from the logo.
+ * Anything else (the wizard, the manual create/manage flows, team, billing, logs, activity, ...) is never redirected,
+ * so a workspace without blocks can still reach them and the manual path cannot bounce back to the wizard.
  */
 export function isRedirectableRoute(url: string): boolean {
-    const path = (url ?? '').split(/[?#]/)[0];
-    if (!path.startsWith('/app/') && path !== '/app') return false;
-    if (/^\/app\/setup(\/|$)/.test(path)) return false;
-    return !/^\/app\/features\/(create|manage)(\/|$)/.test(path);
+    const path = (url ?? '').split(/[?#]/)[0].replace(/\/+$/, '');
+    return path === '/app' || path === '/app/dashboard' || path === '/app/features';
 }
 
+/** True only for a loaded, empty block list on an entry page, when the user has not skipped the wizard here. */
 export function shouldRedirectToSetup(input: SetupRedirectInput): boolean {
     return (
         input.clientId !== null &&
         input.status === 'loaded' &&
         input.total === 0 &&
-        !input.dismissed &&
-        !input.anotherDialogOpen &&
-        !input.alreadyRedirected &&
+        !input.skipped &&
         isRedirectableRoute(input.url)
     );
 }
 
-export function dismissalKey(clientId: number | string): string {
-    return `ai_setup_dismissed_${clientId}`;
+export function skipKey(clientId: number | string): string {
+    return `ai_setup_skipped_${clientId}`;
 }
 
 function storage(): Storage | null {
     try {
-        return typeof localStorage === 'undefined' ? null : localStorage;
+        return typeof sessionStorage === 'undefined' ? null : sessionStorage;
     } catch {
         return null;
     }
 }
 
 /** False when storage is unavailable, so the redirect may happen again rather than crash. */
-export function readDismissed(clientId: number | string): boolean {
+export function readSkipped(clientId: number | string): boolean {
     try {
-        return storage()?.getItem(dismissalKey(clientId)) === '1';
+        return storage()?.getItem(skipKey(clientId)) === '1';
     } catch {
         return false;
     }
 }
 
-/** Only this flag is ever stored: never a key, a prompt or a block name. */
-export function writeDismissed(clientId: number | string): void {
+/**
+ * Remembers "Skip, I'll set up manually" for this workspace, for this browser tab only (sessionStorage), so a new
+ * session asks again. Only this flag is ever stored: never a block name, a prompt or an identifier of the user.
+ */
+export function writeSkipped(clientId: number | string): void {
     try {
-        storage()?.setItem(dismissalKey(clientId), '1');
+        storage()?.setItem(skipKey(clientId), '1');
     } catch {
         // Storage unavailable or full: the redirect may happen again, which is acceptable.
     }

@@ -8,7 +8,7 @@ import {
     OnDestroy,
     OnInit,
 } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -17,6 +17,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import * as logInActions from '../home/ngrx/actions/login.action';
+import { RETURN_URL_PARAM, sanitizeReturnUrl } from '@proxy/utils/return-url';
 import { GoogleOneTapService } from './google-one-tap.service';
 
 @Component({
@@ -30,6 +31,7 @@ export class LoginPageComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly store = inject(Store);
     private readonly actions$ = inject(Actions);
     private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
     private readonly googleOneTapService = inject(GoogleOneTapService);
     private readonly destroy$ = new Subject<void>();
 
@@ -61,7 +63,11 @@ export class LoginPageComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(ofType(logInActions.emailLoginOnboardingPending), takeUntil(this.destroy$))
             .subscribe(({ pendingJwtToken }) => {
                 this.loginInProgress.set(false);
-                this.router.navigate(['/onboarding'], { queryParams: { token: pendingJwtToken } });
+                // Keep the safe return path through onboarding so the flow that started sign-in can resume.
+                const returnUrl = sanitizeReturnUrl(this.route.snapshot.queryParamMap.get(RETURN_URL_PARAM));
+                this.router.navigate(['/onboarding'], {
+                    queryParams: { token: pendingJwtToken, ...(returnUrl ? { [RETURN_URL_PARAM]: returnUrl } : {}) },
+                });
             });
 
         this.actions$.pipe(ofType(logInActions.emailLoginSuccess), takeUntil(this.destroy$)).subscribe(() => {

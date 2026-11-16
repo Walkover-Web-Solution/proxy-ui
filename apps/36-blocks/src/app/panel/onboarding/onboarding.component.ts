@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { AuthService } from '@proxy/services/proxy/auth';
+import { RETURN_URL_PARAM, resolvePostLoginTarget } from '@proxy/utils/return-url';
 import { UsersService } from '@proxy/services/proxy/users';
 import { COUNTRIES_DATA, Country } from '../../../../../shared/assets/utils/countries-info';
 
@@ -165,7 +166,14 @@ export class OnboardingComponent implements OnInit, OnDestroy {
                         this.authService.setTokenSync(jwtToken);
                     }
                     this.onboardingSubmitting.set(false);
-                    this.router.navigate(['/app/features/create']);
+                    // A new workspace has no blocks: continue to a safe return path (for example the AI authorization
+                    // page that started sign-in), otherwise to the AI setup wizard.
+                    void this.router.navigateByUrl(
+                        resolvePostLoginTarget(
+                            this.activatedRoute.snapshot.queryParamMap.get(RETURN_URL_PARAM),
+                            '/app/setup'
+                        )
+                    );
                 },
                 error: (error) => {
                     const errorBody = error?.error;

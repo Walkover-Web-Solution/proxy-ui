@@ -149,7 +149,6 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
             )
             .subscribe((event: NavigationEnd) => {
                 this.updateArea(event.urlAfterRedirects || event.url);
-                this.aiSetup.onNavigation();
                 if (this.isMobileDevice()) this.sideNavService.close();
                 const container = document.getElementById('ChatbotContainer');
                 if (container) {
@@ -178,7 +177,7 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
         this.getClientSettings();
         this.getCurrentTheme();
         document.body.classList.remove('website-active');
-        // The one-time redirect to the setup wizard and the contextual prompt depend on the active workspace.
+        // The setup wizard wording and the contextual prompt depend on the active workspace.
         this.clientSettings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => {
             if (settings?.client?.id) this.aiSetup.setWorkspace(settings.client.id);
         });

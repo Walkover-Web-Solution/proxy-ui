@@ -21,14 +21,13 @@ export type CopyState = 'idle' | 'copied' | 'failed';
 const EXPLANATIONS: Record<AiPromptKind, string> = {
     general: 'Paste this into your AI coding agent. It reads the 36Blocks docs and adds sign-in to your app.',
     block: 'Paste this into your AI coding agent to integrate this existing block into your app.',
-    'block-key':
-        'Paste this into your AI coding agent. It reads this block through the API and changes it the way you ask.',
-    setup: 'Paste this into your AI coding agent. It asks which sign-in methods you want, creates the block through the API and integrates it into your app.',
+    setup: 'Paste this into your AI coding agent. It connects to 36Blocks, you approve access in your browser, then it creates the block and adds it to your app.',
 };
 
 /**
  * The shared body of the "Set up with AI" dialogs: one-line explanation, the read-only prompt, a copy action with
- * distinct copied / failed feedback, and per-tool instructions for connecting the 36Blocks MCP server.
+ * distinct copied / failed feedback, and per-tool instructions for connecting the 36Blocks MCP server. The first time
+ * a tool connects it opens a 36Blocks page in the browser where the signed-in user approves its access.
  */
 @Component({
     selector: 'proxy-ai-setup-panel',
@@ -38,14 +37,10 @@ const EXPLANATIONS: Record<AiPromptKind, string> = {
     styleUrl: './ai-setup-panel.component.scss',
 })
 export class AiSetupPanelComponent {
-    /** The text that is copied. May contain a workspace key (the keyed prompts), so it is never logged or stored. */
+    /** The text that is shown and copied. It never contains a credential. */
     readonly prompt = input.required<string>();
-    /** The text shown on screen when it should differ from what is copied (the key masked). Defaults to `prompt`. */
-    readonly displayPrompt = input<string | null>(null);
     readonly kind = input<AiPromptKind>('general');
-    /** True when the prompt carries a credential: the generic "never paste secrets" footer is replaced by the caller's notice. */
-    readonly sensitive = input(false);
-    /** Heading and intro for the connector tabs. */
+    /** Heading for the connector tabs. */
     readonly tabsHeading = input('Connect your AI tool to 36Blocks');
     /** Emits after the prompt was copied successfully. */
     readonly promptCopied = output<void>();
@@ -55,8 +50,7 @@ export class AiSetupPanelComponent {
     private resetTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
     protected readonly explanation = computed(() => EXPLANATIONS[this.kind()]);
-    protected readonly promptRows = computed(() => (this.sensitive() ? 12 : 7));
-    protected readonly shownPrompt = computed(() => this.displayPrompt() ?? this.prompt());
+    protected readonly promptRows = computed(() => (this.kind() === 'setup' ? 16 : 7));
     protected readonly mcpUrl = MCP_SERVER_URL;
     protected readonly cliInit = CLI_INIT_COMMAND;
     // Syntax confirmed from the tools' own documentation: Claude Code "claude mcp add --transport http <name> <url>";

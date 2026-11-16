@@ -1,14 +1,14 @@
-import { Inject, Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Observable, catchError, defer, map, of, tap } from 'rxjs';
+import { Observable, catchError, defer, forkJoin, map, of, tap } from 'rxjs';
 import { FeaturesService } from '@proxy/services/proxy/features';
+import { RootService } from '@proxy/services/proxy/root';
 import { ProxyAuthScriptUrl } from '@proxy/models/features-model';
-import { ProxyBaseUrls } from '@proxy/models/root-models';
 import { environment } from '../../environments/environment';
 import { AiPromptKind, BlockPromptContext, resolvePrompt } from './ai-prompts';
-import { BlockListStatus, SETUP_ROUTE, readDismissed, shouldRedirectToSetup, writeDismissed } from './setup-redirect';
+import { BlockListStatus, MANUAL_CREATE_ROUTE, SETUP_ROUTE, readSkipped, writeSkipped } from './setup-redirect';
 import { BlockSummary } from './setup-block';
 
 export type BlockRef = BlockSummary;
@@ -26,41 +26,38 @@ export interface WorkspaceBlocks {
 
 export type BlockContext = Omit<BlockPromptContext, 'scriptUrl'>;
 
-/** Data for the "Set up with AI" dialog. `context` is present on a block's own pages. It never contains a key. */
+/** Data for the "Set up with AI" dialog. The prompt never contains a credential. */
 export interface SetupDialogData {
     kind: AiPromptKind;
     prompt: string;
-    context?: BlockPromptContext | null;
+}
+
+function isDenied(error: unknown): boolean {
+    const e = error as { status?: number; errorCode?: number } | null;
+    return e?.status === 403 || e?.errorCode === 403;
 }
 
 /**
  * Shared state for the "Set up with AI" feature: which block (if any) the current page is about, whether the workspace
- * has blocks, the one-time redirect to the setup wizard and opening the dialog. The wizard and the dialog components
- * are loaded lazily. This root service never holds a workspace key: the components that use one provide their own
- * `SetupKeyService`, which is dropped with them.
+ * has blocks (read by the zero-blocks route guard), and opening the dialog. The wizard and the dialog components are
+ * loaded lazily. Nothing here holds a credential: the AI agent signs in through the MCP server's browser authorization.
  */
 @Injectable({ providedIn: 'root' })
 export class AiSetupService {
     private readonly dialog = inject(MatDialog);
     private readonly router = inject(Router);
     private readonly featuresService = inject(FeaturesService);
+    private readonly rootService = inject(RootService);
     private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
     private readonly blockContext = signal<BlockContext | null>(null);
     readonly workspace = signal<WorkspaceBlocks>({ clientId: null, status: 'idle', total: null });
-    /** Workspaces already redirected in this tab, so unavailable storage cannot send the user back on every page. */
-    private readonly redirectedThisSession = new Set<number>();
 
     readonly block = computed(() => {
         const block = this.blockContext();
         return block ? { ...block, scriptUrl: ProxyAuthScriptUrl(environment.proxyServer) } : null;
     });
     readonly resolved = computed(() => resolvePrompt({ block: this.block() }));
-
-    constructor(@Inject(ProxyBaseUrls.BaseURL) private readonly apiBaseUrl: string) {
-        // A dialog that was in the way has closed: the redirect may now be allowed.
-        this.dialog.afterAllClosed.subscribe(() => this.evaluateRedirect());
-    }
 
     /** Pages for one specific block register it so the dialog uses that block's prompt. */
     setBlockContext(context: BlockContext): void {
@@ -77,24 +74,11 @@ export class AiSetupService {
         return this.blockContext() !== null;
     }
 
-    /** The dashboard API base URL, absolute (a relative review-build URL is resolved against the page origin). */
-    resolvedApiBaseUrl(): string {
-        if (this.isBrowser && this.apiBaseUrl.startsWith('/')) return `${location.origin}${this.apiBaseUrl}`;
-        return this.apiBaseUrl;
-    }
-
     /** Called by the dashboard layout once the active workspace is known (and again if it changes). */
     setWorkspace(clientId: number): void {
         if (this.workspace().clientId === clientId) return;
         this.workspace.set({ clientId, status: 'idle', total: null });
         this.refresh().subscribe();
-    }
-
-    /** Called on dashboard navigation: while the workspace has no blocks the list is re-checked. */
-    onNavigation(): void {
-        const workspace = this.workspace();
-        if (workspace.status === 'loaded' && workspace.total === 0) this.refresh().subscribe();
-        else this.evaluateRedirect();
     }
 
     /**
@@ -115,10 +99,10 @@ export class AiSetupService {
                     first: blocks[0] ?? null,
                 };
             }),
-            catchError((error: any): Observable<BlockListResult> => {
-                const denied = error?.status === 403 || error?.errorCode === 403;
-                return of(denied ? { status: 'denied' } : { status: 'error' });
-            })
+            catchError(
+                (error: unknown): Observable<BlockListResult> =>
+                    of(isDenied(error) ? { status: 'denied' } : { status: 'error' })
+            )
         );
     }
 
@@ -138,10 +122,35 @@ export class AiSetupService {
                             ? { status: 'loaded', total: result.total }
                             : { status: result.status, total: null }
                     );
-                    this.evaluateRedirect();
                 })
             );
         });
+    }
+
+    /**
+     * For the zero-blocks route guard: the active workspace and whether it has blocks, read before any dashboard page
+     * renders. A workspace already known to have blocks is answered from memory (a switch reloads the page, so the
+     * cache never outlives a workspace). Otherwise the current workspace and its block count are read together. A failed
+     * or denied read resolves with that status and never with a total, so the guard cannot mistake it for "no blocks".
+     */
+    resolveWorkspace(): Observable<WorkspaceBlocks> {
+        const known = this.workspace();
+        if (known.clientId !== null && known.status === 'loaded' && (known.total ?? 0) > 0) return of(known);
+        return forkJoin({
+            settings: this.rootService.getClientSettings().pipe(
+                map((res) => (res?.hasError ? null : (res?.data?.client?.id ?? null))),
+                catchError(() => of(null))
+            ),
+            blocks: this.fetchBlocks(1),
+        }).pipe(
+            map(({ settings, blocks }): WorkspaceBlocks => {
+                if (settings === null) return { clientId: null, status: 'error', total: null };
+                return blocks.status === 'loaded'
+                    ? { clientId: settings, status: 'loaded', total: blocks.total }
+                    : { clientId: settings, status: blocks.status, total: null };
+            }),
+            tap((workspace) => this.workspace.set(workspace))
+        );
     }
 
     /**
@@ -160,27 +169,36 @@ export class AiSetupService {
         await this.router.navigateByUrl(SETUP_ROUTE);
     }
 
-    /** The public website's button: always the general prompt, no key and no account data. */
+    /** The public website's button: always the general prompt, no account data. */
     async openGeneral(): Promise<void> {
         await this.openDialog(resolvePrompt({ block: null }));
     }
 
-    /** Marks the wizard as dealt with for this workspace ("Set up manually", "Skip for now", or the redirect itself). */
-    dismiss(): void {
+    /** True when the user chose to skip the wizard for the current workspace in this tab. */
+    isSkipped(): boolean {
         const clientId = this.workspace().clientId;
-        if (clientId === null) return;
-        this.redirectedThisSession.add(clientId);
-        writeDismissed(clientId);
+        return clientId !== null && readSkipped(clientId);
+    }
+
+    /**
+     * "Skip, I'll set up manually": remembered for this workspace and this tab only, so the zero-blocks guard does not
+     * send the user straight back. A new tab or session offers the wizard again while the workspace has no blocks.
+     */
+    skipForNow(): void {
+        const clientId = this.workspace().clientId;
+        if (clientId !== null) writeSkipped(clientId);
+    }
+
+    /** Skip and open the manual create-block page (which the guard never redirects away from). */
+    async setUpManually(): Promise<void> {
+        this.skipForNow();
+        await this.router.navigateByUrl(MANUAL_CREATE_ROUTE);
     }
 
     private async openDialog(resolved = this.resolved()): Promise<void> {
         if (!this.isBrowser) return;
         const { SetupWithAiDialogComponent } = await import('./setup-with-ai-dialog/setup-with-ai-dialog.component');
-        const data: SetupDialogData = {
-            kind: resolved.kind,
-            prompt: resolved.prompt,
-            context: resolved.kind === 'block' ? this.block() : null,
-        };
+        const data: SetupDialogData = { kind: resolved.kind, prompt: resolved.prompt };
         this.dialog.open(SetupWithAiDialogComponent, {
             data,
             width: '640px',
@@ -188,30 +206,6 @@ export class AiSetupService {
             autoFocus: '.ai-copy-button',
             restoreFocus: true,
         });
-    }
-
-    /** Redirects to the wizard once per workspace when (and only when) every condition holds. Safe to call often. */
-    evaluateRedirect(): void {
-        if (!this.isBrowser) return;
-        const workspace = this.workspace();
-        const clientId = workspace.clientId;
-        if (
-            clientId === null ||
-            !shouldRedirectToSetup({
-                clientId,
-                status: workspace.status,
-                total: workspace.total,
-                url: this.router.url,
-                dismissed: readDismissed(clientId),
-                anotherDialogOpen: this.dialog.openDialogs.length > 0,
-                alreadyRedirected: this.redirectedThisSession.has(clientId),
-            })
-        ) {
-            return;
-        }
-        // "Once" means once: record it now, so a reload or a later visit to the dashboard does not redirect again.
-        this.dismiss();
-        void this.router.navigateByUrl(SETUP_ROUTE);
     }
 
     private patch(change: Partial<WorkspaceBlocks>): void {

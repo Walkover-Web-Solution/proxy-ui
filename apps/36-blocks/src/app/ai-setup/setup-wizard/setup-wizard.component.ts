@@ -4,39 +4,27 @@ import {
     DestroyRef,
     ElementRef,
     Injector,
-    OnInit,
     PLATFORM_ID,
     afterNextRender,
     computed,
     inject,
     signal,
 } from '@angular/core';
-import { NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ConfirmDialogComponent } from '@proxy/ui/confirm-dialog';
 import { FeaturesService } from '@proxy/services/proxy/features';
 import { catchError, debounceTime, distinctUntilChanged, map, of, startWith, switchMap, tap } from 'rxjs';
-import {
-    BLOCK_NAME_MAX,
-    BLOCK_NAME_MIN,
-    blockNameMessage,
-    buildSetupPrompt,
-    checkBlockName,
-    maskKeyInPrompt,
-} from '../ai-prompts';
+import { BLOCK_NAME_MAX, BLOCK_NAME_MIN, blockNameMessage, buildSetupPrompt, checkBlockName } from '../ai-prompts';
 import { AiSetupService } from '../ai-setup.service';
 import { AiSetupPanelComponent } from '../ai-setup-panel/ai-setup-panel.component';
 import { BlockBaseline, BlockSummary, blockNameTaken, detectNewBlock, makeBaseline } from '../setup-block';
-import { PROVISION_FAILURE_TEXT, SetupKeyService } from '../setup-key.service';
-import { PERMISSION_CREATE_KEY, PERMISSION_VIEW_KEYS, SETUP_KEY_NAME } from '../setup-key';
 
 export type WizardStep = 1 | 2 | 3;
 export type WaitPhase = 'waiting' | 'found';
@@ -55,16 +43,14 @@ const STEPS: { n: WizardStep; label: string }[] = [
 ];
 
 /**
- * The AI setup wizard (`/app/setup`). Step 1 names the block, step 2 creates (or reuses) the dedicated workspace key
- * and shows the prompt, step 3 watches for the block the agent creates. Nothing is created before the explicit click in
- * step 2, the wizard never creates the block itself, and the key lives only in `SetupKeyService`, which is provided here
- * and so is dropped when the user leaves the page.
+ * The AI setup wizard (`/app/setup`). Step 1 names the block, step 2 shows a prompt that holds no credential (the AI
+ * agent signs in through the MCP server's browser authorization), step 3 watches for the block the agent creates.
+ * Nothing is created by this page: the agent creates the block through the API.
  */
 @Component({
     selector: 'proxy-setup-wizard',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        NgTemplateOutlet,
         ReactiveFormsModule,
         RouterLink,
         MatButtonModule,
@@ -74,27 +60,20 @@ const STEPS: { n: WizardStep; label: string }[] = [
         MatProgressSpinnerModule,
         AiSetupPanelComponent,
     ],
-    providers: [SetupKeyService],
     templateUrl: './setup-wizard.component.html',
     styleUrl: './setup-wizard.component.scss',
 })
-export class SetupWizardComponent implements OnInit {
-    private readonly router = inject(Router);
-    private readonly dialog = inject(MatDialog);
+export class SetupWizardComponent {
     private readonly aiSetup = inject(AiSetupService);
     private readonly featuresService = inject(FeaturesService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly injector = inject(Injector);
     private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
     private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
-    protected readonly keys = inject(SetupKeyService);
 
     protected readonly steps = STEPS;
     protected readonly nameMin = BLOCK_NAME_MIN;
     protected readonly nameMax = BLOCK_NAME_MAX;
-    protected readonly keyName = SETUP_KEY_NAME;
-    protected readonly failureText = PROVISION_FAILURE_TEXT;
-    protected readonly neededPermissions = [PERMISSION_CREATE_KEY, PERMISSION_VIEW_KEYS];
 
     protected readonly step = signal<WizardStep>(1);
     protected readonly phase = signal<WaitPhase>('waiting');
@@ -113,20 +92,11 @@ export class SetupWizardComponent implements OnInit {
     protected readonly nameError = computed(() => (this.showNameError() ? blockNameMessage(this.check().problem) : ''));
     protected readonly lookup = signal<NameLookup>('idle');
 
-    // ---- Step 2: key + prompt --------------------------------------------------------------------------------------
+    // ---- Step 2: prompt --------------------------------------------------------------------------------------------
     /** The chosen name, fixed when the user leaves step 1. */
     protected readonly blockName = signal('');
-    /** The prompt that includes the key. Memory only; never logged, stored or put in a URL. */
-    private readonly keyedPrompt = signal<string | null>(null);
-    protected readonly hasPrompt = computed(() => this.keyedPrompt() !== null);
-    protected readonly revealed = signal(false);
-    protected readonly copyPrompt = computed(() => this.keyedPrompt() ?? '');
-    protected readonly shownPrompt = computed(() => {
-        const prompt = this.keyedPrompt();
-        if (prompt === null || this.revealed()) return prompt ?? '';
-        return maskKeyInPrompt(prompt, this.keys.authKey() ?? '');
-    });
-    protected readonly promptUnavailable = signal(false);
+    /** The prompt for the chosen name; null only if the name could not be validated (it was, in step 1). */
+    protected readonly prompt = computed(() => buildSetupPrompt({ blockName: this.blockName() }));
 
     // ---- Step 3: waiting, then found -------------------------------------------------------------------------------
     protected readonly checking = signal(false);
@@ -148,7 +118,6 @@ export class SetupWizardComponent implements OnInit {
     private readonly onVisibilityChange = () => {
         if (this.pollTimer !== undefined && !document.hidden) this.tick();
     };
-    private revokeDialog: MatDialogRef<unknown> | null = null;
 
     constructor() {
         this.destroyRef.onDestroy(() => this.stopPolling());
@@ -181,10 +150,6 @@ export class SetupWizardComponent implements OnInit {
             .subscribe((state) => this.lookup.set(state));
     }
 
-    ngOnInit(): void {
-        void this.keys.loadPermissions();
-    }
-
     // ---- Navigation ------------------------------------------------------------------------------------------------
     /** Switches step and moves focus to the new heading, so keyboard and screen-reader users are not left on a removed control. */
     protected go(step: WizardStep): void {
@@ -198,18 +163,9 @@ export class SetupWizardComponent implements OnInit {
         });
     }
 
-    protected retryPermissions(): void {
-        void this.keys.loadPermissions();
-    }
-
+    /** "Skip, I'll set up manually": remembered for this workspace in this tab so the dashboard does not bounce back. */
     protected setUpManually(): void {
-        this.aiSetup.dismiss();
-        void this.router.navigate(['/app', 'features', 'create']);
-    }
-
-    protected skip(): void {
-        this.aiSetup.dismiss();
-        void this.router.navigate(['/app', 'dashboard']);
+        void this.aiSetup.setUpManually();
     }
 
     // ---- Step 1 ----------------------------------------------------------------------------------------------------
@@ -220,50 +176,20 @@ export class SetupWizardComponent implements OnInit {
             this.host.nativeElement.querySelector<HTMLElement>('input')?.focus();
             return;
         }
-        // The name changed after a prompt was made: that prompt names the wrong block, so it is dropped.
-        if (this.blockName() !== check.value) this.keyedPrompt.set(null);
         this.blockName.set(check.value);
+        // What the workspace has now, so the agent's block can be told from the old ones.
+        if (!this.baseline) this.captureBaseline();
         this.go(2);
     }
 
     // ---- Step 2 ----------------------------------------------------------------------------------------------------
-    /** The one explicit action that creates (or reuses) the key. Nothing is created before this click. */
-    protected async createKey(): Promise<void> {
-        this.promptUnavailable.set(false);
-        if (!this.keys.authKey()) await this.keys.prepare();
-        const key = this.keys.authKey();
-        if (!key || this.keys.provision() !== 'ready') return;
-        const prompt = buildSetupPrompt({
-            blockName: this.blockName(),
-            baseUrl: this.aiSetup.resolvedApiBaseUrl(),
-            authKey: key,
-        });
-        if (!prompt) {
-            this.promptUnavailable.set(true);
-            return;
-        }
-        this.keyedPrompt.set(prompt);
-        this.revealed.set(false);
-        void this.captureBaseline();
-    }
-
-    /** What the workspace had when the prompt was handed out, so the agent's block can be told from the old ones. */
-    private async captureBaseline(): Promise<void> {
-        this.baseline = null;
+    private captureBaseline(): void {
         this.aiSetup.fetchBlocks(BLOCK_LIST_SIZE).subscribe((result) => {
             if (result.status === 'loaded') this.baseline = makeBaseline(result.blocks, result.total);
         });
     }
 
-    protected toggleReveal(): void {
-        this.revealed.update((value) => !value);
-    }
-
-    protected onPromptCopied(): void {
-        if (this.step() === 2) this.startWaiting();
-    }
-
-    /** For people who copied the prompt by hand: continue without pressing "Copy prompt". */
+    /** The user has the prompt in their AI tool (and the connector set up there): start watching for the block. */
     protected startWaiting(): void {
         this.phase.set('waiting');
         this.checkFailed.set(false);
@@ -332,28 +258,6 @@ export class SetupWizardComponent implements OnInit {
             this.focusHeading();
             // The workspace now has a block: keep the shared state honest for the top bar and the redirect.
             this.aiSetup.refresh().subscribe();
-        });
-    }
-
-    // ---- Key controls ----------------------------------------------------------------------------------------------
-    protected confirmRevoke(): void {
-        if (this.revokeDialog || this.keys.revoke() === 'working') return;
-        const ref: MatDialogRef<ConfirmDialogComponent> = this.dialog.open(ConfirmDialogComponent, {
-            panelClass: ['mat-dialog'],
-        });
-        this.revokeDialog = ref;
-        ref.componentRef.setInput(
-            'confirmationMessage',
-            `Revoke the setup key “${this.keys.keyName() ?? SETUP_KEY_NAME}”? It stops working on the next call, so your AI agent can no longer manage blocks with it. You can create a new one later.`
-        );
-        ref.componentRef.setInput('confirmButtonText', 'Revoke key');
-        ref.componentRef.setInput('confirmButtonColor', 'warn');
-        ref.afterClosed().subscribe(async (action) => {
-            this.revokeDialog = null;
-            if (action !== 'yes') return;
-            await this.keys.revokeKey();
-            // The prompt holds the key: once it is revoked there is nothing useful left to show.
-            if (this.keys.revoke() === 'done') this.keyedPrompt.set(null);
         });
     }
 }

@@ -1,5 +1,4 @@
 <p class="ai-explainer">{{ explanation() }}</p>
-<ng-content select="[aiPanelNotice]"></ng-content>
 
 <label class="ai-label" for="ai-prompt-field">Prompt</label>
 <textarea
@@ -8,9 +7,9 @@
     class="ai-prompt"
     readonly
     [attr.rows]="promptRows()"
-    [class.ai-prompt-tall]="sensitive()"
+    [class.ai-prompt-tall]="kind() === 'setup'"
     spellcheck="false"
-    [value]="shownPrompt()"
+    [value]="prompt()"
 ></textarea>
 <div class="ai-copy-row">
     <button
@@ -32,11 +31,13 @@
             Couldn’t copy automatically. The prompt is selected, so copy it with your keyboard.
         }
     </span>
-    <ng-content select="[aiPanelActions]"></ng-content>
 </div>
 
 <h3 class="ai-subheading">{{ tabsHeading() }}</h3>
-<ng-content select="[aiPanelTabsNote]"></ng-content>
+<p class="ai-note ai-signin-note">
+    The first time your tool connects, it opens a 36Blocks page in your browser. Sign in if asked and approve access for
+    the workspace shown there. You never paste a key or token.
+</p>
 <mat-tab-group class="ai-tabs" animationDuration="0ms" mat-stretch-tabs="false" aria-label="AI tool">
     <mat-tab label="Claude Code">
         <div class="ai-tab-body">
@@ -94,6 +95,4 @@
         </div>
     </mat-tab>
 </mat-tab-group>
-@if (!sensitive()) {
-    <p class="ai-note">Sign in through your tool’s connector. Never paste tokens or secrets into a prompt.</p>
-}
+<p class="ai-note">Never paste tokens or secrets into a prompt.</p>

@@ -74,6 +74,15 @@
                     <mat-icon>add</mat-icon>
                     <span>Create workspace</span>
                 </button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item type="button" [routerLink]="['/app', 'features', 'create']">
+                    <mat-icon>add_circle_outline</mat-icon>
+                    <span>Connect new application</span>
+                </button>
+                <button mat-menu-item type="button" (click)="openAiSetup()">
+                    <mat-icon>auto_awesome</mat-icon>
+                    <span>Set up with AI</span>
+                </button>
             </mat-menu>
             <button
                 matIconButton

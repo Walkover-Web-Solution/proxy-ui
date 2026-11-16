@@ -1,0 +1,218 @@
+<main class="oauth-page">
+    <a class="oauth-brand brand" routerLink="/" aria-label="36blocks home"
+        ><span class="brand-mark" aria-hidden="true">▦</span><span>36blocks</span></a
+    >
+
+    <section class="oauth-card" [attr.aria-busy]="view().kind === 'loading'">
+        @switch (view().kind) {
+            @case ('loading') {
+                <h1 class="oauth-heading" tabindex="-1">Checking the request</h1>
+                <p class="oauth-state" role="status" aria-live="polite">
+                    <mat-spinner diameter="22" aria-hidden="true"></mat-spinner>
+                    Checking the request from your AI tool…
+                </p>
+            }
+
+            @case ('invalid') {
+                <h1 class="oauth-heading" tabindex="-1">This request can’t be approved</h1>
+                <p class="oauth-problem" role="alert">{{ $any(view()).message }}</p>
+                <p class="oauth-muted">
+                    Nothing was shared and you were not sent back to the AI tool. Close this tab and start the
+                    connection again from your tool.
+                </p>
+                <div class="oauth-actions">
+                    <a mat-stroked-button routerLink="/app/dashboard">Go to 36Blocks</a>
+                </div>
+            }
+
+            @case ('error') {
+                <h1 class="oauth-heading" tabindex="-1">We couldn’t load this request</h1>
+                <p class="oauth-problem" role="alert">{{ $any(view()).message }}</p>
+                <div class="oauth-actions">
+                    <button type="button" mat-flat-button (click)="load()">Try again</button>
+                </div>
+            }
+
+            @case ('denied') {
+                <h1 class="oauth-heading" tabindex="-1">You don’t have access to do this</h1>
+                <p class="oauth-problem" role="alert">
+                    Your role in the current workspace does not allow you to authorize AI tools. Ask a workspace Owner
+                    or Admin, or switch to a workspace where you have that access.
+                </p>
+                <div class="oauth-actions">
+                    <button
+                        type="button"
+                        mat-stroked-button
+                        (click)="toggleSwitch()"
+                        [attr.aria-expanded]="switchOpen()"
+                    >
+                        Switch workspace
+                    </button>
+                    <button type="button" mat-button (click)="load()">Check again</button>
+                </div>
+                <ng-container *ngTemplateOutlet="switcher"></ng-container>
+            }
+
+            @case ('no-workspace') {
+                <h1 class="oauth-heading" tabindex="-1">Choose a workspace first</h1>
+                <p class="oauth-muted">
+                    <strong>{{ $any(view()).clientName }}</strong> wants to connect to 36Blocks, but you don’t have a
+                    workspace selected. Access is always limited to one workspace, so pick one or create a new one.
+                </p>
+                <ng-container *ngTemplateOutlet="picker"></ng-container>
+                <div class="oauth-actions">
+                    <button type="button" mat-flat-button (click)="createWorkspace()">
+                        <mat-icon aria-hidden="true">add</mat-icon>
+                        Create a workspace
+                    </button>
+                </div>
+            }
+
+            @case ('ready') {
+                @let consent = $any(view()).consent;
+                <h1 class="oauth-heading" tabindex="-1">Allow {{ consent.clientName }} to use 36Blocks?</h1>
+                <p class="oauth-muted">
+                    This AI tool is asking to act as you. Approve only if you started this connection from a tool you
+                    trust.
+                    @if (consent.redirectHost) {
+                        After you decide, your browser returns to <strong>{{ consent.redirectHost }}</strong
+                        >.
+                    }
+                </p>
+
+                <div class="oauth-workspace" role="group" aria-labelledby="oauth-workspace-label">
+                    <div>
+                        <span id="oauth-workspace-label" class="oauth-label">Workspace it will access</span>
+                        <strong class="oauth-workspace-name">{{ consent.workspace.name }}</strong>
+                    </div>
+                    <button
+                        type="button"
+                        mat-stroked-button
+                        [disabled]="busy() !== null"
+                        [attr.aria-expanded]="switchOpen()"
+                        (click)="toggleSwitch()"
+                    >
+                        Switch workspace
+                    </button>
+                </div>
+                <ng-container *ngTemplateOutlet="switcher"></ng-container>
+
+                @if (consent.scopes.length) {
+                    <h2 class="oauth-subheading">Permissions requested</h2>
+                    <ul class="oauth-list">
+                        @for (scope of consent.scopes; track scope.key) {
+                            <li>{{ scope.label }}</li>
+                        }
+                    </ul>
+                }
+
+                <div class="oauth-can">
+                    <div>
+                        <h2 class="oauth-subheading">It will be able to</h2>
+                        <ul class="oauth-list">
+                            <li>Create and configure blocks, widgets and login methods in this workspace</li>
+                            <li>Read this workspace’s blocks so it can add them to your app</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="oauth-subheading">It will not be able to</h2>
+                        <ul class="oauth-list">
+                            <li>Change any other workspace</li>
+                            <li>Change billing</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="oauth-muted">You can remove this access at any time under Team &amp; access → AI tools.</p>
+
+                @if (decisionError(); as message) {
+                    <p class="oauth-problem" role="alert">{{ message }}</p>
+                }
+
+                <div class="oauth-actions">
+                    <button type="button" mat-flat-button [disabled]="busy() !== null" (click)="decide('approve')">
+                        {{ busy() === 'approve' ? 'Approving…' : 'Approve' }}
+                    </button>
+                    <button type="button" mat-stroked-button [disabled]="busy() !== null" (click)="decide('deny')">
+                        {{ busy() === 'deny' ? 'Denying…' : 'Deny' }}
+                    </button>
+                </div>
+                <p class="oauth-muted" role="status" aria-live="polite">
+                    @if (busy() !== null) {
+                        Saving your decision…
+                    }
+                </p>
+            }
+
+            @case ('done') {
+                <h1 class="oauth-heading" tabindex="-1">
+                    {{ $any(view()).action === 'approve' ? 'Access approved' : 'Access denied' }}
+                </h1>
+                <p class="oauth-success" role="status">
+                    <mat-icon aria-hidden="true">{{
+                        $any(view()).action === 'approve' ? 'check_circle' : 'block'
+                    }}</mat-icon>
+                    <span>
+                        @if ($any(view()).returned) {
+                            Returning you to your AI tool… If nothing happens, you can return to your AI tool now.
+                        } @else {
+                            Your decision was saved. You can return to your AI tool.
+                        }
+                    </span>
+                </p>
+                <div class="oauth-actions">
+                    @if ($any(view()).returned) {
+                        <button type="button" mat-stroked-button (click)="returnToTool()">Try returning again</button>
+                    }
+                    <a mat-button routerLink="/app/dashboard">Go to 36Blocks</a>
+                </div>
+            }
+        }
+    </section>
+</main>
+
+<!-- Workspaces to switch to (the current one is already selected) -->
+<ng-template #switcher>
+    @if (switchOpen()) {
+        <div class="oauth-switcher">
+            <ng-container *ngTemplateOutlet="picker"></ng-container>
+        </div>
+    }
+</ng-template>
+
+<ng-template #picker>
+    @switch (workspaces().status) {
+        @case ('loading') {
+            <p class="oauth-state" role="status" aria-live="polite">
+                <mat-spinner diameter="20" aria-hidden="true"></mat-spinner>
+                Loading your workspaces…
+            </p>
+        }
+        @case ('error') {
+            <p class="oauth-problem" role="alert">Your workspaces couldn’t be loaded.</p>
+            <button type="button" mat-stroked-button (click)="loadWorkspaces()">Try again</button>
+        }
+        @case ('loaded') {
+            @if (workspaces().items.length === 0) {
+                <p class="oauth-muted" role="status">You don’t have any workspaces yet.</p>
+            } @else {
+                <ul class="oauth-workspaces" aria-label="Your workspaces">
+                    @for (client of workspaces().items; track client.id) {
+                        <li>
+                            <button
+                                type="button"
+                                mat-stroked-button
+                                [disabled]="switchingTo() !== null"
+                                (click)="switchTo(client)"
+                            >
+                                {{ switchingTo() === client.id ? 'Switching…' : client.name }}
+                            </button>
+                        </li>
+                    }
+                </ul>
+            }
+            @if (switchError(); as message) {
+                <p class="oauth-problem" role="alert">{{ message }}</p>
+            }
+        }
+    }
+</ng-template>

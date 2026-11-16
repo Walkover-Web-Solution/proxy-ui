@@ -1071,6 +1071,11 @@ export class CreateFeatureComponent extends BaseComponent implements OnDestroy, 
         this.authorizationStepContent?.nativeElement?.querySelector<HTMLInputElement>('input')?.focus();
     }
 
+    /** The AI path is part of creating a block: same outcome, done by the user's AI tool. */
+    public openAiSetup(): void {
+        void this.aiSetup.goToSetup();
+    }
+
     public ngOnDestroy(): void {
         if (this.aiSetupReferenceId) this.aiSetup.clearBlockContext(this.aiSetupReferenceId);
         super.ngOnDestroy();

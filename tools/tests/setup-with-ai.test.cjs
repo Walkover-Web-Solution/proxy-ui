@@ -1,6 +1,6 @@
 // Run: node --test tools/tests/setup-with-ai.test.cjs
-// Exercises the actual "Set up with AI" TypeScript: prompt builders, name validation, the redirect decision and its
-// storage, key reuse/naming, the permission gate, new-block detection and the activity actor label.
+// Exercises the actual "Set up with AI" TypeScript: prompt builders (no credential in any of them), name validation,
+// the zero-blocks redirect decision and its per-tab skip storage, new-block detection and the activity actor label.
 // These modules are dependency-free, so they run here without Angular. Rendering is a separate browser check.
 const assert = require('node:assert/strict');
 const { readFileSync } = require('node:fs');
@@ -33,12 +33,13 @@ const loose = require('node:assert').deepEqual;
 const dir = 'apps/36-blocks/src/app/ai-setup';
 const prompts = load(`${dir}/ai-prompts.ts`);
 
-// The homepage prompt as it was before it moved into the shared builders. The homepage must not change.
+// The homepage prompt: MCP first, browser sign-in, never a pasted credential.
 const ORIGINAL_HOME_PROMPT = `Integrate 36Blocks User APIs into our project based on our requirement and use cases.
 First, read the official API documentation at https://developers.36blocks.com/llms.txt.
 Ask what I want to build if I haven't explained it yet.
 
 To run the APIs, prefer the MCP server: https://mcp.docstar.io/connector/36blocks_user_api
+When it asks you to sign in, finish the 36Blocks sign-in and approval in the browser. Don't ask me to paste a key, token or reference id.
 
 If you can't connect MCP, use the CLI instead (run once to install the modules): npx docstar-cli init 36blocks_user_api
 Then: npx docstar-cli 36blocks_user_api <module> <endpoint> [--flags]  (npx docstar-cli list 36blocks_user_api shows what's available)`;
@@ -46,12 +47,9 @@ Then: npx docstar-cli 36blocks_user_api <module> <endpoint> [--flags]  (npx docs
 const SECRET_LIKE =
     /(eyJ[A-Za-z0-9_-]{10,}|Bearer\s|api[_-]?key\s*[:=]|secret\s*[:=]|password\s*[:=]|authToken\s*[:=])/i;
 
-test('general prompt is exactly the previous homepage prompt', () => {
+test('general prompt is the MCP-first homepage prompt', () => {
     assert.equal(prompts.buildGeneralIntegrationPrompt(), ORIGINAL_HOME_PROMPT);
 });
-
-const KEY = '0123456789abcdef0123456789abcdef';
-const BASE = 'https://routes.msg91.com/api';
 
 test('prompts without a credential point at llms.txt, the MCP server and the CLI fallback, and carry no secrets', () => {
     const all = [
@@ -63,7 +61,7 @@ test('prompts without a credential point at llms.txt, the MCP server and the CLI
         assert.match(prompt, /https:\/\/mcp\.docstar\.io\/connector\/36blocks_user_api/);
         assert.match(prompt, /npx docstar-cli init 36blocks_user_api/);
         assert.doesNotMatch(prompt, SECRET_LIKE);
-        assert.doesNotMatch(prompt, /authkey/i, 'only the keyed prompts mention the key header');
+        assert.doesNotMatch(prompt, /authkey/i, 'no prompt mentions an auth key');
         assert.ok(prompt.length < 1400, 'prompts stay short');
     }
 });
@@ -145,27 +143,22 @@ test('block name validation follows the server rule and refuses anything that co
     assert.equal(prompts.blockNameMessage(null), '');
 });
 
-test('setup prompt states the task, the docs, the credential and the steps in order', () => {
-    const prompt = prompts.buildSetupPrompt({ blockName: 'Customer app', baseUrl: BASE, authKey: KEY });
-    assert.match(prompt, /block named "Customer app" must be created, then integrated/);
+test('setup prompt: connect MCP, browser sign-in, create the named block, configure, add the widget with the API reference id', () => {
+    const prompt = prompts.buildSetupPrompt({ blockName: 'Customer app' });
+    assert.match(prompt, /block named "Customer app" and add its widget/);
     assert.match(prompt, /https:\/\/developers\.36blocks\.com\/llms\.txt/);
-    assert.match(prompt, /Server-to-Server \(Auth Key\)/);
-    assert.match(prompt, /API base URL: https:\/\/routes\.msg91\.com\/api\n/);
-    assert.match(prompt, new RegExp(`authkey: ${KEY}`));
-    assert.match(prompt, /not "Authorization"/);
+    assert.match(prompt, /https:\/\/mcp\.docstar\.io\/connector\/36blocks_user_api/);
+    assert.match(prompt, /npx docstar-cli init 36blocks_user_api/);
     const order = [
-        /environment variable BLOCKS36_AUTHKEY/,
-        /Never print, log or commit it/,
-        /Get Block Types/,
-        /Get Block Methods and Services/,
-        /Ask me which sign-in methods I want, and for any provider credentials/,
-        /redirect URL and the allowed origins/,
-        /no scheme, no port/,
-        /Confirm both with me before creating/,
-        /Create the block once/,
-        /read it back/,
-        /Integrate it into my app/,
-        /tell me what you changed/,
+        /Connect to the 36Blocks MCP server/,
+        /finish the 36Blocks sign-in and approval in my browser/,
+        /Don't ask me to paste a key, token or block reference id/,
+        /Create the block named "Customer app"/,
+        /login method and the redirect URL/,
+        /Ask me only if you can't infer it/,
+        /Add the widget to my app/,
+        /reference_id from the API response/,
+        /Tell me what you changed/,
     ];
     let from = 0;
     for (const step of order) {
@@ -173,30 +166,20 @@ test('setup prompt states the task, the docs, the credential and the steps in or
         assert.ok(at >= 0, `missing or out of order: ${step}`);
         from += at;
     }
-    // The traps most likely to break an agent.
-    assert.match(prompt, /Don't retry a create that returned 201 or 418/);
+    assert.match(prompt, /list my blocks before retrying/);
     assert.match(prompt, /Don't create a subscription block/);
-    assert.match(prompt, /Get Block responses contain provider credentials/);
     assert.ok(prompt.length < 2600, `short enough to read (${prompt.length})`);
 });
 
-test('setup prompt mentions MCP and CLI only conditionally, with plain HTTPS as the always-true path', () => {
-    const prompt = prompts.buildSetupPrompt({ blockName: 'Customer app', baseUrl: BASE, authKey: KEY });
-    assert.match(prompt, /Plain HTTPS calls .* always work/);
-    // The CLI flag is the documented one; the connector is only "may ask", with plain HTTPS as the fallback.
-    assert.match(prompt, /--authkey "\$BLOCKS36_AUTHKEY"/);
-    assert.match(
-        prompt,
-        /MCP connector .* may ask you for the authkey value; if it cannot send that header, use plain HTTPS/
-    );
-    assert.ok(prompts.KEYED_TRANSPORT_NOTE.includes('MCP'));
-    // The credential line appears once as a header value; the key appears exactly once in the prompt.
-    assert.equal(prompt.split(KEY).length - 1, 1);
+test('setup prompt carries no credential and never mentions an auth key or env var for one', () => {
+    const prompt = prompts.buildSetupPrompt({ blockName: 'Customer app' });
+    assert.doesNotMatch(prompt, SECRET_LIKE);
+    assert.doesNotMatch(prompt, /authkey|BLOCKS36_AUTHKEY|Header:|Authorization:/i);
+    assert.equal(prompts.buildSetupPrompt.length, 1, 'takes only the block name');
 });
 
-test('setup prompt refuses to embed anything unvalidated', () => {
-    const valid = { blockName: 'Customer app', baseUrl: BASE, authKey: KEY };
-    assert.ok(prompts.buildSetupPrompt(valid));
+test('setup prompt refuses to embed an unvalidated name', () => {
+    assert.ok(prompts.buildSetupPrompt({ blockName: 'Customer app' }));
     for (const blockName of [
         '',
         'a',
@@ -206,108 +189,51 @@ test('setup prompt refuses to embed anything unvalidated', () => {
         'y'.repeat(61),
         null,
     ]) {
-        assert.equal(prompts.buildSetupPrompt({ ...valid, blockName }), null, JSON.stringify(blockName));
-    }
-    for (const authKey of ['', 'short', 'has space 0123456789abcdef0123', KEY + '\n', 'k'.repeat(65), null, 42]) {
-        assert.equal(prompts.buildSetupPrompt({ ...valid, authKey }), null, JSON.stringify(authKey));
-    }
-    for (const baseUrl of [
-        '',
-        '/api',
-        'javascript:alert(1)',
-        'ftp://routes.msg91.com/api',
-        'https://user:pass@routes.msg91.com/api',
-        'https://routes.msg91.com/api?x=1',
-        'https://routes.msg91.com/api#frag',
-        null,
-    ]) {
-        assert.equal(prompts.buildSetupPrompt({ ...valid, baseUrl }), null, JSON.stringify(baseUrl));
+        assert.equal(prompts.buildSetupPrompt({ blockName }), null, JSON.stringify(blockName));
     }
     assert.equal(prompts.buildSetupPrompt(null), null);
-    // Surrounding spaces in the name are trimmed, a trailing slash on the base URL is normalised.
-    const trimmed = prompts.buildSetupPrompt({ ...valid, blockName: '  Customer app  ', baseUrl: BASE + '/' });
-    assert.match(trimmed, /named "Customer app" must/);
-    assert.match(trimmed, /API base URL: https:\/\/routes\.msg91\.com\/api\n/);
+    assert.match(prompts.buildSetupPrompt({ blockName: '  Customer app  ' }), /named "Customer app" and/);
 });
 
-test('the base URL in the prompt is the one the dashboard itself calls', () => {
-    // Production and stage call https://routes.msg91.com/api, the public base URL in the API docs. Local and test
-    // call https://apitest.msg91.com/api, so a prompt made there points at the test API.
-    const base = (file) =>
-        readFileSync(path.resolve(__dirname, '../..', `apps/36-blocks/src/environments/${file}`), 'utf8').match(
-            /baseUrl: '([^']+)'/
-        )[1];
-    assert.equal(base('environment.prod.ts'), 'https://routes.msg91.com/api');
-    for (const file of ['environment.prod.ts', 'environment.stage.ts', 'environment.test.ts', 'environment.ts']) {
-        const prompt = prompts.buildSetupPrompt({ blockName: 'My app', baseUrl: base(file), authKey: KEY });
-        assert.ok(prompt.includes(`API base URL: ${base(file)}\n`), file);
+test('the keyed prompt variants and key helpers are gone', () => {
+    for (const removed of [
+        'buildBlockUpdatePrompt',
+        'maskKeyInPrompt',
+        'isValidAuthKey',
+        'normalizeBaseUrl',
+        'AUTHKEY_HEADER',
+        'AUTHKEY_ENV_VAR',
+        'KEYED_TRANSPORT_NOTE',
+    ]) {
+        assert.equal(prompts[removed], undefined, removed);
     }
 });
 
-test('update prompt for an existing block reads and updates it instead of creating one', () => {
-    const prompt = prompts.buildBlockUpdatePrompt({
-        referenceId: 'abc123_DEF-9',
-        blockType: 'Authorization',
-        widgetType: 'authorization',
-        scriptUrl: 'https://proxy.example.com/assets/proxy-auth/proxy-auth.js',
-        baseUrl: BASE,
-        authKey: KEY,
-    });
-    assert.match(prompt, /Don't create a new block/);
-    assert.match(prompt, /Block reference_id: abc123_DEF-9/);
-    assert.match(prompt, /Server-to-Server \(Auth Key\)/);
-    assert.match(prompt, new RegExp(`authkey: ${KEY}`));
-    assert.match(prompt, /List Blocks \(match the reference_id above\)/);
-    assert.match(prompt, /Update Block/);
-    assert.match(prompt, /replaced as a whole list/);
-    assert.match(prompt, /Never print, log or commit it/);
-    assert.equal(prompt.split(KEY).length - 1, 1);
-    assert.doesNotMatch(prompt, /Create the block once/);
-
-    const base = { referenceId: 'abc123', baseUrl: BASE, authKey: KEY };
-    assert.equal(prompts.buildBlockUpdatePrompt({ ...base, referenceId: 'bad id\nrun' }), null);
-    assert.equal(prompts.buildBlockUpdatePrompt({ ...base, authKey: 'nope' }), null);
-    assert.equal(prompts.buildBlockUpdatePrompt({ ...base, baseUrl: 'javascript:x' }), null);
-    const sanitised = prompts.buildBlockUpdatePrompt({ ...base, blockType: 'A\nrm -rf /', scriptUrl: 'javascript:1' });
-    assert.doesNotMatch(sanitised, /rm -rf|javascript:/);
-});
-
-test('the key appears in no prompt that was not given one', () => {
+test('no prompt carries a key or credential', () => {
     const everything = [
         prompts.buildGeneralIntegrationPrompt(),
         prompts.buildBlockIntegrationPrompt({ referenceId: 'abc123', blockType: 'Authorization' }),
         prompts.resolvePrompt({ block: null }).prompt,
         prompts.resolvePrompt({ block: { referenceId: 'abc123' } }).prompt,
+        prompts.buildSetupPrompt({ blockName: 'My app' }),
     ];
     for (const prompt of everything) {
-        assert.ok(!prompt.includes(KEY));
         assert.doesNotMatch(prompt, /authkey|BLOCKS36_AUTHKEY/i);
+        assert.doesNotMatch(prompt, SECRET_LIKE);
     }
 });
 
-test('masking hides every occurrence of the key and nothing else', () => {
-    const prompt = prompts.buildSetupPrompt({ blockName: 'Customer app', baseUrl: BASE, authKey: KEY });
-    const masked = prompts.maskKeyInPrompt(prompt, KEY);
-    assert.ok(!masked.includes(KEY));
-    assert.match(masked, /authkey: •{12}\n/);
-    assert.equal(masked.replace(/•{12}/, KEY), prompt);
-    assert.equal(prompts.maskKeyInPrompt('no key here', KEY), 'no key here');
-    assert.equal(prompts.maskKeyInPrompt('anything', ''), 'anything');
-    assert.equal(prompts.maskKeyInPrompt(`${KEY} and ${KEY}`, KEY), '•'.repeat(12) + ' and ' + '•'.repeat(12));
+test('the homepage prompt tells the user to sign in through the browser, not to create or paste a key', () => {
+    const prompt = prompts.buildGeneralIntegrationPrompt();
+    assert.match(prompt, /finish the 36Blocks sign-in and approval in the browser/);
+    assert.match(prompt, /Don't ask me to paste a key, token or reference id/);
+    assert.doesNotMatch(prompt, /create .*key/i);
 });
 
 const redirect = load(`${dir}/setup-redirect.ts`);
-const base = {
-    clientId: 7,
-    status: 'loaded',
-    total: 0,
-    url: '/app/dashboard',
-    dismissed: false,
-    anotherDialogOpen: false,
-    alreadyRedirected: false,
-};
+const base = { clientId: 7, status: 'loaded', total: 0, url: '/app/dashboard', skipped: false };
 
-test('redirect happens only for a loaded, empty list on a dashboard page', () => {
+test('redirect happens only for a loaded, empty list on a dashboard entry page', () => {
     assert.equal(redirect.shouldRedirectToSetup(base), true);
 });
 
@@ -320,25 +246,29 @@ test('redirect never happens while loading, after an error, when denied, or befo
     assert.equal(redirect.shouldRedirectToSetup({ ...base, total: null }), false);
 });
 
-test('redirect does not happen when the workspace has blocks, is dismissed, or has no known id', () => {
+test('redirect does not happen when the workspace has blocks, was skipped here, or has no known id', () => {
     assert.equal(redirect.shouldRedirectToSetup({ ...base, total: 3 }), false);
-    assert.equal(redirect.shouldRedirectToSetup({ ...base, dismissed: true }), false);
+    assert.equal(redirect.shouldRedirectToSetup({ ...base, total: 1 }), false);
+    assert.equal(redirect.shouldRedirectToSetup({ ...base, skipped: true }), false);
     assert.equal(redirect.shouldRedirectToSetup({ ...base, clientId: null }), false);
 });
 
-test('redirect does not fight open dialogs and happens once', () => {
-    assert.equal(redirect.shouldRedirectToSetup({ ...base, anotherDialogOpen: true }), false);
-    assert.equal(redirect.shouldRedirectToSetup({ ...base, alreadyRedirected: true }), false);
+test('a workspace without blocks keeps redirecting: there is no permanent dismissal', () => {
+    // Two evaluations in a row, as on first login and after a workspace switch: both redirect.
+    assert.equal(redirect.shouldRedirectToSetup(base), true);
+    assert.equal(redirect.shouldRedirectToSetup({ ...base }), true);
+    assert.equal(redirect.readDismissed, undefined);
+    assert.equal(redirect.writeDismissed, undefined);
 });
 
-test('redirect is limited to dashboard pages, not the wizard, onboarding, project, preview or the manual block flow', () => {
+test('redirect is limited to dashboard entry pages and never the wizard, manual flow, OAuth page or onboarding', () => {
     for (const url of [
         '/app',
+        '/app/',
         '/app/dashboard',
+        '/app/dashboard?x=1',
         '/app/features',
         '/app/features?search=x',
-        '/app/team/members',
-        '/app/billing',
     ]) {
         assert.equal(redirect.shouldRedirectToSetup({ ...base, url }), true, url);
     }
@@ -349,33 +279,51 @@ test('redirect is limited to dashboard pages, not the wizard, onboarding, projec
         '/onboarding?token=x',
         '/project',
         '/widget-preview/abc123',
+        '/oauth/authorize?client_id=x',
         '/app/setup',
         '/app/setup?x=1',
         '/app/features/create',
         '/app/features/manage/12',
+        '/app/team/members',
+        '/app/billing',
+        '/app/logs',
         '/application',
     ]) {
         assert.equal(redirect.shouldRedirectToSetup({ ...base, url }), false, url);
     }
     assert.equal(redirect.SETUP_ROUTE, '/app/setup');
+    assert.equal(redirect.MANUAL_CREATE_ROUTE, '/app/features/create');
 });
 
-test('dismissal is stored per workspace in localStorage and holds nothing but a flag', () => {
+test('the manual path cannot bounce: skip target and wizard are never redirectable', () => {
+    assert.equal(redirect.isRedirectableRoute(redirect.MANUAL_CREATE_ROUTE), false);
+    assert.equal(redirect.isRedirectableRoute(redirect.SETUP_ROUTE), false);
+});
+
+test('skip is stored per workspace in sessionStorage (never localStorage) and holds nothing but a flag', () => {
     const data = new Map();
-    const localStorage = {
+    const sessionStorage = {
         getItem: (key) => (data.has(key) ? data.get(key) : null),
         setItem: (key, value) => data.set(key, String(value)),
     };
-    const fr = load(`${dir}/setup-redirect.ts`, { localStorage });
-    assert.equal(fr.readDismissed(7), false);
-    fr.writeDismissed(7);
-    assert.equal(fr.readDismissed(7), true);
-    assert.equal(fr.readDismissed(8), false, 'another workspace is unaffected');
-    assert.deepEqual([...data.keys()], [fr.dismissalKey(7)]);
-    assert.equal(data.get(fr.dismissalKey(7)), '1');
+    const localStorage = {
+        getItem() {
+            throw new Error('localStorage must not be used');
+        },
+        setItem() {
+            throw new Error('localStorage must not be used');
+        },
+    };
+    const fr = load(`${dir}/setup-redirect.ts`, { sessionStorage, localStorage });
+    assert.equal(fr.readSkipped(7), false);
+    fr.writeSkipped(7);
+    assert.equal(fr.readSkipped(7), true);
+    assert.equal(fr.readSkipped(8), false, 'another workspace is unaffected');
+    assert.deepEqual([...data.keys()], [fr.skipKey(7)]);
+    assert.equal(data.get(fr.skipKey(7)), '1');
 });
 
-test('dismissal storage failures never throw', () => {
+test('skip storage failures never throw', () => {
     const throwing = {
         getItem() {
             throw new Error('SecurityError');
@@ -384,108 +332,25 @@ test('dismissal storage failures never throw', () => {
             throw new Error('QuotaExceededError');
         },
     };
-    const fr = load(`${dir}/setup-redirect.ts`, { localStorage: throwing });
-    assert.equal(fr.readDismissed(7), false);
-    assert.doesNotThrow(() => fr.writeDismissed(7));
+    const fr = load(`${dir}/setup-redirect.ts`, { sessionStorage: throwing });
+    assert.equal(fr.readSkipped(7), false);
+    assert.doesNotThrow(() => fr.writeSkipped(7));
 
-    // Accessing the localStorage global itself can throw (blocked site data).
+    // Accessing the sessionStorage global itself can throw (blocked site data).
     const blocked = {};
-    Object.defineProperty(blocked, 'localStorage', {
+    Object.defineProperty(blocked, 'sessionStorage', {
         get() {
             throw new Error('blocked');
         },
     });
     const fr2 = load(`${dir}/setup-redirect.ts`, blocked);
-    assert.equal(fr2.readDismissed(7), false);
-    assert.doesNotThrow(() => fr2.writeDismissed(7));
+    assert.equal(fr2.readSkipped(7), false);
+    assert.doesNotThrow(() => fr2.writeSkipped(7));
 
-    // Server rendering: no localStorage at all.
+    // Server rendering: no sessionStorage at all.
     const fr3 = load(`${dir}/setup-redirect.ts`);
-    assert.equal(fr3.readDismissed(7), false);
-    assert.doesNotThrow(() => fr3.writeDismissed(7));
-});
-
-const setupKey = load(`${dir}/setup-key.ts`);
-const roles = [
-    { id: 4, role_name: 'User' },
-    { id: 3, role_name: 'Admin' },
-    { id: 2, role_name: 'Owner' },
-    { id: 1, role_name: 'Super admin' },
-];
-const key = (id, name, status = 'active', role_id = 2, authkey = `key${id}`.padEnd(32, '0')) => ({
-    id,
-    name,
-    status,
-    role_id,
-    authkey,
-});
-
-test('the Owner role is found by name, never by a hardcoded id', () => {
-    assert.equal(setupKey.findOwnerRole(roles).id, 2);
-    // Ids are not assumed: a renumbered list still resolves by name.
-    assert.equal(setupKey.findOwnerRole([{ id: 17, role_name: ' owner ' }]).id, 17);
-    assert.equal(setupKey.findOwnerRole([{ id: 5, role_name: 'OWNER' }]).id, 5);
-    // Not found: null (the UI shows an error state, it does not guess).
-    assert.equal(setupKey.findOwnerRole([{ id: 3, role_name: 'Admin' }]), null);
-    assert.equal(setupKey.findOwnerRole([]), null);
-    assert.equal(setupKey.findOwnerRole(undefined), null);
-    assert.equal(setupKey.findOwnerRole(null), null);
-    // Super admin can never be given to a key, even if it were named Owner.
-    assert.equal(setupKey.findOwnerRole([{ id: 1, role_name: 'Owner' }]), null);
-});
-
-test('an active AI_setup key with the Owner role is reused', () => {
-    const plan = setupKey.planSetupKey([key(9, 'default'), key(10, 'AI_setup'), key(11, 'other')], 2);
-    assert.equal(plan.action, 'reuse');
-    assert.equal(plan.key.id, 10);
-    // A suffixed key from an earlier run is reused too, the oldest first.
-    const suffixed = setupKey.planSetupKey(
-        [key(20, 'AI_setup_3'), key(15, 'AI_setup_2'), key(12, 'AI_setup', 'inactive')],
-        2
-    );
-    assert.equal(suffixed.action, 'reuse');
-    assert.equal(suffixed.key.id, 15);
-});
-
-test('a free name is used as is; a taken name gets the next numeric suffix', () => {
-    loose(setupKey.planSetupKey([], 2), { action: 'create', name: 'AI_setup' });
-    loose(setupKey.planSetupKey([key(1, 'default')], 2), { action: 'create', name: 'AI_setup' });
-    // An inactive key holding the name is never reused or overwritten.
-    loose(setupKey.planSetupKey([key(5, 'AI_setup', 'inactive')], 2), { action: 'create', name: 'AI_setup_2' });
-    loose(setupKey.planSetupKey([key(5, 'AI_setup', 'inactive'), key(6, 'AI_setup_2', 'inactive')], 2), {
-        action: 'create',
-        name: 'AI_setup_3',
-    });
-    // Names compare case-insensitively, as the server's uniqueness check does.
-    loose(setupKey.planSetupKey([key(5, 'ai_setup', 'inactive')], 2), { action: 'create', name: 'AI_setup_2' });
-});
-
-test('an active key with the right name but another role is not silently reused', () => {
-    const plan = setupKey.planSetupKey([key(5, 'AI_setup', 'active', 3)], 2);
-    loose(plan, { action: 'create', name: 'AI_setup_2' });
-    // A key whose secret is missing from the list cannot be reused.
-    const noSecret = setupKey.planSetupKey([{ id: 5, name: 'AI_setup', status: 'active', role_id: 2 }], 2);
-    loose(noSecret, { action: 'create', name: 'AI_setup_2' });
-    assert.equal(setupKey.SETUP_KEY_NAME, 'AI_setup');
-});
-
-test('the permission gate needs create_authkey and view_authkeys, and edit_authkey only to revoke', () => {
-    const all = ['view_authkeys', 'create_authkey', 'edit_authkey', 'view_clients'];
-    loose(setupKey.permissionGate(all), { canCreateKey: true, canRevokeKey: true, missing: [] });
-    const noRevoke = setupKey.permissionGate(['view_authkeys', 'create_authkey']);
-    assert.equal(noRevoke.canCreateKey, true);
-    assert.equal(noRevoke.canRevokeKey, false);
-    // A User role is read only: it may list keys but not create one.
-    const reader = setupKey.permissionGate(['view_client_users', 'view_authkeys']);
-    assert.equal(reader.canCreateKey, false);
-    loose(reader.missing, ['create_authkey']);
-    loose(setupKey.permissionGate(['create_authkey']).missing, ['view_authkeys']);
-    // Anything that is not a list of names means no permissions.
-    for (const bad of [null, undefined, {}, 'create_authkey', [1, null, {}], []]) {
-        const gate = setupKey.permissionGate(bad);
-        assert.equal(gate.canCreateKey, false, JSON.stringify(bad));
-        assert.equal(gate.canRevokeKey, false, JSON.stringify(bad));
-    }
+    assert.equal(fr3.readSkipped(7), false);
+    assert.doesNotThrow(() => fr3.writeSkipped(7));
 });
 
 const blocks = load(`${dir}/setup-block.ts`);
