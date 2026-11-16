@@ -6,7 +6,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import * as logInActions from '../home/ngrx/actions/login.action';
 import * as registrationActions from '../home/ngrx/actions/registration.action';
-import { AiSetupService } from '../../ai-setup/ai-setup.service';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,7 +19,6 @@ export class WebsiteLayoutComponent implements OnInit, OnDestroy {
     private readonly router = inject(Router);
     private readonly activatedRoute = inject(ActivatedRoute);
     private readonly store = inject(Store);
-    private readonly aiSetup = inject(AiSetupService);
 
     public readonly headerNavLinks: { label: string; ariaLabel: string; route: string }[] = [
         { label: 'Home', ariaLabel: '36Blocks home', route: '/' },
@@ -75,11 +73,6 @@ export class WebsiteLayoutComponent implements OnInit, OnDestroy {
 
     public closeMobileMenu(): void {
         this.mobileMenuOpen.set(false);
-    }
-
-    public openAiSetup(): void {
-        this.closeMobileMenu();
-        void this.aiSetup.openGeneral();
     }
 
     public login(): void {

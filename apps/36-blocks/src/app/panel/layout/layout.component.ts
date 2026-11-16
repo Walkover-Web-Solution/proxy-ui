@@ -4,6 +4,7 @@ import {
     Component,
     OnDestroy,
     OnInit,
+    effect,
     inject,
     signal,
 } from '@angular/core';
@@ -39,6 +40,7 @@ import { CreateWorkspaceDialogComponent } from './create-workspace-dialog/create
 import { environment } from '../../../environments/environment';
 import { AuthService } from '@proxy/services/proxy/auth';
 import { SideNavService } from './side-nav.service';
+import { shouldCollapseSidebarForEmptyWorkspace } from './sidebar-default';
 import { UiSettingsService } from './ui-settings.service';
 import { FeaturesService } from '@proxy/services/proxy/features';
 import { take } from 'rxjs/operators';
@@ -117,9 +119,19 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     private featuresService = inject(FeaturesService);
     private dialog = inject(MatDialog);
     private aiSetup = inject(AiSetupService);
+    /** The workspace the "empty workspace starts collapsed" rule was already applied to. */
+    private collapsedForWorkspace: number | null = null;
 
     constructor() {
         super();
+        // A workspace without blocks (first sign-in, sign-up, or after switching) starts with the sidebar collapsed.
+        effect(() => {
+            const workspace = this.aiSetup.workspace();
+            if (shouldCollapseSidebarForEmptyWorkspace(workspace, this.collapsedForWorkspace)) {
+                this.collapsedForWorkspace = workspace.clientId;
+                this.sideNavService.collapseWithoutSaving();
+            }
+        });
         this.logInData$ = this.store.pipe(
             select(selectLogInData),
             distinctUntilChanged(isEqual),

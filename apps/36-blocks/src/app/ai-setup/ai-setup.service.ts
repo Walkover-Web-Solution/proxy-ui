@@ -169,11 +169,6 @@ export class AiSetupService {
         await this.router.navigateByUrl(SETUP_ROUTE);
     }
 
-    /** The public website's button: always the general prompt, no account data. */
-    async openGeneral(): Promise<void> {
-        await this.openDialog(resolvePrompt({ block: null }));
-    }
-
     /** True when the user chose to skip the wizard for the current workspace in this tab. */
     isSkipped(): boolean {
         const clientId = this.workspace().clientId;
