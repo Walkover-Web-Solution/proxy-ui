@@ -62,6 +62,18 @@ function get(key, fallback = undefined) {
     return value;
 }
 
+function getPublic(baseKey) {
+    const candidates = [baseKey, `NEXT_PUBLIC_${baseKey}`, `VITE_${baseKey}`, `REACT_APP_${baseKey}`];
+    for (const k of candidates) {
+        if (env[k] !== undefined && env[k] !== '') {
+            if (DEBUG) console.log(`[set-env DEBUG] ${baseKey} = SET (via ${k})`);
+            return env[k];
+        }
+    }
+    if (DEBUG) console.log(`[set-env DEBUG] ${baseKey} = MISSING`);
+    return undefined;
+}
+
 function assertNoMissingKeys() {
     if (missingKeys.length > 0) {
         console.error(`[set-env] FATAL: missing required env vars: ${missingKeys.join(', ')}`);
@@ -85,8 +97,8 @@ function writeProxyEnv() {
     interfaceScriptUrl: ${JSON.stringify(get('INTERFACE_SCRIPT_URL'))},
 
     // STEWARD FEEDBACK
-    stewardFeedbackUrl: ${JSON.stringify(get('STEWARD_FEEDBACK_URL', 'https://steward.embarko.app/api/v1/feedback'))},
-    stewardFeedbackKey: ${JSON.stringify(get('STEWARD_FEEDBACK_KEY', 'pk_7109b673ade5f6aefc2eb0a1dfbcee1c4a2e'))},
+    stewardFeedbackUrl: ${JSON.stringify(getPublic('STEWARD_FEEDBACK_URL'))},
+    stewardFeedbackKey: ${JSON.stringify(getPublic('STEWARD_FEEDBACK_KEY'))},
     appVersion: ${JSON.stringify(get('APP_VERSION', require('../package.json').version))},
 };
 `;
