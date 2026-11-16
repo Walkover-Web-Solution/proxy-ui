@@ -71,6 +71,50 @@
 .sidebar-billing-link__arrow {
     margin-left: auto;
 }
+.sidebar-feedback-link {
+    padding: 6px;
+    margin-top: 2px;
+}
+.sidebar-feedback-link--collapsed {
+    padding: 6px 0;
+    display: flex;
+    justify-content: center;
+}
+.sidebar-feedback-link__btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    width: 100%;
+    color: var(--experience-ink);
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+}
+.sidebar-feedback-link__btn:hover {
+    background: var(--experience-soft);
+    color: var(--experience-accent);
+}
+.sidebar-feedback-link__icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.sidebar-feedback-link__text {
+    display: flex;
+    align-items: center;
+}
+.sidebar-feedback-link__label {
+    font-weight: 550;
+    font-size: 12px;
+}
 .collapsed-sidebar .workspace-brand {
     padding: 5px 0 20px;
     justify-content: center;
