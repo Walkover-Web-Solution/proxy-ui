@@ -1,0 +1,13 @@
+@if (shouldShow()) {
+    <button
+        type="button"
+        mat-mini-fab
+        class="feedback-floating-btn"
+        (click)="openFeedback()"
+        matTooltip="Feedback"
+        matTooltipPosition="left"
+        aria-label="Send feedback"
+    >
+        <mat-icon class="material-icons-outlined">feedback</mat-icon>
+    </button>
+}
