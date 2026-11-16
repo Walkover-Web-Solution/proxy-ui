@@ -1,7 +1,7 @@
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, exhaustMap, map, switchMap, take } from 'rxjs/operators';
+import { catchError, exhaustMap, map, switchMap, take, tap } from 'rxjs/operators';
 import { from, of, throwError } from 'rxjs';
 import { errorResolver } from '@proxy/models/root-models';
 import { AuthService } from '@proxy/services/proxy/auth';
@@ -10,6 +10,8 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { GoogleAuthProvider } from 'firebase/auth';
 import { LoginService } from '@proxy/services/login';
 import { UsersService } from '@proxy/services/proxy/users';
+import { clearAllSkipped } from '../../../../ai-setup/setup-redirect';
+import { AiSetupService } from '../../../../ai-setup/ai-setup.service';
 
 @Injectable()
 export class LogInEffects {
@@ -17,12 +19,33 @@ export class LogInEffects {
 
     private usersService = inject(UsersService);
 
+    private aiSetup = inject(AiSetupService);
+
     constructor(
         private actions$: Actions,
         private authService: AuthService,
         private loginService: LoginService,
         private afAuth: AngularFireAuth
     ) {}
+
+    // A sign-in or sign-out ends the "skip the setup wizard" choice made earlier in this tab and forgets the last
+    // workspace's block count, so a workspace without blocks is offered the wizard again in the next session.
+    endSetupSkip$ = createEffect(
+        () =>
+            this.actions$.pipe(
+                ofType(
+                    logInActions.emailLoginAction,
+                    logInActions.logInAction,
+                    logInActions.googleOneTapCredential,
+                    logInActions.logoutAction
+                ),
+                tap(() => {
+                    clearAllSkipped();
+                    this.aiSetup.resetWorkspace();
+                })
+            ),
+        { dispatch: false }
+    );
 
     emailLogin$ = createEffect(() =>
         this.actions$.pipe(

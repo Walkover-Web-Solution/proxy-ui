@@ -42,8 +42,10 @@ export function shouldRedirectToSetup(input: SetupRedirectInput): boolean {
     );
 }
 
+const SKIP_KEY_PREFIX = 'ai_setup_skipped_';
+
 export function skipKey(clientId: number | string): string {
-    return `ai_setup_skipped_${clientId}`;
+    return `${SKIP_KEY_PREFIX}${clientId}`;
 }
 
 function storage(): Storage | null {
@@ -72,5 +74,25 @@ export function writeSkipped(clientId: number | string): void {
         storage()?.setItem(skipKey(clientId), '1');
     } catch {
         // Storage unavailable or full: the redirect may happen again, which is acceptable.
+    }
+}
+
+/**
+ * Forgets every "Skip, I'll set up manually" choice. Called on sign-in and sign-out: the choice belongs to one signed-in
+ * session, so it must not survive into the next one in the same tab (a logout reloads the page but keeps sessionStorage).
+ * Only this feature's keys are removed.
+ */
+export function clearAllSkipped(): void {
+    try {
+        const store = storage();
+        if (!store) return;
+        const stale: string[] = [];
+        for (let i = 0; i < store.length; i++) {
+            const key = store.key(i);
+            if (key?.startsWith(SKIP_KEY_PREFIX)) stale.push(key);
+        }
+        stale.forEach((key) => store.removeItem(key));
+    } catch {
+        // Storage unavailable: nothing was remembered, so nothing to forget.
     }
 }

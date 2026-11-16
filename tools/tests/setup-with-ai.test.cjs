@@ -323,6 +323,39 @@ test('skip is stored per workspace in sessionStorage (never localStorage) and ho
     assert.equal(data.get(fr.skipKey(7)), '1');
 });
 
+test('signing in or out forgets every skip choice and nothing else', () => {
+    const data = new Map([
+        ['ai_setup_skipped_7', '1'],
+        ['ai_setup_skipped_8', '1'],
+        ['unrelated', 'keep'],
+    ]);
+    const sessionStorage = {
+        get length() {
+            return data.size;
+        },
+        key: (i) => [...data.keys()][i] ?? null,
+        getItem: (key) => (data.has(key) ? data.get(key) : null),
+        removeItem: (key) => data.delete(key),
+    };
+    const fr = load(`${dir}/setup-redirect.ts`, { sessionStorage });
+    assert.equal(fr.readSkipped(7), true);
+    fr.clearAllSkipped();
+    assert.equal(fr.readSkipped(7), false);
+    assert.equal(fr.readSkipped(8), false);
+    assert.deepEqual([...data.keys()], ['unrelated'], "only this feature's keys are removed");
+    fr.clearAllSkipped(); // nothing left to remove: still fine
+});
+
+test('forgetting skip choices never throws when storage is unavailable', () => {
+    const throwing = {
+        get length() {
+            throw new Error('blocked');
+        },
+    };
+    assert.doesNotThrow(() => load(`${dir}/setup-redirect.ts`, { sessionStorage: throwing }).clearAllSkipped());
+    assert.doesNotThrow(() => load(`${dir}/setup-redirect.ts`, {}).clearAllSkipped());
+});
+
 test('skip storage failures never throw', () => {
     const throwing = {
         getItem() {

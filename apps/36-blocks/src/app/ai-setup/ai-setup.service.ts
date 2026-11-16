@@ -74,6 +74,15 @@ export class AiSetupService {
         return this.blockContext() !== null;
     }
 
+    /**
+     * Forgets the remembered workspace and block context. Called on sign-in and sign-out so a different user or client
+     * is never answered from the previous one's block count (a session expiry navigates without reloading the page).
+     */
+    resetWorkspace(): void {
+        this.workspace.set({ clientId: null, status: 'idle', total: null });
+        this.blockContext.set(null);
+    }
+
     /** Called by the dashboard layout once the active workspace is known (and again if it changes). */
     setWorkspace(clientId: number): void {
         if (this.workspace().clientId === clientId) return;
