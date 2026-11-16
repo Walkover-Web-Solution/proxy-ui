@@ -54,7 +54,7 @@ test('state and scope are optional and read as empty strings', () => {
 });
 
 test('a request missing a required value is invalid and names the field', () => {
-    for (const key of ['client_id', 'redirect_uri', 'response_type', 'code_challenge', 'code_challenge_method']) {
+    for (const key of ['client_id', 'redirect_uri', 'response_type']) {
         const values = { ...full };
         delete values[key];
         const parsed = c.parseAuthorizeRequest(getter(values));
@@ -65,6 +65,31 @@ test('a request missing a required value is invalid and names the field', () => 
     }
     assert.equal(c.parseAuthorizeRequest(getter({ ...full, client_id: '   ' })).ok, false);
     assert.equal(c.parseAuthorizeRequest(getter({})).ok, false);
+});
+
+test('PKCE is optional, but the challenge and its method must come together', () => {
+    const { code_challenge, code_challenge_method, ...noPkce } = full;
+    const parsed = c.parseAuthorizeRequest(getter(noPkce));
+    assert.equal(parsed.ok, true);
+    assert.equal(parsed.params.code_challenge, '');
+    assert.equal(parsed.params.code_challenge_method, '');
+    const query = c.buildAuthorizeQuery(parsed.params);
+    assert.equal('code_challenge' in query, false);
+    assert.equal('code_challenge_method' in query, false);
+
+    for (const [present, absent] of [
+        ['code_challenge', 'code_challenge_method'],
+        ['code_challenge_method', 'code_challenge'],
+    ]) {
+        const half = c.parseAuthorizeRequest(getter({ ...noPkce, [present]: full[present] }));
+        assert.equal(half.ok, false, present);
+        assert.equal(half.reason, 'missing');
+        loose(half.fields, [absent]);
+    }
+
+    const withPkce = c.buildAuthorizeQuery(c.parseAuthorizeRequest(getter(full)).params);
+    assert.equal(withPkce.code_challenge, full.code_challenge);
+    assert.equal(withPkce.code_challenge_method, full.code_challenge_method);
 });
 
 test('only the authorization code flow is supported', () => {

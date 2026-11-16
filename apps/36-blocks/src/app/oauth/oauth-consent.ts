@@ -15,13 +15,9 @@ export const AUTHORIZE_QUERY_KEYS = [
     'code_challenge_method',
 ] as const;
 
-const REQUIRED_KEYS = [
-    'client_id',
-    'redirect_uri',
-    'response_type',
-    'code_challenge',
-    'code_challenge_method',
-] as const;
+const REQUIRED_KEYS = ['client_id', 'redirect_uri', 'response_type'] as const;
+/** PKCE is optional (the application may be registered without it) but the two values travel together. */
+const PKCE_KEYS = ['code_challenge', 'code_challenge_method'] as const;
 const MAX_PARAM_LENGTH = 2048;
 const MAX_SCOPES = 20;
 
@@ -29,6 +25,7 @@ export interface AuthorizeParams {
     client_id: string;
     redirect_uri: string;
     response_type: string;
+    /** Optional (PKCE); '' when absent. Both are present or both are absent. */
     code_challenge: string;
     code_challenge_method: string;
     /** Optional in the request; '' when absent. */
@@ -57,7 +54,9 @@ export function parseAuthorizeRequest(get: (key: string) => string | null | unde
     });
     if (malformed.length) return { ok: false, reason: 'malformed', fields: [...malformed] };
 
-    const missing = REQUIRED_KEYS.filter((key) => !read(key)?.trim());
+    const missing: string[] = REQUIRED_KEYS.filter((key) => !read(key)?.trim());
+    const pkcePresent = PKCE_KEYS.filter((key) => !!read(key)?.trim());
+    if (pkcePresent.length === 1) missing.push(...PKCE_KEYS.filter((key) => !read(key)?.trim()));
     if (missing.length) return { ok: false, reason: 'missing', fields: [...missing] };
     if (read('response_type') !== 'code') return { ok: false, reason: 'unsupported', fields: ['response_type'] };
 
@@ -67,8 +66,8 @@ export function parseAuthorizeRequest(get: (key: string) => string | null | unde
             client_id: read('client_id')!,
             redirect_uri: read('redirect_uri')!,
             response_type: 'code',
-            code_challenge: read('code_challenge')!,
-            code_challenge_method: read('code_challenge_method')!,
+            code_challenge: read('code_challenge') ?? '',
+            code_challenge_method: read('code_challenge_method') ?? '',
             state: read('state') ?? '',
             scope: read('scope') ?? '',
         },
@@ -95,9 +94,9 @@ export function buildAuthorizeQuery(params: AuthorizeParams): Record<string, str
         client_id: params.client_id,
         redirect_uri: params.redirect_uri,
         response_type: params.response_type,
-        code_challenge: params.code_challenge,
-        code_challenge_method: params.code_challenge_method,
     };
+    if (params.code_challenge) query['code_challenge'] = params.code_challenge;
+    if (params.code_challenge_method) query['code_challenge_method'] = params.code_challenge_method;
     if (params.state) query['state'] = params.state;
     if (params.scope) query['scope'] = params.scope;
     return query;
