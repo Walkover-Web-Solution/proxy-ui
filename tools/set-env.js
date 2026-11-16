@@ -83,6 +83,11 @@ function writeProxyEnv() {
 
     // VIASOCKET INTERFACE
     interfaceScriptUrl: ${JSON.stringify(get('INTERFACE_SCRIPT_URL'))},
+
+    // STEWARD FEEDBACK
+    stewardFeedbackUrl: ${JSON.stringify(get('STEWARD_FEEDBACK_URL', 'https://steward.embarko.app/api/v1/feedback'))},
+    stewardFeedbackKey: ${JSON.stringify(get('STEWARD_FEEDBACK_KEY', 'pk_7109b673ade5f6aefc2eb0a1dfbcee1c4a2e'))},
+    appVersion: ${JSON.stringify(get('APP_VERSION', require('../package.json').version))},
 };
 `;
     const outPath = path.join(root, 'apps/36-blocks/src/environments/env-variables.ts');
