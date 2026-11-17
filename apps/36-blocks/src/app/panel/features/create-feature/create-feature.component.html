@@ -2,7 +2,16 @@
     <span
         ><strong>Setup path:</strong> Configure this block → preview authentication → integrate in your application →
         verify a real sign-in. A preview alone does not verify your integration.</span
-    ><a href="https://developers.36blocks.com">Integration guidance ↗</a>
+    >
+    <span class="flex flex-wrap items-center gap-4 ml-auto">
+        @if (!isEditMode) {
+            <button matButton="tonal" type="button" class="mat-btn-xs" (click)="openAiSetup()">
+                <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined">auto_awesome</mat-icon>
+                Set up with AI instead
+            </button>
+        }
+        <a href="https://developers.36blocks.com">Integration guidance ↗</a>
+    </span>
 </div>
 <div class="flex flex-col h-full">
     @if ((isLoading$ | async) || (loadingScript | async)) {

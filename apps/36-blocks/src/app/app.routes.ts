@@ -21,6 +21,14 @@ export const appRoutes: Route[] = [
         loadChildren: () => import('./panel/panel.routes').then((r) => r.panelRoutes),
     },
     {
+        // An AI tool's MCP connection asks the signed-in operator for access. Signed-out visitors are sent to login
+        // and brought back here with the full authorize query.
+        path: 'oauth/authorize',
+        loadComponent: () =>
+            import('./oauth/authorize/oauth-authorize.component').then((c) => c.OAuthAuthorizeComponent),
+        canActivate: [CanActivateRouteGuard],
+    },
+    {
         path: 'widget-preview/:referenceId',
         loadComponent: () =>
             import('./panel/features/create-feature/feature-preview/widget-preview/widget-preview.component').then(

@@ -25,6 +25,7 @@ import { FeatureComponentStore } from './feature.store';
 import { Observable } from 'rxjs';
 import { IFeature } from '@proxy/models/features-model';
 import { IPaginatedResponse } from '@proxy/models/root-models';
+import { AiSetupService } from '../../../ai-setup/ai-setup.service';
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-features',
@@ -56,6 +57,7 @@ import { IPaginatedResponse } from '@proxy/models/root-models';
 export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit {
     private componentStore = inject(FeatureComponentStore);
     private router = inject(Router);
+    private aiSetup = inject(AiSetupService);
 
     /** Store Feature Data */
     public feature$: Observable<IPaginatedResponse<IFeature[]>> = this.componentStore.feature$;
@@ -115,6 +117,10 @@ export class FeatureComponent extends BaseComponent implements OnDestroy, OnInit
      */
     public getFeatures(): void {
         this.componentStore.getFeature({ ...this.params });
+    }
+
+    public openAiSetup(): void {
+        void this.aiSetup.goToSetup();
     }
 
     public navigateToPreview(referenceId: string): void {

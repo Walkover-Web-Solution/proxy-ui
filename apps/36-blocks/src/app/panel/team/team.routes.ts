@@ -18,6 +18,11 @@ export const teamRoutes: Route[] = [
                 path: 'api-keys',
                 loadComponent: () => import('./api-keys/api-keys.component').then((c) => c.ApiKeysComponent),
             },
+            {
+                path: 'ai-tools',
+                loadComponent: () =>
+                    import('../../oauth/connections/ai-tools.component').then((c) => c.AiToolsComponent),
+            },
         ],
     },
 ];

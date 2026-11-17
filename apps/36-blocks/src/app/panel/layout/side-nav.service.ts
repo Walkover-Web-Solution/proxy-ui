@@ -19,6 +19,14 @@ export class SideNavService {
         this.uiSettings.setSideNavOpen(true);
     }
 
+    /**
+     * Starts a workspace without blocks with the sidebar collapsed. Deliberately not saved: the saved preference is the
+     * user's own choice and must still apply in workspaces that have blocks.
+     */
+    public collapseWithoutSaving(): void {
+        this.isSideNavOpen.set(false);
+    }
+
     public close(): void {
         this.isSideNavOpen.set(false);
         this.uiSettings.setSideNavOpen(false);

@@ -115,3 +115,41 @@
         padding-bottom: 20px;
     }
 }
+
+.ai-setup-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 34px;
+    padding: 0 12px;
+    border: 1px solid var(--experience-accent);
+    border-radius: 7px;
+    background: var(--experience-soft);
+    color: var(--experience-accent);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+}
+.ai-setup-button:hover {
+    background: var(--experience-surface);
+}
+.ai-setup-button:focus-visible {
+    outline: 2px solid var(--experience-accent);
+    outline-offset: 2px;
+}
+.ai-setup-button mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+}
+@media (max-width: 720px) {
+    // Phone width: icon only (the accessible name stays "Set up with AI").
+    .ai-setup-label {
+        display: none;
+    }
+    .ai-setup-button {
+        width: 36px;
+        padding: 0;
+        justify-content: center;
+    }
+}

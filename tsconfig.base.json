@@ -73,7 +73,8 @@
             "@proxy/urls/logs-urls": ["libs/urls/logs-urls/src/index.ts"],
             "@proxy/urls/root-urls": ["libs/urls/root-urls/src/index.ts"],
             "@proxy/urls/users-urls": ["libs/urls/users-urls/src/index.ts"],
-            "@proxy/utils": ["libs/utils/src/index.ts"]
+            "@proxy/utils": ["libs/utils/src/index.ts"],
+            "@proxy/utils/return-url": ["libs/utils/src/return-url.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]

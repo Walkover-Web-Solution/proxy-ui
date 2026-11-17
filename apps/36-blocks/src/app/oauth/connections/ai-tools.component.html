@@ -1,0 +1,64 @@
+<div class="tab-toolbar">
+    <p class="tab-toolbar__lead">
+        These AI tools signed in <strong>as you</strong> and can configure the workspace shown next to each one. They
+        never see your password. Revoke a tool to cut off its access immediately. To connect a new tool, use
+        <strong>Set up with AI</strong> from the blocks page.
+    </p>
+</div>
+
+@if (loading()) {
+    <p role="status" aria-live="polite">Loading connected AI tools…</p>
+} @else if (denied()) {
+    <div class="state-block" role="alert">
+        <p>You do not have permission to view connected AI tools.</p>
+    </div>
+} @else if (error(); as message) {
+    <div class="state-block" role="alert">
+        <p>{{ message }}</p>
+        <button mat-stroked-button type="button" (click)="load()">Retry</button>
+    </div>
+} @else if (connections().length === 0) {
+    <div class="state-block" role="status">
+        <p>No AI tools are connected to your account.</p>
+    </div>
+} @else {
+    <div class="table-scroll" role="region" aria-label="Connected AI tools" tabindex="0">
+        <table class="team-table">
+            <caption class="visually-hidden">
+                AI tools connected to your account
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">Tool</th>
+                    <th scope="col">Workspace</th>
+                    <th scope="col">Access</th>
+                    <th scope="col">Connected</th>
+                    <th scope="col">Last used</th>
+                    <th scope="col" class="actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (connection of connections(); track connection.id) {
+                    <tr>
+                        <td>{{ connection.client_name }}</td>
+                        <td>{{ connection.workspace?.name ?? 'Unknown workspace' }}</td>
+                        <td>{{ scopeText(connection) }}</td>
+                        <td>{{ connection.created_at ? (connection.created_at | date: 'medium') : '-' }}</td>
+                        <td>{{ connection.last_used_at ? (connection.last_used_at | date: 'medium') : 'Never' }}</td>
+                        <td class="actions">
+                            <button
+                                mat-stroked-button
+                                type="button"
+                                [disabled]="revokingId() !== null"
+                                [attr.aria-label]="'Revoke access for ' + connection.client_name"
+                                (click)="confirmRevoke(connection)"
+                            >
+                                {{ revokingId() === connection.id ? 'Revoking…' : 'Revoke' }}
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

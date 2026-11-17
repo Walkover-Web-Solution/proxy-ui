@@ -1,4 +1,5 @@
 import { Route } from '@angular/router';
+import { zeroBlocksGuard } from '../ai-setup/zero-blocks.guard';
 import { CanActivateRouteGuard } from '../website/home/authguard';
 
 export const panelRoutes: Route[] = [
@@ -18,6 +19,11 @@ export const panelRoutes: Route[] = [
             {
                 path: 'activity',
                 loadComponent: () => import('./activity/activity.component').then((c) => c.ActivityComponent),
+            },
+            {
+                path: 'setup',
+                loadComponent: () =>
+                    import('../ai-setup/setup-wizard/setup-wizard.component').then((c) => c.SetupWizardComponent),
             },
             {
                 path: 'dashboard',
@@ -41,5 +47,7 @@ export const panelRoutes: Route[] = [
             },
         ],
         canActivate: [CanActivateRouteGuard],
+        // Runs after sign-in is confirmed and before the dashboard children render.
+        canActivateChild: [zeroBlocksGuard],
     },
 ];

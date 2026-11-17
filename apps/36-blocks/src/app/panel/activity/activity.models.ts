@@ -2,6 +2,10 @@ export type AuditOutcome = 'started' | 'succeeded' | 'denied' | 'failed';
 
 export interface AuditContext {
     actor_user_id?: number;
+    /** `auth_key` when a workspace API key (not a signed-in person) made the call. */
+    actor_type?: string;
+    auth_key_id?: number;
+    auth_key_name?: string;
     target_user_id?: number;
     target_company_id?: number;
     feature_configuration_id?: number;
@@ -18,6 +22,31 @@ export interface ActivityOperation {
     created_at: string;
     user?: { user_id: number; name: string; email: string } | null;
     audit_context?: AuditContext | null;
+}
+
+export interface ActivityActor {
+    /** Primary line of the actor cell. Plain text only; the template must never render it as HTML. */
+    name: string;
+    email: string | null;
+    idLabel: string;
+}
+
+/** Operations made with a workspace API key name the key; everything else shows the signed-in operator as before. */
+export function activityActor(row: Pick<ActivityOperation, 'user' | 'audit_context'>): ActivityActor {
+    const audit = row.audit_context;
+    if (audit?.actor_type === 'auth_key') {
+        const keyName = typeof audit.auth_key_name === 'string' ? audit.auth_key_name.trim() : '';
+        return {
+            name: keyName ? `API key: ${keyName}` : 'API key',
+            email: null,
+            idLabel: `Key ID: ${audit.auth_key_id ?? 'unavailable'}`,
+        };
+    }
+    return {
+        name: row.user?.name || row.user?.email || 'Unavailable',
+        email: row.user?.email ?? null,
+        idLabel: `Actor ID: ${audit?.actor_user_id ?? row.user?.user_id ?? 'unavailable'}`,
+    };
 }
 
 export interface ActivityFilters {

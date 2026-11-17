@@ -1,0 +1,182 @@
+<div class="setup-page">
+    <div class="page-heading">
+        <div>
+            <span class="page-kicker">SET UP WITH AI</span>
+            <h1>{{ another() ? 'Add another block with AI' : 'Set up your first block with AI' }}</h1>
+            <p>
+                Name the block and give one prompt to your AI coding agent. You approve its access in your browser; it
+                then creates the block and adds it to your app.
+            </p>
+        </div>
+        <a href="https://developers.36blocks.com" target="_blank" rel="noopener">Developer documentation ↗</a>
+    </div>
+
+    <ol class="stepper" aria-label="Setup progress">
+        @for (s of steps; track s.n) {
+            <li
+                [class.is-current]="step() === s.n"
+                [class.is-done]="step() > s.n"
+                [attr.aria-current]="step() === s.n ? 'step' : null"
+            >
+                <span class="stepper-dot" aria-hidden="true">
+                    @if (step() > s.n) {
+                        <mat-icon>check</mat-icon>
+                    } @else {
+                        {{ s.n }}
+                    }
+                </span>
+                <span class="stepper-label"
+                    ><span class="visually-hidden">Step {{ s.n }}: </span>{{ s.label }}</span
+                >
+            </li>
+        }
+    </ol>
+
+    @switch (step()) {
+        <!-- Step 1: name -->
+        @case (1) {
+            <section class="setup-card">
+                <h2 class="step-heading" tabindex="-1">Name your block</h2>
+                <p class="lead">
+                    A block holds one application’s sign-in configuration. Choose a name you will recognise. Your AI
+                    creates the block for you in the next steps; nothing is created yet.
+                </p>
+                <form (submit)="$event.preventDefault(); submitName()" novalidate>
+                    <mat-form-field class="name-field">
+                        <mat-label>Block name</mat-label>
+                        <input
+                            matInput
+                            type="text"
+                            autocomplete="off"
+                            spellcheck="false"
+                            [maxlength]="nameMax + 20"
+                            [formControl]="name"
+                            [attr.aria-invalid]="nameError() ? 'true' : null"
+                            aria-describedby="name-hint name-status"
+                            placeholder="e.g. Customer app login"
+                            (blur)="showNameError.set(name.value.length > 0)"
+                        />
+                        <mat-hint id="name-hint"
+                            >{{ nameMin }}–{{ nameMax }} characters. Letters, numbers, spaces and underscores.</mat-hint
+                        >
+                    </mat-form-field>
+                    <div id="name-status" class="field-status" role="status" aria-live="polite">
+                        @if (nameError()) {
+                            <p class="problem">{{ nameError() }}</p>
+                        } @else if (lookup() === 'taken') {
+                            <p class="warning">
+                                <mat-icon aria-hidden="true">warning_amber</mat-icon>
+                                <span
+                                    >A block named “{{ check().value }}” already exists in this workspace. Block names
+                                    are unique, so your AI would be refused. Pick a different name.</span
+                                >
+                            </p>
+                        }
+                    </div>
+                    <div class="actions">
+                        <button type="submit" mat-flat-button>Continue</button>
+                    </div>
+                </form>
+            </section>
+        }
+
+        <!-- Step 2: prompt -->
+        @case (2) {
+            <section class="setup-card">
+                <h2 class="step-heading" tabindex="-1">Give this to your AI</h2>
+                <p class="summary">
+                    Block to create: <strong>{{ blockName() }}</strong>
+                    <button type="button" class="link-button" (click)="go(1)">Change name</button>
+                </p>
+                @if (prompt(); as text) {
+                    <proxy-ai-setup-panel [prompt]="text" kind="setup"></proxy-ai-setup-panel>
+                    <div class="actions">
+                        <button type="button" mat-flat-button (click)="startWaiting()">
+                            I’ve pasted it, wait for my block
+                        </button>
+                        <button type="button" mat-button (click)="go(1)">Back</button>
+                    </div>
+                } @else {
+                    <p class="problem" role="alert">The prompt couldn’t be built. Go back and check the block name.</p>
+                    <div class="actions">
+                        <button type="button" mat-flat-button (click)="go(1)">Back</button>
+                    </div>
+                }
+            </section>
+        }
+
+        <!-- Step 3: waiting, then done -->
+        @case (3) {
+            <section class="setup-card">
+                @if (phase() === 'waiting') {
+                    <h2 class="step-heading" tabindex="-1">Waiting for your block…</h2>
+                    <div class="state-line" role="status" aria-live="polite">
+                        @if (!pollingStopped()) {
+                            <mat-spinner diameter="22" aria-hidden="true"></mat-spinner>
+                        }
+                        <p>
+                            @if (pollingStopped()) {
+                                We stopped checking automatically. If your agent has created the block, check again.
+                            } @else {
+                                Paste the prompt into your AI agent and approve its access when your browser opens the
+                                36Blocks page. This page checks for “{{ blockName() }}” every few seconds while the tab
+                                is open.
+                            }
+                        </p>
+                    </div>
+                    @if (checkFailed()) {
+                        <p class="problem" role="alert">
+                            Couldn’t check your blocks just now. This is a problem reading the list, not a sign that
+                            nothing was created. Check again in a moment.
+                        </p>
+                    }
+                    <div class="actions">
+                        <button type="button" mat-stroked-button [disabled]="checking()" (click)="checkAgain()">
+                            {{ checking() ? 'Checking…' : 'Check again' }}
+                        </button>
+                        <button type="button" mat-button (click)="backToPrompt()">Show prompt</button>
+                    </div>
+                } @else {
+                    <h2 class="step-heading" tabindex="-1">Your block is ready</h2>
+                    @if (found(); as result) {
+                        <p class="success" role="status">
+                            <mat-icon aria-hidden="true">check_circle</mat-icon>
+                            <span>
+                                @if (result.renamed) {
+                                    A new block appeared, but under a different name than “{{ blockName() }}”: your AI
+                                    changed it. Check it is the one you expect.
+                                } @else {
+                                    <strong>{{ result.block.name }}</strong> was created.
+                                }
+                            </span>
+                        </p>
+                        <dl class="facts">
+                            <dt>Block name</dt>
+                            <dd>{{ result.block.name }}</dd>
+                            <dt>Reference ID</dt>
+                            <dd>
+                                <code>{{ result.block.referenceId }}</code>
+                            </dd>
+                        </dl>
+                        <div class="actions">
+                            @if (blockLink(); as link) {
+                                <a mat-flat-button [routerLink]="link">Open block</a>
+                            }
+                            @if (previewLink(); as link) {
+                                <a mat-stroked-button [routerLink]="link">Preview widget</a>
+                            }
+                            <a mat-button routerLink="/app/dashboard">Go to dashboard</a>
+                        </div>
+                    }
+                }
+            </section>
+        }
+    }
+
+    @if (!found()) {
+        <div class="alt-paths">
+            <span>Prefer not to use AI?</span>
+            <button type="button" mat-button (click)="setUpManually()">Skip, I’ll set up manually</button>
+        </div>
+    }
+</div>
