@@ -41,6 +41,15 @@
                 }
             </mat-nav-list>
 
+            <div class="px-4 pb-3">
+                <button matButton="outlined" type="button" class="w-full" (click)="openAiSetup()">
+                    <mat-icon class="mat-icon-prefix mat-icon-18 material-icons-outlined" aria-hidden="true"
+                        >auto_awesome</mat-icon
+                    >
+                    Set up with AI
+                </button>
+            </div>
+
             <!-- User menu footer — consistent with main layout sidebar -->
             @if (logInData$ | async; as user) {
                 <proxy-sidebar-user-menu

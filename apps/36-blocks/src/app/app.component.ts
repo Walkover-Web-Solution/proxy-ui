@@ -18,6 +18,7 @@ import { ILogInFeatureStateWithRootState } from './website/home/ngrx/store/login
 import { IAppState, selectClientSettings } from './core/ngrx';
 import { rootActions } from './core/ngrx/actions';
 import { IClientSettings, IFirebaseUserModel } from '@proxy/models/root-models';
+import { readReturnUrlFromUrl, resolvePostLoginTarget } from '@proxy/utils/return-url';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -134,7 +135,11 @@ export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
                     websiteRoutes.some((route) => currentUrl.startsWith(route));
                 const isOnboardingRoute = currentUrl.startsWith('/onboarding');
                 if (isOnWebsiteRoute && !isOnboardingRoute) {
-                    this.router.navigate(['/app/dashboard']);
+                    // Sign-in may have been started from a protected page (for example the AI authorization page):
+                    // go back there when the login URL carries a safe same-origin return path.
+                    void this.router.navigateByUrl(
+                        resolvePostLoginTarget(readReturnUrlFromUrl(currentUrl), '/app/dashboard')
+                    );
                 }
             });
         }

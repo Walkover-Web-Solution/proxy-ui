@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@a
 import { AuthService } from '@proxy/services/proxy/auth';
 import { CookieService } from 'ngx-cookie-service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { returnUrlQueryParams } from '@proxy/utils/return-url';
 import { Observable, map, take } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -29,7 +30,18 @@ export class CanActivateRouteGuard {
         }
         return this.afAuth.authState.pipe(
             take(1),
-            map((user) => (user ? true : this.router.createUrlTree([''])))
+            map((user) => (user ? true : this.signInTree(state.url)))
         );
+    }
+
+    /**
+     * Protected pages send the visitor to the login page and remember where they were going (a same-origin relative
+     * path only); anything else keeps the previous behaviour of going to the home page.
+     */
+    private signInTree(url: string): UrlTree {
+        const queryParams = returnUrlQueryParams(url);
+        return Object.keys(queryParams).length
+            ? this.router.createUrlTree(['/login'], { queryParams })
+            : this.router.createUrlTree(['']);
     }
 }

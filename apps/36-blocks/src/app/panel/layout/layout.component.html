@@ -74,6 +74,15 @@
                     <mat-icon>add</mat-icon>
                     <span>Create workspace</span>
                 </button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item type="button" [routerLink]="['/app', 'features', 'create']">
+                    <mat-icon>add_circle_outline</mat-icon>
+                    <span>Connect new application</span>
+                </button>
+                <button mat-menu-item type="button" (click)="openAiSetup()">
+                    <mat-icon>auto_awesome</mat-icon>
+                    <span>Set up with AI</span>
+                </button>
             </mat-menu>
             <button
                 matIconButton
@@ -154,6 +163,9 @@
             <div class="context-meta">
                 <span class="environment-label"
                     ><span class="environment-prefix">Console: </span>{{ environmentLabel }}</span
+                ><button type="button" class="ai-setup-button" aria-label="Set up with AI" (click)="openAiSetup()">
+                    <mat-icon aria-hidden="true">auto_awesome</mat-icon
+                    ><span class="ai-setup-label">Set up with AI</span></button
                 ><a href="https://developers.36blocks.com">Developer docs ↗</a>
             </div>
         </header>

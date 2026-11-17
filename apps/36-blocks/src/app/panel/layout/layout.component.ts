@@ -4,6 +4,7 @@ import {
     Component,
     OnDestroy,
     OnInit,
+    effect,
     inject,
     signal,
 } from '@angular/core';
@@ -39,9 +40,11 @@ import { CreateWorkspaceDialogComponent } from './create-workspace-dialog/create
 import { environment } from '../../../environments/environment';
 import { AuthService } from '@proxy/services/proxy/auth';
 import { SideNavService } from './side-nav.service';
+import { shouldCollapseSidebarForEmptyWorkspace } from './sidebar-default';
 import { UiSettingsService } from './ui-settings.service';
 import { FeaturesService } from '@proxy/services/proxy/features';
 import { take } from 'rxjs/operators';
+import { AiSetupService } from '../../ai-setup/ai-setup.service';
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-layout',
@@ -115,9 +118,20 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     private uiSettings = inject(UiSettingsService);
     private featuresService = inject(FeaturesService);
     private dialog = inject(MatDialog);
+    private aiSetup = inject(AiSetupService);
+    /** The workspace the "empty workspace starts collapsed" rule was already applied to. */
+    private collapsedForWorkspace: number | null = null;
 
     constructor() {
         super();
+        // A workspace without blocks (first sign-in, sign-up, or after switching) starts with the sidebar collapsed.
+        effect(() => {
+            const workspace = this.aiSetup.workspace();
+            if (shouldCollapseSidebarForEmptyWorkspace(workspace, this.collapsedForWorkspace)) {
+                this.collapsedForWorkspace = workspace.clientId;
+                this.sideNavService.collapseWithoutSaving();
+            }
+        });
         this.logInData$ = this.store.pipe(
             select(selectLogInData),
             distinctUntilChanged(isEqual),
@@ -175,6 +189,10 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
         this.getClientSettings();
         this.getCurrentTheme();
         document.body.classList.remove('website-active');
+        // The setup wizard wording and the contextual prompt depend on the active workspace.
+        this.clientSettings$.pipe(takeUntil(this.destroy$)).subscribe((settings) => {
+            if (settings?.client?.id) this.aiSetup.setWorkspace(settings.client.id);
+        });
 
         if (this.isMobileDevice()) {
             this.sideNavService.close();
@@ -287,6 +305,10 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
                     location.href = '/app';
                 }
             });
+    }
+
+    public openAiSetup(): void {
+        void this.aiSetup.openSetup();
     }
 
     public switchClient(clientId: number): void {
