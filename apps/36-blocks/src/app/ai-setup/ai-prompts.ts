@@ -109,13 +109,26 @@ When it asks you to sign in, finish the 36Blocks sign-in and approval in the bro
 If you can't connect MCP, use the CLI instead (run once to install the modules): ${CLI_INIT_COMMAND}
 Then: ${CLI_RUN_HINT}  (${CLI_LIST_COMMAND} shows what's available)`;
 
+/**
+ * Widget login needs no auth key. The key only exists for server-to-server calls, and it must reach the app through the
+ * user's own environment file: never through the chat and never into code.
+ */
+const AUTH_KEY_RULE = `Widget login needs no auth key. Only if my app makes server-to-server calls with one, tell me to copy it from Team & access → API keys in the 36Blocks panel into my own environment file, and say which variable you read it from. Never ask me to paste it into this chat and never write its value into code.`;
+
+/** The block holds one redirect URL, so it should be the production one; other environments have two clean options. */
+const REDIRECT_RULE = `The block's redirect URL is the production URL of the app (where signed-in users land, for example https://app.example.com/auth/callback). If I haven't deployed yet or you can't tell, ask me, and use the local URL meanwhile. For localhost or staging, suggest a separate block for that environment (ask me before creating it), or pass addInfo.redirect_path in the widget config so the redirect stays on the page's own origin.`;
+
 /** The homepage prompt: MCP first, with the browser sign-in done by the user, never a pasted credential. */
 export function buildGeneralIntegrationPrompt(): string {
     return `Integrate 36Blocks User APIs into our project based on our requirement and use cases.
 First, read the official API documentation at ${LLMS_TXT_URL}.
 Ask what I want to build if I haven't explained it yet.
 
-${CONNECT_LINES}`;
+${CONNECT_LINES}
+
+If we need a new login block, create it yourself with the Create Login Block (Simple) tool (create_login_block) once I've approved the sign-in. ${REDIRECT_RULE}
+
+${AUTH_KEY_RULE}`;
 }
 
 /** For one specific, existing block. Returns null when the block's reference id is not a plain identifier. */
@@ -138,9 +151,13 @@ function blockPromptBody(context: BlockPromptContext, transport: string): string
 ${details.join('\n')}
 
 First, read the official API documentation at ${LLMS_TXT_URL}.
-Ask which app or framework this is for if I haven't said. If you need the block's settings (methods, redirect URL, allowed origins), read them with the Get Block API.
+Ask which app or framework this is for if I haven't said. Read the block's settings (login methods, redirect URL, allowed origins) with the Get Block tool (get_block) and its widget snippet and redirect behaviour with Get Block Integration Details (get_block_integration). Change settings only with Update Login Block (update_login_block), and tell me what you change.
 
-${transport}`;
+${transport}
+
+${REDIRECT_RULE}
+
+${AUTH_KEY_RULE}`;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -161,7 +178,7 @@ export function buildSetupPrompt(input: SetupPromptInput): string | null {
     const name = checkBlockName(input?.blockName);
     if (!name.valid) return null;
 
-    return `Set up 36Blocks authentication for my app: create a 36Blocks block named "${name.value}" and add its widget to this project.
+    return `Set up 36Blocks authentication for my app: create a 36Blocks block named "${name.value}" and add its login widget to this project.
 
 Docs: ${LLMS_TXT_URL}
 
@@ -169,15 +186,17 @@ Do these in order:
 1. Connect to the 36Blocks MCP server: ${MCP_SERVER_URL}
    If you can't use MCP, use the CLI instead: ${CLI_INIT_COMMAND}
 2. When it asks you to sign in, I will finish the 36Blocks sign-in and approval in my browser. Don't ask me to paste a key, token or block reference id: you get everything through the connection.
-3. Create the block named "${name.value}" (Authorization block type), then read it back.
-4. Configure the login method and the redirect URL that suit my app. Inspect the project to work out the framework, the URL the app runs on and the sign-in methods it needs. Ask me only if you can't infer it. Allowed origins are bare hosts (no scheme, no port).
-5. Add the widget to my app by following the docs. Use the block's reference_id from the API response.
+3. Inspect this project to work out the framework, the production URL of the app and the sign-in methods it needs (password, Google, Apple, OTP). Ask me only if you can't infer it.
+4. Create the block with the Create Login Block (Simple) tool (create_login_block): name "${name.value}", the redirect URL and the login methods. It returns the block's reference_id.
+5. Read how to wire it in with Get Block Integration Details (get_block_integration), then add the widget and the redirect route to my app by following the docs. Use the block's reference_id from the API response.
 6. Tell me what you changed.
 
 Careful:
-- If a create call fails or times out, list my blocks before retrying so you don't create a duplicate.
+- ${REDIRECT_RULE}
+- If a create call fails or times out, list my blocks (list_blocks) before retrying so you don't create a duplicate.
 - Don't create a subscription block.
-- Block responses can contain provider credentials: treat them as secret and never print or commit them.`;
+- Block responses can contain provider credentials: treat them as secret and never print or commit them.
+- ${AUTH_KEY_RULE}`;
 }
 
 export interface ResolvedPrompt {

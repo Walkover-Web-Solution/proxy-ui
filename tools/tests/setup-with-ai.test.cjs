@@ -33,22 +33,29 @@ const loose = require('node:assert').deepEqual;
 const dir = 'apps/36-blocks/src/app/ai-setup';
 const prompts = load(`${dir}/ai-prompts.ts`);
 
-// The homepage prompt: MCP first, browser sign-in, never a pasted credential.
-const ORIGINAL_HOME_PROMPT = `Integrate 36Blocks User APIs into our project based on our requirement and use cases.
-First, read the official API documentation at https://developers.36blocks.com/llms.txt.
-Ask what I want to build if I haven't explained it yet.
-
-To run the APIs, prefer the MCP server: https://mcp.docstar.io/connector/36blocks_user_api
-When it asks you to sign in, finish the 36Blocks sign-in and approval in the browser. Don't ask me to paste a key, token or reference id.
-
-If you can't connect MCP, use the CLI instead (run once to install the modules): npx docstar-cli init 36blocks_user_api
-Then: npx docstar-cli 36blocks_user_api <module> <endpoint> [--flags]  (npx docstar-cli list 36blocks_user_api shows what's available)`;
-
 const SECRET_LIKE =
     /(eyJ[A-Za-z0-9_-]{10,}|Bearer\s|api[_-]?key\s*[:=]|secret\s*[:=]|password\s*[:=]|authToken\s*[:=])/i;
 
-test('general prompt is the MCP-first homepage prompt', () => {
-    assert.equal(prompts.buildGeneralIntegrationPrompt(), ORIGINAL_HOME_PROMPT);
+// Words an auth key may appear in: only as an instruction for the user to copy it themselves, never with a value.
+const KEY_ASSIGNMENT = /(authkey|BLOCKS\w*AUTHKEY|auth[_ ]?key)\s*[:=]/i;
+const AUTH_KEY_RULE_CHECKS = [
+    /Widget login needs no auth key/,
+    /copy it from Team & access → API keys in the 36Blocks panel into my own environment file/,
+    /say which variable you read it from/,
+    /Never ask me to paste it into this chat and never write its value into code/,
+];
+const REDIRECT_RULE_CHECKS = [
+    /production URL of the app/,
+    /separate block for that environment \(ask me before creating it\)/,
+    /addInfo\.redirect_path/,
+    /page's own origin/,
+];
+
+test('general prompt is MCP-first, names the simple create tool and carries the auth key and redirect rules', () => {
+    const prompt = prompts.buildGeneralIntegrationPrompt();
+    assert.match(prompt, /^Integrate 36Blocks User APIs into our project based on our requirement and use cases\./);
+    assert.match(prompt, /Create Login Block \(Simple\) tool \(create_login_block\)/);
+    for (const check of [...AUTH_KEY_RULE_CHECKS, ...REDIRECT_RULE_CHECKS]) assert.match(prompt, check);
 });
 
 test('prompts without a credential point at llms.txt, the MCP server and the CLI fallback, and carry no secrets', () => {
@@ -61,8 +68,9 @@ test('prompts without a credential point at llms.txt, the MCP server and the CLI
         assert.match(prompt, /https:\/\/mcp\.docstar\.io\/connector\/36blocks_user_api/);
         assert.match(prompt, /npx docstar-cli init 36blocks_user_api/);
         assert.doesNotMatch(prompt, SECRET_LIKE);
-        assert.doesNotMatch(prompt, /authkey/i, 'no prompt mentions an auth key');
-        assert.ok(prompt.length < 1400, 'prompts stay short');
+        assert.doesNotMatch(prompt, KEY_ASSIGNMENT, 'an auth key is only ever mentioned as "copy it yourself"');
+        for (const check of AUTH_KEY_RULE_CHECKS) assert.match(prompt, check);
+        assert.ok(prompt.length < 2200, `prompts stay short (${prompt.length})`);
     }
 });
 
@@ -82,6 +90,9 @@ test('block prompt is pre-filled with the real reference id, type and script URL
     assert.match(prompt, /Widget type: authorization/);
     assert.match(prompt, /Widget script: https:\/\/proxy\.example\.com\/assets\/proxy-auth\/proxy-auth\.js/);
     assert.match(prompt, /Don't create a new block/);
+    assert.match(prompt, /Get Block tool \(get_block\)/);
+    assert.match(prompt, /Get Block Integration Details \(get_block_integration\)/);
+    assert.match(prompt, /Update Login Block \(update_login_block\)/);
 });
 
 test('block prompt omits unknown details and rejects unsafe input instead of embedding it', () => {
@@ -106,7 +117,7 @@ test('resolvePrompt gives a block its prompt and everything else the general one
     // An unusable block context falls back rather than producing an empty prompt.
     assert.equal(prompts.resolvePrompt({ block: { referenceId: '<script>' } }).kind, 'general');
     for (const state of [{ block: null }, { block: { referenceId: 'abc123' } }]) {
-        assert.doesNotMatch(prompts.resolvePrompt(state).prompt, /authkey|BLOCKS36_AUTHKEY/i);
+        assert.doesNotMatch(prompts.resolvePrompt(state).prompt, KEY_ASSIGNMENT);
     }
 });
 
@@ -145,7 +156,7 @@ test('block name validation follows the server rule and refuses anything that co
 
 test('setup prompt: connect MCP, browser sign-in, create the named block, configure, add the widget with the API reference id', () => {
     const prompt = prompts.buildSetupPrompt({ blockName: 'Customer app' });
-    assert.match(prompt, /block named "Customer app" and add its widget/);
+    assert.match(prompt, /block named "Customer app" and add its login widget/);
     assert.match(prompt, /https:\/\/developers\.36blocks\.com\/llms\.txt/);
     assert.match(prompt, /https:\/\/mcp\.docstar\.io\/connector\/36blocks_user_api/);
     assert.match(prompt, /npx docstar-cli init 36blocks_user_api/);
@@ -153,11 +164,11 @@ test('setup prompt: connect MCP, browser sign-in, create the named block, config
         /Connect to the 36Blocks MCP server/,
         /finish the 36Blocks sign-in and approval in my browser/,
         /Don't ask me to paste a key, token or block reference id/,
-        /Create the block named "Customer app"/,
-        /login method and the redirect URL/,
+        /production URL of the app and the sign-in methods it needs/,
         /Ask me only if you can't infer it/,
-        /Add the widget to my app/,
-        /reference_id from the API response/,
+        /Create Login Block \(Simple\) tool \(create_login_block\): name "Customer app"/,
+        /Get Block Integration Details \(get_block_integration\)/,
+        /Use the block's reference_id from the API response/,
         /Tell me what you changed/,
     ];
     let from = 0;
@@ -166,15 +177,17 @@ test('setup prompt: connect MCP, browser sign-in, create the named block, config
         assert.ok(at >= 0, `missing or out of order: ${step}`);
         from += at;
     }
-    assert.match(prompt, /list my blocks before retrying/);
+    assert.match(prompt, /list my blocks \(list_blocks\) before retrying/);
     assert.match(prompt, /Don't create a subscription block/);
-    assert.ok(prompt.length < 2600, `short enough to read (${prompt.length})`);
+    for (const check of [...AUTH_KEY_RULE_CHECKS, ...REDIRECT_RULE_CHECKS]) assert.match(prompt, check);
+    assert.ok(prompt.length < 3600, `short enough to read (${prompt.length})`);
 });
 
-test('setup prompt carries no credential and never mentions an auth key or env var for one', () => {
+test('setup prompt carries no credential and mentions an auth key only as "copy it yourself"', () => {
     const prompt = prompts.buildSetupPrompt({ blockName: 'Customer app' });
     assert.doesNotMatch(prompt, SECRET_LIKE);
-    assert.doesNotMatch(prompt, /authkey|BLOCKS36_AUTHKEY|Header:|Authorization:/i);
+    assert.doesNotMatch(prompt, KEY_ASSIGNMENT);
+    assert.doesNotMatch(prompt, /Header:|Authorization:/i);
     assert.equal(prompts.buildSetupPrompt.length, 1, 'takes only the block name');
 });
 
@@ -218,7 +231,7 @@ test('no prompt carries a key or credential', () => {
         prompts.buildSetupPrompt({ blockName: 'My app' }),
     ];
     for (const prompt of everything) {
-        assert.doesNotMatch(prompt, /authkey|BLOCKS36_AUTHKEY/i);
+        assert.doesNotMatch(prompt, KEY_ASSIGNMENT);
         assert.doesNotMatch(prompt, SECRET_LIKE);
     }
 });
