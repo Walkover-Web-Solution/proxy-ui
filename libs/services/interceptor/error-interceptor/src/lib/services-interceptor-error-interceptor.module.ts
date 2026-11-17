@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { PrimeNgToastService } from '@proxy/ui/prime-ng-toast';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { CookieService } from 'ngx-cookie-service';
+import { returnUrlQueryParams } from '@proxy/utils/return-url';
 @Injectable({
     providedIn: 'root',
 })
@@ -48,7 +49,13 @@ export class ErrorInterceptor implements HttpInterceptor {
                                 this.toast.error('Session expired');
                             }
                             this.afAuth.signOut();
-                            this.router.navigate(['/']);
+                            // A protected page remembers where the user was so sign-in can bring them back.
+                            const queryParams = returnUrlQueryParams(this.router.url);
+                            if (Object.keys(queryParams).length) {
+                                this.router.navigate(['/login'], { queryParams });
+                            } else {
+                                this.router.navigate(['/']);
+                            }
                             return throwError(err.error);
                         }
                         if (err.status === 422) {

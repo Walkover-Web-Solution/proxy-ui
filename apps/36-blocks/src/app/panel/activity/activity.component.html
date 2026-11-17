@@ -194,12 +194,12 @@
                                 }}<small>Operation #{{ row.id }} · Session {{ row.session_id ?? 'unavailable' }}</small>
                             </td>
                             <td>
-                                {{ row.user?.name || row.user?.email || 'Unavailable'
-                                }}<small>{{ row.user?.email }}</small
-                                ><small
-                                    >Actor ID:
-                                    {{ row.audit_context?.actor_user_id ?? row.user?.user_id ?? 'unavailable' }}</small
-                                >
+                                @let actor = actorOf(row);
+                                {{ actor.name }}
+                                @if (actor.email) {
+                                    <small>{{ actor.email }}</small>
+                                }
+                                <small>{{ actor.idLabel }}</small>
                             </td>
                             <td>{{ row.operation }}</td>
                             <td>

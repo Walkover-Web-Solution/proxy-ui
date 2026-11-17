@@ -236,12 +236,17 @@ test('missing or malformed successful log details produce recoverable errors and
 // when the client has no projects, while exposing the new Activity route.
 test('production panel keeps authentication without restoring project gating', () => {
     const authGuard = class {};
+    const zeroBlocksGuard = () => true;
     const { panelRoutes } = loadClass('apps/36-blocks/src/app/panel/panel.routes.ts', {
         '../website/home/authguard': { CanActivateRouteGuard: authGuard },
+        '../ai-setup/zero-blocks.guard': { zeroBlocksGuard },
     });
     const panel = panelRoutes[0];
     assert.equal(panel.canActivate.length, 1);
     assert.equal(panel.canActivate[0], authGuard);
+    // The zero-blocks redirect is a route-level child guard, not a layout-side effect.
+    assert.equal(panel.canActivateChild.length, 1);
+    assert.equal(panel.canActivateChild[0], zeroBlocksGuard);
     assert.equal(panel.children.find((route) => route.path === '').redirectTo, 'dashboard');
     assert.equal(typeof panel.children.find((route) => route.path === 'activity').loadComponent, 'function');
 });
