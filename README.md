@@ -12,7 +12,7 @@
 
 4. Run `npm ci --ignore-scripts --legacy-peer-deps` to install the locked dependencies. Review the development guide before enabling install hooks.
 
-5. Configure approved local environment values from `.env.example`, run `node tools/set-env`, then `npm start`. The checked-in local API URL points to a remote test service; change it before exercising mutations. Optional feedback variables `STEWARD_FEEDBACK_URL` and `STEWARD_FEEDBACK_KEY` (also supporting `VITE_` / `NEXT_PUBLIC_` / `REACT_APP_` prefixes) enable the native panel feedback widget; omitting either hides the feedback triggers.
+5. Configure approved local environment values, run `node tools/set-env`, then `npm start`. The checked-in local API URL points to a remote test service; change it before exercising mutations.
 
 Read [AGENTS.md](AGENTS.md), [current work state](../user-proxy/docs/WORK-STATE.md), [architecture](../user-proxy/docs/ARCHITECTURE.md) and the authoritative [capability matrix](../user-proxy/docs/CAPABILITIES.md). The API is the sibling `user-proxy` repository. `node --test tools/tests/*.test.cjs` runs focused behavior tests; legacy Nx/Jest targets have known gaps recorded in the work state.
 

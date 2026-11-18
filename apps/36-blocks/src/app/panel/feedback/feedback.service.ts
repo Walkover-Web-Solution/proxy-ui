@@ -24,12 +24,11 @@ export class FeedbackService {
     }
 
     public isConfigured(): boolean {
-        const url = (environment as any).stewardFeedbackUrl;
         const key = (environment as any).stewardFeedbackKey;
         const isPlaceholder = (val: unknown, name: string) =>
             !val || typeof val !== 'string' || val.trim().length === 0 || val.trim() === name;
 
-        return !isPlaceholder(url, 'STEWARD_FEEDBACK_URL') && !isPlaceholder(key, 'STEWARD_FEEDBACK_KEY');
+        return !isPlaceholder(key, 'STEWARD_FEEDBACK_KEY');
     }
 
     public isAvailable(): boolean {

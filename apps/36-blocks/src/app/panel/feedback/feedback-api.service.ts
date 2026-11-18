@@ -10,6 +10,8 @@ import { BillingService } from '../billing/billing.service';
 import { environment } from '../../../environments/environment';
 import { take } from 'rxjs/operators';
 
+export const STEWARD_FEEDBACK_URL = 'https://steward.embarko.app/api/v1/feedback';
+
 export interface IFeedbackUser {
     id: string | number | null;
     email: string | null;
@@ -123,11 +125,10 @@ export class FeedbackApiService {
     }
 
     public async sendFeedback(text: string): Promise<IFeedbackSendResult> {
-        const url = (environment as any).stewardFeedbackUrl;
         const key = (environment as any).stewardFeedbackKey;
         const appVersion = (environment as any).appVersion || '0.0.3';
 
-        if (!url || !key) {
+        if (!key) {
             return {
                 success: false,
                 status: 0,
@@ -149,7 +150,7 @@ export class FeedbackApiService {
         };
 
         try {
-            const response = await fetch(url, {
+            const response = await fetch(STEWARD_FEEDBACK_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

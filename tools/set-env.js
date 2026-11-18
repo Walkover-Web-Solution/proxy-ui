@@ -97,7 +97,6 @@ function writeProxyEnv() {
     interfaceScriptUrl: ${JSON.stringify(get('INTERFACE_SCRIPT_URL'))},
 
     // STEWARD FEEDBACK
-    stewardFeedbackUrl: ${JSON.stringify(getPublic('STEWARD_FEEDBACK_URL'))},
     stewardFeedbackKey: ${JSON.stringify(getPublic('STEWARD_FEEDBACK_KEY'))},
     appVersion: ${JSON.stringify(get('APP_VERSION', require('../package.json').version))},
 };
