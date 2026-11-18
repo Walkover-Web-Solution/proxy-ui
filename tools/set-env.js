@@ -62,6 +62,18 @@ function get(key, fallback = undefined) {
     return value;
 }
 
+function getPublic(baseKey) {
+    const candidates = [baseKey, `NEXT_PUBLIC_${baseKey}`, `VITE_${baseKey}`, `REACT_APP_${baseKey}`];
+    for (const k of candidates) {
+        if (env[k] !== undefined && env[k] !== '') {
+            if (DEBUG) console.log(`[set-env DEBUG] ${baseKey} = SET (via ${k})`);
+            return env[k];
+        }
+    }
+    if (DEBUG) console.log(`[set-env DEBUG] ${baseKey} = MISSING`);
+    return undefined;
+}
+
 function assertNoMissingKeys() {
     if (missingKeys.length > 0) {
         console.error(`[set-env] FATAL: missing required env vars: ${missingKeys.join(', ')}`);
@@ -83,6 +95,10 @@ function writeProxyEnv() {
 
     // VIASOCKET INTERFACE
     interfaceScriptUrl: ${JSON.stringify(get('INTERFACE_SCRIPT_URL'))},
+
+    // STEWARD FEEDBACK
+    stewardFeedbackKey: ${JSON.stringify(getPublic('STEWARD_FEEDBACK_KEY'))},
+    appVersion: ${JSON.stringify(get('APP_VERSION', require('../package.json').version))},
 };
 `;
     const outPath = path.join(root, 'apps/36-blocks/src/environments/env-variables.ts');
