@@ -62,6 +62,7 @@ No key has a fallback (`get(key)` is called without a default), so every key is 
 |---|---|---|---|---|
 | `FIREBASE_CONFIG_API_KEY`, `FIREBASE_CONFIG_AUTH_DOMAIN`, `FIREBASE_CONFIG_PROJECT_ID`, `FIREBASE_CONFIG_STORAGE_BUCKET`, `FIREBASE_CONFIG_MESSAGING_SENDER_ID`, `FIREBASE_CONFIG_APP_ID` | dashboard (`--proxy`) → `apps/36-blocks/src/environments/env-variables.ts` <!-- verify:ignore --> | `environment.firebaseConfig.*` | `apps/36-blocks/src/app/app.config.ts` (`AngularFireModule.initializeApp`) | Google sign-in and `AuthService.getToken` fail. |
 | `INTERFACE_SCRIPT_URL` | dashboard | `environment.interfaceScriptUrl` | `apps/36-blocks/src/app/panel/layout/layout.component.ts:LayoutComponent` | viaSocket chatbot script gets `src="undefined"`. |
+| `STEWARD_FEEDBACK_KEY` | dashboard | `environment.stewardFeedbackKey` | `FeedbackService` | Steward publishable API key (`pk_...`). Kept in the environment only (never written in code); feedback triggers are hidden if missing. |
 | `AUTH_UI_ENCODE_KEY`, `AUTH_UI_IV_KEY` | widget (`--auth`) → `apps/36-blocks-widget/src/environments/env-variables.ts` <!-- verify:ignore --> | `environment.uiEncodeKey`, `environment.uiIvKey` | widget login/register password and `proxy_state` encryption ([widget-auth](./modules/widget-auth.md)) | Backend cannot decrypt passwords → login/register fail. |
 | `AUTH_API_ENCODE_KEY`, `AUTH_API_IV_KEY` | widget | `environment.apiEncodeKey`, `environment.apiIvKey` | `OtpEffects.getWidgetData$` (decrypts `data.ciphered`) | Widget config cannot be decrypted → no login buttons. |
 | `HCAPTCHA_SITE_KEY` | widget | `environment.hCaptchaSiteKey` | `apps/36-blocks-widget/src/main.ts` (`NgHcaptchaModule.forRoot`), widget login form | hCaptcha fails to load → password login blocked. **Not in `.env.example`.** Local `environment.ts` overrides it with hCaptcha's public test key. |
@@ -71,7 +72,7 @@ No key has a fallback (`get(key)` is called without a default), so every key is 
 The secrets must match the backend: the four `AUTH_*` keys must equal the keys the proxy backend uses to encrypt `ciphered` and decrypt passwords. The Firebase project must be the one whose ID tokens the backend accepts at `POST /googleLogin` ([api](./api.md#dashboard-auth-and-session)).
 
 ### `.env.example`
-Lists `FIREBASE_CONFIG_API_KEY`, `FIREBASE_CONFIG_AUTH_DOMAIN`, `FIREBASE_CONFIG_PROJECT_ID`, `FIREBASE_CONFIG_STORAGE_BUCKET`, `FIREBASE_CONFIG_MESSAGING_SENDER_ID`, `FIREBASE_CONFIG_APP_ID`, `AUTH_UI_ENCODE_KEY`, `AUTH_UI_IV_KEY`, `AUTH_API_ENCODE_KEY`, `AUTH_API_IV_KEY`, `INTERFACE_SCRIPT_URL` and `CLIENT_BASE_URL`.
+Lists `FIREBASE_CONFIG_API_KEY`, `FIREBASE_CONFIG_AUTH_DOMAIN`, `FIREBASE_CONFIG_PROJECT_ID`, `FIREBASE_CONFIG_STORAGE_BUCKET`, `FIREBASE_CONFIG_MESSAGING_SENDER_ID`, `FIREBASE_CONFIG_APP_ID`, `AUTH_UI_ENCODE_KEY`, `AUTH_UI_IV_KEY`, `AUTH_API_ENCODE_KEY`, `AUTH_API_IV_KEY`, `INTERFACE_SCRIPT_URL`, `CLIENT_BASE_URL` and `STEWARD_FEEDBACK_KEY`.
 
 > [!WARNING]
 > `CLIENT_BASE_URL` in `.env.example` is read by nothing. The string only appears as the DI token name `ProxyBaseUrls.ClientURL`, whose value comes from `environment.apiUrl + environment.msgMidProxy`. `HCAPTCHA_SITE_KEY` and `SEND_OTP_AUTH_KEY` are missing from the example although CI requires them.

@@ -44,6 +44,7 @@ import { SideNavService } from './side-nav.service';
 import { shouldCollapseSidebarForEmptyWorkspace } from './sidebar-default';
 import { UiSettingsService } from './ui-settings.service';
 import { FeaturesService } from '@proxy/services/proxy/features';
+import { FeedbackService } from '../feedback/feedback.service';
 import { take } from 'rxjs/operators';
 import { AiSetupService } from '../../ai-setup/ai-setup.service';
 @Component({
@@ -119,11 +120,13 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
     private featuresService = inject(FeaturesService);
     private dialog = inject(MatDialog);
     private aiSetup = inject(AiSetupService);
+    public feedbackService = inject(FeedbackService);
     /** The workspace the "empty workspace starts collapsed" rule was already applied to. */
     private collapsedForWorkspace: number | null = null;
 
     constructor() {
         super();
+        this.feedbackService.isSidebarPresent.set(!this.sideNavService.hideSidebar());
         // A workspace without blocks (first sign-in, sign-up, or after switching) starts with the sidebar collapsed.
         effect(() => {
             const workspace = this.aiSetup.workspace();
@@ -176,10 +179,12 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
                         .subscribe((res) => {
                             const hasFeatures = (res?.data?.totalEntityCount ?? 0) > 0;
                             this.sideNavService.hideSidebar.set(!hasFeatures);
+                            this.feedbackService.isSidebarPresent.set(hasFeatures);
                             this.cdr.markForCheck();
                         });
                 } else {
                     this.sideNavService.hideSidebar.set(false);
+                    this.feedbackService.isSidebarPresent.set(true);
                 }
                 this.cdr.markForCheck();
             });
@@ -330,5 +335,14 @@ export class LayoutComponent extends BaseComponent implements OnInit, OnDestroy 
 
     public toggleSideBarEvent(): void {
         this.sideNavService.toggle();
+    }
+
+    public openFeedback(): void {
+        this.feedbackService.openFeedback();
+    }
+
+    override ngOnDestroy(): void {
+        this.feedbackService.isSidebarPresent.set(false);
+        super.ngOnDestroy();
     }
 }

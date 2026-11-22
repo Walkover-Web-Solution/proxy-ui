@@ -167,6 +167,11 @@ button {
         min-width: auto !important;
         width: auto !important;
     }
+
+    &.feedback-dialog {
+        min-width: min(480px, 92vw) !important;
+        max-width: 92vw !important;
+    }
 }
 
 .preview-fullscreen-dialog {

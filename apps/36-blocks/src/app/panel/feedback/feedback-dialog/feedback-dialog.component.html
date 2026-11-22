@@ -1,0 +1,74 @@
+<div class="feedback-dialog-shell">
+    <div class="feedback-dialog-header">
+        <h2 mat-dialog-title class="feedback-dialog-title">
+            {{ state() === 'success' ? 'Feedback sent' : 'Send feedback' }}
+        </h2>
+        <button
+            mat-icon-button
+            type="button"
+            class="feedback-dialog-close"
+            aria-label="Close feedback dialog"
+            [disabled]="state() === 'loading'"
+            (click)="close()"
+        >
+            <mat-icon class="mat-icon-20">close</mat-icon>
+        </button>
+    </div>
+
+    @if (state() === 'success') {
+        <mat-dialog-content class="feedback-dialog-content feedback-success-view">
+            <div class="success-icon-wrap" aria-hidden="true">
+                <mat-icon class="success-icon">check_circle</mat-icon>
+            </div>
+            <h3 class="success-title">Thanks, we got it</h3>
+            <p class="success-subtitle">Your feedback helps us make Proxy better.</p>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end" class="feedback-dialog-actions">
+            <button mat-flat-button color="primary" type="button" (click)="close()">Done</button>
+        </mat-dialog-actions>
+    } @else {
+        <mat-dialog-content class="feedback-dialog-content">
+            <form id="feedback-form" (ngSubmit)="send()">
+                <mat-form-field appearance="outline" class="w-full feedback-form-field">
+                    <mat-label>Feedback</mat-label>
+                    <textarea
+                        matInput
+                        [(ngModel)]="feedbackText"
+                        name="feedbackText"
+                        rows="5"
+                        placeholder="What's on your mind? Tell us what you love or what could be better..."
+                        [disabled]="state() === 'loading'"
+                        required
+                        autocomplete="off"
+                        autofocus
+                    ></textarea>
+                </mat-form-field>
+            </form>
+
+            @if (errorMessage(); as error) {
+                <div class="feedback-error-banner" role="alert">
+                    <mat-icon class="mat-icon-18 text-danger shrink-0">error_outline</mat-icon>
+                    <span class="feedback-error-text text-danger">{{ error }}</span>
+                </div>
+            }
+        </mat-dialog-content>
+
+        <mat-dialog-actions align="end" class="feedback-dialog-actions">
+            <button type="button" mat-button [disabled]="state() === 'loading'" (click)="close()">Cancel</button>
+            <button
+                type="submit"
+                form="feedback-form"
+                mat-flat-button
+                color="primary"
+                [disabled]="state() === 'loading' || !canSend()"
+            >
+                @if (state() === 'loading') {
+                    <mat-spinner diameter="18" class="feedback-spinner mr-2"></mat-spinner>
+                    <span>Sending…</span>
+                } @else {
+                    <span>Send</span>
+                }
+            </button>
+        </mat-dialog-actions>
+    }
+</div>

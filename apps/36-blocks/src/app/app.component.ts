@@ -19,11 +19,12 @@ import { IAppState, selectClientSettings } from './core/ngrx';
 import { rootActions } from './core/ngrx/actions';
 import { IClientSettings, IFirebaseUserModel } from '@proxy/models/root-models';
 import { readReturnUrlFromUrl, resolvePostLoginTarget } from '@proxy/utils/return-url';
+import { FeedbackFloatingButtonComponent } from './panel/feedback/feedback-floating-button/feedback-floating-button.component';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'proxy-root',
-    imports: [RouterModule, PrimeNgToastComponent],
+    imports: [RouterModule, PrimeNgToastComponent, FeedbackFloatingButtonComponent],
     templateUrl: './app.component.html',
 })
 export class AppComponent extends BaseComponent implements OnInit, OnDestroy {
