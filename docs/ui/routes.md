@@ -1,7 +1,7 @@
 ---
 covers: ["apps/36-blocks/src/app/**/*.routes.ts", "apps/36-blocks/src/app/website/home/authguard/**", "apps/36-blocks/src/app/panel/layout/main-left-side-nav/main-left-side-nav.component.ts"]
-verified_at: 76f26ae5
-verified_on: 2026-10-14
+verified_at: b7d51dad
+verified_on: 2026-11-22
 ---
 # Routes and pages
 
@@ -15,7 +15,8 @@ The widget app (`apps/36-blocks-widget`) has no router: `ProxyAuthWidgetComponen
 |---|---|---|
 | `apps/36-blocks/src/app/app.routes.ts` | `appRoutes` | root (`appConfig`) |
 | `apps/36-blocks/src/app/website/website.routes.ts` | `websiteRoutes` | `''` |
-| `apps/36-blocks/src/app/panel/panel.routes.ts` | `panelRoutes` | `app` |
+| `apps/36-blocks/src/app/panel/panel.routes.ts` | `panelRoutes` (`canActivateChild: zeroBlocksGuard`) | `app` |
+| `apps/36-blocks/src/app/panel/team/team.routes.ts` | `teamRoutes` | `/app/team` |
 | `apps/36-blocks/src/app/panel/features/features.routes.ts` | `featuresRoutes` | `/app/features` |
 | `apps/36-blocks/src/app/panel/logs/logs.routes.ts` | `logsRoutes` | `/app/logs` |
 | `apps/36-blocks/src/app/panel/layout/layout.routes.ts` | `layoutRoutes` | **nowhere** (dead copy, see warning) |
@@ -31,7 +32,8 @@ Paths are full URLs. "Lazy" means `loadComponent`/`loadChildren` (own chunk). Gu
 
 | Route | Component | Guard | Load | Purpose |
 |---|---|---|---|---|
-| `/` | `apps/36-blocks/src/app/website/home/home.component.ts:HomeComponent` | `LoggedInGuard` | lazy | Landing page (SEO meta, JSON-LD, widget theme demo) |
+| `/` | `apps/36-blocks/src/app/website/home/home.component.ts:HomeComponent` | `LoggedInGuard` | lazy | Landing page (SEO meta, JSON-LD, copyable AI integration prompt; no in-page "Set up with AI" button) |
+| `/docs` | `apps/36-blocks/src/app/website/docs/docs.component.ts:DocsComponent` | none | lazy | Static product docs page for prospects |
 | `/pricing` | `apps/36-blocks/src/app/website/pricing/pricing.component.ts:PricingComponent` | none | lazy | Static pricing page |
 | `/security` | `apps/36-blocks/src/app/website/security/security.component.ts:SecurityComponent` | none | lazy | Static page |
 | `/privacy` | `apps/36-blocks/src/app/website/privacy/privacy.component.ts:PrivacyComponent` | none | lazy | Static page |
@@ -48,6 +50,7 @@ The layout itself (`apps/36-blocks/src/app/website/layout/website-layout.compone
 | Route | Component | Guard | Load | Purpose |
 |---|---|---|---|---|
 | `/onboarding` | `apps/36-blocks/src/app/panel/onboarding/onboarding.component.ts:OnboardingComponent` | none | lazy | Finish sign-up; reads query `onboarding_token` |
+| `/oauth/authorize` | `apps/36-blocks/src/app/oauth/authorize/oauth-authorize.component.ts:OAuthAuthorizeComponent` | `CanActivateRouteGuard` | lazy | MCP / AI-tool operator OAuth consent ([operator-mcp-oauth](../flows/operator-mcp-oauth.md)) |
 | `/widget-preview/:referenceId` | `apps/36-blocks/src/app/panel/features/create-feature/feature-preview/widget-preview/widget-preview.component.ts:WidgetPreviewComponent` | `CanActivateRouteGuard` | lazy | Full-page live preview of a block's widget; query `tab`, `theme` |
 | `/project` | `apps/36-blocks/src/app/panel/create-project/create-project.component.ts:CreateProjectComponent` | `CanActivateRouteGuard` | lazy | Create the first project / environment |
 | `/client/registration` | `apps/36-blocks/src/app/core/registration/registration.component.ts:RegistrationComponent` | none | lazy | Loads the widget script in register-only mode; query `reference_id`, `first_name`, `last_name`, `signup_service_id`, `email` |
@@ -55,26 +58,33 @@ The layout itself (`apps/36-blocks/src/app/website/layout/website-layout.compone
 
 ### Dashboard (`panelRoutes`, layout `LayoutComponent`)
 
-The parent route `/app` lazy-loads `apps/36-blocks/src/app/panel/layout/layout.component.ts:LayoutComponent` (side nav, header, client switcher, Light / Dark / System theme switcher) with `canActivate: [CanActivateRouteGuard]`. The guard is on the parent only; children inherit it.
+The parent route `/app` lazy-loads `apps/36-blocks/src/app/panel/layout/layout.component.ts:LayoutComponent` (side nav, header, client switcher, workspace creation, Light / Dark / System theme switcher) with `canActivate: [CanActivateRouteGuard]` and `canActivateChild: [zeroBlocksGuard]`. The parent guard runs once; children inherit it. `zeroBlocksGuard` may redirect empty workspaces from entry URLs to `/app/setup` ([panel-ai-setup](../modules/panel-ai-setup.md)).
 
 | Route | Component | Guard | Load | Purpose / data |
 |---|---|---|---|---|
 | `/app` | redirect | (parent) | – | → `/app/dashboard` |
-| `/app/dashboard` | `apps/36-blocks/src/app/panel/dashboard/dashboard.component.ts:DashboardComponent` | (parent) | lazy | Analytics charts (`AnalyticsService`, `FeaturesService`, ECharts) |
-| `/app/features` | `apps/36-blocks/src/app/panel/features/feature/feature.component.ts:FeatureComponent` | (parent) | lazy (`loadChildren` → `featuresRoutes`) | Blocks list (`FeatureComponentStore`) |
-| `/app/features/create` | `apps/36-blocks/src/app/panel/features/create-feature/create-feature.component.ts:CreateFeatureComponent` | (parent) | lazy | Create-block wizard (`CreateFeatureComponentStore`) |
+| `/app/setup` | `apps/36-blocks/src/app/ai-setup/setup-wizard/setup-wizard.component.ts:SetupWizardComponent` | (parent) | lazy | Set up with AI wizard |
+| `/app/dashboard` | `apps/36-blocks/src/app/panel/dashboard/dashboard.component.ts:DashboardComponent` | (parent) | lazy | Overview analytics (`AnalyticsService`, ECharts) |
+| `/app/features` | `apps/36-blocks/src/app/panel/features/feature/feature.component.ts:FeatureComponent` | (parent) | lazy (`loadChildren` → `featuresRoutes`) | Applications & blocks list |
+| `/app/features/create` | `apps/36-blocks/src/app/panel/features/create-feature/create-feature.component.ts:CreateFeatureComponent` | (parent) | lazy | Create-block wizard |
 | `/app/features/manage/:id` | same `CreateFeatureComponent` | (parent) | lazy | Edit an existing block; `params.id` switches the component to edit mode |
-| `/app/users` | `apps/36-blocks/src/app/panel/users/user/user.component.ts:UserComponent` | (parent) | lazy | End users, roles, permissions (`UserComponentStore` + `FeatureComponentStore`) |
-| `/app/logs` | `apps/36-blocks/src/app/panel/logs/log/log.component.ts:LogComponent` | (parent) | lazy (`loadChildren` → `logsRoutes`) | Request logs (`LogsComponentStore`); `data: { title: 'Logs' }` |
-| `/app/chatbot` | `apps/36-blocks/src/app/panel/chatbot/chatbot.component.ts:ChatbotComponent` | (parent) | lazy | Empty placeholder; `LayoutComponent` shows the GTWY chatbot container when the URL contains `chatbot` |
-| `/app/billing` | `apps/36-blocks/src/app/panel/billing/billing.component.ts:BillingComponent` | (parent) | lazy | Plans, usage, payment methods (`BillingComponentStore`) |
+| `/app/users` | `apps/36-blocks/src/app/panel/users/user/user.component.ts:UserComponent` | (parent) | lazy | People: end users and per-block management |
+| `/app/team` | `apps/36-blocks/src/app/panel/team/team.component.ts:TeamComponent` | (parent) | lazy (`loadChildren` → `teamRoutes`) | Team & access: members, roles, API keys, AI tools ([panel-team-access](../modules/panel-team-access.md)) |
+| `/app/team/members` | `MembersComponent` | (parent) | lazy | Default team tab |
+| `/app/team/roles` | `RolesComponent` | (parent) | lazy | Operator roles |
+| `/app/team/api-keys` | `ApiKeysComponent` | (parent) | lazy | Workspace API keys |
+| `/app/team/ai-tools` | `AiToolsComponent` | (parent) | lazy | Connected MCP tools |
+| `/app/activity` | `apps/36-blocks/src/app/panel/activity/activity.component.ts:ActivityComponent` | (parent) | lazy | Operator activity and Login as |
+| `/app/logs` | `apps/36-blocks/src/app/panel/logs/log/log.component.ts:LogComponent` | (parent) | lazy (`loadChildren` → `logsRoutes`) | Request logs; `data: { title: 'Logs' }` |
+| `/app/chatbot` | `apps/36-blocks/src/app/panel/chatbot/chatbot.component.ts:ChatbotComponent` | (parent) | lazy | Assistant placeholder; script injected by `LayoutComponent` |
+| `/app/billing` | `apps/36-blocks/src/app/panel/billing/billing.component.ts:BillingComponent` | (parent) | lazy | Plans, usage, payment methods |
 
 Page internals are in [panel-features](../modules/panel-features.md) and [panel-ops](../modules/panel-ops.md). Backend endpoints are in [api](../api.md).
 
 ## Navigation and layout
 
 - **Two layouts.** Website pages render inside `WebsiteLayoutComponent` (header/footer, `routerLink` nav). Dashboard pages render inside `LayoutComponent`. `/onboarding`, `/project`, `/widget-preview/:referenceId` and `/client/registration` have no layout.
-- **Side nav items** are a hardcoded array in `apps/36-blocks/src/app/panel/layout/main-left-side-nav/main-left-side-nav.component.ts:MainLeftSideNavComponent` (`dashboard`, `features` "Blocks", `users`, `logs`, `chatbot` "Ask Ai"), relative to `/app`. Billing is a separate link in `layout.component.html` (`routerLink="/app/billing"`).
+- **Side nav items** are a hardcoded array in `MainLeftSideNavComponent` (`dashboard` Overview, `features` Applications & blocks, `users` People, `team` Team & access, `logs` Request logs, `activity` Operator activity, `chatbot` Assistant), relative to `/app`. Billing is a separate link in `layout.component.html`. Header titles come from `LayoutComponent.currentArea`, not route `data.title`.
 - **Header title** comes from route `data.title`: `AppComponent` dispatches `rootActions.headerTitleAction` with the deepest route's title on every `NavigationEnd`. Only `logsRoutes` sets one today.
 - **Logged-in redirect off website pages** happens in two places: `LoggedInGuard` on `/` only, and `AppComponent` on `authenticatedAction` for a hardcoded `websiteRoutes` list. A new website page must be added to that list (see [app-shell](../modules/app-shell.md)).
 - **Deep links** use path params for ids (`manage/:id`, `widget-preview/:referenceId`) and query params for view state (`tab`, `theme` on widget preview, written back with `queryParamsHandling: 'merge'`).

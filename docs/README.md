@@ -1,6 +1,6 @@
 ---
-verified_at: 395659d5
-verified_on: 2026-10-29
+verified_at: b7d51dad
+verified_on: 2026-11-22
 ---
 # Docs index
 
@@ -25,7 +25,9 @@ Start with [../AGENTS.md](../AGENTS.md), then read the doc for the area you're c
 |---|---|
 | [modules/app-shell.md](modules/app-shell.md) | Dashboard bootstrap, auth token handling, guards, the root store, website pages, the dead SSR files |
 | [modules/panel-features.md](modules/panel-features.md) | The block create/manage wizard, plans and taxes, OAuth clients, widget preview and snippet |
-| [modules/panel-ops.md](modules/panel-ops.md) | Panel layout, client switching, the dashboard analytics page, users and roles, logs, billing, onboarding |
+| [modules/panel-ops.md](modules/panel-ops.md) | Panel shell, Overview, People, logs, billing, onboarding |
+| [modules/panel-team-access.md](modules/panel-team-access.md) | Team & access (members, roles, API keys, AI tools) and Operator activity |
+| [modules/panel-ai-setup.md](modules/panel-ai-setup.md) | Set up with AI wizard, zero-blocks guard, MCP snippets, `/oauth/authorize` |
 | [modules/shared-libs.md](modules/shared-libs.md) | Anything in `libs/`: aliases, HTTP wrappers, ErrorInterceptor, proxy services, `BaseResponse`, constants |
 | [modules/widget-embed.md](modules/widget-embed.md) | The widget's global API, bootstrap, shadow DOM and CSS isolation, window events, the single-file build |
 | [modules/widget-auth.md](modules/widget-auth.md) | Widget login, register, OTP, OAuth consent, the `otp` store, encryption |
@@ -38,6 +40,7 @@ Start with [../AGENTS.md](../AGENTS.md), then read the doc for the area you're c
 | [flows/dashboard-login.md](flows/dashboard-login.md) | Email or Google login, onboarding redirect, boot with an existing session, 401 handling, client switch, logout |
 | [flows/feature-configuration.md](flows/feature-configuration.md) | A block from creation to its manage tabs to the snippet a customer pastes |
 | [flows/widget-verification.md](flows/widget-verification.md) | A host page loading proxy-auth.js through to the user being logged in and the host callbacks |
+| [flows/operator-mcp-oauth.md](flows/operator-mcp-oauth.md) | AI-tool MCP OAuth consent at `/oauth/authorize` |
 
 ## UI
 
@@ -55,6 +58,10 @@ The older notes (docs/widget-*.md, docs/build-modernization.md, docs/angular-*.m
 ## Needs a human
 
 Open questions the code can't answer are collected in [open-questions.md](open-questions.md), and each one is also a `[!TODO]` in the doc it concerns. Answer it in that doc, then delete the TODO and the line in open-questions.md.
+
+## Documentation maintenance
+
+Weekly agent maintenance records reviewed revision, coverage status and unfinished work in [docs-maintenance.json](docs-maintenance.json). Start the next run from that file.
 
 ## Where the standard doc names live
 

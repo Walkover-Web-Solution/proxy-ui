@@ -1,7 +1,7 @@
 ---
 covers: ["apps/36-blocks/src/main.ts", "apps/36-blocks/src/app/app.config.ts", "apps/36-blocks/src/app/app.routes.ts", "apps/36-blocks-widget/src/main.ts", "apps/36-blocks-widget/src/app/init-verification.ts", "apps/36-blocks-widget/build-elements.js", "apps/*/project.json", "tsconfig.base.json", "nx.json", "tools/*.js"]
-verified_at: 395659d5
-verified_on: 2026-10-29
+verified_at: b7d51dad
+verified_on: 2026-11-22
 ---
 # Architecture
 
@@ -19,7 +19,7 @@ proxy-ui is an Nx monorepo (Angular 21, standalone components, NgRx, Tailwind v4
    - the `ProxyBaseUrls` DI tokens (`BaseURL` and `ProxyLogsUrl` both = `environment.baseUrl`; `IToken` = a mutable `{token, companyId}` object)
    - Material defaults
 3. `APP_INITIALIZER` → `apps/36-blocks/src/app/core/auth-initializer.service.ts:AuthInitializerService` copies the `authToken` cookie into the in-memory token before the first navigation.
-4. `apps/36-blocks/src/app/app.routes.ts:appRoutes` lazy-loads the website (`''`), the panel (`app`), `onboarding`, `project`, `widget-preview/:referenceId` and `client/registration`. The full table is in [ui/routes.md](ui/routes.md).
+4. `apps/36-blocks/src/app/app.routes.ts:appRoutes` lazy-loads the website (`''`), the panel (`app`), `onboarding`, `oauth/authorize` (operator MCP consent), `project`, `widget-preview/:referenceId` and `client/registration`. The full table is in [ui/routes.md](ui/routes.md). Panel children include the AI setup wizard and `zeroBlocksGuard` ([panel-ai-setup](modules/panel-ai-setup.md)).
 
 The SSR files (`apps/36-blocks/src/main.server.ts`, `apps/36-blocks/src/server.ts`, `app.config.server.ts`, `app.routes.server.ts`, `app.config.browser.ts`) are dead leftovers: SSR was removed in commit 64b28e3c and nothing builds them. See [modules/app-shell.md](modules/app-shell.md).
 
@@ -34,7 +34,7 @@ The SSR files (`apps/36-blocks/src/main.server.ts`, `apps/36-blocks/src/server.t
 
 | Layer | Folder | Owns | May call | Must not |
 |---|---|---|---|---|
-| Dashboard pages | `apps/36-blocks/src/app/panel/`, `apps/36-blocks/src/app/website/`, `apps/36-blocks/src/app/core/` | Routed standalone components, per-page `<page>.store.ts` ComponentStores, the global NgRx store | `libs/services/**`, `libs/ui/**`, `libs/constant`, `libs/models/**` | Call `HttpClient` directly for proxy API calls (use a service in `libs/services/proxy/`) |
+| Dashboard pages | `apps/36-blocks/src/app/panel/`, `apps/36-blocks/src/app/website/`, `apps/36-blocks/src/app/core/`, `apps/36-blocks/src/app/ai-setup/`, `apps/36-blocks/src/app/oauth/` | Routed standalone components, per-page `<page>.store.ts` ComponentStores (where used), the global NgRx store | `libs/services/**`, `libs/ui/**`, `libs/constant`, `libs/models/**` | Call `HttpClient` directly for proxy API calls (use a service in `libs/services/proxy/` or app-local services for team/activity/oauth) |
 | Widget | `apps/36-blocks-widget/src/app/otp/` | Widget screens, the `otp` NgRx slice, `OtpService` and its own URL constants | `libs/services/http-wrapper-no-auth`, `libs/constant`, `libs/models/**`, `libs/utils` | Import `@proxy/services/proxy/*`, `@proxy/services/httpWrapper` or login services (they need `AngularFireAuth` and `IToken`, which the widget doesn't provide); use dynamic `import()` |
 | Proxy API services | `libs/services/proxy/`, `libs/services/login` | One injectable per backend domain, returning the wrapper Observable unchanged | `libs/urls/**`, `libs/services/http-wrapper` | Hold state |
 | HTTP | `libs/services/http-wrapper`, `libs/services/http-wrapper-no-auth`, `libs/services/interceptor/error-interceptor` | Headers, the token, error mapping, 401 handling | `HttpClient` | Be used across apps the wrong way round (auth wrapper in the widget) |
