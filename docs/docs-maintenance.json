@@ -1,0 +1,29 @@
+{
+    "last_successful_run": {
+        "commit": "b7d51dad",
+        "date": "2026-11-22",
+        "basis_commit": "395659d5"
+    },
+    "unfinished_work": [
+        "Product vision / ICP / positioning: no VISION.md or product brief in repo; purpose is inferred from code and website copy only.",
+        "Website SEO and marketing: /docs and refreshed homepage are not fully inventoried beyond routes; competitor evidence not tracked.",
+        "Measurement and experiments: middleware Experiments section not enabled for this repository.",
+        "Verify open-questions.md items with backend/ops owners (unchanged from prior run).",
+        "panel-features.md and widget-embed.md verified_at still pre–experience-refresh; spot-check on next run unless those areas change."
+    ],
+    "coverage_map": {
+        "product_purpose": { "status": "partial", "location": "docs/architecture.md#architecture, website pages under apps/36-blocks/src/app/website/" },
+        "features_journeys": { "status": "verified", "location": "docs/flows/, docs/modules/" },
+        "architecture": { "status": "verified", "location": "docs/architecture.md" },
+        "development_testing": { "status": "verified", "location": "AGENTS.md, docs/environment.md, docs/conventions.md" },
+        "design_accessibility": { "status": "verified", "location": "docs/ui/design-system.md" },
+        "website_marketing_seo": { "status": "partial", "location": "docs/ui/routes.md (public routes); no dedicated SEO runbook" },
+        "performance_caching": { "status": "not_applicable", "reason": "Client-only SPAs; no server-side cache in this repo" },
+        "backend_data": { "status": "partial", "location": "docs/api.md (observed proxy calls); contracts live in user-proxy" },
+        "security_privacy": { "status": "partial", "location": "AGENTS.md rules, docs/environment.md, docs/modules/widget-auth.md" },
+        "measurement_experiments": { "status": "not_applicable", "reason": "No in-repo experiment framework; analytics calls documented in panel-ops" },
+        "operations": { "status": "partial", "location": "docs/environment.md (CI), .github/workflows/" },
+        "cli_sdk": { "status": "partial", "location": "docs/modules/panel-ai-setup.md (MCP + docstar-cli references)" },
+        "agent_access": { "status": "verified", "location": "AGENTS.md, docs/README.md, docs/docs-maintenance.json" }
+    }
+}

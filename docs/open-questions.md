@@ -1,6 +1,6 @@
 ---
-verified_at: 395659d5
-verified_on: 2026-10-29
+verified_at: b7d51dad
+verified_on: 2026-11-22
 ---
 # Open questions
 
@@ -33,6 +33,8 @@ What the code, its comments and the git history can't answer. Each question also
 
 ## Dashboard
 
+- **Operator Login as policy.** Which roles may call `POST loginAs` and what audit trail the backend guarantees beyond the `operations` list? ([panel-team-access.md](modules/panel-team-access.md))
+- **Operator MCP OAuth.** Are `operator/oauth/*` permissions aligned with Team & access roles, and which redirect URIs are allow-listed server-side? ([flows/operator-mcp-oauth.md](flows/operator-mcp-oauth.md))
 - **Feature type ids.** Are `feature_id` 1 (authorization) and 2 (subscription) stable backend ids, and are more types planned? The UI hard-codes them with no enum. ([modules/panel-features.md](modules/panel-features.md))
 - **Dead Lago helpers.** Can `createLagoFeature`, the store's `getPlansForm` and `getBillableMetricForm` be removed? ([modules/panel-features.md](modules/panel-features.md))
 - **Logs page.** Its nav item says "Temporary hide this page" but is shown. Are proxy logs still a supported product? ([modules/panel-ops.md](modules/panel-ops.md))

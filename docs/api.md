@@ -1,7 +1,7 @@
 ---
-covers: ["apps/36-blocks-widget/src/app/init-verification.ts", "apps/36-blocks-widget/src/main.ts", "apps/36-blocks-widget/src/app/otp/service/otp.service.ts", "apps/36-blocks-widget/src/app/otp/service/urls/**", "apps/36-blocks-widget/src/app/otp/service/user-management-bridge.service.ts", "libs/constant/src/widget-events.ts", "libs/urls/**", "libs/services/proxy/**", "libs/services/login/**", "apps/36-blocks/src/app/panel/billing/billing.urls.ts", "apps/36-blocks/src/app/panel/billing/billing.service.ts", "apps/36-blocks/src/app/app.config.ts"]
-verified_at: 395659d5
-verified_on: 2026-10-29
+covers: ["apps/36-blocks-widget/src/app/init-verification.ts", "apps/36-blocks-widget/src/main.ts", "apps/36-blocks-widget/src/app/otp/service/otp.service.ts", "apps/36-blocks-widget/src/app/otp/service/urls/**", "apps/36-blocks-widget/src/app/otp/service/user-management-bridge.service.ts", "libs/constant/src/widget-events.ts", "libs/urls/**", "libs/services/proxy/**", "libs/services/login/**", "apps/36-blocks/src/app/panel/billing/billing.urls.ts", "apps/36-blocks/src/app/panel/billing/billing.service.ts", "apps/36-blocks/src/app/panel/team/**", "apps/36-blocks/src/app/panel/activity/**", "apps/36-blocks/src/app/oauth/**", "apps/36-blocks/src/app/app.config.ts"]
+verified_at: b7d51dad
+verified_on: 2026-11-22
 ---
 # API
 
@@ -137,6 +137,39 @@ Base `environment.baseUrl`; all with the JWT `Authorization` header.
 | GET | `/analytics/breakdown` | `AnalyticsService.getBreakdown` | `apps/36-blocks/src/app/panel/dashboard/breakdown-chart/breakdown-chart.component.ts` |
 
 `LogsService` uses the `ProxyLogsUrl` token, which is also `environment.baseUrl`.
+
+## Dashboard: operator team, MCP OAuth, and activity
+
+JWT auth via `HttpWrapperService` on `environment.baseUrl`. Operators are scoped by session token (no `client_id` in requests). UI detail: [panel-team-access](./modules/panel-team-access.md), [panel-ai-setup](./modules/panel-ai-setup.md), flow [operator-mcp-oauth](./flows/operator-mcp-oauth.md).
+
+### Team & access (`TeamService` / `TeamUrls`)
+
+| Method | Path | Caller |
+|---|---|---|
+| GET | `users` | `TeamService.getMembers` |
+| POST | `invite` | `TeamService.inviteMember` |
+| PUT | `updateUserRole` | `TeamService.updateMemberRole` |
+| GET | `rolePermissions` | `TeamService.getRoles` |
+| GET / POST | `authentications` | `TeamService` API keys |
+| PUT / DELETE | `authentications/:id` | `TeamService` API keys |
+
+### Operator MCP OAuth (`OAuthService` / `OAuthUrls`)
+
+Distinct from widget paths `oauth/authorize` and `oauth/authorize/decision` under the widget API base ([widget-auth](./modules/widget-auth.md)).
+
+| Method | Path | Caller |
+|---|---|---|
+| GET | `operator/oauth/authorize` | `OAuthAuthorizeComponent` (query forwarded) |
+| POST | `operator/oauth/decision` | `OAuthAuthorizeComponent` |
+| GET | `operator/oauth/connections` | `AiToolsComponent` |
+| POST | `operator/oauth/connections/:id/revoke` | `AiToolsComponent` |
+
+### Operator activity (`ActivityService`)
+
+| Method | Path | Caller |
+|---|---|---|
+| GET | `operations` | `ActivityComponent` (paginated filters) |
+| POST | `loginAs` | `ActivityComponent` (impersonation / investigation) |
 
 ## Dashboard: users, roles, permissions (admin side)
 `UsersService` (`libs/services/proxy/users/src/lib/services-proxy-users.module.ts`), JWT auth. Caller: `apps/36-blocks/src/app/panel/users/user/user.store.ts`. The service takes `referenceId` (and `id`) from the payload, puts them in the path and deletes them from the body.

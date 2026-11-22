@@ -1,7 +1,7 @@
 ---
-covers: ["tools/set-env.js", "tools/postbuild.js", ".env.example", "apps/36-blocks/src/environments/**", "apps/36-blocks-widget/src/environments/**", "apps/36-blocks/project.json", "apps/36-blocks-widget/project.json", "package.json", "nx.json", ".github/workflows/main.yml", "apps/36-blocks/src/server.ts"]
-verified_at: 395659d5
-verified_on: 2026-10-29
+covers: ["tools/set-env.js", "tools/postbuild.js", ".env.example", "apps/36-blocks/src/environments/**", "apps/36-blocks-widget/src/environments/**", "apps/36-blocks/project.json", "apps/36-blocks-widget/project.json", "package.json", "nx.json", ".github/workflows/main.yml", ".github/workflows/v0-behavior.yml", "apps/36-blocks/src/server.ts"]
+verified_at: b7d51dad
+verified_on: 2026-11-22
 ---
 # Environment
 
@@ -41,6 +41,7 @@ It is up when the console shows `[set-env] Written: …/env-variables.ts` and th
 | `test` | `nx test`: targets the default project `36-blocks`, which has no `test` target. Only some libs have `@nx/jest:jest` targets (`nx run-many -t test`). |
 | `test:contract` | `nx test 36-blocks-widget …`: the widget has no `test` target, so this cannot run (see [widget-embed](./modules/widget-embed.md)). |
 | `lint` | `nx workspace-lint && nx lint`. `workspace-lint` is not an Nx 21 command, so use `npx nx run-many -t lint`. |
+| `test:v0` | `node --test tools/tests/*.test.cjs`: focused behavior tests (setup-with-ai, oauth consent, team access, panel investigation, etc.). Requires `npm ci` first (tests import TypeScript sources). No `.env` required. |
 | `format`, `format:check`, `format:code` | Nx / Prettier formatting. A husky `pre-commit` hook runs `lint-staged` (Prettier on `*.{html,scss,ts,json}`). |
 
 > [!WARNING]
@@ -137,6 +138,12 @@ Errors are only logged; the build never fails here.
 > [!WARNING]
 > CI never runs `tools/set-env.js`, and env-variables.ts is gitignored. The Nx `set-env` targets in both `project.json` files are not dependencies (dependsOn) of `build`. Any affected build therefore compiles without `./env-variables`, and it fails: GitHub Actions shows 95 failures in the last 100 "Build check" runs, and the last green run was on 2026-04-23. The failing log (e.g. run 39735436439 on `P0092-clean`) is `TS2307: Cannot find module './env-variables'` for both apps. The widget also has no `local` configuration.
 > [!TODO] Needs a human: should the workflow run `node tools/set-env` with placeholder values first (in CI mode it exits 1 on any missing key, so the keys would have to be set), or should the job be removed? Until then a red "Build check" says nothing about the change under review.
+
+## CI: `.github/workflows/v0-behavior.yml` ("V0 behavior checks")
+
+- Triggers: every `pull_request` (any base branch, including `stage`) and `workflow_dispatch`.
+- Steps: checkout, Node 22, `npm ci --ignore-scripts --legacy-peer-deps`, then `npm run test:v0`, then `node tools/set-env` with `CI=false` (no credentials required), then `ngc --noEmit` on `apps/36-blocks/tsconfig.app.json`.
+- This is the reliable automated check for setup-with-ai, oauth consent, team access and related routing logic when the legacy Build check is red.
 
 Deployment is not in this repo. `set-env.js` comments and `AWS_BRANCH` point to AWS Amplify, where .env is written before the build.
 > [!TODO] Needs a human: which Amplify app/branch maps to which build script (`build:test` / `build:stage` / `build:prod`)?

@@ -22,6 +22,7 @@ Both apps are client-only and call a backend "proxy" API that lives in another r
 | Build widget into dashboard assets | `npm run build:proxy-auth` |
 | Full build | `npm run build:test`, `npm run build:stage` or `npm run build:prod`. Plain `npm run build` mixes a prod widget with a local dashboard |
 | Format | `npm run format:code`. Prettier also runs on pre-commit through husky and lint-staged |
+| Behavior tests | `npm run test:v0` (Node tests in `tools/tests/`; CI job **V0 behavior checks**) |
 
 `npm test` and `npm run lint` are not reliable at this commit: there is no test target on the dashboard, and `nx workspace-lint` is gone in Nx 21. Check a change by building the affected app: `npx nx build 36-blocks` or `npx nx build 36-blocks-widget` (run `node tools/set-env` first). The CI "Build check" workflow fails on every PR today because it never runs `set-env`, so a red check there says nothing about your change ([docs/environment.md](docs/environment.md#ci-githubworkflowsmainyml-build-check)).
 
@@ -34,6 +35,8 @@ Both apps are client-only and call a backend "proxy" API that lives in another r
 - Dashboard login, token or guards → [docs/modules/app-shell.md](docs/modules/app-shell.md), [docs/flows/dashboard-login.md](docs/flows/dashboard-login.md)
 - Blocks (features) wizard, OAuth clients, client secrets, redirect response mode → [docs/modules/panel-features.md](docs/modules/panel-features.md), [docs/flows/feature-configuration.md](docs/flows/feature-configuration.md)
 - Users, logs, billing, dashboard, layout → [docs/modules/panel-ops.md](docs/modules/panel-ops.md)
+- Team & access, API keys, operator activity, Login as → [docs/modules/panel-team-access.md](docs/modules/panel-team-access.md)
+- Set up with AI, zero-blocks guard, MCP OAuth consent → [docs/modules/panel-ai-setup.md](docs/modules/panel-ai-setup.md), [docs/flows/operator-mcp-oauth.md](docs/flows/operator-mcp-oauth.md)
 - `libs/**`, HTTP, the interceptor → [docs/modules/shared-libs.md](docs/modules/shared-libs.md)
 - Routes, state, components, styling → [docs/ui/](docs/README.md#ui)
 - A common change (page, backend call, block tab, widget key or screen, env value, lib, release) → [docs/recipes.md](docs/recipes.md)
@@ -76,5 +79,5 @@ Both apps are client-only and call a backend "proxy" API that lives in another r
 
 ## Docs map
 
-See [docs/README.md](docs/README.md) for every doc and when to read it. What the code can't answer is listed in [docs/open-questions.md](docs/open-questions.md); don't guess at those, ask.
+See [docs/README.md](docs/README.md) for every doc and when to read it. Coverage map and the last maintenance revision: [docs/docs-maintenance.json](docs/docs-maintenance.json). What the code can't answer is in [docs/open-questions.md](docs/open-questions.md); don't guess at those, ask.
 When you change behaviour that a doc describes, update that doc in the same change and run `/ai-docs update`.
